@@ -83,13 +83,6 @@
         [super keyDown:theEvent];
 }
 
-- (BOOL)resignFirstResponder {
-    BOOL shouldResign = [super resignFirstResponder];
-    if (shouldResign)
-        [typeSelectHelper stopSearch];
-    return shouldResign;
-}
-
 - (void)scrollToBeginningOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:0];

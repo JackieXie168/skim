@@ -37,11 +37,17 @@
  */
 
 #import "SKTypeSelectHelper.h"
+#import "OBUtilities.h"
+
+static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChangeFirstResponderNotification";
 
 #define REPEAT_CHARACTER '/'
 
-@interface NSString (BDSKTypeAheadHelperExtensions)
+@interface NSString (SKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range;
+@end
+
+@interface NSWindow (SKTypeAheadHelperExtensions)
 @end
 
 #pragma mark -
@@ -52,8 +58,8 @@
 - (void)searchWithStickyMatch:(BOOL)allowUpdate;
 - (void)stopTimer;
 - (void)startTimerForSelector:(SEL)selector;
-- (void)typeSelectSearchTimeout:(NSTimer *)aTimer;
-- (void)typeSelectCleanTimeout:(NSTimer *)aTimer;
+- (void)typeSelectSearchTimeout:(id)sender;
+- (void)typeSelectCleanTimeout:(id)sender;
 - (unsigned int)indexOfMatchedItemAfterIndex:(unsigned int)selectedIndex;
 @end
 
@@ -72,6 +78,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     [searchString release];
     [searchCache release];
@@ -142,8 +149,11 @@
 - (void)processKeyDownEvent:(NSEvent *)keyEvent {
     NSText *fieldEditor = [[NSApp keyWindow] fieldEditor:YES forObject:self];
     
-    if (processing == NO)
+    if (processing == NO) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:[NSApp keyWindow]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:[NSApp keyWindow]];
         [fieldEditor setString:@""];
+    }
     
     // Append the new character to the search string
     [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
@@ -196,6 +206,7 @@
             continue;
         if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character])
             continue;
+        return NO;
     }
     return YES;
 }
@@ -244,15 +255,16 @@
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 }
 
-- (void)typeSelectSearchTimeout:(NSTimer *)aTimer {
+- (void)typeSelectSearchTimeout:(id)sender {
     if (matchesImmediately == NO)
         [self searchWithStickyMatch:NO];
-    [self typeSelectCleanTimeout:aTimer];
+    [self typeSelectCleanTimeout:sender];
 }
 
-- (void)typeSelectCleanTimeout:(NSTimer *)aTimer {
+- (void)typeSelectCleanTimeout:(id)sender {
     if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
         [dataSource typeSelectHelper:self updateSearchString:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     processing = NO;
 }
@@ -328,7 +340,7 @@
 
 #pragma mark -
 
-@implementation NSString (BDSKTypeAheadHelperExtensions)
+@implementation NSString (SKTypeAheadHelperExtensions)
 
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range {
     unsigned int stringLength = [string length];
@@ -351,6 +363,26 @@
             range = NSMakeRange(r.location + 1, NSMaxRange(range) - r.location - 1);
     }
     return NO;
+}
+
+@end
+
+#pragma mark -
+
+@implementation NSWindow (SKTypeAheadHelperExtensions)
+
+static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
+
++ (void)load {
+    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))OBReplaceMethodImplementationWithSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:));
+}
+
+- (BOOL)replacementMakeFirstResponder:(NSResponder *)aResponder {
+    id oldFirstResponder = [self firstResponder];
+    BOOL success = originalMakeFirstResponder(self, _cmd, aResponder);
+    if (oldFirstResponder != [self firstResponder])
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKWindowDidChangeFirstResponderNotification object:self];
+    return success;
 }
 
 @end

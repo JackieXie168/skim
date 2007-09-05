@@ -1441,13 +1441,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
-- (BOOL)resignFirstResponder {
-    BOOL shouldResign = [super resignFirstResponder];
-    if (shouldResign)
-        [typeSelectHelper stopSearch];
-    return shouldResign;
-}
-
 #pragma mark Tracking mousemoved fix
 
 - (void)setFrame:(NSRect)frame {
