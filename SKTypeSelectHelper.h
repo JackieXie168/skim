@@ -76,12 +76,12 @@ enum {
 
 - (void)rebuildTypeSelectSearchCache;
 
-- (void)processKeyDownEvent:(NSEvent *)keyEvent;
+- (void)processKeyDownEvent:(NSEvent *)keyEvent forView:(NSView *)view;
 - (void)repeatSearch;
 - (void)stopSearch;
 
-- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent;
-- (BOOL)isRepeatEvent:(NSEvent *)keyEvent;
+- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent forView:(NSView *)view;
+- (BOOL)isRepeatEvent:(NSEvent *)keyEvent forView:(NSView *)view;
 
 @end
 
