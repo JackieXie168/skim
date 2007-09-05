@@ -234,9 +234,13 @@
         
         foundIndex = [self indexOfMatchedItemAfterIndex:startIndex];
         
-        // Avoid flashing a selection all over the place while you're still typing the thing you have selected
-        if (foundIndex != NSNotFound && foundIndex != selectedIndex)
+        if (foundIndex == NSNotFound) {
+            if ([dataSource respondsToSelector:@selector(typeSelectHelper:didFailToFindMatchForSearchString:)])
+                [dataSource typeSelectHelper:self didFailToFindMatchForSearchString:searchString];
+        } else if (foundIndex != selectedIndex) {
+            // Avoid flashing a selection all over the place while you're still typing the thing you have selected
             [dataSource typeSelectHelper:self selectItemAtIndex:foundIndex];
+        }
     }
 }
 

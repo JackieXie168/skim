@@ -372,6 +372,10 @@ static unsigned int maxRecentDocumentsCount = 0;
     [tableView scrollRowToVisible:itemIndex];
 }
 
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
+}
+
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
     NSString *message = @"";
     if (searchString)
