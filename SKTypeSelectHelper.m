@@ -169,6 +169,7 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWindow];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWindow];
+        [fieldEditor setDelegate:self];
         [fieldEditor setString:@""];
     }
     
@@ -211,7 +212,7 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 - (BOOL)isSearchEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
         return NO;
-    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask)
+    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask & ~NSAlphaShiftKeyMask)
         return NO;
     
     static NSCharacterSet *nonAlphanumericCharacterSet = nil;
@@ -292,6 +293,24 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     processing = NO;
+    
+    NSWindow *keyWindow = [NSApp keyWindow];
+    NSText *fieldEditor = [keyWindow fieldEditor:YES forObject:self];
+    if ([fieldEditor delegate] == self) {
+        // we pass a dummy key event to the field editor to clear any hanging dead keys (marked text)
+        NSEvent *keyEvent = [NSEvent keyEventWithType:NSKeyDown
+                                             location:NSZeroPoint
+                                        modifierFlags:0
+                                            timestamp:0
+                                         windowNumber:0
+                                              context:nil
+                                           characters:@""
+                          charactersIgnoringModifiers:@""
+                                            isARepeat:NO
+                                              keyCode:0];
+        [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
+        [fieldEditor setDelegate:nil];
+    }
 }
 
 - (void)searchWithStickyMatch:(BOOL)sticky {
