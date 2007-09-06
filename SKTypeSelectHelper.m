@@ -70,7 +70,8 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 
 - (id)init {
     if (self = [super init]){
-        searchString = [[NSMutableString alloc] init];
+        searchCache = nil;
+        searchString = nil;
         cycleResults = YES;
         matchesImmediately = YES;
         matchOption = SKPrefixMatch;
