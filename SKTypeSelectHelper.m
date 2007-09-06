@@ -170,6 +170,7 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWindow];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWindow];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:keyWindow];
         [fieldEditor setDelegate:self];
         [fieldEditor setString:@""];
     }
