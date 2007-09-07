@@ -38,7 +38,7 @@
 
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
-
+#import "Files_SKExtensions.h"
 
 @interface SKDownload (Private)
 - (void)setStatus:(int)newStatus;
@@ -78,7 +78,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self cleanupDownload];
+    [self cancelDownload];
     [URL release];
     [URLDownload release];
     [filePath release];
@@ -88,7 +88,7 @@
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    [self cleanupDownload];
+    [self cancelDownload];
 }
 
 #pragma mark Accessors
@@ -306,9 +306,7 @@
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-	NSString *tmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-    [[NSFileManager defaultManager] createDirectoryAtPath:tmpDir attributes:nil];
-    [URLDownload setDestination:[tmpDir stringByAppendingPathComponent:filename] allowOverwrite:YES];
+    [URLDownload setDestination:[[SKDownloadFolderURL() path] stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {

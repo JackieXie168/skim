@@ -43,6 +43,7 @@
 #import "SKStringConstants.h"
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
+#import "NSString_SKExtensions.h"
 
 
 @implementation SKDownloadController
@@ -127,36 +128,45 @@
 }
 
 - (IBAction)cancelDownload:(id)sender {
-	int row = [tableView clickedRow];
+    SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
-    if (row != -1) {
-        SKDownload *download = [downloads objectAtIndex:row];
-        if ([download status] == SKDownloadStatusDownloading) {
-            [download cancelDownload];
-        }
+    if (download == nil) {
+        int row = [tableView clickedRow];
+        if (row != -1)
+            download = [downloads objectAtIndex:row];
+    }
+    if (download && [download status] == SKDownloadStatusDownloading) {
+        [download cancelDownload];
     }
 }
 
 - (IBAction)resumeDownload:(id)sender {
-	int row = [tableView clickedRow];
+    SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
-    if (row != -1) {
-        SKDownload *download = [downloads objectAtIndex:row];
-        if ([download status] == SKDownloadStatusCanceled) {
-            [download resumeDownload];
-            [self reloadTableView];
-            [self updateButtons];
-        }
+    if (download == nil) {
+        int row = [tableView clickedRow];
+        if (row != -1)
+            download = [downloads objectAtIndex:row];
+    }
+    if (download && [download status] == SKDownloadStatusCanceled) {
+        [download resumeDownload];
+        [self reloadTableView];
+        [self updateButtons];
     }
 }
 
 - (IBAction)removeDownload:(id)sender {
-	int row = [tableView clickedRow];
+    SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
-    if (row != -1) {
-        SKDownload *download = [downloads objectAtIndex:row];
-        [download cleanupDownload];
-        [downloads removeObjectAtIndex:row];
+    if (download == nil) {
+        int row = [tableView clickedRow];
+        if (row != -1)
+            download = [downloads objectAtIndex:row];
+    }
+    
+    if (download) {
+        [download cancelDownload];
+        [downloads removeObject:download];
         [self reloadTableView];
         [self updateButtons];
     }
@@ -181,6 +191,47 @@
     [preferencesSheet orderOut:self];
 }
 
+- (void)openDownloadedFile:(id)sender {
+    SKDownload *download = [sender representedObject];
+    
+    if (download && [download status] != SKDownloadStatusFinished) {
+        NSBeep();
+        return;
+    }
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:[download filePath]];
+    NSError *error;
+    if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error])
+        [NSApp presentError:error];
+}
+
+- (void)revealDownloadedFile:(id)sender {
+    SKDownload *download = [sender representedObject];
+    
+    if (download && [download status] != SKDownloadStatusFinished) {
+        NSBeep();
+        return;
+    }
+    
+    [[NSWorkspace sharedWorkspace] selectFile:[download filePath] inFileViewerRootedAtPath:nil];
+}
+
+- (void)trashDownloadedFile:(id)sender {
+    SKDownload *download = [sender representedObject];
+    
+    if (download && [download status] != SKDownloadStatusFinished) {
+        NSBeep();
+        return;
+    }
+    
+    NSString *filePath = [download filePath];
+    NSString *folderPath = [filePath stringByDeletingLastPathComponent];
+    NSString *fileName = [filePath lastPathComponent];
+    int tag = 0;
+    
+    [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
+}
+
 #pragma mark SKDownloadDelegate
 
 - (void)downloadDidStart:(SKDownload *)download {
@@ -202,7 +253,7 @@
             [NSApp presentError:error];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
-            [download cleanupDownload];
+            [download cancelDownload];
             [downloads removeObject:download];
             // for the document to note that the file has been deleted
             [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
@@ -313,7 +364,7 @@
     if ([download canCancel]) {
         [download cancelDownload];
     } else {
-        [download cleanupDownload];
+        [download cancelDownload];
         [downloads removeObjectAtIndex:row];
         [self reloadTableView];
         [self updateButtons];
@@ -322,6 +373,44 @@
 
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     return YES;
+}
+
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)row {
+    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    NSMenuItem *menuItem;
+    SKDownload *download = [downloads objectAtIndex:row];
+    
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    
+    if ([download canCancel]) {
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+    } else {
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+    }
+    if ([download canResume]) {
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+    }
+    if ([download status] == SKDownloadStatusFinished) {
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+        
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+        
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:download];
+    }
+    
+    return menu;
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol

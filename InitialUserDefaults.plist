@@ -235,7 +235,7 @@
         <key>SKAutoOpenDownloadsWindow</key>
         <true/>
         <key>SKAutoRemoveFinishedDownloads</key>
-        <true/>
+        <false/>
         <key>SKAutoCloseDownloadsWindow</key>
         <false/>
         <key>SUScheduledCheckInterval</key>

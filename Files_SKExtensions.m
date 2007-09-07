@@ -39,6 +39,36 @@
 #import "Files_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
+NSURL *SKDownloadFolderURL() {
+    OSStatus err;
+	ICInstance inst;
+	ICAttr junk = 0;
+	ICFileSpec spec;
+    
+	static CFURLRef pathURL = NULL;
+    
+    if (NULL == pathURL) {
+        long size = sizeof(ICFileSpec);
+        FSRef pathRef;
+        
+        err = ICStart(&inst, 'SKim');
+        if (noErr == err)
+            err = ICBegin(inst, icReadOnlyPerm);
+        
+        if (err == noErr) {
+            err = ICGetPref(inst, kICDownloadFolder, &junk, &spec, &size);
+            if (noErr == err) {
+                ICEnd(inst);
+                ICStop(inst);
+            }
+            
+            err = FSpMakeFSRef(&(spec.fss), &pathRef);
+            if(err == noErr)
+                pathURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
+        }
+    }
+    return (NSURL *)pathURL;
+}
 
 BOOL SKFileIsInTrash(NSURL *fileURL) {
     NSCParameterAssert([fileURL isFileURL]);    

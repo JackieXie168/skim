@@ -38,6 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+// This function is not thread safe
+
+extern NSURL *SKDownloadFolderURL();
+
 // These functions are thread safe
 
 extern BOOL SKFileIsInTrash(NSURL *fileURL);
