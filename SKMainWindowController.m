@@ -3413,6 +3413,39 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [pdfView setActiveAnnotation:nil];
 }
 
+- (void)autoSizeNoteRows:(id)sender {
+    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:@"note"];
+    id cell = [tableColumn dataCell];
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width], 17.0)]);
+    NSSize size = NSMakeSize(width, FLT_MAX);
+    
+    NSMutableArray *items = [NSMutableArray array];
+    id item = [sender representedObject];
+    
+    if (item) {
+        [items addObject:item];
+    } else {
+        [items addObjectsFromArray:[self notes]];
+        [items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
+    }
+    
+    int i, count = [items count];
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
+    int row;
+    
+    for (i = 0; i < count; i++) {
+        item = [items objectAtIndex:i];
+        [cell setObjectValue:[item contents]];
+        NSAttributedString *attrString = [cell attributedStringValue];
+        NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
+        [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, 19.0)];
+        row = [noteOutlineView rowForItem:item];
+        if (row != -1)
+            [rowIndexes addIndex:row];
+    }
+    [noteOutlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+}
+
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSMenu *menu = nil;
     NSMenuItem *menuItem;
@@ -3445,6 +3478,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setTarget:self];
             [menuItem setRepresentedObject:annotation];
         }
+        if ([menu numberOfItems] > 0)
+            [menu addItem:[NSMenuItem separatorItem]];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:item];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
+        [menuItem setTarget:self];
     }
     return menu;
 }
