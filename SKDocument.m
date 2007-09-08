@@ -62,6 +62,7 @@
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "SKFDFParser.h"
+#import "NSData_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -1055,25 +1056,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
             [fh seekToFileOffset:startPos];
             NSData *trailerData = [fh readDataToEndOfFile];
-            
-            // done with the filehandle and offsets; now we have the trailer as NSData, so try to find the marker pattern in it
             const char *pattern = "%%EOF";
             unsigned patternLength = strlen(pattern);
-            unsigned trailerLength = [trailerData length];
-            BOOL foundTrailer = NO;
+            unsigned trailerIndex = [trailerData indexOfBytes:pattern length:patternLength options:NSBackwardsSearch];
             
-            int i, startIndex = trailerLength - patternLength;
-            const char *buffer = [trailerData bytes];
-            
-            // Adobe says to search from the end, so we get the last %%EOF
-            for (i = startIndex; i >= 0 && NO == foundTrailer; i -= 1) {
-                
-                // don't bother comparing if the first byte doesn't match
-                if (buffer[i] == pattern[0])
-                    foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
-            }
-            
-            if (foundTrailer) {
+            if (trailerIndex != NSNotFound) {
                 if (autoUpdate && [self isDocumentEdited] == NO) {
                     // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                     [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
@@ -1322,8 +1309,54 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return data;
 }
 
+- (NSString *)fileIDString; {
+    if (pdfData == nil)
+        return nil;
+    const char *EOFPattern = "%%EOF";
+    const char *trailerPattern = "trailer";
+    const char *IDPattern = "/ID";
+    const char *startArrayPattern = "[";
+    const char *endArrayPattern = "]";
+    unsigned patternLength = strlen(EOFPattern);
+    NSRange range = NSMakeRange([pdfData length] - 1024, 1024);
+    if (range.location < 0)
+        range = NSMakeRange(0, [pdfData length]);
+    unsigned EOFIndex = [pdfData indexOfBytes:EOFPattern length:patternLength options:NSBackwardsSearch range:range];
+    unsigned trailerIndex, IDIndex, startArrayIndex, endArrayIndex;
+    NSData *fileIDData;
+    
+    if (EOFIndex != NSNotFound) {
+        range = NSMakeRange(EOFIndex - 2048, 2048);
+        if (range.location < 0)
+            range = NSMakeRange(0, EOFIndex);
+        patternLength = strlen(trailerPattern);
+        trailerIndex = [pdfData indexOfBytes:trailerPattern length:patternLength options:NSBackwardsSearch range:range];
+        if (trailerIndex != NSNotFound) {
+            range = NSMakeRange(trailerIndex + patternLength, EOFIndex - trailerIndex - patternLength);
+            patternLength = strlen(IDPattern);
+            IDIndex = [pdfData indexOfBytes:IDPattern length:patternLength options:0 range:range];
+            if (IDIndex != NSNotFound) {
+                range = NSMakeRange(IDIndex + patternLength, EOFIndex - IDIndex - patternLength);
+                patternLength = strlen(startArrayPattern);
+                startArrayIndex = [pdfData indexOfBytes:startArrayPattern length:patternLength options:0 range:range];
+                if (startArrayIndex != NSNotFound) {
+                    range = NSMakeRange(startArrayIndex + patternLength, EOFIndex - startArrayIndex - patternLength);
+                    patternLength = strlen(endArrayPattern);
+                    endArrayIndex = [pdfData indexOfBytes:endArrayPattern length:patternLength options:0 range:range];
+                    if (endArrayIndex != NSNotFound) {
+                        fileIDData = [pdfData subdataWithRange:NSMakeRange(startArrayIndex + 1, endArrayIndex - startArrayIndex - 1)];
+                        return [[[NSString alloc] initWithData:fileIDData encoding:NSISOLatin1StringEncoding] autorelease];
+                    }
+                }
+            }
+        }
+    }
+    return nil;
+}
+
 - (NSString *)notesFDFString {
     NSString *filename = [[[self fileURL] path] lastPathComponent];
+    NSString *fileIDString = [self fileIDString];
     int i, count = [[self notes] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n1 0 obj<</FDF<<", 0xe2, 0xe3, 0xcf, 0xd3];
     [string appendString:@"/Annots["];
@@ -1335,7 +1368,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if (index != NSNotFound)
             filename = [filename stringByAppendingPathComponent:[files objectAtIndex:index]];
     }
-    [string appendFormat:@"]/F(%@)>>\nendobj\n", filename ? [filename stringByEscapingParenthesis] : @""];
+    [string appendFormat:@"]/F(%@)", filename ? [filename stringByEscapingParenthesis] : @""];
+    if (fileIDString)
+        [string appendFormat:@"/ID[%@]", fileIDString];
+    [string appendString:@">>\nendobj\n"];
     for (i = 0; i < count; i++)
         [string appendFormat:@"obj %i 0<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
     [string appendString:@"trailer\n<</Root 1 0 R>>\n%%EOF\n"];
