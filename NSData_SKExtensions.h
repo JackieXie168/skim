@@ -1,8 +1,8 @@
 //
-//  SKFDFParser.h
+//  NSData_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/6/07.
+//  Created by Christiaan Hofman on 9/8/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -39,7 +39,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKFDFParser : NSObject
-+ (NSArray *)notesDictionariesFromFDFString:(NSString *)string;
-+ (NSDictionary *)fdfObjectsFromFDFString:(NSString *)string;
+@interface NSData (SKExtensions)
+- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength;
+- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask;
+- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange;
 @end
