@@ -43,8 +43,6 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
-#define WINDOW_WIDTH    400.0
-#define WINDOW_HEIGHT   80.0
 #define WINDOW_OFFSET   20.0
 #define TEXT_MARGIN_X   2.0
 #define TEXT_MARGIN_Y   2.0
@@ -179,8 +177,9 @@
 }
 
 - (void)showWithTimer:(NSTimer *)aTimer {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, [sud floatForKey:@"SKToolTipWidth"], [sud floatForKey:@"SKToolTipHeight"]);
     NSImage *image = nil;
     NSAttributedString *text = nil;
     NSString *string = nil;
