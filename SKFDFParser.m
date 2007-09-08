@@ -55,13 +55,13 @@
 #pragma mark -
 
 @interface SKIndirectObject : NSObject <NSCopying> {
-    int objectNumber;
-    int generationNumber;
+    unsigned int objectNumber;
+    unsigned int generationNumber;
 }
-+ (id)indirectObjectWithNumber:(int)objNumber generation:(int)genNumber;
-- (id)initWithNumber:(int)objNumber generation:(int)genNumber;
-- (int)objectNumber;
-- (int)generationNumber;
++ (id)indirectObjectWithNumber:(unsigned int)objNumber generation:(unsigned int)genNumber;
+- (id)initWithNumber:(unsigned int)objNumber generation:(unsigned int)genNumber;
+- (unsigned int)objectNumber;
+- (unsigned int)generationNumber;
 @end
 
 #pragma mark -
@@ -631,11 +631,11 @@ static inline int hexCharacterNumber(unichar ch) {
 
 @implementation SKIndirectObject : NSObject
 
-+ (id)indirectObjectWithNumber:(int)objNumber generation:(int)genNumber {
++ (id)indirectObjectWithNumber:(unsigned int)objNumber generation:(unsigned int)genNumber {
     return [[[self alloc] initWithNumber:objNumber generation:genNumber] autorelease];
 }
 
-- (id)initWithNumber:(int)objNumber generation:(int)genNumber {
+- (id)initWithNumber:(unsigned int)objNumber generation:(unsigned int)genNumber {
     if (self = [super init]) {
         objectNumber = objNumber;
         generationNumber = genNumber;
@@ -651,11 +651,15 @@ static inline int hexCharacterNumber(unichar ch) {
     return [self isMemberOfClass:[other class]] && [self objectNumber] == [other objectNumber] && [self generationNumber] == [other generationNumber];
 }
 
-- (int)objectNumber {
+- (unsigned int)hash {
+    return (objectNumber << 16) | generationNumber;
+}
+
+- (unsigned int)objectNumber {
     return objectNumber;
 }
 
-- (int)generationNumber {
+- (unsigned int)generationNumber {
     return generationNumber;
 }
 
