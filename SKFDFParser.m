@@ -86,7 +86,7 @@
         
         if ([key isEqualToString:@"Type"]) {
             if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
-                if ([value isEqualtoString:@"Text"])
+                if ([value isEqualToString:@"Text"])
                     value = @"Note";
                 if ([validTypes containsObject:value])
                     [dictionary setObject:value forKey:@"type"];
