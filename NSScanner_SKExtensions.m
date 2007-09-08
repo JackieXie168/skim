@@ -51,4 +51,12 @@
     return YES;
 }
 
+- (BOOL)peekCharacter:(unichar *)ch {
+    if ([self isAtEnd])
+        return NO;
+    if (ch != NULL)
+        *ch = [[self string] characterAtIndex:[self scanLocation]];
+    return YES;
+}
+
 @end

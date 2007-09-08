@@ -43,6 +43,7 @@
 				<string>Skim Notes</string>
 				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
+				<string>Notes as FDF</string>
 			</array>
 		</dict>
 		<dict>
@@ -79,6 +80,7 @@
 				<string>Skim Notes</string>
 				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
+				<string>Notes as FDF</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
@@ -339,6 +341,30 @@
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fdf</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/vnd.fdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Notes as FDF</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>FDF </string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
@@ -428,7 +454,7 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>com.apple.ostype</key>
-                <string>PDFD</string>
+				<string>PDFD</string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>pdfd</string>
@@ -449,7 +475,7 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>com.apple.ostype</key>
-                <string>SKNT</string>
+				<string>SKNT</string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>skim</string>

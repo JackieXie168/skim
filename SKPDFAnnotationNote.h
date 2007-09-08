@@ -50,6 +50,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (NSDictionary *)dictionaryValue;
 
+- (NSString *)fdfString;
+
 - (PDFDestination *)destination;
 - (unsigned int)pageIndex;
 - (int)noteType;

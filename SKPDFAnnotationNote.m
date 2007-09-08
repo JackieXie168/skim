@@ -44,6 +44,7 @@
 #import "OBUtilities.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 enum {
     SKASTextNote = 'NTxt',
@@ -220,6 +221,50 @@ static IMP originalSetBorder = NULL;
         [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
     }
     return dict;
+}
+
+- (NSString *)fdfString {
+    NSMutableString *string = [NSMutableString string];
+    NSRect bounds = [self bounds];
+    float r, g, b, a = 0.0;
+    PDFBorder *border = [self border];
+    [[self color] getRed:&r green:&g blue:&b alpha:&a];
+    [string appendString:@"/Type/Annot/Subtype/"];
+    [string appendString:[[self type] isEqualToString:@"Note"] ? @"Text" : [self type]];
+    [string appendString:@"/Contents("];
+    [string appendString:[[self contents] stringByEscapingParenthesis]];
+    if ([self text]) {
+        [string appendString:@"\n"];
+        [string appendString:[[[self text] string] stringByEscapingParenthesis]];
+    }
+    [string appendString:@")"];
+    [string appendFormat:@"/Rect[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
+    if (a > 0.0)
+        [string appendFormat:@"/C[%f %f %f]", r, g, b];
+    [string appendFormat:@"/Page %i", [self pageIndex]];
+    if (border) {
+        [string appendFormat:@"/BS<</W%f/S", [border lineWidth]];
+        switch ([border style]) {
+            case kPDFBorderStyleSolid:
+                [string appendString:@"/S"];
+                break;
+            case kPDFBorderStyleDashed:
+                [string appendString:@"/D"];
+                break;
+            case kPDFBorderStyleBeveled:
+                [string appendString:@"/B"];
+                break;
+            case kPDFBorderStyleInset:
+                [string appendString:@"/I"];
+                break;
+            case kPDFBorderStyleUnderline:
+                [string appendString:@"/U"];
+                break;
+        }
+        [string appendFormat:@"/D[%@]", [[[border dashPattern] valueForKey:@"stringValue"] componentsJoinedByString:@" "]];
+        [string appendString:@">>"];
+    }
+    return string;
 }
 
 - (PDFDestination *)destination{
@@ -599,6 +644,15 @@ static IMP originalSetBorder = NULL;
     return dict;
 }
 
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    float r, g, b, a = 0.0;
+    [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
+    if (a > 0.0)
+        [string appendFormat:@"/IC[%f %f %f]", r, g, b];
+    return string;
+}
+
 - (BOOL)isNoteAnnotation { return YES; }
 
 - (BOOL)isResizable { return YES; }
@@ -671,6 +725,15 @@ static IMP originalSetBorder = NULL;
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[self interiorColor] forKey:@"interiorColor"];
     return dict;
+}
+
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    float r, g, b, a = 0.0;
+    [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
+    if (a > 0.0)
+        [string appendFormat:@"/IC[%f %f %f]", r, g, b];
+    return string;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -910,6 +973,20 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return dict;
 }
 
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    NSEnumerator *pointEnum = [[self quadrilateralPoints] objectEnumerator];
+    NSValue *value;
+    NSPoint point;
+    [string appendString:@"/QuadPoints["];
+    while (value = [pointEnum nextObject]) {
+        point = [value pointValue];
+        [string appendFormat:@"%f %f ", point.x, point.y];
+    }
+    [string appendString:@"]"];
+    return string;
+}
+
 - (void)regenerateLineRects {
     
     NSArray *quadPoints = [self quadrilateralPoints];
@@ -1063,6 +1140,12 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return dict;
 }
 
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    [string appendFormat:@"/DA(/%@ %f Tf)", [[self font] fontName], [[self font] pointSize]];
+    return string;
+}
+
 - (BOOL)isNoteAnnotation { return YES; }
 
 - (BOOL)isResizable { return YES; }
@@ -1177,6 +1260,32 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [dict setValue:[self text] forKey:@"text"];
     [dict setValue:[self image] forKey:@"image"];
     return dict;
+}
+
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    [string appendString:@"/Name"];
+    switch ([self iconType]) {
+        case kPDFTextAnnotationIconComment:
+            [string appendString:@"/Comment"];
+            break;
+        case kPDFTextAnnotationIconKey:
+            [string appendString:@"/Key"];
+            break;
+        case kPDFTextAnnotationIconNote:
+            [string appendString:@"/Note"];
+            break;
+        case kPDFTextAnnotationIconNewParagraph:
+            [string appendString:@"/NewParagraph"];
+            break;
+        case kPDFTextAnnotationIconParagraph:
+            [string appendString:@"/Paragraph"];
+            break;
+        case kPDFTextAnnotationIconInsert:
+            [string appendString:@"/Insert"];
+            break;
+    }
+    return string;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -1372,6 +1481,59 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:@"startPoint"];
     [dict setValue:NSStringFromPoint([self endPoint]) forKey:@"endPoint"];
     return dict;
+}
+
+- (NSString *)fdfString {
+    NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
+    [string appendString:@"/LE["];
+    switch ([self startLineStyle]) {
+        case kPDFLineStyleNone:
+            [string appendString:@"/None"];
+            break;
+        case kPDFLineStyleSquare:
+            [string appendString:@"/Square"];
+            break;
+        case kPDFLineStyleCircle:
+            [string appendString:@"/Circle"];
+            break;
+        case kPDFLineStyleDiamond:
+            [string appendString:@"/Diamond"];
+            break;
+        case kPDFLineStyleOpenArrow:
+            [string appendString:@"/OpenArrow"];
+            break;
+        case kPDFLineStyleClosedArrow:
+            [string appendString:@"/ClosedArrow"];
+            break;
+        default:
+            [string appendString:@"/None"];
+            break;
+    }
+    switch ([self endLineStyle]) {
+        case kPDFLineStyleNone:
+            [string appendString:@"/None"];
+            break;
+        case kPDFLineStyleSquare:
+            [string appendString:@"/Square"];
+            break;
+        case kPDFLineStyleCircle:
+            [string appendString:@"/Circle"];
+            break;
+        case kPDFLineStyleDiamond:
+            [string appendString:@"/Diamond"];
+            break;
+        case kPDFLineStyleOpenArrow:
+            [string appendString:@"/OpenArrow"];
+            break;
+        case kPDFLineStyleClosedArrow:
+            [string appendString:@"/ClosedArrow"];
+            break;
+        default:
+            [string appendString:@"/None"];
+            break;
+    }
+    [string appendString:@"]"];
+    return string;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
