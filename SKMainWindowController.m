@@ -3416,7 +3416,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)autoSizeNoteRows:(id)sender {
     NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:@"note"];
     id cell = [tableColumn dataCell];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width], 17.0)]);
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, 17.0)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
