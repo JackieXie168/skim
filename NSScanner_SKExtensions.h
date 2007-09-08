@@ -41,4 +41,5 @@
 
 @interface NSScanner (SKExtensions)
 - (BOOL)scanCharacter:(unichar *)ch;
+- (BOOL)peekCharacter:(unichar *)ch;
 @end

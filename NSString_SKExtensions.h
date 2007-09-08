@@ -53,6 +53,8 @@
 
 - (NSString *)lossyASCIIString;
 
+- (NSString *)stringByEscapingParenthesis;
+
 - (NSRange)rangeOfLeadingEmptyLine;
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
 - (NSRange)rangeOfTrailingEmptyLine;

@@ -51,6 +51,7 @@ NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 NSString *SKNotesDocumentType = @"Skim Notes";
 NSString *SKNotesRTFDocumentType = @"Notes as RTF";
 NSString *SKNotesTextDocumentType = @"Notes as Text";
+NSString *SKNotesFDFDocumentType = @"Notes as FDF";
 NSString *SKPostScriptDocumentType = @"PostScript document";
 NSString *SKDVIDocumentType = @"DVI document";
 

@@ -203,6 +203,27 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
 }
 
+- (NSString *)stringByEscapingParenthesis {
+    static NSCharacterSet *parenAndBackslashCharSet = nil;
+    
+    if (parenAndBackslashCharSet == nil)
+        parenAndBackslashCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"()\\"] retain];
+    
+    unsigned location = [self rangeOfCharacterFromSet:parenAndBackslashCharSet].location;
+    if (location == NSNotFound)
+        return self;
+    
+    NSRange range;
+    NSMutableString *string = [self mutableCopy];
+    
+    while (location != NSNotFound) {
+        [string insertString:@"\\" atIndex:location];
+        range = NSMakeRange(location + 2, [string length] - location - 2);
+        location = [string rangeOfCharacterFromSet:parenAndBackslashCharSet options:0 range:range].location;
+    }
+    return [string autorelease];
+}
+
 #pragma mark Empty lines
 
 // whitespace at the beginning of the string up to the end or until (and including) a newline

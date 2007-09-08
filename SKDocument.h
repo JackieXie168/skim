@@ -102,6 +102,7 @@ enum {
 
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
+- (NSString *)notesFDFString;
 
 - (NSDictionary *)currentDocumentSetup;
 

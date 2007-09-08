@@ -61,6 +61,7 @@
 #import "SKApplicationController.h"
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
+#import "SKFDFParser.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -371,6 +372,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+        NSString *string = [self notesFDFString];
+        if (string)
+            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:outError];
+        else if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     
     if (didWrite == NO && outError != NULL && *outError == nil)
@@ -668,7 +675,16 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
     if (returnCode == NSOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
-        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
+        NSString *extension = [[notesURL path] pathExtension];
+        NSArray *array = nil;
+        
+        if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
+            array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
+        } else {
+            NSString *fdfString = [NSString stringWithContentsOfURL:notesURL encoding:NSISOLatin1StringEncoding error:NULL];
+            if (fdfString)
+                array = [SKFDFParser notesDictionariesFromFDFString:fdfString];
+        }
         
         if (array) {
             if ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState)
@@ -678,7 +694,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             // previous undo actions are not reliable anymore
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeDone];
-        }
+        } else
+            NSBeep();
         
     }
 }
@@ -699,7 +716,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
                               file:[[path lastPathComponent] stringByReplacingPathExtension:@"skim"]
-                             types:[NSArray arrayWithObject:@"skim"]
+                             types:[NSArray arrayWithObjects:@"skim", @"fdf", nil]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
@@ -1303,6 +1320,26 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSData *data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
     [templateAttrString release];
     return data;
+}
+
+- (NSString *)notesFDFString {
+    NSString *filename = [[[self fileURL] path] lastPathComponent];
+    int i, count = [[self notes] count];
+    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n1 0 obj<</FDF<<", 0xe2, 0xe3, 0xcf, 0xd3];
+    [string appendString:@"/Annots["];
+    for (i = 0; i < count; i++)
+        [string appendFormat:@"%i 0 R ", i + 2];
+    if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
+        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:[[self fileURL] path]];
+        unsigned index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+        if (index != NSNotFound)
+            filename = [filename stringByAppendingPathComponent:[files objectAtIndex:index]];
+    }
+    [string appendFormat:@"]/F(%@)>>\nendobj\n", filename ? [filename stringByEscapingParenthesis] : @""];
+    for (i = 0; i < count; i++)
+        [string appendFormat:@"obj %i 0<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
+    [string appendString:@"trailer\n<</Root 1 0 R>>\n%%EOF\n"];
+    return string;
 }
 
 - (void)setPrintInfo:(NSPrintInfo *)printInfo {
