@@ -232,6 +232,10 @@
         <real>400.0</real>
         <key>SKLargeMagnificationWidth</key>
         <real>600.0</real>
+        <key>SKToolTipWidth</key>
+        <real>400.0</real>
+        <key>SKToolTipHeight</key>
+        <real>80.0</real>
         <key>SKAutoOpenDownloadsWindow</key>
         <true/>
         <key>SKAutoRemoveFinishedDownloads</key>
