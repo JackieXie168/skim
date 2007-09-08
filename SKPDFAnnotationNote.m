@@ -243,7 +243,7 @@ static IMP originalSetBorder = NULL;
         [string appendFormat:@"/C[%f %f %f]", r, g, b];
     [string appendFormat:@"/Page %i", [self pageIndex]];
     if (border) {
-        [string appendFormat:@"/BS<</W%f/S", [border lineWidth]];
+        [string appendFormat:@"/BS<</W %f/S", [border lineWidth]];
         switch ([border style]) {
             case kPDFBorderStyleSolid:
                 [string appendString:@"/S"];
