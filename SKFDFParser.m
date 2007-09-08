@@ -76,6 +76,7 @@
 
 + (NSDictionary *)noteDictionary:(NSDictionary *)dict lookup:(NSDictionary *)lookup {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    NSSet *validTypes = [NSSet setWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
     NSEnumerator *keyEnum = [dict keyEnumerator];
     NSString *key;
     BOOL success = YES;
@@ -84,10 +85,16 @@
         id value = [dict valueForKey:key];
         
         if ([key isEqualToString:@"Type"]) {
-            if (value = [self value:value ofClass:[NSString class] lookup:lookup])
-                [dictionary setObject:value forKey:@"type"];
-            else
+            if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
+                if ([value isEqualtoString:@"Text"])
+                    value = @"Note";
+                if ([validTypes containsObject:value])
+                    [dictionary setObject:value forKey:@"type"];
+                else
+                    success = NO;
+            } else {
                 success = NO;
+            }
         } else if ([key isEqualToString:@"Contents"]) {
             if (value = [self value:value ofClass:[NSString class] lookup:lookup])
                 [dictionary setObject:value forKey:@"contents"];
