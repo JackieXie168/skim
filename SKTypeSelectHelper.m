@@ -49,6 +49,7 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 @end
 
 @interface NSWindow (SKTypeAheadHelperExtensions)
+- (BOOL)replacementMakeFirstResponder:(NSResponder *)aResponder;
 @end
 
 #pragma mark -

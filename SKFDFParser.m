@@ -268,6 +268,7 @@
         (trailer = [fdfDict objectForKey:@"trailer"]) &&
         ([trailer isKindOfClass:[NSDictionary class]]) &&
         (root = [trailer objectForKey:@"Root"]) &&
+        (rootDict = [fdfDict objectForKey:root]) &&
         ([rootDict isKindOfClass:[NSDictionary class]]) &&
         (annots = [trailer objectForKey:@"Annots"]) &&
         ([annots isKindOfClass:[NSArray class]])) {
@@ -277,6 +278,8 @@
         
         array = [NSMutableArray array];
         while (dict = [annotEnum nextObject]) {
+            while ([dict isKindOfClass:[SKIndirectObject class]])
+                dict = [fdfDict objectForKey:dict];
             if ([dict isKindOfClass:[NSDictionary class]] == NO)
                 return nil;
             if (dict = [self noteDictionary:dict lookup:fdfDict])

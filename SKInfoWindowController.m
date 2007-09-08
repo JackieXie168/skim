@@ -81,8 +81,7 @@
     [self setWindowFrameAutosaveName:@"SKInfoWindow"];
 }
 
-static inline 
-NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
+static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
     if (fileURL == nil)
         return @"";
     
