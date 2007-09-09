@@ -129,28 +129,25 @@
         while ([scanner scanFDFComment:NULL]);
         if (success = [scanner scanInt:&genNumber]) {
             while ([scanner scanFDFComment:NULL]);
-            if (success = [scanner scanString:@"obj" intoString:NULL]) {
-                if (success = [scanner scanFDFObject:&object]) {
-                    if ([object isKindOfClass:[NSDictionary class]]) {
-                        while ([scanner scanFDFComment:NULL]);
-                        if ([scanner scanString:@"stream" intoString:NULL]) {
-                            object = @"";
-                            if ([scanner scanUpToString:@"endstream" intoString:&object] && [scanner scanString:@"endstream" intoString:NULL]) {
-                                int end = [object length];
-                                unichar ch = end ? [object characterAtIndex:end - 1] : 0;
-                                if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
-                                    end--;
-                                    if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
-                                        end--;
-                                    object = [object substringToIndex:end];
-                                }
-                            }
+            if (success = [scanner scanString:@"obj" intoString:NULL] && [scanner scanFDFObject:&object]) {
+                while ([scanner scanFDFComment:NULL]);
+                if (success = [object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
+                    object = @"";
+                    if ([scanner scanUpToString:@"endstream" intoString:&object] && [scanner scanString:@"endstream" intoString:NULL]) {
+                        int end = [object length];
+                        unichar ch = end ? [object characterAtIndex:end - 1] : 0;
+                        if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
+                            end--;
+                            if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
+                                end--;
+                            object = [object substringToIndex:end];
                         }
-                        [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
-                        while ([scanner scanFDFComment:NULL]);
-                        success = [scanner scanString:@"endobj" intoString:NULL];
-                        while ([scanner scanFDFComment:NULL]);
                     }
+                }
+                if (success) {
+                    success = [scanner scanString:@"endobj" intoString:NULL];
+                    while ([scanner scanFDFComment:NULL]);
+                    [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
                 }
             }
         }
