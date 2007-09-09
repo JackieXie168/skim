@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @interface SKFDFParser (SKPrivate)
@@ -435,6 +436,31 @@
                 [dictionary setObject:quadPoints forKey:@"quadrilateralPoints"];
             } else {
                 success = NO;
+            }
+        } else if ([key isEqualToString:@"DA"]) {
+            if (value = [self stringValue:value]) {
+                NSScanner *scanner = [NSScanner scannerWithString:value];
+                NSString *fontName;
+                float fontSize;
+                if ([scanner scanUpToString:@"Tf" intoString:NULL] && [scanner isAtEnd] == NO) {
+                    unsigned location = [scanner scanLocation];
+                    NSRange r = [value rangeOfString:@"/" options:NSBackwardsSearch range:NSMakeRange(0, location)];
+                    if (r.location != NSNotFound) {
+                        [scanner setScanLocation:NSMaxRange(r)];
+                        if ([scanner scanCharactersFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] intoString:&fontName] && 
+                            [scanner scanFloat:&fontSize] && 
+                            [scanner scanString:@"Tf" intoString:NULL] && 
+                            [scanner scanLocation] == location + 2) {
+                            NSFont *font = [NSFont fontWithName:fontName size:fontSize];
+                            if (font == nil) {
+                                fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey];
+                                font = [NSFont fontWithName:fontName size:fontSize];
+                            }
+                            if (font)
+                                [dictionary setObject:font forKey:@"font"];
+                        }
+                    }
+                }
             }
         }
     }
