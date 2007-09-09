@@ -86,6 +86,13 @@
         
         if ([key isEqualToString:@"Type"]) {
             if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
+                if ([value isEqualToString:@"Annot"] == NO)
+                    success = NO;
+            } else {
+                success = NO;
+            }
+        } else if ([key isEqualToString:@"Subtype"]) {
+            if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
                 if ([value isEqualToString:@"Text"])
                     value = @"Note";
                 if ([validTypes containsObject:value])
@@ -114,8 +121,8 @@
         } else if ([key isEqualToString:@"Page"]) {
             if (value = [self value:value ofClass:[NSNumber class] lookup:lookup])
                 [dictionary setObject:value forKey:@"pageIndex"];
-            else
-                success = NO;
+            else{
+                success = NO;}
         } else if ([key isEqualToString:@"C"]) {
             if ((value = [self value:value ofClass:[NSArray class] lookup:lookup]) && [value count] == 3) {
                 float r, g, b;
@@ -269,15 +276,19 @@
     NSDictionary *trailer;
     SKIndirectObject *root;
     NSDictionary *rootDict;
+    NSDictionary *rootFDFDict;
     NSArray *annots;
     
     if ((fdfDict = [self fdfObjectsFromFDFString:string]) &&
         (trailer = [fdfDict objectForKey:@"trailer"]) &&
         ([trailer isKindOfClass:[NSDictionary class]]) &&
         (root = [trailer objectForKey:@"Root"]) &&
+        ([root isKindOfClass:[SKIndirectObject class]]) &&
         (rootDict = [fdfDict objectForKey:root]) &&
         ([rootDict isKindOfClass:[NSDictionary class]]) &&
-        (annots = [trailer objectForKey:@"Annots"]) &&
+        (rootFDFDict = [rootDict objectForKey:@"FDF"]) &&
+        ([rootFDFDict isKindOfClass:[NSDictionary class]]) &&
+        (annots = [rootFDFDict objectForKey:@"Annots"]) &&
         ([annots isKindOfClass:[NSArray class]])) {
     
         NSEnumerator *annotEnum = [annots objectEnumerator];
@@ -317,36 +328,37 @@
     [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
     
     // Scan the FDF body
-    while (success = success && [scanner scanInt:&objNumber] &&
-                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL] &&
-                    [scanner scanInt:&genNumber] &&
-                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL] &&
-                    [scanner scanString:@"obj" intoString:NULL]) {
-        
+    while (success && [scanner scanInt:&objNumber]) {
         [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-        if (success = [scanner scanFDFObject:&object]) {
-            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-            
-            if ([object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
-                object = @"";
-                [scanner scanString:@"\n" intoString:NULL] || [scanner scanString:@"\r\n" intoString:NULL];
-                
-                if ([scanner scanUpToString:@"endstream" intoString:&object]) {
-                    int end = [object length];
-                    unichar ch = end ? [object characterAtIndex:end - 1] : 0;
-                    if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
-                        end--;
-                        if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
-                            end--;
-                        object = [object substringToIndex:end];
-                    }
-                }
-                [scanner scanString:@"endstream" intoString:NULL];
+        if (success = [scanner scanInt:&genNumber]) {
+            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
+            if ([scanner scanString:@"obj" intoString:NULL]) {
                 [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+                if (success = [scanner scanFDFObject:&object]) {
+                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+                    
+                    if ([object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
+                        object = @"";
+                        [scanner scanString:@"\n" intoString:NULL] || [scanner scanString:@"\r\n" intoString:NULL];
+                        
+                        if ([scanner scanUpToString:@"endstream" intoString:&object]) {
+                            int end = [object length];
+                            unichar ch = end ? [object characterAtIndex:end - 1] : 0;
+                            if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
+                                end--;
+                                if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
+                                    end--;
+                                object = [object substringToIndex:end];
+                            }
+                        }
+                        [scanner scanString:@"endstream" intoString:NULL];
+                    }
+                    [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
+                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+                    success = [scanner scanString:@"endobj" intoString:NULL];
+                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+                }
             }
-            [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
-            success = [scanner scanString:@"endobj" intoString:NULL];
-            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
         }
     }
     
@@ -381,12 +393,12 @@
 - (BOOL)scanFDFObject:(id *)object {
     id tmpObject = nil;
     BOOL success = [self scanFDFName:&tmpObject] || 
-        [self scanFDFString:&tmpObject] || 
-        [self scanFDFHexString:&tmpObject] || 
-        [self scanFDFNumber:&tmpObject] || 
         [self scanFDFArray:&tmpObject] || 
         [self scanFDFDictionary:&tmpObject] || 
+        [self scanFDFString:&tmpObject] || 
+        [self scanFDFHexString:&tmpObject] || 
         [self scanFDFIndirectObject:&tmpObject] || 
+        [self scanFDFNumber:&tmpObject] || 
         [self scanString:@"null" intoString:NULL];
     
     if (success && object)
@@ -408,10 +420,13 @@
             success = NO;
             break;
         }
-        if (ch == ']')
+        if (ch == ']') {
+            [self scanCharacter:NULL];
             break;
-        else if ((success = [self scanFDFObject:&object]) && object)
-            [tmpArray addObject:object];
+        } else if (success = [self scanFDFObject:&object]) {
+           if (object)
+                [tmpArray addObject:object];
+        }
     }
     
     if (success && array)
@@ -422,18 +437,11 @@
 
 - (BOOL)scanFDFDictionary:(NSDictionary **)dictionary {
     NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
-    unichar ch;
     NSString *key;
     id object;
     BOOL success = [self scanString:@"<<" intoString:NULL];
     
     while (success) {
-        [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-        
-        if ([self peekCharacter:&ch] == NO) {
-            success = NO;
-            break;
-        }
         if ([self scanFDFName:&key]) {
             [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
             if ((success = [self scanFDFObject:&object]) && object)
@@ -443,6 +451,7 @@
         } else {
             success = NO;
         }
+        [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
     }
     
     if (success && dictionary)
@@ -589,7 +598,7 @@ static inline int hexCharacterNumber(unichar ch) {
     if (whitespaceOrDelimiterCharSet == nil) {
         NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
         [tmpSet addCharactersInString:@"()<>[]{}/%"];
-        whitespaceOrDelimiterCharSet = [[tmpSet invertedSet] copy];
+        whitespaceOrDelimiterCharSet = [tmpSet copy];
         [tmpSet release];
     }
     return [self scanString:@"/" intoString:NULL] && [self scanUpToCharactersFromSet:whitespaceOrDelimiterCharSet intoString:string];
@@ -645,6 +654,10 @@ static inline int hexCharacterNumber(unichar ch) {
 
 - (id)copyWithZone:(NSZone *)aZone {
     return [self retain];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %i %i>",[self class], objectNumber, generationNumber];
 }
 
 - (BOOL)isEqual:(id)other {
