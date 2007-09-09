@@ -1142,7 +1142,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSString *)fdfString {
     NSMutableString *string = [[[super fdfString] mutableCopy] autorelease];
-    [string appendFormat:@"/DA(/%@ %f Tf)", [[self font] fontName], [[self font] pointSize]];
+    [string appendFormat:@"/DA(/%@ %f Tf)/DS(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize], [[self font] fontName], [[self font] pointSize]];
     return string;
 }
 
