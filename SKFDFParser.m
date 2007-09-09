@@ -481,19 +481,19 @@
 
 - (BOOL)scanFDFObject:(id *)object {
     id tmpObject = nil;
-    BOOL success = YES;
+    BOOL success;
     
-    do {
-        success = [self scanFDFName:&tmpObject] || 
-                  [self scanFDFArray:&tmpObject] || 
-                  [self scanFDFDictionary:&tmpObject] || 
-                  [self scanFDFString:&tmpObject] || 
-                  [self scanFDFHexString:&tmpObject] || 
-                  [self scanFDFIndirectObject:&tmpObject] || 
-                  [self scanFDFNumber:&tmpObject] || 
-                  [self scanFDFBoolean:&tmpObject] || 
-                  [self scanString:@"null" intoString:NULL];
-    } while (success == NO && [self isAtEnd] == NO && [self scanFDFComment:NULL]);
+    while ([self scanFDFComment:NULL]);
+    
+    success = [self scanFDFName:&tmpObject] || 
+              [self scanFDFArray:&tmpObject] || 
+              [self scanFDFDictionary:&tmpObject] || 
+              [self scanFDFString:&tmpObject] || 
+              [self scanFDFHexString:&tmpObject] || 
+              [self scanFDFIndirectObject:&tmpObject] || 
+              [self scanFDFNumber:&tmpObject] || 
+              [self scanFDFBoolean:&tmpObject] || 
+              [self scanString:@"null" intoString:NULL];
     
     if (success && object)
         *object = tmpObject;
@@ -503,18 +503,12 @@
 
 - (BOOL)scanFDFArray:(NSArray **)array {
     NSMutableArray *tmpArray = [NSMutableArray array];
-    unichar ch;
     id object;
     BOOL success = [self scanString:@"[" intoString:NULL];
     
     while (success) {
         while ([self scanFDFComment:NULL]);
-        if ([self peekCharacter:&ch] == NO) {
-            success = NO;
-            break;
-        }
-        if (ch == ']') {
-            [self scanCharacter:NULL];
+        if ([self scanString:@"]" intoString:NULL]) {
             break;
         } else if (success = [self scanFDFObject:&object]) {
            if (object)
@@ -536,13 +530,11 @@
     
     while (success) {
         while ([self scanFDFComment:NULL]);
-        if ([self scanFDFName:&key]) {
-            if ((success = [self scanFDFObject:&object]) && object)
-                [tmpDict setObject:object forKey:key];
-        } else if ([self scanString:@">>" intoString:NULL]) {
+        if ([self scanString:@">>" intoString:NULL]) {
             break;
-        } else {
-            success = NO;
+        } else if (success = ([self scanFDFName:&key] && [self scanFDFObject:&object])) {
+            if (object)
+                [tmpDict setObject:object forKey:key];
         }
     }
     
