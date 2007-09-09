@@ -129,7 +129,7 @@
         while ([scanner scanFDFComment:NULL]);
         if (success = [scanner scanInt:&genNumber]) {
             while ([scanner scanFDFComment:NULL]);
-            if ([scanner scanString:@"obj" intoString:NULL]) {
+            if (success = [scanner scanString:@"obj" intoString:NULL]) {
                 if (success = [scanner scanFDFObject:&object]) {
                     if ([object isKindOfClass:[NSDictionary class]]) {
                         while ([scanner scanFDFComment:NULL]);
@@ -516,8 +516,7 @@
     BOOL success = [self scanString:@"[" intoString:NULL];
     
     while (success) {
-        [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-        
+        while ([self scanFDFComment:NULL]);
         if ([self peekCharacter:&ch] == NO) {
             success = NO;
             break;
@@ -544,8 +543,8 @@
     BOOL success = [self scanString:@"<<" intoString:NULL];
     
     while (success) {
+        while ([self scanFDFComment:NULL]);
         if ([self scanFDFName:&key]) {
-            [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
             if ((success = [self scanFDFObject:&object]) && object)
                 [tmpDict setObject:object forKey:key];
         } else if ([self scanString:@">>" intoString:NULL]) {
@@ -553,7 +552,6 @@
         } else {
             success = NO;
         }
-        [self scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
     }
     
     if (success && dictionary)
@@ -668,8 +666,6 @@ static inline int hexCharacterNumber(unichar ch) {
         hexChar = 0;
         if ([hexCharSet characterIsMember:ch]) {
             hexChar += hexCharacterNumber(ch);
-        } else if ([[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:ch]) {
-            // ignore
         } else if (ch == '>') {
             done = YES;
         } else {
