@@ -135,9 +135,7 @@
                         while ([scanner scanFDFComment:NULL]);
                         if ([scanner scanString:@"stream" intoString:NULL]) {
                             object = @"";
-                            [scanner scanString:@"\n" intoString:NULL] || [scanner scanString:@"\r\n" intoString:NULL];
-                            
-                            if ([scanner scanUpToString:@"endstream" intoString:&object]) {
+                            if ([scanner scanUpToString:@"endstream" intoString:&object] && [scanner scanString:@"endstream" intoString:NULL]) {
                                 int end = [object length];
                                 unichar ch = end ? [object characterAtIndex:end - 1] : 0;
                                 if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
@@ -147,7 +145,6 @@
                                     object = [object substringToIndex:end];
                                 }
                             }
-                            [scanner scanString:@"endstream" intoString:NULL];
                         }
                         [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
                         while ([scanner scanFDFComment:NULL]);
