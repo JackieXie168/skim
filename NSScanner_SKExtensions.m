@@ -42,21 +42,32 @@
 @implementation NSScanner (SKExtensions)
 
 - (BOOL)scanCharacter:(unichar *)ch {
-    if ([self isAtEnd])
-        return NO;
-    int location = [self scanLocation];
-    if (ch != NULL)
-        *ch = [[self string] characterAtIndex:location];
-    [self setScanLocation:location + 1];
-    return YES;
+    int location, length = [[self string] length];
+    unichar character;
+    BOOL success = NO;
+    for (location = [self scanLocation]; success == NO && location < length; location++) {
+        character = [[self string] characterAtIndex:location];
+        success = [[self charactersToBeSkipped] characterIsMember:character] == NO;
+    }
+    if (success) {
+        if (ch != NULL)
+            *ch = character;
+        [self setScanLocation:location];
+    }
+    return success;
 }
 
 - (BOOL)peekCharacter:(unichar *)ch {
-    if ([self isAtEnd])
-        return NO;
-    if (ch != NULL)
-        *ch = [[self string] characterAtIndex:[self scanLocation]];
-    return YES;
+    int location, length = [[self string] length];
+    unichar character;
+    BOOL success = NO;
+    for (location = [self scanLocation]; success == NO && location < length; location++) {
+        character = [[self string] characterAtIndex:location];
+        success = [[self charactersToBeSkipped] characterIsMember:character] == NO;
+    }
+    if (success && ch != NULL)
+        *ch = character;
+    return success;
 }
 
 @end
