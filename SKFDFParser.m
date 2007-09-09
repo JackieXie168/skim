@@ -464,6 +464,20 @@
             }
         }
     }
+    
+    NSString *type = [dictionary objectForKey:@"type"];
+    NSString *contents;
+    if ([type isEqualToString:@"Note"]) {
+        if (contents = [dictionary objectForKey:@"contents"]) {
+            unsigned contentsEnd, end;
+            [contents getLineStart:NULL end:&end contentsEnd:&contentsEnd forRange:NSMakeRange(0, 0)];
+            if (end < [contents length]) {
+                [dictionary setObject:[contents substringToIndex:contentsEnd] forKey:@"contents"];
+                [dictionary setObject:[[[NSAttributedString alloc] initWithString:[contents substringFromIndex:end]] autorelease] forKey:@"text"];
+            }
+        }
+    }
+    
     return success ? dictionary : nil;
 }
 
