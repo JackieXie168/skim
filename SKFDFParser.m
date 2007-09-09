@@ -131,7 +131,7 @@
             while ([scanner scanFDFComment:NULL]);
             if (success = [scanner scanString:@"obj" intoString:NULL] && [scanner scanFDFObject:&object]) {
                 while ([scanner scanFDFComment:NULL]);
-                if (success = [object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
+                if ([object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
                     object = @"";
                     if ([scanner scanUpToString:@"endstream" intoString:&object] && [scanner scanString:@"endstream" intoString:NULL]) {
                         int end = [object length];
@@ -594,8 +594,12 @@
                             if (success = s != nil)
                                 [tmpString appendString:s];
                             [s release];
-                        } else
-                            success = NO;
+                        } else if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
+                            if (ch == '\r')
+                                [self scanString:@"\n" intoString:NULL];
+                        } else {
+                            [self setScanLocation:[self scanLocation] - 1];
+                        }
                     } else {
                         success = NO;
                     }
