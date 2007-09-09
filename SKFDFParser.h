@@ -39,7 +39,9 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKFDFParser : NSObject
-+ (NSArray *)notesDictionariesFromFDFString:(NSString *)string;
-+ (NSDictionary *)fdfObjectsFromFDFString:(NSString *)string;
+@interface SKFDFParser : NSObject {
+    NSDictionary *fdfDictionary;
+    NSString *fdfString;
+}
++ (NSArray *)noteDictionariesFromFDFString:(NSString *)string;
 @end

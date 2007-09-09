@@ -684,7 +684,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         } else {
             NSString *fdfString = [NSString stringWithContentsOfURL:notesURL encoding:NSISOLatin1StringEncoding error:NULL];
             if (fdfString)
-                array = [SKFDFParser notesDictionariesFromFDFString:fdfString];
+                array = [SKFDFParser noteDictionariesFromFDFString:fdfString];
         }
         
         if (array) {
