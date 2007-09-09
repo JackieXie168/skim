@@ -192,29 +192,21 @@
 - (NSArray *)noteDictionaries {
     NSMutableArray *array = nil;
     NSDictionary *trailer;
-    SKIndirectObject *root;
-    NSDictionary *rootDict;
+    NSDictionary *root;
     NSDictionary *fdfDict;
     NSArray *annots;
     
-    if ((trailer = [fdfDictionary objectForKey:@"trailer"]) &&
-        ([trailer isKindOfClass:[NSDictionary class]]) &&
-        (root = [trailer objectForKey:@"Root"]) &&
-        ([root isKindOfClass:[SKIndirectObject class]]) &&
-        (rootDict = [fdfDictionary objectForKey:root]) &&
-        ([rootDict isKindOfClass:[NSDictionary class]]) &&
-        (fdfDict = [rootDict objectForKey:@"FDF"]) &&
-        ([fdfDict isKindOfClass:[NSDictionary class]]) &&
-        (annots = [fdfDict objectForKey:@"Annots"]) &&
-        ([annots isKindOfClass:[NSArray class]])) {
+    if ((trailer = [self dictionaryValue:[fdfDictionary objectForKey:@"trailer"]]) &&
+        (root = [self dictionaryValue:[trailer objectForKey:@"Root"]]) &&
+        (fdfDict = [self dictionaryValue:[root objectForKey:@"FDF"]]) &&
+        (annots = [self arrayValue:[fdfDict objectForKey:@"Annots"]])) {
     
         NSEnumerator *annotEnum = [annots objectEnumerator];
         NSDictionary *dict;
         
-        array = [NSMutableArray array];
+        array = [NSMutableArray arrayWithCapacity:[annots count]];
         while (dict = [annotEnum nextObject]) {
-            if ((dict = [self dictionaryValue:dict]) &&
-                (dict = [self noteDictionary:dict]))
+            if (dict = [self noteDictionary:[self dictionaryValue:dict]])
                 [array addObject:dict];
         }
     }
@@ -249,7 +241,7 @@
     NSSet *validTypes = [NSSet setWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
     NSEnumerator *keyEnum = [dict keyEnumerator];
     NSString *key;
-    BOOL success = YES;
+    BOOL success = dict != nil;
     
     while (success && (key = [keyEnum nextObject])) {
         id value = [dict valueForKey:key];
