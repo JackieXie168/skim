@@ -70,7 +70,14 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
-@interface SKDocument (Private)
+
+@interface NSFileManager (SKDocumentExtensions)
+- (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
+@end
+
+#pragma mark -
+
+@interface SKDocument (SKPrivate)
 
 - (void)setPDFData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
@@ -86,6 +93,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 @end
 
+#pragma mark -
 
 @implementation SKDocument
 
@@ -247,7 +255,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             
             if (success = [self writeToURL:tmpURL ofType:typeName error:outError]) {
                 
-                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", @"plist", nil];
+                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
                 NSSet *ourImportantExtensions = [NSSet setWithObjects:@"pdf", @"skim", nil];
                 NSEnumerator *fileEnum;
                 NSString *file;
@@ -324,16 +332,18 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
                    [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
-        NSData *notesData = [[self notes] count] ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
-        NSData *notesTextData = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
-        NSData *notesRTFData = [self notesRTFData];
+        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
+        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
+            name = [name stringByAppendingString:@"1"];
+        BOOL hasNotes = [[self notes] count] > 0;
+        NSData *notesData = hasNotes ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
+        NSData *notesTextData = hasNotes ? [[self notesString] dataUsingEncoding:NSUTF8StringEncoding] : nil;
+        NSData *notesRTFData = hasNotes ? [self notesRTFData] : nil;
+        NSData *notesFDFData = hasNotes ? [[self notesFDFStringForFile:[name stringByAppendingPathExtension:@"pdf"]] dataUsingEncoding:NSISOLatin1StringEncoding] : nil;
         NSData *textData = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding];
         NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
         NSData *infoData = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
-        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
-        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
-            name = [name stringByAppendingString:@"1"];
         [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
         if (notesData)
             [fileWrapper addRegularFileWithContents:notesData preferredFilename:[name stringByAppendingPathExtension:@"skim"]];
@@ -341,6 +351,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [fileWrapper addRegularFileWithContents:notesTextData preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
         if (notesRTFData)
             [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
+        if (notesFDFData)
+            [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
         if (textData)
             [fileWrapper addRegularFileWithContents:textData preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
         if (infoData)
@@ -374,6 +386,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+        NSString *filePath = [[self fileURL] path];
+        NSString *filename = [filePath lastPathComponent];
+        if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
+            NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
+            filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
+        }
         NSString *string = [self notesFDFString];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:outError];
@@ -417,6 +435,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [dict setObject:[NSNumber numberWithUnsignedLong:'PDFD'] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKNT'] forKey:NSFileHFSTypeCode];
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [typeName isEqualToString:SKNotesFDFDocumentType])
+        [dict setObject:[NSNumber numberWithUnsignedLong:'FDF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedLong:'RTF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType])
@@ -527,51 +547,20 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             }
         }
     } else if ([docType isEqualToString:SKPDFBundleDocumentType]) {
-        NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initWithPath:[absoluteURL path]];
-        NSFileWrapper *pdfFW = nil;
-        NSFileWrapper *skimFW = nil;
-        NSDictionary *fileWrappers = [fileWrapper fileWrappers];
-        NSArray *noteArray = nil;
-        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
-        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
-            name = [name stringByAppendingString:@"1"];
-        
-        pdfFW = [fileWrappers objectForKey:[name stringByAppendingPathExtension:@"pdf"]];
-        if ([pdfFW isRegularFile] == NO)
-            pdfFW = nil;
-        skimFW = [fileWrappers objectForKey:[name stringByAppendingPathExtension:@"skim"]];
-        if ([skimFW isRegularFile] == NO)
-            skimFW = nil;
-        if (pdfFW == nil || skimFW == nil) {
-            NSArray *fws = [fileWrappers allValues];
-            NSArray *extensions = [fws valueForKeyPath:@"filename.pathExtension.lowercaseString"];
-            unsigned int index;
-            if (pdfFW == nil) {
-                index = [extensions indexOfObject:@"pdf"];
-                if (index != NSNotFound) {
-                    pdfFW = [fws objectAtIndex:index];
-                    if ([pdfFW isRegularFile] == NO)
-                        pdfFW = nil;
-                }
-            }
-            if (skimFW == nil) {
-                index = [extensions indexOfObject:@"skim"];
-                if (index != NSNotFound) {
-                    skimFW = [fws objectAtIndex:index];
-                    if ([skimFW isRegularFile] == NO)
-                        skimFW = nil;
+        NSString *path = [absoluteURL path];
+        NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:path];
+        if (pdfFile) {
+            NSURL *pdfURL = [NSURL fileURLWithPath:[path stringByAppendingPathComponent:pdfFile]];
+            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
+                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
+                NSString *skimFile = [[NSFileManager defaultManager] subfileWithExtension:@"skim" inPDFBundleAtPath:path];
+                if (skimFile) {
+                    NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[path stringByAppendingPathComponent:skimFile]];
+                    if (array)
+                        [self setNoteDicts:array];
                 }
             }
         }
-        if (pdfFW) {
-            data = [[pdfFW regularFileContents] retain];
-            pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[pdfFW filename]]]];
-        }
-        if (skimFW) {
-            if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[skimFW regularFileContents]])
-                [self setNoteDicts:noteArray];
-        }
-        [fileWrapper release];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
@@ -1036,16 +1025,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("application/x-dvi"))) {
                     return;
                 } if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
-                    NSString *pdfFile = [fileName stringByAppendingPathComponent:@"data.pdf"];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile]) {
-                        fileName = pdfFile;
-                    } else {
-                        NSArray *subfiles = [[NSFileManager defaultManager] subpathsAtPath:fileName];
-                        unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
-                        if (index == NSNotFound)
-                            return;
-                        fileName = [fileName stringByAppendingPathComponent:[subfiles objectAtIndex:index]];
-                    }
+                    NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
+                    if (pdfFile == nil) return;
+                    fileName = [fileName stringByAppendingPathComponent:pdfFile];
                 }
             }
             
@@ -1355,19 +1337,22 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSString *)notesFDFString {
-    NSString *filename = [[[self fileURL] path] lastPathComponent];
+    NSString *filePath = [[self fileURL] path];
+    NSString *filename = [filePath lastPathComponent];
+    if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
+        NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
+        filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
+    }
+    return [self notesFDFStringForFile:filename];
+}
+
+- (NSString *)notesFDFStringForFile:(NSString *)filename {
     NSString *fileIDString = [self fileIDString];
     int i, count = [[self notes] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n1 0 obj<</FDF<<", 0xe2, 0xe3, 0xcf, 0xd3];
     [string appendString:@"/Annots["];
     for (i = 0; i < count; i++)
         [string appendFormat:@"%i 0 R ", i + 2];
-    if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
-        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:[[self fileURL] path]];
-        unsigned index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
-        if (index != NSNotFound)
-            filename = [filename stringByAppendingPathComponent:[files objectAtIndex:index]];
-    }
     [string appendFormat:@"]/F(%@)", filename ? [filename stringByEscapingParenthesis] : @""];
     if (fileIDString)
         [string appendFormat:@"/ID[%@]", fileIDString];
@@ -1744,6 +1729,26 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 			return view;
 	}
 	return nil;
+}
+
+@end
+
+
+@implementation NSFileManager (SKDocumentExtensions)
+
+- (NSString *)subfileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path {
+    NSArray *subfiles = [self subpathsAtPath:path];
+    NSString *fileName = [[[path stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
+    NSString *pdfFile = nil;
+    
+    if ([subfiles containsObject:fileName]) {
+        pdfFile = fileName;
+    } else {
+        unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
+        if (index == NSNotFound)
+            pdfFile = [subfiles objectAtIndex:index];
+    }
+    return pdfFile;
 }
 
 @end
