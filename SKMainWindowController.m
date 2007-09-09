@@ -776,10 +776,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     pdfOutline = [[pdfDoc outlineRoot] retain];
     [pdfOutlineItems removeAllObjects];
     if (pdfOutline) {
+        updatingOutlineSelection = YES;
         [outlineView reloadData];
-        
         if ([outlineView numberOfRows] == 1)
             [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+        updatingOutlineSelection = NO;
         [self updateOutlineSelection];
     }
     [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
