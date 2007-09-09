@@ -1373,7 +1373,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [string appendFormat:@"/ID[%@]", fileIDString];
     [string appendString:@">>>>\nendobj\n"];
     for (i = 0; i < count; i++)
-        [string appendFormat:@"obj %i 0<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
+        [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
     [string appendString:@"trailer\n<</Root 1 0 R>>\n%%EOF\n"];
     return string;
 }
