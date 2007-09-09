@@ -86,8 +86,9 @@
         
         if ([key isEqualToString:@"Type"]) {
             if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
-                if ([value isEqualToString:@"Annot"] == NO)
+                if ([value isEqualToString:@"Annot"] == NO) {
                     success = NO;
+                }
             } else {
                 success = NO;
             }
@@ -95,62 +96,64 @@
             if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
                 if ([value isEqualToString:@"Text"])
                     value = @"Note";
-                if ([validTypes containsObject:value])
+                if ([validTypes containsObject:value]) {
                     [dictionary setObject:value forKey:@"type"];
-                else
+                } else {
                     success = NO;
+                }
             } else {
                 success = NO;
             }
         } else if ([key isEqualToString:@"Contents"]) {
-            if (value = [self value:value ofClass:[NSString class] lookup:lookup])
+            if (value = [self value:value ofClass:[NSString class] lookup:lookup]) {
                 [dictionary setObject:value forKey:@"contents"];
-            else
+            } else {
                 success = NO;
+            }
         } else if ([key isEqualToString:@"Rect"]) {
             if ((value = [self value:value ofClass:[NSArray class] lookup:lookup]) && [value count] == 4) {
-                NSRect rect;
-                rect.origin.x = [[value objectAtIndex:0] floatValue];
-                rect.origin.y = [[value objectAtIndex:1] floatValue];
-                rect.size.width = [[value objectAtIndex:2] floatValue] - NSMinX(rect);
-                rect.size.height = [[value objectAtIndex:3] floatValue] - NSMinY(rect);
-                [dictionary setObject:NSStringFromRect(rect) forKey:@"bounds"];
+                NSNumber *l = [self value:[value objectAtIndex:0] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *b = [self value:[value objectAtIndex:1] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *r = [self value:[value objectAtIndex:2] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *t = [self value:[value objectAtIndex:3] ofClass:[NSNumber class] lookup:lookup];
+                if (l && b && r && t) {
+                    NSRect rect;
+                    rect.origin.x = [l floatValue];
+                    rect.origin.y = [b floatValue];
+                    rect.size.width = [r floatValue] - NSMinX(rect);
+                    rect.size.height = [t floatValue] - NSMinY(rect);
+                    [dictionary setObject:NSStringFromRect(rect) forKey:@"bounds"];
+                } else {
+                    success = NO;
+                }
             } else {
                 success = NO;
             }
         } else if ([key isEqualToString:@"Page"]) {
-            if (value = [self value:value ofClass:[NSNumber class] lookup:lookup])
+            if (value = [self value:value ofClass:[NSNumber class] lookup:lookup]) {
                 [dictionary setObject:value forKey:@"pageIndex"];
-            else{
-                success = NO;}
+            } else {
+                success = NO;
+            }
         } else if ([key isEqualToString:@"C"]) {
             if ((value = [self value:value ofClass:[NSArray class] lookup:lookup]) && [value count] == 3) {
-                float r, g, b;
-                r = [[value objectAtIndex:0] floatValue];
-                g = [[value objectAtIndex:1] floatValue];
-                b = [[value objectAtIndex:2] floatValue];
-                [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:@"color"];
+                NSNumber *r = [self value:[value objectAtIndex:0] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *g = [self value:[value objectAtIndex:1] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *b = [self value:[value objectAtIndex:2] ofClass:[NSNumber class] lookup:lookup];
+                if (r && g && b) {
+                    [dictionary setObject:[NSColor colorWithCalibratedRed:[r floatValue] green:[g floatValue] blue:[b floatValue] alpha:1.0] forKey:@"color"];
+                } else {
+                    success = NO;
+                }
             } else {
                 success = NO;
             }
         } else if ([key isEqualToString:@"BS"]) {
             if (value = [self value:value ofClass:[NSDictionary class] lookup:lookup]) {
-                NSNumber *width = [value objectForKey:@"W"];
-                NSString *s = [value objectForKey:@"S"];
-                NSArray *dashPattern = [value objectForKey:@"D"];
+                NSNumber *width = [self value:[value objectForKey:@"W"] ofClass:[NSNumber class] lookup:lookup];
+                NSString *s = [self value:[value objectForKey:@"S"] ofClass:[NSString class] lookup:lookup];
+                NSArray *dashPattern = [self value:[value objectForKey:@"D"] ofClass:[NSArray class] lookup:lookup];
                 int style = kPDFBorderStyleSolid;
-                if (s && [s isKindOfClass:[NSString class]]) {
-                    success = NO;
-                    break;
-                }
-                if (dashPattern && [dashPattern isKindOfClass:[NSArray class]] == NO) {
-                    success = NO;
-                    break;
-                }
-                if (width && [width isKindOfClass:[NSNumber class]] == NO) {
-                    success = NO;
-                    break;
-                }
                 if ([s isEqualToString:@"S"])
                     style = kPDFBorderStyleSolid;
                 else if ([s isEqualToString:@"D"])
@@ -175,16 +178,8 @@
                 success = NO;
                 break;
             }
-            NSNumber *width = [value count] > 2 ? [value objectAtIndex:2] : nil;
-            NSArray *dashPattern = [value count] > 3 ? [value objectAtIndex:3] : nil;
-            if (dashPattern && [dashPattern isKindOfClass:[NSArray class]] == NO) {
-                success = NO;
-                break;
-            }
-            if (width && [width isKindOfClass:[NSNumber class]] == NO) {
-                success = NO;
-                break;
-            }
+            NSNumber *width = [value count] > 2 ?  [self value:[value objectAtIndex:2] ofClass:[NSNumber class] lookup:lookup] : nil;
+            NSArray *dashPattern = [value count] > 3 ? [self value:[value objectAtIndex:2] ofClass:[NSArray class] lookup:lookup] : nil;
             if (width && [width floatValue] > 0.0) {
                 [dictionary setObject:width forKey:@"lineWidth"];
                 [dictionary setObject:[NSNumber numberWithInt:dashPattern ? kPDFBorderStyleDashed : kPDFBorderStyleSolid] forKey:@"borderStyle"];
@@ -212,40 +207,47 @@
             }
         } else if ([key isEqualToString:@"IC"]) {
             if ((value = [self value:value ofClass:[NSArray class] lookup:lookup]) && [value count] == 3) {
-                float r, g, b;
-                r = [[value objectAtIndex:0] floatValue];
-                g = [[value objectAtIndex:1] floatValue];
-                b = [[value objectAtIndex:2] floatValue];
-                [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:@"interiorColor"];
+                NSNumber *r = [self value:[value objectAtIndex:0] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *g = [self value:[value objectAtIndex:1] ofClass:[NSNumber class] lookup:lookup];
+                NSNumber *b = [self value:[value objectAtIndex:2] ofClass:[NSNumber class] lookup:lookup];
+                if (r && g && b) {
+                    [dictionary setObject:[NSColor colorWithCalibratedRed:[r floatValue] green:[g floatValue] blue:[b floatValue] alpha:1.0] forKey:@"interiorColor"];
+                } else {
+                    success = NO;
+                }
             } else {
                 success = NO;
             }
         } else if ([key isEqualToString:@"LE"]) {
             if ((value = [self value:value ofClass:[NSArray class] lookup:lookup]) && [value count] == 2) {
-                NSString *start = [value objectAtIndex:0];
-                NSString *end = [value objectAtIndex:1];
+                NSString *start = [self value:[value objectAtIndex:0] ofClass:[NSNumber class] lookup:lookup];
+                NSString *end = [self value:[value objectAtIndex:1] ofClass:[NSNumber class] lookup:lookup];
                 int startStyle = kPDFLineStyleNone;
                 int endStyle = kPDFLineStyleNone;
-                if (start && [start isKindOfClass:[NSNumber class]] == NO) {
-                    success = NO;
-                    break;
-                }
-                if (end && [end isKindOfClass:[NSNumber class]] == NO) {
-                    success = NO;
-                    break;
-                }
+                if ([start isEqualToString:@"None"])
+                    startStyle = kPDFLineStyleNone;
+                else if ([start isEqualToString:@"Square"])
+                    startStyle = kPDFLineStyleSquare;
+                else if ([start isEqualToString:@"Circle"])
+                    startStyle = kPDFLineStyleCircle;
+                else if ([start isEqualToString:@"Diamond"])
+                    startStyle = kPDFLineStyleDiamond;
+                else if ([start isEqualToString:@"OpenArrow"])
+                    startStyle = kPDFLineStyleOpenArrow;
+                else if ([start isEqualToString:@"ClosedArrow"])
+                    startStyle = kPDFLineStyleClosedArrow;
                 if ([end isEqualToString:@"None"])
                     startStyle = kPDFLineStyleNone;
                 else if ([end isEqualToString:@"Square"])
-                    startStyle = kPDFLineStyleSquare;
+                    endStyle = kPDFLineStyleSquare;
                 else if ([end isEqualToString:@"Circle"])
-                    startStyle = kPDFLineStyleCircle;
+                    endStyle = kPDFLineStyleCircle;
                 else if ([end isEqualToString:@"Diamond"])
-                    startStyle = kPDFLineStyleDiamond;
+                    endStyle = kPDFLineStyleDiamond;
                 else if ([end isEqualToString:@"OpenArrow"])
-                    startStyle = kPDFLineStyleOpenArrow;
+                    endStyle = kPDFLineStyleOpenArrow;
                 else if ([end isEqualToString:@"ClosedArrow"])
-                    startStyle = kPDFLineStyleClosedArrow;
+                    endStyle = kPDFLineStyleClosedArrow;
                 [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:@"startLineStyle"];
                 [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:@"endLineStyle"];
             } else {
