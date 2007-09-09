@@ -232,7 +232,7 @@ static IMP originalSetBorder = NULL;
     [string appendString:@"/Type/Annot/Subtype/"];
     [string appendString:[[self type] isEqualToString:@"Note"] ? @"Text" : [self type]];
     [string appendString:@"/Contents("];
-    [string appendString:[[self contents] stringByEscapingParenthesis]];
+    [string appendString:[self contents] ? [[self contents] stringByEscapingParenthesis] : @""];
     if ([self text]) {
         [string appendString:@"\n"];
         [string appendString:[[[self text] string] stringByEscapingParenthesis]];
