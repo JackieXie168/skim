@@ -49,7 +49,9 @@
 - (BOOL)scanFDFHexString:(NSString **)string;
 - (BOOL)scanFDFName:(NSString **)string;
 - (BOOL)scanFDFNumber:(NSNumber **)number;
+- (BOOL)scanFDFBoolean:(id *)boolNumber;
 - (BOOL)scanFDFIndirectObject:(id *)object;
+- (BOOL)scanFDFComment:(NSString **)comment;
 @end
 
 #pragma mark -
@@ -320,67 +322,63 @@
     
     NSScanner *scanner = [NSScanner scannerWithString:string];
     
-    [scanner setCharactersToBeSkipped:nil];
-    
     // Scan the FDF header
     [scanner scanString:@"%FDF-1.2" intoString:NULL];
-    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-    if ([scanner scanString:@"%" intoString:NULL])
-        [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+    while ([scanner scanFDFComment:NULL]);
     
     // Scan the FDF body
     while (success && [scanner scanInt:&objNumber]) {
-        [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+        while ([scanner scanFDFComment:NULL]);
         if (success = [scanner scanInt:&genNumber]) {
-            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
+            while ([scanner scanFDFComment:NULL]);
             if ([scanner scanString:@"obj" intoString:NULL]) {
-                [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
                 if (success = [scanner scanFDFObject:&object]) {
-                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-                    
-                    if ([object isKindOfClass:[NSDictionary class]] && [scanner scanString:@"stream" intoString:NULL]) {
-                        object = @"";
-                        [scanner scanString:@"\n" intoString:NULL] || [scanner scanString:@"\r\n" intoString:NULL];
-                        
-                        if ([scanner scanUpToString:@"endstream" intoString:&object]) {
-                            int end = [object length];
-                            unichar ch = end ? [object characterAtIndex:end - 1] : 0;
-                            if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
-                                end--;
-                                if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
+                    if ([object isKindOfClass:[NSDictionary class]]) {
+                        while ([scanner scanFDFComment:NULL]);
+                        if ([scanner scanString:@"stream" intoString:NULL]) {
+                            object = @"";
+                            [scanner scanString:@"\n" intoString:NULL] || [scanner scanString:@"\r\n" intoString:NULL];
+                            
+                            if ([scanner scanUpToString:@"endstream" intoString:&object]) {
+                                int end = [object length];
+                                unichar ch = end ? [object characterAtIndex:end - 1] : 0;
+                                if ([[NSCharacterSet newlineCharacterSet] characterIsMember:ch]) {
                                     end--;
-                                object = [object substringToIndex:end];
+                                    if (end && ch == '\n' && [object characterAtIndex:end - 1] == '\r')
+                                        end--;
+                                    object = [object substringToIndex:end];
+                                }
                             }
+                            [scanner scanString:@"endstream" intoString:NULL];
                         }
-                        [scanner scanString:@"endstream" intoString:NULL];
+                        [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
+                        while ([scanner scanFDFComment:NULL]);
+                        success = [scanner scanString:@"endobj" intoString:NULL];
+                        while ([scanner scanFDFComment:NULL]);
                     }
-                    [fdfDict setObject:object forKey:[SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber]];
-                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-                    success = [scanner scanString:@"endobj" intoString:NULL];
-                    [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
                 }
             }
         }
     }
     
     // Scan the FDF cross reference table, if present
-    while (success && [scanner scanString:@"xref" intoString:NULL]) {
-        [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-        [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-        while ([scanner scanInt:NULL]) {
-            [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-            [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+    if (success) {
+        while ([scanner scanString:@"xref" intoString:NULL]) {
+            while ([scanner scanFDFComment:NULL]);
+            while ([scanner scanInt:NULL]) {
+                while ([scanner scanFDFComment:NULL]);
+            }
         }
     }
     
     // Scan the FDF trailer
     if (success = success && [scanner scanString:@"trailer" intoString:NULL]) {
-        [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-        if (success = [scanner scanFDFDictionary:&dictionary] && 
-                [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL] &&
-                [scanner scanString:@"%%EOF" intoString:NULL])
+        while ([scanner scanFDFComment:NULL]);
+        if (success = [scanner scanFDFDictionary:&dictionary]) {
+            while ([scanner scanFDFComment:NULL]);
             [fdfDict setObject:dictionary forKey:@"trailer"];
+            [scanner scanString:@"%%EOF" intoString:NULL];
+        }
     }
     
     return success ? fdfDict : nil;
@@ -394,14 +392,19 @@
 
 - (BOOL)scanFDFObject:(id *)object {
     id tmpObject = nil;
-    BOOL success = [self scanFDFName:&tmpObject] || 
-        [self scanFDFArray:&tmpObject] || 
-        [self scanFDFDictionary:&tmpObject] || 
-        [self scanFDFString:&tmpObject] || 
-        [self scanFDFHexString:&tmpObject] || 
-        [self scanFDFIndirectObject:&tmpObject] || 
-        [self scanFDFNumber:&tmpObject] || 
-        [self scanString:@"null" intoString:NULL];
+    BOOL success = YES;
+    
+    do {
+        success = [self scanFDFName:&tmpObject] || 
+                  [self scanFDFArray:&tmpObject] || 
+                  [self scanFDFDictionary:&tmpObject] || 
+                  [self scanFDFString:&tmpObject] || 
+                  [self scanFDFHexString:&tmpObject] || 
+                  [self scanFDFIndirectObject:&tmpObject] || 
+                  [self scanFDFNumber:&tmpObject] || 
+                  [self scanFDFBoolean:&tmpObject] || 
+                  [self scanString:@"null" intoString:NULL];
+    } while (success == NO && [self isAtEnd] == NO && [self scanFDFComment:NULL]);
     
     if (success && object)
         *object = tmpObject;
@@ -474,55 +477,63 @@
     NSMutableString *tmpString = [NSMutableString string];
     NSString *s;
     unichar ch;
-    BOOL success = [self scanString:@"(" intoString:NULL];
+    BOOL success;
     
-    while (success) {
-        if ([self scanUpToCharactersFromSet:specialCharSet intoString:&s])
-            [tmpString appendString:s];
-        if ([self scanCharacter:&ch]) {
-            if (ch == ')') {
-                break;
-            } else if (ch == '\\') {
-                if ([self scanCharacter:&ch]) {
-                    if (ch == 'n') {
-                        [tmpString appendString:@"\n"];
-                    } else if (ch == 'r') {
-                        [tmpString appendString:@"\r"];
-                    } else if (ch == 't') {
-                        [tmpString appendString:@"\r"];
-                    } else if (ch == 'b') {
-                        [tmpString appendString:@"\b"];
-                    } else if (ch == 'f') {
-                        [tmpString appendString:@"\f"];
-                    } else if (ch == '(') {
-                        [tmpString appendString:@"("];
-                    } else if (ch == ')') {
-                        [tmpString appendString:@")"];
-                    } else if (ch == '\\') {
-                        [tmpString appendString:@"\\"];
-                    } else if ([octalCharSet characterIsMember:ch]) {
-                        char octal = ch;
-                        if ([self peekCharacter:&ch] && [octalCharSet characterIsMember:ch]) {
-                            [self scanCharacter:NULL];
-                            octal = 8 * octal + ch;
+    if (success = [self scanString:@"(" intoString:NULL]) {
+        NSCharacterSet *skipChars = [[self charactersToBeSkipped] retain];
+        [self setCharactersToBeSkipped:nil];
+        
+        while (success) {
+            if ([self scanUpToCharactersFromSet:specialCharSet intoString:&s])
+                [tmpString appendString:s];
+            if ([self scanCharacter:&ch]) {
+                if (ch == ')') {
+                    break;
+                } else if (ch == '\\') {
+                    if ([self scanCharacter:&ch]) {
+                        if (ch == 'n') {
+                            [tmpString appendString:@"\n"];
+                        } else if (ch == 'r') {
+                            [tmpString appendString:@"\r"];
+                        } else if (ch == 't') {
+                            [tmpString appendString:@"\r"];
+                        } else if (ch == 'b') {
+                            [tmpString appendString:@"\b"];
+                        } else if (ch == 'f') {
+                            [tmpString appendString:@"\f"];
+                        } else if (ch == '(') {
+                            [tmpString appendString:@"("];
+                        } else if (ch == ')') {
+                            [tmpString appendString:@")"];
+                        } else if (ch == '\\') {
+                            [tmpString appendString:@"\\"];
+                        } else if ([octalCharSet characterIsMember:ch]) {
+                            char octal = ch;
                             if ([self peekCharacter:&ch] && [octalCharSet characterIsMember:ch]) {
                                 [self scanCharacter:NULL];
                                 octal = 8 * octal + ch;
+                                if ([self peekCharacter:&ch] && [octalCharSet characterIsMember:ch]) {
+                                    [self scanCharacter:NULL];
+                                    octal = 8 * octal + ch;
+                                }
                             }
-                        }
-                        NSString *s = [[NSString alloc] initWithBytes:&octal length:1 encoding:NSISOLatin1StringEncoding];
-                        if (success = s != nil)
-                            [tmpString appendString:s];
-                        [s release];
-                    } else
+                            NSString *s = [[NSString alloc] initWithBytes:&octal length:1 encoding:NSISOLatin1StringEncoding];
+                            if (success = s != nil)
+                                [tmpString appendString:s];
+                            [s release];
+                        } else
+                            success = NO;
+                    } else {
                         success = NO;
-                } else {
-                    success = NO;
+                    }
                 }
+            } else {
+                success = NO;
             }
-        } else {
-            success = NO;
         }
+        
+        [self setCharactersToBeSkipped:skipChars];
+        [skipChars release];
     }
     
     if (success && string)
@@ -603,7 +614,18 @@ static inline int hexCharacterNumber(unichar ch) {
         whitespaceOrDelimiterCharSet = [tmpSet copy];
         [tmpSet release];
     }
-    return [self scanString:@"/" intoString:NULL] && [self scanUpToCharactersFromSet:whitespaceOrDelimiterCharSet intoString:string];
+    
+    BOOL success;
+    
+    if (success = [self scanString:@"/" intoString:NULL]) {
+        NSCharacterSet *skipChars = [[self charactersToBeSkipped] retain];
+        [self setCharactersToBeSkipped:nil];
+        success =  [self scanUpToCharactersFromSet:whitespaceOrDelimiterCharSet intoString:string];
+        [self setCharactersToBeSkipped:skipChars];
+        [skipChars release];
+    }
+    
+    return  success;
 }
 
 - (BOOL)scanFDFNumber:(NSNumber **)number {
@@ -616,24 +638,55 @@ static inline int hexCharacterNumber(unichar ch) {
     return success;
 }
 
+- (BOOL)scanFDFBoolean:(id *)boolNumber {
+    NSNumber *tmpBoolNumber = nil;
+    BOOL success;
+    
+    if (success = [self scanString:@"true" intoString:NULL])
+        tmpBoolNumber = [NSNumber numberWithBool:YES];
+    else if (success = [self scanString:@"false" intoString:NULL])
+        tmpBoolNumber = [NSNumber numberWithBool:NO];
+    
+    if (success && boolNumber)
+        *boolNumber = tmpBoolNumber;
+    
+    return success;
+}
+
 - (BOOL)scanFDFIndirectObject:(id *)object {
     int rewindLoc = [self scanLocation];
     id tmpObject;
     int objNumber, genNumber;
     BOOL success;
     
-    if (success = [self scanInt:&objNumber] && [self scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL] &&
-        [self scanInt:&genNumber] && [self scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL] &&
-        [self scanString:@"R" intoString:NULL])
+    if (success = [self scanInt:&objNumber] && [self scanInt:&genNumber] && [self scanString:@"R" intoString:NULL]) {
         tmpObject = [SKIndirectObject indirectObjectWithNumber:objNumber generation:genNumber];
-    
-    if (success == NO)
+    } else {
         [self setScanLocation:rewindLoc];
+    }
     
     if (success && object)
         *object = tmpObject;
     
     return success;
+}
+
+- (BOOL)scanFDFComment:(NSString **)comment {
+    NSString *tmpComment = @"";
+    BOOL success;
+    
+    if (success = [self scanString:@"%" intoString:NULL]) {
+        NSCharacterSet *skipChars = [[self charactersToBeSkipped] retain];
+        [self setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
+        [self scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&tmpComment];
+        [self setCharactersToBeSkipped:skipChars];
+        [skipChars release];
+    }
+    
+    if (success && comment)
+        *comment = tmpComment;
+        
+    return  success;
 }
 
 @end
