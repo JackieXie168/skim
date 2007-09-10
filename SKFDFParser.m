@@ -92,7 +92,8 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
         CGPDFDocumentRelease(document);
     }
     
-    CGDataProviderRelease(provider);
+    if (provider)
+        CGDataProviderRelease(provider);
     [pdfData release];
     
     return notes;
@@ -266,7 +267,7 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
             NSMutableArray *quadPoints = [NSMutableArray arrayWithCapacity:count / 2];
             for (i = 0; i < count; i++) {
                 NSPoint point;
-                if (CGPDFArrayGetNumber(array, i, &point.x) && CGPDFArrayGetNumber(array, i, &point.y))
+                if (CGPDFArrayGetNumber(array, i, &point.x) && CGPDFArrayGetNumber(array, ++i, &point.y))
                     [quadPoints addObject:NSStringFromPoint(point)];
             }
             [dictionary setObject:quadPoints forKey:@"quadrilateralPoints"];
