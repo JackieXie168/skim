@@ -1957,6 +1957,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     return rv;
 }
 
+- (NSColor *)control:(NSControl *)control backgroundColorForFieldEditor:(NSText *)textObj {
+    if (editAnnotation)
+        return [activeAnnotation color];
+    return nil;
+}
+
 - (void)selectNextActiveAnnotation:(id)sender {
     PDFDocument *pdfDoc = [self document];
     int numberOfPages = [pdfDoc pageCount];
