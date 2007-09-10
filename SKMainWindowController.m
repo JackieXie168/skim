@@ -3729,7 +3729,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: %@", @"Status message"), searchString]];
+        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
