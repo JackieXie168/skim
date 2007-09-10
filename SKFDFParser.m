@@ -50,8 +50,7 @@
 
 @implementation SKFDFParser
 
-static const void *getCFDataBytePointer(void *info) { return CFDataGetBytePtr((CFDataRef)info); }
-static void releaseCFData(void *info) { CFRelease((CFDataRef)info); }
+static const void *getNSDataBytePointer(void *info) { return [(NSData *)info bytes]; }
 
 + (NSArray *)noteDictionariesFromFDFData:(NSData *)data {
     const char *pdfHeader = "%PDF";
@@ -64,9 +63,8 @@ static void releaseCFData(void *info) { CFRelease((CFDataRef)info); }
     
     [pdfData replaceBytesInRange:NSMakeRange(0, pdfHeaderLength) withBytes:pdfHeader length:pdfHeaderLength];
 
-    static const CGDataProviderDirectAccessCallbacks callbacks = {&getCFDataBytePointer, NULL, NULL, &releaseCFData };
-    void *info = (void *)pdfData;
-    CGDataProviderRef provider = CGDataProviderCreateDirectAccess(info, [pdfData length], &callbacks);
+    static const CGDataProviderDirectAccessCallbacks callbacks = {&getNSDataBytePointer, NULL, NULL, NULL};
+    CGDataProviderRef provider = CGDataProviderCreateDirectAccess((void *)pdfData, [pdfData length], &callbacks);
     CGPDFDocumentRef document = CGPDFDocumentCreateWithProvider(provider);
     NSMutableArray *notes = nil;
     
