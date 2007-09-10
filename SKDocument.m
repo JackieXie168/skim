@@ -671,9 +671,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
             array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
         } else {
-            NSString *fdfString = [NSString stringWithContentsOfURL:notesURL encoding:NSISOLatin1StringEncoding error:NULL];
-            if (fdfString)
-                array = [SKFDFParser noteDictionariesFromFDFString:fdfString];
+            NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
+            if (fdfData)
+                array = [SKFDFParser noteDictionariesFromFDFData:fdfData];
         }
         
         if (array) {
