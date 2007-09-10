@@ -205,6 +205,9 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
                  [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:@"borderStyle"];
             }
         }
+    } else {
+        [dictionary setObject:[NSNumber numberWithFloat:1.0] forKey:@"lineWidth"];
+        [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:@"borderStyle"];
     }
     
     if (CGPDFDictionaryGetName(annot, "Name", &name)) {
