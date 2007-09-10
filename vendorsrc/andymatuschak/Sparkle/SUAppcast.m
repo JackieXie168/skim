@@ -43,7 +43,7 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	NSError *error = nil;
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[[url retain] autorelease] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
     NSURLResponse *response = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     NSXMLDocument *document = nil;
