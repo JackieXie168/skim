@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 
 
@@ -111,6 +112,7 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
     CGPDFReal real;
     CGPDFInteger integer;
     BOOL success = YES;
+    NSRect bounds = NSZeroRect;
     
     if (CGPDFDictionaryGetName(annot, "Type", &name) == NO || strcmp(name, "Annot") != 0) {
         success = NO;
@@ -125,7 +127,8 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
     if (CGPDFDictionaryGetArray(annot, "Rect", &array)) {
         CGPDFReal l, b, r, t;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &l) && CGPDFArrayGetNumber(array, 1, &b) && CGPDFArrayGetNumber(array, 2, &r) && CGPDFArrayGetNumber(array, 3, &t)) {
-            [dictionary setObject:NSStringFromRect(NSMakeRect(l, b, r - l, t - b)) forKey:@"bounds"];
+            bounds = NSMakeRect(l, b, r - l, t - b);
+            [dictionary setObject:NSStringFromRect(bounds) forKey:@"bounds"];
         }
     } else {
         success = NO;
@@ -271,7 +274,7 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
             for (i = 0; i < count; i++) {
                 NSPoint point;
                 if (CGPDFArrayGetNumber(array, i, &point.x) && CGPDFArrayGetNumber(array, ++i, &point.y))
-                    [quadPoints addObject:NSStringFromPoint(point)];
+                    [quadPoints addObject:NSStringFromPoint(SKSubstractPoints(point, bounds.origin))];
             }
             [dictionary setObject:quadPoints forKey:@"quadrilateralPoints"];
         }

@@ -980,10 +980,11 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSEnumerator *pointEnum = [[self quadrilateralPoints] objectEnumerator];
     NSValue *value;
     NSPoint point;
+    NSRect bounds = [self bounds];
     [string appendString:@"/QuadPoints["];
     while (value = [pointEnum nextObject]) {
         point = [value pointValue];
-        [string appendFormat:@"%f %f ", point.x, point.y];
+        [string appendFormat:@"%f %f ", point.x + NSMinX(bounds), point.y + NSMinY(bounds)];
     }
     [string appendString:@"]"];
     return string;
