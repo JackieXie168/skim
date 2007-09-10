@@ -674,6 +674,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             NSString *fdfString = [NSString stringWithContentsOfURL:notesURL encoding:NSISOLatin1StringEncoding error:NULL];
             if (fdfString)
                 array = [SKFDFParser noteDictionariesFromFDFString:fdfString];
+            
+            CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((CFURLRef)notesURL);
+            NSLog(@"%@",pdfDoc);
+            if (pdfDoc) CGPDFDocumentRelease(pdfDoc);
         }
         
         if (array) {
