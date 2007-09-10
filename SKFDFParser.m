@@ -157,7 +157,8 @@
     if (success) {
         while ([scanner scanString:@"xref" intoString:NULL]) {
             while ([scanner scanFDFComment:NULL]);
-            while ([scanner scanInt:NULL]) {
+            while ([scanner scanInt:NULL] && [scanner scanInt:NULL]) {
+                [scanner scanString:@"n" intoString:NULL] || [scanner scanString:@"f" intoString:NULL];
                 while ([scanner scanFDFComment:NULL]);
             }
         }
