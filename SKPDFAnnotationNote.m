@@ -228,20 +228,15 @@ static IMP originalSetBorder = NULL;
     NSRect bounds = [self bounds];
     float r, g, b, a = 0.0;
     PDFBorder *border = [self border];
+    NSString *contents = [self contents];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
     [string appendString:@"/Type/Annot/Subtype/"];
     [string appendString:[[self type] isEqualToString:@"Note"] ? @"Text" : [self type]];
-    [string appendString:@"/Contents("];
-    [string appendString:[self contents] ? [[self contents] stringByEscapingParenthesis] : @""];
-    if ([self text]) {
-        [string appendString:@"\n"];
-        [string appendString:[[[self text] string] stringByEscapingParenthesis]];
-    }
-    [string appendString:@")"];
     [string appendFormat:@"/Rect[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
+    [string appendFormat:@"/Page %i", [self pageIndex]];
+    [string appendString:@"/F 4"];
     if (a > 0.0)
         [string appendFormat:@"/C[%f %f %f]", r, g, b];
-    [string appendFormat:@"/Page %i", [self pageIndex]];
     if (border) {
         [string appendFormat:@"/BS<</W %f/S", [border lineWidth]];
         switch ([border style]) {
@@ -264,6 +259,13 @@ static IMP originalSetBorder = NULL;
         [string appendFormat:@"/D[%@]", [[[border dashPattern] valueForKey:@"stringValue"] componentsJoinedByString:@" "]];
         [string appendString:@">>"];
     }
+    [string appendString:@"/Contents("];
+    [string appendString:contents ? [contents stringByEscapingParenthesis] : @""];
+    if ([self text]) {
+        [string appendString:@"\n"];
+        [string appendString:[[[self text] string] stringByEscapingParenthesis]];
+    }
+    [string appendString:@")"];
     return string;
 }
 
