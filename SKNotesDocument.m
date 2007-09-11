@@ -48,6 +48,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 
 @implementation SKNotesDocument
 
@@ -110,29 +111,31 @@
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
     BOOL didRead = NO;
+    NSArray *array = nil;
     
     if ([typeName isEqualToString:SKNotesDocumentType]) {
-        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+        array = [SKFDFParser noteDictionariesFromFDFData:data];
+    }
+    if (array) {
+        NSEnumerator *dictEnum = [array objectEnumerator];
+        NSDictionary *dict;
+        NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
         
-        if (array) {
-            NSEnumerator *dictEnum = [array objectEnumerator];
-            NSDictionary *dict;
-            NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
+        while (dict = [dictEnum nextObject]) {
+            NSMutableDictionary *note = [dict mutableCopy];
             
-            while (dict = [dictEnum nextObject]) {
-                NSMutableDictionary *note = [dict mutableCopy];
-                
-                if ([[dict valueForKey:@"type"] isEqualToString:@"Note"])
-                    [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
-                [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
-                
-                [newNotes addObject:note];
-                [note release];
-            }
-            [[self mutableArrayValueForKey:@"notes"] setArray:newNotes];
-            [outlineView reloadData];
-            didRead = YES;
+            if ([[dict valueForKey:@"type"] isEqualToString:@"Note"])
+                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
+            [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
+            
+            [newNotes addObject:note];
+            [note release];
         }
+        [[self mutableArrayValueForKey:@"notes"] setArray:newNotes];
+        [outlineView reloadData];
+        didRead = YES;
     }
     
     if (didRead == NO && outError != NULL)
