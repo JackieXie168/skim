@@ -49,6 +49,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
+#import "SKStatusBar.h"
 
 @implementation SKNotesDocument
 
@@ -439,6 +440,17 @@
     int row = [outlineView rowForItem:[[arrayController arrangedObjects] objectAtIndex:itemIndex]];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     [outlineView scrollRowToVisible:row];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+    if (searchString)
+        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
+    else
+        [statusBar setLeftStringValue:@""];
 }
 
 @end

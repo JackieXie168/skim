@@ -29,7 +29,11 @@
             ACTIONS = {openPDF = id; }; 
             CLASS = SKNotesDocument; 
             LANGUAGE = ObjC; 
-            OUTLETS = {arrayController = NSArrayController; outlineView = SKNoteOutlineView; }; 
+            OUTLETS = {
+                arrayController = NSArrayController; 
+                outlineView = SKNoteOutlineView; 
+                statusBar = SKStatusBar; 
+            }; 
             SUPERCLASS = NSDocument; 
         }, 
         {
@@ -37,6 +41,13 @@
             CLASS = SKOutlineView; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSOutlineView; 
+        }, 
+        {
+            ACTIONS = {startAnimation = id; stopAnimation = id; }; 
+            CLASS = SKStatusBar; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {leftCell = id; rightCell = id; }; 
+            SUPERCLASS = NSControl; 
         }
     ); 
     IBVersion = 1; 
