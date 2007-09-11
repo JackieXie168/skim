@@ -424,7 +424,7 @@
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         id item = [outlineView itemAtRow:i];
-        NSString *contents = [item type] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+        NSString *contents = [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
         [texts addObject:contents ? contents : @""];
     }
     return texts;
