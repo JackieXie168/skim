@@ -420,26 +420,24 @@
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    return [[arrayController arrangedObjects] valueForKey:@"contents"];
+    int i, count = [outlineView numberOfRows];
+    NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
+    for (i = 0; i < count; i++) {
+        id item = [outlineView itemAtRow:i];
+        NSString *contents = [item type] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+        [texts addObject:contents ? contents : @""];
+    }
+    return texts;
 }
 
 - (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    NSArray *arrangedNotes = [arrayController arrangedObjects];
     int row = [outlineView selectedRow];
-    id item = nil;
-    if (row == -1)
-        return NSNotFound;
-    item = [outlineView itemAtRow:row];
-    if ([item valueForKey:@"type"])
-        return [arrangedNotes indexOfObject:item];
-    else 
-        return [[arrangedNotes valueForKey:@"child"] indexOfObject:item];
+    return row == -1 ? NSNotFound : row;
 }
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    int row = [outlineView rowForItem:[[arrayController arrangedObjects] objectAtIndex:itemIndex]];
-    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    [outlineView scrollRowToVisible:row];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
+    [outlineView scrollRowToVisible:itemIndex];
 }
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
