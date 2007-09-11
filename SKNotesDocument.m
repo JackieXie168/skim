@@ -191,6 +191,8 @@
     return setup;
 }
 
+#pragma mark Actions
+
 - (IBAction)openPDF:(id)sender {
     NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
     NSError *error;
@@ -198,6 +200,44 @@
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL fileURLWithPath:path] display:YES error:&error])
             [NSApp presentError:error];
     } else NSBeep();
+}
+
+- (void)copyNote:(id)sender {
+    NSDictionary *item = [sender representedObject];
+    [self outlineView:outlineView copyItems:[NSArray arrayWithObjects:item, nil]];
+}
+
+- (void)autoSizeNoteRows:(id)sender {
+    NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"note"];
+    id cell = [tableColumn dataCell];
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, 17.0)]);
+    NSSize size = NSMakeSize(width, FLT_MAX);
+    
+    NSMutableArray *items = [NSMutableArray array];
+    id item = [sender representedObject];
+    
+    if (item) {
+        [items addObject:item];
+    } else {
+        [items addObjectsFromArray:[self notes]];
+        [items addObjectsFromArray:[[self notes] valueForKey:@"child"]];
+    }
+    
+    int i, count = [items count];
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
+    int row;
+    
+    for (i = 0; i < count; i++) {
+        item = [items objectAtIndex:i];
+        [cell setObjectValue:[item valueForKey:@"contents"]];
+        NSAttributedString *attrString = [cell attributedStringValue];
+        NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
+        [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, 19.0)] forKey:@"rowHeight"];
+        row = [outlineView rowForItem:item];
+        if (row != -1)
+            [rowIndexes addIndex:row];
+    }
+    [outlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
 }
 
 #pragma mark Accessors
@@ -312,6 +352,28 @@
     [outlineView reloadData];
 }
 
+- (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
+    NSDictionary *firstItem = [items objectAtIndex:0];
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    NSMutableArray *types = [NSMutableArray array];
+    NSAttributedString *attrString = [firstItem valueForKey:@"type"] ? nil : [firstItem valueForKey:@"contents"];
+    NSString *string = [firstItem valueForKey:@"type"] ? [firstItem valueForKey:@"contents"] : [attrString string];
+    if (string)
+        [types addObject:NSStringPboardType];
+    if (attrString)
+        [types addObject:NSRTFPboardType];
+    if ([types count])
+        [pboard declareTypes:types owner:nil];
+    if (string)
+        [pboard setString:string forType:NSStringPboardType];
+    if (attrString)
+        [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil] forType:NSRTFPboardType];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {
+    return [items count] > 0;
+}
+
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     NSNumber *heightNumber = [item valueForKey:@"rowHeight"];
     return heightNumber ? [heightNumber floatValue] : 17.0;
@@ -327,6 +389,28 @@
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
     return [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+}
+
+- (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    NSMenu *menu = nil;
+    NSMenuItem *menuItem;
+    
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
+    
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:item];
+        [menu addItem:[NSMenuItem separatorItem]];
+    }
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:item];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    
+    return menu;
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol
