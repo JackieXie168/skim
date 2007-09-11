@@ -269,7 +269,7 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
     
     if (CGPDFDictionaryGetArray(annot, "QuadPoints", &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
-        if (i % 8 == 0) {
+        if (count % 8 == 0) {
             NSMutableArray *quadPoints = [NSMutableArray arrayWithCapacity:count / 2];
             for (i = 0; i < count; i++) {
                 NSPoint point;

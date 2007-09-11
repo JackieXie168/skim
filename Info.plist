@@ -383,11 +383,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8</string>
+	<string>0.9</string>
 	<key>CFBundleSignature</key>
 	<string>SKim</string>
 	<key>CFBundleVersion</key>
-	<string>v11</string>
+	<string>v12</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
