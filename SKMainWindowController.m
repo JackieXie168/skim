@@ -3691,7 +3691,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return pageLabels;
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
+        int i, count = [noteOutlineView numberOfRows];
+        NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
+        for (i = 0; i < count; i++) {
+            id item = [noteOutlineView itemAtRow:i];
+            NSString *contents = [item type] ? [(PDFAnnotation *)item contents] : [[(SKNoteText *)item contents] string];
+            [texts addObject:contents ? contents : @""];
+        }
+        return texts;
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         int i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
@@ -3706,7 +3713,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return [[thumbnailTableView selectedRowIndexes] lastIndex];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        return [[noteArrayController arrangedObjects] indexOfObject:[self selectedNote]];
+        int row = [noteOutlineView selectedRow];
+        return row == -1 ? NSNotFound : row;
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         int row = [outlineView selectedRow];
         return row == -1 ? NSNotFound : row;
@@ -3718,9 +3726,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         [self setPageNumber:itemIndex + 1];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        int row = [noteOutlineView rowForItem:[[noteArrayController arrangedObjects] objectAtIndex:itemIndex]];
-        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-        [noteOutlineView scrollRowToVisible:row];
+        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
+        [noteOutlineView scrollRowToVisible:itemIndex];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
         [noteOutlineView scrollRowToVisible:itemIndex];
