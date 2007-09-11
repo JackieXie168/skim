@@ -1745,7 +1745,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         pdfFile = fileName;
     } else {
         unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
-        if (index == NSNotFound)
+        if (index != NSNotFound)
             pdfFile = [subfiles objectAtIndex:index];
     }
     return pdfFile;
