@@ -50,8 +50,15 @@
     [super dealloc];
 }
 
+- (id)copyWithZone:(NSZone *)aZone {
+    SKProgressCell *copy = [super copyWithZone:aZone];
+    copy->progressIndicator = [progressIndicator retain];
+    copy->status = status;
+    return copy;
+}
+
 - (NSProgressIndicator *)progressIndicator {
-    return [[progressIndicator retain] autorelease];
+    return progressIndicator;
 }
 
 - (void)setProgressIndicator:(NSProgressIndicator *)newProgressIndicator {

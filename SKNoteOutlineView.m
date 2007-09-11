@@ -308,6 +308,13 @@
 
 @implementation SKAnnotationTypeImageCell
 
+- (id)copyWithZone:(NSZone *)aZone {
+    SKAnnotationTypeImageCell *copy = [super copyWithZone:aZone];
+    copy->type = [type retain];
+    copy->active = active;
+    return copy;
+}
+
 - (void)dealloc {
     [type release];
     [super dealloc];
