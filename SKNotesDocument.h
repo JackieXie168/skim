@@ -38,11 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKNoteOutlineView;
+@class SKNoteOutlineView, SKStatusBar;
 
 @interface SKNotesDocument : NSDocument {
     IBOutlet SKNoteOutlineView *outlineView;
     IBOutlet NSArrayController *arrayController;
+    IBOutlet SKStatusBar *statusBar;
     NSMutableArray *notes;
 }
 
