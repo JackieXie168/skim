@@ -315,12 +315,14 @@ static const void *getNSDataBytePointer(void *info) { return [(NSData *)info byt
     if ([type isEqualToString:@"Text"]) {
         [dictionary setObject:@"Note" forKey:@"type"];
         if (contents = [dictionary objectForKey:@"contents"]) {
-            unsigned contentsEnd, end;
-            [contents getLineStart:NULL end:&end contentsEnd:&contentsEnd forRange:NSMakeRange(0, 0)];
-            if (contentsEnd < end) {
-                [dictionary setObject:[contents substringToIndex:contentsEnd] forKey:@"contents"];
-                if (end < [contents length])
-                    [dictionary setObject:[[[NSAttributedString alloc] initWithString:[contents substringFromIndex:end]] autorelease] forKey:@"text"];
+            NSRange r = [contents rangeOfString:@"  "];
+            if (NSMaxRange(r) < [contents length]) {
+                NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
+                                               size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+                NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
+                                                    attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
+                [dictionary setObject:attrString forKey:@"text"];
+                [dictionary setObject:[contents substringToIndex:r.location] forKey:@"contents"];
             }
         }
     } else if ([validTypes containsObject:type] == NO) {
