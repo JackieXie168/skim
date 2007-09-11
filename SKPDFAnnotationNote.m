@@ -263,8 +263,8 @@ static IMP originalSetBorder = NULL;
     }
     [string appendString:@"/Contents("];
     [string appendString:contents ? [contents stringByEscapingParenthesis] : @""];
-    if ([self text]) {
-        [string appendString:@"\n"];
+    if ([[self text] length]) {
+        [string appendString:@"  "];
         [string appendString:[[[self text] string] stringByEscapingParenthesis]];
     }
     [string appendString:@")"];
