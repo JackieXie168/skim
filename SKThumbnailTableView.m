@@ -200,6 +200,12 @@ static NSColor *deselectedColor = nil;
     }
 }
 
+- (id)copyWithZone:(NSZone *)aZone {
+    SKSnapshotPageCell *copy = [super copyWithZone:aZone];
+    copy->hasWindow = hasWindow;
+    return copy;
+}
+
 - (void)setObjectValue:(id)anObject {
     [super setObjectValue:[anObject valueForKey:@"label"]];
     hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
