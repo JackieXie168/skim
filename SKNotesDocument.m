@@ -50,6 +50,9 @@
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "SKStatusBar.h"
+#import "NSWindowController_SKExtensions.h"
+
+static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
 @implementation SKNotesDocument
 
@@ -71,6 +74,8 @@
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [aController setShouldCloseDocument:YES];
+    
+    [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
