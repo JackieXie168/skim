@@ -259,7 +259,7 @@ static IMP originalSetBorder = NULL;
         [string appendFormat:@"/D[%@]", [[[border dashPattern] valueForKey:@"stringValue"] componentsJoinedByString:@" "]];
         [string appendString:@">>"];
     } else {
-        [string appendString:@"<</W 0.0>>"];
+        [string appendString:@"/BS<</W 0.0>>"];
     }
     [string appendString:@"/Contents("];
     [string appendString:contents ? [contents stringByEscapingParenthesis] : @""];
