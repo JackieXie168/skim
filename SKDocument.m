@@ -352,7 +352,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if (notesRTFData)
             [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
         if (notesFDFData)
-            [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
+            [fileWrapper addRegularFileWithContents:notesFDFData preferredFilename:[name stringByAppendingPathExtension:@"fdf"]];
         if (textData)
             [fileWrapper addRegularFileWithContents:textData preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
         if (infoData)
