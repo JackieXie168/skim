@@ -1958,9 +1958,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (NSColor *)control:(NSControl *)control backgroundColorForFieldEditor:(NSText *)textObj {
-    if (editAnnotation)
-        return [activeAnnotation color];
-    return nil;
+    NSColor *color = nil;
+    if (editAnnotation) {
+        color = [activeAnnotation color];
+        float alpha = [color alphaComponent];
+        if (alpha < 1.0)
+            color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
+    }
+    return color;
 }
 
 - (void)selectNextActiveAnnotation:(id)sender {
