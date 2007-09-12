@@ -101,6 +101,7 @@ NSString *SKShowStatusBarKey = @"SKShowStatusBar";
 NSString *SKEnableAppleRemoteKey = @"SKEnableAppleRemote";
 NSString *SKAppleRemoteSwitchIndicationTimeoutKey = @"SKAppleRemoteSwitchIndicationTimeout";
 NSString *SKReadMissingNotesFromSkimFileOptionKey = @"SKReadMissingNotesFromSkimFileOption";
+NSString *SKSavePasswordOptionKey = @"SKSavePasswordOption";
 NSString *SKBlankAllScreensInFullScreenKey = @"SKBlankAllScreensInFullScreen";
 NSString *SKActivateFullScreenNavigationAtBottomKey = @"SKActivateFullScreenNavigationAtBottom";
 NSString *SKActivatePresentationNavigationAtBottomKey = @"SKActivatePresentationNavigationAtBottom";
