@@ -105,6 +105,8 @@ enum {
 - (NSString *)notesFDFString;
 - (NSString *)notesFDFStringForFile:(NSString *)filename;
 
+- (NSArray *)fileIDStrings;
+
 - (NSDictionary *)currentDocumentSetup;
 
 - (SKPDFSynchronizer *)synchronizer;
