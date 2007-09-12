@@ -1291,7 +1291,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return data;
 }
 
-- (NSString *)fileIDString; {
+- (NSArray *)fileIDStrings {
     if (pdfData == nil)
         return nil;
     const char *EOFPattern = "%%EOF";
@@ -1299,13 +1299,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     const char *IDPattern = "/ID";
     const char *startArrayPattern = "[";
     const char *endArrayPattern = "]";
+    const char *startStringPattern = "<";
+    const char *endStringPattern = ">";
     unsigned patternLength = strlen(EOFPattern);
     NSRange range = NSMakeRange([pdfData length] - 1024, 1024);
     if (range.location < 0)
         range = NSMakeRange(0, [pdfData length]);
     unsigned EOFIndex = [pdfData indexOfBytes:EOFPattern length:patternLength options:NSBackwardsSearch range:range];
-    unsigned trailerIndex, IDIndex, startArrayIndex, endArrayIndex;
-    NSData *fileIDData;
+    unsigned trailerIndex, IDIndex, startArrayIndex, endArrayIndex, startStringIndex, endStringIndex;
+    NSData *firstIDData = nil;
+    NSData *secondIDData = nil;
     
     if (EOFIndex != NSNotFound) {
         range = NSMakeRange(EOFIndex - 2048, 2048);
@@ -1326,13 +1329,38 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     patternLength = strlen(endArrayPattern);
                     endArrayIndex = [pdfData indexOfBytes:endArrayPattern length:patternLength options:0 range:range];
                     if (endArrayIndex != NSNotFound) {
-                        fileIDData = [pdfData subdataWithRange:NSMakeRange(startArrayIndex + 1, endArrayIndex - startArrayIndex - 1)];
-                        return [[[NSString alloc] initWithData:fileIDData encoding:NSISOLatin1StringEncoding] autorelease];
+                        range = NSMakeRange(startArrayIndex + 1, endArrayIndex - startArrayIndex - 1);
+                        patternLength = strlen(startStringPattern);
+                        startStringIndex = [pdfData indexOfBytes:startStringPattern length:patternLength options:0 range:range];
+                        if (startStringIndex != NSNotFound) {
+                            range = NSMakeRange(startStringIndex + patternLength, endArrayIndex - startStringIndex - patternLength);
+                            patternLength = strlen(endStringPattern);
+                            endStringIndex = [pdfData indexOfBytes:endStringPattern length:patternLength options:0 range:range];
+                            if (endStringIndex != NSNotFound) {
+                                if (firstIDData = [pdfData subdataWithRange:NSMakeRange(startStringIndex + 1, endStringIndex - startStringIndex - 1)]) {
+                                    range = NSMakeRange(endStringIndex + patternLength, endArrayIndex - endStringIndex - patternLength);
+                                    patternLength = strlen(startStringPattern);
+                                    startStringIndex = [pdfData indexOfBytes:startStringPattern length:patternLength options:0 range:range];
+                                    if (startStringIndex != NSNotFound) {
+                                        range = NSMakeRange(startStringIndex + patternLength, endArrayIndex - startStringIndex - patternLength);
+                                        patternLength = strlen(endStringPattern);
+                                        endStringIndex = [pdfData indexOfBytes:endStringPattern length:patternLength options:0 range:range];
+                                        if (endStringIndex != NSNotFound) {
+                                            secondIDData = [pdfData subdataWithRange:NSMakeRange(startStringIndex + 1, endStringIndex - startStringIndex - 1)];
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
+    if (secondIDData)
+        return [NSArray arrayWithObjects:
+                    [[[NSString alloc] initWithData:firstIDData encoding:NSISOLatin1StringEncoding] autorelease],
+                    [[[NSString alloc] initWithData:secondIDData encoding:NSISOLatin1StringEncoding] autorelease], nil];
     return nil;
 }
 
@@ -1347,15 +1375,15 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSString *)notesFDFStringForFile:(NSString *)filename {
-    NSString *fileIDString = [self fileIDString];
+    NSArray *fileIDStrings = [self fileIDStrings];
     int i, count = [[self notes] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n1 0 obj<</FDF<<", 0xe2, 0xe3, 0xcf, 0xd3];
     [string appendString:@"/Annots["];
     for (i = 0; i < count; i++)
         [string appendFormat:@"%i 0 R ", i + 2];
     [string appendFormat:@"]/F(%@)", filename ? [filename stringByEscapingParenthesis] : @""];
-    if (fileIDString)
-        [string appendFormat:@"/ID[%@]", fileIDString];
+    if (fileIDStrings)
+        [string appendFormat:@"/ID[<%@><%@>]", [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
     [string appendString:@">>>>\nendobj\n"];
     for (i = 0; i < count; i++)
         [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
