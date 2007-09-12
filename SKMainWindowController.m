@@ -867,7 +867,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
 }
     
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts{
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
     NSEnumerator *e = [noteDicts objectEnumerator];
     PDFAnnotation *annotation;
     NSDictionary *dict;
@@ -878,16 +878,20 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     while (dict = [e nextObject]) {
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
-            [annotation setShouldDisplay:[pdfView hideNotes] == NO];
-            [annotation setShouldPrint:[pdfView hideNotes] == NO];
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-            [page addAnnotation:annotation];
-            [pdfView setNeedsDisplayForAnnotation:annotation];
-            [observedNotes addObject:annotation];
+            if (undoable) {
+                [pdfView addAnnotation:annotation toPage:page];
+            } else {
+                [annotation setShouldDisplay:[pdfView hideNotes] == NO];
+                [annotation setShouldPrint:[pdfView hideNotes] == NO];
+                [page addAnnotation:annotation];
+                [pdfView setNeedsDisplayForAnnotation:annotation];
+                [observedNotes addObject:annotation];
+            }
             [annotation release];
         }
     }
@@ -896,8 +900,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView resetHoverRects];
 }
 
-- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
-    NSEnumerator *e = [notes objectEnumerator];
+- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
+    NSEnumerator *e = [[[notes copy] autorelease] objectEnumerator];
     PDFAnnotation *annotation;
     
     [pdfView removeHoverRects];
@@ -905,13 +909,18 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // remove the current annotations
     [pdfView setActiveAnnotation:nil];
     while (annotation = [e nextObject]) {
-        [pdfView setNeedsDisplayForAnnotation:annotation];
-        [[annotation page] removeAnnotation:annotation];
+        if (undoable) {
+            [pdfView removeAnnotation:annotation];
+        } else {
+            [pdfView setNeedsDisplayForAnnotation:annotation];
+            [[annotation page] removeAnnotation:annotation];
+        }
     }
     
-    [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+    if (undoable == NO)
+        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
     
-    [self addAnnotationsFromDictionaries:noteDicts];
+    [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
 
 - (SKPDFView *)pdfView {
