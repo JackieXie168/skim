@@ -1384,7 +1384,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [annots appendFormat:@"%i 0 R ", i + 1];
     }
     [string appendFormat:@"%i 0 obj<</FDF<</Annots[%@]/F(%@)", i + 1, annots, filename ? [filename stringByEscapingParenthesis] : @""];
-    if (fileIDStrings)
+    if ([fileIDStrings count] == 2)
         [string appendFormat:@"/ID[<%@><%@>]", [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
     [string appendFormat:@">>>>\nendobj\ntrailer\n<</Root %i 0 R>>\n%%EOF\n", i + 1];
     return string;
