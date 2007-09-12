@@ -1377,17 +1377,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSString *)notesFDFStringForFile:(NSString *)filename {
     NSArray *fileIDStrings = [self fileIDStrings];
     int i, count = [[self notes] count];
-    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n1 0 obj<</FDF<<", 0xe2, 0xe3, 0xcf, 0xd3];
-    [string appendString:@"/Annots["];
-    for (i = 0; i < count; i++)
-        [string appendFormat:@"%i 0 R ", i + 2];
-    [string appendFormat:@"]/F(%@)", filename ? [filename stringByEscapingParenthesis] : @""];
+    NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
+    NSMutableString *annots = [NSMutableString string];
+    for (i = 0; i < count; i++) {
+        [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 1, [[[self notes] objectAtIndex:i] fdfString]];
+        [annots appendFormat:@"%i 0 R ", i + 1];
+    }
+    [string appendFormat:@"%i 0 obj<</FDF<</Annots[%@]/F(%@)", i + 1, annots, filename ? [filename stringByEscapingParenthesis] : @""];
     if (fileIDStrings)
         [string appendFormat:@"/ID[<%@><%@>]", [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
-    [string appendString:@">>>>\nendobj\n"];
-    for (i = 0; i < count; i++)
-        [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 2, [[[self notes] objectAtIndex:i] fdfString]];
-    [string appendString:@"trailer\n<</Root 1 0 R>>\n%%EOF\n"];
+    [string appendFormat:@">>>>\nendobj\ntrailer\n<</Root %i 0 R>>\n%%EOF\n", i + 1];
     return string;
 }
 
