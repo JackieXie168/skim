@@ -262,6 +262,7 @@
             <string>SKDefaultFullScreenPDFDisplaySettings</string>
             <string>SKAutoSaveSkimNotes</string>
             <string>SKSnapshotsOnTop</string>
+            <string>SKSavePasswordOption</string>
             <string>SUCheckAtStartup</string>
             <string>SUScheduledCheckInterval</string>
         </array>
@@ -326,7 +327,6 @@
             <string>SKActivateFullScreenNavigationAtBottom</string>
             <string>SKActivatePresentationNavigationAtBottom</string>
             <string>SKReadMissingNotesFromSkimFileOption</string>
-            <string>SKSavePasswordOption</string>
             <string>SKEnableAppleRemote</string>
         </array>
     </dict>
