@@ -218,6 +218,8 @@
         <real>2.0</real>
         <key>SKReadMissingNotesFromSkimFileOption</key>
         <integer>-1</integer>
+        <key>SKSavePasswordOption</key>
+        <integer>-1</integer>
         <key>SKBlankAllScreensInFullScreen</key>
         <false/>
         <key>SKAutoCropBoxMarginHeight</key>
@@ -324,6 +326,7 @@
             <string>SKActivateFullScreenNavigationAtBottom</string>
             <string>SKActivatePresentationNavigationAtBottom</string>
             <string>SKReadMissingNotesFromSkimFileOption</string>
+            <string>SKSavePasswordOption</string>
             <string>SKEnableAppleRemote</string>
         </array>
     </dict>
