@@ -56,6 +56,8 @@
 #import <Carbon/Carbon.h>
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
+#import "OBUtilities.h"
+#import <Security/Security.h>
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -114,6 +116,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
 - (void)updateCursor;
+
+- (void)tryToUnlockDocument:(PDFDocument *)document;
 
 @end
 
@@ -449,6 +453,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 #pragma mark Accessors
 
 - (void)setDocument:(PDFDocument *)document {
+    if ([document isLocked] && [[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableSavingPassword"] == NO)
+        [self tryToUnlockDocument:document];
     [readingBar release];
     readingBar = nil;
     selectionRect = NSZeroRect;
@@ -3678,6 +3684,26 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[self cursorForEvent:event] set];
 }
 
+- (void)tryToUnlockDocument:(PDFDocument *)document {
+    NSArray *fileIDStrings = [(SKDocument *)[[[self window] windowController] document] fileIDStrings];
+    NSString *fileIDString = [fileIDStrings count] ? [fileIDStrings objectAtIndex:0] : nil;
+    if (fileIDString) {
+        const char *serviceName = [[NSString stringWithFormat:@"Skim - %@", fileIDString] UTF8String];
+        const char *userName = [NSUserName() UTF8String];
+        void *passwordData = NULL;
+        UInt32 passwordLength = 0;
+        NSData *data = nil;
+        NSString *password = nil;
+        OSErr err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, &passwordData, NULL);
+        if (err == noErr) {
+            data = [NSData dataWithBytes:passwordData length:passwordLength];
+            SecKeychainItemFreeContent(NULL, passwordData);
+            password = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+            [document unlockWithPassword:password];
+        }
+    }
+}
+
 @end
 
 #pragma mark Core Graphics extension
@@ -3760,3 +3786,77 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 @end
 
+#pragma mark -
+
+@interface PDFDisplayView : NSView
+- (void)passwordEntered:(id)sender;
+@end
+
+@interface PDFDisplayView (SKExtensions)
+- (void)replacementPasswordEntered:(id)sender;
+- (void)savePasswordInKeychain:(NSString *)password;
+@end
+
+@implementation PDFDisplayView (SKExtensions)
+
+static IMP originalPasswordEntered = NULL;
+
++ (void)load {
+    if ([self instancesRespondToSelector:@selector(passwordEntered:)])
+        originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
+}
+
+- (void)replacementPasswordEntered:(id)sender {
+    originalPasswordEntered(self, _cmd, sender);
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableSavingPassword"] == NO) {
+        SKDocument *document = [[[self window] windowController] document];
+        if ([document isKindOfClass:[SKDocument class]] && [[document pdfDocument] isLocked] == NO)
+            [self savePasswordInKeychain:[sender stringValue]];
+    }
+}
+
+- (void)savePasswordInKeychain:(NSString *)password {
+    SKDocument *document = [[[self window] windowController] document];
+    NSArray *fileIDStrings = [document fileIDStrings];
+    NSString *fileIDString = [fileIDStrings count] ? [fileIDStrings objectAtIndex:0] : nil;
+    if (fileIDString) {
+        NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog")]
+                                         defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                       alternateButton:NSLocalizedString(@"No", @"Button title")
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
+        if ([alert runModal] == NSAlertDefaultReturn) {
+            const char *userNameCString = [NSUserName() UTF8String];
+            const char *nameCString = [[NSString stringWithFormat:@"Skim - %@", fileIDString] UTF8String];
+            
+            OSStatus err;
+            SecKeychainItemRef itemRef = NULL;    
+            const void *passwordData = NULL;
+            UInt32 passwordLength = 0;
+            
+            // first see if the password exists in the keychain
+            err = SecKeychainFindGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, &passwordLength, (void **)&passwordData, &itemRef);
+            
+            if(err == noErr){
+                // password was on keychain, so flush the buffer and then modify the keychain
+                SecKeychainItemFreeContent(NULL, (void *)passwordData);
+                passwordData = NULL;
+                
+                passwordData = [password UTF8String];
+                SecKeychainAttribute attrs[] = {
+                    { kSecAccountItemAttr, strlen(userNameCString), (char *)userNameCString },
+                    { kSecServiceItemAttr, strlen(nameCString), (char *)nameCString } };
+                const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
+                
+                err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
+            } else if(err == errSecItemNotFound){
+                // password not on keychain, so add it
+                passwordData = [password UTF8String];
+                err = SecKeychainAddGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, strlen(passwordData), passwordData, &itemRef);    
+            } else 
+                NSLog(@"Error %d occurred setting password", err);
+        }
+    }
+}
+
+@end

@@ -150,6 +150,7 @@
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
+		CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA1CCE60C9864470061A6D4 /* Security.framework */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKTocOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */; };
@@ -531,6 +532,7 @@
 		CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarHighlightNote.tiff; path = Images/ToolbarHighlightNote.tiff; sourceTree = "<group>"; };
 		CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSData_SKExtensions.h; sourceTree = "<group>"; };
 		CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSData_SKExtensions.m; sourceTree = "<group>"; };
+		CEA1CCE60C9864470061A6D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
 		CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnailTableView.h; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 				CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */,
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
+				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -662,6 +665,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEA1CCE60C9864470061A6D4 /* Security.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				F98E24BE0B702D9400914AF0 /* Carbon.framework */,
 				455989F70B2662FF00E5419B /* Quartz.framework */,
