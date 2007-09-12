@@ -140,7 +140,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [mainController setPdfDocument:pdfDocument];
     [self setPDFDoc:nil];
     
-    [mainController setAnnotationsFromDictionaries:noteDicts];
+    [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
@@ -411,7 +411,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [pdfDocument autorelease];
         pdfDocument = nil;
         if (noteDicts) {
-            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
+            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
             [self setNoteDicts:nil];
         }
         [[self undoManager] removeAllActions];
@@ -677,13 +677,13 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         }
         
         if (array) {
-            if ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState)
-                [[self mainWindowController] setAnnotationsFromDictionaries:array];
-            else
-                [[self mainWindowController] addAnnotationsFromDictionaries:array];
-            // previous undo actions are not reliable anymore
-            [[self undoManager] removeAllActions];
-            [self updateChangeCount:NSChangeDone];
+            if ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState) {
+                [[self mainWindowController] setAnnotationsFromDictionaries:array undoable:YES];
+                [[self undoManager] setActionName:NSLocalizedString(@"Replace Notes", @"Undo action name")];
+            } else {
+                [[self mainWindowController] addAnnotationsFromDictionaries:array undoable:YES];
+                [[self undoManager] setActionName:NSLocalizedString(@"Add Notes", @"Undo action name")];
+            }
         } else
             NSBeep();
         
