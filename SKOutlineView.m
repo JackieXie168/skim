@@ -179,4 +179,11 @@
 	return menu;
 }
 
+- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation {
+    if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
+        [super draggedImage:anImage endedAt:aPoint operation:operation];
+    if ([[self dataSource] respondsToSelector:@selector(outlineView:dragEndedWithOperation:)])
+        [[self dataSource] outlineView:self dragEndedWithOperation:operation];
+}
+
 @end

@@ -68,3 +68,7 @@
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
 - (NSMenu *)outlineView:(NSOutlineView *)anOutlineView menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 @end
+
+@interface NSObject (SKOutlineViewDataSource)
+- (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
+@end
