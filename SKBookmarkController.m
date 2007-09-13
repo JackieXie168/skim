@@ -48,6 +48,7 @@
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
+static NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";
 
 @implementation SKBookmarkController
 
@@ -99,6 +100,10 @@ static unsigned int maxRecentDocumentsCount = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleBookmarkChangedNotification:)
                                                      name:SKBookmarkChangedNotification
+                                                   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleBookmarkWillBeRemovedNotification:)
+                                                     name:SKBookmarkWillBeRemovedNotification
                                                    object:nil];
     }
     return self;
@@ -152,6 +157,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index {
     [[[self undoManager] prepareWithInvocationTarget:self] insertObject:[bookmarks objectAtIndex:index] inBookmarksAtIndex:index];
+    [self handleBookmarkWillBeRemovedNotification:nil];
     [bookmarks removeObjectAtIndex:index];
     [self handleBookmarkChangedNotification:nil];
 }
@@ -280,6 +286,11 @@ static unsigned int maxRecentDocumentsCount = 0;
     }
 }
 
+- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification  {
+    if ([outlineView editedRow] && [[self window] makeFirstResponder:outlineView] == NO)
+        [[self window] endEditingFor:nil];
+}
+
 - (void)handleBookmarkChangedNotification:(NSNotification *)notification {
     [self saveBookmarks];
     [outlineView reloadData];
@@ -359,6 +370,10 @@ static unsigned int maxRecentDocumentsCount = 0;
         }
     }
     [self bookmark:item insertChildBookmark:folder atIndex:index];
+    
+    int row = [outlineView rowForItem:folder];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [outlineView editColumn:0 row:row withEvent:nil select:YES];
 }
 
 #pragma mark Undo support
@@ -402,7 +417,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:@"label"]) {
-        [item setLabel:object];
+        if ([object isEqualToString:[item label]] == NO)
+            [item setLabel:object];
     }
 }
 
@@ -695,6 +711,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)removeChild:(SKBookmark *)child {
     NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
     [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkWillBeRemovedNotification object:self];
     [child setParent:nil];
     [children removeObject:child];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
