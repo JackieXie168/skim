@@ -38,16 +38,13 @@
 
 #import "SKTextWithIconCell.h"
 
-/* Almost all of this code is copy-and-paste from OmniAppKit/OATextWithIconCell, except for the text layout (which seems wrong in OATextWithIconCell). */
+// Almost all of this code is copy-and-paste from OmniAppKit/OATextWithIconCell, with some simplifications for features we're not interested in
 
 NSString *SKTextWithIconCellImageKey = @"image";
 NSString *SKTextWithIconCellStringKey = @"string";
 
-
-@interface NSLayoutManager (BDSKExtensions)
-+ (float)defaultViewLineHeightForFont:(NSFont *)theFont;
-@end
-
+#define BORDER_BETWEEN_EDGE_AND_IMAGE (2.0)
+#define BORDER_BETWEEN_IMAGE_AND_TEXT (2.0)
 
 @implementation SKTextWithIconCell
 
@@ -55,16 +52,8 @@ NSString *SKTextWithIconCellStringKey = @"string";
 
 - (id)init {
     if (self = [super initTextCell:@""]) {
-        [self setImagePosition:NSImageLeft];
         [self setEditable:YES];
         [self setScrollable:YES];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder {
-    if (self = [super initWithCoder:coder]) {
-        [self setImagePosition:NSImageLeft];
     }
     return self;
 }
@@ -82,62 +71,31 @@ NSString *SKTextWithIconCellStringKey = @"string";
     return copy;
 }
 
-#define BORDER_BETWEEN_EDGE_AND_IMAGE (2.0)
-#define BORDER_BETWEEN_IMAGE_AND_TEXT (3.0)
-#define SIZE_OF_TEXT_FIELD_BORDER (1.0)
-
-#define CELL_SIZE_FUDGE_FACTOR 10.0
-
 - (NSSize)cellSize {
     NSSize cellSize = [super cellSize];
-    // TODO: WJS 1/31/04 -- I REALLY don't think this next line is accurate. It appears to not be used much, anyways, but still...
-    cellSize.width += [icon size].width + (BORDER_BETWEEN_EDGE_AND_IMAGE * 2.0) + (BORDER_BETWEEN_IMAGE_AND_TEXT * 2.0) + (SIZE_OF_TEXT_FIELD_BORDER * 2.0) + CELL_SIZE_FUDGE_FACTOR;
+    cellSize.width += [icon size].width + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
     return cellSize;
 }
 
 #define CALCULATE_DRAWING_RECTS_AND_SIZES \
-NSRectEdge rectEdge;  \
 NSSize imageSize; \
-\
-if (imagePosition == NSImageLeft) { \
-    rectEdge = NSMinXEdge; \
-        imageSize = NSMakeSize(NSHeight(aRect) - 1, NSHeight(aRect) - 1); \
-} else { \
-    rectEdge =  NSMaxXEdge; \
-        if (icon == nil) \
-            imageSize = NSZeroSize; \
-                else \
-                    imageSize = [icon size]; \
-} \
-\
+imageSize = NSMakeSize(NSHeight(aRect) - 1, NSHeight(aRect) - 1); \
 NSRect cellFrame = aRect, ignored; \
+\
 if (imageSize.width > 0) \
-NSDivideRect(cellFrame, &ignored, &cellFrame, BORDER_BETWEEN_EDGE_AND_IMAGE, rectEdge); \
+NSDivideRect(cellFrame, &ignored, &cellFrame, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge); \
 \
 NSRect imageRect, textRect; \
-NSDivideRect(cellFrame, &imageRect, &textRect, imageSize.width, rectEdge); \
+NSDivideRect(cellFrame, &imageRect, &textRect, imageSize.width, NSMinXEdge); \
 \
 if (imageSize.width > 0) \
-NSDivideRect(textRect, &ignored, &textRect, BORDER_BETWEEN_IMAGE_AND_TEXT, rectEdge); \
-\
-/* this is the main difference from OATextWithIconCell, which ends up with a really weird text baseline for tall cells */\
-float vOffset = 0.5f * (NSHeight(aRect) - [NSLayoutManager defaultViewLineHeightForFont:[self font]]); \
-\
-if (![controlView isFlipped]) \
-textRect.origin.y -= vOffset; \
-else \
-textRect.origin.y += vOffset; \
+NSDivideRect(textRect, &ignored, &textRect, BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
 
 - (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
     CALCULATE_DRAWING_RECTS_AND_SIZES;
     
-    NSDivideRect(textRect, &ignored, &textRect, SIZE_OF_TEXT_FIELD_BORDER, NSMinXEdge);
-    textRect = NSInsetRect(textRect, 1.0f, 0.0);
-    
     // Draw the text
-    NSAttributedString *label = [self attributedStringValue];
-    
-    [label drawInRect:textRect];
+    [super drawInteriorWithFrame:textRect inView:controlView];
     
     // Draw the image
     imageRect.origin.x += 0.5 * (NSWidth(imageRect) - imageSize.width);
@@ -178,28 +136,6 @@ textRect.origin.y += vOffset; \
         [icon release];
         icon = [anIcon retain];
     }
-}
-
-- (NSCellImagePosition)imagePosition {
-    return imagePosition;
-}
-
-- (void)setImagePosition:(NSCellImagePosition)aPosition {
-    imagePosition = aPosition;
-}
-
-@end
-
-
-@implementation NSLayoutManager (BDSKExtensions)
-
-+ (float)defaultViewLineHeightForFont:(NSFont *)theFont {
-    static NSLayoutManager *layoutManager = nil;
-    if (layoutManager == nil) {
-        layoutManager = [[NSLayoutManager alloc] init];
-        [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
-    }
-    return [layoutManager defaultLineHeightForFont:theFont];
 }
 
 @end
