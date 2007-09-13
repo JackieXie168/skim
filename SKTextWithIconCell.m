@@ -121,8 +121,17 @@ NSDivideRect(textRect, &ignored, &textRect, BORDER_BETWEEN_IMAGE_AND_TEXT, NSMin
 }
 
 - (void)setObjectValue:(id<NSCopying>)obj {
-    [self setIcon:[(id)obj valueForKey:SKTextWithIconCellImageKey]];
-    [super setObjectValue:[(id)obj valueForKey:SKTextWithIconCellStringKey]];
+    NSImage *image;
+    NSString *string;
+    @try {
+        image = [(id)obj valueForKey:SKTextWithIconCellImageKey];
+        string = [(id)obj valueForKey:SKTextWithIconCellStringKey];
+        [self setIcon:image];
+        [super setObjectValue:string];
+    }
+    @catch (id exception) {
+        [super setObjectValue:obj];
+    }
 }
 
 // API
