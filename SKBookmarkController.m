@@ -120,6 +120,8 @@ static unsigned int maxRecentDocumentsCount = 0;
     [outlineView setTypeSelectHelper:typeSelectHelper];
     
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    
+    [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
 }
 
 #pragma mark Bookmarks
@@ -308,8 +310,15 @@ static unsigned int maxRecentDocumentsCount = 0;
     }
 }
 
+- (IBAction)doubleClickBookmark:(id)sender {
+    int row = [outlineView clickedRow];
+    SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
+    if (bm && [bm bookmarkType] == SKBookmarkTypeBookmark)
+        [self openBookmarks:[NSArray arrayWithObject:bm]];
+}
+
 - (IBAction)insertBookmarkFolder:(id)sender {
-    SKBookmark *folder = [[[SKBookmark alloc] initFolderWithLabel:@"Folder"] autorelease];
+    SKBookmark *folder = [[[SKBookmark alloc] initFolderWithLabel:NSLocalizedString(@"Folder", @"default folder name")] autorelease];
     int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = nil;
     unsigned int index = [bookmarks count];

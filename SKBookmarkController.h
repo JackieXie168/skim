@@ -68,6 +68,7 @@ enum {
 - (NSString *)bookmarksFilePath;
 - (void)openBookmarks:(NSArray *)items;
 
+- (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;
 
 - (NSArray *)recentDocuments;
