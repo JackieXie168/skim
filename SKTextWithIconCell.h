@@ -43,13 +43,9 @@ extern NSString *SKTextWithIconCellStringKey;
 
 @interface SKTextWithIconCell : NSTextFieldCell {
     NSImage *icon;
-    NSCellImagePosition imagePosition;
 }
 
 - (NSImage *)icon;
 - (void)setIcon:(NSImage *)anIcon;
-
-- (NSCellImagePosition)imagePosition;
-- (void)setImagePosition:(NSCellImagePosition)aPosition;
 
 @end
