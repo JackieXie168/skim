@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKOutlineView, SKTableView, SKStatusBar;
+@class SKOutlineView, SKStatusBar;
 
 enum {
     SKBookmarkTypeBookmark,
@@ -51,6 +51,7 @@ enum {
     NSMutableArray *bookmarks;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
+    NSArray *draggedBookmarks;
 }
 
 + (id)sharedBookmarkController;
@@ -118,5 +119,6 @@ enum {
 - (void)removeChild:(SKBookmark *)child;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
+- (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
 
 @end
