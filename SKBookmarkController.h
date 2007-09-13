@@ -66,6 +66,7 @@ enum {
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
 - (void)saveBookmarks;
 - (void)handleBookmarkChangedNotification:(NSNotification *)notification;
+- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification;
 - (NSString *)bookmarksFilePath;
 - (void)openBookmarks:(NSArray *)items;
 
