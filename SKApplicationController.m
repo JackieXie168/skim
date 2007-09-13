@@ -246,12 +246,14 @@
         if ([bm bookmarkType] == SKBookmarkTypeFolder) {
             NSMenu *submenu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease];
             NSMenuItem *item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
+            [item setImage:[bm icon]];
             [item setSubmenu:submenu];
             [self addMenuItemsForBookmarks:[bm children] toMenu:submenu];
         } else {
             NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
             [item setTarget:self];
             [item setRepresentedObject:bm];
+            [item setImage:[bm icon]];
         }
     }
 }

@@ -104,6 +104,7 @@ enum {
 - (NSString *)path;
 - (NSData *)aliasData;
 - (NSString *)resolvedPath;
+- (NSImage *)icon;
 - (unsigned int)pageIndex;
 - (NSNumber *)pageNumber;
 - (NSString *)label;

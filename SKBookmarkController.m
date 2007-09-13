@@ -45,6 +45,7 @@
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
+#import "SKTextWithIconCell.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
@@ -371,7 +372,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:@"label"]) {
-        return [item label];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
     } else if ([tcID isEqualToString:@"file"]) {
         return [item resolvedPath];
     } else if ([tcID isEqualToString:@"page"]) {
@@ -498,6 +499,29 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 @implementation SKBookmark
 
++ (NSImage *)smallImageForFile:(NSString *)filePath {
+    static NSMutableDictionary *smallIcons = nil;
+    if (smallIcons == nil)
+        smallIcons = [[NSMutableDictionary alloc] init];
+    
+    NSString *extension = [filePath pathExtension];
+    NSImage *icon = [smallIcons objectForKey:extension];
+    
+    if (icon == nil) {
+        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
+        NSRect sourceRect = {NSZeroPoint, [image size]};
+        NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
+        icon = [[NSImage alloc] initWithSize:targetRect.size];
+        [icon lockFocus];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [icon unlockFocus];
+        [smallIcons setObject:icon forKey:extension];
+        [icon release];
+    }
+    return icon;
+}
+
 - (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeBookmark;
@@ -584,6 +608,13 @@ static unsigned int maxRecentDocumentsCount = 0;
     if (resolvedPath == nil)
         resolvedPath = path;
     return resolvedPath;
+}
+
+- (NSImage *)icon {
+    if ([self bookmarkType] == SKBookmarkTypeFolder)
+        return [NSImage imageNamed:@"SmallFolder"];
+    else
+        return [[self class] smallImageForFile:[self resolvedPath]];
 }
 
 - (unsigned int)pageIndex {
