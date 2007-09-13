@@ -4,7 +4,7 @@
         {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {insertBookmarkFolder = id; }; 
+            ACTIONS = {insertBookmarkFolder = id; openBookmark = id; }; 
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
             OUTLETS = {outlineView = SKOutlineView; statusBar = SKStatusBar; }; 
