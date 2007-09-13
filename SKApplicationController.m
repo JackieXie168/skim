@@ -239,19 +239,31 @@
 
 #pragma mark Support
 
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
-    int i = [menu numberOfItems], iMax = [bookmarks count];
-    while (--i > 1)
-        [menu removeItemAtIndex:i];
-    if (iMax > 0)
-        [menu addItem:[NSMenuItem separatorItem]];
+- (void)addMenuItemsForBookmarks:(NSArray *)bookmarks toMenu:(NSMenu *)menu {
+    int i, iMax = [bookmarks count];
     for (i = 0; i < iMax; i++) {
         SKBookmark *bm = [bookmarks objectAtIndex:i];
-        NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
-        [item setTarget:self];
-        [item setRepresentedObject:bm];
+        if ([bm bookmarkType] == SKBookmarkTypeFolder) {
+            NSMenu *submenu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease];
+            NSMenuItem *item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
+            [item setSubmenu:submenu];
+            [self addMenuItemsForBookmarks:[bm children] toMenu:submenu];
+        } else {
+            NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
+            [item setTarget:self];
+            [item setRepresentedObject:bm];
+        }
     }
+}
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
+    int i = [menu numberOfItems];
+    while (--i > 1)
+        [menu removeItemAtIndex:i];
+    if ([bookmarks count] > 0)
+        [menu addItem:[NSMenuItem separatorItem]];
+    [self addMenuItemsForBookmarks:bookmarks toMenu:menu];
 }
 
 - (void)appleRemoteButton:(AppleRemoteEventIdentifier)buttonIdentifier pressedDown:(BOOL)pressedDown {
