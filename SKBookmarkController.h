@@ -38,10 +38,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKTableView, SKStatusBar;
+@class SKOutlineView, SKTableView, SKStatusBar;
+
+enum {
+    SKBookmarkTypeBookmark,
+    SKBookmarkTypeFolder
+};
 
 @interface SKBookmarkController : NSWindowController {
-    IBOutlet SKTableView *tableView;
+    IBOutlet SKOutlineView *outlineView;
     IBOutlet SKStatusBar *statusBar;
     NSMutableArray *bookmarks;
     NSMutableArray *recentDocuments;
@@ -63,6 +68,8 @@
 - (NSString *)bookmarksFilePath;
 - (void)openBookmarks:(NSArray *)items;
 
+- (IBAction)insertBookmarkFolder:(id)sender;
+
 - (NSArray *)recentDocuments;
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
@@ -78,13 +85,20 @@
     NSData *aliasData;
     NSString *label;
     unsigned int pageIndex;
+    NSMutableArray *children;
+    SKBookmark *parent;
+    int bookmarkType;
 }
 
 - (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
+- (id)initFolderWithLabel:(NSString *)aLabel;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSDictionary *)dictionaryValue;
+
+- (int)bookmarkType;
 
 - (NSString *)path;
 - (NSData *)aliasData;
@@ -93,5 +107,14 @@
 - (NSNumber *)pageNumber;
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
+
+- (SKBookmark *)parent;
+- (void)setParent:(SKBookmark *)newParent;
+- (NSArray *)children;
+- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index;
+- (void)addChild:(SKBookmark *)child;
+- (void)removeChild:(SKBookmark *)child;
+
+- (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 
 @end

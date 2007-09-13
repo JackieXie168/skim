@@ -1,12 +1,25 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            ACTIONS = {insertBookmarkFolder = id; }; 
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {statusBar = SKStatusBar; tableView = SKTableView; }; 
+            OUTLETS = {outlineView = SKOutlineView; statusBar = SKStatusBar; }; 
             SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                copy = id; 
+                delete = id; 
+                scrollToBeginningOfDocument = id; 
+                scrollToEndOfDocument = id; 
+            }; 
+            CLASS = SKOutlineView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOutlineView; 
         }, 
         {
             ACTIONS = {startAnimation = id; stopAnimation = id; }; 
