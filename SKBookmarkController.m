@@ -169,9 +169,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (unsigned int)indexOfChildBookmark:(SKBookmark *)bookmark {
-    SKBookmark *parent = [bookmark parent];
-    NSArray *children = parent ? [parent children] : bookmarks;
-    return [children indexOfObject:bookmark];
+    return [[self childrenOfBookmark:[bookmark parent]] indexOfObject:bookmark];
 }
 
 - (void)bookmark:(SKBookmark *)bookmark insertChildBookmark:(SKBookmark *)child atIndex:(unsigned int)index {
@@ -327,20 +325,14 @@ static unsigned int maxRecentDocumentsCount = 0;
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
         if ([outlineView isItemExpanded:selectedItem]) {
-            item = [selectedItem parent];
-            if (item)
-                index = [[item children] indexOfObject:selectedItem] + 1;
-            else
-                index = [bookmarks indexOfObject:selectedItem] + 1;
-        } else {
             item = selectedItem;
             index = [[item children] count];
+        } else {
+            item = [selectedItem parent];
+            index = [self indexOfChildBookmark:selectedItem] + 1;
         }
     }
-    if (item)
-        [item insertChild:folder atIndex:index];
-    else
-        [self insertObject:folder inBookmarksAtIndex:index];
+    [self bookmark:item insertChildBookmark:folder atIndex:index];
 }
 
 #pragma mark Undo support
@@ -425,8 +417,13 @@ static unsigned int maxRecentDocumentsCount = 0;
         SKBookmark *bookmark = [outlineView itemAtRow:draggedRow];
         if ([(SKBookmark *)item isDescendantOf:bookmark])
             return NO;
-        if ([bookmark parent] == item && index > (int)[self indexOfChildBookmark:bookmark])
-            index--;
+        if ([bookmark parent] == item) {
+            int draggedIndex = [self indexOfChildBookmark:bookmark];
+            if (index > draggedIndex)
+                index--;
+            if (index == draggedIndex)
+                return NO;
+        }
         [bookmark retain];
         [self removeChildBookmark:bookmark];
         [self bookmark:item insertChildBookmark:bookmark atIndex:index];
@@ -584,6 +581,13 @@ static unsigned int maxRecentDocumentsCount = 0;
     [super dealloc];
 }
 
+- (NSString *)description {
+    if (bookmarkType == SKBookmarkTypeFolder)
+        return [NSString stringWithFormat:@"<%@: label=%@, children=%@>", [self class], label, children];
+    else
+        return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, path, pageIndex];
+}
+
 - (NSDictionary *)dictionaryValue {
     if (bookmarkType == SKBookmarkTypeFolder)
         return [NSDictionary dictionaryWithObjectsAndKeys:@"folder", @"type", [children valueForKey:@"dictionaryValue"], @"children", label, @"label", nil];
@@ -666,6 +670,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)removeChild:(SKBookmark *)child {
     NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
     [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
+    [child setParent:nil];
     [children removeObject:child];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
 }
