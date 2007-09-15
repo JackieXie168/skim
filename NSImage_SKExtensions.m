@@ -545,4 +545,30 @@
     [shadow release];
 }
 
++ (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code {
+	IconRef iconref;
+	OSErr myErr = GetIconRef (kOnSystemDisk, kSystemIconsCreator, code, &iconref);
+	
+	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(iconSize.width, iconSize.height)]; 
+	CGRect rect =  CGRectMake(0.0, 0.0, iconSize.width, iconSize.height);
+	
+	[image lockFocus]; 
+	PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
+                         &rect,
+						 kAlignAbsoluteCenter, //kAlignNone,
+						 kTransformNone,
+						 NULL /*inLabelColor*/,
+						 kPlotIconRefNormalFlags,
+						 iconref); 
+	[image unlockFocus]; 
+	
+	myErr = ReleaseIconRef(iconref);
+	
+	return [image autorelease];
+}
+
++ (NSImage *)imageWithIconForToolboxCode:(OSType) code {
+    return [self iconWithSize:NSMakeSize(32,32) forToolboxCode:code];
+}
+
 @end

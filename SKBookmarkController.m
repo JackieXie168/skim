@@ -37,6 +37,7 @@
  */
 
 #import "SKBookmarkController.h"
+#import "SKBookmark.h"
 #import "BDAlias.h"
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
@@ -45,10 +46,15 @@
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
 #import "SKTextWithIconCell.h"
+#import "SKToolbarItem.h"
+#import "NSImage_SKExtensions.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
-static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
-static NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";
+
+static NSString *SKBookmarksToolbarIdentifier = @"SKBookmarksToolbarIdentifier";
+static NSString *SKBookmarksNewFolderToolbarItemIdentifier = @"SKBookmarksNewFolderToolbarItemIdentifier";
+static NSString *SKBookmarksNewSeparatorToolbarItemIdentifier = @"SKBookmarksNewSeparatorToolbarItemIdentifier";
+static NSString *SKBookmarksDeleteToolbarItemIdentifier = @"SKBookmarksDeleteToolbarItemIdentifier";
 
 @implementation SKBookmarkController
 
@@ -113,13 +119,21 @@ static unsigned int maxRecentDocumentsCount = 0;
     [bookmarks release];
     [recentDocuments release];
     [draggedBookmarks release];
+    [toolbarItems release];
+    [statusBar release];
     [super dealloc];
 }
 
 - (NSString *)windowNibName { return @"BookmarksWindow"; }
 
 - (void)windowDidLoad {
+    [self setupToolbar];
+    
     [self setWindowFrameAutosaveName:@"SKBookmarksWindow"];
+    
+    [statusBar retain];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKShowBookmarkStatusBar"] == NO)
+        [self toggleStatusBar:nil];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setDataSource:self];
@@ -128,6 +142,21 @@ static unsigned int maxRecentDocumentsCount = 0;
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
+}
+
+- (void)updateStatus {
+    int row = [outlineView selectedRow];
+    NSString *message = @"";
+    if (row != -1) {
+        SKBookmark *bookmark = [outlineView itemAtRow:row];
+        if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
+            message = [bookmark resolvedPath];
+        } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
+            int count = [[bookmark children] count];
+            message = count == 1 ? NSLocalizedString(@"1 item", @"Status message") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Status message"), count];
+        }
+    }
+    [statusBar setLeftStringValue:message];
 }
 
 #pragma mark Bookmarks
@@ -398,6 +427,15 @@ static unsigned int maxRecentDocumentsCount = 0;
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
+- (IBAction)deleteBookmark:(id)sender {
+    [outlineView delete:sender];
+}
+
+- (IBAction)toggleStatusBar:(id)sender {
+    [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:1.0];
+    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:@"SKShowBookmarkStatusBar"];
+}
+
 #pragma mark Undo support
 
 - (NSUndoManager *)undoManager {
@@ -516,6 +554,10 @@ static unsigned int maxRecentDocumentsCount = 0;
     return nil;
 }
 
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification {
+    [self updateStatus];
+}
+
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
     NSEnumerator *itemEnum = [[self minimumCoverForBookmarks:items] reverseObjectEnumerator];
     SKBookmark *item;
@@ -557,239 +599,106 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
-    NSString *message = @"";
     if (searchString)
-        message = [NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString];
-    [statusBar setLeftStringValue:message];
+        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString]];
+    else
+        [self updateStatus];
 }
 
-@end
+#pragma mark Toolbar
 
-#pragma mark -
-
-@implementation SKBookmark
-
-+ (NSImage *)smallImageForFile:(NSString *)filePath {
-    static NSMutableDictionary *smallIcons = nil;
-    if (smallIcons == nil)
-        smallIcons = [[NSMutableDictionary alloc] init];
+- (void)setupToolbar {
+    // Create a new toolbar instance, and attach it to our document window
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKBookmarksToolbarIdentifier] autorelease];
+    SKToolbarItem *item;
     
-    NSString *extension = [filePath pathExtension];
-    NSImage *icon = [smallIcons objectForKey:extension];
+    toolbarItems = [[NSMutableDictionary alloc] initWithCapacity:3];
     
-    if (icon == nil) {
-        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
-        NSRect sourceRect = {NSZeroPoint, [image size]};
-        NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
-        icon = [[NSImage alloc] initWithSize:targetRect.size];
-        [icon lockFocus];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        [icon unlockFocus];
-        [smallIcons setObject:icon forKey:extension];
-        [icon release];
-    }
-    return icon;
+    // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
+    [toolbar setAllowsUserCustomization: YES];
+    [toolbar setAutosavesConfiguration: YES];
+    [toolbar setDisplayMode: NSToolbarDisplayModeDefault];
+    
+    // We are the delegate
+    [toolbar setDelegate: self];
+    
+    // Add template toolbar items
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewFolderToolbarItemIdentifier];
+    [item setLabels:NSLocalizedString(@"New Folder", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add a New Folder", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarNewFolder"];
+    [item setTarget:self];
+    [item setAction:@selector(insertBookmarkFolder:)];
+    [toolbarItems setObject:item forKey:SKBookmarksNewFolderToolbarItemIdentifier];
+    [item release];
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksNewSeparatorToolbarItemIdentifier];
+    [item setLabels:NSLocalizedString(@"New Separator", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add a New Separator", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarNewSeparator"];
+    [item setTarget:self];
+    [item setAction:@selector(insertBookmarkSeparator:)];
+    [toolbarItems setObject:item forKey:SKBookmarksNewSeparatorToolbarItemIdentifier];
+    [item release];
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksDeleteToolbarItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Delete", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Delete Selected Items", @"Tool tip message")];
+    [item setImage:[NSImage imageWithIconForToolboxCode:kToolbarDeleteIcon]];
+    [item setTarget:self];
+    [item setAction:@selector(deleteBookmark:)];
+    [toolbarItems setObject:item forKey:SKBookmarksDeleteToolbarItemIdentifier];
+    [item release];
+    
+    // Attach the toolbar to the window
+    [[self window] setToolbar:toolbar];
 }
 
-- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
-    if (self = [super init]) {
-        bookmarkType = SKBookmarkTypeBookmark;
-        path = [aPath copy];
-        aliasData = [aData copy];
-        pageIndex = aPageIndex;
-        label = [aLabel copy];
-        children = nil;
-    }
-    return self;
+- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+
+    NSToolbarItem *item = [toolbarItems objectForKey:itemIdent];
+    NSToolbarItem *newItem = [[item copy] autorelease];
+    return newItem;
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
-    return [self initWithPath:aPath aliasData:[[BDAlias aliasWithPath:aPath] aliasData] pageIndex:aPageIndex label:aLabel];
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects:
+        SKBookmarksNewFolderToolbarItemIdentifier, 
+        SKBookmarksNewSeparatorToolbarItemIdentifier, 
+        SKBookmarksDeleteToolbarItemIdentifier, nil];
 }
 
-- (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    if (self = [super init]) {
-        bookmarkType = SKBookmarkTypeFolder;
-        path = nil;
-        aliasData = nil;
-        pageIndex = NSNotFound;
-        label = [aLabel copy];
-        children = [aChildren mutableCopy];
-        [children makeObjectsPerformSelector:@selector(setParent:) withObject:self];
-    }
-    return self;
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects: 
+        SKBookmarksNewFolderToolbarItemIdentifier, 
+        SKBookmarksNewSeparatorToolbarItemIdentifier, 
+		SKBookmarksDeleteToolbarItemIdentifier, 
+        NSToolbarFlexibleSpaceItemIdentifier, 
+		NSToolbarSpaceItemIdentifier, 
+		NSToolbarSeparatorItemIdentifier, 
+		NSToolbarCustomizeToolbarItemIdentifier, nil];
 }
 
-- (id)initFolderWithLabel:(NSString *)aLabel {
-    return [self initFolderWithChildren:[NSArray array] label:aLabel];
-}
-
-- (id)initSeparator {
-    if (self = [super init]) {
-        bookmarkType = SKBookmarkTypeSeparator;
-        path = nil;
-        aliasData = nil;
-        pageIndex = NSNotFound;
-        label = nil;
-        children = nil;
-    }
-    return self;
-}
-
-- (id)initWithDictionary:(NSDictionary *)dictionary {
-    if ([[dictionary objectForKey:@"type"] isEqualToString:@"folder"]) {
-        NSEnumerator *dictEnum = [[dictionary objectForKey:@"children"] objectEnumerator];
-        NSDictionary *dict;
-        NSMutableArray *newChildren = [NSMutableArray array];
-        while (dict = [dictEnum nextObject])
-            [newChildren addObject:[[[[self class] alloc] initWithDictionary:dict] autorelease]];
-        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:@"label"]];
-    } else if ([[dictionary objectForKey:@"type"] isEqualToString:@"separator"]) {
-        return [self initSeparator];
+- (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
+    NSString *identifier = [toolbarItem itemIdentifier];
+    if ([identifier isEqualToString:SKBookmarksDeleteToolbarItemIdentifier]) {
+        return [outlineView canDelete];
     } else {
-        return [self initWithPath:[dictionary objectForKey:@"path"] aliasData:[dictionary objectForKey:@"_BDAlias"] pageIndex:[[dictionary objectForKey:@"pageIndex"] unsignedIntValue] label:[dictionary objectForKey:@"label"]];
-    }
-}
-
-- (id)copyWithZone:(NSZone *)aZone {
-    if (bookmarkType == SKBookmarkTypeFolder)
-        return [[[self class] allocWithZone:aZone] initFolderWithChildren:[[[NSArray alloc] initWithArray:children copyItems:YES] autorelease] label:label];
-    else if (bookmarkType == SKBookmarkTypeSeparator)
-        return [[[self class] allocWithZone:aZone] initSeparator];
-    else
-        return [[[self class] allocWithZone:aZone] initWithPath:path aliasData:aliasData pageIndex:pageIndex label:label];
-}
-
-- (void)dealloc {
-    [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
-    [path release];
-    [aliasData release];
-    [label release];
-    [children release];
-    [super dealloc];
-}
-
-- (NSString *)description {
-    if (bookmarkType == SKBookmarkTypeFolder)
-        return [NSString stringWithFormat:@"<%@: label=%@, children=%@>", [self class], label, children];
-    else if (bookmarkType == SKBookmarkTypeSeparator)
-        return [NSString stringWithFormat:@"<%@: separator>", [self class]];
-    else
-        return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, path, pageIndex];
-}
-
-- (NSDictionary *)dictionaryValue {
-    if (bookmarkType == SKBookmarkTypeFolder)
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"folder", @"type", [children valueForKey:@"dictionaryValue"], @"children", label, @"label", nil];
-    else if (bookmarkType == SKBookmarkTypeSeparator)
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"separator", @"type", nil];
-    else
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"bookmark", @"type", path, @"path", aliasData, @"_BDAlias", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", label, @"label", nil];
-}
-
-- (int)bookmarkType {
-    return bookmarkType;
-}
-
-- (NSString *)path {
-    return [[path retain] autorelease];
-}
-
-- (NSData *)aliasData {
-    return aliasData;
-}
-
-- (NSString *)resolvedPath {
-    NSString *resolvedPath = [[BDAlias aliasWithData:aliasData] fullPathNoUI];
-    if (resolvedPath == nil)
-        resolvedPath = path;
-    return resolvedPath;
-}
-
-- (NSImage *)icon {
-    if ([self bookmarkType] == SKBookmarkTypeFolder)
-        return [NSImage imageNamed:@"SmallFolder"];
-    else if (bookmarkType == SKBookmarkTypeSeparator)
-        return nil;
-    else
-        return [[self class] smallImageForFile:[self resolvedPath]];
-}
-
-- (unsigned int)pageIndex {
-    return pageIndex;
-}
-
-- (NSNumber *)pageNumber {
-    return pageIndex == NSNotFound ? nil : [NSNumber numberWithUnsignedInt:pageIndex + 1];
-}
-
-- (NSString *)label {
-    return label;
-}
-
-- (void)setLabel:(NSString *)newLabel {
-    if (label != newLabel) {
-        NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-        [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] setLabel:label];
-        [label release];
-        label = [newLabel retain];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
-    }
-}
-
-- (SKBookmark *)parent {
-    return parent;
-}
-
-- (void)setParent:(SKBookmark *)newParent {
-    parent = newParent;
-}
-
-- (NSArray *)children {
-    return children;
-}
-
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index {
-    NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-    [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] removeChild:child];
-    [children insertObject:child atIndex:index];
-    [child setParent:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
-}
-
-- (void)addChild:(SKBookmark *)child {
-    [self insertChild:child atIndex:[children count]];
-}
-
-- (void)removeChild:(SKBookmark *)child {
-    NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-    [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkWillBeRemovedNotification object:self];
-    [child setParent:nil];
-    [children removeObject:child];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
-}
-
-- (BOOL)isDescendantOf:(SKBookmark *)bookmark {
-    if (self == bookmark)
         return YES;
-    NSEnumerator *childEnum = [[bookmark children] objectEnumerator];
-    SKBookmark *child;
-    while (child = [childEnum nextObject]) {
-        if ([self isDescendantOf:child])
-            return YES;
     }
-    return NO;
 }
 
-- (BOOL)isDescendantOfArray:(NSArray *)bookmarks {
-    NSEnumerator *bmEnum = [bookmarks objectEnumerator];
-    SKBookmark *bm = nil;
-    while (bm = [bmEnum nextObject]) {
-        if ([self isDescendantOf:bm]) return YES;
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(toggleStatusBar:)) {
+        if ([statusBar isVisible])
+            [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
+        return YES;
     }
-    return NO;
+    return YES;
 }
 
 @end
