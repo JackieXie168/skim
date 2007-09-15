@@ -529,8 +529,13 @@ static unsigned int maxRecentDocumentsCount = 0;
         SKBookmark *bookmark;
 				
 		while (bookmark = [bmEnum nextObject]) {
-            if (item == [bookmark parent] && index > (int)[self indexOfChildBookmark:bookmark])
-                index--;
+            int bookmarkIndex = [self indexOfChildBookmark:bookmark];
+            if (item == [bookmark parent]) {
+                if (index > bookmarkIndex)
+                    index--;
+                if (index == bookmarkIndex)
+                    continue;
+            }
             [self removeChildBookmark:bookmark];
             [self bookmark:item insertChildBookmark:bookmark atIndex:index++];
 		}
