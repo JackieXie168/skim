@@ -1,8 +1,8 @@
 //
-//  NSImage_SKExtensions.h
+//  SKBookmark.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/27/07.
+//  Created by Christiaan Hofman on 9/15/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -38,9 +38,53 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKBookmarkChangedNotification;
+extern NSString *SKBookmarkWillBeRemovedNotification;
 
-@interface NSImage (SKExtensions)
-+ (void)makeAdornImages;
-+ (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
-+ (NSImage *)imageWithIconForToolboxCode:(OSType)code;
+enum {
+    SKBookmarkTypeBookmark,
+    SKBookmarkTypeFolder,
+    SKBookmarkTypeSeparator
+};
+
+@interface SKBookmark : NSObject <NSCopying> {
+    NSString *path;
+    NSData *aliasData;
+    NSString *label;
+    unsigned int pageIndex;
+    NSMutableArray *children;
+    SKBookmark *parent;
+    int bookmarkType;
+}
+
+- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
+- (id)initFolderWithLabel:(NSString *)aLabel;
+- (id)initSeparator;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
+- (NSDictionary *)dictionaryValue;
+
+- (int)bookmarkType;
+
+- (NSString *)path;
+- (NSData *)aliasData;
+- (NSString *)resolvedPath;
+- (NSImage *)icon;
+- (unsigned int)pageIndex;
+- (NSNumber *)pageNumber;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
+
+- (SKBookmark *)parent;
+- (void)setParent:(SKBookmark *)newParent;
+- (NSArray *)children;
+- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index;
+- (void)addChild:(SKBookmark *)child;
+- (void)removeChild:(SKBookmark *)child;
+
+- (BOOL)isDescendantOf:(SKBookmark *)bookmark;
+- (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
+
 @end

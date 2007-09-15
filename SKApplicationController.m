@@ -43,6 +43,7 @@
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
 #import "SKBookmarkController.h"
+#import "SKBookmark.h"
 #import "BDAlias.h"
 #import "SKVersionNumber.h"
 #import "NSUserDefaultsController_SKExtensions.h"

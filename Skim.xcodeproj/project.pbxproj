@@ -172,6 +172,10 @@
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
+		CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */; };
+		CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */; };
+		CEBD52EC0C9C0AE500FBF6A4 /* SKBookmark.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */; };
+		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
@@ -269,6 +273,7 @@
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 				CEA1D6E90C9984400061A6D4 /* SKTextWithIconCell.h in CopyFiles */,
+				CEBD52EC0C9C0AE500FBF6A4 /* SKBookmark.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,6 +576,10 @@
 		CEB72B890C4A189D000350F9 /* SKTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionController.h; sourceTree = "<group>"; };
 		CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
 		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
+		CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNewFolder.tiff; path = Images/ToolbarNewFolder.tiff; sourceTree = "<group>"; };
+		CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNewSeparator.tiff; path = Images/ToolbarNewSeparator.tiff; sourceTree = "<group>"; };
+		CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmark.h; sourceTree = "<group>"; };
+		CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmark.m; sourceTree = "<group>"; };
 		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1000,6 +1009,8 @@
 			children = (
 				CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
+				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
+				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
 				CEAF2E570C45414100C3ECBB /* SKLine.h */,
 				CEAF2E580C45414100C3ECBB /* SKLine.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
@@ -1086,6 +1097,8 @@
 				CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */,
 				CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
+				CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */,
+				CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */,
 				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
 				CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */,
 				CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */,
@@ -1311,6 +1324,8 @@
 				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 				CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */,
+				CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */,
+				CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1528,6 +1543,7 @@
 				CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */,
 				CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */,
 				CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */,
+				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

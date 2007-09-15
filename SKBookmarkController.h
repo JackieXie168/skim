@@ -41,12 +41,6 @@
 
 @class SKBookmarkOutlineView, SKStatusBar;
 
-enum {
-    SKBookmarkTypeBookmark,
-    SKBookmarkTypeFolder,
-    SKBookmarkTypeSeparator
-};
-
 @interface SKBookmarkController : NSWindowController {
     IBOutlet SKBookmarkOutlineView *outlineView;
     IBOutlet SKStatusBar *statusBar;
@@ -54,6 +48,7 @@ enum {
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
     NSArray *draggedBookmarks;
+    NSMutableDictionary *toolbarItems;
 }
 
 + (id)sharedBookmarkController;
@@ -75,6 +70,8 @@ enum {
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;
 - (IBAction)insertBookmarkSeparator:(id)sender;
+- (IBAction)deleteBookmark:(id)sender;
+- (IBAction)toggleStatusBar:(id)sender;
 
 - (NSArray *)recentDocuments;
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
@@ -83,48 +80,7 @@ enum {
 
 - (NSUndoManager *)undoManager;
 
-@end
-
-
-@interface SKBookmark : NSObject <NSCopying> {
-    NSString *path;
-    NSData *aliasData;
-    NSString *label;
-    unsigned int pageIndex;
-    NSMutableArray *children;
-    SKBookmark *parent;
-    int bookmarkType;
-}
-
-- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
-- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
-- (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
-- (id)initFolderWithLabel:(NSString *)aLabel;
-- (id)initSeparator;
-- (id)initWithDictionary:(NSDictionary *)dictionary;
-
-- (NSDictionary *)dictionaryValue;
-
-- (int)bookmarkType;
-
-- (NSString *)path;
-- (NSData *)aliasData;
-- (NSString *)resolvedPath;
-- (NSImage *)icon;
-- (unsigned int)pageIndex;
-- (NSNumber *)pageNumber;
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
-
-- (SKBookmark *)parent;
-- (void)setParent:(SKBookmark *)newParent;
-- (NSArray *)children;
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index;
-- (void)addChild:(SKBookmark *)child;
-- (void)removeChild:(SKBookmark *)child;
-
-- (BOOL)isDescendantOf:(SKBookmark *)bookmark;
-- (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
+- (void)setupToolbar;
 
 @end
 
