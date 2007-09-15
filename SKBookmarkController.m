@@ -376,6 +376,28 @@ static unsigned int maxRecentDocumentsCount = 0;
     [outlineView editColumn:0 row:row withEvent:nil select:YES];
 }
 
+- (IBAction)insertBookmarkSeparator:(id)sender {
+    SKBookmark *separator = [[[SKBookmark alloc] initSeparator] autorelease];
+    int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
+    SKBookmark *item = nil;
+    unsigned int index = [bookmarks count];
+    
+    if (rowIndex != NSNotFound) {
+        SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
+        if ([outlineView isItemExpanded:selectedItem]) {
+            item = selectedItem;
+            index = [[item children] count];
+        } else {
+            item = [selectedItem parent];
+            index = [self indexOfChildBookmark:selectedItem] + 1;
+        }
+    }
+    [self bookmark:item insertChildBookmark:separator atIndex:index];
+    
+    int row = [outlineView rowForItem:separator];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+}
+
 #pragma mark Undo support
 
 - (NSUndoManager *)undoManager {
@@ -417,6 +439,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:@"label"]) {
+        if (object == nil)
+            object = @"";
         if ([object isEqualToString:[item label]] == NO)
             [item setLabel:object];
     }
@@ -475,6 +499,10 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 #pragma mark NSOutlineView delegate methods
 
+- (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    return [[tableColumn identifier] isEqualToString:@"label"] && [item bookmarkType] != SKBookmarkTypeSeparator;
+}
+
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation {
     NSString *tcID = [tc identifier];
     
@@ -497,6 +525,10 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items {
     return [items count] > 0;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov drawSeparatorRowForItem:(id)item {
+    return [item bookmarkType] == SKBookmarkTypeSeparator;
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol
@@ -593,6 +625,18 @@ static unsigned int maxRecentDocumentsCount = 0;
     return [self initFolderWithChildren:[NSArray array] label:aLabel];
 }
 
+- (id)initSeparator {
+    if (self = [super init]) {
+        bookmarkType = SKBookmarkTypeSeparator;
+        path = nil;
+        aliasData = nil;
+        pageIndex = NSNotFound;
+        label = nil;
+        children = nil;
+    }
+    return self;
+}
+
 - (id)initWithDictionary:(NSDictionary *)dictionary {
     if ([[dictionary objectForKey:@"type"] isEqualToString:@"folder"]) {
         NSEnumerator *dictEnum = [[dictionary objectForKey:@"children"] objectEnumerator];
@@ -601,6 +645,8 @@ static unsigned int maxRecentDocumentsCount = 0;
         while (dict = [dictEnum nextObject])
             [newChildren addObject:[[[[self class] alloc] initWithDictionary:dict] autorelease]];
         return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:@"label"]];
+    } else if ([[dictionary objectForKey:@"type"] isEqualToString:@"separator"]) {
+        return [self initSeparator];
     } else {
         return [self initWithPath:[dictionary objectForKey:@"path"] aliasData:[dictionary objectForKey:@"_BDAlias"] pageIndex:[[dictionary objectForKey:@"pageIndex"] unsignedIntValue] label:[dictionary objectForKey:@"label"]];
     }
@@ -609,6 +655,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (id)copyWithZone:(NSZone *)aZone {
     if (bookmarkType == SKBookmarkTypeFolder)
         return [[[self class] allocWithZone:aZone] initFolderWithChildren:[[[NSArray alloc] initWithArray:children copyItems:YES] autorelease] label:label];
+    else if (bookmarkType == SKBookmarkTypeSeparator)
+        return [[[self class] allocWithZone:aZone] initSeparator];
     else
         return [[[self class] allocWithZone:aZone] initWithPath:path aliasData:aliasData pageIndex:pageIndex label:label];
 }
@@ -625,6 +673,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (NSString *)description {
     if (bookmarkType == SKBookmarkTypeFolder)
         return [NSString stringWithFormat:@"<%@: label=%@, children=%@>", [self class], label, children];
+    else if (bookmarkType == SKBookmarkTypeSeparator)
+        return [NSString stringWithFormat:@"<%@: separator>", [self class]];
     else
         return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, path, pageIndex];
 }
@@ -632,6 +682,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (NSDictionary *)dictionaryValue {
     if (bookmarkType == SKBookmarkTypeFolder)
         return [NSDictionary dictionaryWithObjectsAndKeys:@"folder", @"type", [children valueForKey:@"dictionaryValue"], @"children", label, @"label", nil];
+    else if (bookmarkType == SKBookmarkTypeSeparator)
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"separator", @"type", nil];
     else
         return [NSDictionary dictionaryWithObjectsAndKeys:@"bookmark", @"type", path, @"path", aliasData, @"_BDAlias", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", label, @"label", nil];
 }
@@ -658,6 +710,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (NSImage *)icon {
     if ([self bookmarkType] == SKBookmarkTypeFolder)
         return [NSImage imageNamed:@"SmallFolder"];
+    else if (bookmarkType == SKBookmarkTypeSeparator)
+        return nil;
     else
         return [[self class] smallImageForFile:[self resolvedPath]];
 }
@@ -736,6 +790,27 @@ static unsigned int maxRecentDocumentsCount = 0;
         if ([self isDescendantOf:bm]) return YES;
     }
     return NO;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKBookmarkOutlineView
+
+#define SEPARATOR_LEFT_INDENT 8.0
+#define SEPARATOR_RIGHT_INDENT 2.0
+
+- (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:drawSeparatorRowForItem:)] &&
+        [[self delegate] outlineView:self drawSeparatorRowForItem:[self itemAtRow:rowIndex]]) {
+        float indent = [self levelForItem:[self itemAtRow:rowIndex]] * [self indentationPerLevel];
+        NSRect rect = [self rectOfRow:rowIndex];
+        [[NSColor gridColor] setStroke];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, floorf(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, floorf(NSMidY(rect)) + 0.5)];
+    } else {
+        [super drawRow:rowIndex clipRect:clipRect];
+    }
 }
 
 @end

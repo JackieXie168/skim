@@ -249,6 +249,8 @@
             [item setImage:[bm icon]];
             [item setSubmenu:submenu];
             [self addMenuItemsForBookmarks:[bm children] toMenu:submenu];
+        } else if ([bm bookmarkType] == SKBookmarkTypeSeparator) {
+            [menu addItem:[NSMenuItem separatorItem]];
         } else {
             NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
             [item setTarget:self];
