@@ -798,7 +798,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 @implementation SKBookmarkOutlineView
 
-#define SEPARATOR_LEFT_INDENT 8.0
+#define SEPARATOR_LEFT_INDENT 20.0
 #define SEPARATOR_RIGHT_INDENT 2.0
 
 - (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect {
