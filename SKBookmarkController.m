@@ -162,7 +162,7 @@ static unsigned int maxRecentDocumentsCount = 0;
             message = [bookmark resolvedPath];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
             int count = [[bookmark children] count];
-            message = count == 1 ? NSLocalizedString(@"1 item", @"Status message") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Status message"), count];
+            message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         }
     }
     [statusBar setLeftStringValue:message];
@@ -475,7 +475,12 @@ static unsigned int maxRecentDocumentsCount = 0;
     if ([tcID isEqualToString:@"label"]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
     } else if ([tcID isEqualToString:@"file"]) {
-        return [item resolvedPath];
+        if ([item bookmarkType] == SKBookmarkTypeFolder) {
+            int count = [[item children] count];
+            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
+        } else {
+            return [item resolvedPath];
+        }
     } else if ([tcID isEqualToString:@"page"]) {
         return [[item pageNumber] stringValue];
     }
@@ -549,6 +554,15 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 #pragma mark NSOutlineView delegate methods
+
+- (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([[tableColumn identifier] isEqualToString:@"file"]) {
+        if ([item bookmarkType] == SKBookmarkTypeFolder)
+            [cell setTextColor:[NSColor disabledControlTextColor]];
+        else
+            [cell setTextColor:[NSColor controlTextColor]];
+    }
+}
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     return [[tableColumn identifier] isEqualToString:@"label"] && [item bookmarkType] != SKBookmarkTypeSeparator;
