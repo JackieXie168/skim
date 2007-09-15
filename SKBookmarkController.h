@@ -61,7 +61,7 @@
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
-- (void)saveBookmarks;
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleBookmarkChangedNotification:(NSNotification *)notification;
 - (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification;
 - (NSString *)bookmarksFilePath;

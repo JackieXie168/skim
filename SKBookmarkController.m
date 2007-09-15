@@ -48,6 +48,7 @@
 #import "SKTextWithIconCell.h"
 #import "SKToolbarItem.h"
 #import "NSImage_SKExtensions.h"
+#import "SKStringConstants.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 
@@ -55,6 +56,9 @@ static NSString *SKBookmarksToolbarIdentifier = @"SKBookmarksToolbarIdentifier";
 static NSString *SKBookmarksNewFolderToolbarItemIdentifier = @"SKBookmarksNewFolderToolbarItemIdentifier";
 static NSString *SKBookmarksNewSeparatorToolbarItemIdentifier = @"SKBookmarksNewSeparatorToolbarItemIdentifier";
 static NSString *SKBookmarksDeleteToolbarItemIdentifier = @"SKBookmarksDeleteToolbarItemIdentifier";
+
+#define BOOKMARKS_KEY           @"bookmarks"
+#define RECENT_DOCUMENTS_KEY    @"recentDocuments"
 
 @implementation SKBookmarkController
 
@@ -81,7 +85,7 @@ static unsigned int maxRecentDocumentsCount = 0;
         NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
         if (data) {
             NSString *error = nil;
-            NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
+            NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
             id plist = [NSPropertyListSerialization propertyListFromData:data
                                                         mutabilityOption:NSPropertyListImmutable
                                                                   format:&format 
@@ -91,8 +95,8 @@ static unsigned int maxRecentDocumentsCount = 0;
                 NSLog(@"Error deserializing: %@", error);
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                [recentDocuments addObjectsFromArray:[plist objectForKey:@"recentDocuments"]];
-                NSEnumerator *dictEnum = [[plist objectForKey:@"bookmarks"] objectEnumerator];
+                [recentDocuments addObjectsFromArray:[plist objectForKey:RECENT_DOCUMENTS_KEY]];
+                NSEnumerator *dictEnum = [[plist objectForKey:BOOKMARKS_KEY] objectEnumerator];
                 NSDictionary *dict;
                 
                 while (dict = [dictEnum nextObject]) {
@@ -103,6 +107,10 @@ static unsigned int maxRecentDocumentsCount = 0;
             }
         }
         
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleApplicationWillTerminateNotification:)
+                                                     name:NSApplicationWillTerminateNotification
+                                                   object:NSApp];
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleBookmarkChangedNotification:)
                                                      name:SKBookmarkChangedNotification
@@ -116,6 +124,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [bookmarks release];
     [recentDocuments release];
     [draggedBookmarks release];
@@ -132,7 +141,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     [self setWindowFrameAutosaveName:@"SKBookmarksWindow"];
     
     [statusBar retain];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKShowBookmarkStatusBar"] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowBookmarkStatusBarKey] == NO)
         [self toggleStatusBar:nil];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
@@ -282,8 +291,6 @@ static unsigned int maxRecentDocumentsCount = 0;
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
-    
-    [self saveBookmarks];
 }
 
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
@@ -299,30 +306,6 @@ static unsigned int maxRecentDocumentsCount = 0;
     unsigned int index = [self indexOfRecentDocumentAtPath:path];
     NSArray *setups = index == NSNotFound ? nil : [[recentDocuments objectAtIndex:index] objectForKey:@"snapshots"];
     return [setups count] ? setups : nil;
-}
-
-- (void)saveBookmarks {
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"dictionaryValue"], @"bookmarks", recentDocuments, @"recentDocuments", nil];
-    NSString *error = nil;
-    NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
-    
-	if (error) {
-		NSLog(@"Error deserializing: %@", error);
-        [error release];
-	} else {
-        [data writeToFile:[self bookmarksFilePath] atomically:YES];
-    }
-}
-
-- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification  {
-    if ([outlineView editedRow] && [[self window] makeFirstResponder:outlineView] == NO)
-        [[self window] endEditingFor:nil];
-}
-
-- (void)handleBookmarkChangedNotification:(NSNotification *)notification {
-    [self saveBookmarks];
-    [outlineView reloadData];
 }
 
 - (NSString *)bookmarksFilePath {
@@ -433,7 +416,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (IBAction)toggleStatusBar:(id)sender {
     [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:1.0];
-    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:@"SKShowBookmarkStatusBar"];
+    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowBookmarkStatusBarKey];
 }
 
 #pragma mark Undo support
@@ -446,6 +429,31 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)sender {
     return [self undoManager];
+}
+
+#pragma mark Notification handlers
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"dictionaryValue"], BOOKMARKS_KEY, recentDocuments, RECENT_DOCUMENTS_KEY, nil];
+    NSString *error = nil;
+    NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
+    
+	if (error) {
+		NSLog(@"Error deserializing: %@", error);
+        [error release];
+	} else {
+        [data writeToFile:[self bookmarksFilePath] atomically:YES];
+    }
+}
+
+- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification  {
+    if ([outlineView editedRow] && [[self window] makeFirstResponder:outlineView] == NO)
+        [[self window] endEditingFor:nil];
+}
+
+- (void)handleBookmarkChangedNotification:(NSNotification *)notification {
+    [outlineView reloadData];
 }
 
 #pragma mark NSOutlineView datasource methods

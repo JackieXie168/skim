@@ -98,6 +98,7 @@ NSString *SKSwatchColorsKey = @"SKSwatchColors";
 NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";
 NSString *SKDefaultFullScreenPDFDisplaySettingsKey = @"SKDefaultFullScreenPDFDisplaySettings";
 NSString *SKShowStatusBarKey = @"SKShowStatusBar";
+NSString *SKShowBookmarkStatusBarKey = @"SKShowBookmarkStatusBar";
 NSString *SKEnableAppleRemoteKey = @"SKEnableAppleRemote";
 NSString *SKAppleRemoteSwitchIndicationTimeoutKey = @"SKAppleRemoteSwitchIndicationTimeout";
 NSString *SKReadMissingNotesFromSkimFileOptionKey = @"SKReadMissingNotesFromSkimFileOption";
