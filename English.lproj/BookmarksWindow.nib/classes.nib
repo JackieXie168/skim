@@ -1,15 +1,25 @@
 {
     IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {insertBookmarkFolder = id; openBookmark = id; }; 
+            ACTIONS = {
+                doubleClickBookmark = id; 
+                insertBookmarkFolder = id; 
+                insertBookmarkSeparator = id; 
+            }; 
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {outlineView = SKOutlineView; statusBar = SKStatusBar; }; 
+            OUTLETS = {outlineView = SKBookmarkOutlineView; statusBar = SKStatusBar; }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = SKBookmarkOutlineView; LANGUAGE = ObjC; SUPERCLASS = SKOutlineView; }, 
         {
             ACTIONS = {
                 copy = id; 

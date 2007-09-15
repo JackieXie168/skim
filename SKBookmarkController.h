@@ -37,16 +37,18 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKOutlineView.h"
 
-@class SKOutlineView, SKStatusBar;
+@class SKBookmarkOutlineView, SKStatusBar;
 
 enum {
     SKBookmarkTypeBookmark,
-    SKBookmarkTypeFolder
+    SKBookmarkTypeFolder,
+    SKBookmarkTypeSeparator
 };
 
 @interface SKBookmarkController : NSWindowController {
-    IBOutlet SKOutlineView *outlineView;
+    IBOutlet SKBookmarkOutlineView *outlineView;
     IBOutlet SKStatusBar *statusBar;
     NSMutableArray *bookmarks;
     NSMutableArray *recentDocuments;
@@ -72,6 +74,7 @@ enum {
 
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;
+- (IBAction)insertBookmarkSeparator:(id)sender;
 
 - (NSArray *)recentDocuments;
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
@@ -97,6 +100,7 @@ enum {
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
+- (id)initSeparator;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSDictionary *)dictionaryValue;
@@ -122,4 +126,13 @@ enum {
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
 
+@end
+
+
+@interface SKBookmarkOutlineView : SKOutlineView
+@end
+
+
+@interface NSObject (SKBookmarkOutlineViewDelegate)
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView drawSeparatorRowForItem:(id)item;
 @end
