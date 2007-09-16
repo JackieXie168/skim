@@ -415,7 +415,13 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
+    [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+    [[self progressController] setIndeterminate:YES];
+    [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+    
+    BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
+    
+    if (success) {
         [[self mainWindowController] setPdfDocument:pdfDocument];
         [pdfDocument autorelease];
         pdfDocument = nil;
@@ -427,8 +433,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         // file watching could have been disabled if the file was deleted
         if (watchedFile == nil && fileUpdateTimer == nil)
             [self checkFileUpdatesIfNeeded];
-        return YES;
-    } else return NO;
+    }
+
+    [[self progressController] endSheet];
+    
+    return success;
 }
 
 - (NSDictionary *)fileAttributesToWriteToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation originalContentsURL:(NSURL *)absoluteOriginalContentsURL error:(NSError **)outError {
@@ -982,19 +991,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         autoUpdate = NO;
     } else {
         NSError *error = nil;
-        BOOL success;
         
         [[alert window] orderOut:nil];
         
-        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] setIndeterminate:YES];
-        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
-        
-        success = [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error];
-        
-        [[self progressController] endSheet];
-        
-        if (success == NO && error)
+        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] == NO && error)
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         
         if (returnCode == NSAlertAlternateReturn)
