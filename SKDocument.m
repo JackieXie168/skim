@@ -822,7 +822,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                 [progressBar setUsesThreadedAnimation:YES];
             } else {
                 NSLog(@"Failed to load ProgressSheet.nib");
-                return;
             }
         }
         
@@ -985,12 +984,32 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         autoUpdate = NO;
     } else {
         NSError *error = nil;
-        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
-            if (autoUpdate == NO) {
-                [[alert window] orderOut:nil];
-                [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+        BOOL success;
+        
+        [[alert window] orderOut:nil];
+        
+        if (progressSheet == nil) {
+            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+                [progressBar setUsesThreadedAnimation:YES];
+            } else {
+                NSLog(@"Failed to load ProgressSheet.nib");
             }
         }
+        
+        [progressField setStringValue:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [progressBar setIndeterminate:YES];
+        [progressBar startAnimation:self];
+        [NSApp beginSheet:progressSheet modalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        
+        success = [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error];
+        
+        [progressBar stopAnimation:self];
+        [NSApp endSheet:progressSheet];
+        [progressSheet orderOut:self];
+        
+        if (success == NO && error)
+            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+        
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
     }
