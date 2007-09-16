@@ -79,6 +79,7 @@
 #import "SKTransitionController.h"
 #import "SKTypeSelectHelper.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKProgressController.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -136,6 +137,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)setupToolbar;
 
 - (void)updatePageLabelsAndOutline;
+
+- (SKProgressController *)progressController;
 
 - (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
 - (void)showRightSideWindowOnScreen:(NSScreen *)screen;
@@ -237,7 +240,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [toolbarItems release];
     [pdfOutlineItems release];
     [savedNormalSetup release];
-    [progressSheet release];
+    [progressController release];
     [colorAccessoryView release];
     [super dealloc];
 }
@@ -784,6 +787,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self updateOutlineSelection];
     }
     [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
+}
+
+- (SKProgressController *)progressController {
+    if (progressController == nil)
+        progressController = [[SKProgressController alloc] init];
+    return progressController;
 }
 
 #pragma mark Accessors
@@ -1513,36 +1522,25 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     BOOL emptySelection = NSIsEmptyRect(rect[0]);
     
     if (emptySelection) {
-        if (progressSheet == nil) {
-            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-                [progressBar setUsesThreadedAnimation:YES];
-            } else {
-                NSLog(@"Failed to load ProgressSheet.nib");
-                return;
-            }
-        }
-        
         int i, j, count = [[pdfView document] pageCount];
         rect[0] = rect[1] = NSZeroRect;
         
-        [progressBar setMaxValue:(double)MIN(18, count)];
-        [progressBar setDoubleValue:0.0];
-        [progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] setMaxValue:(double)MIN(18, count)];
+        [[self progressController] setDoubleValue:0.0];
+        [[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] beginSheetModalForWindow:[self window]];
         
-        [NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
         if (count < 18) {
             for (i = 0; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
-                [progressBar incrementBy:1.0];
-                [progressBar displayIfNeeded];
+                [[self progressController] incrementBy:1.0];
             }
         } else {
             int start[3] = {0, count / 2 - 3, count - 6};
             for (j = 0; j < 3; j++) {
                 for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
-                    [progressBar setDoubleValue:(double)(3 * j + i)];
-                    [progressBar displayIfNeeded];
+                    [[self progressController] setDoubleValue:(double)(3 * j + i)];
                 }
             }
         }
@@ -1559,71 +1557,47 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView setCurrentSelectionRect:NSZeroRect];
 	
     if (emptySelection) {
-        [NSApp endSheet:progressSheet];
-        [progressSheet orderOut:self];
+        [[self progressController] endSheet];
     }
 }
 
 - (IBAction)autoCropAll:(id)sender {
-    if (progressSheet == nil) {
-        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-            [progressBar setUsesThreadedAnimation:YES];
-        } else {
-            NSLog(@"Failed to load ProgressSheet.nib");
-            return;
-        }
-    }
-    
     NSMutableArray *rectArray = [NSMutableArray array];
     PDFDocument *pdfDoc = [pdfView document];
     int i, iMax = [[pdfView document] pageCount];
     
-	[progressBar setMaxValue:(double)iMax];
-	[progressBar setDoubleValue:0.0];
-	[progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-    
-	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
+	[[self progressController] setMaxValue:(double)iMax];
+	[[self progressController] setDoubleValue:0.0];
+	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+	[[self progressController] beginSheetModalForWindow:[self window]];
     
     for (i = 0; i < iMax; i++) {
         [rectArray addObject:[NSValue valueWithRect:[[pdfDoc pageAtIndex:i] foregroundBox]]];
-        [progressBar incrementBy:1.0];
-        [progressBar displayIfNeeded];
+        [[self progressController] incrementBy:1.0];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     }
     [self cropPagesToRects:rectArray];
 	
-    [NSApp endSheet:progressSheet];
-    [progressSheet orderOut:self];
+    [[self progressController] endSheet];
 }
 
 - (IBAction)smartAutoCropAll:(id)sender {
-    if (progressSheet == nil) {
-        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-            [progressBar setUsesThreadedAnimation:YES];
-        } else {
-            NSLog(@"Failed to load ProgressSheet.nib");
-            return;
-        }
-    }
-    
     NSMutableArray *rectArray = [NSMutableArray array];
     PDFDocument *pdfDoc = [pdfView document];
     int i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
     
-	[progressBar setMaxValue:1.1 * iMax];
-	[progressBar setDoubleValue:0.0];
-	[progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
-    
-	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
+	[[self progressController] setMaxValue:1.1 * iMax];
+	[[self progressController] setDoubleValue:0.0];
+	[[self progressController] setMessage:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+	[[self progressController] beginSheetModalForWindow:[self window]];
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
         size.width = fmaxf(size.width, NSWidth(bbox));
         size.height = fmaxf(size.height, NSHeight(bbox));
-        [progressBar incrementBy:1.0];
-        [progressBar displayIfNeeded];
+        [[self progressController] incrementBy:1.0];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     }
@@ -1639,8 +1613,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         rect = SKConstrainRect(rect, bounds);
         [rectArray addObject:[NSValue valueWithRect:rect]];
         if (i && i % 10 == 0) {
-            [progressBar incrementBy:1.0];
-            [progressBar displayIfNeeded];
+            [[self progressController] incrementBy:1.0];
             if (i && i % 100 == 0)
                 [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
         }
@@ -1648,8 +1621,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [self cropPagesToRects:rectArray];
 	
-    [NSApp endSheet:progressSheet];
-    [progressSheet orderOut:self];
+    [[self progressController] endSheet];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
@@ -2944,32 +2916,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
-    if (progressSheet == nil) {
-        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-            [progressBar setUsesThreadedAnimation:YES];
-        } else {
-            NSLog(@"Failed to load ProgressSheet.nib");
-            return;
-        }
-    }
-    
 	// Establish maximum and current value for progress bar.
-	[progressBar setMaxValue:(double)[[pdfView document] pageCount]];
-	[progressBar setDoubleValue:0.0];
-	[progressField setStringValue:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
+	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
+	[[self progressController] setDoubleValue:0.0];
+	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
 	
 	// Bring up the save panel as a sheet.
-	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+	[[self progressController] beginSheetModalForWindow:[self window]];
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {
-	[NSApp endSheet:progressSheet];
-	[progressSheet orderOut:self];
+	[[self progressController] endSheet];
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[progressBar setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
-	[progressBar displayIfNeeded];
+	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {

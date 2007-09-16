@@ -62,6 +62,7 @@
 		CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */; };
 		CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
+		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -383,6 +384,8 @@
 		CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeRightUpCursor.tiff; path = Images/ResizeRightUpCursor.tiff; sourceTree = "<group>"; };
 		CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKGradientView.h; sourceTree = "<group>"; };
 		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
+		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
+		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -916,6 +919,8 @@
 				CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
 				CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */,
+				CE209FA70C9D38C6007C72F9 /* SKProgressController.h */,
+				CE209FA80C9D38C6007C72F9 /* SKProgressController.m */,
 				F97751610B37461000DF673B /* SKPSProgressController.h */,
 				F97751620B37461000DF673B /* SKPSProgressController.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
@@ -1544,6 +1549,7 @@
 				CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */,
 				CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */,
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
+				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
