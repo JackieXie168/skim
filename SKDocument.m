@@ -63,6 +63,7 @@
 #import "NSTask_SKExtensions.h"
 #import "SKFDFParser.h"
 #import "NSData_SKExtensions.h"
+#import "SKProgressController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -91,6 +92,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
 
+- (SKProgressController *)progressController;
+
 @end
 
 #pragma mark -
@@ -107,7 +110,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [noteDicts release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
-    [progressSheet release];
+    [progressController release];
     [autoRotateButton release];
     [super dealloc];
 }
@@ -158,6 +161,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     if([event eventID] == kAEOpenDocuments && searchString != nil && [@"" isEqualToString:searchString] == NO){
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
+}
+
+- (SKProgressController *)progressController {
+    if (progressController == nil)
+        progressController = [[SKProgressController alloc] init];
+    return progressController;
 }
 
 #pragma mark Document read/write
@@ -477,8 +486,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [self setNoteDicts:nil];
     
     if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        SKPSProgressController *progressController = [[[SKPSProgressController alloc] init] autorelease];
-        data = [progressController PDFDataWithPostScriptData:data];
+        SKPSProgressController *psProgressController = [[[SKPSProgressController alloc] init] autorelease];
+        data = [psProgressController PDFDataWithPostScriptData:data];
     }
     
     if (data)
@@ -563,17 +572,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         }
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-            if (data = [[progressController PDFDataWithPostScriptData:data] retain])
+            SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
+            if (data = [[psProgressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
-            [progressController autorelease];
+            [psProgressController autorelease];
         }
     } else if ([docType isEqualToString:SKDVIDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            SKDVIProgressController *progressController = [[SKDVIProgressController alloc] init];
-            if (data = [[progressController PDFDataWithDVIFile:[absoluteURL path]] retain])
+            SKDVIProgressController *dviProgressController = [[SKDVIProgressController alloc] init];
+            if (data = [[dviProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
-            [progressController autorelease];
+            [dviProgressController autorelease];
         }
     }
     
@@ -807,8 +816,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, targetPath);
         }
         
-        [progressBar performSelectorOnMainThread:@selector(stopAnimation:) withObject:nil waitUntilDone:NO];
-        [progressSheet performSelectorOnMainThread:@selector(orderOut:) withObject:nil waitUntilDone:NO];
+        [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
         
         [pool release];
 }
@@ -817,21 +825,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     if (NSOKButton == returnCode && [self fileURL]) {
         
-        if (progressSheet == nil) {
-            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-                [progressBar setUsesThreadedAnimation:YES];
-            } else {
-                NSLog(@"Failed to load ProgressSheet.nib");
-            }
-        }
-        
-        [progressField setStringValue:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [progressSheet setTitle:NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet")];
-        [progressBar setIndeterminate:YES];
-        [progressBar startAnimation:self];
+        [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] setIndeterminate:YES];
         
         [sheet orderOut:self];
-        [progressSheet orderFront:self];
+        [[self progressController] show];
         
         NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], @"sourcePath", [sheet filename], @"targetPath", nil];
         [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
@@ -988,24 +986,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         [[alert window] orderOut:nil];
         
-        if (progressSheet == nil) {
-            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-                [progressBar setUsesThreadedAnimation:YES];
-            } else {
-                NSLog(@"Failed to load ProgressSheet.nib");
-            }
-        }
-        
-        [progressField setStringValue:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [progressBar setIndeterminate:YES];
-        [progressBar startAnimation:self];
-        [NSApp beginSheet:progressSheet modalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] setIndeterminate:YES];
+        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
         
         success = [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error];
         
-        [progressBar stopAnimation:self];
-        [NSApp endSheet:progressSheet];
-        [progressSheet orderOut:self];
+        [[self progressController] endSheet];
         
         if (success == NO && error)
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];

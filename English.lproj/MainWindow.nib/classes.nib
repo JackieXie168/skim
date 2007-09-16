@@ -148,9 +148,6 @@
                 passwordSheet = NSWindow; 
                 pdfContentBox = BDSKEdgeView; 
                 pdfView = SKPDFView; 
-                progressBar = NSProgressIndicator; 
-                progressField = NSTextField; 
-                progressSheet = NSWindow; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideCollapsibleView = BDSKCollapsibleView; 
                 rightSideContentBox = NSBox; 

@@ -55,16 +55,12 @@ enum {
 };
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController;
 
 @interface SKDocument : NSDocument
 {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;
-    
-    IBOutlet NSWindow           *progressSheet;
-    IBOutlet NSProgressIndicator *progressBar;
-    IBOutlet NSTextField        *progressField;
     
     IBOutlet NSButton *autoRotateButton;
     BOOL autoRotate;
@@ -75,7 +71,9 @@ enum {
     // temporary variables:
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
-        
+    
+    SKProgressController *progressController;
+    
     SKPDFSynchronizer *synchronizer;
     NSString *watchedFile;
     BOOL autoUpdate;

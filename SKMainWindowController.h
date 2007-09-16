@@ -65,7 +65,7 @@ typedef struct _SKPDFViewState {
 
 @class PDFOutline, SKThumbnail;
 @class SKPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
@@ -164,10 +164,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *bookmarkSheet;
     IBOutlet NSTextField        *bookmarkField;
     
-    IBOutlet NSWindow           *progressSheet;
-    IBOutlet NSProgressIndicator *progressBar;
-    IBOutlet NSTextField        *progressField;
-    
     IBOutlet NSWindow           *passwordSheet;
     IBOutlet NSTextField        *passwordField;
     
@@ -176,6 +172,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSTextField        *transitionDurationField;
     IBOutlet NSSlider           *transitionDurationSlider;
     IBOutlet NSMatrix           *transitionExtentMatrix;
+    
+    SKProgressController        *progressController;
     
     NSButton                    *colorAccessoryView;
     BOOL                        updatingColor;
