@@ -81,15 +81,6 @@
 
 #pragma mark -
 
-@interface NSView (SKScrollingExtensions)
-- (void)scrollLineUp;
-- (void)scrollLineDown;
-- (void)scrollLineRight;
-- (void)scrollLineLeft;
-@end
-
-#pragma mark -
-
 enum {
     SKSplashTypeResize,
     SKSplashTypeScroll

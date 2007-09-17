@@ -64,6 +64,7 @@
 #import "SKFDFParser.h"
 #import "NSData_SKExtensions.h"
 #import "SKProgressController.h"
+#import "NSView_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -1772,25 +1773,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
-}
-
-@end
-
-
-@implementation NSView (SKExtensions)
-
-- (id)subviewOfClass:(Class)aClass {
-	if ([self isKindOfClass:aClass])
-		return self;
-	
-	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-	NSView *view, *subview;
-	
-	while (subview = [viewEnum nextObject]) {
-		if (view = [subview subviewOfClass:aClass])
-			return view;
-	}
-	return nil;
 }
 
 @end

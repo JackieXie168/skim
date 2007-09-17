@@ -59,6 +59,7 @@
 #import "Files_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
@@ -558,44 +559,6 @@
 
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index {
     return [[[SKLine alloc] initWithLine:index] autorelease];
-}
-
-@end
-
-#pragma mark -
-
-@implementation NSView (SKScrollingExtensions)
-
-- (void)scrollLineUp {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.y -= [scrollView verticalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineDown {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.y += [scrollView verticalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineRight {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.x -= [scrollView horizontalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineLeft {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.x += [scrollView horizontalLineScroll];
-    [documentView scrollPoint:point];
 }
 
 @end

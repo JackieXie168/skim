@@ -1,8 +1,8 @@
 //
-//  NSValue_SKExtensions.m
+//  NSView_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 5/26/07.
+//  Created by Christiaan Hofman on 9/17/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,76 +36,18 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSValue_SKExtensions.h"
+#import <Cocoa/Cocoa.h>
 
 
-@implementation NSValue (SKExtensions)
+@interface NSView (SKExtensions)
 
-- (NSComparisonResult)boundsCompare:(NSValue *)aValue {
-    NSRect rect1 = [self rectValue];
-    NSRect rect2 = [aValue rectValue];
-    float y1 = NSMaxY(rect1);
-    float y2 = NSMaxY(rect2);
-    
-    if (y1 > y2)
-        return NSOrderedAscending;
-    else if (y1 < y2)
-        return NSOrderedDescending;
-    
-    float x1 = NSMinX(rect1);
-    float x2 = NSMinX(rect2);
-    
-    if (x1 < x2)
-        return NSOrderedAscending;
-    else if (x1 > x2)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
-}
+- (id)subviewOfClass:(Class)aClass;
 
-- (NSString *)rectString {
-    return NSStringFromRect([self rectValue]);
-}
+- (void)scrollLineUp;
+- (void)scrollLineDown;
+- (void)scrollLineRight;
+- (void)scrollLineLeft;
 
-- (NSString *)pointString {
-    return NSStringFromPoint([self pointValue]);
-}
-
-- (NSString *)originString {
-    return NSStringFromPoint([self rectValue].origin);
-}
-
-- (NSString *)sizeString {
-    return NSStringFromSize([self rectValue].size);
-}
-
-- (NSString *)midPointString {
-    NSRect rect = [self rectValue];
-    return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
-}
-
-- (float)rectX {
-    return [self rectValue].origin.x;
-}
-
-- (float)rectY {
-    return [self rectValue].origin.y;
-}
-
-- (float)rectWidth {
-    return [self rectValue].size.width;
-}
-
-- (float)rectHeight {
-    return [self rectValue].size.height;
-}
-
-- (float)pointX {
-    return [self pointValue].x;
-}
-
-- (float)pointY {
-    return [self pointValue].y;
-}
+- (void)deactivateColorAndLineWells;
 
 @end
