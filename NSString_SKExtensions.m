@@ -39,6 +39,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
+#import "NSURL_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
 
@@ -380,6 +381,23 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 - (NSString *)parenthesizedStringIfNotEmpty {
     return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@"(%@)", self];
+}
+
+- (NSURL *)url {
+    NSURL *url = nil;
+    if ([self rangeOfString:@"://"].location != NSNotFound)
+        url = [NSURL URLWithString:self];
+    else
+        url = [NSURL fileURLWithPath:[self stringByExpandingTildeInPath]];
+    return url;
+}
+
+- (NSAttributedString *)icon {
+    return [[self url] icon];
+}
+
+- (NSAttributedString *)smallIcon {
+    return [[self url] smallIcon];
 }
 
 @end

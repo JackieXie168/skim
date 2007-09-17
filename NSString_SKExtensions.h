@@ -86,4 +86,8 @@
 - (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty;
 - (NSString *)parenthesizedStringIfNotEmpty;
 
+- (NSURL *)url;
+- (NSAttributedString *)icon;
+- (NSAttributedString *)smallIcon;
+
 @end
