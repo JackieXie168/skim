@@ -74,6 +74,14 @@
 - (NSImage *)thumbnailWithSize:(float)size;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
+- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size;
+- (NSAttributedString *)thumbnailAttachment;
+- (NSAttributedString *)thumbnail512Attachment;
+- (NSAttributedString *)thumbnail256Attachment;
+- (NSAttributedString *)thumbnail128Attachment;
+- (NSAttributedString *)thumbnail64Attachment;
+- (NSAttributedString *)thumbnail32Attachment;
+
 - (void)miniaturize;
 - (void)deminiaturize;
 

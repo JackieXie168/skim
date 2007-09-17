@@ -53,6 +53,14 @@ extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect;
 
+- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size;
+- (NSAttributedString *)thumbnailAttachment;
+- (NSAttributedString *)thumbnail512Attachment;
+- (NSAttributedString *)thumbnail256Attachment;
+- (NSAttributedString *)thumbnail128Attachment;
+- (NSAttributedString *)thumbnail64Attachment;
+- (NSAttributedString *)thumbnail32Attachment;
+
 - (NSArray *)lineBounds;
 
 - (unsigned int)pageIndex;

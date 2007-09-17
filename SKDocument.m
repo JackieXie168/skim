@@ -388,6 +388,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    } else if ([typeName isEqualToString:SKNotesRTFDDocumentType]) {
+        NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
+        if (fileWrapper)
+            didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+        else if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
         NSString *string = [self notesString];
         if (string)
@@ -1297,6 +1303,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return data;
 }
 
+- (NSFileWrapper *)notesRTFDFileWrapper {
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtfd"];
+    NSDictionary *docAttributes = nil;
+    NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
+    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+    NSFileWrapper *fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
+    [templateAttrString release];
+    return fileWrapper;
+}
+
 - (NSArray *)fileIDStrings {
     if (pdfData == nil)
         return nil;
@@ -1416,7 +1432,20 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return YES;
 }
 
+- (NSArray *)snapshots {
+    return [[self mainWindowController] snapshots];
+}
+
 #pragma mark Scripting support
+
+- (NSArray *)pages {
+    NSMutableArray *pages = [NSMutableArray array];
+    PDFDocument *pdfDoc = [self pdfDocument];
+    int i, count = [pdfDoc pageCount];
+    for (i = 0; i < count; i++)
+        [pages addObject:[pdfDoc pageAtIndex:i]];
+    return pages;
+}
 
 - (unsigned int)countOfPages {
     return [[self pdfDocument] pageCount];

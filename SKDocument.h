@@ -100,6 +100,7 @@ enum {
 
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
+- (NSFileWrapper *)notesRTFDFileWrapper;
 - (NSString *)notesFDFString;
 - (NSString *)notesFDFStringForFile:(NSString *)filename;
 
@@ -108,6 +109,9 @@ enum {
 - (NSDictionary *)currentDocumentSetup;
 
 - (SKPDFSynchronizer *)synchronizer;
+
+- (NSArray *)snapshots;
+- (NSArray *)pages;
 
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
