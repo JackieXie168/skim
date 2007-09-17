@@ -41,6 +41,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "SKLineWell.h"
+#import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
@@ -48,35 +49,6 @@ static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Em
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
 
-
-@interface NSView (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells;
-@end
-
-@implementation NSView (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells {
-    [[self subviews] makeObjectsPerformSelector:_cmd];
-}
-@end
-
-@interface NSColorWell (SKPreferenceControllerExtensions)
-@end
-
-@implementation NSColorWell (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells {
-    [self deactivate];
-    [super deactivateColorAndLineWells];
-}
-@end
-
-@implementation SKLineWell (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells {
-    [self deactivate];
-    [super deactivateColorAndLineWells];
-}
-@end
-
-#pragma mark -
 
 @implementation SKPreferenceController
 

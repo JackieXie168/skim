@@ -145,8 +145,3 @@ enum {
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
 - (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
 @end
-
-
-@interface NSView (SKExtensions)
-- (id)subviewOfClass:(Class)aClass;
-@end
