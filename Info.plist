@@ -41,8 +41,9 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
 				<string>Notes as FDF</string>
 			</array>
 		</dict>
@@ -78,8 +79,9 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
 				<string>Notes as FDF</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
@@ -300,6 +302,26 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>txt</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/plain</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Notes as Text</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>rtf</string>
 			</array>
 			<key>CFBundleTypeMIMETypes</key>
@@ -324,14 +346,18 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>txt</string>
+				<string>rtfd</string>
 			</array>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>text/plain</string>
+				<string>text/rtfd</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Notes as Text</string>
+			<string>Notes as RTFD</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>RTFD</string>
+			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
 			<key>LSTypeIsPackage</key>

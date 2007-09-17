@@ -63,6 +63,7 @@
 		CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
+		CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -386,6 +387,7 @@
 		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
+		CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = notesTemplate.rtfd; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -1119,8 +1121,9 @@
 			isa = PBXGroup;
 			children = (
 				CE1E2F120BDB86A10011D9DD /* displayline */,
-				CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */,
 				CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */,
+				CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */,
+				CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */,
 			);
 			name = "Shared Support";
 			sourceTree = "<group>";
@@ -1331,6 +1334,7 @@
 				CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */,
 				CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */,
 				CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */,
+				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

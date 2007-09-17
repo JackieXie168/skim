@@ -211,6 +211,45 @@ static IMP originalDealloc = NULL;
     return [image autorelease];
 }
 
+- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size {
+    NSImage *image = [self thumbnailWithSize:size forBox:kPDFDisplayBoxCropBox];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:@"page.tiff"];
+    [wrapper setPreferredFilename:@"page.tiff"];
+
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
+    return attrString;
+}
+
+- (NSAttributedString *)thumbnailAttachment {
+    return [self thumbnailAttachmentWithSize:0.0];
+}
+
+- (NSAttributedString *)thumbnail512Attachment {
+    return [self thumbnailAttachmentWithSize:512.0];
+}
+
+- (NSAttributedString *)thumbnail256Attachment {
+    return [self thumbnailAttachmentWithSize:256.0];
+}
+
+- (NSAttributedString *)thumbnail128Attachment {
+    return [self thumbnailAttachmentWithSize:128.0];
+}
+
+- (NSAttributedString *)thumbnail64Attachment {
+    return [self thumbnailAttachmentWithSize:64.0];
+}
+
+- (NSAttributedString *)thumbnail32Attachment {
+    return [self thumbnailAttachmentWithSize:32.0];
+}
+
 - (NSArray *)lineBounds {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];

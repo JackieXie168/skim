@@ -354,6 +354,45 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     return [image autorelease];
 }
 
+- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size {
+    NSImage *image = [self thumbnailWithSize:size];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:@"page.tiff"];
+    [wrapper setPreferredFilename:@"page.tiff"];
+
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
+    return attrString;
+}
+
+- (NSAttributedString *)thumbnailAttachment {
+    return [self thumbnailAttachmentWithSize:0.0];
+}
+
+- (NSAttributedString *)thumbnail512Attachment {
+    return [self thumbnailAttachmentWithSize:512.0];
+}
+
+- (NSAttributedString *)thumbnail256Attachment {
+    return [self thumbnailAttachmentWithSize:256.0];
+}
+
+- (NSAttributedString *)thumbnail128Attachment {
+    return [self thumbnailAttachmentWithSize:128.0];
+}
+
+- (NSAttributedString *)thumbnail64Attachment {
+    return [self thumbnailAttachmentWithSize:64.0];
+}
+
+- (NSAttributedString *)thumbnail32Attachment {
+    return [self thumbnailAttachmentWithSize:32.0];
+}
+
 #pragma mark Miniaturize / Deminiaturize
 
 - (void)getMiniRect:(NSRect *)miniRect maxiRect:(NSRect *)maxiRect forDockingRect:(NSRect)dockRect {
