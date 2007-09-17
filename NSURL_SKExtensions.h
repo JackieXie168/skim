@@ -41,5 +41,10 @@
 extern NSString *SKWeblocFilePboardType;
 
 @interface NSURL (SKExtensions)
+
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard;
+
+- (NSAttributedString *)icon;
+- (NSAttributedString *)smallIcon;
+
 @end

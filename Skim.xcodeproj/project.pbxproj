@@ -64,6 +64,7 @@
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
+		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -153,7 +154,6 @@
 		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
 		CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA1CCE60C9864470061A6D4 /* Security.framework */; };
-		CEA1D6E90C9984400061A6D4 /* SKTextWithIconCell.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEA1D6E70C9984400061A6D4 /* SKTextWithIconCell.h */; };
 		CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */; };
 		CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
@@ -176,7 +176,6 @@
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
 		CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */; };
 		CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */; };
-		CEBD52EC0C9C0AE500FBF6A4 /* SKBookmark.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
@@ -274,8 +273,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CEA1D6E90C9984400061A6D4 /* SKTextWithIconCell.h in CopyFiles */,
-				CEBD52EC0C9C0AE500FBF6A4 /* SKBookmark.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,8 +284,9 @@
 			files = (
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
-				CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */,
 				CE48BC330C08B58700A166C6 /* notesTemplate.txt in CopyFiles */,
+				CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */,
+				CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

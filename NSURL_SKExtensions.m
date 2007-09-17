@@ -66,4 +66,45 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     return theURL;
 }
 
+- (NSAttributedString *)icon {
+    NSAttributedString *attrString = nil;
+    
+    NSString *name = [self isFileURL] ? [self path] : [self relativeString];
+    if (name) {
+        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
+        name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+        
+        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+        [wrapper setFilename:name];
+        [wrapper setPreferredFilename:name];
+
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+        [wrapper release];
+        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+        [attachment release];
+    }
+    return attrString;
+}
+
+- (NSAttributedString *)smallIcon {
+    NSAttributedString *attrString = nil;
+    
+    NSString *name = [self isFileURL] ? [self path] : [self relativeString];
+    if (name) {
+        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
+        [image setSize:NSMakeSize(16, 16)];
+        name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+        
+        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+        [wrapper setFilename:name];
+        [wrapper setPreferredFilename:name];
+
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+        [wrapper release];
+        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+        [attachment release];
+    }
+    return attrString;
+}
+
 @end
