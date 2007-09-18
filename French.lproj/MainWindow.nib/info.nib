@@ -11,11 +11,11 @@
 		<key>224</key>
 		<string>690 581 220 442 0 0 1600 1178 </string>
 		<key>256</key>
-		<string>690 581 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>314</key>
-		<string>690 581 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>502</key>
-		<string>690 581 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>511</key>
 		<string>690 581 220 442 0 0 1600 1178 </string>
 		<key>687</key>
@@ -28,6 +28,12 @@
 	<key>IBLockedObjects</key>
 	<array>
 		<integer>208</integer>
+	</array>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>314</integer>
+		<integer>502</integer>
+		<integer>256</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
