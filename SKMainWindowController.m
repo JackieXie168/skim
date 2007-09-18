@@ -734,7 +734,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)updatePageLabelsAndOutline {
     PDFDocument *pdfDoc = [pdfView document];
-    NSTableColumn *tableColumn = [[thumbnailTableView tableColumns] objectAtIndex:1];
+    NSTableColumn *tableColumn = [thumbnailTableView tableColumnWithIdentifier:@"page"];
     id cell = [tableColumn dataCell];
     float labelWidth = 0.0;
     int i, count = [pdfDoc pageCount];
@@ -757,11 +757,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [thumbnailTableView sizeToFit];
-    tableColumn = [[outlineView tableColumns] objectAtIndex:1];
+    tableColumn = [outlineView tableColumnWithIdentifier:@"page"];
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [outlineView sizeToFit];
-    tableColumn = [[snapshotTableView tableColumns] objectAtIndex:1];
+    tableColumn = [snapshotTableView tableColumnWithIdentifier:@"page"];
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [snapshotTableView sizeToFit];
@@ -2346,7 +2346,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
         [findArrayController removeObjects:searchResults];
-        [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
+        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
         [[findTableView headerView] setNeedsDisplay:YES];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
@@ -2359,7 +2359,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (findPanelFind == NO) {
         [self willChangeValueForKey:@"searchResults"];
         [self didChangeValueForKey:@"searchResults"];
-        [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]]];
+        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]]];
         [[findTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
@@ -3114,7 +3114,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *tcID = [tableColumn identifier];
         if([tcID isEqualToString:@"label"]){
             return [(PDFOutline *)item label];
-        }else if([tcID isEqualToString:@"icon"]){
+        }else if([tcID isEqualToString:@"page"]){
             return [[[(PDFOutline *)item destination] page] label];
         }else{
             [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
@@ -3507,7 +3507,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
-        NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:@"image"] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
@@ -3517,7 +3517,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             return fmaxf(1.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:@"image"] width], 
                                      fminf(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
