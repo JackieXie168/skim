@@ -55,7 +55,7 @@
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)reloadPagePopUpButton;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleDocumentDidUnlock:(NSNotification *)notification;
+- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 
 @end
