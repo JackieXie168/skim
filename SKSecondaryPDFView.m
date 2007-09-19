@@ -481,7 +481,7 @@ static float SKPopUpMenuFontSize = 11.0;
     [pagePopUpButton selectItemAtIndex:[[self document] indexForPage:[self currentPage]]];
 }
 
-- (void)handleDocumentDidUnlock:(NSNotification *)notification {
+- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [self reloadPagePopUpButton];
     [self layoutScrollView];
 }
