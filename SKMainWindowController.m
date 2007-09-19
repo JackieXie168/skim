@@ -80,6 +80,7 @@
 #import "SKTypeSelectHelper.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKProgressController.h"
+#import "SKSecondaryPDFView.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -1885,6 +1886,59 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (IBAction)toggleSplitPDF:(id)sender {
+    if (pdfSplitView) {
+        
+        [pdfContentBox setFrame:[pdfSplitView frame]];
+        [splitView replaceSubview:pdfSplitView with:pdfContentBox];
+        pdfSplitView = nil;
+        secondaryPdfContentBox = nil;
+        secondaryPdfView = nil;
+        
+    } else {
+        
+        NSPoint point = [pdfView convertPoint:[pdfView bounds].origin toPage:[pdfView currentPage]];
+        NSRect ignored, frame1, frame2;
+        
+        pdfSplitView = [[SKSplitView alloc] initWithFrame:[pdfContentBox bounds]];
+        [pdfSplitView setBlendEnds:YES];
+        [pdfContentBox retain];
+        [splitView replaceSubview:pdfContentBox with:pdfSplitView];
+        [pdfSplitView release];
+        
+        frame1 = [pdfSplitView bounds];
+        NSDivideRect(frame1, &frame1, &frame2, roundf(0.7 * NSHeight(frame1)), NSMaxYEdge);
+        NSDivideRect(frame2, &ignored, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
+        
+        [pdfContentBox setFrame:frame1];
+        [pdfSplitView addSubview:pdfContentBox];
+        [pdfContentBox release];
+        
+        secondaryPdfContentBox = [[BDSKEdgeView alloc] initWithFrame:frame1];
+        [secondaryPdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask | BDSKMaxYEdgeMask];
+        [secondaryPdfContentBox setFrame:frame2];
+        [pdfSplitView addSubview:secondaryPdfContentBox];
+        [secondaryPdfContentBox release];
+        
+        secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[[secondaryPdfContentBox contentView] bounds]];
+        [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [secondaryPdfContentBox addSubview:secondaryPdfView];
+        [secondaryPdfView release];
+        
+        [pdfSplitView setDelegate:self];
+        [pdfSplitView adjustSubviews];
+        
+        [secondaryPdfView setDocument:[pdfView document]];
+        [secondaryPdfView setAutoScales:YES];
+        [secondaryPdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+        [secondaryPdfView setDisplaysPageBreaks:NO];
+        [secondaryPdfView setDisplayBox:kPDFDisplayBoxCropBox];
+        [secondaryPdfView goToPage:[pdfView currentPage]];
+        point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:point fromPage:[secondaryPdfView currentPage]] toView:[secondaryPdfView documentView]];
+        [[secondaryPdfView documentView] scrollPoint:point];
+    }
+}
+
 - (IBAction)toggleFullScreen:(id)sender {
     if ([self isFullScreen])
         [self exitFullScreen:sender];
@@ -2780,6 +2834,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
+        [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:page];
     }
     [noteOutlineView reloadData];
 }
@@ -2812,6 +2867,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
+        [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:page];
     }
     [noteOutlineView reloadData];
 }
@@ -2831,6 +2887,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([wc isPageVisible:oldPage] || [wc isPageVisible:newPage])
                 [self snapshotNeedsUpdate:wc];
         }
+        [secondaryPdfView setNeedsDisplay:YES];
     }
     
     [noteArrayController rearrangeObjects];
@@ -2864,6 +2921,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([wc isPageVisible:[annotation page]])
                 [self snapshotNeedsUpdate:wc];
         }
+        
+        [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
         
         [noteArrayController rearrangeObjects];
         [noteOutlineView reloadData];
@@ -2913,6 +2972,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (displayChanged)
             [self allThumbnailsNeedUpdate];
     }
+    
+    [secondaryPdfView setNeedsDisplay:YES];
 }
 
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
@@ -4709,6 +4770,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
+    } else if (action == @selector(toggleSplitPDF:)) {
+        if (secondaryPdfView)
+            [menuItem setTitle:NSLocalizedString(@"Hide Split PDF", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Split PDF", @"Menu item title")];
+        return [self isPresentation] == NO && [self isFullScreen] == NO;
     } else if (action == @selector(toggleStatusBar:)) {
         if ([statusBar isVisible])
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
@@ -4754,46 +4821,95 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark SKSplitView delegate protocol
 
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
-    if (offset == 0)
-        [self toggleLeftSidePane:self];
-    else
-        [self toggleRightSidePane:self];
+    if ([sender isEqual:splitView]) {
+        if (offset == 0)
+            [self toggleLeftSidePane:self];
+        else
+            [self toggleRightSidePane:self];
+    } else if ([sender isEqual:pdfSplitView]) {
+        NSRect primaryFrame = [pdfContentBox frame];
+        NSRect secondaryFrame = [secondaryPdfContentBox frame];
+        
+        if (NSHeight(secondaryFrame) > 0.0) {
+            lastSecondaryPdfViewPaneHeight = NSHeight(secondaryFrame); // cache this
+            primaryFrame.size.height += lastLeftSidePaneWidth;
+            secondaryFrame.size.height = 0.0;
+        } else {
+            if(lastSecondaryPdfViewPaneHeight <= 0.0)
+                lastSecondaryPdfViewPaneHeight = 200.0; // a reasonable value to start
+            if (lastSecondaryPdfViewPaneHeight > 0.5 * NSHeight(primaryFrame))
+                lastSecondaryPdfViewPaneHeight = floorf(0.5 * NSHeight(primaryFrame));
+            primaryFrame.size.height -= lastSecondaryPdfViewPaneHeight;
+            secondaryFrame.size.height = lastSecondaryPdfViewPaneHeight;
+        }
+        primaryFrame.origin.y = NSMaxY(secondaryFrame) + [pdfSplitView dividerThickness];
+        [pdfContentBox setFrame:primaryFrame];
+        [secondaryPdfContentBox setFrame:secondaryFrame];
+        [pdfSplitView setNeedsDisplay:YES];
+        [pdfSplitView adjustSubviews];
+    }
 }
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
-    NSView *leftSideView = [[sender subviews] objectAtIndex:0];
-    NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
-    NSView *rightSideView = [[sender subviews] objectAtIndex:2];
-    NSRect leftSideFrame = [leftSideView frame];
-    NSRect mainFrame = [mainView frame];
-    NSRect rightSideFrame = [rightSideView frame];
-    
-    if (NSWidth(leftSideFrame) <= 1.0)
-        leftSideFrame.size.width = 0.0;
-    if (NSWidth(rightSideFrame) <= 1.0)
-        rightSideFrame.size.width = 0.0;
-    
-    mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
-    
-    if (NSWidth(mainFrame) < 0.0) {
-        float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftSideFrame) + NSWidth(rightSideFrame));
-        leftSideFrame.size.width = floorf(resizeFactor * NSWidth(leftSideFrame));
-        rightSideFrame.size.width = floorf(resizeFactor * NSWidth(rightSideFrame));
+    if ([sender isEqual:splitView]) {
+        NSView *leftSideView = [[sender subviews] objectAtIndex:0];
+        NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
+        NSView *rightSideView = [[sender subviews] objectAtIndex:2];
+        NSRect leftSideFrame = [leftSideView frame];
+        NSRect mainFrame = [mainView frame];
+        NSRect rightSideFrame = [rightSideView frame];
+        
+        if (NSWidth(leftSideFrame) <= 1.0)
+            leftSideFrame.size.width = 0.0;
+        if (NSWidth(rightSideFrame) <= 1.0)
+            rightSideFrame.size.width = 0.0;
+        
         mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+        
+        if (NSWidth(mainFrame) < 0.0) {
+            float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftSideFrame) + NSWidth(rightSideFrame));
+            leftSideFrame.size.width = floorf(resizeFactor * NSWidth(leftSideFrame));
+            rightSideFrame.size.width = floorf(resizeFactor * NSWidth(rightSideFrame));
+            mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+        }
+        mainFrame.origin.x = NSMaxX(leftSideFrame) + [sender dividerThickness];
+        rightSideFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
+        [leftSideView setFrame:leftSideFrame];
+        [rightSideView setFrame:rightSideFrame];
+        [mainView setFrame:mainFrame];
+        
+        [sender adjustSubviews];
+    } else if ([sender isEqual:pdfSplitView]) {
+        NSView *primaryView = [[sender subviews] objectAtIndex:0];
+        NSView *secondaryView = [[sender subviews] objectAtIndex:1];
+        NSRect primaryFrame = [primaryView frame];
+        NSRect secondaryFrame = [secondaryView frame];
+        
+        if (NSHeight(secondaryFrame) <= 1.0)
+            secondaryFrame.size.height = 0.0;
+        
+        primaryFrame.size.height = NSHeight([sender frame]) - NSHeight(secondaryFrame)  - [sender dividerThickness];
+        
+        if (NSHeight(primaryFrame) < 0.0) {
+            float resizeFactor = 1.0 + NSHeight(primaryFrame) / NSHeight(secondaryFrame);
+            secondaryFrame.size.height = floorf(resizeFactor * NSHeight(secondaryFrame));
+            primaryFrame.size.height = NSHeight([sender frame]) - NSHeight(secondaryFrame) - 2 * [sender dividerThickness];
+        }
+        primaryFrame.origin.x = NSMaxY(secondaryFrame) + [sender dividerThickness];
+        [primaryView setFrame:primaryFrame];
+        [secondaryView setFrame:secondaryFrame];
+        
+        [sender adjustSubviews];
     }
-    mainFrame.origin.x = NSMaxX(leftSideFrame) + [sender dividerThickness];
-    rightSideFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
-    [leftSideView setFrame:leftSideFrame];
-    [rightSideView setFrame:rightSideFrame];
-    [mainView setFrame:mainFrame];
-    
-    [sender adjustSubviews];
 }
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
-    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
-        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
-        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
+    id sender = [notification object];
+    if ([sender isEqual:splitView] || sender == nil) {
+        if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
+            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
+        }
     }
 }
 

@@ -40,6 +40,7 @@
 #import "NSBezierPath_CoreImageExtensions.h"
 #import "CIImage_BDSKExtensions.h"
 
+#define END_JOIN_WIDTH 3.0f
 
 @implementation SKSplitView
 
@@ -85,6 +86,33 @@
     [super mouseDown:theEvent];
 }
 
+- (void)drawBlendedJoinEndAtLeftInRect:(NSRect)rect {
+    // this blends us smoothly with the a vertical divider on our left
+    Class svClass = [self class];
+    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass startColor]
+                                               blendedAtRight:NO
+                                  ofVerticalGradientFromColor:[svClass startColor]
+                                                      toColor:[svClass endColor]];
+}
+
+- (void)drawBlendedJoinEndAtRightInRect:(NSRect)rect {
+    // this blends us smoothly with the a vertical divider on our right
+    Class svClass = [self class];
+    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass endColor]
+                                               blendedAtRight:YES
+                                  ofVerticalGradientFromColor:[svClass startColor]
+                                                      toColor:[svClass endColor]];
+}
+
+- (void)drawBlendedJoinEndAtTopInRect:(NSRect)rect {
+    // this blends us smoothly with the a vertical divider on our left
+    Class svClass = [self class];
+    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass startColor]
+                                               blendedAtRight:NO
+                                  ofVerticalGradientFromColor:[svClass startColor]
+                                                      toColor:[svClass endColor]];
+}
+
 - (void)drawDividerInRect:(NSRect)aRect {
     NSPoint startPoint, endPoint;
     float handleSize = 20.0;
@@ -93,6 +121,14 @@
     
     // Draw the gradient
     [[NSBezierPath bezierPathWithRect:aRect] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
+    
+    if (blendEnds && [self isVertical] == NO) {
+        NSRect endRect, ignored;
+        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, NSMinXEdge);
+        [self drawBlendedJoinEndAtLeftInRect:endRect];
+        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, NSMaxXEdge);
+        [self drawBlendedJoinEndAtRightInRect:endRect];
+    }
     
     [NSGraphicsContext saveGraphicsState];
     
@@ -138,6 +174,14 @@
 
 - (float)dividerThickness {
 	return 6.0;
+}
+
+- (BOOL)blendEnds {
+    return blendEnds;
+}
+
+- (void)setBlendEnds:(BOOL)flag {
+    blendEnds = flag;
 }
 
 @end

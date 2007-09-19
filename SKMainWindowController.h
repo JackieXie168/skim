@@ -64,7 +64,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
+@class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -72,6 +72,10 @@ typedef struct _SKPDFViewState {
     
     IBOutlet SKPDFView          *pdfView;
     IBOutlet BDSKEdgeView       *pdfContentBox;
+    
+    SKSplitView                 *pdfSplitView;
+    SKSecondaryPDFView          *secondaryPdfView;
+    BDSKEdgeView                *secondaryPdfContentBox;
     
     IBOutlet NSBox              *leftSideContentBox;
     IBOutlet NSView             *leftSideContentView;
@@ -193,6 +197,7 @@ typedef struct _SKPDFViewState {
     
     float                       lastLeftSidePaneWidth;
     float                       lastRightSidePaneWidth;
+    float                       lastSecondaryPdfViewPaneHeight;
     
     float                       thumbnailCacheSize;
     float                       snapshotCacheSize;

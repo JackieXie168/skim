@@ -1,8 +1,8 @@
 //
-//  SKSplitView.h
+//  SKSecondaryPDFView.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 9/19/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -37,18 +37,25 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
-@class CIColor;
 
-@interface SKSplitView : NSSplitView {
-    BOOL blendEnds;
+@interface SKSecondaryPDFView : PDFView {
+    NSPopUpButton *scalePopUpButton;
+    NSPopUpButton *pagePopUpButton;
 }
-+ (CIColor *)startColor;
-+ (CIColor *)endColor;
-- (BOOL)blendEnds;
-- (void)setBlendEnds:(BOOL)flag;
-@end
 
-@interface NSObject (SKSplitViewExtendedDelegate)
-- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset;
+- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
+- (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
+- (void)scalePopUpAction:(id)sender;
+- (void)pagePopUpAction:(id)sender;
+- (NSScrollView *)scrollView;
+- (void)layoutScrollView;
+- (void)setScrollerSize:(NSControlSize)controlSize;
+- (void)dragWithEvent:(NSEvent *)theEvent;
+- (void)reloadPagePopUpButton;
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleDocumentDidUnlock:(NSNotification *)notification;
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
+
 @end

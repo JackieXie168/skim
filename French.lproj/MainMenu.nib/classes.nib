@@ -60,6 +60,7 @@
                 togglePresentation = id; 
                 toggleReadingBar = id; 
                 toggleRightSidePane = id; 
+                toggleSplitPDF = id; 
                 toggleStatusBar = id; 
             }; 
             CLASS = FirstResponder; 
