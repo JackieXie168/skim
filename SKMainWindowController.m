@@ -1933,6 +1933,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [secondaryPdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
         [secondaryPdfView setDisplaysPageBreaks:NO];
         [secondaryPdfView setDisplayBox:kPDFDisplayBoxCropBox];
+        [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
         [secondaryPdfView goToPage:[pdfView currentPage]];
         point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:point fromPage:[secondaryPdfView currentPage]] toView:[secondaryPdfView documentView]];
         [[secondaryPdfView documentView] scrollPoint:point];
@@ -3040,6 +3041,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([key isEqualToString:SKBackgroundColorKey]) {
             if ([self isFullScreen] == NO && [self isPresentation] == NO)
                 [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+            [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
             if ([self isFullScreen]) {
                 NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
