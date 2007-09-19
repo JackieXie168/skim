@@ -138,6 +138,7 @@ NSRect BDSKCenterRect(NSRect rect, NSSize size, BOOL flipped)
     if ([self usesItemFromMenu])
         [headerCell setStringValue:[self title]];
 	[headerCell setState:[self isHighlighted]];
+	[headerCell setHighlighted:[self isHighlighted]];
 	[headerCell drawWithFrame:cellFrame inView:controlView];
 	
 	if (indicatorImage != nil) {
