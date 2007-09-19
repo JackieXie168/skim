@@ -119,7 +119,7 @@ static float BDSKScaleMenuFontSize = 11.0;
             [curItem setRepresentedObject:(BDSKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:BDSKDefaultScaleMenuFactors[cnt]] : nil)];
         }
         // select the appropriate item, adjusting the scaleFactor if necessary
-        if([self autoScales])
+        if([self autoFits])
             [self setScaleFactor:0.0 adjustPopup:YES];
         else
             [self setScaleFactor:[self scaleFactor] adjustPopup:YES];
