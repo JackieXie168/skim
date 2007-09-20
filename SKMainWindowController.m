@@ -1934,6 +1934,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [secondaryPdfView setDisplaysPageBreaks:NO];
         [secondaryPdfView setDisplayBox:kPDFDisplayBoxCropBox];
         [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
+        [secondaryPdfView layoutDocumentView];
         [secondaryPdfView goToPage:[pdfView currentPage]];
         point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:point fromPage:[secondaryPdfView currentPage]] toView:[secondaryPdfView documentView]];
         [[secondaryPdfView documentView] scrollPoint:point];
@@ -4849,6 +4850,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [secondaryPdfContentBox setFrame:secondaryFrame];
         [pdfSplitView setNeedsDisplay:YES];
         [pdfSplitView adjustSubviews];
+        [secondaryPdfView layoutDocumentView];
+        [secondaryPdfView setNeedsDisplay:YES];
     }
 }
 
