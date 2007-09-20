@@ -329,6 +329,46 @@ static float SKPopUpMenuFontSize = 11.0;
     return cnt > 0;
 }
 
+
+- (IBAction)toggleDisplayAsBookFromMenu:(id)sender {
+    [self setDisplaysAsBook:[self displaysAsBook] == NO];
+}
+
+- (IBAction)toggleDisplayPageBreaksFromMenu:(id)sender {
+    [self setDisplaysPageBreaks:[self displaysPageBreaks] == NO];
+}
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = [super menuForEvent:theEvent];
+    int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
+    NSMenuItem *item;
+    PDFDisplayMode displayMode = [self displayMode];
+    
+    if (i != -1) {
+        if (displayMode == kPDFDisplayTwoUp || displayMode == kPDFDisplayTwoUpContinuous) { 
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBookFromMenu:) keyEquivalent:@"" atIndex:++i];
+            [item setTarget:self];
+        }
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Page Breaks", @"Menu item title") action:@selector(toggleDisplayPageBreaksFromMenu:) keyEquivalent:@"" atIndex:++i];
+        [item setTarget:self];
+    }
+    
+    return menu;
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(toggleDisplayAsBookFromMenu:)) {
+        [menuItem setState:[self displaysAsBook] ? NSOnState : NSOffState];
+        return YES;
+    } else if ([menuItem action] == @selector(toggleDisplayPageBreaksFromMenu:)) {
+        [menuItem setState:[self displaysPageBreaks] ? NSOnState : NSOffState];
+        return YES;
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+        return [super validateMenuItem:menuItem];
+    }
+    return YES;
+}
+
 #pragma mark Scrollview
 
 - (NSScrollView *)scrollView;
