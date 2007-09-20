@@ -1933,7 +1933,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [leftSideContentBox setFrame:sideFrame];
         [pdfContentBox setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
-        [splitView adjustSubviews];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -1971,7 +1970,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [rightSideContentBox setFrame:sideFrame];
         [pdfContentBox setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
-        [splitView adjustSubviews];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -4925,7 +4923,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [pdfContentBox setFrame:primaryFrame];
         [secondaryPdfContentBox setFrame:secondaryFrame];
         [pdfSplitView setNeedsDisplay:YES];
-        [pdfSplitView adjustSubviews];
         [secondaryPdfView layoutDocumentView];
         [secondaryPdfView setNeedsDisplay:YES];
     }
