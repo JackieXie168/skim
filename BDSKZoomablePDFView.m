@@ -103,18 +103,32 @@ static float BDSKScaleMenuFontSize = 11.0;
         NSScrollView *scrollView = [self scrollView];
         [scrollView setAlwaysHasHorizontalScroller:YES];
 
-        unsigned cnt, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuLabels) / sizeof(NSString *));
-        id curItem;
-
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
         [[scalePopUpButton cell] setControlSize:controlSize];
 		
+        unsigned cnt, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuLabels) / sizeof(NSString *));
+        id curItem;
+        NSString *label;
+        float width, maxWidth = 0.0;
+        NSSize size = NSMakeSize(1000.0, 1000.0);
+        NSDictionary *attrs = [[scalePopUpButton attributedTitle] attributesAtIndex:0 effectiveRange:NULL];
+        unsigned maxIndex = 0;
+
+        // set a suitable font, the control size is 0, 1 or 2
+        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
+
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
-            [scalePopUpButton addItemWithTitle:NSLocalizedStringFromTable(BDSKDefaultScaleMenuLabels[cnt], @"ZoomValues", nil)];
+            label = NSLocalizedStringFromTable(BDSKDefaultScaleMenuLabels[cnt], @"ZoomValues", nil);
+            width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
+            if (width > maxWidth) {
+                maxWidth = width;
+                maxIndex = cnt;
+            }
+            [scalePopUpButton addItemWithTitle:label];
             curItem = [scalePopUpButton itemAtIndex:cnt];
             [curItem setRepresentedObject:(BDSKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:BDSKDefaultScaleMenuFactors[cnt]] : nil)];
         }
@@ -128,11 +142,10 @@ static float BDSKScaleMenuFontSize = 11.0;
         [scalePopUpButton setTarget:self];
         [scalePopUpButton setAction:@selector(scalePopUpAction:)];
 
-        // set a suitable font, the control size is 0, 1 or 2
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
-
-        // Make sure the popup is big enough to fit the cells.
+        // Make sure the popup is big enough to fit the largest cell
+        [scalePopUpButton setTitle:[[scalePopUpButton itemAtIndex:maxIndex] title]];
         [scalePopUpButton sizeToFit];
+        [scalePopUpButton synchronizeTitleAndSelectedItem];
 
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
