@@ -291,9 +291,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideContentBox addSubview:rightSideContentView];
     
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
-    
     [secondaryPdfView setFrame:[[secondaryPdfContentBox contentView] bounds]];
-    [pdfSplitView setBlendEnds:YES];
     
     if (usesDrawers) {
         NSSize size = [leftSideContentBox frame].size;
@@ -316,6 +314,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [leftSideDrawer setDelegate:self];
         [rightSideDrawer setDelegate:self];
+    } else {
+        [pdfSplitView setBlendEnds:YES];
     }
     
     [outlineView setAutoresizesOutlineColumn: NO];
