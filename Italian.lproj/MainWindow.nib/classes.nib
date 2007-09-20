@@ -147,6 +147,7 @@
                 passwordField = NSTextField; 
                 passwordSheet = NSWindow; 
                 pdfContentBox = BDSKEdgeView; 
+                pdfSplitView = SKSplitView; 
                 pdfView = SKPDFView; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideCollapsibleView = BDSKCollapsibleView; 
@@ -156,6 +157,8 @@
                 rightSideGradientView = BDSKGradientView; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
+                secondaryPdfContentBox = BDSKEdgeView; 
+                secondaryPdfView = SKSecondaryPDFView; 
                 snapshotArrayController = NSArrayController; 
                 snapshotTableView = SKSnapshotTableView; 
                 snapshotView = NSView; 
@@ -187,6 +190,12 @@
         }, 
         {CLASS = SKOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
+        {
+            ACTIONS = {pagePopUpAction = id; scalePopUpAction = id; }; 
+            CLASS = SKSecondaryPDFView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = PDFView; 
+        }, 
         {CLASS = SKSnapshotPageCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
         {
             CLASS = SKSnapshotTableView; 

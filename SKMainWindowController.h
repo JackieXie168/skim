@@ -73,9 +73,9 @@ typedef struct _SKPDFViewState {
     IBOutlet SKPDFView          *pdfView;
     IBOutlet BDSKEdgeView       *pdfContentBox;
     
-    SKSplitView                 *pdfSplitView;
-    SKSecondaryPDFView          *secondaryPdfView;
-    BDSKEdgeView                *secondaryPdfContentBox;
+    IBOutlet SKSplitView        *pdfSplitView;
+    IBOutlet SKSecondaryPDFView *secondaryPdfView;
+    IBOutlet BDSKEdgeView       *secondaryPdfContentBox;
     
     IBOutlet NSBox              *leftSideContentBox;
     IBOutlet NSView             *leftSideContentView;
