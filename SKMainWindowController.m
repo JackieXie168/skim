@@ -379,10 +379,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             }
         }
         if (usesDrawers == NO) {
-            frame = [pdfContentBox frame];
+            frame = [pdfSplitView frame];
             frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
             frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
-            [pdfContentBox setFrame:frame];
+            [pdfSplitView setFrame:frame];
         }
     }
     
@@ -576,10 +576,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
     }
     if (usesDrawers == NO) {
-        frame = [pdfContentBox frame];
+        frame = [pdfSplitView frame];
         frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
         frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
-        [pdfContentBox setFrame:frame];
+        [pdfSplitView setFrame:frame];
     }
     
     [self applyPDFSettings:setup];
@@ -1913,7 +1913,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [leftSideDrawer openOnEdge:NSMinXEdge];
     } else {
         NSRect sideFrame = [leftSideContentBox frame];
-        NSRect pdfFrame = [pdfContentBox frame];
+        NSRect pdfFrame = [pdfSplitView frame];
         
         if (NSWidth(sideFrame) > 0.0) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
@@ -1931,7 +1931,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
         pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
         [leftSideContentBox setFrame:sideFrame];
-        [pdfContentBox setFrame:pdfFrame];
+        [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         
         [self splitViewDidResizeSubviews:nil];
@@ -1952,7 +1952,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
         NSRect sideFrame = [rightSideContentBox frame];
-        NSRect pdfFrame = [pdfContentBox frame];
+        NSRect pdfFrame = [pdfSplitView frame];
         
         if (NSWidth(sideFrame) > 1.0) {
             lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
@@ -1968,7 +1968,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
         sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
         [rightSideContentBox setFrame:sideFrame];
-        [pdfContentBox setFrame:pdfFrame];
+        [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         
         [self splitViewDidResizeSubviews:nil];
