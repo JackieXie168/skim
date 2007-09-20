@@ -1891,6 +1891,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (void)scrollSecondaryPdfView {
+    NSPoint point = [pdfView bounds].origin;
+    PDFPage *page = [pdfView pageForPoint:point nearest:YES];
+    point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
+    [secondaryPdfView goToPage:page];
+    [[secondaryPdfView documentView] scrollPoint:point];
+}
+
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([secondaryPdfView window]) {
         
@@ -1898,7 +1906,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
     } else {
         
-        NSPoint point = [pdfView convertPoint:[pdfView bounds].origin toPage:[pdfView currentPage]];
         NSRect ignored, frame1, frame2;
         
         frame1 = [pdfSplitView bounds];
@@ -1915,8 +1922,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [secondaryPdfView setAutoScales:YES];
         [secondaryPdfView layoutDocumentView];
         [secondaryPdfView goToPage:[pdfView currentPage]];
-        point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:point fromPage:[secondaryPdfView currentPage]] toView:[secondaryPdfView documentView]];
-        [[secondaryPdfView documentView] scrollPoint:point];
+        [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];
     }
     
     [pdfSplitView adjustSubviews];
