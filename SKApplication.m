@@ -50,22 +50,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 @end
 
 
-@interface NSMenu (SKExtensions)
-- (int)indexOfItemWithTarget:(id)target;
-@end
-
-
-@implementation NSMenu (SKExtensions)
-- (int)indexOfItemWithTarget:(id)target {
-    int index = [self numberOfItems];
-    while (index--)
-        if ([[self itemAtIndex:index] target] == target)
-            break;
-    return index;
-}
-@end
-
-
 @implementation SKApplication
 
 - (IBAction)orderFrontLineInspector:(id)sender {
@@ -144,7 +128,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     NSWindowController *windowController = [aWindow windowController];
     NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
     int numberOfItems = [windowsMenu numberOfItems];
-    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
     if (itemIndex != -1) {
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
@@ -187,7 +171,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
                 [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
         } else {
-            int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
+            int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window] andAction:@selector(makeKeyAndOrderFront:)];
             int index = mainIndex;
             
             [item setIndentationLevel:1];
@@ -206,7 +190,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 }
 
 - (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
-    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
+    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
     [super addWindowsItem:aWindow title:aString filename:isFilename];
     
