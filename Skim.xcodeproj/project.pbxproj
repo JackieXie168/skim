@@ -119,7 +119,6 @@
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE5478CB0B33456300F8AFB6 /* ToolbarFullScreen.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */; };
 		CE5478CE0B33456300F8AFB6 /* ToolbarNext.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */; };
-		CE5478CF0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */; };
 		CE5478D10B33456300F8AFB6 /* ToolbarPrevious.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */; };
 		CE5478D20B33456300F8AFB6 /* ToolbarRotateLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */; };
 		CE5478D30B33456300F8AFB6 /* ToolbarRotateRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */; };
@@ -494,7 +493,6 @@
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
 		CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFullScreen.tiff; path = Images/ToolbarFullScreen.tiff; sourceTree = "<group>"; };
 		CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNext.tiff; path = Images/ToolbarNext.tiff; sourceTree = "<group>"; };
-		CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNotesDrawer.tiff; path = Images/ToolbarNotesDrawer.tiff; sourceTree = "<group>"; };
 		CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPrevious.tiff; path = Images/ToolbarPrevious.tiff; sourceTree = "<group>"; };
 		CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateLeft.tiff; path = Images/ToolbarRotateLeft.tiff; sourceTree = "<group>"; };
 		CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateRight.tiff; path = Images/ToolbarRotateRight.tiff; sourceTree = "<group>"; };
@@ -1097,7 +1095,6 @@
 				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */,
 				CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */,
-				CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */,
 				CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */,
 				CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */,
 				CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */,
@@ -1288,7 +1285,6 @@
 				CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */,
 				CE5478CE0B33456300F8AFB6 /* ToolbarNext.tiff in Resources */,
 				CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */,
-				CE5478CF0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff in Resources */,
 				CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */,
 				CE5478D10B33456300F8AFB6 /* ToolbarPrevious.tiff in Resources */,
 				CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */,
