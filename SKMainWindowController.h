@@ -201,6 +201,10 @@ typedef struct _SKPDFViewState {
     
     float                       thumbnailCacheSize;
     float                       snapshotCacheSize;
+    
+    NSDrawer                    *leftSideDrawer;
+    NSDrawer                    *rightSideDrawer;
+    BOOL                        usesDrawers;
 }
 
 - (IBAction)changeColor:(id)sender;
@@ -311,6 +315,9 @@ typedef struct _SKPDFViewState {
 - (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState;
 - (SKRightSidePaneState)rightSidePaneState;
 - (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState;
+
+- (BOOL)leftSidePaneIsOpen;
+- (BOOL)rightSidePaneIsOpen;
 
 - (void)displayOutlineView;
 - (void)fadeInOutlineView;

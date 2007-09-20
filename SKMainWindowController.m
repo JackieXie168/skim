@@ -215,6 +215,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         updatingColor = NO;
         updatingFont = NO;
         updatingLine = NO;
+        usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:@"SKUsesDrawers"];
     }
     
     return self;
@@ -243,6 +244,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [savedNormalSetup release];
     [progressController release];
     [colorAccessoryView release];
+    [leftSideDrawer release];
+    [rightSideDrawer release];
     [super dealloc];
 }
 
@@ -292,6 +295,29 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [secondaryPdfView setFrame:[[secondaryPdfContentBox contentView] bounds]];
     [pdfSplitView setBlendEnds:YES];
     
+    if (usesDrawers) {
+        NSSize size = [leftSideContentBox frame].size;
+        leftSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMinXEdge];
+        rightSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMaxXEdge];
+        [leftSideDrawer setContentView:leftSideContentBox];
+        [rightSideDrawer setContentView:rightSideContentBox];
+        [leftSideDrawer setParentWindow:[self window]];
+        [rightSideDrawer setParentWindow:[self window]];
+        [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+        [leftSideGradientView setDrawsGradient:NO];
+        [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+        [rightSideGradientView setDrawsGradient:NO];
+        [pdfSplitView setFrame:[splitView frame]];
+        [pdfSplitView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [pdfSplitView adjustSubviews];
+        [[splitView superview] replaceSubview:splitView with:pdfSplitView];
+        splitView = nil;
+        [leftSideDrawer openOnEdge:NSMinXEdge];
+        [rightSideDrawer openOnEdge:NSMaxXEdge];
+        [leftSideDrawer setDelegate:self];
+        [rightSideDrawer setDelegate:self];
+    }
+    
     [outlineView setAutoresizesOutlineColumn: NO];
     [self displayOutlineView];
     [self displayNoteView];
@@ -329,19 +355,35 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         if (width >= 0.0) {
             frame = [leftSideContentBox frame];
             frame.size.width = width;
-            [leftSideContentBox setFrame:frame];
+            if (usesDrawers == NO) {
+                [leftSideContentBox setFrame:frame];
+            } else if (width > 0.0) {
+                [leftSideDrawer setContentSize:frame.size];
+                [leftSideDrawer openOnEdge:NSMinXEdge];
+            } else {
+                [leftSideDrawer close];
+            }
         }
         width = [sud floatForKey:SKRightSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [rightSideContentBox frame];
             frame.size.width = width;
             frame.origin.x = NSMaxX([splitView frame]) - width;
-            [rightSideContentBox setFrame:frame];
+            if (usesDrawers == NO) {
+                [rightSideContentBox setFrame:frame];
+            } else if (width > 0.0) {
+                [rightSideDrawer setContentSize:frame.size];
+                [rightSideDrawer openOnEdge:NSMaxXEdge];
+            } else {
+                [rightSideDrawer close];
+            }
         }
-        frame = [pdfContentBox frame];
-        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
-        frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
-        [pdfContentBox setFrame:frame];
+        if (usesDrawers == NO) {
+            frame = [pdfContentBox frame];
+            frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
+            frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
+            [pdfContentBox setFrame:frame];
+        }
     }
     
     // this needs to be done before loading the PDFDocument
@@ -363,7 +405,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView layoutDocumentView];
     
     // Show/hide left side pane if necessary
-    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && (NSWidth([leftSideContentBox frame]) > 0.0) == (pdfOutline == nil))
+    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == (pdfOutline == nil))
         [self toggleLeftSidePane:self];
     if (pdfOutline == nil) {
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
@@ -511,18 +553,34 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (number = [setup objectForKey:@"leftSidePaneWidth"]) {
         frame = [leftSideContentBox frame];
         frame.size.width = [number floatValue];
-        [leftSideContentBox setFrame:frame];
+        if (usesDrawers == NO) {
+            [leftSideContentBox setFrame:frame];
+        } else if (NSWidth(frame) > 0.0) {
+            [leftSideDrawer setContentSize:frame.size];
+            [leftSideDrawer openOnEdge:NSMinXEdge];
+        } else {
+            [leftSideDrawer close];
+        }
     }
     if (number = [setup objectForKey:@"rightSidePaneWidth"]) {
         frame = [rightSideContentBox frame];
         frame.size.width = [number floatValue];
         frame.origin.x = NSMaxX([splitView frame]) - NSWidth(frame);
-        [rightSideContentBox setFrame:frame];
+        if (usesDrawers == NO) {
+            [rightSideContentBox setFrame:frame];
+        } else if (NSWidth(frame) > 0.0) {
+            [rightSideDrawer setContentSize:frame.size];
+            [rightSideDrawer openOnEdge:NSMaxXEdge];
+        } else {
+            [rightSideDrawer close];
+        }
     }
-    frame = [pdfContentBox frame];
-    frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
-    frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
-    [pdfContentBox setFrame:frame];
+    if (usesDrawers == NO) {
+        frame = [pdfContentBox frame];
+        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
+        frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
+        [pdfContentBox setFrame:frame];
+    }
     
     [self applyPDFSettings:setup];
     if (number = [setup objectForKey:@"pageIndex"])
@@ -533,8 +591,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentBox frame]) : 0.0] forKey:@"leftSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentBox frame]) : 0.0] forKey:@"rightSidePaneWidth"];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:@"pageIndex"];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
@@ -1016,6 +1074,28 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         else if (rightSidePaneState == SKSnapshotSidePaneState)
             [self displaySnapshotView];
     }
+}
+
+- (BOOL)leftSidePaneIsOpen {
+    int state;
+    if ([self isFullScreen])
+        state = [leftSideWindow state];
+    else if (usesDrawers)
+        state = [leftSideDrawer state];
+    else
+        state = NSWidth([leftSideContentBox frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+    return state == NSDrawerOpenState || state == NSDrawerOpeningState;
+}
+
+- (BOOL)rightSidePaneIsOpen {
+    int state;
+    if ([self isFullScreen])
+        state = [rightSideWindow state];
+    else if (usesDrawers)
+        state = [rightSideDrawer state];
+    else
+        state = NSWidth([rightSideContentBox frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+    return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
 - (NSArray *)notes {
@@ -1700,7 +1780,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
             [leftSideWindow expand];
-    } else if (NSWidth([leftSideContentBox frame]) <= 0.0) {
+    } else if ([self leftSidePaneIsOpen] == NO) {
         [self toggleLeftSidePane:sender];
     }
     [searchField selectText:self];
@@ -1722,7 +1802,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         documentRect.size.height /= [[self pdfView] scaleFactor];
     }
     
-    frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
+    frame.size.width = NSWidth(documentRect);
+    if (usesDrawers == NO)
+        frame.size.width += NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + 2 * [splitView dividerThickness] + 2.0;
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         frame.size.height = NSHeight(documentRect) + 1.0;
     } else {
@@ -1823,6 +1905,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [self hideLeftSideWindow];
         else
             [self showLeftSideWindowOnScreen:[[self window] screen]];
+    } else if (usesDrawers) {
+        int state = [leftSideDrawer state];
+        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+            [leftSideDrawer close];
+        else
+            [leftSideDrawer openOnEdge:NSMinXEdge];
     } else {
         NSRect sideFrame = [leftSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
@@ -1857,6 +1945,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [rightSideWindow collapse];
         else
             [rightSideWindow expand];
+    } else if (usesDrawers) {
+        int state = [rightSideDrawer state];
+        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+            [rightSideDrawer close];
+        else
+            [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
         NSRect sideFrame = [rightSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
@@ -1951,12 +2045,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [leftSideWindow moveToScreen:screen];
     
-    if ([[mainWindow firstResponder] isDescendantOf:leftSideContentView])
-        [mainWindow makeFirstResponder:nil];
+    if ([[[leftSideContentView window] firstResponder] isDescendantOf:leftSideContentView])
+        [[leftSideContentView window] makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideContentView];
     
-    [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-    [leftSideGradientView setDrawsGradient:NO];
+    if (usesDrawers == NO) {
+        [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+        [leftSideGradientView setDrawsGradient:NO];
+    }
     
     if ([self isPresentation]) {
         savedLeftSidePaneState = [self leftSidePaneState];
@@ -1979,12 +2075,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [rightSideWindow moveToScreen:screen];
     
-    if ([[mainWindow firstResponder] isDescendantOf:rightSideContentView])
-        [mainWindow makeFirstResponder:nil];
+    if ([[[rightSideContentView window] firstResponder] isDescendantOf:rightSideContentView])
+        [[rightSideContentView window] makeFirstResponder:nil];
     [rightSideWindow setMainView:rightSideContentView];
     
-    [rightSideEdgeView setEdges:BDSKNoEdgeMask];
-    [rightSideGradientView setDrawsGradient:NO];
+    if (usesDrawers == NO) {
+        [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+        [rightSideGradientView setDrawsGradient:NO];
+    }
     
     if ([self isPresentation]) {
         [rightSideWindow expand];
@@ -2007,8 +2105,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [leftSideContentView setFrame:[leftSideContentBox bounds]];
         [leftSideContentBox addSubview:leftSideContentView];
         
-        [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-        [leftSideGradientView setDrawsGradient:YES];
+        if (usesDrawers == NO) {
+            [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+            [leftSideGradientView setDrawsGradient:YES];
+        }
         
         if ([self isPresentation]) {
             [self setLeftSidePaneState:savedLeftSidePaneState];
@@ -2028,8 +2128,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [rightSideContentView setFrame:[rightSideContentBox bounds]];
         [rightSideContentBox addSubview:rightSideContentView];
         
-        [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-        [rightSideGradientView setDrawsGradient:YES];
+        if (usesDrawers == NO) {
+            [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+            [rightSideGradientView setDrawsGradient:YES];
+        }
         
         if ([self isPresentation]) {
             [rightSideWindow setLevel:NSFloatingWindowLevel];
@@ -2489,7 +2591,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
-    if (NSWidth([leftSideContentBox frame]) <= 0.0)
+    if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:self];
     [searchField setStringValue:string];
     [self search:searchField];
@@ -2644,7 +2746,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
     if ([self isPresentation] == NO) {
-        if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0) {
+        if ([self isFullScreen] == NO && [self rightSidePaneIsOpen] == NO) {
             [self toggleRightSidePane:self];
         } else if ([self isFullScreen] && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
             [rightSideWindow expand];
@@ -4730,30 +4832,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(autoSelectContent:)) {
         return [self isPresentation] == NO && [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
-        if ([self isFullScreen]) {
-            if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
-                [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
-            else
-                [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
-        } else {
-            if (NSWidth([leftSideContentBox frame]) > 0.0)
-                [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
-            else
-                [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
-        }
+        if ([self leftSidePaneIsOpen])
+            [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
         return YES;
     } else if (action == @selector(toggleRightSidePane:)) {
-        if ([self isFullScreen]) {
-            if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
-                [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
-            else
-                [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
-        } else {
-            if (NSWidth([rightSideContentBox frame]) > 0.0)
-                [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
-            else
-                [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
-        }
+        if ([self rightSidePaneIsOpen])
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
@@ -4909,6 +4997,36 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
             [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
         }
+    }
+}
+
+- (NSSize)drawerWillResizeContents:(NSDrawer *)sender toSize:(NSSize)contentSize {
+    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+        if ([sender isEqual:leftSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:contentSize.width forKey:SKLeftSidePaneWidthKey];
+        else if ([sender isEqual:rightSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:contentSize.width forKey:SKRightSidePaneWidthKey];
+    }
+    return contentSize;
+}
+
+- (void)drawerDidOpen:(NSNotification *)notification {
+    id sender = [notification object];
+    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+        if ([sender isEqual:leftSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:[sender contentSize].width forKey:SKLeftSidePaneWidthKey];
+        else if ([sender isEqual:rightSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:[sender contentSize].width forKey:SKRightSidePaneWidthKey];
+    }
+}
+
+- (void)drawerDidClose:(NSNotification *)notification {
+    id sender = [notification object];
+    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+        if ([sender isEqual:leftSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:0.0 forKey:SKLeftSidePaneWidthKey];
+        else if ([sender isEqual:rightSideDrawer])
+            [[NSUserDefaults standardUserDefaults] setFloat:0.0 forKey:SKRightSidePaneWidthKey];
     }
 }
 
