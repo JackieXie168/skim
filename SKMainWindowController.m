@@ -292,26 +292,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [secondaryPdfView setFrame:[[secondaryPdfEdgeView contentView] bounds]];
     
     if (usesDrawers) {
-        NSSize size = [leftSideContentView frame].size;
-        leftSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMinXEdge];
-        rightSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMaxXEdge];
-        [leftSideDrawer setContentView:leftSideContentView];
-        [rightSideDrawer setContentView:rightSideContentView];
+        leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
         [leftSideDrawer setParentWindow:[self window]];
-        [rightSideDrawer setParentWindow:[self window]];
+        [leftSideDrawer setContentView:leftSideContentView];
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
         [leftSideGradientView setDrawsGradient:NO];
+        [leftSideDrawer openOnEdge:NSMinXEdge];
+        [leftSideDrawer setDelegate:self];
+        rightSideDrawer = [[NSDrawer alloc] initWithContentSize:[rightSideContentView frame].size preferredEdge:NSMaxXEdge];
+        [rightSideDrawer setParentWindow:[self window]];
+        [rightSideDrawer setContentView:rightSideContentView];
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
         [rightSideGradientView setDrawsGradient:NO];
-        [pdfSplitView setFrame:[splitView frame]];
-        [pdfSplitView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [pdfSplitView adjustSubviews];
-        [[splitView superview] replaceSubview:splitView with:pdfSplitView];
-        splitView = nil;
-        [leftSideDrawer openOnEdge:NSMinXEdge];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
-        [leftSideDrawer setDelegate:self];
         [rightSideDrawer setDelegate:self];
+        [pdfSplitView setFrame:[splitView bounds]];
     } else {
         [pdfSplitView setBlendEnds:YES];
     }
@@ -4934,30 +4929,30 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
     if ([sender isEqual:splitView]) {
-        NSView *leftSideView = [[sender subviews] objectAtIndex:0];
+        NSView *leftView = [[sender subviews] objectAtIndex:0];
         NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
-        NSView *rightSideView = [[sender subviews] objectAtIndex:2];
-        NSRect leftSideFrame = [leftSideView frame];
+        NSView *rightView = [[sender subviews] objectAtIndex:2];
+        NSRect leftFrame = [leftView frame];
         NSRect mainFrame = [mainView frame];
-        NSRect rightSideFrame = [rightSideView frame];
+        NSRect rightFrame = [rightView frame];
         
-        if (NSWidth(leftSideFrame) <= 1.0)
-            leftSideFrame.size.width = 0.0;
-        if (NSWidth(rightSideFrame) <= 1.0)
-            rightSideFrame.size.width = 0.0;
+        if (NSWidth(leftFrame) <= 1.0)
+            leftFrame.size.width = 0.0;
+        if (NSWidth(rightFrame) <= 1.0)
+            rightFrame.size.width = 0.0;
         
-        mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+        mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
         
         if (NSWidth(mainFrame) < 0.0) {
-            float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftSideFrame) + NSWidth(rightSideFrame));
-            leftSideFrame.size.width = floorf(resizeFactor * NSWidth(leftSideFrame));
-            rightSideFrame.size.width = floorf(resizeFactor * NSWidth(rightSideFrame));
-            mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+            float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftFrame) + NSWidth(rightFrame));
+            leftFrame.size.width = floorf(resizeFactor * NSWidth(leftFrame));
+            rightFrame.size.width = floorf(resizeFactor * NSWidth(rightFrame));
+            mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
         }
-        mainFrame.origin.x = NSMaxX(leftSideFrame) + [sender dividerThickness];
-        rightSideFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
-        [leftSideView setFrame:leftSideFrame];
-        [rightSideView setFrame:rightSideFrame];
+        mainFrame.origin.x = NSMaxX(leftFrame) + [sender dividerThickness];
+        rightFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
+        [leftView setFrame:leftFrame];
+        [rightView setFrame:rightFrame];
         [mainView setFrame:mainFrame];
         
         [sender adjustSubviews];
