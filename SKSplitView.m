@@ -86,33 +86,6 @@
     [super mouseDown:theEvent];
 }
 
-- (void)drawBlendedJoinEndAtLeftInRect:(NSRect)rect {
-    // this blends us smoothly with the a vertical divider on our left
-    Class svClass = [self class];
-    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass startColor]
-                                               blendedAtRight:NO
-                                  ofVerticalGradientFromColor:[svClass startColor]
-                                                      toColor:[svClass endColor]];
-}
-
-- (void)drawBlendedJoinEndAtRightInRect:(NSRect)rect {
-    // this blends us smoothly with the a vertical divider on our right
-    Class svClass = [self class];
-    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass endColor]
-                                               blendedAtRight:YES
-                                  ofVerticalGradientFromColor:[svClass startColor]
-                                                      toColor:[svClass endColor]];
-}
-
-- (void)drawBlendedJoinEndAtTopInRect:(NSRect)rect {
-    // this blends us smoothly with the a vertical divider on our left
-    Class svClass = [self class];
-    [[NSBezierPath bezierPathWithRect:rect] fillPathWithColor:[svClass startColor]
-                                               blendedAtRight:NO
-                                  ofVerticalGradientFromColor:[svClass startColor]
-                                                      toColor:[svClass endColor]];
-}
-
 - (void)drawDividerInRect:(NSRect)aRect {
     NSPoint startPoint, endPoint;
     float handleSize = 20.0;
@@ -122,12 +95,12 @@
     // Draw the gradient
     [[NSBezierPath bezierPathWithRect:aRect] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
     
-    if (blendEnds && [self isVertical] == NO) {
+    if (blendEnds) {
         NSRect endRect, ignored;
-        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, NSMinXEdge);
-        [self drawBlendedJoinEndAtLeftInRect:endRect];
-        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, NSMaxXEdge);
-        [self drawBlendedJoinEndAtRightInRect:endRect];
+        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMinYEdge : NSMinXEdge);
+        [[NSBezierPath bezierPathWithRect:endRect] fillPathVertically:[self isVertical] withStartColor:[CIColor clearColor] endColor:[[self class] startColor]];
+        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMaxYEdge : NSMaxXEdge);
+        [[NSBezierPath bezierPathWithRect:endRect] fillPathVertically:[self isVertical] withStartColor:[[self class] endColor] endColor:[CIColor clearColor]];
     }
     
     [NSGraphicsContext saveGraphicsState];
