@@ -262,8 +262,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
     
-    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [secondaryPdfContentBox setEdges:BDSKEveryEdgeMask];
+    [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
@@ -280,25 +280,23 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
-    [leftSideContentBox setAutoresizesSubviews:YES];
-    [[leftSideContentBox contentView] setAutoresizesSubviews:YES];
-    [rightSideContentBox setAutoresizesSubviews:YES];
-    [[rightSideContentBox contentView] setAutoresizesSubviews:YES];
+    [leftSideContentView setAutoresizesSubviews:YES];
+    [rightSideContentView setAutoresizesSubviews:YES];
     
-    [leftSideContentView setFrame:[leftSideContentBox bounds]];
-    [leftSideContentBox addSubview:leftSideContentView];
-    [rightSideContentView setFrame:[rightSideContentBox bounds]];
-    [rightSideContentBox addSubview:rightSideContentView];
+    [leftSideView setFrame:[leftSideContentView bounds]];
+    [leftSideContentView addSubview:leftSideView];
+    [rightSideView setFrame:[rightSideContentView bounds]];
+    [rightSideContentView addSubview:rightSideView];
     
-    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
-    [secondaryPdfView setFrame:[[secondaryPdfContentBox contentView] bounds]];
+    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+    [secondaryPdfView setFrame:[[secondaryPdfEdgeView contentView] bounds]];
     
     if (usesDrawers) {
-        NSSize size = [leftSideContentBox frame].size;
+        NSSize size = [leftSideContentView frame].size;
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMinXEdge];
         rightSideDrawer = [[NSDrawer alloc] initWithContentSize:size preferredEdge:NSMaxXEdge];
-        [leftSideDrawer setContentView:leftSideContentBox];
-        [rightSideDrawer setContentView:rightSideContentBox];
+        [leftSideDrawer setContentView:leftSideContentView];
+        [rightSideDrawer setContentView:rightSideContentView];
         [leftSideDrawer setParentWindow:[self window]];
         [rightSideDrawer setParentWindow:[self window]];
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
@@ -353,10 +351,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([sud objectForKey:SKLeftSidePaneWidthKey]) {
         float width = [sud floatForKey:SKLeftSidePaneWidthKey];
         if (width >= 0.0) {
-            frame = [leftSideContentBox frame];
+            frame = [leftSideContentView frame];
             frame.size.width = width;
             if (usesDrawers == NO) {
-                [leftSideContentBox setFrame:frame];
+                [leftSideContentView setFrame:frame];
             } else if (width > 0.0) {
                 [leftSideDrawer setContentSize:frame.size];
                 [leftSideDrawer openOnEdge:NSMinXEdge];
@@ -366,11 +364,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
         width = [sud floatForKey:SKRightSidePaneWidthKey];
         if (width >= 0.0) {
-            frame = [rightSideContentBox frame];
+            frame = [rightSideContentView frame];
             frame.size.width = width;
             frame.origin.x = NSMaxX([splitView frame]) - width;
             if (usesDrawers == NO) {
-                [rightSideContentBox setFrame:frame];
+                [rightSideContentView setFrame:frame];
             } else if (width > 0.0) {
                 [rightSideDrawer setContentSize:frame.size];
                 [rightSideDrawer openOnEdge:NSMaxXEdge];
@@ -380,8 +378,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
         if (usesDrawers == NO) {
             frame = [pdfSplitView frame];
-            frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
-            frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
+            frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
+            frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
             [pdfSplitView setFrame:frame];
         }
     }
@@ -551,10 +549,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (rectString = [setup objectForKey:@"windowFrame"])
         [[self window] setFrame:NSRectFromString(rectString) display:NO];
     if (number = [setup objectForKey:@"leftSidePaneWidth"]) {
-        frame = [leftSideContentBox frame];
+        frame = [leftSideContentView frame];
         frame.size.width = [number floatValue];
         if (usesDrawers == NO) {
-            [leftSideContentBox setFrame:frame];
+            [leftSideContentView setFrame:frame];
         } else if (NSWidth(frame) > 0.0) {
             [leftSideDrawer setContentSize:frame.size];
             [leftSideDrawer openOnEdge:NSMinXEdge];
@@ -563,11 +561,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         }
     }
     if (number = [setup objectForKey:@"rightSidePaneWidth"]) {
-        frame = [rightSideContentBox frame];
+        frame = [rightSideContentView frame];
         frame.size.width = [number floatValue];
         frame.origin.x = NSMaxX([splitView frame]) - NSWidth(frame);
         if (usesDrawers == NO) {
-            [rightSideContentBox setFrame:frame];
+            [rightSideContentView setFrame:frame];
         } else if (NSWidth(frame) > 0.0) {
             [rightSideDrawer setContentSize:frame.size];
             [rightSideDrawer openOnEdge:NSMaxXEdge];
@@ -577,8 +575,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
     if (usesDrawers == NO) {
         frame = [pdfSplitView frame];
-        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
-        frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
+        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
+        frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
         [pdfSplitView setFrame:frame];
     }
     
@@ -591,8 +589,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
-    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentBox frame]) : 0.0] forKey:@"leftSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentBox frame]) : 0.0] forKey:@"rightSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:@"leftSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:@"rightSidePaneWidth"];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:@"pageIndex"];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
@@ -1083,7 +1081,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     else if (usesDrawers)
         state = [leftSideDrawer state];
     else
-        state = NSWidth([leftSideContentBox frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = NSWidth([leftSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -1094,7 +1092,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     else if (usesDrawers)
         state = [rightSideDrawer state];
     else
-        state = NSWidth([rightSideContentBox frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = NSWidth([rightSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -1804,7 +1802,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     frame.size.width = NSWidth(documentRect);
     if (usesDrawers == NO)
-        frame.size.width += NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + 2 * [splitView dividerThickness] + 2.0;
+        frame.size.width += NSWidth([leftSideContentView frame]) + NSWidth([rightSideContentView frame]) + 2 * [splitView dividerThickness] + 2.0;
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         frame.size.height = NSHeight(documentRect) + 1.0;
     } else {
@@ -1914,7 +1912,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [leftSideDrawer openOnEdge:NSMinXEdge];
         }
     } else {
-        NSRect sideFrame = [leftSideContentBox frame];
+        NSRect sideFrame = [leftSideContentView frame];
         NSRect pdfFrame = [pdfSplitView frame];
         
         if ([self leftSidePaneIsOpen]) {
@@ -1932,7 +1930,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             sideFrame.size.width = lastLeftSidePaneWidth;
         }
         pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
-        [leftSideContentBox setFrame:sideFrame];
+        [leftSideContentView setFrame:sideFrame];
         [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         
@@ -1957,7 +1955,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         else
             [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
-        NSRect sideFrame = [rightSideContentBox frame];
+        NSRect sideFrame = [rightSideContentView frame];
         NSRect pdfFrame = [pdfSplitView frame];
         
         if ([self rightSidePaneIsOpen]) {
@@ -1973,7 +1971,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             sideFrame.size.width = lastRightSidePaneWidth;
         }
         sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
-        [rightSideContentBox setFrame:sideFrame];
+        [rightSideContentView setFrame:sideFrame];
         [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         
@@ -2000,7 +1998,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([secondaryPdfView window]) {
         
-        [secondaryPdfContentBox removeFromSuperview];
+        [secondaryPdfEdgeView removeFromSuperview];
         
     } else {
         
@@ -2010,10 +2008,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSDivideRect(frame1, &frame1, &frame2, roundf(0.7 * NSHeight(frame1)), NSMaxYEdge);
         NSDivideRect(frame2, &ignored, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
         
-        [pdfContentBox setFrame:frame1];
+        [pdfEdgeView setFrame:frame1];
         
-        [secondaryPdfContentBox setFrame:frame2];
-        [pdfSplitView addSubview:secondaryPdfContentBox];
+        [secondaryPdfEdgeView setFrame:frame2];
+        [pdfSplitView addSubview:secondaryPdfEdgeView];
         
         [secondaryPdfView setDocument:[pdfView document]];
         [secondaryPdfView setDisplaysPageBreaks:NO];
@@ -2049,9 +2047,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [leftSideWindow moveToScreen:screen];
     
-    if ([[[leftSideContentView window] firstResponder] isDescendantOf:leftSideContentView])
-        [[leftSideContentView window] makeFirstResponder:nil];
-    [leftSideWindow setMainView:leftSideContentView];
+    if ([[[leftSideView window] firstResponder] isDescendantOf:leftSideView])
+        [[leftSideView window] makeFirstResponder:nil];
+    [leftSideWindow setMainView:leftSideView];
     
     if (usesDrawers == NO) {
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
@@ -2079,9 +2077,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [rightSideWindow moveToScreen:screen];
     
-    if ([[[rightSideContentView window] firstResponder] isDescendantOf:rightSideContentView])
-        [[rightSideContentView window] makeFirstResponder:nil];
-    [rightSideWindow setMainView:rightSideContentView];
+    if ([[[rightSideView window] firstResponder] isDescendantOf:rightSideView])
+        [[rightSideView window] makeFirstResponder:nil];
+    [rightSideWindow setMainView:rightSideView];
     
     if (usesDrawers == NO) {
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
@@ -2101,13 +2099,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (void)hideLeftSideWindow {
-    if ([[leftSideContentView window] isEqual:leftSideWindow]) {
+    if ([[leftSideView window] isEqual:leftSideWindow]) {
         [leftSideWindow orderOut:self];
         
-        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideContentView])
+        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideView])
             [leftSideWindow makeFirstResponder:nil];
-        [leftSideContentView setFrame:[leftSideContentBox bounds]];
-        [leftSideContentBox addSubview:leftSideContentView];
+        [leftSideView setFrame:[leftSideContentView bounds]];
+        [leftSideContentView addSubview:leftSideView];
         
         if (usesDrawers == NO) {
             [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
@@ -2124,13 +2122,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (void)hideRightSideWindow {
-    if ([[rightSideContentView window] isEqual:rightSideWindow]) {
+    if ([[rightSideView window] isEqual:rightSideWindow]) {
         [rightSideWindow orderOut:self];
         
-        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideContentView])
+        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideView])
             [rightSideWindow makeFirstResponder:nil];
-        [rightSideContentView setFrame:[rightSideContentBox bounds]];
-        [rightSideContentBox addSubview:rightSideContentView];
+        [rightSideView setFrame:[rightSideContentView bounds]];
+        [rightSideContentView addSubview:rightSideView];
         
         if (usesDrawers == NO) {
             [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
@@ -2395,8 +2393,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     [pdfView disableNavigation];
-    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
-    [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
+    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+    [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
     if ([self isPresentation])
         [self exitPresentationMode];
@@ -4910,8 +4908,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             [self toggleRightSidePane:self];
     } else if ([sender isEqual:pdfSplitView] && [[sender subviews] count] > 1) {
-        NSRect primaryFrame = [pdfContentBox frame];
-        NSRect secondaryFrame = [secondaryPdfContentBox frame];
+        NSRect primaryFrame = [pdfEdgeView frame];
+        NSRect secondaryFrame = [secondaryPdfEdgeView frame];
         
         if (NSHeight(secondaryFrame) > 0.0) {
             lastSecondaryPdfViewPaneHeight = NSHeight(secondaryFrame); // cache this
@@ -4926,8 +4924,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             secondaryFrame.size.height = lastSecondaryPdfViewPaneHeight;
         }
         primaryFrame.origin.y = NSMaxY(secondaryFrame) + [pdfSplitView dividerThickness];
-        [pdfContentBox setFrame:primaryFrame];
-        [secondaryPdfContentBox setFrame:secondaryFrame];
+        [pdfEdgeView setFrame:primaryFrame];
+        [secondaryPdfEdgeView setFrame:secondaryFrame];
         [pdfSplitView setNeedsDisplay:YES];
         [secondaryPdfView layoutDocumentView];
         [secondaryPdfView setNeedsDisplay:YES];
@@ -4997,8 +4995,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     id sender = [notification object];
     if ([sender isEqual:splitView] || sender == nil) {
         if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
-            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
-            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
+            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentView frame]) forKey:SKLeftSidePaneWidthKey];
+            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentView frame]) forKey:SKRightSidePaneWidthKey];
         }
     }
 }
