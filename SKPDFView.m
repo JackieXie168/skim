@@ -566,30 +566,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     return transitionController;
 }
 
-- (SKAnimationTransitionStyle)transitionStyle {
-    return [[self transitionController] transitionStyle];
-}
-
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
-    [[self transitionController] setTransitionStyle:style];
-}
-
-- (float)transitionDuration {
-    return [[self transitionController] duration];
-}
-
-- (void)setTransitionDuration:(float)duration {
-    [[self transitionController] setDuration:duration];
-}
-
-- (BOOL)transitionShouldRestrict {
-    return [[self transitionController] shouldRestrict];
-}
-
-- (void)setTransitionShouldRestrict:(BOOL)flag {
-    [[self transitionController] setShouldRestrict:flag];
-}
-
 - (SKTypeSelectHelper *)typeSelectHelper {
     return typeSelectHelper;
 }
@@ -642,14 +618,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)goToNextPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && [self transitionStyle] != SKNoTransition && [self canGoToNextPage])
+    if (hasNavigation && autohidesCursor && transitionController && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (void)goToPreviousPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+    if (hasNavigation && autohidesCursor && transitionController && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];

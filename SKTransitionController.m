@@ -416,6 +416,45 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     }
 }
 
+- (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        [self setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
+        [self setDuration:fmaxf([transitionDurationField floatValue], 0.0)];
+        [self setShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
+    }
+}
+
+- (void)chooseTransitionModalForWindow:(NSWindow *)window {
+    if (transitionSheet == nil) {
+        if (NO == [NSBundle loadNibNamed:@"TransitionSheet" owner:self]) {
+            NSLog(@"Failed to load TransitionSheet.nib");
+            return;
+        }
+        NSArray *filterNames = [SKTransitionController transitionFilterNames];
+        int i, count = [filterNames count];
+        for (i = 0; i < count; i++) {
+            NSString *name = [filterNames objectAtIndex:i];
+            [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
+            NSMenuItem *item = [transitionStylePopUpButton lastItem];
+            [item setTag:SKCoreImageTransition + i];
+        }
+    }
+    [transitionStylePopUpButton selectItemWithTag:[self transitionStyle]];
+    [transitionDurationField setFloatValue:[self duration]];
+    [transitionDurationSlider setFloatValue:[self duration]];
+    [transitionExtentMatrix selectCellWithTag:(int)[self shouldRestrict]];
+	[NSApp beginSheet:transitionSheet
+       modalForWindow:window
+        modalDelegate:self 
+       didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissTransitionSheet:(id)sender {
+    [NSApp endSheet:transitionSheet returnCode:[sender tag]];
+    [transitionSheet orderOut:self];
+}
+
 @end
 
 #pragma mark -
