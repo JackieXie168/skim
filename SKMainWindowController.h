@@ -70,12 +70,11 @@ typedef struct _SKPDFViewState {
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
     
-    IBOutlet SKPDFView          *pdfView;
-    IBOutlet BDSKEdgeView       *pdfEdgeView;
-    
     IBOutlet SKSplitView        *pdfSplitView;
-    IBOutlet SKSecondaryPDFView *secondaryPdfView;
+    IBOutlet BDSKEdgeView       *pdfEdgeView;
+    IBOutlet SKPDFView          *pdfView;
     IBOutlet BDSKEdgeView       *secondaryPdfEdgeView;
+    IBOutlet SKSecondaryPDFView *secondaryPdfView;
     
     IBOutlet NSView             *leftSideContentView;
     IBOutlet NSView             *leftSideView;
@@ -101,7 +100,7 @@ typedef struct _SKPDFViewState {
     
     SKStatusBar                 *statusBar;
     
-    IBOutlet SKTocOutlineView      *outlineView;
+    IBOutlet SKTocOutlineView   *outlineView;
     IBOutlet NSView             *tocView;
     PDFOutline                  *pdfOutline;
     NSMutableArray              *pdfOutlineItems;
