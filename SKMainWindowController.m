@@ -1826,8 +1826,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton)
+    if (returnCode == NSOKButton) {
         [pdfView takePasswordFrom:[controller textField]];
+        if ([[pdfView document] isLocked] == NO)
+            [[self document] savePasswordInKeychain:[controller stringValue]];
+    }
 }
 
 - (IBAction)password:(id)sender {
@@ -4843,7 +4846,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(performFit:)) {
         return [self isFullScreen] == NO && [self isPresentation] == NO;
     } else if (action == @selector(password:)) {
-        return [self isPresentation] == NO && [[self pdfDocument] isEncrypted];
+        return [self isPresentation] == NO && [[self pdfDocument] isLocked];
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];

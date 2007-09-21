@@ -106,6 +106,8 @@ enum {
 
 - (NSArray *)fileIDStrings;
 
+- (void)savePasswordInKeychain:(NSString *)password;
+
 - (NSDictionary *)currentDocumentSetup;
 
 - (SKPDFSynchronizer *)synchronizer;
