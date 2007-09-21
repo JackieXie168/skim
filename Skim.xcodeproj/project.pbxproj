@@ -168,6 +168,7 @@
 		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
 		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
+		CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -573,6 +574,10 @@
 		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Resume.tiff; path = Images/Resume.tiff; sourceTree = "<group>"; };
 		CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSecondaryPDFView.h; sourceTree = "<group>"; };
 		CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSecondaryPDFView.m; sourceTree = "<group>"; };
+		CEAE38C30CA4399B00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
+		CEAE38CA0CA439F600849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
+		CEAE38CB0CA439FD00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
+		CEAE38CC0CA43A0200849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -779,6 +784,7 @@
 				CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */,
 				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
 				CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */,
+				CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -1339,6 +1345,7 @@
 				CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */,
 				CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */,
 				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
+				CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1783,6 +1790,17 @@
 				CEAA56600C6DE96F006BD633 /* Italian */,
 			);
 			name = DownloadsWindow.nib;
+			sourceTree = "<group>";
+		};
+		CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAE38C30CA4399B00849B0F /* English */,
+				CEAE38CA0CA439F600849B0F /* Dutch */,
+				CEAE38CB0CA439FD00849B0F /* French */,
+				CEAE38CC0CA43A0200849B0F /* Italian */,
+			);
+			name = TransitionSheet.nib;
 			sourceTree = "<group>";
 		};
 		CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */ = {

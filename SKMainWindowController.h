@@ -170,12 +170,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *passwordSheet;
     IBOutlet NSTextField        *passwordField;
     
-    IBOutlet NSWindow           *transitionSheet;
-    IBOutlet NSPopUpButton      *transitionStylePopUpButton;
-    IBOutlet NSTextField        *transitionDurationField;
-    IBOutlet NSSlider           *transitionDurationSlider;
-    IBOutlet NSMatrix           *transitionExtentMatrix;
-    
     SKProgressController        *progressController;
     
     NSButton                    *colorAccessoryView;
@@ -268,7 +262,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)dismissPasswordSheet:(id)sender;
 - (IBAction)savePDFSettingToDefaults:(id)sender;
 - (IBAction)chooseTransition:(id)sender;
-- (IBAction)dismissTransitionSheet:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor autoFits:(BOOL)autoFits display:(BOOL)display;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;

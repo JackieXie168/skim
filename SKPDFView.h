@@ -142,14 +142,7 @@ typedef enum _SKNoteType {
 
 - (void)toggleReadingBar;
 
-- (SKAnimationTransitionStyle)transitionStyle;
-- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
-
-- (float)transitionDuration;
-- (void)setTransitionDuration:(float)duration;
-
-- (BOOL)transitionShouldRestrict;
-- (void)setTransitionShouldRestrict:(BOOL)flag;
+- (SKTransitionController *)transitionController;
 
 - (SKTypeSelectHelper *)typeSelectHelper;
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;

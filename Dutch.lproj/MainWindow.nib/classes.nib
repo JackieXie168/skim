@@ -63,7 +63,6 @@
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
                 dismissPasswordSheet = id; 
-                dismissTransitionSheet = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doAutoScale = id; 
@@ -168,11 +167,6 @@
                 thumbnailView = NSView; 
                 tocView = NSView; 
                 toolModeButton = NSSegmentedControl; 
-                transitionDurationField = NSTextField; 
-                transitionDurationSlider = NSSlider; 
-                transitionExtentMatrix = NSMatrix; 
-                transitionSheet = NSWindow; 
-                transitionStylePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

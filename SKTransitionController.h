@@ -115,6 +115,12 @@ typedef enum _SKAnimationTransitionStyle {
 @class CIImage, SKTransitionView;
 
 @interface SKTransitionController : NSObject {
+    IBOutlet NSWindow           *transitionSheet;
+    IBOutlet NSPopUpButton      *transitionStylePopUpButton;
+    IBOutlet NSTextField        *transitionDurationField;
+    IBOutlet NSSlider           *transitionDurationSlider;
+    IBOutlet NSMatrix           *transitionExtentMatrix;
+    
     NSWindow *transitionWindow;
     SKTransitionView *transitionView;
     NSView *view;
@@ -144,5 +150,8 @@ typedef enum _SKAnimationTransitionStyle {
 
 - (void)prepareAnimationForRect:(NSRect)rect;
 - (void)animateForRect:(NSRect)rect forward:(BOOL)forward;
+
+- (void)chooseTransitionModalForWindow:(NSWindow *)window;
+- (IBAction)dismissTransitionSheet:(id)sender;
 
 @end

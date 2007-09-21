@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {dismissTransitionSheet = id; }; 
+            CLASS = SKTransitionController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                transitionDurationField = NSTextField; 
+                transitionDurationSlider = NSSlider; 
+                transitionExtentMatrix = NSMatrix; 
+                transitionSheet = NSWindow; 
+                transitionStylePopUpButton = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

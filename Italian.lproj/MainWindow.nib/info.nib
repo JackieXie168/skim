@@ -33,20 +33,19 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>511</integer>
-		<integer>539</integer>
-		<integer>628</integer>
-		<integer>743</integer>
-		<integer>224</integer>
-		<integer>256</integer>
-		<integer>5</integer>
-		<integer>553</integer>
-		<integer>502</integer>
-		<integer>314</integer>
-		<integer>168</integer>
 		<integer>676</integer>
+		<integer>256</integer>
+		<integer>168</integer>
+		<integer>553</integer>
 		<integer>208</integer>
+		<integer>224</integer>
+		<integer>511</integer>
+		<integer>5</integer>
 		<integer>677</integer>
+		<integer>314</integer>
+		<integer>502</integer>
+		<integer>539</integer>
+		<integer>743</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
