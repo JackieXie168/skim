@@ -348,22 +348,22 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         float width = [sud floatForKey:SKLeftSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [leftSideContentView frame];
-            frame.size.width = width;
-            if (usesDrawers == NO) {
-                [leftSideContentView setFrame:frame];
-            } else if (width > 0.0) {
-                [leftSideDrawer setContentSize:frame.size];
-                [leftSideDrawer openOnEdge:NSMinXEdge];
-            } else {
-                [leftSideDrawer close];
+            if (width > 0.0) {
+                frame.size.width = width;
+                if (usesDrawers == NO) {
+                    [leftSideContentView setFrame:frame];
+                } else {
+                    [leftSideDrawer setContentSize:frame.size];
+                    [leftSideDrawer openOnEdge:NSMinXEdge];
+                }
             }
         }
         width = [sud floatForKey:SKRightSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [rightSideContentView frame];
             frame.size.width = width;
-            frame.origin.x = NSMaxX([splitView frame]) - width;
             if (usesDrawers == NO) {
+                frame.origin.x = NSMaxX([splitView frame]) - width;
                 [rightSideContentView setFrame:frame];
             } else if (width > 0.0) {
                 [rightSideDrawer setContentSize:frame.size];
