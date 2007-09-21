@@ -216,4 +216,9 @@
     return [CIColor colorWithRed:[color redComponent] green:[color greenComponent] blue:[color blueComponent] alpha:[color alphaComponent]];
 }
 
++ (CIColor *)clearColor;
+{
+    return [self colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+}
+
 @end

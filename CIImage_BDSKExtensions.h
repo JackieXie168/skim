@@ -79,4 +79,6 @@
 
 + (CIColor *)colorWithNSColor:(NSColor *)color;
 
++ (CIColor *)clearColor;
+
 @end 
