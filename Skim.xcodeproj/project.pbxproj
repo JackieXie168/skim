@@ -169,6 +169,12 @@
 		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
 		CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */; };
+		CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEAE39040CA43E7300849B0F /* SKSheetController.h */; };
+		CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE39050CA43E7300849B0F /* SKSheetController.m */; };
+		CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE392A0CA441F700849B0F /* PageSheet.nib */; };
+		CEAE392F0CA4423A00849B0F /* ScaleSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE392D0CA4423A00849B0F /* ScaleSheet.nib */; };
+		CEAE39320CA4426B00849B0F /* PasswordSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE39300CA4426B00849B0F /* PasswordSheet.nib */; };
+		CEAE39350CA4429A00849B0F /* BookmarkSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE39330CA4429A00849B0F /* BookmarkSheet.nib */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -275,6 +281,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +585,24 @@
 		CEAE38CA0CA439F600849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAE38CB0CA439FD00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAE38CC0CA43A0200849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
+		CEAE39040CA43E7300849B0F /* SKSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSheetController.h; sourceTree = "<group>"; };
+		CEAE39050CA43E7300849B0F /* SKSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSheetController.m; sourceTree = "<group>"; };
+		CEAE392B0CA441F700849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PageSheet.nib; sourceTree = "<group>"; };
+		CEAE392E0CA4423A00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
+		CEAE39310CA4426B00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
+		CEAE39340CA4429A00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
+		CEAE39380CA442B900849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PageSheet.nib; sourceTree = "<group>"; };
+		CEAE39390CA442BC00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PageSheet.nib; sourceTree = "<group>"; };
+		CEAE393A0CA442C300849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PageSheet.nib; sourceTree = "<group>"; };
+		CEAE393D0CA442CE00849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
+		CEAE393E0CA442D100849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
+		CEAE393F0CA442D600849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
+		CEAE39450CA442E400849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
+		CEAE39460CA442E800849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
+		CEAE39470CA442F000849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
+		CEAE394B0CA442FB00849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
+		CEAE394C0CA442FE00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
+		CEAE394D0CA4430300849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -785,6 +810,10 @@
 				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
 				CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */,
 				CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */,
+				CEAE392A0CA441F700849B0F /* PageSheet.nib */,
+				CEAE392D0CA4423A00849B0F /* ScaleSheet.nib */,
+				CEAE39300CA4426B00849B0F /* PasswordSheet.nib */,
+				CEAE39330CA4429A00849B0F /* BookmarkSheet.nib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -937,6 +966,8 @@
 				F97751620B37461000DF673B /* SKPSProgressController.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
+				CEAE39040CA43E7300849B0F /* SKSheetController.h */,
+				CEAE39050CA43E7300849B0F /* SKSheetController.m */,
 				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
 				CE1ADEBE0C4C341100071840 /* SKTransitionController.m */,
 			);
@@ -1346,6 +1377,10 @@
 				CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */,
 				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
 				CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */,
+				CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */,
+				CEAE392F0CA4423A00849B0F /* ScaleSheet.nib in Resources */,
+				CEAE39320CA4426B00849B0F /* PasswordSheet.nib in Resources */,
+				CEAE39350CA4429A00849B0F /* BookmarkSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1567,6 +1602,7 @@
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
+				CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1801,6 +1837,50 @@
 				CEAE38CC0CA43A0200849B0F /* Italian */,
 			);
 			name = TransitionSheet.nib;
+			sourceTree = "<group>";
+		};
+		CEAE392A0CA441F700849B0F /* PageSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAE392B0CA441F700849B0F /* English */,
+				CEAE39380CA442B900849B0F /* Dutch */,
+				CEAE39390CA442BC00849B0F /* French */,
+				CEAE393A0CA442C300849B0F /* Italian */,
+			);
+			name = PageSheet.nib;
+			sourceTree = "<group>";
+		};
+		CEAE392D0CA4423A00849B0F /* ScaleSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAE392E0CA4423A00849B0F /* English */,
+				CEAE393D0CA442CE00849B0F /* Dutch */,
+				CEAE393E0CA442D100849B0F /* French */,
+				CEAE393F0CA442D600849B0F /* Italian */,
+			);
+			name = ScaleSheet.nib;
+			sourceTree = "<group>";
+		};
+		CEAE39300CA4426B00849B0F /* PasswordSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAE39310CA4426B00849B0F /* English */,
+				CEAE39450CA442E400849B0F /* Dutch */,
+				CEAE39460CA442E800849B0F /* French */,
+				CEAE39470CA442F000849B0F /* Italian */,
+			);
+			name = PasswordSheet.nib;
+			sourceTree = "<group>";
+		};
+		CEAE39330CA4429A00849B0F /* BookmarkSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAE39340CA4429A00849B0F /* English */,
+				CEAE394B0CA442FB00849B0F /* Dutch */,
+				CEAE394C0CA442FE00849B0F /* French */,
+				CEAE394D0CA4430300849B0F /* Italian */,
+			);
+			name = BookmarkSheet.nib;
 			sourceTree = "<group>";
 		};
 		CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */ = {

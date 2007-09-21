@@ -81,6 +81,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
+#import "SKSheetController.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -246,6 +247,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [colorAccessoryView release];
     [leftSideDrawer release];
     [rightSideDrawer release];
+    [pageSheetController release];
+    [scaleSheetController release];
+    [passwordSheetController release];
+    [bookmarkSheetController release];
     [super dealloc];
 }
 
@@ -1385,24 +1390,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView goToPreviousPage:sender];
 }
 
-- (void)choosePageSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
-        [self setPageLabel:[choosePageField stringValue]];
+        [self setPageLabel:[controller stringValue]];
 }
 
 - (IBAction)doGoToPage:(id)sender {
-    [choosePageField setStringValue:[self pageLabel]];
+    if (pageSheetController == nil)
+        pageSheetController = [[SKPageSheetController alloc] init];
     
-    [NSApp beginSheet: choosePageSheet
-       modalForWindow: [self window]
+    [pageSheetController setStringValue:[self pageLabel]];
+    
+    [pageSheetController beginSheetModalForWindow: [self window]
         modalDelegate: self
-       didEndSelector: @selector(choosePageSheetDidEnd:returnCode:contextInfo:)
+       didEndSelector: @selector(pageSheetDidEnd:returnCode:contextInfo:)
           contextInfo: nil];
-}
-
-- (IBAction)dismissChoosePageSheet:(id)sender {
-    [NSApp endSheet:choosePageSheet returnCode:[sender tag]];
-    [choosePageSheet orderOut:self];
 }
 
 - (IBAction)doGoBack:(id)sender {
@@ -1723,24 +1725,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 	}
 }
 
-- (void)chooseScaleSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
-        [pdfView setScaleFactor:[chooseScaleField intValue]];
+        [pdfView setScaleFactor:[[controller textField] intValue]];
 }
 
 - (IBAction)chooseScale:(id)sender {
-    [chooseScaleField setIntValue:[pdfView scaleFactor]];
+    if (scaleSheetController == nil)
+        scaleSheetController = [[SKScaleSheetController alloc] init];
     
-    [NSApp beginSheet: chooseScaleSheet
-       modalForWindow: [self window]
+    [[scaleSheetController textField] setIntValue:[pdfView scaleFactor]];
+    
+    [scaleSheetController beginSheetModalForWindow: [self window]
         modalDelegate: self
-       didEndSelector: @selector(chooseScaleSheetDidEnd:returnCode:contextInfo:)
+       didEndSelector: @selector(scaleSheetDidEnd:returnCode:contextInfo:)
           contextInfo: nil];
-}
-
-- (IBAction)dismissChooseScaleSheet:(id)sender {
-    [NSApp endSheet:chooseScaleSheet returnCode:[sender tag]];
-    [chooseScaleSheet orderOut:self];
 }
 
 - (IBAction)changeToolMode:(id)sender {
@@ -1823,22 +1822,19 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [[self window] setFrame:frame display:[[self window] isVisible]];
 }
 
-- (void)passwordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
-        [pdfView takePasswordFrom:passwordField];
+        [pdfView takePasswordFrom:[controller textField]];
 }
 
 - (IBAction)password:(id)sender {
-	[NSApp beginSheet:passwordSheet
-       modalForWindow:[self window]
+    if (passwordSheetController == nil)
+        passwordSheetController = [[SKPasswordSheetController alloc] init];
+    
+    [passwordSheetController beginSheetModalForWindow: [self window]
         modalDelegate:self 
        didEndSelector:@selector(passwordSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
-}
-
-- (IBAction)dismissPasswordSheet:(id)sender {
-    [NSApp endSheet:passwordSheet returnCode:[sender tag]];
-    [passwordSheet orderOut:self];
 }
 
 - (IBAction)toggleReadingBar:(id)sender {
@@ -2765,29 +2761,26 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Bookmarks
 
-- (void)bookmarkSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *path = [[self document] fileName];
-        NSString *label = [bookmarkField stringValue];
+        NSString *label = [controller stringValue];
         unsigned int pageIndex = [[pdfView currentPage] pageIndex];
         [bmController addBookmarkForPath:path pageIndex:pageIndex label:label];
     }
 }
 
 - (IBAction)addBookmark:(id)sender {
-	[bookmarkField setStringValue:[[self document] displayName]];
+    if (bookmarkSheetController == nil)
+        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
     
-    [NSApp beginSheet:bookmarkSheet
-       modalForWindow:[self window]
+	[bookmarkSheetController setStringValue:[[self document] displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self window]
         modalDelegate:self 
        didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
-}
-
-- (IBAction)dismissBookmarkSheet:(id)sender {
-    [NSApp endSheet:bookmarkSheet returnCode:[sender tag]];
-    [bookmarkSheet orderOut:self];
 }
 
 #pragma mark Notification handlers

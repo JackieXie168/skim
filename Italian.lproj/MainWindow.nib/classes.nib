@@ -59,10 +59,6 @@
                 createNewNote = id; 
                 crop = id; 
                 cropAll = id; 
-                dismissBookmarkSheet = id; 
-                dismissChoosePageSheet = id; 
-                dismissChooseScaleSheet = id; 
-                dismissPasswordSheet = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doAutoScale = id; 
@@ -111,12 +107,6 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backForwardButton = NSSegmentedControl; 
-                bookmarkField = NSTextField; 
-                bookmarkSheet = NSWindow; 
-                choosePageField = NSTextField; 
-                choosePageSheet = NSWindow; 
-                chooseScaleField = NSTextField; 
-                chooseScaleSheet = NSWindow; 
                 circlePopUpButton = BDSKImagePopUpButton; 
                 colorSwatch = SKColorSwatch; 
                 currentLeftSideView = NSView; 
@@ -143,8 +133,6 @@
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
-                passwordField = NSTextField; 
-                passwordSheet = NSWindow; 
                 pdfEdgeView = BDSKEdgeView; 
                 pdfSplitView = SKSplitView; 
                 pdfView = SKPDFView; 
