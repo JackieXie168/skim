@@ -256,6 +256,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)windowDidLoad{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSRect frame;
     
     settingUpWindow = YES;
     
@@ -273,15 +274,17 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
-    NSRect frame = [leftSideButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
-    [leftSideButton setFrame:frame];
+    if (usesDrawers == NO) {
+        frame = [leftSideButton frame];
+        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        [leftSideButton setFrame:frame];
+        frame = [rightSideButton frame];
+        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        [rightSideButton setFrame:frame];
+    }
+    
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
-    
-    frame = [rightSideButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
-    [rightSideButton setFrame:frame];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
