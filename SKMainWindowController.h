@@ -65,7 +65,7 @@ typedef struct _SKPDFViewState {
 
 @class PDFOutline, SKThumbnail;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
@@ -158,17 +158,10 @@ typedef struct _SKPDFViewState {
     NSMutableDictionary         *toolbarItems;
     NSToolbarItem               *colorSwatchToolbarItem;
     
-    IBOutlet NSWindow           *choosePageSheet;
-    IBOutlet NSTextField        *choosePageField;
-    
-    IBOutlet NSWindow           *chooseScaleSheet;
-    IBOutlet NSTextField        *chooseScaleField;
-    
-    IBOutlet NSWindow           *bookmarkSheet;
-    IBOutlet NSTextField        *bookmarkField;
-    
-    IBOutlet NSWindow           *passwordSheet;
-    IBOutlet NSTextField        *passwordField;
+    SKPageSheetController       *pageSheetController;
+    SKScaleSheetController      *scaleSheetController;
+    SKPasswordSheetController   *passwordSheetController;
+    SKBookmarkSheetController   *bookmarkSheetController;
     
     SKProgressController        *progressController;
     
@@ -217,7 +210,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
 - (IBAction)doGoToPage:(id)sender;
-- (IBAction)dismissChoosePageSheet:(id)sender;
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
 - (IBAction)goBackOrForward:(id)sender;
@@ -244,7 +236,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)chooseScale:(id)sender;
-- (IBAction)dismissChooseScaleSheet:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
 - (IBAction)toggleRightSidePane:(id)sender;
@@ -259,7 +250,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)togglePresentation:(id)sender;
 - (IBAction)performFit:(id)sender;
 - (IBAction)password:(id)sender;
-- (IBAction)dismissPasswordSheet:(id)sender;
 - (IBAction)savePDFSettingToDefaults:(id)sender;
 - (IBAction)chooseTransition:(id)sender;
 
@@ -343,7 +333,6 @@ typedef struct _SKPDFViewState {
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (IBAction)addBookmark:(id)sender;
-- (IBAction)dismissBookmarkSheet:(id)sender;
 
 - (void)registerForNotifications;
 - (void)registerForDocumentNotifications;
