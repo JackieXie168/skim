@@ -1896,7 +1896,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
         [[SKPDFHoverWindow sharedHoverWindow] hide];
-        if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
+        if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
         else
             [leftSideWindow expand];
@@ -1906,16 +1906,18 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         else
             [self showLeftSideWindowOnScreen:[[self window] screen]];
     } else if (usesDrawers) {
-        int state = [leftSideDrawer state];
-        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+        if ([self leftSidePaneIsOpen]) {
+            if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
+                [[SKPDFHoverWindow sharedHoverWindow] hide];
             [leftSideDrawer close];
-        else
+        } else {
             [leftSideDrawer openOnEdge:NSMinXEdge];
+        }
     } else {
         NSRect sideFrame = [leftSideContentBox frame];
         NSRect pdfFrame = [pdfSplitView frame];
         
-        if (NSWidth(sideFrame) > 0.0) {
+        if ([self leftSidePaneIsOpen]) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
                 [[SKPDFHoverWindow sharedHoverWindow] hide];
             lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
@@ -1940,13 +1942,17 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (IBAction)toggleRightSidePane:(id)sender {
     if ([self isFullScreen]) {
-        if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
+        if ([self rightSidePaneIsOpen])
             [rightSideWindow collapse];
         else
             [rightSideWindow expand];
+    } else if ([self isPresentation]) {
+        if ([rightSideWindow isVisible])
+            [self hideRightSideWindow];
+        else
+            [self showRightSideWindowOnScreen:[[self window] screen]];
     } else if (usesDrawers) {
-        int state = [rightSideDrawer state];
-        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+        if ([self rightSidePaneIsOpen])
             [rightSideDrawer close];
         else
             [rightSideDrawer openOnEdge:NSMaxXEdge];
@@ -1954,7 +1960,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSRect sideFrame = [rightSideContentBox frame];
         NSRect pdfFrame = [pdfSplitView frame];
         
-        if (NSWidth(sideFrame) > 1.0) {
+        if ([self rightSidePaneIsOpen]) {
             lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastRightSidePaneWidth;
             sideFrame.size.width = 0.0;
