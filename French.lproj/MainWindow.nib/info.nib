@@ -28,15 +28,13 @@
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBLockedObjects</key>
-	<array>
-		<integer>208</integer>
-	</array>
+	<array/>
 	<key>IBOpenObjects</key>
 	<array>
+		<integer>256</integer>
 		<integer>5</integer>
 		<integer>760</integer>
 		<integer>502</integer>
-		<integer>256</integer>
 		<integer>314</integer>
 	</array>
 	<key>IBSystem Version</key>
