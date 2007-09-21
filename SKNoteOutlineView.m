@@ -280,7 +280,7 @@
 }
 
 - (IBAction)selectNoteTypes:(id)sender {
-    if (NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
+    if (noteTypeSheet == nil && NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
         NSLog(@"Failed to load NoteTypeSheet.nib");
         return;
     }
