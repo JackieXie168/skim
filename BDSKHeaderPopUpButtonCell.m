@@ -185,7 +185,7 @@ NSRect BDSKCenterRect(NSRect rect, NSSize size, BOOL flipped)
 	[path closePath];
     
     [NSGraphicsContext saveGraphicsState];
-	[[NSColor blackColor] set];
+	[[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] set];
 	[path fill];
     [NSGraphicsContext restoreGraphicsState];
 
