@@ -1401,6 +1401,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (pageSheetController == nil)
         pageSheetController = [[SKPageSheetController alloc] init];
     
+    [pageSheetController setObjectValues:pageLabels];
     [pageSheetController setStringValue:[self pageLabel]];
     
     [pageSheetController beginSheetModalForWindow: [self window]

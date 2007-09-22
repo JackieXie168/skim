@@ -9,10 +9,9 @@
                 transitionDurationField = NSTextField; 
                 transitionDurationSlider = NSSlider; 
                 transitionExtentMatrix = NSMatrix; 
-                transitionSheet = NSWindow; 
                 transitionStylePopUpButton = NSPopUpButton; 
             }; 
-            SUPERCLASS = NSObject; 
+            SUPERCLASS = NSWindowController; 
         }
     ); 
     IBVersion = 1; 

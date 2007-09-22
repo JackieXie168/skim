@@ -92,13 +92,11 @@
 }
 
 - (NSString *)stringValue {
-    [self window];
-    return [textField stringValue];
+    return [[self textField] stringValue];
 }
 
 - (void)setStringValue:(NSString *)string {
-    [self window];
-    [textField setStringValue:string];
+    [[self textField] setStringValue:string];
 }
 
 @end
@@ -110,12 +108,12 @@
 - (NSString *)windowNibName { return @"PageSheet"; }
 
 - (NSArray *)objectValues {
-    return [(NSComboBox *)textField objectValues];
+    return [(NSComboBox *)[self textField] objectValues];
 }
 
 - (void)setObjectValues:(NSArray *)objects {
-    [(NSComboBox *)textField removeAllItems];
-    [(NSComboBox *)textField addItemsWithObjectValues:objects];
+    [(NSComboBox *)[self textField] removeAllItems];
+    [(NSComboBox *)[self textField] addItemsWithObjectValues:objects];
 }
 
 @end
