@@ -613,14 +613,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)goToNextPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
+    if (hasNavigation && autohidesCursor && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (void)goToPreviousPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+    if (hasNavigation && autohidesCursor && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
