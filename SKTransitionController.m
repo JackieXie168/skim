@@ -112,9 +112,21 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
-    [transitionWindow release];
     [initialImage release];
     [super dealloc];
+}
+
+- (NSString *)windowNibName { return @"TransitionSheet"; }
+
+- (void)windowDidLoad {
+    NSArray *filterNames = [[self class] transitionFilterNames];
+    int i, count = [filterNames count];
+    for (i = 0; i < count; i++) {
+        NSString *name = [filterNames objectAtIndex:i];
+        [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
+        NSMenuItem *item = [transitionStylePopUpButton lastItem];
+        [item setTag:SKCoreImageTransition + i];
+    }
 }
 
 - (NSView *)view {
@@ -416,6 +428,8 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     }
 }
 
+#pragma mark Setup sheet
+
 - (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         [self setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
@@ -425,25 +439,12 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)chooseTransitionModalForWindow:(NSWindow *)window {
-    if (transitionSheet == nil) {
-        if (NO == [NSBundle loadNibNamed:@"TransitionSheet" owner:self]) {
-            NSLog(@"Failed to load TransitionSheet.nib");
-            return;
-        }
-        NSArray *filterNames = [SKTransitionController transitionFilterNames];
-        int i, count = [filterNames count];
-        for (i = 0; i < count; i++) {
-            NSString *name = [filterNames objectAtIndex:i];
-            [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
-            NSMenuItem *item = [transitionStylePopUpButton lastItem];
-            [item setTag:SKCoreImageTransition + i];
-        }
-    }
+    [self window];
     [transitionStylePopUpButton selectItemWithTag:[self transitionStyle]];
     [transitionDurationField setFloatValue:[self duration]];
     [transitionDurationSlider setFloatValue:[self duration]];
     [transitionExtentMatrix selectCellWithTag:(int)[self shouldRestrict]];
-	[NSApp beginSheet:transitionSheet
+	[NSApp beginSheet:[self window]
        modalForWindow:window
         modalDelegate:self 
        didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
@@ -451,8 +452,8 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (IBAction)dismissTransitionSheet:(id)sender {
-    [NSApp endSheet:transitionSheet returnCode:[sender tag]];
-    [transitionSheet orderOut:self];
+    [NSApp endSheet:[self window] returnCode:[sender tag]];
+    [[self window] orderOut:self];
 }
 
 @end
