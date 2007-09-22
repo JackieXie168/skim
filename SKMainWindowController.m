@@ -1960,6 +1960,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
     [secondaryPdfView goToPage:page];
     [[secondaryPdfView documentView] scrollPoint:point];
+    [secondaryPdfView layoutDocumentView];
 }
 
 - (IBAction)toggleSplitPDF:(id)sender {
@@ -1995,7 +1996,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [pdfSplitView addSubview:secondaryPdfEdgeView];
         }
         
-        [secondaryPdfView layoutDocumentView];
         [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];
     }
     
