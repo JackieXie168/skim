@@ -106,7 +106,7 @@ static float SKPopUpMenuFontSize = 11.0;
         shadowRect.size.height += 1.0;
 		shadowRect = [self convertRect:shadowRect fromView:[scalePopUpButton superview]];
         if (NSIntersectsRect(rect, shadowRect)) {
-            [[NSColor lightGrayColor] set];
+            [[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] set];
             NSRectFill(shadowRect);
         }
     }
