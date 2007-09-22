@@ -4898,32 +4898,33 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
     if ([sender isEqual:splitView]) {
-        NSView *leftView = [[sender subviews] objectAtIndex:0];
-        NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
-        NSView *rightView = [[sender subviews] objectAtIndex:2];
-        NSRect leftFrame = [leftView frame];
-        NSRect mainFrame = [mainView frame];
-        NSRect rightFrame = [rightView frame];
-        
-        if (NSWidth(leftFrame) <= 1.0)
-            leftFrame.size.width = 0.0;
-        if (NSWidth(rightFrame) <= 1.0)
-            rightFrame.size.width = 0.0;
-        
-        mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
-        
-        if (NSWidth(mainFrame) < 0.0) {
-            float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftFrame) + NSWidth(rightFrame));
-            leftFrame.size.width = floorf(resizeFactor * NSWidth(leftFrame));
-            rightFrame.size.width = floorf(resizeFactor * NSWidth(rightFrame));
+        if (usesDrawers == NO) {
+            NSView *leftView = [[sender subviews] objectAtIndex:0];
+            NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
+            NSView *rightView = [[sender subviews] objectAtIndex:2];
+            NSRect leftFrame = [leftView frame];
+            NSRect mainFrame = [mainView frame];
+            NSRect rightFrame = [rightView frame];
+            
+            if (NSWidth(leftFrame) <= 1.0)
+                leftFrame.size.width = 0.0;
+            if (NSWidth(rightFrame) <= 1.0)
+                rightFrame.size.width = 0.0;
+            
             mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
+            
+            if (NSWidth(mainFrame) < 0.0) {
+                float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftFrame) + NSWidth(rightFrame));
+                leftFrame.size.width = floorf(resizeFactor * NSWidth(leftFrame));
+                rightFrame.size.width = floorf(resizeFactor * NSWidth(rightFrame));
+                mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
+            }
+            mainFrame.origin.x = NSMaxX(leftFrame) + [sender dividerThickness];
+            rightFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
+            [leftView setFrame:leftFrame];
+            [rightView setFrame:rightFrame];
+            [mainView setFrame:mainFrame];
         }
-        mainFrame.origin.x = NSMaxX(leftFrame) + [sender dividerThickness];
-        rightFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
-        [leftView setFrame:leftFrame];
-        [rightView setFrame:rightFrame];
-        [mainView setFrame:mainFrame];
-        
         [sender adjustSubviews];
     } else if ([sender isEqual:pdfSplitView]) {
         if ([[sender subviews] count] > 1) {
@@ -4957,13 +4958,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
     id sender = [notification object];
-    if ([sender isEqual:splitView] || sender == nil) {
-        if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
-            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentView frame]) forKey:SKLeftSidePaneWidthKey];
-            [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentView frame]) forKey:SKRightSidePaneWidthKey];
-        }
+    if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && settingUpWindow == NO && usesDrawers == NO) {
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentView frame]) forKey:SKLeftSidePaneWidthKey];
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentView frame]) forKey:SKRightSidePaneWidthKey];
     }
 }
+
+#pragma mark NSDrawer delegate protocol
 
 - (NSSize)drawerWillResizeContents:(NSDrawer *)sender toSize:(NSSize)contentSize {
     if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
