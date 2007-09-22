@@ -175,7 +175,7 @@ NSRect BDSKCenterRect(NSRect rect, NSSize size, BOOL flipped)
 	float height = 4.0 - controlSize;
 	float totalHeight = 3.0 + 2 * height;
 	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path moveToPoint:NSMakePoint(NSMaxX(cellFrame) - 7.5 + controlSize, NSMidY(cellFrame) - 0.5f * totalHeight)];
+	[path moveToPoint:NSMakePoint(NSMaxX(cellFrame) - 7.5 + controlSize, floorf(NSMidY(cellFrame) - 0.5f * totalHeight))];
 	[path relativeLineToPoint:NSMakePoint(-0.5f * width, height)];
 	[path relativeLineToPoint:NSMakePoint(width, 0.0)];
 	[path closePath];
