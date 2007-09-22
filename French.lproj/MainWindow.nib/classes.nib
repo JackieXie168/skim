@@ -144,8 +144,6 @@
                 rightSideView = NSView; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
-                secondaryPdfEdgeView = BDSKEdgeView; 
-                secondaryPdfView = SKSecondaryPDFView; 
                 snapshotArrayController = NSArrayController; 
                 snapshotTableView = SKSnapshotTableView; 
                 snapshotView = NSView; 

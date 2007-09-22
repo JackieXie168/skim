@@ -251,6 +251,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [scaleSheetController release];
     [passwordSheetController release];
     [bookmarkSheetController release];
+    [secondaryPdfEdgeView release];
     [super dealloc];
 }
 
@@ -269,8 +270,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
     
     [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
-	[secondaryPdfEdgeView setColor:[NSColor lightGrayColor] forEdge:NSMaxYEdge];
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
@@ -298,7 +297,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideContentView addSubview:rightSideView];
     
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-    [secondaryPdfView setFrame:[[secondaryPdfEdgeView contentView] bounds]];
     
     if (usesDrawers) {
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
@@ -350,7 +348,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
-    [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
     
     if ([sud objectForKey:SKLeftSidePaneWidthKey]) {
         float width = [sud floatForKey:SKLeftSidePaneWidthKey];
@@ -917,6 +914,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
+        
+        [secondaryPdfView setDocument:document];
         
         [self registerForDocumentNotifications];
         
@@ -1969,22 +1968,33 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
     } else {
         
-        NSRect ignored, frame1, frame2;
+        NSRect frame1, frame2, tmpFrame = [pdfSplitView bounds];
         
-        frame1 = [pdfSplitView bounds];
-        NSDivideRect(frame1, &frame1, &frame2, roundf(0.7 * NSHeight(frame1)), NSMaxYEdge);
-        NSDivideRect(frame2, &ignored, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
+        NSDivideRect(tmpFrame, &frame1, &frame2, roundf(0.7 * NSHeight(tmpFrame)), NSMaxYEdge);
+        NSDivideRect(frame2, &tmpFrame, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
         
         [pdfEdgeView setFrame:frame1];
         
-        [secondaryPdfEdgeView setFrame:frame2];
-        [pdfSplitView addSubview:secondaryPdfEdgeView];
+        if (secondaryPdfView == nil) {
+            secondaryPdfEdgeView = [[BDSKEdgeView alloc] initWithFrame:frame2];
+            [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+            [secondaryPdfEdgeView setColor:[NSColor lightGrayColor] forEdge:NSMaxYEdge];
+            secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[[secondaryPdfEdgeView contentView] bounds]];
+            [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [secondaryPdfEdgeView addSubview:secondaryPdfView];
+            [secondaryPdfView release];
+            [pdfSplitView addSubview:secondaryPdfEdgeView];
+            // Because of a PDFView bug, display properties can not be changed before it is placed in a window
+            [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
+            [secondaryPdfView setDisplaysPageBreaks:NO];
+            [secondaryPdfView setAutoScales:YES];
+            [secondaryPdfView setDocument:[pdfView document]];
+        } else {
+            [secondaryPdfEdgeView setFrame:frame2];
+            [pdfSplitView addSubview:secondaryPdfEdgeView];
+        }
         
-        [secondaryPdfView setDocument:[pdfView document]];
-        [secondaryPdfView setDisplaysPageBreaks:NO];
-        [secondaryPdfView setAutoScales:YES];
         [secondaryPdfView layoutDocumentView];
-        [secondaryPdfView goToPage:[pdfView currentPage]];
         [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];
     }
     
