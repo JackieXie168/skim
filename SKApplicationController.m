@@ -377,7 +377,7 @@
 }
 
 - (void)saveCurrentOpenDocuments:(id)sender {
-    //[[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
 }
 
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create {
