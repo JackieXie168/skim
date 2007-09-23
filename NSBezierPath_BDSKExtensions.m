@@ -241,7 +241,7 @@
 + (NSBezierPath *)bezierPathWithBottomRoundRectInRect:(NSRect)rect radius:(float)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, 0.5f * fminf(NSHeight(rect), NSWidth(rect)));
+    radius = fminf(radius, fminf(NSHeight(rect), 0.5f * NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
