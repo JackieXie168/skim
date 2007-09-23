@@ -289,21 +289,29 @@
 }
 
 - (void)drawRect:(NSRect)aRect {
-    NSRect ignored, topRect, bottomRect, rect;
+    NSRect ignored, topRect, bottomRect, rect = [self bounds];
     NSPoint startPoint, endPoint;
     
-    NSDivideRect([self bounds], &ignored, &rect, -CONTENT_INSET, edge);
     NSDivideRect(rect, &topRect, &ignored, 2.0 * CORNER_RADIUS, NSMaxYEdge);
     NSDivideRect(rect, &bottomRect, &ignored, 2.0 * CORNER_RADIUS, NSMinYEdge);
     
     [NSGraphicsContext saveGraphicsState];
     
-    [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:topRect radius:CORNER_RADIUS];
-    [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:bottomRect radius:CORNER_RADIUS];
-    [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
+    if (edge == NSMinXEdge) {
+        [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
+        [NSBezierPath fillRightRoundRectInRect:topRect radius:CORNER_RADIUS];
+        [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
+        [NSBezierPath fillRightRoundRectInRect:bottomRect radius:CORNER_RADIUS];
+        [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
+        [NSBezierPath fillRightRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
+    } else {
+        [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
+        [NSBezierPath fillLeftRoundRectInRect:topRect radius:CORNER_RADIUS];
+        [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
+        [NSBezierPath fillLeftRoundRectInRect:bottomRect radius:CORNER_RADIUS];
+        [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
+        [NSBezierPath fillLeftRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
+    }
     
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
