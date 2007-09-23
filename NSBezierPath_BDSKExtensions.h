@@ -42,7 +42,19 @@
 
 + (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius;
 + (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius;
-+ (NSBezierPath*)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath *)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)fillLeftRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)fillRightRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)strokeRightRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)fillTopRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)strokeTopRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath *)bezierPathWithTopRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)fillBottomRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)strokeBottomRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath *)bezierPathWithBottomRoundRectInRect:(NSRect)rect radius:(float)radius;
 
 + (void)drawHighlightInRect:(NSRect)rect radius:(float)radius lineWidth:(float)lineWidth color:(NSColor *)color;
 
