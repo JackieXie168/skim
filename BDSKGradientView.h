@@ -44,7 +44,6 @@
     @private
     CIColor *startColor;
     CIColor *endColor;
-    BOOL drawsGradient;
 }
 
 - (void)setLowerColor:(NSColor *)color;
@@ -53,8 +52,5 @@
 // for subclassers
 - (CIColor *)lowerColor;
 - (CIColor *)upperColor;
-
-- (BOOL)drawsGradient;
-- (void)setDrawsGradient:(BOOL)flag;
 
 @end

@@ -52,7 +52,6 @@
 {
     self = [super initWithFrame:frame];
     [self setDefaultColors];
-    drawsGradient = YES;
     return self;
 }
 
@@ -66,7 +65,7 @@
 - (void)drawRect:(NSRect)aRect
 {
     // fill entire view, not just the (possibly clipped) aRect
-    if (drawsGradient)
+    if ([[self window] styleMask] & NSClosableWindowMask)
         [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[self upperColor] endColor:[self lowerColor]];
 }
 
@@ -86,20 +85,8 @@
 - (CIColor *)lowerColor { return endColor; }
 - (CIColor *)upperColor { return startColor; }
 
-- (BOOL)drawsGradient {
-    return drawsGradient;
-}
-
-- (void)setDrawsGradient:(BOOL)flag {
-    if (drawsGradient != flag) {
-        drawsGradient = flag;
-        [self setNeedsDisplay:YES];
-    }
-}
-
-
 // required in order for redisplay to work properly with the controls
-- (BOOL)isOpaque{  return [self drawsGradient]; }
+- (BOOL)isOpaque{  return ([[self window] styleMask] & NSClosableWindowMask) != 0; }
 - (BOOL)isFlipped { return NO; }
 
 @end

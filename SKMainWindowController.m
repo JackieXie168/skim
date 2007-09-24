@@ -303,14 +303,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [leftSideDrawer setParentWindow:[self window]];
         [leftSideDrawer setContentView:leftSideContentView];
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-        [leftSideGradientView setDrawsGradient:NO];
         [leftSideDrawer openOnEdge:NSMinXEdge];
         [leftSideDrawer setDelegate:self];
         rightSideDrawer = [[NSDrawer alloc] initWithContentSize:[rightSideContentView frame].size preferredEdge:NSMaxXEdge];
         [rightSideDrawer setParentWindow:[self window]];
         [rightSideDrawer setContentView:rightSideContentView];
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
-        [rightSideGradientView setDrawsGradient:NO];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [rightSideDrawer setDelegate:self];
         [pdfSplitView setFrame:[splitView bounds]];
@@ -2031,7 +2029,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     if (usesDrawers == NO) {
         [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-        [leftSideGradientView setDrawsGradient:NO];
     }
     
     if ([self isPresentation]) {
@@ -2061,7 +2058,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     if (usesDrawers == NO) {
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
-        [rightSideGradientView setDrawsGradient:NO];
     }
     
     if ([self isPresentation]) {
@@ -2087,7 +2083,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         if (usesDrawers == NO) {
             [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-            [leftSideGradientView setDrawsGradient:YES];
         }
         
         if ([self isPresentation]) {
@@ -2110,7 +2105,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         if (usesDrawers == NO) {
             [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-            [rightSideGradientView setDrawsGradient:YES];
         }
         
         if ([self isPresentation]) {
