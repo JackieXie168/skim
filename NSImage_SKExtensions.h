@@ -40,7 +40,13 @@
 
 
 @interface NSImage (SKExtensions)
+
 + (void)makeAdornImages;
+
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
 + (NSImage *)imageWithIconForToolboxCode:(OSType)code;
+
+- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
+- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
+
 @end

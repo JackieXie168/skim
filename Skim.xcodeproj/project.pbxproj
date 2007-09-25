@@ -1495,12 +1495,15 @@
 				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/French.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/French.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Spanish.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/Spanish.lproj/Skim Help/version.texi",
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/Italian.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/French.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Spanish.lproj/Skim Help/Skim Help.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

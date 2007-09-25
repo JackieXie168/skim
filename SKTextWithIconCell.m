@@ -37,6 +37,7 @@
  */
 
 #import "SKTextWithIconCell.h"
+#import "NSImage_SKExtensions.h"
 
 // Almost all of this code is copy-and-paste from OmniAppKit/OATextWithIconCell, with some simplifications for features we're not interested in
 
@@ -102,16 +103,7 @@ NSDivideRect(textRect, &ignored, &textRect, BORDER_BETWEEN_IMAGE_AND_TEXT, NSMin
     imageRect.origin.y += 0.5 * (NSHeight(imageRect) - imageSize.height);
     imageRect.origin.y = [controlView isFlipped] ? ceilf(NSMinY(imageRect))  : floorf(NSMinY(imageRect));
     imageRect.size = imageSize;
-    [NSGraphicsContext saveGraphicsState];
-    if ([controlView isFlipped]) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        [transform translateXBy:0.0 yBy:NSMaxY(imageRect)];
-        [transform scaleXBy:1.0 yBy:-1.0];
-        [transform translateXBy:0.0 yBy:-NSMinY(imageRect)];
-        [transform concat];
-    }
-    [[self icon] drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-	[NSGraphicsContext restoreGraphicsState];
+    [[self icon] drawFlipped:[controlView isFlipped] inRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(int)selStart length:(int)selLength {

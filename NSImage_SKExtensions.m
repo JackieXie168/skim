@@ -571,4 +571,22 @@
     return [self iconWithSize:NSMakeSize(32,32) forToolboxCode:code];
 }
 
+- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    [NSGraphicsContext saveGraphicsState];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:0.0 yBy:NSMaxY(dstRect)];
+    [transform scaleXBy:1.0 yBy:-1.0];
+    [transform translateXBy:0.0 yBy:-NSMinY(dstRect)];
+    [transform concat];
+    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    if (isFlipped)
+        [self drawFlippedInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    else
+        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+}
+
 @end
