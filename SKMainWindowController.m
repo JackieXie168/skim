@@ -903,6 +903,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [snapshots makeObjectsPerformSelector:@selector(close)];
             [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
             
+            [pdfOutline release];
+            pdfOutline = nil;
+            [pdfOutlineItems removeAllObjects];
+            
             [lastViewedPages removeAllObjects];
             
             [self unregisterForDocumentNotifications];
