@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = SKBookmarkSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKSheetController; 
+        }, 
+        {
+            CLASS = SKPageSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKSheetController; 
+        }, 
+        {
+            CLASS = SKPasswordSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKSheetController; 
+        }, 
+        {
+            CLASS = SKScaleSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = SKSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textField = NSTextField; theModalDelegate = id; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {readNotes = id; saveArchive = id; }; 
+            CLASS = SKDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {readNotesAccessoryView = NSView; replaceNotesCheckButton = NSButton; }; 
+            SUPERCLASS = NSDocument; 
+        }
+    ); 
+    IBVersion = 1; 
+}
