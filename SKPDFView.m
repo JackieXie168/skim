@@ -602,14 +602,21 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 #pragma mark Actions
 
 - (void)animateTransitionForNextPage:(BOOL)next {
-    NSRect rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [[self transitionController] prepareAnimationForRect:rect];
+    unsigned int index = [[self currentPage] pageIndex];
+    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++index : --index] label]];
+    NSRect rect;
+    if (shouldAnimate) {
+        rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+        [[self transitionController] prepareAnimationForRect:rect];
+    }
     if (next)
         [super goToNextPage:self];
     else
         [super goToPreviousPage:self];
-    rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [[self transitionController] animateForRect:rect forward:next];
+    if (shouldAnimate) {
+        rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+        [[self transitionController] animateForRect:rect forward:next];
+    }
 }
 
 - (void)goToNextPage:(id)sender {
