@@ -839,14 +839,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfOutline release];
     pdfOutline = [[pdfDoc outlineRoot] retain];
     [pdfOutlineItems removeAllObjects];
-    if (pdfOutline) {
-        updatingOutlineSelection = YES;
-        [outlineView reloadData];
-        if ([outlineView numberOfRows] == 1)
-            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-        updatingOutlineSelection = NO;
-        [self updateOutlineSelection];
+    
+    updatingOutlineSelection = YES;
+    // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
+    [outlineView reloadData];
+    if ([outlineView numberOfRows] == 1)
+        [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+    updatingOutlineSelection = NO;
+    [self updateOutlineSelection];
+    
+    // handle the case as above where the outline has disappeared in a reload situation
+    if (nil == pdfOutline && currentLeftSideView == tocView) {
+        [self fadeInThumbnailView];
+        [leftSideButton setSelectedSegment:SKThumbnailSidePaneState];
     }
+
     [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
 }
 
