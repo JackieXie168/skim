@@ -412,7 +412,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // Go to page?
     if ([sud boolForKey:SKRememberLastPageViewedKey]) {
         unsigned int pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
-        if (pageIndex != NSNotFound)
+        if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
     }
     
