@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# displayline (Skim)
+#
+# Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
+
+# get arguments
+line=$1
+if [ "${0%forward-search.sh}" != "$0" ]; then
+# if called as forward-search.sh, the order of arguments is different
+source="$2"
+file="$3"
+else
+file="$2"
+[ $# -gt 2 ] && source="$3" || source="${file%.pdf}.tex"
+fi
+
+# expand relative paths
+[ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
+[ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
+
+# call the AppleScript
+exec /usr/bin/osascript \
+  -e "tell application \"Skim\"" \
+  -e "activate" \
+  -e "open POSIX file \"${file}\"" \
+  -e "tell front document to go to TeX line ${line} from POSIX file \"${source}\"" \
+  -e "end tell"

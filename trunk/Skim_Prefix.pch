@@ -1,0 +1,46 @@
+//
+// Prefix header for all source files of the 'Skim' target in the 'Skim' project
+//
+
+#ifdef __OBJC__
+
+    #import <Cocoa/Cocoa.h>
+    #import <objc/objc-class.h>
+    #import <Quartz/Quartz.h>
+
+    #define __SKFILENAMEASNSSTRING \
+      [[NSString stringWithCString:__FILE__] lastPathComponent]
+
+    #if defined (DEBUG)
+
+        #define log_method() \
+          NSLog(@"%@[%@ %@] (%@ line %d)", CLS_GETINFO((struct objc_class *)(self->isa), CLS_META) ? @"+" : @"-", \
+          [self class], NSStringFromSelector(_cmd), __SKFILENAMEASNSSTRING, __LINE__)
+
+        #define log_function() \
+          NSLog(@"%s (%@ line %d)", __PRETTY_FUNCTION__, __SKFILENAMEASNSSTRING, __LINE__)
+
+    #else
+
+       #define log_method();
+       #define log_function();
+
+    #endif
+
+#else
+
+/* this should work for C or C++ */
+
+    #if defined (DEBUG)
+
+       #define log_function() \
+         fprintf(stderr, "%s (%s line %d)", __PRETTY_FUNCTION__, __FILENAME__, __LINE__) \
+         fflush(stderr);
+    
+    #else
+    
+       #define log_function();
+
+    #endif
+
+#endif
