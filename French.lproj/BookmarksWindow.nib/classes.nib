@@ -38,7 +38,8 @@
             OUTLETS = {leftCell = id; rightCell = id; }; 
             SUPERCLASS = NSControl; 
         }, 
-        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
+        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = SKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
     ); 
     IBVersion = 1; 
 }
