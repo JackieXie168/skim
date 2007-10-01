@@ -50,8 +50,6 @@
 #define CONDITIONTAG_CONTAIN @"~"
 #define CONDITIONTAG_SMALLER @"<"
 #define CONDITIONTAG_SMALLER_OR_EQUAL @"<="
-#define CONDITIONTAG_LARGER @">"
-#define CONDITIONTAG_LARGER_OR_EQUAL @">="
 
 /*
        single tag: <$key/>
@@ -67,10 +65,6 @@
                or: <$key<value?> <?$key?> </$key?>
                or: <$key<=value?> </$key?>
                or: <$key<=value?> <?$key?> </$key?>
-               or: <$key>value?> </$key?>
-               or: <$key>value?> <?$key?> </$key?>
-               or: <$key>=value?> </$key?>
-               or: <$key>=value?> <?$key?> </$key?>
 */
 
 enum {
@@ -79,8 +73,6 @@ enum {
     SKConditionTagMatchContain,
     SKConditionTagMatchSmaller,
     SKConditionTagMatchSmallerOrEqual,
-    SKConditionTagMatchLarger,
-    SKConditionTagMatchLargerOrEqual
 };
 
 @implementation SKTemplateParser
@@ -155,8 +147,6 @@ static NSMutableDictionary *equalConditionDict = nil;
 static NSMutableDictionary *containConditionDict = nil;
 static NSMutableDictionary *smallerConditionDict = nil;
 static NSMutableDictionary *smallerOrEqualConditionDict = nil;
-static NSMutableDictionary *largerConditionDict = nil;
-static NSMutableDictionary *largerOrEqualConditionDict = nil;
 static inline NSString *compareConditionTagWithTag(NSString *tag, int matchType){
     NSString *altTag = nil;
     switch (matchType) {
@@ -194,24 +184,6 @@ static inline NSString *compareConditionTagWithTag(NSString *tag, int matchType)
             if(nil == altTag){
                 altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_SMALLER_OR_EQUAL];
                 [smallerOrEqualConditionDict setObject:altTag forKey:tag];
-            }
-            break;
-        case SKConditionTagMatchLarger:
-            if(nil == largerConditionDict)
-                largerConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [largerConditionDict objectForKey:tag];
-            if(nil == altTag){
-                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_LARGER];
-                [largerConditionDict setObject:altTag forKey:tag];
-            }
-            break;
-        case SKConditionTagMatchLargerOrEqual:
-            if(nil == largerOrEqualConditionDict)
-                largerOrEqualConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [largerOrEqualConditionDict objectForKey:tag];
-            if(nil == altTag){
-                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_LARGER_OR_EQUAL];
-                [largerOrEqualConditionDict setObject:altTag forKey:tag];
             }
             break;
     }
@@ -352,14 +324,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
                     matchType = SKConditionTagMatchSmaller;
-                } else if ([scanner scanString:CONDITIONTAG_LARGER_OR_EQUAL intoString:nil]) {
-                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
-                        matchString = @"";
-                    matchType = SKConditionTagMatchLargerOrEqual;
-                } else if ([scanner scanString:CONDITIONTAG_LARGER intoString:nil]) {
-                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
-                        matchString = @"";
-                    matchType = SKConditionTagMatchLarger;
                 }
                 
                 if ([scanner scanString:CONDITIONTAG_CLOSE_DELIM intoString:nil]) {
@@ -414,25 +378,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         subTemplate = nil;
                         for (i = 0; i < count; i++) {
                             matchString = [matchStrings objectAtIndex:i];
-                            int comparison = [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString];
                             switch (matchType) {
-                                 case SKConditionTagMatchEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedSame;
+                                case SKConditionTagMatchEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] caseInsensitiveCompare:matchString] == NSOrderedSame;
                                     break;
                                 case SKConditionTagMatchContain:
                                     isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
                                     break;
                                 case SKConditionTagMatchSmaller:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedAscending;
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
                                     break;
                                 case SKConditionTagMatchSmallerOrEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedDescending;
-                                    break;
-                                case SKConditionTagMatchLarger:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedDescending;
-                                    break;
-                                case SKConditionTagMatchLargerOrEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedAscending;
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
                                     break;
                                 default:
                                     isMatch = [keyValue isNotEmpty];
@@ -593,14 +550,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
                     matchType = SKConditionTagMatchSmaller;
-                } else if ([scanner scanString:CONDITIONTAG_LARGER_OR_EQUAL intoString:nil]) {
-                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
-                        matchString = @"";
-                    matchType = SKConditionTagMatchLargerOrEqual;
-                } else if ([scanner scanString:CONDITIONTAG_LARGER intoString:nil]) {
-                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
-                        matchString = @"";
-                    matchType = SKConditionTagMatchLarger;
                 }
                 
                 if ([scanner scanString:CONDITIONTAG_CLOSE_DELIM intoString:nil]) {
@@ -658,25 +607,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         subTemplate = nil;
                         for (i = 0; i < count; i++) {
                             matchString = [matchStrings objectAtIndex:i];
-                            int comparison = [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString];
                             switch (matchType) {
-                                 case SKConditionTagMatchEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedSame;
+                                case SKConditionTagMatchEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] caseInsensitiveCompare:matchString] == NSOrderedSame;
                                     break;
                                 case SKConditionTagMatchContain:
                                     isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
                                     break;
                                 case SKConditionTagMatchSmaller:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedAscending;
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
                                     break;
                                 case SKConditionTagMatchSmallerOrEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedDescending;
-                                    break;
-                                case SKConditionTagMatchLarger:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedDescending;
-                                    break;
-                                case SKConditionTagMatchLargerOrEqual:
-                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedAscending;
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
                                     break;
                                 default:
                                     isMatch = [keyValue isNotEmpty];
