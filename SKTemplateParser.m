@@ -48,6 +48,10 @@
 #define CONDITIONTAG_CLOSE_DELIM @"?>"
 #define CONDITIONTAG_EQUAL @"="
 #define CONDITIONTAG_CONTAIN @"~"
+#define CONDITIONTAG_SMALLER @"<"
+#define CONDITIONTAG_SMALLER_OR_EQUAL @"<="
+#define CONDITIONTAG_LARGER @">"
+#define CONDITIONTAG_LARGER_OR_EQUAL @">="
 
 /*
        single tag: <$key/>
@@ -59,7 +63,25 @@
                or: <$key=value?> <?$key?> </$key?>
                or: <$key~value?> </$key?>
                or: <$key~value?> <?$key?> </$key?>
+               or: <$key<value?> </$key?>
+               or: <$key<value?> <?$key?> </$key?>
+               or: <$key<=value?> </$key?>
+               or: <$key<=value?> <?$key?> </$key?>
+               or: <$key>value?> </$key?>
+               or: <$key>value?> <?$key?> </$key?>
+               or: <$key>=value?> </$key?>
+               or: <$key>=value?> <?$key?> </$key?>
 */
+
+enum {
+    SKConditionTagMatchOther,
+    SKConditionTagMatchEqual,
+    SKConditionTagMatchContain,
+    SKConditionTagMatchSmaller,
+    SKConditionTagMatchSmallerOrEqual,
+    SKConditionTagMatchLarger,
+    SKConditionTagMatchLargerOrEqual
+};
 
 @implementation SKTemplateParser
 
@@ -130,29 +152,70 @@ static inline NSString *altConditionTagWithTag(NSString *tag){
 }
 
 static NSMutableDictionary *equalConditionDict = nil;
-static inline NSString *equalConditionTagWithTag(NSString *tag){
-    if(nil == equalConditionDict)
-        equalConditionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *equalTag = [equalConditionDict objectForKey:tag];
-    if(nil == equalTag){
-        equalTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_EQUAL];
-        [equalConditionDict setObject:equalTag forKey:tag];
-    }
-    return equalTag;
-}
-
 static NSMutableDictionary *containConditionDict = nil;
-static inline NSString *containConditionTagWithTag(NSString *tag){
-    if(nil == containConditionDict)
-        containConditionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *containTag = [containConditionDict objectForKey:tag];
-    if(nil == containTag){
-        containTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_CONTAIN];
-        [containConditionDict setObject:containTag forKey:tag];
+static NSMutableDictionary *smallerConditionDict = nil;
+static NSMutableDictionary *smallerOrEqualConditionDict = nil;
+static NSMutableDictionary *largerConditionDict = nil;
+static NSMutableDictionary *largerOrEqualConditionDict = nil;
+static inline NSString *compareConditionTagWithTag(NSString *tag, int matchType){
+    NSString *altTag = nil;
+    switch (matchType) {
+        case SKConditionTagMatchEqual:
+            if(nil == equalConditionDict)
+                equalConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [equalConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_EQUAL];
+                [equalConditionDict setObject:altTag forKey:tag];
+            }
+            break;
+        case SKConditionTagMatchContain:
+            if(nil == containConditionDict)
+                containConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [containConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_CONTAIN];
+                [containConditionDict setObject:altTag forKey:tag];
+            }
+            break;
+        case SKConditionTagMatchSmaller:
+            if(nil == smallerConditionDict)
+                smallerConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [smallerConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_SMALLER];
+                [smallerConditionDict setObject:altTag forKey:tag];
+            }
+            break;
+        case SKConditionTagMatchSmallerOrEqual:
+            if(nil == smallerOrEqualConditionDict)
+                smallerOrEqualConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [smallerOrEqualConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_SMALLER_OR_EQUAL];
+                [smallerOrEqualConditionDict setObject:altTag forKey:tag];
+            }
+            break;
+        case SKConditionTagMatchLarger:
+            if(nil == largerConditionDict)
+                largerConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [largerConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_LARGER];
+                [largerConditionDict setObject:altTag forKey:tag];
+            }
+            break;
+        case SKConditionTagMatchLargerOrEqual:
+            if(nil == largerOrEqualConditionDict)
+                largerOrEqualConditionDict = [[NSMutableDictionary alloc] init];
+            altTag = [largerOrEqualConditionDict objectForKey:tag];
+            if(nil == altTag){
+                altTag = [NSString stringWithFormat:@"%@%@%@", SEPTAG_OPEN_DELIM, tag, CONDITIONTAG_LARGER_OR_EQUAL];
+                [largerOrEqualConditionDict setObject:altTag forKey:tag];
+            }
+            break;
     }
-    return containTag;
+    return altTag;
 }
 
 static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, NSString *endDelim, NSString **argString){
@@ -271,17 +334,32 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             } else {
                 
                 NSString *matchString = nil;
-                BOOL matchEqual = NO;
-                BOOL matchContain = NO;
+                int matchType = SKConditionTagMatchOther;
                 
                 if ([scanner scanString:CONDITIONTAG_EQUAL intoString:nil]) {
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
-                    matchEqual = YES;
+                    matchType = SKConditionTagMatchEqual;
                 } else if ([scanner scanString:CONDITIONTAG_CONTAIN intoString:nil]) {
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
-                    matchContain = YES;
+                    matchType = SKConditionTagMatchContain;
+                } else if ([scanner scanString:CONDITIONTAG_SMALLER_OR_EQUAL intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchSmallerOrEqual;
+                } else if ([scanner scanString:CONDITIONTAG_SMALLER intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchSmaller;
+                } else if ([scanner scanString:CONDITIONTAG_LARGER_OR_EQUAL intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchLargerOrEqual;
+                } else if ([scanner scanString:CONDITIONTAG_LARGER intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchLarger;
                 }
                 
                 if ([scanner scanString:CONDITIONTAG_CLOSE_DELIM intoString:nil]) {
@@ -313,8 +391,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         subTemplates = [[NSMutableArray alloc] init];
                         matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ? matchString : @"", nil];
                         
-                        if (matchEqual || matchContain) {
-                            altTag = matchEqual ? equalConditionTagWithTag(tag) : containConditionTagWithTag(tag);
+                        if (matchType != SKConditionTagMatchOther) {
+                            altTag = compareConditionTagWithTag(tag, matchType);
                             altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITIONTAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
@@ -335,12 +413,30 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         count = [matchStrings count];
                         subTemplate = nil;
                         for (i = 0; i < count; i++) {
-                            isMatch = [keyValue isNotEmpty];
                             matchString = [matchStrings objectAtIndex:i];
-                            if (matchEqual) {
-                                isMatch = [matchString isEqualToString:@""] ? NO == isMatch : [[keyValue stringDescription] caseInsensitiveCompare:matchString] == NSOrderedSame;
-                            } else if (matchContain) {
-                                isMatch = [matchString isEqualToString:@""] ? NO == isMatch : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                            int comparison = [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString];
+                            switch (matchType) {
+                                 case SKConditionTagMatchEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedSame;
+                                    break;
+                                case SKConditionTagMatchContain:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                                    break;
+                                case SKConditionTagMatchSmaller:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedAscending;
+                                    break;
+                                case SKConditionTagMatchSmallerOrEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedDescending;
+                                    break;
+                                case SKConditionTagMatchLarger:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedDescending;
+                                    break;
+                                case SKConditionTagMatchLargerOrEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedAscending;
+                                    break;
+                                default:
+                                    isMatch = [keyValue isNotEmpty];
+                                    break;
                             }
                             if (isMatch) {
                                 subTemplate = [subTemplates objectAtIndex:i];
@@ -479,17 +575,32 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             } else {
                 
                 NSString *matchString = nil;
-                BOOL matchEqual = NO;
-                BOOL matchContain = NO;
+                int matchType = SKConditionTagMatchOther;
                 
                 if ([scanner scanString:CONDITIONTAG_EQUAL intoString:nil]) {
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
-                    matchEqual = YES;
+                    matchType = SKConditionTagMatchEqual;
                 } else if ([scanner scanString:CONDITIONTAG_CONTAIN intoString:nil]) {
                     if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
                         matchString = @"";
-                    matchContain = YES;
+                    matchType = SKConditionTagMatchContain;
+                } else if ([scanner scanString:CONDITIONTAG_SMALLER_OR_EQUAL intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchSmallerOrEqual;
+                } else if ([scanner scanString:CONDITIONTAG_SMALLER intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchSmaller;
+                } else if ([scanner scanString:CONDITIONTAG_LARGER_OR_EQUAL intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchLargerOrEqual;
+                } else if ([scanner scanString:CONDITIONTAG_LARGER intoString:nil]) {
+                    if([scanner scanUpToString:CONDITIONTAG_CLOSE_DELIM intoString:&matchString] == NO)
+                        matchString = @"";
+                    matchType = SKConditionTagMatchLarger;
                 }
                 
                 if ([scanner scanString:CONDITIONTAG_CLOSE_DELIM intoString:nil]) {
@@ -523,8 +634,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         subTemplates = [[NSMutableArray alloc] init];
                         matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ? matchString : @"", nil];
                         
-                        if (matchEqual || matchContain) {
-                            altTag = matchEqual ? equalConditionTagWithTag(tag) : containConditionTagWithTag(tag);
+                        if (matchType != SKConditionTagMatchOther) {
+                            altTag = compareConditionTagWithTag(tag, matchType);
                             altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITIONTAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
@@ -546,12 +657,30 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         count = [matchStrings count];
                         subTemplate = nil;
                         for (i = 0; i < count; i++) {
-                            isMatch = [keyValue isNotEmpty];
                             matchString = [matchStrings objectAtIndex:i];
-                            if (matchEqual) {
-                                isMatch = [matchString isEqualToString:@""] ? NO == isMatch : [[keyValue stringDescription] caseInsensitiveCompare:matchString] == NSOrderedSame;
-                            } else if (matchContain) {
-                                isMatch = [matchString isEqualToString:@""] ? NO == isMatch : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                            int comparison = [[keyValue stringDescription] localizedCaseInsensitiveNumericCompare:matchString];
+                            switch (matchType) {
+                                 case SKConditionTagMatchEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedSame;
+                                    break;
+                                case SKConditionTagMatchContain:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue stringDescription] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                                    break;
+                                case SKConditionTagMatchSmaller:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedAscending;
+                                    break;
+                                case SKConditionTagMatchSmallerOrEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedDescending;
+                                    break;
+                                case SKConditionTagMatchLarger:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison == NSOrderedDescending;
+                                    break;
+                                case SKConditionTagMatchLargerOrEqual:
+                                    isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : comparison != NSOrderedAscending;
+                                    break;
+                                default:
+                                    isMatch = [keyValue isNotEmpty];
+                                    break;
                             }
                             if (isMatch) {
                                 subTemplate = [subTemplates objectAtIndex:i];
