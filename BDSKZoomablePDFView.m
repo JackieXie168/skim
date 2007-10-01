@@ -102,7 +102,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         
         NSScrollView *scrollView = [self scrollView];
         [scrollView setAlwaysHasHorizontalScroller:YES];
-
+        
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
@@ -114,12 +114,16 @@ static float BDSKScaleMenuFontSize = 11.0;
         NSString *label;
         float width, maxWidth = 0.0;
         NSSize size = NSMakeSize(1000.0, 1000.0);
-        NSDictionary *attrs = [[scalePopUpButton attributedTitle] attributesAtIndex:0 effectiveRange:NULL];
+        NSDictionary *attrs = nil;
         unsigned maxIndex = 0;
-
+        
         // set a suitable font, the control size is 0, 1 or 2
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
-
+        
+        if ([[scalePopUpButton attributedTitle] length] == 0)
+            [scalePopUpButton setTitle:@"0"];
+        attrs = [[scalePopUpButton attributedTitle] attributesAtIndex:0 effectiveRange:NULL];
+        
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
             label = NSLocalizedStringFromTable(BDSKDefaultScaleMenuLabels[cnt], @"ZoomValues", nil);
@@ -137,20 +141,20 @@ static float BDSKScaleMenuFontSize = 11.0;
             [self setScaleFactor:0.0 adjustPopup:YES];
         else
             [self setScaleFactor:[self scaleFactor] adjustPopup:YES];
-
+        
         // hook it up
         [scalePopUpButton setTarget:self];
         [scalePopUpButton setAction:@selector(scalePopUpAction:)];
-
+        
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
-
+        
         // Make sure the popup is big enough to fit the largest cell
         cnt = [scalePopUpButton indexOfSelectedItem];
         [scalePopUpButton selectItemAtIndex:maxIndex];
         [scalePopUpButton sizeToFit];
         [scalePopUpButton selectItemAtIndex:cnt];
-
+        
         // put it in the scrollview
         [scrollView addSubview:scalePopUpButton];
         [scalePopUpButton release];
