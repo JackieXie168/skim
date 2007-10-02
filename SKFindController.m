@@ -137,8 +137,10 @@ static id sharedFindController = nil;
 
 - (IBAction)findNext:(id)sender {
     [self commitEditing];
-    [[self target] findString:findString options:[self findOptions] & ~NSBackwardsSearch];
-    [self updateFindPboard];
+    if ([findString length]) {
+        [[self target] findString:findString options:[self findOptions] & ~NSBackwardsSearch];
+        [self updateFindPboard];
+    }
 }
 
 - (IBAction)findNextAndOrderOutFindPanel:(id)sender {
@@ -148,8 +150,10 @@ static id sharedFindController = nil;
 
 - (IBAction)findPrevious:(id)sender {
     [self commitEditing];
-    [[self target] findString:findString options:[self findOptions] | NSBackwardsSearch];
-    [self updateFindPboard];
+    if ([findString length]) {
+        [[self target] findString:findString options:[self findOptions] | NSBackwardsSearch];
+        [self updateFindPboard];
+    }
 }
 
 - (IBAction)pickFindString:(id)sender {
