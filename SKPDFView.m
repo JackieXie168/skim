@@ -603,7 +603,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)animateTransitionForNextPage:(BOOL)next {
     unsigned int index = [[self currentPage] pageIndex];
-    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++index : --index] label]];
+    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++index : --index] label]] == NO;
     NSRect rect;
     if (shouldAnimate) {
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
