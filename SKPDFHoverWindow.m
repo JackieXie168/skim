@@ -176,6 +176,12 @@
     [super orderOut:sender];
 }
 
+- (void)hideWithTimer:(NSTimer *)aTimer {
+    [self stopTimer];
+    [animation stopAnimation];
+    [self hide];
+}
+
 - (void)showWithTimer:(NSTimer *)aTimer {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
@@ -317,6 +323,9 @@
             [animation setDelegate:self];
             [animation startAnimation];
         }
+        
+        timer = [[NSTimer scheduledTimerWithTimeInterval:7.0 target:self selector:@selector(hideWithTimer:) userInfo:NULL repeats:NO] retain];
+        
     } else {
         
         [self hide];
