@@ -23,11 +23,14 @@ fi
 # pass through cat to get them as raw bytes to preserve non-ASCII characters
 echo -ne "${line}\x00${file}\x00${source}" | \
 /usr/bin/osascript \
--e "set argv to do shell script \"/bin/cat\"" \
--e "set AppleScript's text item delimiters to ASCII character 0" \
--e "set {theLine, theFile, theSource} to text items of argv" \
--e "tell application \"Skim\"" \
--e "activate" \
--e "open (my POSIX file theFile)" \
--e "tell front document to go to TeX line (theLine as integer) from (my POSIX file theSource)" \
--e "end tell" --
+  -e "set theArgv to do shell script \"/bin/cat\"" \
+  -e "set AppleScript's text item delimiters to ASCII character 0" \
+  -e "set {theLine, theFile, theSource} to text items of theArgv" \
+  -e "set theLine to theLine as integer" \
+  -e "set theFile to POSIX file theFile" \
+  -e "set theSource to POSIX file theSource" \
+  -e "tell application \"Skim\"" \
+  -e "  activate" \
+  -e "  open theFile" \
+  -e "  tell front document to go to TeX line theLine from theSource" \
+  -e "end tell" -
