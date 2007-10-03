@@ -19,10 +19,6 @@ fi
 [ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
 [ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
 
-# call the AppleScript
-exec /usr/bin/osascript \
-  -e "tell application \"Skim\"" \
-  -e "activate" \
-  -e "open POSIX file \"${file}\"" \
-  -e "tell front document to go to TeX line ${line} from POSIX file \"${source}\"" \
-  -e "end tell"
+# pass NULL-separated arguments as stdin to osascript
+# the resource fork of this file is the compiled AppleScript
+echo -ne "${line}\x00${file}\x00${source}" | /usr/bin/osascript -- "$0"
