@@ -147,12 +147,8 @@ static float SKPopUpMenuFontSize = 11.0;
         NSString *label;
         float width, maxWidth = 0.0;
         NSSize size = NSMakeSize(1000.0, 1000.0);
-        NSDictionary *attrs = nil;
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[scalePopUpButton font], NSFontAttributeName, nil];
         unsigned maxIndex = 0;
-		
-        if ([[scalePopUpButton attributedTitle] length] == 0)
-            [scalePopUpButton setTitle:@"0"];
-        attrs = [[scalePopUpButton attributedTitle] attributesAtIndex:0 effectiveRange:NULL];
         
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
@@ -197,12 +193,8 @@ static float SKPopUpMenuFontSize = 11.0;
     NSString *label;
     float width, maxWidth = 0.0;
     NSSize size = NSMakeSize(1000.0, 1000.0);
-    NSDictionary *attrs = nil;
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
     unsigned maxIndex = 0;
-    
-    if ([[pagePopUpButton attributedTitle] length] == 0)
-        [pagePopUpButton setTitle:@"0"];
-    attrs = [[pagePopUpButton attributedTitle] attributesAtIndex:0 effectiveRange:NULL];
     
     while (count--)
         [pagePopUpButton removeItemAtIndex:count];
