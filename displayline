@@ -19,6 +19,15 @@ fi
 [ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
 [ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
 
-# pass NULL-separated arguments as stdin to osascript
-# the resource fork of this file is the compiled AppleScript
-echo -ne "${line}\x00${file}\x00${source}" | /usr/bin/osascript -- "$0"
+# pass arguments as NULL-separated string to osascript
+# pass through cat to get them as raw bytes to preserve non-ASCII characters
+echo -ne "${line}\x00${file}\x00${source}" | \
+/usr/bin/osascript \
+-e "set argv to do shell script \"/bin/cat\"" \
+-e "set AppleScript's text item delimiters to ASCII character 0" \
+-e "set {theLine, theFile, theSource} to text items of argv" \
+-e "tell application \"Skim\"" \
+-e "activate" \
+-e "open (my POSIX file theFile)" \
+-e "tell front document to go to TeX line (theLine as integer) from (my POSIX file theSource)" \
+-e "end tell" --
