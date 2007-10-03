@@ -4914,6 +4914,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
     if ([sender isEqual:splitView]) {
+        
         if (usesDrawers == NO) {
             NSView *leftView = [[sender subviews] objectAtIndex:0];
             NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
@@ -4921,55 +4922,52 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSRect leftFrame = [leftView frame];
             NSRect mainFrame = [mainView frame];
             NSRect rightFrame = [rightView frame];
+            float contentWidth = NSWidth([sender frame]) - 2 * [sender dividerThickness];
             
             if (NSWidth(leftFrame) <= 1.0)
                 leftFrame.size.width = 0.0;
             if (NSWidth(rightFrame) <= 1.0)
                 rightFrame.size.width = 0.0;
             
-            mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
-            
-            if (NSWidth(mainFrame) < 0.0) {
-                float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftFrame) + NSWidth(rightFrame));
+            if (contentWidth < NSWidth(leftFrame) + NSWidth(rightFrame)) {
+                float resizeFactor = contentWidth / (oldSize.width - [sender dividerThickness]);
                 leftFrame.size.width = floorf(resizeFactor * NSWidth(leftFrame));
                 rightFrame.size.width = floorf(resizeFactor * NSWidth(rightFrame));
-                mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftFrame) - NSWidth(rightFrame) - 2 * [sender dividerThickness];
             }
+            
+            mainFrame.size.width = contentWidth - NSWidth(leftFrame) - NSWidth(rightFrame);
             mainFrame.origin.x = NSMaxX(leftFrame) + [sender dividerThickness];
             rightFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
             [leftView setFrame:leftFrame];
             [rightView setFrame:rightFrame];
             [mainView setFrame:mainFrame];
         }
-        [sender adjustSubviews];
+        
     } else if ([sender isEqual:pdfSplitView]) {
+        
         if ([[sender subviews] count] > 1) {
             NSView *primaryView = [[sender subviews] objectAtIndex:0];
             NSView *secondaryView = [[sender subviews] objectAtIndex:1];
             NSRect primaryFrame = [primaryView frame];
             NSRect secondaryFrame = [secondaryView frame];
+            float contentHeight = NSHeight([sender frame]) - [sender dividerThickness];
             
             if (NSHeight(secondaryFrame) <= 1.0)
                 secondaryFrame.size.height = 0.0;
             
-            primaryFrame.size.height = NSHeight([sender frame]) - NSHeight(secondaryFrame)  - [sender dividerThickness];
+            if (contentHeight < NSHeight(secondaryFrame))
+                secondaryFrame.size.height = floorf(NSHeight(secondaryFrame) * contentHeight / (oldSize.height - [sender dividerThickness]));
             
-            if (NSHeight(primaryFrame) < 0.0) {
-                float resizeFactor = 1.0 + NSHeight(primaryFrame) / NSHeight(secondaryFrame);
-                secondaryFrame.size.height = floorf(resizeFactor * NSHeight(secondaryFrame));
-                primaryFrame.size.height = NSHeight([sender frame]) - NSHeight(secondaryFrame) - 2 * [sender dividerThickness];
-            }
+            primaryFrame.size.height = contentHeight - NSHeight(secondaryFrame);
             primaryFrame.origin.x = NSMaxY(secondaryFrame) + [sender dividerThickness];
             [primaryView setFrame:primaryFrame];
             [secondaryView setFrame:secondaryFrame];
-            
-            [sender adjustSubviews];
         } else {
-            NSView *primaryView = [[sender subviews] objectAtIndex:0];
-            [primaryView setFrame:[sender bounds]];
-            [sender adjustSubviews];
+            [[[sender subviews] objectAtIndex:0] setFrame:[sender bounds]];
         }
+        
     }
+    [sender adjustSubviews];
 }
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
