@@ -4938,6 +4938,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             mainFrame.size.width = contentWidth - NSWidth(leftFrame) - NSWidth(rightFrame);
             mainFrame.origin.x = NSMaxX(leftFrame) + [sender dividerThickness];
             rightFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
+            leftFrame.size.height = rightFrame.size.height = mainFrame.size.height = NSHeight([sender frame]);
             [leftView setFrame:leftFrame];
             [rightView setFrame:rightFrame];
             [mainView setFrame:mainFrame];
@@ -4960,6 +4961,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             
             primaryFrame.size.height = contentHeight - NSHeight(secondaryFrame);
             primaryFrame.origin.x = NSMaxY(secondaryFrame) + [sender dividerThickness];
+            primaryFrame.size.width = secondaryFrame.size.width = NSWidth([sender frame]);
             [primaryView setFrame:primaryFrame];
             [secondaryView setFrame:secondaryFrame];
         } else {
