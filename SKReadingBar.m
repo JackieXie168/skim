@@ -47,6 +47,7 @@
         page = nil;
         lineBounds = nil;
         currentLine = -1;
+        numberOfLines = 1;
     }
     return self;
 }
@@ -79,14 +80,26 @@
     currentLine = lineIndex;
 }
 
+- (int)currentLastLine {
+    return MIN([lineBounds count], currentLine + numberOfLines) - 1;
+}
+
 - (unsigned int)numberOfLines {
-    return [lineBounds count];
+    return numberOfLines;
+}
+
+- (void)setNumberOfLines:(unsigned int)number {
+    numberOfLines = number;
 }
 
 - (NSRect)currentBounds {
     if (page == nil || currentLine == -1)
         return NSZeroRect;
-    return [[lineBounds objectAtIndex:currentLine] rectValue];
+    NSRect rect = NSZeroRect;
+    int i, lastLine = [self currentLastLine];
+    for (i = currentLine; i <= lastLine; i++)
+        rect = NSUnionRect(rect, [[lineBounds objectAtIndex:i] rectValue]);
+    return rect;
 }
 
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box {
@@ -101,7 +114,7 @@
 
 - (BOOL)goToNextLine {
     BOOL didMove = NO;
-    if (currentLine < (int)[lineBounds count] - 1) {
+    if (currentLine < (int)[lineBounds count] - (int)numberOfLines) {
         ++currentLine;
         didMove = YES;
     } else if ([self goToNextPage]) {
@@ -118,7 +131,7 @@
         --currentLine;
         didMove =  YES;
     } else if ([self goToPreviousPage]) {
-        currentLine = [lineBounds count] - 1;
+        currentLine = MAX(0, (int)[lineBounds count] - (int)numberOfLines);
         didMove = YES;
     }
     return didMove;
