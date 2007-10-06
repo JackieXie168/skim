@@ -73,6 +73,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 #define ANCHORED_NOTE_SIZE SKMakeSquareSize(16.0)
 
+static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, BOOL lower);
+
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius);
 
@@ -103,6 +105,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
 - (void)resizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
 - (void)moveReadingBarForKey:(unichar)eventChar;
+- (void)resizeReadingBarForKey:(unichar)eventChar;
 
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
@@ -112,6 +115,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)selectWithEvent:(NSEvent *)theEvent;
 - (void)selectTextWithEvent:(NSEvent *)theEvent;
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
+- (void)resizeReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
 - (void)updateCursor;
@@ -920,6 +924,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setAnnotationMode:(annotationMode + 7) % 8];
         } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
             [self moveReadingBarForKey:eventChar];
+        } else if (readingBar && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) {
+            [self resizeReadingBarForKey:eventChar];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'n') {
@@ -983,7 +989,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         p = [self convertPoint:p toPage:page];
         
         if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
-            [self dragReadingBarWithEvent:theEvent];
+            if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
+                [self resizeReadingBarWithEvent:theEvent];
+            else
+                [self dragReadingBarWithEvent:theEvent];
         } else if (area == kPDFNoArea) {
             [self dragWithEvent:theEvent];
         } else {
@@ -2693,6 +2702,20 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
+- (void)resizeReadingBarForKey:(unichar)eventChar {
+    int numberOfLines = [readingBar numberOfLines];
+    if (eventChar == NSDownArrowFunctionKey)
+        numberOfLines++;
+    else if (eventChar == NSUpArrowFunctionKey)
+        numberOfLines--;
+    if (numberOfLines > 0) {
+        [readingBar setNumberOfLines:numberOfLines];
+        [self setNeedsDisplay:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", [readingBar page], @"newPage", nil]];
+    }
+}
+
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = NULL;
     NSArray *annotations;
@@ -3241,6 +3264,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSArray *lineBounds = [page lineBounds];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", nil];
     
+    NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
+    int lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineBounds, YES) - [readingBar currentLine];
+    
+    lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
+    
     [[NSCursor closedHandCursor] push];
     
 	while (YES) {
@@ -3253,26 +3282,63 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self documentView] autoscroll:theEvent];
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *currentPage = [self pageForPoint:mouseLoc nearest:YES];
-        
-        mouseLoc = [self convertPoint:mouseLoc toPage:currentPage];
+        NSPoint mouseLocInPage = [self convertPoint:mouseLoc toPage:currentPage];
+        NSPoint mouseLocInDocument = [self convertPoint:mouseLoc toView:[self documentView]];
+        int currentLine;
         
         if ([currentPage isEqual:page] == NO) {
             page = currentPage;
             lineBounds = [page lineBounds];
         }
         
-        int i, iMax = [lineBounds count];
+        if ([lineBounds count] == 0)
+            continue;
         
-        for (i = 0; i < iMax; i++) {
-            NSRect rect = [[lineBounds objectAtIndex:i] rectValue];
-            if (NSMinY(rect) <= mouseLoc.y && NSMaxY(rect) >= mouseLoc.y) {
-                [readingBar setPage:page];
-                [readingBar setCurrentLine:i];
-                [self setNeedsDisplay:YES];
-                [userInfo setObject:[readingBar page] forKey:@"newPage"];
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
-                break;
-            }
+        currentLine = SKIndexOfRectAtYInOrderedRects(mouseLocInPage.y, lineBounds, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
+        currentLine = MAX(0, MIN((int)[lineBounds count] - (int)[readingBar numberOfLines], currentLine));
+        
+        if ([page isEqual:[readingBar page]] == NO || currentLine != [readingBar currentLine]) {
+            [userInfo setObject:[readingBar page] forKey:@"oldPage"];
+            [readingBar setPage:currentPage];
+            [readingBar setCurrentLine:currentLine];
+            [self setNeedsDisplay:YES];
+            [userInfo setObject:[readingBar page] forKey:@"newPage"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
+            lastMouseLoc = mouseLocInDocument;
+        }
+    }
+    
+    [NSCursor pop];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+}
+
+- (void)resizeReadingBarWithEvent:(NSEvent *)theEvent {
+    PDFPage *page = [readingBar page];
+    int firstLine = [readingBar currentLine];
+    NSArray *lineBounds = [page lineBounds];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", page, @"newPage", nil];
+    
+    [[NSCursor resizeUpDownCursor] push];
+    
+	while (YES) {
+		
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		if ([theEvent type] == NSLeftMouseUp)
+            break;
+        
+        // dragging
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        if ([[self pageForPoint:mouseLoc nearest:YES] isEqual:page] == NO)
+            continue;
+        
+        mouseLoc = [self convertPoint:mouseLoc toPage:page];
+        int numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(mouseLoc.y, lineBounds, YES)) - firstLine + 1;
+        
+        if (numberOfLines > 0 && numberOfLines != (int)[readingBar numberOfLines]) {
+            [readingBar setNumberOfLines:numberOfLines];
+            [self setNeedsDisplay:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
     }
     
@@ -3569,8 +3635,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 p = [self convertPoint:p toPage:page];
                 PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
-                if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
-                    (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
+                if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
+                    cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
+                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode && annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote)
                     cursor = [NSCursor arrowCursor];
@@ -3663,6 +3730,24 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 @end
+
+static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, BOOL lower) 
+{
+    int i = 0, iMax = [rectValues count];
+    
+    for (i = 0; i < iMax; i++) {
+        NSRect rect = [[rectValues objectAtIndex:i] rectValue];
+        if (NSMaxY(rect) > y) {
+            if (NSMinY(rect) <= y)
+                break;
+        } else {
+            if (lower && i > 0)
+                i--;
+            break;
+        }
+    }
+    return MIN(i, iMax - 1);
+}
 
 #pragma mark Core Graphics extension
 

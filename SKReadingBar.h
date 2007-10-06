@@ -44,6 +44,7 @@
     PDFPage *page;
     NSArray *lineBounds;
     int currentLine;
+    unsigned int numberOfLines;
 }
 
 - (PDFPage *)page;
@@ -51,8 +52,10 @@
 
 - (int)currentLine;
 - (void)setCurrentLine:(int)lineIndex;
+- (int)currentLastLine;
 
 - (unsigned int)numberOfLines;
+- (void)setNumberOfLines:(unsigned int)number;
 
 - (NSRect)currentBounds;
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box;
