@@ -2686,6 +2686,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)moveReadingBarForKey:(unichar)eventChar {
     BOOL moved = NO;
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
+    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
     if (eventChar == NSDownArrowFunctionKey)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
@@ -2696,7 +2697,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         moved = [readingBar goToPreviousPage];
     if (moved) {
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
-        [self setNeedsDisplay:YES];
+        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [userInfo setObject:[readingBar page] forKey:@"newPage"];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
@@ -2709,8 +2710,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     else if (eventChar == NSUpArrowFunctionKey)
         numberOfLines--;
     if (numberOfLines > 0) {
+        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [readingBar setNumberOfLines:numberOfLines];
-        [self setNeedsDisplay:YES];
+        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", [readingBar page], @"newPage", nil]];
     }
@@ -3320,9 +3322,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         if ([page isEqual:[readingBar page]] == NO || currentLine != [readingBar currentLine]) {
             [userInfo setObject:[readingBar page] forKey:@"oldPage"];
+            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [readingBar setPage:currentPage];
             [readingBar setCurrentLine:currentLine];
-            [self setNeedsDisplay:YES];
+            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [userInfo setObject:[readingBar page] forKey:@"newPage"];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             lastMouseLoc = mouseLocInDocument;
@@ -3357,7 +3360,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         int numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(mouseLoc.y, lineBounds, YES)) - firstLine + 1;
         
         if (numberOfLines > 0 && numberOfLines != (int)[readingBar numberOfLines]) {
+            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [readingBar setNumberOfLines:numberOfLines];
+            [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [self setNeedsDisplay:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
         }
