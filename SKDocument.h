@@ -98,6 +98,7 @@ enum {
 
 - (SKPDFView *)pdfView;
 
+- (NSData *)notesData;
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
 - (NSFileWrapper *)notesRTFDFileWrapper;
