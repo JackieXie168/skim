@@ -924,7 +924,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setAnnotationMode:(annotationMode + 7) % 8];
         } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
             [self moveReadingBarForKey:eventChar];
-        } else if (readingBar && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask))) {
+        } else if (readingBar && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) {
             [self resizeReadingBarForKey:eventChar];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
             [self setAnnotationMode:SKFreeTextNote];
