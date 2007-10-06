@@ -3267,6 +3267,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
     int lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineBounds, YES) - [readingBar currentLine];
+    NSDate *lastPageChangeDate = [NSDate distantPast];
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
     
@@ -3279,8 +3280,28 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             break;
         
         // dragging
-        [[self documentView] autoscroll:theEvent];
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSPoint mouseLocInWindow = [theEvent locationInWindow];
+        NSPoint mouseLoc = [self convertPoint:mouseLocInWindow fromView:nil];
+        if ([[self documentView] autoscroll:theEvent] == NO &&
+            ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) &&
+            [[NSDate date] timeIntervalSinceDate:lastPageChangeDate] > 0.7) {
+            if (mouseLoc.y < NSMinY([self bounds])) {
+                if ([self canGoToNextPage]) {
+                    [self goToNextPage:self];
+                    lastMouseLoc.y = NSMaxY([[self documentView] bounds]);
+                    lastPageChangeDate = [NSDate date];
+                }
+            } else if (mouseLoc.y > NSMaxY([self bounds])) {
+                if ([self canGoToPreviousPage]) {
+                    [self goToPreviousPage:self];
+                    lastMouseLoc.y = NSMinY([[self documentView] bounds]);
+                    lastPageChangeDate = [NSDate date];
+                }
+            }
+        }
+        
+        mouseLoc = [self convertPoint:mouseLocInWindow fromView:nil];
+        
         PDFPage *currentPage = [self pageForPoint:mouseLoc nearest:YES];
         NSPoint mouseLocInPage = [self convertPoint:mouseLoc toPage:currentPage];
         NSPoint mouseLocInDocument = [self convertPoint:mouseLoc toView:[self documentView]];
