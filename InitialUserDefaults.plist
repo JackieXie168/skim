@@ -6,14 +6,14 @@
     <dict>
         <key>SKBackgroundColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
-	ZoM/AAAAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
+        ZoM/AAAAAYY=
+        </data>
         <key>SKFullScreenBackgroundColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
-	ZoM+gAAAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
+        ZoM+gAAAAYY=
+        </data>
         <key>SKLastOpenFileNames</key>
         <array/>
         <key>SKOpenContentsPaneOnlyForTOC</key>
@@ -47,9 +47,9 @@
         <false/>
         <key>SKSearchHighlightColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQAAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQAAAYY=
+        </data>
         <key>SKShouldHighlightSearchResults</key>
         <true/>
         <key>SKSnapshotsOnTop</key>
@@ -74,9 +74,9 @@
         <true/>
         <key>SKReadingBarColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQEAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQEAAYY=
+        </data>
         <key>SKReadingBarInvert</key>
         <false/>
         <key>SKAnchoredNoteFontName</key>
@@ -89,54 +89,54 @@
         <real>11.0</real>
         <key>SKFreeTextNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQGDPwAAAAGG
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQGDPwAAAAGG
+        </data>
         <key>SKAnchoredNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQGDPwAAAAGG
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQGDPwAAAAGG
+        </data>
         <key>SKCircleNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQAAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQAAAYY=
+        </data>
         <key>SKSquareNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAAEAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAAEAAYY=
+        </data>
         <key>SKHighlightNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQEAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQEAAYY=
+        </data>
         <key>SKUnderlineNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAIM/AAAAAAGG
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAIM/AAAAAAGG
+        </data>
         <key>SKStrikeOutNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAQAAAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQAAAYY=
+        </data>
         <key>SKLineNoteColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
-	ZmZmAAABAYY=
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAAABAYY=
+        </data>
         <key>SKCircleNoteInteriorColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
-	ZgAAhg==
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
+        ZgAAhg==
+        </data>
         <key>SKSquareNoteInteriorColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
-	ZgAAhg==
-	</data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
+        ZgAAhg==
+        </data>
         <key>SKFreeTextNoteLineWidth</key>
         <real>1.0</real>
         <key>SKFreeTextNoteLineStyle</key>
@@ -178,29 +178,29 @@
         <key>SKSwatchColors</key>
         <array>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAQAAAYY=
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAQAAAYY=
+            </data>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAYM/AAAAAAGG
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAYM/AAAAAAGG
+            </data>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAQEAAYY=
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAQEAAYY=
+            </data>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAAEAAYY=
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAAEAAYY=
+            </data>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAAABAYY=
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAAABAYY=
+            </data>
             <data>
-		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAQABAYY=
-		</data>
+            BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+            AWMBhARmZmZmAQABAYY=
+            </data>
         </array>
         <key>SKDefaultNoteWidth</key>
         <real>128.0</real>
@@ -248,8 +248,12 @@
         <integer>86400</integer>
         <key>SKShouldSetCreatorCode</key>
         <false/>
+        <key>SKShowStatusBar</key>
+        <true/>
+        <key>SKShowBookmarkStatusBar</key>
+        <true/>
     </dict>
-	<key>ResettableKeys</key>
+    <key>ResettableKeys</key>
     <dict>
         <key>general</key>
         <array>
