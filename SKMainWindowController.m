@@ -436,12 +436,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self performFit:self];
     
     // Open snapshots?
-    if ([sud boolForKey:SKRememberSnapshotsKey]) {
-        NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
-        NSDictionary *setup;
-        while (setup = [setupEnum nextObject])
-            [self showSnapshotWithSetup:setup];
-    }
+    if ([sud boolForKey:SKRememberSnapshotsKey])
+        [self showSnapshotWithSetups:[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]]];
     
     // typeSelectHelpers
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
@@ -946,10 +942,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self updatePageLabelsAndOutline];
         [self updateNoteSelection];
         
-        NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
-        NSDictionary *setup;
-        while (setup = [setupEnum nextObject])
-            [self showSnapshotWithSetup:setup];
+        [self showSnapshotWithSetups:snapshotDicts];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -2712,19 +2705,24 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [swc showWindow:self];
 }
 
-- (void)showSnapshotWithSetup:(NSDictionary *)setup {
-    SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
+- (void)showSnapshotWithSetups:(NSArray *)setups {
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    NSEnumerator *setupEnum = [setups objectEnumerator];
+    NSDictionary *setup;
     
-    [swc setDelegate:self];
-    
-    [swc setPdfDocument:[pdfView document] setup:setup];
-    
-    [swc setForceOnTop:[self isFullScreen] || [self isPresentation]];
-    [[swc window] setHidesOnDeactivate:snapshotsOnTop];
-    
-    [[self document] addWindowController:swc];
-    [swc release];
+    while (setup = [setupEnum nextObject]) {
+        SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
+        
+        [swc setDelegate:self];
+        
+        [swc setPdfDocument:[pdfView document] setup:setup];
+        
+        [swc setForceOnTop:[self isFullScreen] || [self isPresentation]];
+        [[swc window] setHidesOnDeactivate:snapshotsOnTop];
+        
+        [[self document] addWindowController:swc];
+        [swc release];
+    }
 }
 
 - (void)toggleSnapshots:(NSArray *)snapshotArray {
