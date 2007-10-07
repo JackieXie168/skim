@@ -84,6 +84,25 @@ enum {
     SKASBorderStyleUnderline = 'Undl'
 };
 
+#define TYPE_KEY                    @"type"
+#define BOUNDS_KEY                  @"bounds"
+#define PAGE_INDEX_KEY              @"pageIndex"
+#define CONTENTS_KEY                @"contents"
+#define COLOR_KEY                   @"color"
+#define LINE_WIDTH_KEY              @"lineWidth"
+#define BORDER_STYLE_KEY            @"borderStyle"
+#define DASH_PATTERN_KEY            @"dashPattern"
+#define INTERIOR_COLOR_KEY          @"interiorColor"
+#define QUADRILATERAL_POINTS_KEY    @"quadrilateralPoints"
+#define FONT_KEY                    @"font"
+#define ICON_TYPE_KEY               @"iconType"
+#define TEXT_KEY                    @"text"
+#define IMAGE_KEY                   @"image"
+#define START_LINE_STYLE_KEY        @"startLineStyle"
+#define END_LINE_STYLE_KEY          @"endLineStyle"
+#define START_POINT_KEY             @"startPoint"
+#define END_POINT_KEY               @"endPoint"
+
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
@@ -163,8 +182,8 @@ static IMP originalSetBorder = NULL;
 - (id)initWithDictionary:(NSDictionary *)dict{
     [[self initWithBounds:NSZeroRect] release];
     
-    NSString *type = [dict objectForKey:@"type"];
-    NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);
+    NSString *type = [dict objectForKey:TYPE_KEY];
+    NSRect bounds = NSRectFromString([dict objectForKey:BOUNDS_KEY]);
     Class annotationClass = NULL;
     
     if ([type isEqualToString:SKNoteString])
@@ -181,11 +200,11 @@ static IMP originalSetBorder = NULL;
         annotationClass = [SKPDFAnnotationLine class];
     
     if (self = [[annotationClass alloc] initWithBounds:bounds dictionary:dict]) {
-        NSString *contents = [dict objectForKey:@"contents"];
-        NSColor *color = [dict objectForKey:@"color"];
-        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
-        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
-        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        NSString *contents = [dict objectForKey:CONTENTS_KEY];
+        NSColor *color = [dict objectForKey:COLOR_KEY];
+        NSNumber *lineWidth = [dict objectForKey:LINE_WIDTH_KEY];
+        NSNumber *borderStyle = [dict objectForKey:BORDER_STYLE_KEY];
+        NSArray *dashPattern = [dict objectForKey:DASH_PATTERN_KEY];
         
         if (contents)
             originalSetContents(self, @selector(setContents:), contents);
@@ -210,15 +229,15 @@ static IMP originalSetBorder = NULL;
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:5];
-    [dict setValue:[self type] forKey:@"type"];
-    [dict setValue:[self contents] forKey:@"contents"];
-    [dict setValue:[self color] forKey:@"color"];
-    [dict setValue:NSStringFromRect([self bounds]) forKey:@"bounds"];
-    [dict setValue:[NSNumber numberWithUnsignedInt:[self pageIndex]] forKey:@"pageIndex"];
+    [dict setValue:[self type] forKey:TYPE_KEY];
+    [dict setValue:[self contents] forKey:CONTENTS_KEY];
+    [dict setValue:[self color] forKey:COLOR_KEY];
+    [dict setValue:NSStringFromRect([self bounds]) forKey:BOUNDS_KEY];
+    [dict setValue:[NSNumber numberWithUnsignedInt:[self pageIndex]] forKey:PAGE_INDEX_KEY];
     if ([self border]) {
-        [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
-        [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
-        [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
+        [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:LINE_WIDTH_KEY];
+        [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:BORDER_STYLE_KEY];
+        [dict setValue:[[self border] dashPattern] forKey:DASH_PATTERN_KEY];
     }
     return dict;
 }
@@ -635,7 +654,7 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     if (self = [self initWithBounds:bounds]) {
-        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
+        NSColor *interiorColor = [dict objectForKey:INTERIOR_COLOR_KEY];
         if (interiorColor)
             [super setInteriorColor:interiorColor];
     }
@@ -644,7 +663,7 @@ static IMP originalSetBorder = NULL;
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:[self interiorColor] forKey:@"interiorColor"];
+    [dict setValue:[self interiorColor] forKey:INTERIOR_COLOR_KEY];
     return dict;
 }
 
@@ -683,15 +702,7 @@ static IMP originalSetBorder = NULL;
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"richText"];
-    [properties removeObjectForKey:@"fontName"];
-    [properties removeObjectForKey:@"fontSize"];
-    [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"startPointAsQDPoint"];
-    [properties removeObjectForKey:@"endPointAsQDPoint"];
-    [properties removeObjectForKey:@"asStartLineStyle"];
-    [properties removeObjectForKey:@"asEndLineStyle"];
-    [properties removeObjectForKey:@"selectionSpecifier"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"fontName", @"fontSize", @"asIconType", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", @"selectionSpecifier", nil]];
     return properties;
 }
 
@@ -718,7 +729,7 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     if (self = [self initWithBounds:bounds]) {
-        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
+        NSColor *interiorColor = [dict objectForKey:INTERIOR_COLOR_KEY];
         if (interiorColor)
             [super setInteriorColor:interiorColor];
     }
@@ -727,7 +738,7 @@ static IMP originalSetBorder = NULL;
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:[self interiorColor] forKey:@"interiorColor"];
+    [dict setValue:[self interiorColor] forKey:INTERIOR_COLOR_KEY];
     return dict;
 }
 
@@ -766,15 +777,7 @@ static IMP originalSetBorder = NULL;
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"richText"];
-    [properties removeObjectForKey:@"fontName"];
-    [properties removeObjectForKey:@"fontSize"];
-    [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"startPointAsQDPoint"];
-    [properties removeObjectForKey:@"endPointAsQDPoint"];
-    [properties removeObjectForKey:@"asStartLineStyle"];
-    [properties removeObjectForKey:@"asEndLineStyle"];
-    [properties removeObjectForKey:@"selectionSpecifier"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"fontName", @"fontSize", @"asIconType", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", @"selectionSpecifier", nil]];
     return properties;
 }
 
@@ -868,13 +871,13 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 }
 
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
-    NSString *type = [dict objectForKey:@"type"];
+    NSString *type = [dict objectForKey:TYPE_KEY];
     int markupType = kPDFMarkupTypeHighlight;
     if ([type isEqualToString:SKUnderlineString])
         markupType = kPDFMarkupTypeUnderline;
     else if ([type isEqualToString:SKStrikeOutString])
         markupType = kPDFMarkupTypeStrikeOut;
-    return [self initWithBounds:bounds markupType:markupType quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
+    return [self initWithBounds:bounds markupType:markupType quadrilateralPointsAsStrings:[dict objectForKey:QUADRILATERAL_POINTS_KEY]];
 }
 
 - (void)addLineRect:(NSRect)aRect {
@@ -972,7 +975,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
-    [dict setValue:quadPoints forKey:@"quadrilateralPoints"];
+    [dict setValue:quadPoints forKey:QUADRILATERAL_POINTS_KEY];
     [quadPoints release];
     return dict;
 }
@@ -1082,17 +1085,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"richText"];
-    [properties removeObjectForKey:@"fontName"];
-    [properties removeObjectForKey:@"fontSize"];
-    [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"asBorderStyle"];
-    [properties removeObjectForKey:@"dashPattern"];
-    [properties removeObjectForKey:@"startPointAsQDPoint"];
-    [properties removeObjectForKey:@"endPointAsQDPoint"];
-    [properties removeObjectForKey:@"asStartLineStyle"];
-    [properties removeObjectForKey:@"asEndLineStyle"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"fontName", @"fontSize", @"asIconType", @"lineWidth", @"asBorderStyle", @"dashPattern", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", nil]];
     return properties;
 }
 
@@ -1127,7 +1120,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     if (self = [self initWithBounds:bounds]) {
-        NSFont *font = [dict objectForKey:@"font"];
+        NSFont *font = [dict objectForKey:FONT_KEY];
         NSNumber *rotation = [dict objectForKey:@"rotation"];
         if (font)
             [super setFont:font];
@@ -1139,7 +1132,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:[self font] forKey:@"font"];
+    [dict setValue:[self font] forKey:FONT_KEY];
     if ([self respondsToSelector:@selector(rotation)])
         [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:@"rotation"];
     return dict;
@@ -1179,13 +1172,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"richText"];
-    [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"startPointAsQDPoint"];
-    [properties removeObjectForKey:@"endPointAsQDPoint"];
-    [properties removeObjectForKey:@"asStartLineStyle"];
-    [properties removeObjectForKey:@"asEndLineStyle"];
-    [properties removeObjectForKey:@"selectionSpecifier"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"asIconType", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", @"selectionSpecifier", nil]];
     return properties;
 }
 
@@ -1238,9 +1225,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     if (self = [self initWithBounds:bounds]) {
-        NSAttributedString *aText = [dict objectForKey:@"text"];
-        NSImage *anImage = [dict objectForKey:@"image"];
-        NSNumber *iconType = [dict objectForKey:@"iconType"];
+        NSAttributedString *aText = [dict objectForKey:TEXT_KEY];
+        NSImage *anImage = [dict objectForKey:IMAGE_KEY];
+        NSNumber *iconType = [dict objectForKey:ICON_TYPE_KEY];
         if (anImage)
             image = [anImage retain];
         if (aText)
@@ -1261,9 +1248,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:@"iconType"];
-    [dict setValue:[self text] forKey:@"text"];
-    [dict setValue:[self image] forKey:@"image"];
+    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:ICON_TYPE_KEY];
+    [dict setValue:[self text] forKey:TEXT_KEY];
+    [dict setValue:[self image] forKey:IMAGE_KEY];
     return dict;
 }
 
@@ -1373,16 +1360,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"fontName"];
-    [properties removeObjectForKey:@"fontSize"];
-    [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"asBorderStyle"];
-    [properties removeObjectForKey:@"dashPattern"];
-    [properties removeObjectForKey:@"startPointAsQDPoint"];
-    [properties removeObjectForKey:@"endPointAsQDPoint"];
-    [properties removeObjectForKey:@"asStartLineStyle"];
-    [properties removeObjectForKey:@"asEndLineStyle"];
-    [properties removeObjectForKey:@"selectionSpecifier"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"fontName", @"fontSize", @"lineWidth", @"asBorderStyle", @"dashPattern", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", @"selectionSpecifier", nil]];
     return properties;
 }
 
@@ -1465,11 +1443,11 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     if (self = [self initWithBounds:bounds]) {
         NSString *point;
-        NSNumber *startLineStyle = [dict objectForKey:@"startLineStyle"];
-        NSNumber *endLineStyle = [dict objectForKey:@"endLineStyle"];
-        if (point = [dict objectForKey:@"startPoint"])
+        NSNumber *startLineStyle = [dict objectForKey:START_LINE_STYLE_KEY];
+        NSNumber *endLineStyle = [dict objectForKey:END_LINE_STYLE_KEY];
+        if (point = [dict objectForKey:START_POINT_KEY])
             [super setStartPoint:NSPointFromString(point)];
-        if (point = [dict objectForKey:@"endPoint"])
+        if (point = [dict objectForKey:END_POINT_KEY])
             [super setEndPoint:NSPointFromString(point)];
         if (startLineStyle)
             [super setStartLineStyle:[startLineStyle intValue]];
@@ -1481,10 +1459,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:@"startLineStyle"];
-    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:@"endLineStyle"];
-    [dict setValue:NSStringFromPoint([self startPoint]) forKey:@"startPoint"];
-    [dict setValue:NSStringFromPoint([self endPoint]) forKey:@"endPoint"];
+    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:START_LINE_STYLE_KEY];
+    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:END_LINE_STYLE_KEY];
+    [dict setValue:NSStringFromPoint([self startPoint]) forKey:START_POINT_KEY];
+    [dict setValue:NSStringFromPoint([self endPoint]) forKey:END_POINT_KEY];
     return dict;
 }
 
@@ -1616,14 +1594,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)scriptingProperties {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectForKey:@"richText"];
-    [properties removeObjectForKey:@"fontName"];
-    [properties removeObjectForKey:@"fontSize"];
-    [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"asBorderStyle"];
-    [properties removeObjectForKey:@"dashPattern"];
-    [properties removeObjectForKey:@"selectionSpecifier"];
+    [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"fontName", @"fontSize", @"asIconType", @"lineWidth", @"asBorderStyle", @"dashPattern", @"selectionSpecifier", nil]];
     return properties;
 }
 
