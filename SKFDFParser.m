@@ -305,11 +305,11 @@
        }
     }
     
-    NSSet *validTypes = [NSSet setWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
+    NSSet *validTypes = [NSSet setWithObjects:SKFreeTextString, SKNoteString, SKCircleString, SKSquareString, SKHighlightString, SKUnderlineString, SKStrikeOutString, SKLineString, nil];
     NSString *type = [dictionary objectForKey:@"type"];
     NSString *contents;
-    if ([type isEqualToString:@"Text"]) {
-        [dictionary setObject:@"Note" forKey:@"type"];
+    if ([type isEqualToString:SKTextString]) {
+        [dictionary setObject:SKNoteString forKey:@"type"];
         if (contents = [dictionary objectForKey:@"contents"]) {
             NSRange r = [contents rangeOfString:@"  "];
             if (NSMaxRange(r) < [contents length]) {

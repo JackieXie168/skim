@@ -40,6 +40,9 @@
 
 @class SUUpdater, SKLine, SKDownloadController;
 
+extern NSString *SKDocumentSetupAliasKey;
+extern NSString *SKDocumentSetupFileNameKey;
+
 @interface SKApplicationController : NSObject {
     NSTimer *currentDocumentsTimer;
     BOOL remoteScrolling;

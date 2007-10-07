@@ -167,17 +167,17 @@ static IMP originalSetBorder = NULL;
     NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);
     Class annotationClass = NULL;
     
-    if ([type isEqualToString:@"Note"])
+    if ([type isEqualToString:SKNoteString])
         annotationClass = [SKPDFAnnotationNote class];
-    else if ([type isEqualToString:@"FreeText"])
+    else if ([type isEqualToString:SKFreeTextString])
         annotationClass = [SKPDFAnnotationFreeText class];
-    else if ([type isEqualToString:@"Circle"])
+    else if ([type isEqualToString:SKCircleString])
         annotationClass = [SKPDFAnnotationCircle class];
-    else if ([type isEqualToString:@"Square"])
+    else if ([type isEqualToString:SKSquareString])
         annotationClass = [SKPDFAnnotationSquare class];
-    else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Underline"] || [type isEqualToString:@"StrikeOut"])
+    else if ([type isEqualToString:SKHighlightString] || [type isEqualToString:SKMarkUpString] || [type isEqualToString:SKUnderlineString] || [type isEqualToString:SKStrikeOutString])
         annotationClass = [SKPDFAnnotationMarkup class];
-    else if ([type isEqualToString:@"Line"])
+    else if ([type isEqualToString:SKLineString])
         annotationClass = [SKPDFAnnotationLine class];
     
     if (self = [[annotationClass alloc] initWithBounds:bounds dictionary:dict]) {
@@ -231,7 +231,7 @@ static IMP originalSetBorder = NULL;
     NSString *contents = [self contents];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
     [string appendString:@"/Type/Annot/Subtype/"];
-    [string appendString:[[self type] isEqualToString:@"Note"] ? @"Text" : [self type]];
+    [string appendString:[[self type] isEqualToString:SKNoteString] ? SKTextString : [self type]];
     [string appendFormat:@"/Rect[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [string appendFormat:@"/Page %i", [self pageIndex]];
     [string appendString:@"/F 4"];
@@ -283,21 +283,21 @@ static IMP originalSetBorder = NULL;
 }
 
 - (int)noteType {
-    if ([[self type] isEqualToString:@"FreeText"])
+    if ([[self type] isEqualToString:SKFreeTextString])
         return SKFreeTextNote;
-    else if ([[self type] isEqualToString:@"Note"])
+    else if ([[self type] isEqualToString:SKNoteString])
         return SKAnchoredNote;
-    else if ([[self type] isEqualToString:@"Circle"])
+    else if ([[self type] isEqualToString:SKCircleString])
         return SKCircleNote;
-    else if ([[self type] isEqualToString:@"Square"])
+    else if ([[self type] isEqualToString:SKSquareString])
         return SKSquareNote;
-    else if ([[self type] isEqualToString:@"Highlight"] || [[self type] isEqualToString:@"MarkUp"])
+    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
         return SKHighlightNote;
-    else if ([[self type] isEqualToString:@"Underline"])
+    else if ([[self type] isEqualToString:SKUnderlineString])
         return SKUnderlineNote;
-    else if ([[self type] isEqualToString:@"StrikeOut"])
+    else if ([[self type] isEqualToString:SKStrikeOutString])
         return SKStrikeOutNote;
-    else if ([[self type] isEqualToString:@"Line"])
+    else if ([[self type] isEqualToString:SKLineString])
         return SKLineNote;
     return 0;
 }
@@ -496,21 +496,21 @@ static IMP originalSetBorder = NULL;
 }
 
 - (int)asNoteType {
-    if ([[self type] isEqualToString:@"FreeText"])
+    if ([[self type] isEqualToString:SKFreeTextString])
         return SKASTextNote;
-    else if ([[self type] isEqualToString:@"Note"])
+    else if ([[self type] isEqualToString:SKNoteString])
         return SKASAnchoredNote;
-    else if ([[self type] isEqualToString:@"Circle"])
+    else if ([[self type] isEqualToString:SKCircleString])
         return SKASCircleNote;
-    else if ([[self type] isEqualToString:@"Square"])
+    else if ([[self type] isEqualToString:SKSquareString])
         return SKASSquareNote;
-    else if ([[self type] isEqualToString:@"Highlight"] || [[self type] isEqualToString:@"MarkUp"])
+    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
         return SKASHighlightNote;
-    else if ([[self type] isEqualToString:@"Underline"])
+    else if ([[self type] isEqualToString:SKUnderlineString])
         return SKASUnderlineNote;
-    else if ([[self type] isEqualToString:@"StrikeOut"])
+    else if ([[self type] isEqualToString:SKStrikeOutString])
         return SKASStrikeOutNote;
-    else if ([[self type] isEqualToString:@"Line"])
+    else if ([[self type] isEqualToString:SKLineString])
         return SKASLineNote;
     return 0;
 }
@@ -870,9 +870,9 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 - (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
     NSString *type = [dict objectForKey:@"type"];
     int markupType = kPDFMarkupTypeHighlight;
-    if ([type isEqualToString:@"Underline"])
+    if ([type isEqualToString:SKUnderlineString])
         markupType = kPDFMarkupTypeUnderline;
-    else if ([type isEqualToString:@"StrikeOut"])
+    else if ([type isEqualToString:SKStrikeOutString])
         markupType = kPDFMarkupTypeStrikeOut;
     return [self initWithBounds:bounds markupType:markupType quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
 }
@@ -1300,7 +1300,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isEditable { return YES; }
 
 - (NSString *)type {
-    return @"Note";
+    return SKNoteString;
 }
 
 - (void)setIconType:(PDFTextAnnotationIconType)type;

@@ -40,6 +40,7 @@
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "SKStringConstants.h"
 #import <Carbon/Carbon.h>
 
 
@@ -274,21 +275,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 #pragma mark Templating support
 
 - (NSString *)typeName {
-    if ([self isEqualToString:@"FreeText"])
+    if ([self isEqualToString:SKFreeTextString])
         return NSLocalizedString(@"Text Note", @"Description for export");
-    else if ([self isEqualToString:@"Note"])
+    else if ([self isEqualToString:SKNoteString])
         return NSLocalizedString(@"Anchored Note", @"Description for export");
-    else if ([self isEqualToString:@"Circle"])
+    else if ([self isEqualToString:SKCircleString])
         return NSLocalizedString(@"Circle", @"Description for export");
-    else if ([self isEqualToString:@"Square"])
+    else if ([self isEqualToString:SKSquareString])
         return NSLocalizedString(@"Box", @"Description for export");
-    else if ([self isEqualToString:@"MarkUp"] || [self isEqualToString:@"Highlight"])
+    else if ([self isEqualToString:SKMarkUpString] || [self isEqualToString:SKHighlightString])
         return NSLocalizedString(@"Highlight", @"Description for export");
-    else if ([self isEqualToString:@"Underline"])
+    else if ([self isEqualToString:SKUnderlineString])
         return NSLocalizedString(@"Underline", @"Description for export");
-    else if ([self isEqualToString:@"StrikeOut"])
+    else if ([self isEqualToString:SKStrikeOutString])
         return NSLocalizedString(@"Strike Out", @"Description for export");
-    else if ([self isEqualToString:@"Line"])
+    else if ([self isEqualToString:SKLineString])
         return NSLocalizedString(@"Line", @"Description for export");
     else
         return self;

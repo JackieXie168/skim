@@ -49,6 +49,9 @@
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
 
+static NSString *SKAutoCropBoxMarginWidthKey = @"SKAutoCropBoxMarginWidth";
+static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
+
 @interface PDFPage (SKReplacementMethods)
 - (void)replacementDealloc;
 @end
@@ -76,8 +79,8 @@ static IMP originalDealloc = NULL;
     
     NSValue *rectValue = nil;
     if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectValue)) {
-        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginWidth"];
-        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginHeight"];
+        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
+        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
         NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
         NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];

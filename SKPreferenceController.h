@@ -54,6 +54,8 @@
     NSArray *fonts;
     NSDictionary *resettableKeys;
     BOOL isCustomTeXEditor;
+    NSUserDefaults *sud;
+    NSUserDefaultsController *sudc;
 }
 
 + (id)sharedPrefenceController;

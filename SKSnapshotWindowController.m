@@ -50,6 +50,12 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 
+#define PAGE_KEY                    @"page"
+#define RECT_KEY                    @"rect"
+#define SCALE_FACTOR_KEY            @"scaleFactor"
+#define AUTO_FITS_KEY               @"autoFits"
+#define HAS_WINDOW_KEY              @"hasWindow"
+
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
@@ -289,7 +295,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(BDSKZoomablePDFView *)pdfView autoFits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:[pdfView scaleFactor]], @"scaleFactor", [NSNumber numberWithBool:autoFits], @"autoFits", [NSNumber numberWithBool:[[self window] isVisible]], @"hasWindow", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALE_FACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTO_FITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HAS_WINDOW_KEY, nil];
 }
 
 #pragma mark Thumbnails

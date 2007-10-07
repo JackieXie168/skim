@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKNoteOutlineView
@@ -185,37 +186,37 @@
     if (menu == nil) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         NSMenuItem *menuItem = nil;
-        menuItem = [menu addItemWithTitle:[@"FreeText" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKFreeTextString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"FreeText"];
+        [menuItem setRepresentedObject:SKFreeTextString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"Note" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKNoteString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
         [menuItem setState:NSOnState];
-        [menuItem setRepresentedObject:@"Note"];
-        menuItem = [menu addItemWithTitle:[@"Circle" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setRepresentedObject:SKNoteString];
+        menuItem = [menu addItemWithTitle:[SKCircleString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"Circle"];
+        [menuItem setRepresentedObject:SKCircleString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"Square" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKSquareString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"Square"];
+        [menuItem setRepresentedObject:SKSquareString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"Highlight" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKHighlightString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"Highlight"];
+        [menuItem setRepresentedObject:SKHighlightString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"Underline" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKUnderlineString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"Underline"];
+        [menuItem setRepresentedObject:SKUnderlineString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"StrikeOut" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"StrikeOut"];
+        [menuItem setRepresentedObject:SKStrikeOutString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[@"Line" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[SKLineString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:@"Line"];
+        [menuItem setRepresentedObject:SKLineString];
         [menuItem setState:NSOnState];
         [menu addItem:[NSMenuItem separatorItem]];
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
@@ -364,14 +365,14 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
         noteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
         invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
         
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"TextNoteAdorn", @"FreeText", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"AnchoredNoteAdorn", @"Note", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"CircleNoteAdorn", @"Circle", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"SquareNoteAdorn", @"Square", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"HighlightNoteAdorn", @"Highlight", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"UnderlineNoteAdorn", @"Underline", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"StrikeOutNoteAdorn", @"StrikeOut", filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"LineNoteAdorn", @"Line", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"TextNoteAdorn", SKFreeTextString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"AnchoredNoteAdorn", SKNoteString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"CircleNoteAdorn", SKCircleString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"SquareNoteAdorn", SKSquareString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"HighlightNoteAdorn", SKHighlightString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"UnderlineNoteAdorn", SKUnderlineString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"StrikeOutNoteAdorn", SKStrikeOutString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"LineNoteAdorn", SKLineString, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];

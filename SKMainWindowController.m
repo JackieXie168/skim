@@ -87,6 +87,24 @@
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
 
+#define WINDOW_FRAME_KEY            @"windowFrame"
+#define LEFT_SIDE_PANE_WIDTH_KEY    @"leftSidePaneWidth"
+#define RIGHT_SIDE_PANE_WIDTH_KEY   @"rightSidePaneWidth"
+#define SCALE_FACTOR_KEY            @"scaleFactor"
+#define AUTO_SCALES_KEY             @"autoScales"
+#define DISPLAYS_PAGE_BREAKS_KEY    @"displaysPageBreaks"
+#define DISPLAYS_AS_BOOK_KEY        @"displaysAsBook"    
+#define DISPLAY_MODE_KEY            @"displayMode" 
+#define DISPLAY_BOX_KEY             @"displayBox"  
+#define HAS_HORIZONTAL_SCROLLER_KEY @"hasHorizontalScroller"
+#define HAS_VERTICAL_SCROLLER_KEY   @"hasVerticalScroller"
+#define AUTO_HIDES_SCROLLERS_KEY    @"autoHidesScrollers"
+#define PAGE_INDEX_KEY              @"pageIndex"
+#define PAGE_KEY                    @"page"
+#define RECT_KEY                    @"rect"
+#define AUTO_FITS_KEY               @"autoFits"
+#define HAS_WINDOW_KEY              @"hasWindow"
+
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
@@ -123,6 +141,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 static NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
+static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNoteToolAdorn", @"CircleNoteToolAdorn", @"SquareNoteToolAdorn", @"HighlightNoteToolAdorn", @"UnderlineNoteToolAdorn", @"StrikeOutNoteToolAdorn", @"LineNoteToolAdorn"};
 
@@ -216,7 +235,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         updatingColor = NO;
         updatingFont = NO;
         updatingLine = NO;
-        usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:@"SKUsesDrawers"];
+        usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:SKUsesDrawersKey];
     }
     
     return self;
@@ -425,7 +444,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] autoFits:[[setup objectForKey:@"autoFits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
+            [self showSnapshotAtPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:RECT_KEY]) scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue] autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue] display:[[setup objectForKey:HAS_WINDOW_KEY] boolValue]];
     }
     
     // typeSelectHelpers
@@ -545,9 +564,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSNumber *number;
     NSRect frame;
     
-    if (rectString = [setup objectForKey:@"windowFrame"])
+    if (rectString = [setup objectForKey:WINDOW_FRAME_KEY])
         [[self window] setFrame:NSRectFromString(rectString) display:NO];
-    if (number = [setup objectForKey:@"leftSidePaneWidth"]) {
+    if (number = [setup objectForKey:LEFT_SIDE_PANE_WIDTH_KEY]) {
         frame = [leftSideContentView frame];
         frame.size.width = [number floatValue];
         if (usesDrawers == NO) {
@@ -559,7 +578,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [leftSideDrawer close];
         }
     }
-    if (number = [setup objectForKey:@"rightSidePaneWidth"]) {
+    if (number = [setup objectForKey:RIGHT_SIDE_PANE_WIDTH_KEY]) {
         frame = [rightSideContentView frame];
         frame.size.width = [number floatValue];
         frame.origin.x = NSMaxX([splitView frame]) - NSWidth(frame);
@@ -580,20 +599,20 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
     
     [self applyPDFSettings:setup];
-    if (number = [setup objectForKey:@"pageIndex"])
+    if (number = [setup objectForKey:PAGE_INDEX_KEY])
         [pdfView goToPage:[[pdfView document] pageAtIndex:[number intValue]]];
 }
 
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
-    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:@"leftSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:@"rightSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:@"pageIndex"];
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:WINDOW_FRAME_KEY];
+    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFT_SIDE_PANE_WIDTH_KEY];
+    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHT_SIDE_PANE_WIDTH_KEY];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:PAGE_INDEX_KEY];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:@"hasHorizontalScroller", @"hasVerticalScroller", @"autoHidesScrollers", nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HAS_HORIZONTAL_SCROLLER_KEY, HAS_VERTICAL_SCROLLER_KEY, AUTO_HIDES_SCROLLERS_KEY, nil]];
     } else {
         [setup addEntriesFromDictionary:[self currentPDFSettings]];
     }
@@ -603,17 +622,17 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
-    if (number = [setup objectForKey:@"scaleFactor"])
+    if (number = [setup objectForKey:SCALE_FACTOR_KEY])
         [pdfView setScaleFactor:[number floatValue]];
-    if (number = [setup objectForKey:@"autoScales"])
+    if (number = [setup objectForKey:AUTO_SCALES_KEY])
         [pdfView setAutoScales:[number boolValue]];
-    if (number = [setup objectForKey:@"displaysPageBreaks"])
+    if (number = [setup objectForKey:DISPLAYS_PAGE_BREAKS_KEY])
         [pdfView setDisplaysPageBreaks:[number boolValue]];
-    if (number = [setup objectForKey:@"displaysAsBook"])
+    if (number = [setup objectForKey:DISPLAYS_AS_BOOK_KEY])
         [pdfView setDisplaysAsBook:[number boolValue]];
-    if (number = [setup objectForKey:@"displayMode"])
+    if (number = [setup objectForKey:DISPLAY_MODE_KEY])
         [pdfView setDisplayMode:[number intValue]];
-    if (number = [setup objectForKey:@"displayBox"])
+    if (number = [setup objectForKey:DISPLAY_BOX_KEY])
         [pdfView setDisplayBox:[number intValue]];
 }
 
@@ -622,14 +641,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     if ([self isPresentation]) {
         [setup setDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:@"hasHorizontalScroller", @"hasVerticalScroller", @"autoHidesScrollers", nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HAS_HORIZONTAL_SCROLLER_KEY, HAS_VERTICAL_SCROLLER_KEY, AUTO_HIDES_SCROLLERS_KEY, nil]];
     } else {
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
-        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
-        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYS_PAGE_BREAKS_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYS_AS_BOOK_KEY];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:DISPLAY_BOX_KEY];
+        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SCALE_FACTOR_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTO_SCALES_KEY];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:DISPLAY_MODE_KEY];
     }
     
     return setup;
@@ -700,7 +719,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSString *type = [annotation type];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@""] || [type isEqualToString:@"Line"])) {
+        if ([annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
             updatingLine = YES;
             [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
             updatingLine = NO;
@@ -934,7 +953,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] autoFits:[[setup objectForKey:@"autoFits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
+            [self showSnapshotAtPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:RECT_KEY]) scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue] autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue] display:[[setup objectForKey:HAS_WINDOW_KEY] boolValue]];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -1262,7 +1281,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)changeLineWidth:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@""] || [type isEqualToString:@"Line"])) {
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
         [annotation setLineWidth:[sender lineWidth]];
     }
 }
@@ -1270,7 +1289,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)changeLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
         [annotation setBorderStyle:[sender style]];
     }
 }
@@ -1278,7 +1297,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)changeDashPattern:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
         [annotation setDashPattern:[sender dashPattern]];
     }
 }
@@ -1286,7 +1305,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)changeStartLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:@"Line"]) {
+    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
         [(SKPDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
         updatingLine = NO;
@@ -1296,7 +1315,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)changeEndLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:@"Line"]) {
+    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
         [(SKPDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
         updatingLine = NO;
@@ -2255,9 +2274,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([self isPresentation] == NO && [self isFullScreen] == NO) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:@"hasHorizontalScroller"];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:@"hasVerticalScroller"];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:@"autohidesScrollers"];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HAS_HORIZONTAL_SCROLLER_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HAS_VERTICAL_SCROLLER_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTO_HIDES_SCROLLERS_KEY];
     }
     
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
@@ -2304,10 +2323,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
     [scrollView setNeverHasHorizontalScroller:NO];
-    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:@"hasHorizontalScroller"] boolValue]];
+    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HAS_HORIZONTAL_SCROLLER_KEY] boolValue]];
     [scrollView setNeverHasVerticalScroller:NO];
-    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:@"hasVerticalScroller"] boolValue]];
-    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:@"autoHidesScrollers"] boolValue]];
+    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HAS_VERTICAL_SCROLLER_KEY] boolValue]];
+    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTO_HIDES_SCROLLERS_KEY] boolValue]];
     
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     [pdfView setBackgroundColor:backgroundColor];
@@ -2676,7 +2695,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor autoFits:(BOOL)autoFits display:(BOOL)display{
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(int)scaleFactor autoFits:(BOOL)autoFits display:(BOOL)display{
     
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
@@ -2685,7 +2704,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
-            scaleFactor:[pdfView scaleFactor] * factor
+            scaleFactor:scaleFactor
          goToPageNumber:pageNum
                    rect:rect
                autoFits:autoFits];
@@ -3634,7 +3653,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         rect.origin.y = NSMidY(rect) - 100.0;
         rect.size.height = 200.0;
-        [self showSnapshotAtPageNumber:row forRect:rect factor:1 autoFits:NO display:YES];
+        [self showSnapshotAtPageNumber:row forRect:rect scaleFactor:[pdfView scaleFactor] autoFits:NO display:YES];
         return YES;
     }
     return NO;
@@ -4747,7 +4766,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]) && [pdfView hideNotes] == NO;
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
-        return [self isPresentation] == NO && [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
+        return [self isPresentation] == NO && [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:SKFreeTextString] || [[annotation type] isEqualToString:SKNoteString]);
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];

@@ -64,6 +64,15 @@
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
 
+#define INITIAL_USER_DEFAULTS_FILENAME  @"InitialUserDefaults"
+#define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
+#define RESETTABLE_KEYS_KEY             @"ResettableKeys"
+
+NSString *SKDocumentSetupAliasKey = @"_BDAlias";
+NSString *SKDocumentSetupFileNameKey = @"fileName";
+
+static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
+
 @implementation SKApplicationController
 
 + (void)initialize{
@@ -71,15 +80,11 @@
 }
    
 + (void)setupDefaults{
-    NSString *userDefaultsValuesPath;
-    NSDictionary *userDefaultsValuesDict;
-    NSDictionary *initialValuesDict;
-    NSArray *resettableUserDefaultsKeys;
-    
     // load the default values for the user defaults
-    userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" ofType:@"plist"];
-    userDefaultsValuesDict = [NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath];
-    initialValuesDict = [userDefaultsValuesDict objectForKey:@"RegisteredDefaults"];
+    NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIAL_USER_DEFAULTS_FILENAME ofType:@"plist"];
+    NSDictionary *initialUserDefaultsDict = [NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath];
+    NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
+    NSArray *resettableUserDefaultsKeys;
     
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
@@ -88,7 +93,7 @@
     // factory values, you should set those values 
     // in the shared user defaults controller
     
-    resettableUserDefaultsKeys = [[[userDefaultsValuesDict objectForKey:@"ResettableKeys"] allValues] valueForKeyPath:@"@unionOfArrays.self"];
+    resettableUserDefaultsKeys = [[[initialUserDefaultsDict objectForKey:RESETTABLE_KEYS_KEY] allValues] valueForKeyPath:@"@unionOfArrays.self"];
     initialValuesDict = [initialValuesDict dictionaryWithValuesForKeys:resettableUserDefaultsKeys];
     
     // Set the initial values in the shared user defaults controller 
@@ -121,9 +126,9 @@
         NSError *error;
         
         while (dict = [fileEnum nextObject]){ 
-            fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
-            if(fileURL == nil && [dict objectForKey:@"fileName"])
-                fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
+            fileURL = [[BDAlias aliasWithData:[dict objectForKey:SKDocumentSetupAliasKey]] fileURL];
+            if(fileURL == nil && [dict objectForKey:SKDocumentSetupFileNameKey])
+                fileURL = [NSURL fileURLWithPath:[dict objectForKey:SKDocumentSetupFileNameKey]];
             if(fileURL && NO == SKFileIsInTrash(fileURL)) {
                 if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
                     [document makeWindowControllers];
@@ -347,7 +352,7 @@
     NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     if (importerVersion) {
         SKVersionNumber *importerVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:importerVersion] autorelease];
-        NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"SKSpotlightVersionInfo"];
+        NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
         long sysVersion;
         OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
