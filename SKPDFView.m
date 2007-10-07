@@ -71,6 +71,11 @@ NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationCh
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
+static NSString *SKSmallMagnificationWidthKey = @"SKSmallMagnificationWidth";
+static NSString *SKSmallMagnificationHeightKey = @"SKSmallMagnificationHeight";
+static NSString *SKLargeMagnificationWidthKey = @"SKLargeMagnificationWidth";
+static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
+
 #define ANCHORED_NOTE_SIZE SKMakeSquareSize(16.0)
 
 static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, BOOL lower);
@@ -283,7 +288,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         unsigned j, jMax = [annotations count];
         for (j = 0; j < jMax; j++) {
             PDFAnnotation *annotation = [annotations objectAtIndex:j];
-            if ([[annotation type] isEqualToString:@"Note"] || [[annotation type] isEqualToString:@"Link"]) {
+            if ([[annotation type] isEqualToString:SKNoteString] || [[annotation type] isEqualToString:@"Link"]) {
                 NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                 if (NSIsEmptyRect(rect) == NO) {
                     NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
@@ -338,7 +343,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 CGContextAddPath(context, path);
                 CGContextStrokePath(context);
                 CGPathRelease(path);
-            } else if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+            } else if ([[activeAnnotation type] isEqualToString:SKLineString]) {
                 color[3] = 0.7;
                 rect = NSIntegralRect([self resizeThumbForRect:bounds point:[(SKPDFAnnotationLine *)activeAnnotation startPoint]]);
                 CGContextSetFillColor(context, color);
@@ -440,11 +445,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
     NSRect bounds = [annotation bounds];
-    if ([[annotation type] isEqualToString:@"Underline"]) {
+    if ([[annotation type] isEqualToString:SKUnderlineString]) {
         float delta = 0.03 * NSHeight(bounds);
         bounds.origin.y -= delta;
         bounds.size.height += delta;
-    } else if ([[annotation type] isEqualToString:@"Line"]) {
+    } else if ([[annotation type] isEqualToString:SKLineString]) {
         // need a large padding amount for large line width and cap changes
         bounds = NSInsetRect(bounds, -20, -20);
     }
@@ -1054,7 +1059,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 wasSelection = nil;
             }
             if (draggingAnnotation && didDrag) {
-                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+                if ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
@@ -1500,7 +1505,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 annotation = [annotations objectAtIndex:i];
                 NSString *type = [annotation type];
                 if ([annotation isNoteAnnotation] && [annotation hitTest:location] && 
-                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation)
                             [self setNeedsDisplayForAnnotation:highlightAnnotation];
@@ -1545,7 +1550,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if ([pboardType isEqualToString:NSColorPboardType]) {
                 [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
-            } else if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
+            } else if ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
                 if (number = [dict objectForKey:@"lineWidth"])
@@ -1553,7 +1558,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [highlightAnnotation setDashPattern:[dict objectForKey:@"dashPattern"]];
                 if (number = [dict objectForKey:@"style"])
                     [highlightAnnotation setBorderStyle:[number intValue]];
-                if ([type isEqualToString:@"Line"]) {
+                if ([type isEqualToString:SKLineString]) {
                     if (number = [dict objectForKey:@"startLineStyle"])
                         [(SKPDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
                     if (number = [dict objectForKey:@"endLineStyle"])
@@ -1767,21 +1772,21 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
             break;
         case SKHighlightNote:
-            if ([[activeAnnotation type] isEqualToString:@"Highlight"] && [[activeAnnotation page] isEqual:page]) {
+            if ([[activeAnnotation type] isEqualToString:SKHighlightString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
-            if ([[activeAnnotation type] isEqualToString:@"Underline"] && [[activeAnnotation page] isEqual:page]) {
+            if ([[activeAnnotation type] isEqualToString:SKUnderlineString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
-            if ([[activeAnnotation type] isEqualToString:@"StrikeOut"] && [[activeAnnotation page] isEqual:page]) {
+            if ([[activeAnnotation type] isEqualToString:SKStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
             }
@@ -1795,7 +1800,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (text == nil)
             text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         
-        if ([[activeAnnotation type] isEqualToString:@"Line"] == NO)
+        if ([[activeAnnotation type] isEqualToString:SKLineString] == NO)
             [newAnnotation setContents:text];
         
         [self addAnnotation:newAnnotation toPage:page];
@@ -1838,7 +1843,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
-    BOOL wasNote = [[wasAnnotation type] isEqualToString:@"Note"];
+    BOOL wasNote = [[wasAnnotation type] isEqualToString:SKNoteString];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
@@ -1866,7 +1871,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [page addAnnotation:annotation];
     [annotation release];
     [self setNeedsDisplayForAnnotation:annotation];
-    if ([[annotation type] isEqualToString:@"Note"])
+    if ([[annotation type] isEqualToString:SKNoteString])
         [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, @"oldPage", page, @"newPage", annotation, @"annotation", nil]];                
 }
@@ -1901,14 +1906,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [[NSWorkspace sharedWorkspace] openURL:[(PDFAnnotationLink *)activeAnnotation URL]];
         [self setActiveAnnotation:nil];
         
-    } else if ([type isEqualToString:@"Note"]) {
+    } else if ([type isEqualToString:SKNoteString]) {
         
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         
-    } else if ([type isEqualToString:@"FreeText"]) {
+    } else if ([type isEqualToString:SKFreeTextString]) {
         
         NSRect editBounds = [activeAnnotation bounds];
         editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
@@ -2114,7 +2119,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect factor:1 autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits display:YES];
 }
 
 #pragma mark Notification handling
@@ -2129,7 +2134,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFAnnotation *annotation = [notification object];
     if ([[[annotation page] document] isEqual:[self document]]) {
         [self setNeedsDisplayForAnnotation:annotation];
-        if ([[annotation type] isEqualToString:@"Note"] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
+        if ([[annotation type] isEqualToString:SKNoteString] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
             [self resetHoverRects];
     }
 }
@@ -2429,7 +2434,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
-        if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+        if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setContents:selString];
         }
@@ -2442,7 +2447,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = [activeAnnotation page];
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
-    if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+    if ([[activeAnnotation type] isEqualToString:SKLineString]) {
         
         SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
         NSPoint startPoint = SKIntegralPoint(SKAddPoints([annotation startPoint], bounds.origin));
@@ -2675,7 +2680,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
-            if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+            if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                 [activeAnnotation setContents:selString];
             }
@@ -2814,7 +2819,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     if (newActiveAnnotation == nil) {
         //[super mouseDown:theEvent];
-    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"FreeText"]) {
+    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKFreeTextString]) {
         // probably we should use the note window for Text annotations
         NSRect editBounds = [activeAnnotation bounds];
         editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
@@ -2826,7 +2831,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         // Start editing
         [super mouseDown:theEvent];
         
-    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"Note"]) {
+    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKNoteString]) {
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
@@ -2835,7 +2840,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         // Old (current) annotation location.
         wasBounds = [activeAnnotation bounds];
         
-        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+        if ([[activeAnnotation type] isEqualToString:SKLineString]) {
             wasStartPoint = [(SKPDFAnnotationLine *)activeAnnotation startPoint];
             wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
         }
@@ -2843,7 +2848,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
-        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+        if ([[activeAnnotation type] isEqualToString:SKLineString]) {
             if (NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds point:[(SKPDFAnnotationLine *)activeAnnotation endPoint]])) {
                 resizingAnnotation = YES;
                 draggingStartPoint = NO;
@@ -2874,7 +2879,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSPoint relPoint = SKSubstractPoints(endPt, startPoint);
         newBounds = wasBounds;
         
-        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+        if ([[activeAnnotation type] isEqualToString:SKLineString]) {
             
             SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
             NSPoint endPoint = SKIntegralPoint(SKAddPoints(wasEndPoint, wasBounds.origin));
@@ -3488,7 +3493,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] factor:factor autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits display:YES];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
@@ -3504,8 +3509,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     int originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNotification = [documentView postsBoundsChangedNotifications];
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    NSSize smallSize = NSMakeSize([sud floatForKey:@"SKSmallMagnificationWidth"], [sud floatForKey:@"SKSmallMagnificationHeight"]);
-    NSSize largeSize = NSMakeSize([sud floatForKey:@"SKLargeMagnificationWidth"], [sud floatForKey:@"SKLargeMagnificationHeight"]);
+    NSSize smallSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
+    NSSize largeSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
     NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, smallSize);
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
     NSBezierPath *path;

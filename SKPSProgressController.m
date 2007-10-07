@@ -40,6 +40,8 @@
 #import "NSString_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 
+static NSString *SKDviConversionCommandKey = @"SKDviConversionCommand";
+
 enum {
     SKConversionSucceeded = 0,
     SKConversionFailed = 1
@@ -303,6 +305,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @end
 
+#pragma mark -
+
 @implementation SKDVIProgressController (Private)
 
 - (void)doConversionWithInfo:(NSDictionary *)info {
@@ -310,7 +314,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     
     NSString *dviFile = [info objectForKey:@"dviFile"];
-    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDviConversionCommand"];
+    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
     NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];

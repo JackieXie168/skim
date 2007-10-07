@@ -132,7 +132,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
         while (dict = [dictEnum nextObject]) {
             NSMutableDictionary *note = [dict mutableCopy];
             
-            if ([[dict valueForKey:@"type"] isEqualToString:@"Note"])
+            if ([[dict valueForKey:@"type"] isEqualToString:SKNoteString])
                 [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
             [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
             
@@ -192,9 +192,9 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     if (fileName) {
         NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
         
-        [setup setObject:fileName forKey:@"fileName"];
+        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
         if(data)
-            [setup setObject:data forKey:@"_BDAlias"];
+            [setup setObject:data forKey:SKDocumentSetupAliasKey];
     }
     
     return setup;
@@ -280,13 +280,13 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil)
         return [[arrayController arrangedObjects] count];
-    else if ([[item valueForKey:@"type"] isEqualToString:@"Note"])
+    else if ([[item valueForKey:@"type"] isEqualToString:SKNoteString])
         return 1;
     return 0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
-    return [[item valueForKey:@"type"] isEqualToString:@"Note"];
+    return [[item valueForKey:@"type"] isEqualToString:SKNoteString];
 }
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item {

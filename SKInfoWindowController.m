@@ -40,6 +40,7 @@
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
 
+static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 
 @implementation SKInfoWindowController
 
@@ -78,7 +79,7 @@
 }
 
 - (void)windowDidLoad {
-    [self setWindowFrameAutosaveName:@"SKInfoWindow"];
+    [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
 }
 
 static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {

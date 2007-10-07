@@ -38,12 +38,15 @@
 
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
+#import "SKStringConstants.h"
 
 NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";
 NSString *SKLineInspectorLineStyleDidChangeNotification = @"SKLineInspectorLineStyleDidChangeNotification";
 NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDashPatternDidChangeNotification";
 NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
 NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
+
+static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 
 @implementation SKLineInspector
 
@@ -88,7 +91,7 @@ static SKLineInspector *sharedLineInspector = nil;
 - (unsigned)retainCount { return UINT_MAX; }
 
 - (void)windowDidLoad {
-    [self setWindowFrameAutosaveName:@"SKLineInspector"];
+    [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
     [lineWell setCanActivate:NO];
     [lineWell bind:@"lineWidth" toObject:self withKeyPath:@"lineWidth" options:nil];
@@ -478,12 +481,12 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation {
     NSString *type = [annotation type];
-    if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
+    if ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString]) {
         [self setLineWidth:[annotation border] ? [[annotation border] lineWidth] : 0.0];
         [self setDashPattern:[[annotation border] dashPattern]];
         [self setStyle:[annotation border] ? [[annotation border] style] : 0];
     }
-    if ([type isEqualToString:@"Line"]) {
+    if ([type isEqualToString:SKLineString]) {
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
         [self setEndLineStyle:[(PDFAnnotationLine *)annotation endLineStyle]];
     }

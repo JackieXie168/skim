@@ -45,6 +45,7 @@
 #import "SKTypeSelectHelper.h"
 #import "NSString_SKExtensions.h"
 
+static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
 @implementation SKDownloadController
 
@@ -90,7 +91,7 @@
 }
 
 - (void)windowDidLoad {
-    [self setWindowFrameAutosaveName:@"SKDownloadsWindow"];
+    [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     [self updateButtons];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];

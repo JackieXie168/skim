@@ -48,6 +48,9 @@
 #define TEXT_MARGIN_Y   2.0
 #define ALPHA_VALUE     0.95
 
+NSString *SKToolTipWidthKey = @"SKToolTipWidth";
+NSString *SKToolTipHeightKey = @"SKToolTipHeight";
+
 @interface NSScreen (SKExtensions)
 + (NSScreen *)screenForPoint:(NSPoint)point;
 @end
@@ -185,7 +188,7 @@
 - (void)showWithTimer:(NSTimer *)aTimer {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, [sud floatForKey:@"SKToolTipWidth"], [sud floatForKey:@"SKToolTipHeight"]);
+    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, [sud floatForKey:SKToolTipWidthKey], [sud floatForKey:SKToolTipHeightKey]);
     NSImage *image = nil;
     NSAttributedString *text = nil;
     NSString *string = nil;

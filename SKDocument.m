@@ -73,6 +73,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
+static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 
 @interface NSFileManager (SKDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
@@ -182,7 +183,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     if (exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
-            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
+            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             if ([[self pdfDocument] allowsPrinting] == NO) {
                 int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
                 if (index != -1)
@@ -1258,9 +1259,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (fileName) {
         NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
         
-        [setup setObject:fileName forKey:@"fileName"];
+        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
         if(data)
-            [setup setObject:data forKey:@"_BDAlias"];
+            [setup setObject:data forKey:SKDocumentSetupAliasKey];
         
         [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
     }

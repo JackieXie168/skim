@@ -43,6 +43,17 @@
 NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
 NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";
 
+static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
+static NSString *SKBookmarkTypeFolderString = @"folder";
+static NSString *SKBookmarkTypeSeparatorString = @"separator";
+
+#define CHILDREN_KEY    @"children"
+#define LABEL_KEY       @"label"
+#define PAGE_INDEX_KEY  @"pageIndex"
+#define PATH_KEY        @"path"
+#define ALIAS_KEY       @"_BDAlias"
+#define TYPE_KEY        @"type"
+
 @implementation SKBookmark
 
 + (NSImage *)smallImageForFile:(NSString *)filePath {
@@ -114,17 +125,17 @@ NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotific
 }
 
 - (id)initWithDictionary:(NSDictionary *)dictionary {
-    if ([[dictionary objectForKey:@"type"] isEqualToString:@"folder"]) {
-        NSEnumerator *dictEnum = [[dictionary objectForKey:@"children"] objectEnumerator];
+    if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeFolderString]) {
+        NSEnumerator *dictEnum = [[dictionary objectForKey:CHILDREN_KEY] objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
         while (dict = [dictEnum nextObject])
             [newChildren addObject:[[[[self class] alloc] initWithDictionary:dict] autorelease]];
-        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:@"label"]];
-    } else if ([[dictionary objectForKey:@"type"] isEqualToString:@"separator"]) {
+        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
+    } else if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeSeparatorString]) {
         return [self initSeparator];
     } else {
-        return [self initWithPath:[dictionary objectForKey:@"path"] aliasData:[dictionary objectForKey:@"_BDAlias"] pageIndex:[[dictionary objectForKey:@"pageIndex"] unsignedIntValue] label:[dictionary objectForKey:@"label"]];
+        return [self initWithPath:[dictionary objectForKey:PATH_KEY] aliasData:[dictionary objectForKey:ALIAS_KEY] pageIndex:[[dictionary objectForKey:PAGE_INDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
@@ -157,11 +168,11 @@ NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotific
 
 - (NSDictionary *)dictionaryValue {
     if (bookmarkType == SKBookmarkTypeFolder)
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"folder", @"type", [children valueForKey:@"dictionaryValue"], @"children", label, @"label", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, TYPE_KEY, [children valueForKey:@"dictionaryValue"], CHILDREN_KEY, label, LABEL_KEY, nil];
     else if (bookmarkType == SKBookmarkTypeSeparator)
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"separator", @"type", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSeparatorString, TYPE_KEY, nil];
     else
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"bookmark", @"type", path, @"path", aliasData, @"_BDAlias", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", label, @"label", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, TYPE_KEY, path, PATH_KEY, aliasData, ALIAS_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, label, LABEL_KEY, nil];
 }
 
 - (int)bookmarkType {
