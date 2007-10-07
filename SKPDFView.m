@@ -2119,7 +2119,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect scaleFactor:[self scaleFactor] autoFits:autoFits];
 }
 
 #pragma mark Notification handling
@@ -3493,7 +3493,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {

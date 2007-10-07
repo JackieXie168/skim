@@ -231,6 +231,17 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
 }
 
+- (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
+    [self setPdfDocument:pdfDocument
+             scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue]
+          goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue]
+                    rect:NSRectFromString([setup objectForKey:RECT_KEY])
+                autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue]];
+           
+    if ([[setup objectForKey:HAS_WINDOW_KEY] boolValue])
+        [self performSelector:@selector(showWindow:) withObject:self afterDelay:0.0];
+}
+
 - (BOOL)isPageVisible:(PDFPage *)page {
     if ([[page document] isEqual:[pdfView document]] == NO)
         return NO;

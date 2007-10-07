@@ -100,10 +100,6 @@
 #define HAS_VERTICAL_SCROLLER_KEY   @"hasVerticalScroller"
 #define AUTO_HIDES_SCROLLERS_KEY    @"autoHidesScrollers"
 #define PAGE_INDEX_KEY              @"pageIndex"
-#define PAGE_KEY                    @"page"
-#define RECT_KEY                    @"rect"
-#define AUTO_FITS_KEY               @"autoFits"
-#define HAS_WINDOW_KEY              @"hasWindow"
 
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
@@ -444,7 +440,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:RECT_KEY]) scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue] autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue] display:[[setup objectForKey:HAS_WINDOW_KEY] boolValue]];
+            [self showSnapshotWithSetup:setup];
     }
     
     // typeSelectHelpers
@@ -953,7 +949,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:RECT_KEY]) scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue] autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue] display:[[setup objectForKey:HAS_WINDOW_KEY] boolValue]];
+            [self showSnapshotWithSetup:setup];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -2695,15 +2691,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(int)scaleFactor autoFits:(BOOL)autoFits display:(BOOL)display{
-    
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(int)scaleFactor autoFits:(BOOL)autoFits {
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     [swc setDelegate:self];
     
-    PDFDocument *doc = [pdfView document];
-    [swc setPdfDocument:doc
+    [swc setPdfDocument:[pdfView document]
             scaleFactor:scaleFactor
          goToPageNumber:pageNum
                    rect:rect
@@ -2715,8 +2709,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[self document] addWindowController:swc];
     [swc release];
     
-    if (display)
-        [swc showWindow:self];
+    [swc showWindow:self];
+}
+
+- (void)showSnapshotWithSetup:(NSDictionary *)setup {
+    SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
+    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    
+    [swc setDelegate:self];
+    
+    [swc setPdfDocument:[pdfView document] setup:setup];
+    
+    [swc setForceOnTop:[self isFullScreen] || [self isPresentation]];
+    [[swc window] setHidesOnDeactivate:snapshotsOnTop];
+    
+    [[self document] addWindowController:swc];
+    [swc release];
 }
 
 - (void)toggleSnapshots:(NSArray *)snapshotArray {
@@ -3653,7 +3661,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         rect.origin.y = NSMidY(rect) - 100.0;
         rect.size.height = 200.0;
-        [self showSnapshotAtPageNumber:row forRect:rect scaleFactor:[pdfView scaleFactor] autoFits:NO display:YES];
+        [self showSnapshotAtPageNumber:row forRect:rect scaleFactor:[pdfView scaleFactor] autoFits:NO];
         return YES;
     }
     return NO;
