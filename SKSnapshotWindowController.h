@@ -50,6 +50,7 @@
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup;
 
 - (BOOL)isPageVisible:(PDFPage *)page;
 
