@@ -364,7 +364,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                                 if ([matchString hasPrefix:@"$"])
                                     matchString = [object safeValueForKeyPath:[matchString substringFromIndex:1]];
-                                [matchStrings addObject:matchString ? matchString : @"", nil];
+                                [matchStrings addObject:matchString ? matchString : @""];
                                 subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
                                 altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITIONTAG_CLOSE_DELIM, &matchString);
                             }
