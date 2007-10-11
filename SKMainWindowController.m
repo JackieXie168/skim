@@ -955,6 +955,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         // the number of pages may have changed
         [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+        [self updateLeftStatus];
+        [self updateRightStatus];
     }
 }
     
