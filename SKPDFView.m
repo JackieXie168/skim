@@ -2691,7 +2691,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)moveReadingBarForKey:(unichar)eventChar {
     BOOL moved = NO;
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
-    [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
     if (eventChar == NSDownArrowFunctionKey)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
@@ -2702,7 +2701,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         moved = [readingBar goToPreviousPage];
     if (moved) {
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
-        [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
         [userInfo setObject:[readingBar page] forKey:@"newPage"];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
