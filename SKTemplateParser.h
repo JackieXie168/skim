@@ -39,20 +39,15 @@
 #import <Cocoa/Cocoa.h>
 
 
-@protocol SKTemplateParserDelegate
-
-- (void)templateParserWillParseTemplate:(id)template usingObject:(id)object isAttributed:(BOOL)flag;
-- (void)templateParserDidParseTemplate:(id)template usingObject:(id)object isAttributed:(BOOL)flag;
-
-@end
-
-
 @interface SKTemplateParser : NSObject
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object;
-+ (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object delegate:(id <SKTemplateParserDelegate>)delegate;
++ (NSArray *)arrayByParsingTemplateString:(NSString *)template;
++ (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object;
+
 + (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object;
-+ (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object delegate:(id <SKTemplateParserDelegate>)delegate;
++ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template;
++ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object;
 
 @end
 
