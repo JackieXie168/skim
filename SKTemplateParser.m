@@ -264,13 +264,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 NSString *itemTemplate = nil, *separatorTemplate = nil;
                 NSString *endTag;
                 NSRange sepTagRange, wsRange;
+                BOOL onlyWhite;
                 
-                // collection template currentTag
-                // ignore whitespace before the currentTag. Should we also remove a newline?
+                // collection template tag
+                // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                    wsRange = [[currentTag text] rangeOfTrailingEmptyLine];
-                    if (wsRange.location != NSNotFound)
+                    wsRange = [[currentTag text] rangeOfTrailingEmptyLine:&onlyWhite];
+                    if (wsRange.location != NSNotFound) {
                         [currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                    } else if ([result count] == 1 && onlyWhite) {
+                        [result removeAllObjects];
+                        currentTag = nil;
+                    }
                 }
                 
                 endTag = endMultiTagWithTag(tag);
@@ -279,7 +284,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 if ([scanner scanString:endTag intoString:nil])
                     continue;
                 if ([scanner scanUpToString:endTag intoString:&itemTemplate] && [scanner scanString:endTag intoString:nil]) {
-                    // ignore whitespace before the currentTag. Should we also remove a newline?
+                    // ignore whitespace before the tag. Should we also remove a newline?
                     wsRange = [itemTemplate rangeOfTrailingEmptyLine];
                     if (wsRange.location != NSNotFound)
                         itemTemplate = [itemTemplate substringToIndex:wsRange.location];
@@ -328,17 +333,22 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     NSString *subTemplate = nil;
                     NSString *endTag, *altTag;
                     NSRange altTagRange, wsRange;
+                    BOOL onlyWhite;
                     
-                    // condition template currentTag
-                    // ignore whitespace before the currentTag. Should we also remove a newline?
+                    // condition template tag
+                    // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        wsRange = [[currentTag text] rangeOfTrailingEmptyLine];
-                        if (wsRange.location != NSNotFound)
+                        wsRange = [[currentTag text] rangeOfTrailingEmptyLine:&onlyWhite];
+                        if (wsRange.location != NSNotFound) {
                             [currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                        } else if ([result count] == 1 && onlyWhite) {
+                            [result removeAllObjects];
+                            currentTag = nil;
+                        }
                     }
                     
                     endTag = endConditionTagWithTag(tag);
-                    // ignore the rest of an empty line after the currentTag
+                    // ignore the rest of an empty line after the tag
                     [scanner scanEmptyLine];
                     if ([scanner scanString:endTag intoString:nil])
                         continue;
@@ -547,13 +557,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 NSAttributedString *itemTemplate = nil, *separatorTemplate = nil;
                 NSString *endTag;
                 NSRange sepTagRange, wsRange;
+                BOOL onlyWhite;
                 
                 // collection template tag
                 // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                    wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLine];
-                    if (wsRange.location != NSNotFound)
+                    wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLine:&onlyWhite];
+                    if (wsRange.location != NSNotFound) {
                         [currentTag setAttributedText:[[currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
+                    } else if ([result count] == 1 && onlyWhite) {
+                        [result removeAllObjects];
+                        currentTag = nil;
+                    }
                 }
                 
                 endTag = endMultiTagWithTag(tag);
@@ -612,13 +627,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     NSAttributedString *subTemplate = nil;
                     NSString *endTag, *altTag;
                     NSRange altTagRange, wsRange;
+                    BOOL onlyWhite;
                     
                     // condition template tag
                     // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLine];
-                        if (wsRange.location != NSNotFound)
+                        wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLine:&onlyWhite];
+                        if (wsRange.location != NSNotFound) {
                             [currentTag setAttributedText:[[currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
+                        } else if ([result count] == 1 && onlyWhite) {
+                            [result removeAllObjects];
+                            currentTag = nil;
+                        }
                     }
                     
                     endTag = endConditionTagWithTag(tag);

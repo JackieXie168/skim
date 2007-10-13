@@ -58,7 +58,9 @@
 - (NSRange)rangeOfLeadingEmptyLine;
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
 - (NSRange)rangeOfTrailingEmptyLine;
+- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite;
 - (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
+- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range;
 
 - (NSString *)typeName;
 
