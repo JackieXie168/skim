@@ -739,7 +739,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             
         } else if (type == SKCollectionTagType) {
             
-            keyValue = [object safeValueForKeyPath:[tag keyPath];
+            keyValue = [object safeValueForKeyPath:[tag keyPath]];
             if ([keyValue respondsToSelector:@selector(objectEnumerator)]) {
                 NSEnumerator *itemE = [keyValue objectEnumerator];
                 id nextItem, item = [itemE nextObject];
