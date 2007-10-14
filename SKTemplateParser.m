@@ -842,24 +842,26 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 @implementation NSScanner (SKTemplateParser)
 
 - (BOOL)scanEmptyLine {
-    BOOL foundNewline = NO;
+    BOOL foundEndOfLine = NO;
     BOOL foundWhitespace = NO;
     int startLoc = [self scanLocation];
     
     // [self scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:nil] is much more sensible, but NSScanner creates an autoreleased inverted character set every time you use it, so it's pretty inefficient
     foundWhitespace = [self scanUpToCharactersFromSet:[NSCharacterSet nonWhitespaceCharacterSet] intoString:nil];
 
-    if ([self isAtEnd] == NO) {
-        foundNewline = [self scanString:@"\r\n" intoString:nil];
-        if (foundNewline == NO) {
+    if ([self isAtEnd]) {
+        foundEndOfLine == foundWhiteSpace;
+    } else {
+        foundEndOfLine = [self scanString:@"\r\n" intoString:nil];
+        if (foundEndOfLine == NO) {
             unichar nextChar = [[self string] characterAtIndex:[self scanLocation]];
-            if (foundNewline = [[NSCharacterSet newlineCharacterSet] characterIsMember:nextChar])
+            if (foundEndOfLine = [[NSCharacterSet newlineCharacterSet] characterIsMember:nextChar])
                 [self setScanLocation:[self scanLocation] + 1];
         }
     }
-    if (foundNewline == NO && foundWhitespace == YES)
+    if (foundEndOfLine == NO && foundWhitespace == YES)
         [self setScanLocation:startLoc];
-    return foundNewline;
+    return foundEndOfLine;
 }
 
 @end
