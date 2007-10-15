@@ -850,7 +850,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     foundWhitespace = [self scanUpToCharactersFromSet:[NSCharacterSet nonWhitespaceCharacterSet] intoString:nil];
 
     if ([self isAtEnd]) {
-        foundEndOfLine == foundWhitespace;
+        foundEndOfLine = foundWhitespace;
     } else {
         foundEndOfLine = [self scanString:@"\r\n" intoString:nil];
         if (foundEndOfLine == NO) {
