@@ -230,14 +230,25 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 // whitespace at the beginning of the string up to the end or until (and including) a newline
 - (NSRange)rangeOfLeadingEmptyLine {
-    return [self rangeOfLeadingEmptyLineInRange:NSMakeRange(0, [self length])];
+    return [self rangeOfLeadingEmptyLine:NULL];
+}
+
+- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite {
+    return [self rangeOfLeadingEmptyLine:onlyWhite range:NSMakeRange(0, [self length])];
 }
 
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range {
+    return [self rangeOfLeadingEmptyLine:NULL range:range];
+}
+
+- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range {
     NSRange firstCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
     NSRange wsRange = NSMakeRange(NSNotFound, 0);
     unsigned int start = range.location;
-    if (firstCharRange.location != NSNotFound) {
+    if (firstCharRange.location == NSNotFound) {
+        if (onlyWhite)
+            *onlyWhite = YES;
+    } else {
         unichar firstChar = [self characterAtIndex:firstCharRange.location];
         unsigned int rangeEnd = NSMaxRange(firstCharRange);
         if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
@@ -246,6 +257,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
             else 
                 wsRange = NSMakeRange(start, rangeEnd - start);
         }
+        if (onlyWhite)
+            *onlyWhite = NO;
     }
     return wsRange;
 }
@@ -272,8 +285,12 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     } else {
         unichar lastChar = [self characterAtIndex:lastCharRange.location];
         unsigned int rangeEnd = NSMaxRange(lastCharRange);
-        if (rangeEnd < end && [[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar]) 
-            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
+        if (rangeEnd < end && [[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar]) {
+            if (lastChar == '\n' && rangeEnd - 1 > range.location && [self characterAtIndex:rangeEnd - 2] == '\r')
+                wsRange = NSMakeRange(rangeEnd - 1, end - rangeEnd + 1);
+            else
+                wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
+        }
         if (onlyWhite)
             *onlyWhite = NO;
     }
