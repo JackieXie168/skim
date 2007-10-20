@@ -70,6 +70,8 @@
 + (void)makeAdornImages {
     static NSImage *backAdornImage = nil;
     static NSImage *forwardAdornImage = nil;
+    static NSImage *firstAdornImage = nil;
+    static NSImage *lastAdornImage = nil;
     static NSImage *outlineViewAdornImage = nil;
     static NSImage *thumbnailViewAdornImage = nil;
     static NSImage *noteViewAdornImage = nil;
@@ -139,6 +141,34 @@
     [path fill];
     [forwardAdornImage unlockFocus];
     [forwardAdornImage setName:@"ForwardAdorn"];
+    
+    firstAdornImage = [[NSImage alloc] initWithSize:size];
+    [firstAdornImage lockFocus];
+    //[shadow set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(18.0, 2.5)];
+    [path lineToPoint:NSMakePoint(9.5, 7.0)];
+    [path lineToPoint:NSMakePoint(18.0, 11.5)];
+    [path closePath];
+    [path appendBezierPathWithRect:NSMakeRect(5.0, 3.0, 3.0, 8.0)];
+    [path fill];
+    [firstAdornImage unlockFocus];
+    [firstAdornImage setName:@"FirstAdorn"];
+    
+    lastAdornImage = [[NSImage alloc] initWithSize:size];
+    [lastAdornImage lockFocus];
+    //[shadow set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(7.0, 2.5)];
+    [path lineToPoint:NSMakePoint(15.5, 7.0)];
+    [path lineToPoint:NSMakePoint(7.0, 11.5)];
+    [path closePath];
+    [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 3.0, 8.0)];
+    [path fill];
+    [lastAdornImage unlockFocus];
+    [lastAdornImage setName:@"LastAdorn"];
     
     outlineViewAdornImage = [[NSImage alloc] initWithSize:size];
     [outlineViewAdornImage lockFocus];

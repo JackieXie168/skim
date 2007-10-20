@@ -109,6 +109,7 @@ static NSString *SKDocumentToolbarPreviousItemIdentifier = @"SKDocumentPreviousT
 static NSString *SKDocumentToolbarNextItemIdentifier = @"SKDocumentNextToolbarItemIdentifier";
 static NSString *SKDocumentToolbarBackForwardItemIdentifier = @"SKDocumentToolbarBackForwardItemIdentifier";
 static NSString *SKDocumentToolbarPageNumberItemIdentifier = @"SKDocumentToolbarPageNumberItemIdentifier";
+static NSString *SKDocumentToolbarPageNumberButtonsItemIdentifier = @"SKDocumentToolbarPageNumberButtonsItemIdentifier";
 static NSString *SKDocumentToolbarScaleItemIdentifier = @"SKDocumentToolbarScaleItemIdentifier";
 static NSString *SKDocumentToolbarZoomInItemIdentifier = @"SKDocumentZoomInToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomOutItemIdentifier = @"SKDocumentZoomOutToolbarItemIdentifier";
@@ -1409,6 +1410,28 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (IBAction)doGoToPreviousPage:(id)sender {
     [pdfView goToPreviousPage:sender];
+}
+
+- (IBAction)doGoToFirstPage:(id)sender {
+    [pdfView goToFirstPage:sender];
+}
+
+- (IBAction)doGoToLastPage:(id)sender {
+    [pdfView goToLastPage:sender];
+}
+
+- (IBAction)goToFirstOrPreviousPage:(id)sender {
+    if ([sender selectedSegment] == 0)
+        [pdfView goToFirstPage:sender];
+    else
+        [pdfView goToPreviousPage:sender];
+}
+
+- (IBAction)goToNextOrLastPage:(id)sender {
+    if ([sender selectedSegment] == 0)
+        [pdfView goToNextPage:sender];
+    else
+        [pdfView goToLastPage:sender];
 }
 
 - (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -2851,6 +2874,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self didChangeValueForKey:@"pageLabel"];
     [self didChangeValueForKey:@"pageNumber"];
     
+    [previousPageButton setEnabled:[pdfView canGoToFirstPage] forSegment:0];
+    [previousPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:1];
+    [nextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:0];
+    [nextPageButton setEnabled:[pdfView canGoToLastPage] forSegment:1];
+    
     [self updateOutlineSelection];
     [self updateNoteSelection];
     [self updateThumbnailSelection];
@@ -4214,6 +4242,28 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberItemIdentifier];
     [item release];
     
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Menu item title") 
+                                                                     action:@selector(doGoToPage:)
+									                          keyEquivalent:@""] autorelease];
+	[menuItem setTarget:self];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPageNumberButtonsItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Go To Page", @"Tool tip message")];
+    [[previousPageButton cell] setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
+    [[previousPageButton cell] setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
+    [[nextPageButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
+    [[nextPageButton cell] setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
+    frame = [previousPageButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [previousPageButton setFrame:frame];
+    frame = [nextPageButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [nextPageButton setFrame:frame];
+    [item setViewWithSizes:pageNumberButtonsView];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberButtonsItemIdentifier];
+    [item release];
+    
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Scale", @"Menu item title") 
                                                                      action:@selector(chooseScale:)
 									                          keyEquivalent:@""] autorelease];
@@ -4694,6 +4744,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarNextItemIdentifier, 
         SKDocumentToolbarBackForwardItemIdentifier, 
         SKDocumentToolbarPageNumberItemIdentifier, 
+        SKDocumentToolbarPageNumberButtonsItemIdentifier, 
         SKDocumentToolbarScaleItemIdentifier, 
         SKDocumentToolbarZoomInItemIdentifier, 
         SKDocumentToolbarZoomOutItemIdentifier, 

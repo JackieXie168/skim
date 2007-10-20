@@ -64,6 +64,8 @@
                 doAutoScale = id; 
                 doGoBack = id; 
                 doGoForward = id; 
+                doGoToFirstPage = id; 
+                doGoToLastPage = id; 
                 doGoToNextPage = id; 
                 doGoToPage = id; 
                 doGoToPreviousPage = id; 
@@ -78,6 +80,8 @@
                 exitFullScreen = id; 
                 getInfo = id; 
                 goBackOrForward = id; 
+                goToFirstOrPreviousPage = id; 
+                goToNextOrLastPage = id; 
                 password = id; 
                 performFit = id; 
                 rotateAllLeft = id; 
@@ -122,6 +126,7 @@
                 leftSideGradientView = BDSKGradientView; 
                 leftSideView = NSView; 
                 markupPopUpButton = BDSKImagePopUpButton; 
+                nextPageButton = NSSegmentedControl; 
                 noteArrayController = NSArrayController; 
                 noteButton = NSSegmentedControl; 
                 noteOutlineView = SKNoteOutlineView; 
@@ -130,12 +135,15 @@
                 noteView = NSView; 
                 outlineView = SKTocOutlineView; 
                 ownerController = NSObjectController; 
+                pageNumberButtonsField = NSTextField; 
+                pageNumberButtonsView = NSView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
                 pdfEdgeView = BDSKEdgeView; 
                 pdfSplitView = SKSplitView; 
                 pdfView = SKPDFView; 
+                previousPageButton = NSSegmentedControl; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideCollapsibleView = BDSKCollapsibleView; 
                 rightSideContentView = NSView; 
