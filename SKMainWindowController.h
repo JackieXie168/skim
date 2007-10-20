@@ -148,6 +148,10 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *pageNumberView;
     IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
+    IBOutlet NSView             *pageNumberButtonsView;
+    IBOutlet NSSegmentedControl *previousPageButton;
+    IBOutlet NSSegmentedControl *nextPageButton;
+    IBOutlet NSTextField        *pageNumberButtonsField;
     IBOutlet NSSegmentedControl *toolModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
@@ -210,6 +214,10 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeDisplayBox:(id)sender;
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
+- (IBAction)doGoToFirstPage:(id)sender;
+- (IBAction)doGoToLastPage:(id)sender;
+- (IBAction)goToFirstOrPreviousPage:(id)sender;
+- (IBAction)goToNextOrLastPage:(id)sender;
 - (IBAction)doGoToPage:(id)sender;
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
