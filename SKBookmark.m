@@ -50,8 +50,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 #define CHILDREN_KEY    @"children"
 #define LABEL_KEY       @"label"
 #define PAGE_INDEX_KEY  @"pageIndex"
-#define PATH_KEY        @"path"
-#define ALIAS_KEY       @"_BDAlias"
+#define ALIAS_DATA_KEY  @"_BDAlias"
 #define TYPE_KEY        @"type"
 
 @implementation SKBookmark
@@ -79,11 +78,10 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     return icon;
 }
 
-- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeBookmark;
-        path = [aPath copy];
-        aliasData = [aData copy];
+        alias = [anAlias retain];
         pageIndex = aPageIndex;
         label = [aLabel copy];
         children = nil;
@@ -91,15 +89,18 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     return self;
 }
 
+- (id)initWithAliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+    return [self initWithAlias:[BDAlias aliasWithData:aData] pageIndex:aPageIndex label:aLabel];
+}
+
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
-    return [self initWithPath:aPath aliasData:[[BDAlias aliasWithPath:aPath] aliasData] pageIndex:aPageIndex label:aLabel];
+    return [self initWithAlias:[BDAlias aliasWithPath:aPath] pageIndex:aPageIndex label:aLabel];
 }
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeFolder;
-        path = nil;
-        aliasData = nil;
+        alias = nil;
         pageIndex = NSNotFound;
         label = [aLabel copy];
         children = [aChildren mutableCopy];
@@ -115,8 +116,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 - (id)initSeparator {
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeSeparator;
-        path = nil;
-        aliasData = nil;
+        alias = nil;
         pageIndex = NSNotFound;
         label = nil;
         children = nil;
@@ -135,7 +135,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     } else if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeSeparatorString]) {
         return [self initSeparator];
     } else {
-        return [self initWithPath:[dictionary objectForKey:PATH_KEY] aliasData:[dictionary objectForKey:ALIAS_KEY] pageIndex:[[dictionary objectForKey:PAGE_INDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
+        return [self initWithAliasData:[dictionary objectForKey:ALIAS_DATA_KEY] pageIndex:[[dictionary objectForKey:PAGE_INDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
@@ -145,13 +145,12 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     else if (bookmarkType == SKBookmarkTypeSeparator)
         return [[[self class] allocWithZone:aZone] initSeparator];
     else
-        return [[[self class] allocWithZone:aZone] initWithPath:path aliasData:aliasData pageIndex:pageIndex label:label];
+        return [[[self class] allocWithZone:aZone] initWithAlias:alias pageIndex:pageIndex label:label];
 }
 
 - (void)dealloc {
     [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
-    [path release];
-    [aliasData release];
+    [alias release];
     [label release];
     [children release];
     [super dealloc];
@@ -163,7 +162,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     else if (bookmarkType == SKBookmarkTypeSeparator)
         return [NSString stringWithFormat:@"<%@: separator>", [self class]];
     else
-        return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, path, pageIndex];
+        return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, [self path], pageIndex];
 }
 
 - (NSDictionary *)dictionaryValue {
@@ -172,7 +171,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     else if (bookmarkType == SKBookmarkTypeSeparator)
         return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSeparatorString, TYPE_KEY, nil];
     else
-        return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, TYPE_KEY, path, PATH_KEY, aliasData, ALIAS_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, label, LABEL_KEY, nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, TYPE_KEY, [self aliasData], ALIAS_DATA_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, label, LABEL_KEY, nil];
 }
 
 - (int)bookmarkType {
@@ -180,18 +179,15 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 }
 
 - (NSString *)path {
-    return [[path retain] autorelease];
+    return [alias fullPathNoUI];
+}
+
+- (BDAlias *)alias {
+    return alias;
 }
 
 - (NSData *)aliasData {
-    return aliasData;
-}
-
-- (NSString *)resolvedPath {
-    NSString *resolvedPath = [[BDAlias aliasWithData:aliasData] fullPathNoUI];
-    if (resolvedPath == nil)
-        resolvedPath = path;
-    return resolvedPath;
+    return [alias aliasData];
 }
 
 - (NSImage *)icon {
@@ -200,7 +196,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     else if (bookmarkType == SKBookmarkTypeSeparator)
         return nil;
     else
-        return [[self class] smallImageForFile:[self resolvedPath]];
+        return [[self class] smallImageForFile:[self path]];
 }
 
 - (unsigned int)pageIndex {

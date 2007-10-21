@@ -66,7 +66,8 @@ static NSString *SKMaximumDocumentPageHistoryCountKey = @"SKMaximumDocumentPageH
 
 #define PAGE_INDEX_KEY          @"pageIndex"
 #define PATH_KEY                @"path"
-#define ALIAS_KEY               @"_BDAlias"
+#define ALIAS_KEY               @"alias"
+#define ALIAS_DATA_KEY          @"_BDAlias"
 #define SNAPSHOTS_KEY           @"snapshots"
 
 @implementation SKBookmarkController
@@ -96,7 +97,7 @@ static unsigned int maxRecentDocumentsCount = 0;
             NSString *error = nil;
             NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
             id plist = [NSPropertyListSerialization propertyListFromData:data
-                                                        mutabilityOption:NSPropertyListImmutable
+                                                        mutabilityOption:NSPropertyListMutableContainers
                                                                   format:&format 
                                                         errorDescription:&error];
             
@@ -168,13 +169,13 @@ static unsigned int maxRecentDocumentsCount = 0;
     if (row != -1) {
         SKBookmark *bookmark = [outlineView itemAtRow:row];
         if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
-            message = [bookmark resolvedPath];
+            message = [bookmark path];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
             int count = [[bookmark children] count];
             message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         }
     }
-    [statusBar setLeftStringValue:message];
+    [statusBar setLeftStringValue:message ? message : @""];
 }
 
 #pragma mark Bookmarks
@@ -273,15 +274,17 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (unsigned int)indexOfRecentDocumentAtPath:(NSString *)path {
-    unsigned int index = [[recentDocuments valueForKey:PATH_KEY] indexOfObject:path];
-    if (index == NSNotFound) {
-        unsigned int i, iMax = [recentDocuments count];
-        for (i = 0; i < iMax; i++) {
-            NSData *aliasData = [[recentDocuments objectAtIndex:i] valueForKey:ALIAS_KEY];
-            if ([[[BDAlias aliasWithData:aliasData] fullPathNoUI] isEqualToString:path]) {
-                index = i;
-                break;
-            }
+    unsigned int index = NSNotFound, i, iMax = [recentDocuments count];
+    for (i = 0; i < iMax; i++) {
+        NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
+        BDAlias *alias = [info valueForKey:ALIAS_KEY];
+        if (alias == nil) {
+            alias = [BDAlias aliasWithData:[info valueForKey:ALIAS_DATA_KEY]];
+            [info setValue:alias forKey:ALIAS_KEY];
+        }
+        if ([[alias fullPathNoUI] isEqualToString:path]) {
+            index = i;
+            break;
         }
     }
     return index;
@@ -296,7 +299,7 @@ static unsigned int maxRecentDocumentsCount = 0;
         [recentDocuments removeObjectAtIndex:index];
     
     NSData *data = [[BDAlias aliasWithPath:path] aliasData];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, PATH_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, data, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, data, ALIAS_DATA_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
@@ -353,7 +356,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     
     while (bm = [bmEnum nextObject]) {
         id document = nil;
-        NSString *path = [bm resolvedPath];
+        NSString *path = [bm path];
         NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
         NSError *error;
         
@@ -488,7 +491,7 @@ static unsigned int maxRecentDocumentsCount = 0;
             int count = [[item children] count];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         } else {
-            return [item resolvedPath];
+            return [item path];
         }
     } else if ([tcID isEqualToString:@"page"]) {
         return [[item pageNumber] stringValue];
@@ -583,7 +586,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     if ([tcID isEqualToString:@"label"]) {
         return [item label];
     } else if ([tcID isEqualToString:@"file"]) {
-        return [item resolvedPath];
+        return [item path];
     } else if ([tcID isEqualToString:@"page"]) {
         return [[item pageNumber] stringValue];
     }
