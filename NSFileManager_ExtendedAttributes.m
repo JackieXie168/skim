@@ -553,7 +553,7 @@ static NSString *xattrError(const int err, const char *myPath)
         }
     } while(bzret != BZ_STREAM_END && NO == hadError);
     
-    BZ2_bzCompressEnd(&stream);
+    BZ2_bzDecompressEnd(&stream);
     [buffer release];
 
 	return decompressed;
