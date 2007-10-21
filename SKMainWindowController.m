@@ -4402,11 +4402,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setTag:SKSquareNote];
     [menuItem setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
     [menuItem setTarget:self];
-    menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Circle", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
+    menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Shape", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
-    [item setLabels:NSLocalizedString(@"Add Circle", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Circle", @"Tool tip message")];
+    [item setLabels:NSLocalizedString(@"Add Shape", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Circle or Box", @"Tool tip message")];
     [item setTarget:self];
     [item setViewWithSizes:circlePopUpButton];
     [item setMenuFormRepresentation:menuItem];
