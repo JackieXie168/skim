@@ -230,24 +230,24 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 // whitespace at the beginning of the string up to and including a newline
 - (NSRange)rangeOfLeadingEmptyLine {
-    return [self rangeOfLeadingEmptyLine:NULL];
+    return [self rangeOfLeadingEmptyLineRequiringNewline:YES];
 }
 
-- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite {
-    return [self rangeOfLeadingEmptyLine:onlyWhite range:NSMakeRange(0, [self length])];
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL {
+    return [self rangeOfLeadingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
 }
 
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfLeadingEmptyLine:NULL range:range];
+    return [self rangeOfLeadingEmptyLineRequiringNewline:YES range:range];
 }
 
-- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range {
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
     NSRange firstCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
     NSRange wsRange = NSMakeRange(NSNotFound, 0);
     unsigned int start = range.location;
     if (firstCharRange.location == NSNotFound) {
-        if (onlyWhite)
-            *onlyWhite = YES;
+        if (requireNL == NO)
+            wsRange = range;
     } else {
         unichar firstChar = [self characterAtIndex:firstCharRange.location];
         unsigned int rangeEnd = NSMaxRange(firstCharRange);
@@ -257,38 +257,35 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
             else 
                 wsRange = NSMakeRange(start, rangeEnd - start);
         }
-        if (onlyWhite)
-            *onlyWhite = NO;
     }
     return wsRange;
 }
 
 // whitespace at the end of the string after a newline
 - (NSRange)rangeOfTrailingEmptyLine {
-    return [self rangeOfTrailingEmptyLine:NULL];
+    return [self rangeOfTrailingEmptyLineRequiringNewline:YES];
 }
 
-- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite {
-    return [self rangeOfTrailingEmptyLine:onlyWhite range:NSMakeRange(0, [self length])];
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL {
+    return [self rangeOfTrailingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
 }
+
 - (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfTrailingEmptyLine:NULL range:range];
+    return [self rangeOfTrailingEmptyLineRequiringNewline:YES range:range];
 }
 
-- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range {
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
     NSRange lastCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
     NSRange wsRange = NSMakeRange(NSNotFound, 0);
     unsigned int end = NSMaxRange(range);
     if (lastCharRange.location == NSNotFound) {
-        if (onlyWhite)
-            *onlyWhite = YES;
+        if (requireNL == NO)
+            wsRange = range;
     } else {
         unichar lastChar = [self characterAtIndex:lastCharRange.location];
         unsigned int rangeEnd = NSMaxRange(lastCharRange);
         if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
             wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
-        if (onlyWhite)
-            *onlyWhite = NO;
     }
     return wsRange;
 }

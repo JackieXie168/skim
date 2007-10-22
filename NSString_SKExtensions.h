@@ -56,13 +56,13 @@
 - (NSString *)stringByEscapingParenthesis;
 
 - (NSRange)rangeOfLeadingEmptyLine;
-- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite;
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL;
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfLeadingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range;
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
 - (NSRange)rangeOfTrailingEmptyLine;
-- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite;
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL;
 - (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfTrailingEmptyLine:(BOOL *)onlyWhite range:(NSRange)range;
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
 
 - (NSString *)typeName;
 
