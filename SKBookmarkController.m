@@ -111,7 +111,8 @@ static unsigned int maxRecentDocumentsCount = 0;
                 
                 while (dict = [dictEnum nextObject]) {
                     SKBookmark *bookmark = [[SKBookmark alloc] initWithDictionary:dict];
-                    [bookmarks addObject:bookmark];
+                    if (bookmark)
+                        [bookmarks addObject:bookmark];
                     [bookmark release];
                 }
             }
@@ -211,10 +212,9 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label {
-    if (path == nil)
-        return;
     SKBookmark *bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:pageIndex label:label];
-    [[self mutableArrayValueForKey:@"bookmarks"] addObject:bookmark];
+    if (bookmark)
+        [[self mutableArrayValueForKey:@"bookmarks"] addObject:bookmark];
     [bookmark release];
 }
 
