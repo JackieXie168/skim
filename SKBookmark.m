@@ -80,11 +80,16 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 
 - (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     if (self = [super init]) {
-        bookmarkType = SKBookmarkTypeBookmark;
-        alias = [anAlias retain];
-        pageIndex = aPageIndex;
-        label = [aLabel copy];
-        children = nil;
+        if (anAlias) {
+            bookmarkType = SKBookmarkTypeBookmark;
+            alias = [anAlias retain];
+            pageIndex = aPageIndex;
+            label = [aLabel copy];
+            children = nil;
+        } else {
+            [self release];
+            self = nil;
+        }
     }
     return self;
 }
