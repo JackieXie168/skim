@@ -34,7 +34,7 @@
                 description="The default PDF view settings for normal mode.">
                 <cocoa key="defaultPdfViewSettings"/>
             </property>
-            <property name="default full screen view settings" type="PDF view settings" code="DVSt"
+            <property name="default full screen view settings" type="PDF view settings" code="DFVS"
                 description="The default PDF view settings for full screen mode. An empty dictionary indicates that default view settings for normal mode are used.">
                 <cocoa key="defaultFullScreenPdfViewSettings"/>
             </property>
