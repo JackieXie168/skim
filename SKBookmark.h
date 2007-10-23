@@ -51,6 +51,7 @@ enum {
 
 @interface SKBookmark : NSObject <NSCopying> {
     BDAlias *alias;
+    NSData *aliasData;
     NSString *label;
     unsigned int pageIndex;
     NSMutableArray *children;
