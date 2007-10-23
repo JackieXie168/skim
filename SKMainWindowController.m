@@ -880,12 +880,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 #pragma mark Accessors
 
 - (void)setDocument:(NSDocument *)document {
-    if ([self document] && document == nil) {
-        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
-        NSString *path = [[[self document] fileURL] path];
-        if (pageIndex != NSNotFound && path)
-            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[snapshots valueForKey:@"currentSetup"]];
-    }
     [super setDocument:document];
 }
 

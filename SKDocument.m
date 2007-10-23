@@ -66,6 +66,8 @@
 #import "SKProgressController.h"
 #import "NSView_SKExtensions.h"
 #import <Security/Security.h>
+#import "SKBookmarkController.h"
+#import "PDFPage_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -74,6 +76,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
+static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 
 @interface NSFileManager (SKDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
@@ -175,6 +178,13 @@ static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
     if (progressController == nil)
         progressController = [[SKProgressController alloc] init];
     return progressController;
+}
+
+- (void)saveRecentDocumentInfo {
+    unsigned int pageIndex = [[[self pdfView] currentPage] pageIndex];
+    NSString *path = [[self fileURL] path];
+    if (pageIndex != NSNotFound && path)
+        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:@"currentSetup"]];
 }
 
 #pragma mark Document read/write
@@ -989,6 +999,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     if (returnCode == NSAlertOtherReturn) {
         autoUpdate = NO;
+        disableAutoReload = YES;
     } else {
         NSError *error = nil;
         
@@ -999,6 +1010,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
+        disableAutoReload = NO;
     }
 }
 
@@ -1049,12 +1061,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             unsigned trailerIndex = [trailerData indexOfBytes:pattern length:patternLength options:NSBackwardsSearch];
             
             if (trailerIndex != NSNotFound) {
-                if (autoUpdate && [self isDocumentEdited] == NO) {
+                BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
+                if (disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
                     // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                     [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
                 } else {
                     NSString *message;
-                    if ([self isDocumentEdited])
+                    if ([self isDocumentEdited] || [[self notes] count] > 0)
                         message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
                     else 
                         message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
@@ -1847,6 +1860,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return setup;
 }
 
+@end
+
+
+@implementation NSDocument (SKExtensions)
+- (void)saveRecentDocumentInfo {}
 @end
 
 
