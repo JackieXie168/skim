@@ -109,6 +109,9 @@ static IMP originalDealloc = NULL;
     
     [image lockFocus];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    [[NSColor whiteColor] set];
+    bounds.origin = NSZeroPoint;
+    NSRectFill(bounds);
     if ([self rotation]) {
         NSAffineTransform *transform = [NSAffineTransform transform];
         [transform rotateByDegrees:[self rotation]];
@@ -125,9 +128,6 @@ static IMP originalDealloc = NULL;
         }
         [transform concat];
     }
-    [[NSColor whiteColor] set];
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
     [self drawWithBox:box]; 
     [image unlockFocus];
     
