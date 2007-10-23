@@ -61,19 +61,23 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
         smallIcons = [[NSMutableDictionary alloc] init];
     
     NSString *extension = [filePath pathExtension];
+    if (extension == nil)
+        return nil;
+    
     NSImage *icon = [smallIcons objectForKey:extension];
     
     if (icon == nil) {
         NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
-        NSRect sourceRect = {NSZeroPoint, [image size]};
-        NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
-        icon = [[NSImage alloc] initWithSize:targetRect.size];
-        [icon lockFocus];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        [icon unlockFocus];
-        [smallIcons setObject:icon forKey:extension];
-        [icon release];
+        if (image) {NSRect sourceRect = {NSZeroPoint, [image size]};
+            NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
+            icon = [[NSImage alloc] initWithSize:targetRect.size];
+            [icon lockFocus];
+            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+            [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+            [icon unlockFocus];
+            [smallIcons setObject:icon forKey:extension];
+            [icon release];
+        }
     }
     return icon;
 }
