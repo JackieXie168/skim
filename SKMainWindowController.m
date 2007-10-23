@@ -879,10 +879,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 #pragma mark Accessors
 
-- (void)setDocument:(NSDocument *)document {
-    [super setDocument:document];
-}
-
 - (PDFDocument *)pdfDocument{
     return [pdfView document];
 }
