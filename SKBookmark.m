@@ -89,6 +89,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
         if (anAlias) {
             bookmarkType = SKBookmarkTypeBookmark;
             alias = [anAlias retain];
+            aliasData = [[alias aliasData] retain];
             pageIndex = aPageIndex;
             label = [aLabel copy];
             children = nil;
@@ -112,6 +113,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeFolder;
         alias = nil;
+        aliasData = nil;
         pageIndex = NSNotFound;
         label = [aLabel copy];
         children = [aChildren mutableCopy];
@@ -128,6 +130,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     if (self = [super init]) {
         bookmarkType = SKBookmarkTypeSeparator;
         alias = nil;
+        aliasData = nil;
         pageIndex = NSNotFound;
         label = nil;
         children = nil;
@@ -162,6 +165,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 - (void)dealloc {
     [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
     [alias release];
+    [aliasData release];
     [label release];
     [children release];
     [super dealloc];
@@ -198,7 +202,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 }
 
 - (NSData *)aliasData {
-    return [alias aliasData];
+    return [self path] ? [alias aliasData] : aliasData;
 }
 
 - (NSImage *)icon {
