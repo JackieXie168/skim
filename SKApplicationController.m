@@ -251,15 +251,17 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     for (i = 0; i < iMax; i++) {
         SKBookmark *bm = [bookmarks objectAtIndex:i];
         if ([bm bookmarkType] == SKBookmarkTypeFolder) {
+            NSString *label = [bm label];
             NSMenu *submenu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease];
-            NSMenuItem *item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
+            NSMenuItem *item = [menu addItemWithTitle:label ? label : @"" action:NULL keyEquivalent:@""];
             [item setImage:[bm icon]];
             [item setSubmenu:submenu];
             [self addMenuItemsForBookmarks:[bm children] toMenu:submenu];
         } else if ([bm bookmarkType] == SKBookmarkTypeSeparator) {
             [menu addItem:[NSMenuItem separatorItem]];
         } else {
-            NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
+            NSString *label = [bm label];
+            NSMenuItem *item = [menu addItemWithTitle:label ? label : @"" action:@selector(openBookmark:)  keyEquivalent:@""];
             [item setTarget:self];
             [item setRepresentedObject:bm];
             [item setImage:[bm icon]];
