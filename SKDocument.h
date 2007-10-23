@@ -77,6 +77,7 @@ enum {
     SKPDFSynchronizer *synchronizer;
     NSString *watchedFile;
     BOOL autoUpdate;
+    BOOL disableAutoReload;
     BOOL isSaving;
     BOOL fileChangedOnDisk;
     BOOL exportUsingPanel;
@@ -136,6 +137,11 @@ enum {
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
 - (id)handleShowTeXScriptCommand:(NSScriptCommand *)command;
 
+@end
+
+
+@interface NSDocument (SKExtensions)
+- (void)saveRecentDocumentInfo;
 @end
 
 
