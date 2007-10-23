@@ -39,6 +39,7 @@
 #import "SKBookmark.h"
 #import "SKBookmarkController.h"
 #import "BDAlias.h"
+#import "NSImage_SKExtensions.h"
 
 NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
 NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";
@@ -57,18 +58,19 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 
 + (NSImage *)smallImageForFile:(NSString *)filePath {
     static NSMutableDictionary *smallIcons = nil;
-    if (smallIcons == nil)
-        smallIcons = [[NSMutableDictionary alloc] init];
+    
+    if (filePath == nil)
+        return [NSImage smallMissingFileImage];
     
     NSString *extension = [filePath pathExtension];
-    if (extension == nil)
-        return nil;
-    
     NSImage *icon = [smallIcons objectForKey:extension];
     
     if (icon == nil) {
+        if (smallIcons == nil)
+            smallIcons = [[NSMutableDictionary alloc] init];
         NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
-        if (image) {NSRect sourceRect = {NSZeroPoint, [image size]};
+        if (image) {
+            NSRect sourceRect = {NSZeroPoint, [image size]};
             NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
             icon = [[NSImage alloc] initWithSize:targetRect.size];
             [icon lockFocus];
