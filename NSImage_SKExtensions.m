@@ -601,6 +601,34 @@
     return [self iconWithSize:NSMakeSize(32,32) forToolboxCode:code];
 }
 
++ (NSImage *)missingFileImage {
+    static NSImage *image = nil;
+    if(image == nil){
+        image = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
+        NSImage *genericDocImage = [self iconWithSize:NSMakeSize(32, 32) forToolboxCode:kGenericDocumentIcon];
+        NSImage *questionMark = [self iconWithSize:NSMakeSize(20, 20) forToolboxCode:kQuestionMarkIcon];
+        [image lockFocus];
+        [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
+        [questionMark compositeToPoint:NSMakePoint(6, 4) operation:NSCompositeSourceOver fraction:0.7];
+        [image unlockFocus];
+    }
+    return image;
+}
+
++ (NSImage *)smallMissingFileImage {
+    static NSImage *image = nil;
+    if(image == nil){
+        image = [[NSImage alloc] initWithSize:NSMakeSize(16, 16)];
+        NSImage *genericDocImage = [self iconWithSize:NSMakeSize(16, 16) forToolboxCode:kGenericDocumentIcon];
+        NSImage *questionMark = [self iconWithSize:NSMakeSize(10, 10) forToolboxCode:kQuestionMarkIcon];
+        [image lockFocus];
+        [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
+        [questionMark compositeToPoint:NSMakePoint(3, 2) operation:NSCompositeSourceOver fraction:0.7];
+        [image unlockFocus];
+    }
+    return image;
+}
+
 - (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
     [NSGraphicsContext saveGraphicsState];
     NSAffineTransform *transform = [NSAffineTransform transform];
