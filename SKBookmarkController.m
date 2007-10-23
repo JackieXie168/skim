@@ -298,8 +298,8 @@ static unsigned int maxRecentDocumentsCount = 0;
     if (index != NSNotFound)
         [recentDocuments removeObjectAtIndex:index];
     
-    NSData *data = [[BDAlias aliasWithPath:path] aliasData];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, data, ALIAS_DATA_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
+    BDAlias *alias = [BDAlias aliasWithPath:path];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, [alias aliasData], ALIAS_DATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
@@ -446,13 +446,14 @@ static unsigned int maxRecentDocumentsCount = 0;
 #pragma mark Notification handlers
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
+    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
     NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"dictionaryValue"], BOOKMARKS_KEY, recentDocuments, RECENT_DOCUMENTS_KEY, nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
     
 	if (error) {
-		NSLog(@"Error deserializing: %@", error);
+		NSLog(@"Error serializing: %@", error);
         [error release];
 	} else {
         [data writeToFile:[self bookmarksFilePath] atomically:YES];
