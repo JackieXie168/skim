@@ -175,6 +175,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)goToFindResults:(NSArray *)findResults;
 
+- (void)showHoverWindowForDestination:(PDFDestination *)dest;
+
 - (void)updateNoteFilterPredicate;
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
@@ -2831,6 +2833,31 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [wc showWindow:self];
 }
 
+- (void)showHoverWindowForDestination:(PDFDestination *)dest {
+        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
+        NSPoint point = [dest point];
+        switch ([[dest page] rotation]) {
+            case 0:
+                point.x -= 50.0;
+                point.y += 20.0;
+                break;
+            case 90:
+                point.x -= 20.0;
+                point.y -= 50.0;
+                break;
+            case 180:
+                point.x += 50.0;
+                point.y -= 20.0;
+                break;
+            case 270:
+                point.x += 20.0;
+                point.y += 50.0;
+                break;
+        }
+        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+}
+
 #pragma mark Bookmarks
 
 - (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -3540,13 +3567,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineView:(NSOutlineView *)ov mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:outlineView]) {
-        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
-        PDFDestination *dest = [item destination];
-        NSPoint point = [dest point];
-        point.x -= 50.0;
-        point.y += 20.0;
-        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+        [self showHoverWindowForDestination:[item destination]];
     }
 }
 
@@ -3773,13 +3794,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
-        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-        NSPoint point = [dest point];
-        point.x -= 50.0;
-        point.y += 20.0;
-        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+        [self showHoverWindowForDestination:dest];
     }
 }
 

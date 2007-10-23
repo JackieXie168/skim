@@ -42,6 +42,7 @@
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSAffineTransform_SKExtensions.h"
 
 #define WINDOW_OFFSET   20.0
 #define TEXT_MARGIN_X   2.0
@@ -203,18 +204,36 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         
         if (page) {
             
-            NSImage *pageImage = [page image];
+            NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
             NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
             NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
             NSRect sourceRect = contentRect;
-            
-            sourceRect.origin = [dest point];
-            sourceRect.origin.x -= NSMinX(bounds);
-            sourceRect.origin.y -= NSMinY(bounds) + NSHeight(sourceRect);
-            
             PDFSelection *selection = [page selectionForRect:bounds];
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            
+            [transform rotateByDegrees:-[page rotation]];
+            switch ([page rotation]) {
+                case 0:
+                    [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+                    break;
+                case 90:
+                    [transform translateXBy:-NSMaxX(bounds) yBy:-NSMinY(bounds)];
+                    break;
+                case 180:
+                    [transform translateXBy:-NSMaxX(bounds) yBy:-NSMaxY(bounds)];
+                    break;
+                case 270:
+                    [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)];
+                    break;
+            }
+            
+            bounds = [transform transformRect:bounds];
+            
+            sourceRect.origin = [transform transformPoint:[dest point]];
+            sourceRect.origin.y -= NSHeight(sourceRect);
+            
             if ([selection string]) {
-                NSRect selBounds = [selection boundsForPage:page];
+                NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
                 float top = ceilf(fmaxf(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
                 float left = floorf(fminf(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
                 if (top < NSMaxY(sourceRect))
