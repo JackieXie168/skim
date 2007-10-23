@@ -57,6 +57,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "OBUtilities.h"
+#import "NSAffineTransform_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -702,16 +703,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     break;
             }
             [transform rotateByDegrees:-[page rotation]];
-            targetRect.origin = [transform transformPoint:targetRect.origin];
-            targetRect.size = [transform transformSize:targetRect.size];
-            if (NSWidth(targetRect) < 0.0) {
-                targetRect.origin.x += NSWidth(targetRect);
-                targetRect.size.width *= -1.0;
-            }
-            if (NSHeight(targetRect) < 0.0) {
-                targetRect.origin.y += NSHeight(targetRect);
-                targetRect.size.height *= -1.0;
-            }
+            targetRect = [transform transformRect:targetRect];
         }
         
         PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
@@ -1604,16 +1596,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                         break;
                 }
                 [transform rotateByDegrees:-[page rotation]];
-                targetRect.origin = [transform transformPoint:targetRect.origin];
-                targetRect.size = [transform transformSize:targetRect.size];
-                if (NSWidth(targetRect) < 0.0) {
-                    targetRect.origin.x += NSWidth(targetRect);
-                    targetRect.size.width *= -1.0;
-                }
-                if (NSHeight(targetRect) < 0.0) {
-                    targetRect.origin.y += NSHeight(targetRect);
-                    targetRect.size.height *= -1.0;
-                }
+                targetRect = [transform transformRect:targetRect];
             }
             
             PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
