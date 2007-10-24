@@ -4,6 +4,7 @@
         {
             CLASS = SKBookmarkSheetController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {folderPopUp = NSPopUpButton; }; 
             SUPERCLASS = SKSheetController; 
         }, 
         {

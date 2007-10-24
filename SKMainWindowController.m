@@ -2856,7 +2856,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *path = [[self document] fileName];
         NSString *label = [controller stringValue];
         unsigned int pageIndex = [[pdfView currentPage] pageIndex];
-        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label];
+        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:[controller selectedFolder]];
     }
 }
 

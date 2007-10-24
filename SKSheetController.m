@@ -37,6 +37,8 @@
  */
 
 #import "SKSheetController.h"
+#import "SKBookmarkController.h"
+#import "SKBookmark.h"
 
 
 @implementation SKSheetController
@@ -127,7 +129,37 @@
 #pragma mark -
 
 @implementation SKBookmarkSheetController : SKSheetController
+
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
+
+- (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(int)level toMenu:(NSMenu *)menu {
+    int i, iMax = [bookmarks count];
+    for (i = 0; i < iMax; i++) {
+        SKBookmark *bm = [bookmarks objectAtIndex:i];
+        if ([bm bookmarkType] == SKBookmarkTypeFolder) {
+            NSString *label = [bm label];
+            NSMenuItem *item = [menu addItemWithTitle:label ? label : @"" action:NULL keyEquivalent:@""];
+            [item setImage:[bm icon]];
+            [item setIndentationLevel:level];
+            [item setRepresentedObject:bm];
+            [self addMenuItemsForBookmarks:[bm children] level:level+1 toMenu:menu];
+        }
+    }
+}
+
+- (void)prepare {
+    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
+    [folderPopUp removeAllItems];
+    NSMenuItem *item = [[folderPopUp menu] addItemWithTitle:NSLocalizedString(@"Bookmarks Menu", @"Menu item title") action:NULL keyEquivalent:@""];
+    [item setImage:[NSImage imageNamed:@"SmallMenu"]];
+    [self addMenuItemsForBookmarks:bookmarks level:1 toMenu:[folderPopUp menu]];
+    [folderPopUp selectItemAtIndex:0];
+}
+
+- (SKBookmark *)selectedFolder {
+    return [[folderPopUp selectedItem] representedObject];
+}
+
 @end
 
 #pragma mark -

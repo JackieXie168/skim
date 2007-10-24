@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKOutlineView.h"
 
-@class SKBookmarkOutlineView, SKStatusBar;
+@class SKBookmark, SKBookmarkOutlineView, SKStatusBar;
 
 @interface SKBookmarkController : NSWindowController {
     IBOutlet SKBookmarkOutlineView *outlineView;
@@ -60,7 +60,7 @@
 - (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index;
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
+- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleBookmarkChangedNotification:(NSNotification *)notification;
 - (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification;
