@@ -3616,7 +3616,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (row != -1)
             [rowIndexes addIndex:row];
     }
-    [noteOutlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
+    [noteOutlineView reloadData];
 }
 
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
