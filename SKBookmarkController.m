@@ -211,13 +211,6 @@ static unsigned int maxRecentDocumentsCount = 0;
     [self handleBookmarkChangedNotification:nil];
 }
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label {
-    SKBookmark *bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:pageIndex label:label];
-    if (bookmark)
-        [[self mutableArrayValueForKey:@"bookmarks"] addObject:bookmark];
-    [bookmark release];
-}
-
 - (NSArray *)childrenOfBookmark:(SKBookmark *)bookmark {
     return bookmark ? [bookmark children] : bookmarks;
 }
@@ -254,6 +247,14 @@ static unsigned int maxRecentDocumentsCount = 0;
         }
     }
     return minimalCover;
+}
+
+- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder {
+    SKBookmark *bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:pageIndex label:label];
+    if (bookmark) {
+        [self bookmark:folder insertChildBookmark:bookmark atIndex:[[self childrenOfBookmark:folder] count]];
+        [bookmark release];
+    }
 }
 
 - (NSArray *)draggedBookmarks {

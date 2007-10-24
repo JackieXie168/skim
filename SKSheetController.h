@@ -75,7 +75,14 @@
 
 #pragma mark -
 
-@interface SKBookmarkSheetController : SKSheetController
+@class SKBookmark;
+
+@interface SKBookmarkSheetController : SKSheetController {
+    IBOutlet NSPopUpButton *folderPopUp;
+}
+
+- (SKBookmark *)selectedFolder;
+
 @end
 
 #pragma mark -
