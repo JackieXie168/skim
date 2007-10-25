@@ -173,22 +173,22 @@ You can change your view of a page in a PDF file in several ways.
 
 @box{taskbox}
 @itemize
-@item To zoom in or out, choose View > Zoom In or View > Zoom Out.
+@item To zoom in or out, choose PDF > Zoom In or PDF > Zoom Out.
 @end itemize
 @itemize
-@item To see the page in its original size, choose View > Actual Size.
+@item To see the page in its original size, choose PDF > Actual Size.
 @end itemize
 @itemize
-@item To view the PDF so that its pages fit in its window, choose View > Zoom To Fit.
+@item To view the PDF so that its pages fit in its window, choose PDF > Zoom To Fit.
 @end itemize
 @itemize
-@item To keep the PDF so that its pages always fit in its window, also if you resize the window, choose View > Automatically Resize.
+@item To keep the PDF so that its pages always fit in its window, also if you resize the window, choose PDF > Automatically Resize.
 @end itemize
 @itemize
-@item To zoom to a particular section of a PDF document, choose Tools > Select Tool and select the section, then choose View > Zoom To Selection.
+@item To zoom to a particular section of a PDF document, choose Tools > Select Tool and select the section, then choose PDF > Zoom To Selection.
 @end itemize
 @itemize
-@item To view a page at a size you specify, resize the window to the size you want, then choose View > Size To Fit. The page resizes to fit the window size.
+@item To view a page at a size you specify, resize the window to the size you want, then choose PDF > Size To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
 @item To see a page at a specific percentage of its original size, type a percentage in the Scale field in the toolbar. If you don't see the Scale field, choose View > Customize Toolbar.
@@ -249,7 +249,7 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 @item To jump to the next page, press the Down Arrow or Page Down key. To jump to the previous page, press the Up Arrow or Page Up key.
 @end itemize
 @itemize
-@item To use the vertical scroll bar to scroll through a PDF with several pages, choose View > PDF Display > Continuous.
+@item To use the vertical scroll bar to scroll through a PDF with several pages, choose PDF > PDF Display > Continuous.
 @end itemize
 @itemize
 @item To view a specific page in a PDF document, type the page number that you want to view in the Page Number field in the toolbar, then press Return.
@@ -277,7 +277,7 @@ You can also scroll pages by dragging with the mouse.
 @box{taskbox}
 @heading To use the vertical scroll bar to scroll through the pages of the document:
 @itemize
-@item Choose View > PDF Display > Continuous.
+@item Choose PDF > PDF Display > Continuous.
 @end itemize
 @heading To scroll by dragging:
 @itemize
@@ -445,7 +445,7 @@ You can crop a page in a PDF document to remove parts you don't need. You can cr
 @end itemize
 @endbox
 
-Cropping a document does not destroy any of its contents. You can always view the uncropped document by choosing View > PDF Display > Media Box. To view the cropped document, choose View > PDF Display > Crop Box. 
+Cropping a document does not destroy any of its contents. You can always view the uncropped document by choosing PDF > PDF Display > Media Box. To view the cropped document, choose PDF > PDF Display > Crop Box. 
 
 @c ======================================================================================
 
@@ -471,11 +471,11 @@ Some PDF files contain a table of contents, which lets you quickly jump to secti
 
 @topic Setting the default view options for a PDF document
 
-You can choose the PDF display options at which Skim displays new PDF documents. These view options include all the settings in the View > PDF Display submenu, the default document scale, and wether the document automatically scales with its window allows.
+You can choose the PDF display options at which Skim displays new PDF documents. These view options include all the settings in the PDF > PDF Display submenu, the default document scale, and wether the document automatically scales with its window allows.
 
 @box{taskbox}
 @itemize
-@item To save the current display options of a document as the default to use for newly opened documents, select View > Use Current View Settings as Default.
+@item To save the current display options of a document as the default to use for newly opened documents, select PDF > Use Current View Settings as Default.
 @end itemize
 @itemize
 @item To revert the initial display settings to their original default values, choose Skim > Preferences, choose General, and press the button below 'Revert initial PDF view settings for:'.
@@ -500,10 +500,10 @@ Viewing pages side-by-side lets you display more of a document on the screen.
 
 @box{taskbox}
 @itemize
-@item To view two pages side-by-side, choose View > PDF Display > Facing Pages. If you want the first page to be a right-hand page, as it would be in a book, choose View >PDF Display > Book Mode. Otherwise, the first page will be a left-hand page. 
+@item To view two pages side-by-side, choose PDF > PDF Display > Facing Pages. If you want the first page to be a right-hand page, as it would be in a book, choose PDF > PDF Display > Book Mode. Otherwise, the first page will be a left-hand page. 
 @end itemize
 @itemize
-@item To stop viewing pages side-by-side, choose View > PDF Display > Single Pages.
+@item To stop viewing pages side-by-side, choose PDF > PDF Display > Single Pages.
 @end itemize
 @endbox
 
@@ -521,7 +521,7 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 
 @box{taskbox}
 @itemize
-@item To display a border around each page, Choose View > PDF Display > Page Breaks.
+@item To display a border around each page, Choose PDF > PDF Display > Page Breaks.
 @end itemize
 @endbox
 
