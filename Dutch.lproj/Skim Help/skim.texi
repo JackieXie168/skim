@@ -175,22 +175,22 @@ You can change your view of a page in a PDF file in several ways.
 
 @box{taskbox}
 @itemize
-@item Om in of uit te zoomen, kiest u Weergave > Zoom In or Weergave > Zoom Uit.
+@item Om in of uit te zoomen, kiest u PDF > Zoom In or PDF > Zoom Uit.
 @end itemize
 @itemize
-@item Als u de pagina op werkelijke grootte wilt weergeven, kiest u Weergave > Werkelijke Grootte
+@item Als u de pagina op werkelijke grootte wilt weergeven, kiest u PDF > Werkelijke Grootte
 @end itemize
 @itemize
-@item To view the PDF so that its pages fit in its window, kies Weergave > Passend.
+@item To view the PDF so that its pages fit in its window, kies PDF > Passend.
 @end itemize
 @itemize
-@item Als u wilt dat de paginas altijd in het venster passen, ook als u het venster groter of kleiner maakt, kiest u Weergave > Vergroot Automatisch.
+@item Als u wilt dat de paginas altijd in het venster passen, ook als u het venster groter of kleiner maakt, kiest u PDF > Vergroot Automatisch.
 @end itemize
 @itemize
-@item Als u wilt inzoomen op een bepaald gedeelte van een PDF-document, kiest u Extra's > Selectiefunctie. Vervolgens selecteert u het gedeelte waarop u wilt inzoomen en kiest u Weergave > 'Zoom in op selectie'.
+@item Als u wilt inzoomen op een bepaald gedeelte van een PDF-document, kiest u Extra's > Selectiefunctie. Vervolgens selecteert u het gedeelte waarop u wilt inzoomen en kiest u PDF > 'Zoom in op selectie'.
 @end itemize
 @itemize
-@item Als U de pagina op een zelf gekozen formaat wilt weergeven, vergroot u het venster tot het gewenste formaat en kiest U Weergave > Passend. De grootte van de pagina wordt aangepast aan de grootte van het venster.
+@item Als U de pagina op een zelf gekozen formaat wilt weergeven, vergroot u het venster tot het gewenste formaat en kiest U PDF > Passend. De grootte van de pagina wordt aangepast aan de grootte van het venster.
 @end itemize
 @itemize
 @item Om een pagina weer te geven op een bepaald percentage van de oorspronkelijke grootte, typt u een percentage in het veld Vergroting in de knoppenbalk. Als dit veld niet in de knoppenbalk wordt weergegeven, kiest u Weergave > 'Pas knoppenbalk aan'.
@@ -250,7 +250,7 @@ Als u in Skim een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geo
 @item Om naar de volgende pagina te gaan, drukt u op de Pijl-Omlaagtoets of de Pagina Omlaag-toets. Om naar de vorige pagina te gaan, drukt u op de Pijl-Omhoogtoets of de Pagina Omhoog-toets. 
 @end itemize
 @itemize
-@item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u Weergave > PDF Weergave > Doorlopend. 
+@item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u PDF > PDF Weergave > Doorlopend. 
 @end itemize
 @itemize
 @item Om een bepaalde pagina in een PDF-bestand te bekijken, typt u het paginanummer dat u wilt bekijken in het veld Pagina in de knoppenbalk en drukt u vervolgens op de Return-toets.
@@ -279,7 +279,7 @@ U kunt ook bladeren met behulp van de muis.
 @box{taskbox}
 @heading Om met de verticale schuifbalk door de pagina's van een document bladeren:
 @itemize
-@item Kies Weergave > PDF Weergave > Doorlopend.
+@item Kies PDF > PDF Weergave > Doorlopend.
 @end itemize
 @heading Om te bladeren door te slepen:
 @itemize
@@ -447,7 +447,7 @@ U kunt een pagina van een PDF-document bijsnijden om de gedeelten van de pagina 
 @end itemize
 @endbox
 
-Wanneer u een document bijsnijdt, verdwijnt daarmee niets van de inhoud van het document. U kunt het origineel altijd weer bekijken door Weergave' > PDF-weergave > Mediavak te kiezen. Om het bijgesneden document weer te geven, kiest u Weergave > PDF-weergave > Bijsnijvak.
+Wanneer u een document bijsnijdt, verdwijnt daarmee niets van de inhoud van het document. U kunt het origineel altijd weer bekijken door Weergave' > PDF-weergave > Mediavak te kiezen. Om het bijgesneden document weer te geven, kiest u PDF > PDF-weergave > Bijsnijvak.
 
 @c ======================================================================================
 
@@ -473,11 +473,11 @@ Sommige PDF-bestanden bevatten een inhoudsopgave, waarmee u snel naar bepaalde g
 
 @topic Standaard weergave-opties instellen voor PDF-documenten
 
-U kunt opgeven met welke opties Skim nieuwe PDF-document weergeeft. Deze opties omvatten alle keuzes uit het Weergave > 'PDF weergave' menu, de standaard grootte als een percentage, ofdat het document zijn grootte automatisch aanpast aan het venster.
+U kunt opgeven met welke opties Skim nieuwe PDF-document weergeeft. Deze opties omvatten alle keuzes uit het PDF > 'PDF weergave' menu, de standaard grootte als een percentage, ofdat het document zijn grootte automatisch aanpast aan het venster.
 
 @box{taskbox}
 @itemize
-@item Om de huidige weergave-opties van een PDF-document te bewaren, kies Weergave > 'Gebruik de huidige weergaveinstellingen als standaard'.
+@item Om de huidige weergave-opties van een PDF-document te bewaren, kies PDF > 'Gebruik de huidige weergaveinstellingen als standaard'.
 @end itemize
 @itemize
 @item Om de initi‘le weergave-opties tot hun oorspronkelijke waarden te herstellen, kies Skim > Voorkeuren, kies Algemeen, en druk op de knop onder 'Herstel init‘le weergaveinstellingen voor:'.
@@ -502,10 +502,10 @@ Als u pagina's naast elkaar weergeeft, is een groter gedeelte van een document z
 
 @box{taskbox}
 @itemize
-@item Om twee PDF-pagina's naast elkaar weer te geven, kiest u Weergave > 'PDF weergave' > 'Tegenoverliggende pagina's'. Als u wilt dat de eerste pagina een rechterpagina is, net als in een boek, kiest u Weergave > 'PDF weergave' > Boekmodus. Als deze optie uitgeschakeld is, wordt de eerste pagina weergegeven als een linkerpagina.
+@item Om twee PDF-pagina's naast elkaar weer te geven, kiest u PDF > 'PDF weergave' > 'Tegenoverliggende pagina's'. Als u wilt dat de eerste pagina een rechterpagina is, net als in een boek, kiest u PDF > 'PDF weergave' > Boekmodus. Als deze optie uitgeschakeld is, wordt de eerste pagina weergegeven als een linkerpagina.
 @end itemize
 @itemize
-@item Als u de weergave van twee PDF-pagina's naast elkaar wilt stoppen, kiest u Weergave > 'PDF weergave' > 'Enkele pagina's'.
+@item Als u de weergave van twee PDF-pagina's naast elkaar wilt stoppen, kiest u PDF > 'PDF weergave' > 'Enkele pagina's'.
 @end itemize
 @endbox
 
@@ -523,7 +523,7 @@ Wanneer u meerdere PDF-pagina's tegelijkertijd bekijkt, is het soms moeilijk om 
 
 @box{taskbox}
 @itemize
-@item Kies Weergave > 'PDF weergave' > 'Pagina onderbrekingen'.
+@item Kies PDF > 'PDF weergave' > 'Pagina onderbrekingen'.
 @end itemize
 @endbox
 
