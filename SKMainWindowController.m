@@ -4237,9 +4237,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarBackForwardItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Menu item title") 
-                                                                     action:@selector(doGoToPage:)
-									                          keyEquivalent:@""] autorelease];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Menu item title") action:@selector(doGoToPage:) keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPageNumberItemIdentifier];
     [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
@@ -4249,10 +4247,19 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Menu item title") 
-                                                                     action:@selector(doGoToPage:)
-									                          keyEquivalent:@""] autorelease];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) keyEquivalent:@""];
 	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoTonextPage:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"First", @"Menu item title") action:@selector(doGoToFirstPage:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Last", @"Menu item title") action:@selector(doGoToLastPage:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Page", @"Menu item title") stringByAppendingEllipsis] action:@selector(doGoToPage:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
+    [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPageNumberButtonsItemIdentifier];
     [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Page", @"Tool tip message")];
@@ -4271,9 +4278,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberButtonsItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Scale", @"Menu item title") 
-                                                                     action:@selector(chooseScale:)
-									                          keyEquivalent:@""] autorelease];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Scale", @"Menu item title") action:@selector(chooseScale:) keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarScaleItemIdentifier];
     [item setLabels:NSLocalizedString(@"Scale", @"Toolbar item label")];
@@ -4873,6 +4878,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [pdfView canGoToNextPage];
     } else if (action == @selector(doGoToPreviousPage:)) {
         return [pdfView canGoToPreviousPage];
+    } else if (action == @selector(doGoToFirstPage:)) {
+        return [pdfView canGoToFirstPage];
+    } else if (action == @selector(doGoToLastPage:)) {
+        return [pdfView canGoToLastPage];
     } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];
     } else if (action == @selector(doGoForward:)) {
