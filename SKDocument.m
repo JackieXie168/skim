@@ -1040,11 +1040,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             }
             
             NSString *extension = [fileName pathExtension];
+            BOOL isDVI = NO;
             if (extension) {
                 NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-                if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("application/x-dvi"))) {
-                    return;
-                } if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+                if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("application/x-dvi")))) {
+                    isDVI = YES;
+                } if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
                     NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
                     if (pdfFile == nil) return;
                     fileName = [fileName stringByAppendingPathComponent:pdfFile];
@@ -1058,9 +1059,17 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
             [fh seekToFileOffset:startPos];
             NSData *trailerData = [fh readDataToEndOfFile];
+            NSRange range = NSMakeRange(0, [trailerData length]);
             const char *pattern = "%%EOF";
             unsigned patternLength = strlen(pattern);
-            unsigned trailerIndex = [trailerData indexOfBytes:pattern length:patternLength options:NSBackwardsSearch];
+            unsigned trailerIndex;
+            
+            if (isDVI) {
+                pattern = [[NSString stringWithFormat:@"%C%C%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
+                patternLength = strlen(pattern);
+                range = NSMakeRange(patternLength, [trailerData length] - patternLength);
+            }
+            trailerIndex = [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
             
             if (trailerIndex != NSNotFound) {
                 BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
