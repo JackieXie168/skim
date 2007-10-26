@@ -432,6 +432,8 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    [[[self windowForSheet] attachedSheet] orderOut:self];
+        
     [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
     [[self progressController] setIndeterminate:YES];
     [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
