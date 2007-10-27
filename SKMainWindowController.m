@@ -4250,7 +4250,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) keyEquivalent:@""];
 	[menuItem setTarget:self];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoTonextPage:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoToNextPage:) keyEquivalent:@""];
 	[menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"First", @"Menu item title") action:@selector(doGoToFirstPage:) keyEquivalent:@""];
 	[menuItem setTarget:self];
