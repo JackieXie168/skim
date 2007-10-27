@@ -3531,9 +3531,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (mouseInside == NO) {
                 mouseInside = YES;
                 [NSCursor hide];
+                // make sure we flush the complete drawing to avoid flickering
+                [[self window] disableFlushWindow];
             }
-            // make sure we flush the complete drawing to avoid flickering
-            [[self window] disableFlushWindow];
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
                 magRect = (visibleRect);
@@ -3574,6 +3574,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             
             [[self window] enableFlushWindow];
             [[self window] flushWindowIfNeeded];
+            [[self window] disableFlushWindow];
             
         } else { // mouse is not in the rect
             // show cursor 
@@ -3582,6 +3583,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [NSCursor unhide];
                 // restore the cached image in order to clear the rect
                 [[self window] restoreCachedImage];
+                [[self window] enableFlushWindow];
                 [[self window] flushWindowIfNeeded];
             }
             if ([theEvent type] == NSLeftMouseDragged)
@@ -3599,6 +3601,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	
     
 	[[self window] restoreCachedImage];
+    if (mouseInside)
+        [[self window] enableFlushWindow];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
