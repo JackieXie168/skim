@@ -90,7 +90,7 @@
 	NSRect textRect, ignored;
     float rightMargin = RIGHT_MARGIN;
     
-    [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[[self class] upperColor] endColor:[[self class] lowerColor]];
+    [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[[self class] lowerColor] endColor:[[self class] upperColor]];
     
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;

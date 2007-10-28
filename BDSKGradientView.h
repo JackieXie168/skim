@@ -42,8 +42,8 @@
 @interface BDSKGradientView : NSView
 {
     @private
-    CIColor *startColor;
-    CIColor *endColor;
+    CIColor *lowerColor;
+    CIColor *upperColor;
 }
 
 - (void)setLowerColor:(NSColor *)color;
