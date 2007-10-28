@@ -22,6 +22,8 @@
                 displaySinglePages = id; 
                 doGoBack = id; 
                 doGoForward = id; 
+                doGoToFirstPage = id; 
+                doGoToLastPage = id; 
                 doGoToNextPage = id; 
                 doGoToPage = id; 
                 doGoToPreviousPage = id; 
