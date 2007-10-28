@@ -122,3 +122,4 @@ NSString *SKHighlightString = @"Highlight";
 NSString *SKUnderlineString = @"Underline";
 NSString *SKStrikeOutString = @"StrikeOut";
 NSString *SKLineString = @"Line";
+NSString *SKLinkString = @"Link";

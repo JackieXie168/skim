@@ -121,3 +121,4 @@ extern NSString *SKHighlightString;
 extern NSString *SKUnderlineString;
 extern NSString *SKStrikeOutString;
 extern NSString *SKLineString;
+extern NSString *SKLinkString;
