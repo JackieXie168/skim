@@ -44,18 +44,3 @@
 @interface NSCell (SKExtensions)
 - (NSColor *)replacementHighlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
 @end
-
-
-@interface NSTextFieldCell (SKExtensions)
-- (NSText *)replacementSetUpFieldEditorAttributes:(NSText *)textObj;
-@end
-
-
-@interface NSTextField (SKExtensions)
-- (void)replacementSetDelegate:(id)delegate;
-@end
-
-
-@interface NSObject (SKExtendedNSTextFieldDelegate)
-- (NSColor *)control:(NSControl *)control backgroundColorForFieldEditor:(NSText *)textObj;
-@end

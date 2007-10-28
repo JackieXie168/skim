@@ -192,7 +192,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     readingBar = nil;
     
     activeAnnotation = nil;
-    editAnnotation = nil;
     wasSelection = nil;
     wasBounds = NSZeroRect;
     wasStartPoint = NSZeroPoint;
@@ -220,9 +219,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                                  name:SKAnnotationDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:self];
-    if (floor(NSAppKitVersionNumber) > 824)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
-                                                     name:PDFViewScaleChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
+                                                 name:PDFViewScaleChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
 }
@@ -540,7 +538,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (BOOL)isEditing {
-    return editAnnotation != nil || editField != nil;
+    return editField != nil;
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
@@ -1918,61 +1916,32 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     } else if ([type isEqualToString:SKFreeTextString]) {
         
         NSRect editBounds = [activeAnnotation bounds];
+        NSFont *font = [(PDFAnnotationFreeText *)activeAnnotation font];
+        NSColor *color = [activeAnnotation color];
+        float alpha = [color alphaComponent];
+        if (alpha < 1.0)
+            color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
+        editBounds = [self convertRect:[self convertRect:editBounds fromPage:[activeAnnotation page]] toView:[self documentView]];
+        editField = [[[NSTextField alloc] initWithFrame:editBounds] autorelease];
+        [editField setBackgroundColor:color];
+        [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
+        [editField setStringValue:[activeAnnotation contents]];
+        [editField setDelegate:self];
+        [[self documentView] addSubview:editField];
+        [editField selectText:self];
         
-        if (floor(NSAppKitVersionNumber) <= 824) {
-
-            editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
-            [editAnnotation setStringValue:[activeAnnotation contents]];
-            if ([activeAnnotation respondsToSelector:@selector(font)])
-                [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-            [[activeAnnotation page] addAnnotation:editAnnotation];
-            
-            // Start editing
-            NSPoint location = [self convertPoint:[self convertPoint:SKCenterPoint(editBounds) fromPage:[activeAnnotation page]] toView:nil];
-            NSEvent *theEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:location modifierFlags:0 timestamp:0 windowNumber:[[self window] windowNumber] context:nil eventNumber:0 clickCount:1 pressure:1.0];
-            [super mouseDown:theEvent];
-            
-        } else {
-        
-            NSColor *color = [activeAnnotation color];
-            float alpha = [color alphaComponent];
-            if (alpha < 1.0)
-                color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
-            editBounds = [self convertRect:[self convertRect:editBounds fromPage:[activeAnnotation page]] toView:[self documentView]];
-            editField = [[NSTextField alloc] initWithFrame:editBounds];
-            [editField setBezeled:YES];
-            [editField setBackgroundColor:color];
-            if ([activeAnnotation respondsToSelector:@selector(font)]) {
-                NSFont *font = [(PDFAnnotationFreeText *)activeAnnotation font];
-                [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
-            }
-            [editField setStringValue:[activeAnnotation contents]];
-            [editField setDelegate:self];
-            [[self documentView] addSubview:editField];
-            [editField selectText:self];
-            
-        }
     }
     
 }
 
 - (void)endAnnotationEdit:(id)sender {
-    if (editAnnotation) {
-        if ([self respondsToSelector:@selector(removeAnnotationControl)])
-            [self removeAnnotationControl]; // this removes the textfield from the pdfview, need to do this before we remove the text widget
-        if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
-            [activeAnnotation setContents:[editAnnotation stringValue]];
-        }
-        [[editAnnotation page] removeAnnotation:editAnnotation];
-        editAnnotation = nil;
-    } else if (editField) {
+    if (editField) {
         if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
             [[self window] endEditingFor:nil];
         if ([[editField stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
             [activeAnnotation setContents:[editField stringValue]];
         }
         [editField removeFromSuperview];
-        [editField release];
         editField = nil;
     }
 }
@@ -1987,17 +1956,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
        rv = [super control:control textView:textView doCommandBySelector:command];
     }
     return rv;
-}
-
-- (NSColor *)control:(NSControl *)control backgroundColorForFieldEditor:(NSText *)textObj {
-    NSColor *color = nil;
-    if ([self isEditing]) {
-        color = [activeAnnotation color];
-        float alpha = [color alphaComponent];
-        if (alpha < 1.0)
-            color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
-    }
-    return color;
 }
 
 - (void)selectNextActiveAnnotation:(id)sender {
