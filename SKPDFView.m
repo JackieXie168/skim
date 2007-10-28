@@ -126,6 +126,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
 - (void)updateCursor;
 
+- (void)endEditingIfPageOutOfScope;
+
 @end
 
 #pragma mark -
@@ -539,6 +541,16 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (BOOL)isEditing {
     return editAnnotation != nil || editField != nil;
+}
+
+- (void)setDisplayMode:(PDFDisplayMode)mode {
+    [super setDisplayMode:mode];
+    [self endEditingIfPageOutOfScope];
+}
+
+- (void)setDisplaysAsBook:(BOOL)asBook {
+    [super setDisplaysAsBook:asBook];
+    [self endEditingIfPageOutOfScope];
 }
 
 - (NSRect)currentSelectionRect {
@@ -2162,25 +2174,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
+    [self endEditingIfPageOutOfScope];
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
         [self setNeedsDisplay:YES];
-    if (editField) {
-        PDFDisplayMode displayMode = [self displayMode];
-        PDFPage *page = [activeAnnotation page];
-        PDFPage *currentPage = [self currentPage];
-        if ([page isEqual:currentPage] == NO && displayMode != kPDFDisplaySinglePageContinuous && displayMode != kPDFDisplayTwoUpContinuous) {
-            int currentPageIndex = [currentPage pageIndex];
-            int facingPageIndex = -1;
-            if (displayMode == kPDFDisplayTwoUp) {
-                if ([self displaysAsBook] == (BOOL)(currentPageIndex % 2))
-                    facingPageIndex = currentPageIndex + 1;
-                else
-                    facingPageIndex = currentPageIndex - 1;
-            }
-            if (facingPageIndex == -1 || facingPageIndex == (int)[[self document] pageCount] || [page isEqual:[[self document] pageAtIndex:facingPageIndex]] == NO)
-                [self endAnnotationEdit:self];
-        }
-    }
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
@@ -3803,6 +3799,26 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                       clickCount:1
                                         pressure:0.0];
     [[self cursorForEvent:event] set];
+}
+
+- (void)endEditingIfPageOutOfScope {
+    if (editField) {
+        PDFDisplayMode displayMode = [self displayMode];
+        PDFPage *page = [activeAnnotation page];
+        PDFPage *currentPage = [self currentPage];
+        if ([page isEqual:currentPage] == NO && displayMode != kPDFDisplaySinglePageContinuous && displayMode != kPDFDisplayTwoUpContinuous) {
+            int currentPageIndex = [currentPage pageIndex];
+            int facingPageIndex = -1;
+            if (displayMode == kPDFDisplayTwoUp) {
+                if ([self displaysAsBook] == (BOOL)(currentPageIndex % 2))
+                    facingPageIndex = currentPageIndex + 1;
+                else
+                    facingPageIndex = currentPageIndex - 1;
+            }
+            if (facingPageIndex == -1 || facingPageIndex == (int)[[self document] pageCount] || [page isEqual:[[self document] pageAtIndex:facingPageIndex]] == NO)
+                [self endAnnotationEdit:self];
+        }
+    }
 }
 
 @end
