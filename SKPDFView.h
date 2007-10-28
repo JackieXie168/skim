@@ -129,6 +129,8 @@ typedef enum _SKNoteType {
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
 
+- (BOOL)isEditing;
+
 - (NSRect)currentSelectionRect;
 - (void)setCurrentSelectionRect:(NSRect)rect;
 

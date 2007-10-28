@@ -516,7 +516,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	// Will need to redraw old active anotation.
 	if (activeAnnotation != nil) {
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
-        if (changed && editAnnotation)
+        if (changed && [self isEditing])
             [self endAnnotationEdit:nil];
 	}
     
@@ -532,6 +532,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	
 	if (changed)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
+}
+
+- (BOOL)isEditing {
+    return editAnnotation != nil;
 }
 
 - (NSRect)currentSelectionRect {
@@ -900,7 +904,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         // Normal or fullscreen mode
         if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
             [self delete:self];
-        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0) && activeAnnotation && activeAnnotation != editAnnotation) {
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0) && activeAnnotation && [self isEditing] == NO) {
             [self editActiveAnnotation:self];
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
             [self selectNextActiveAnnotation:self];
@@ -1302,7 +1306,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
         
         if (annotation) {
-            if ((annotation != activeAnnotation || editAnnotation == nil) && [annotation isEditable]) {
+            if ((annotation != activeAnnotation || [self isEditing] == NO) && [annotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
@@ -1312,7 +1316,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [item setRepresentedObject:annotation];
             [item setTarget:self];
         } else if ([activeAnnotation isNoteAnnotation]) {
-            if (editAnnotation == nil && [activeAnnotation isEditable]) {
+            if ([self isEditing] == NO && [activeAnnotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setTarget:self];
             }
@@ -1831,7 +1835,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     
-    if (editAnnotation && activeAnnotation == annotation)
+    if ([self isEditing] && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
@@ -1862,10 +1866,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)editThisAnnotation:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     
-    if (annotation == nil || editAnnotation == annotation)
+    if (annotation == nil || ([self isEditing] && activeAnnotation == annotation))
         return;
     
-    if (editAnnotation)
+    if ([self isEditing])
         [self endAnnotationEdit:self];
     if (activeAnnotation != annotation)
         [self setActiveAnnotation:annotation];
@@ -1929,7 +1933,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 // we're the delegate of the textfield used to edit text widgets
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
     BOOL rv = NO;
-    if (editAnnotation && (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:))) {
+    if ([self isEditing] && (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:))) {
         [self endAnnotationEdit:self];
         [[self window] makeFirstResponder:self];
     } else if ([PDFView instancesRespondToSelector:_cmd]) {
@@ -1940,7 +1944,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (NSColor *)control:(NSControl *)control backgroundColorForFieldEditor:(NSText *)textObj {
     NSColor *color = nil;
-    if (editAnnotation) {
+    if ([self isEditing]) {
         color = [activeAnnotation color];
         float alpha = [color alphaComponent];
         if (alpha < 1.0)
@@ -1957,7 +1961,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFAnnotation *annotation = nil;
     
     if (activeAnnotation) {
-        if (editAnnotation)
+        if ([self isEditing])
             [self endAnnotationEdit:self];
         pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
@@ -2002,7 +2006,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFAnnotation *annotation = nil;
     
     if (activeAnnotation) {
-        if (editAnnotation)
+        if ([self isEditing])
             [self endAnnotationEdit:self];
         pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
@@ -2802,16 +2806,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (newActiveAnnotation == nil) {
         //[super mouseDown:theEvent];
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKFreeTextString]) {
+        [self editActiveAnnotation:self];
         // probably we should use the note window for Text annotations
-        NSRect editBounds = [activeAnnotation bounds];
-        editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
-        [editAnnotation setStringValue:[activeAnnotation contents]];
-        if ([activeAnnotation respondsToSelector:@selector(font)])
-            [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-        [[activeAnnotation page] addAnnotation:editAnnotation];
-        
-        // Start editing
-        [super mouseDown:theEvent];
         
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKNoteString]) {
         
