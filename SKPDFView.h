@@ -95,7 +95,6 @@ typedef enum _SKNoteType {
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
-	PDFAnnotationTextWidget *editAnnotation;
     NSTextField *editField;
     PDFSelection *wasSelection;
 	NSRect wasBounds;
