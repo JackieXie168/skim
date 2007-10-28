@@ -96,6 +96,7 @@ typedef enum _SKNoteType {
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
+    NSTextField *editField;
     PDFSelection *wasSelection;
 	NSRect wasBounds;
     NSPoint wasStartPoint;
@@ -180,6 +181,7 @@ typedef enum _SKNoteType {
 - (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 - (void)resetHoverRects;
