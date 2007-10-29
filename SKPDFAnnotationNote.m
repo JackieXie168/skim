@@ -1065,12 +1065,14 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
-    CGContextSaveGState(context);
-    SKCGContextSetDefaultRGBColorSpace(context);
-    
+    if (floor(NSAppKitVersionNumber) <= 824) {
+        CGContextSaveGState(context);
+        SKCGContextSetDefaultRGBColorSpace(context);
+    }
     [super drawWithBox:box inContext:context];
-    
-    CGContextRestoreGState(context);
+    if (floor(NSAppKitVersionNumber) <= 824) {
+        CGContextRestoreGState(context);
+    }
 }
 
 - (float)rowHeight {
