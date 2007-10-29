@@ -3769,12 +3769,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([page isEqual:currentPage] == NO && displayMode != kPDFDisplaySinglePageContinuous && displayMode != kPDFDisplayTwoUpContinuous) {
             if (displayMode == kPDFDisplayTwoUp) {
                 int currentPageIndex = [currentPage pageIndex];
-                int facingPageIndex = currentPageIndex1;
+                int facingPageIndex = currentPageIndex;
                 if ([self displaysAsBook] == (BOOL)(currentPageIndex % 2))
                     facingPageIndex++;
                 else
                     facingPageIndex--;
-                if ([page pageIndex] != facingPageIndex)
+                if ((int)[page pageIndex] != facingPageIndex)
                     isVisible = NO;
             } else {
                 isVisible = NO;
