@@ -301,26 +301,6 @@ static IMP originalSetBorder = NULL;
     return page ? [page pageIndex] : NSNotFound;
 }
 
-- (int)noteType {
-    if ([[self type] isEqualToString:SKFreeTextString])
-        return SKFreeTextNote;
-    else if ([[self type] isEqualToString:SKNoteString])
-        return SKAnchoredNote;
-    else if ([[self type] isEqualToString:SKCircleString])
-        return SKCircleNote;
-    else if ([[self type] isEqualToString:SKSquareString])
-        return SKSquareNote;
-    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
-        return SKHighlightNote;
-    else if ([[self type] isEqualToString:SKUnderlineString])
-        return SKUnderlineNote;
-    else if ([[self type] isEqualToString:SKStrikeOutString])
-        return SKStrikeOutNote;
-    else if ([[self type] isEqualToString:SKLineString])
-        return SKLineNote;
-    return 0;
-}
-
 - (PDFBorderStyle)borderStyle {
     return [[self border] style];
 }

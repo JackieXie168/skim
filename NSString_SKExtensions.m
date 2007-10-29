@@ -104,6 +104,31 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 @implementation NSString (SKExtensions)
 
+- (NSNumber *)noteTypeOrder {
+    int order = 8;
+    if ([[self type] isEqualToString:SKFreeTextString])
+        order = 0;
+    else if ([[self type] isEqualToString:SKNoteString] || [[self type] isEqualToString:SKTextString])
+        order = 1;
+    else if ([[self type] isEqualToString:SKCircleString])
+        order = 2;
+    else if ([[self type] isEqualToString:SKSquareString])
+        order = 3;
+    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
+        order = 4;
+    else if ([[self type] isEqualToString:SKUnderlineString])
+        order = 5;
+    else if ([[self type] isEqualToString:SKStrikeOutString])
+        order = 6;
+    else if ([[self type] isEqualToString:SKLineString])
+        order = 7;
+    return [NSNumber numberWithInt:order];
+}
+
+- (NSComparisonResult)noteTypeCompare:(id)other {
+    return [[self noteTypeOrder] compare:[other noteTypeOrder]];
+}
+
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 {
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
