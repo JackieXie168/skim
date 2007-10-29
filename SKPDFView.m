@@ -88,10 +88,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
 @end
 
-@interface PDFView (PDFViewPrivateDeclarations)
-- (void)removeAnnotationControl;
-@end
-
 #pragma mark -
 
 @interface SKPDFView (Private)
