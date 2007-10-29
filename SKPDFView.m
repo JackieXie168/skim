@@ -126,7 +126,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
 - (void)updateCursor;
 
-- (void)endEditingIfPageOutOfScope;
+- (void)relayoutEditField;
 
 @end
 
@@ -543,12 +543,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
     [super setDisplayMode:mode];
-    [self endEditingIfPageOutOfScope];
+    [self relayoutEditField];
 }
 
 - (void)setDisplaysAsBook:(BOOL)asBook {
     [super setDisplaysAsBook:asBook];
-    [self endEditingIfPageOutOfScope];
+    [self relayoutEditField];
 }
 
 - (NSRect)currentSelectionRect {
@@ -1922,7 +1922,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (alpha < 1.0)
             color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
         editBounds = [self convertRect:[self convertRect:editBounds fromPage:[activeAnnotation page]] toView:[self documentView]];
-        editField = [[[NSTextField alloc] initWithFrame:editBounds] autorelease];
+        editField = [[NSTextField alloc] initWithFrame:editBounds];
         [editField setBackgroundColor:color];
         [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
         [editField setStringValue:[activeAnnotation contents]];
@@ -1942,6 +1942,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [activeAnnotation setContents:[editField stringValue]];
         }
         [editField removeFromSuperview];
+        [editField release];
         editField = nil;
     }
 }
@@ -2132,7 +2133,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    [self endEditingIfPageOutOfScope];
+    [self relayoutEditField];
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
         [self setNeedsDisplay:YES];
 }
@@ -3759,22 +3760,33 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[self cursorForEvent:event] set];
 }
 
-- (void)endEditingIfPageOutOfScope {
+- (void)relayoutEditField {
     if (editField) {
         PDFDisplayMode displayMode = [self displayMode];
         PDFPage *page = [activeAnnotation page];
         PDFPage *currentPage = [self currentPage];
+        BOOL isVisible = YES;
         if ([page isEqual:currentPage] == NO && displayMode != kPDFDisplaySinglePageContinuous && displayMode != kPDFDisplayTwoUpContinuous) {
-            int currentPageIndex = [currentPage pageIndex];
-            int facingPageIndex = -1;
             if (displayMode == kPDFDisplayTwoUp) {
+                int currentPageIndex = [currentPage pageIndex];
+                int facingPageIndex = currentPageIndex1;
                 if ([self displaysAsBook] == (BOOL)(currentPageIndex % 2))
-                    facingPageIndex = currentPageIndex + 1;
+                    facingPageIndex++;
                 else
-                    facingPageIndex = currentPageIndex - 1;
+                    facingPageIndex--;
+                if ([page pageIndex] != facingPageIndex)
+                    isVisible = NO;
+            } else {
+                isVisible = NO;
             }
-            if (facingPageIndex == -1 || facingPageIndex == (int)[[self document] pageCount] || [page isEqual:[[self document] pageAtIndex:facingPageIndex]] == NO)
-                [self endAnnotationEdit:self];
+        }
+        if (isVisible) {
+            NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
+            [editField setFrame:editBounds];
+            if ([editField superview] == nil)
+                [[self documentView] addSubview:editField];
+        } else if ([editField superview]) {
+            [editField removeFromSuperview];
         }
     }
 }
