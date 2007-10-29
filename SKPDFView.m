@@ -1938,22 +1938,23 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (editField) {
         if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
             [[self window] endEditingFor:nil];
-        if ([[editField stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
+        if ([[editField stringValue] isEqualToString:[activeAnnotation contents]] == NO)
             [activeAnnotation setContents:[editField stringValue]];
-        }
         [editField removeFromSuperview];
         [editField release];
         editField = nil;
     }
 }
 
-// we're the delegate of the textfield used to edit text widgets
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
     BOOL rv = NO;
-    if ([self isEditing] && (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:))) {
-        [self endAnnotationEdit:self];
-        [[self window] makeFirstResponder:self];
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    if ([control isEqual:editField]) {
+        if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
+            [self endAnnotationEdit:self];
+            [[self window] makeFirstResponder:self];
+            rv = YES;
+        }
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
        rv = [super control:control textView:textView doCommandBySelector:command];
     }
     return rv;
@@ -2133,13 +2134,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    [self relayoutEditField];
+    if ([self isEditing] && [self displayMode] != kPDFDisplaySinglePageContinuous && [self displayMode] != kPDFDisplayTwoUpContinuous)
+        [self relayoutEditField];
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
         [self setNeedsDisplay:YES];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    if (editField) {
+    if ([self isEditing]) {
         NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
         [editField setFrame:editBounds];
         if ([activeAnnotation respondsToSelector:@selector(font)]) {
