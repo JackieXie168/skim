@@ -106,21 +106,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 - (NSNumber *)noteTypeOrder {
     int order = 8;
-    if ([[self type] isEqualToString:SKFreeTextString])
+    if ([self isEqualToString:SKFreeTextString])
         order = 0;
-    else if ([[self type] isEqualToString:SKNoteString] || [[self type] isEqualToString:SKTextString])
+    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
         order = 1;
-    else if ([[self type] isEqualToString:SKCircleString])
+    else if ([self isEqualToString:SKCircleString])
         order = 2;
-    else if ([[self type] isEqualToString:SKSquareString])
+    else if ([self isEqualToString:SKSquareString])
         order = 3;
-    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
+    else if ([self isEqualToString:SKHighlightString] || [self isEqualToString:SKMarkUpString])
         order = 4;
-    else if ([[self type] isEqualToString:SKUnderlineString])
+    else if ([self isEqualToString:SKUnderlineString])
         order = 5;
-    else if ([[self type] isEqualToString:SKStrikeOutString])
+    else if ([self isEqualToString:SKStrikeOutString])
         order = 6;
-    else if ([[self type] isEqualToString:SKLineString])
+    else if ([self isEqualToString:SKLineString])
         order = 7;
     return [NSNumber numberWithInt:order];
 }
