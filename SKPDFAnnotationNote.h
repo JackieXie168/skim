@@ -54,7 +54,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (PDFDestination *)destination;
 - (unsigned int)pageIndex;
-- (int)noteType;
 
 - (PDFBorderStyle)borderStyle;
 - (void)setBorderStyle:(PDFBorderStyle)style;
