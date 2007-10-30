@@ -3444,16 +3444,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
-    if ([ov isEqual:outlineView]) {
-        return [ov rowHeight];
-    } else if ([ov isEqual:noteOutlineView]) {
+    if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(rowHeight)] == NO)
-            return 17.0;
-        else
+        if ([item respondsToSelector:@selector(rowHeight)])
             return [item rowHeight];
     }
-    return 17.0;
+    return [ov rowHeight];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
@@ -3591,9 +3587,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)autoSizeNoteRows:(id)sender {
+    float rowHeight = [noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:@"note"];
     id cell = [tableColumn dataCell];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, 17.0)]);
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
@@ -3615,7 +3612,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [cell setObjectValue:[item string]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
-        [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, 19.0)];
+        [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)];
         row = [noteOutlineView rowForItem:item];
         if (row != -1)
             [rowIndexes addIndex:row];
@@ -3733,7 +3730,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             return fmaxf(32.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
-    return 17.0;
+    return [tv rowHeight];
 }
 
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {

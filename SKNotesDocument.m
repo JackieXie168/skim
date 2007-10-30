@@ -145,7 +145,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
                 [note setValue:contents forKey:@"contents"];
                 [contents release];
             }
-            [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
+            [note setObject:[NSNumber numberWithFloat:[outlineView rowHeight] + 2.0] forKey:@"rowHeight"];
             
             [newNotes addObject:note];
             [note release];
@@ -228,9 +228,10 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 }
 
 - (void)autoSizeNoteRows:(id)sender {
+    float rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"note"];
     id cell = [tableColumn dataCell];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, 17.0)]);
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
@@ -252,7 +253,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
         [cell setObjectValue:[item valueForKey:@"string"]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
-        [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, 19.0)] forKey:@"rowHeight"];
+        [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)] forKey:@"rowHeight"];
         row = [outlineView rowForItem:item];
         if (row != -1)
             [rowIndexes addIndex:row];
@@ -396,7 +397,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     NSNumber *heightNumber = [item valueForKey:@"rowHeight"];
-    return heightNumber ? [heightNumber floatValue] : 17.0;
+    return heightNumber ? [heightNumber floatValue] : [ov rowHeight];
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
