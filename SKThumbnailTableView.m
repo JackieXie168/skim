@@ -207,8 +207,12 @@ static NSColor *deselectedColor = nil;
 }
 
 - (void)setObjectValue:(id)anObject {
-    [super setObjectValue:[anObject valueForKey:@"label"]];
-    hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
+    if ([anObject isKindOfClass:[NSString class]]) {
+        [super setObjectValue:anObject];
+    } else {
+        [super setObjectValue:[anObject valueForKey:@"label"]];
+        hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
+    }
 }
 
 - (id)objectValue {

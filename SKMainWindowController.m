@@ -807,11 +807,25 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [statusBar setRightStringValue:message];
 }
 
-- (void)updatePageLabelsAndOutline {
-    PDFDocument *pdfDoc = [pdfView document];
-    NSTableColumn *tableColumn = [thumbnailTableView tableColumnWithIdentifier:@"page"];
+- (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
+    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:@"page"];
     id cell = [tableColumn dataCell];
     float labelWidth = 0.0;
+    NSEnumerator *labelEnum = [pageLabels objectEnumerator];
+    NSString *label;
+    
+    while (label = [labelEnum nextObject]) {
+        [cell setStringValue:label];
+        labelWidth = fmaxf(labelWidth, [cell cellSize].width);
+    }
+    
+    [tableColumn setMinWidth:labelWidth];
+    [tableColumn setMaxWidth:labelWidth];
+    [tv sizeToFit];
+}
+
+- (void)updatePageLabelsAndOutline {
+    PDFDocument *pdfDoc = [pdfView document];
     int i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
@@ -823,23 +837,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         if (label == nil)
             label = [NSString stringWithFormat:@"%i", i+1];
         [pageLabels addObject:label];
-        [cell setStringValue:label];
-        labelWidth = fmaxf(labelWidth, [cell cellSize].width);
     }
     [self didChangeValueForKey:@"pageLabels"];
     [self didChangeValueForKey:@"pageLabel"];
     
-    [tableColumn setMinWidth:labelWidth];
-    [tableColumn setMaxWidth:labelWidth];
-    [thumbnailTableView sizeToFit];
-    tableColumn = [outlineView tableColumnWithIdentifier:@"page"];
-    [tableColumn setMinWidth:labelWidth];
-    [tableColumn setMaxWidth:labelWidth];
-    [outlineView sizeToFit];
-    tableColumn = [snapshotTableView tableColumnWithIdentifier:@"page"];
-    [tableColumn setMinWidth:labelWidth];
-    [tableColumn setMaxWidth:labelWidth];
-    [snapshotTableView sizeToFit];
+    [self updatePageColumnWidthForTableView:thumbnailTableView];
+    [self updatePageColumnWidthForTableView:snapshotTableView];
+    [self updatePageColumnWidthForTableView:outlineView];
     
     // this uses the pageLabels
     [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
@@ -3441,7 +3445,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:outlineView]) {
-        return 17.0;
+        return [ov rowHeight];
     } else if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
         if ([item respondsToSelector:@selector(rowHeight)] == NO)
