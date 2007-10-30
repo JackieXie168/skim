@@ -160,6 +160,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 @implementation SKPDFView
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     static BOOL initialized = NO;
     if (initialized == YES) return;
     initialized = YES;

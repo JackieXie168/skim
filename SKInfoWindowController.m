@@ -39,12 +39,15 @@
 #import "SKInfoWindowController.h"
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
+#import "OBUtilities.h"
 
 static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 
 @implementation SKInfoWindowController
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     SKBoolStringTransformer *transformer = [[SKBoolStringTransformer alloc] init];
     [NSValueTransformer setValueTransformer:transformer forName:@"SKBoolStringTransformer"];
     [transformer release];

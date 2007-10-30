@@ -185,6 +185,8 @@ static NSColor *deselectedColor = nil;
 
 + (void)initialize
 {
+    OBINITIALIZE;
+    
     BOOL didInit = NO;
     if (NO == didInit) {
         didInit = YES;
