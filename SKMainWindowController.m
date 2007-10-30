@@ -3594,6 +3594,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     id cell = [tableColumn dataCell];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
+    NSSize smallSize = NSMakeSize(width - [noteOutlineView indentationPerLevel], FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
     id item = [sender representedObject];
@@ -3613,7 +3614,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         item = [items objectAtIndex:i];
         [cell setObjectValue:[item string]];
         NSAttributedString *attrString = [cell attributedStringValue];
-        NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
+        NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)];
         row = [noteOutlineView rowForItem:item];
         if (row != -1)
