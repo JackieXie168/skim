@@ -145,7 +145,6 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
                 [note setValue:contents forKey:@"contents"];
                 [contents release];
             }
-            [note setObject:[NSNumber numberWithFloat:[outlineView rowHeight] + 2.0] forKey:@"rowHeight"];
             
             [newNotes addObject:note];
             [note release];
@@ -397,7 +396,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     NSNumber *heightNumber = [item valueForKey:@"rowHeight"];
-    return heightNumber ? [heightNumber floatValue] : [ov rowHeight];
+    return heightNumber ? [heightNumber floatValue] : [ov rowHeight] + 2.0;
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {

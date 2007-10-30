@@ -39,6 +39,7 @@
 #import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKTocOutlineView
