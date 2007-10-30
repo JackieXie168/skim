@@ -3444,12 +3444,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+    float rowHeight = 0.0;
     if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
         if ([item respondsToSelector:@selector(rowHeight)])
-            return [item rowHeight];
+            rowHeight = [item rowHeight];
+        return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
     }
-    return [ov rowHeight];
+    return rowHeight > 0.0 ? rowHeight : [ov rowHeight];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {

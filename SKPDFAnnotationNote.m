@@ -627,7 +627,7 @@ static IMP originalSetBorder = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKCircleNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineStyleKey]];
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
@@ -702,7 +702,7 @@ static IMP originalSetBorder = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSquareNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineStyleKey]];
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
@@ -840,7 +840,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
         numberOfLines = 0;
         lineRects = NULL;
         
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
@@ -1095,7 +1095,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineStyleKey]];
         originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
@@ -1200,7 +1200,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
@@ -1448,7 +1448,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]];
         originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
-        rowHeight = 19.0;
+        rowHeight = 0.0;
     }
     return self;
 }
