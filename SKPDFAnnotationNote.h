@@ -62,6 +62,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)pattern;
 
+- (NSString *)string;
+- (void)setString:(NSString *)newString;
+
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
@@ -140,6 +143,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 #pragma mark -
 
 @interface SKPDFAnnotationNote : PDFAnnotationText {
+    NSString *string;
     NSImage *image;
     NSTextStorage *textStorage;
     NSAttributedString *text;
@@ -188,7 +192,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSString *)type;
 - (PDFPage *)page;
 - (unsigned int)pageIndex;
-- (NSAttributedString *)contents;
+- (NSAttributedString *)string;
 
 - (float)rowHeight;
 - (void)setRowHeight:(float)newRowHeight;

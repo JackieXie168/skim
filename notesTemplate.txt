@@ -1,10 +1,10 @@
 <$notes.@arraySortedByPageIndex>
 * <$type.typeName/>, page <$pageIndex.numberByAddingOne/>
 
-<$contents?>
-<$contents/>
+<string?>
+<string/>
 
-</$contents?>
+</string?>
 <$text?>
 <$text/>
 

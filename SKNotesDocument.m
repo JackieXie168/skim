@@ -78,8 +78,8 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-    NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
-    [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
+    [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, stringSortDescriptor, nil]];
     [outlineView reloadData];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
@@ -132,8 +132,19 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
         while (dict = [dictEnum nextObject]) {
             NSMutableDictionary *note = [dict mutableCopy];
             
-            if ([[dict valueForKey:@"type"] isEqualToString:SKNoteString])
-                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
+            [note setValue:[dict valueForKey:@"contents"] forKey:@"string"];
+            if ([[dict valueForKey:@"type"] isEqualToString:SKNoteString]) {
+                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"string", nil] forKey:@"child"];
+                NSMutableString *contents = [[NSMutableString alloc] init];
+                if ([[dict valueForKey:@"contents"] length])
+                    [contents appendString:[dict valueForKey:@"contents"]];
+                if ([[dict valueForKey:@"text"] length]) {
+                    [contents appendString:@"  "];
+                    [contents appendString:[[dict valueForKey:@"text"] string]];
+                }
+                [note setValue:contents forKey:@"contents"];
+                [contents release];
+            }
             [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
             
             [newNotes addObject:note];
@@ -238,7 +249,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
-        [cell setObjectValue:[item valueForKey:@"contents"]];
+        [cell setObjectValue:[item valueForKey:@"string"]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
         [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, 19.0)] forKey:@"rowHeight"];
@@ -300,7 +311,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:@"note"]) {
-        return [item valueForKey:@"contents"];
+        return [item valueForKey:@"string"];
     } else if([tcID isEqualToString:@"type"]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:@"type"], @"type", nil];
     } else if ([tcID isEqualToString:@"page"]) {
@@ -325,7 +336,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
         if ([tcID isEqualToString:@"type"]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:@"note"]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:@"page"]) {
             if (oldTableColumn == nil)
                 ascending = NO;
@@ -365,8 +376,8 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     NSDictionary *firstItem = [items objectAtIndex:0];
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSMutableArray *types = [NSMutableArray array];
-    NSAttributedString *attrString = [firstItem valueForKey:@"type"] ? nil : [firstItem valueForKey:@"contents"];
-    NSString *string = [firstItem valueForKey:@"type"] ? [firstItem valueForKey:@"contents"] : [attrString string];
+    NSAttributedString *attrString = [firstItem valueForKey:@"type"] ? nil : [firstItem valueForKey:@"string"];
+    NSString *string = [firstItem valueForKey:@"type"] ? [firstItem valueForKey:@"string"] : [attrString string];
     if (string)
         [types addObject:NSStringPboardType];
     if (attrString)
@@ -397,7 +408,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    return [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+    return [item valueForKey:@"type"] ? [item valueForKey:@"string"] : [[item valueForKey:@"string"] string];
 }
 
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
@@ -429,8 +440,8 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         id item = [outlineView itemAtRow:i];
-        NSString *contents = [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
-        [texts addObject:contents ? contents : @""];
+        NSString *string = [item valueForKey:@"type"] ? [item valueForKey:@"string"] : [[item valueForKey:@"string"] string];
+        [texts addObject:string ? string : @""];
     }
     return texts;
 }

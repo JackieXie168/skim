@@ -3335,7 +3335,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         if ([tcID isEqualToString:@"note"]) {
-            return [item contents];
+            return [item string];
         } else if([tcID isEqualToString:@"type"]) {
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], @"active", [item type], @"type", nil];
         } else if([tcID isEqualToString:@"page"]) {
@@ -3348,8 +3348,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
         if ([[tableColumn identifier] isEqualToString:@"note"]) {
-            if ([object isEqualToString:[item contents]] == NO)
-                [item setContents:object];
+            if ([object isEqualToString:[item string]] == NO)
+                [item setString:object];
         }
     }
 }
@@ -3389,7 +3389,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([tcID isEqualToString:@"type"]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"page"]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
@@ -3419,7 +3419,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
     if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:@"note"]) {
-        return [item type] ? [(PDFAnnotation *)item contents] : [[(SKNoteText *)item contents] string];
+        return [item type] ? [(PDFAnnotation *)item string] : [[(SKNoteText *)item string] string];
     }
     return nil;
 }
@@ -3512,8 +3512,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSMutableArray *types = [NSMutableArray array];
         NSData *noteData = item ? [NSKeyedArchiver archivedDataWithRootObject:[item dictionaryValue]] : nil;
-        NSAttributedString *attrString = [firstItem type] ? nil : [(SKNoteText *)firstItem contents];
-        NSString *string = [firstItem type] ? [firstItem contents] : [attrString string];
+        NSAttributedString *attrString = [firstItem type] ? nil : [(SKNoteText *)firstItem string];
+        NSString *string = [firstItem type] ? [firstItem string] : [attrString string];
         if (noteData)
             [types addObject:SKSkimNotePboardType];
         if (string)
@@ -3612,7 +3612,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
-        [cell setObjectValue:[item contents]];
+        [cell setObjectValue:[item string]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
         [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, 19.0)];
@@ -3867,8 +3867,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) {
             id item = [noteOutlineView itemAtRow:i];
-            NSString *contents = [item type] ? [(PDFAnnotation *)item contents] : [[(SKNoteText *)item contents] string];
-            [texts addObject:contents ? contents : @""];
+            NSString *string = [item type] ? [(PDFAnnotation *)item string] : [[(SKNoteText *)item string] string];
+            [texts addObject:string ? string : @""];
         }
         return texts;
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
@@ -4102,11 +4102,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     if (searchString && [searchString isEqualToString:@""] == NO) {
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
-        NSExpression *rhs = [NSExpression expressionForKeyPath:@"contents"];
-        NSPredicate *contentsPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
+        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
         rhs = [NSExpression expressionForKeyPath:@"text.string"];
         NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
-        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:contentsPredicate, textPredicate, nil]];
+        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
     }
     if (typePredicate) {
         if (searchPredicate)
