@@ -230,9 +230,10 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     float rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"note"];
     id cell = [tableColumn dataCell];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
+    float indentation = [outlineView indentationPerLevel];
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
-    NSSize smallSize = NSMakeSize(width - [outlineView indentationPerLevel], FLT_MAX);
+    NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
     id item = [sender representedObject];

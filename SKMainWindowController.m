@@ -3592,9 +3592,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     float rowHeight = [noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:@"note"];
     id cell = [tableColumn dataCell];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
+    float indentation = [noteOutlineView indentationPerLevel];
+    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
-    NSSize smallSize = NSMakeSize(width - [noteOutlineView indentationPerLevel], FLT_MAX);
+    NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
     id item = [sender representedObject];
