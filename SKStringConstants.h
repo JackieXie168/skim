@@ -110,6 +110,7 @@ extern NSString *SKAutoOpenDownloadsWindowKey;
 extern NSString *SKAutoRemoveFinishedDownloadsKey;
 extern NSString *SKAutoCloseDownloadsWindowKey;
 extern NSString *SKShouldSetCreatorCodeKey;
+extern NSString *SKTableFontSizeKey;
 
 extern NSString *SKFreeTextString;
 extern NSString *SKTextString;

@@ -111,6 +111,7 @@ NSString *SKAutoOpenDownloadsWindowKey = @"SKAutoOpenDownloadsWindow";
 NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
 NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
 NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
+NSString *SKTableFontSizeKey = @"SKTableFontSize";
 
 NSString *SKFreeTextString = @"FreeText";
 NSString *SKTextString = @"Text";

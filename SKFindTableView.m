@@ -48,7 +48,7 @@
 }
 
 - (void)awakeFromNib {
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:@"SKTableFontSize"];
+    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
     if (fontSize)
         [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
 }
