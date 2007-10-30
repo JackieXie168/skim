@@ -37,6 +37,7 @@
  */
 
 #import "SKColorSwatch.h"
+#import "OBUtilities.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -47,6 +48,8 @@ static NSString *SKColorsBindingName = @"colors";
 @implementation SKColorSwatch
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     [self exposeBinding:@"colors"];
 }
 

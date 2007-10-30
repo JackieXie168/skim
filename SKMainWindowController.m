@@ -82,6 +82,7 @@
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
 #import "SKSheetController.h"
+#import "OBUtilities.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -209,6 +210,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 @implementation SKMainWindowController
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
 }
 

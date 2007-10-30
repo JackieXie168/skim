@@ -37,6 +37,7 @@
  */
 
 #import "CIImage_BDSKExtensions.h"
+#import "OBUtilities.h"
 
 
 @implementation CIImage (BDSKExtensions)
@@ -45,6 +46,8 @@ static NSString *startColorKey = nil;
 static NSString *endColorKey = nil;
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         // in Tiger the input colors are reversed
         startColorKey = [@"inputColor1" retain];

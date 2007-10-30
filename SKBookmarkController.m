@@ -49,6 +49,7 @@
 #import "SKToolbarItem.h"
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "OBUtilities.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 
@@ -75,6 +76,8 @@ static NSString *SKMaximumDocumentPageHistoryCountKey = @"SKMaximumDocumentPageH
 static unsigned int maxRecentDocumentsCount = 0;
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     maxRecentDocumentsCount = [[NSUserDefaults standardUserDefaults] integerForKey:SKMaximumDocumentPageHistoryCountKey];
     if (maxRecentDocumentsCount == 0)
         maxRecentDocumentsCount = 50;

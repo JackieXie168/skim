@@ -38,6 +38,7 @@
 
 #import "SKLineWell.h"
 #import "SKLineInspector.h"
+#import "OBUtilities.h"
 
 NSString *SKLineStylePboardType = @"SKLineStylePboardType";
 
@@ -48,6 +49,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 @implementation SKLineWell
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     id keys[5] = {@"lineWidth", @"style", @"dashPattern", @"startLineStyle", @"endLineStyle"};
     int values[5] = {2091, 2092, 2093, 2094, 2095};
     observationContexts = (NSDictionary *)CFDictionaryCreate(NULL, (const void **)keys, (const void **)values, 5, &kCFCopyStringDictionaryKeyCallBacks, NULL);

@@ -42,6 +42,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "OBUtilities.h"
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
@@ -60,6 +61,8 @@ NSString *SKDVIDocumentType = @"DVI document";
 @implementation SKDocumentController
 
 + (void)initialize {
+    OBINITIALIZE;
+    
     if (nil == SKPDFDocumentType)
         SKPDFDocumentType = [NSPDFPboardType copy];
 }

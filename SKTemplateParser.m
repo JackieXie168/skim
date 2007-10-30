@@ -40,6 +40,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKTag.h"
+#import "OBUtilities.h"
 
 #define STARTTAG_OPEN_DELIM @"<$"
 #define ENDTAG_OPEN_DELIM @"</$"
@@ -83,6 +84,7 @@ static NSCharacterSet *keyCharacterSet = nil;
 static NSCharacterSet *invertedKeyCharacterSet = nil;
 
 + (void)initialize {
+    OBINITIALIZE;
     
     NSMutableCharacterSet *tmpSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
     [tmpSet addCharactersInString:@".-:;@"];

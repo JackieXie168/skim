@@ -60,6 +60,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "OBUtilities.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
@@ -76,6 +77,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 @implementation SKApplicationController
 
 + (void)initialize{
+    OBINITIALIZE;
+    
     [self setupDefaults];
 }
    

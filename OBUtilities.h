@@ -20,3 +20,12 @@
 IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp);
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
+
+#define OBINITIALIZE \
+    do { \
+        static BOOL hasBeenInitialized = NO; \
+        [super initialize]; \
+        if (hasBeenInitialized) \
+            return; \
+        hasBeenInitialized = YES;\
+    } while (0);
