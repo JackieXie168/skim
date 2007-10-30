@@ -285,8 +285,8 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         if ([text length] == 0) {
             [text release];
             text = nil;
-            if ([[annotation contents] length])
-                string = [annotation contents];
+            if ([[annotation string] length])
+                string = [annotation string];
         }
         
     }

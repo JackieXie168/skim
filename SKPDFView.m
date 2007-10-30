@@ -834,7 +834,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
         else
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
-        [newAnnotation setContents:[pboard stringForType:NSStringPboardType]];
+        [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
     }
     
     [self addAnnotation:newAnnotation toPage:page];
@@ -1066,7 +1066,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (draggingAnnotation && didDrag) {
                 if ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                    [activeAnnotation setContents:selString];
+                    [activeAnnotation setString:selString];
                 }
             } else if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationFromSelectionWithType:annotationMode];
@@ -1797,7 +1797,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         
         if ([[activeAnnotation type] isEqualToString:SKLineString] == NO)
-            [newAnnotation setContents:text];
+            [newAnnotation setString:text];
         
         [self addAnnotation:newAnnotation toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
@@ -1921,7 +1921,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         editField = [[NSTextField alloc] initWithFrame:editBounds];
         [editField setBackgroundColor:color];
         [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
-        [editField setStringValue:[activeAnnotation contents]];
+        [editField setStringValue:[activeAnnotation string]];
         [editField setDelegate:self];
         [[self documentView] addSubview:editField];
         [editField selectText:self];
@@ -1934,8 +1934,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (editField) {
         if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
             [[self window] endEditingFor:nil];
-        if ([[editField stringValue] isEqualToString:[activeAnnotation contents]] == NO)
-            [activeAnnotation setContents:[editField stringValue]];
+        if ([[editField stringValue] isEqualToString:[activeAnnotation string]] == NO)
+            [activeAnnotation setString:[editField stringValue]];
         [editField removeFromSuperview];
         [editField release];
         editField = nil;
@@ -2439,7 +2439,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [activeAnnotation setBounds:newBounds];
         if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            [activeAnnotation setContents:selString];
+            [activeAnnotation setString:selString];
         }
     }
 }
@@ -2685,7 +2685,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [activeAnnotation setBounds:newBounds];
             if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                [activeAnnotation setContents:selString];
+                [activeAnnotation setString:selString];
             }
         }
     }
@@ -2810,7 +2810,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self removeAnnotation:newActiveAnnotation];
             
             newActiveAnnotation = [[[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
-            [newActiveAnnotation setContents:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
+            [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
             [self addAnnotation:newActiveAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
         }

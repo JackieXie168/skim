@@ -119,7 +119,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [[self note] contents];
+    return [[self note] string];
 }
 
 - (PDFAnnotation *)note {
@@ -212,7 +212,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
     NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
     if (image) {
-        NSString *name = [note contents];
+        NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
         [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSTIFFPboardType, nil] owner:nil];
@@ -225,10 +225,10 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
     NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
     if (image) {
-        NSString *name = [note contents];
+        NSString *name = [note string];
         if ([name length] == 0)
             name = @"NoteImage";
-        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[note contents]];
+        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[note string]];
         NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
         int i = 0;
         NSFileManager *fm = [NSFileManager defaultManager];
