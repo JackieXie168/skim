@@ -52,6 +52,9 @@
 
 - (void)awakeFromNib {
     [self noteTypeMenu]; // this sets the menu for the header view
+    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:@"SKTableFontSize"];
+    if (fontSize)
+        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
 }
 
 - (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {

@@ -47,6 +47,12 @@
     [super dealloc];
 }
 
+- (void)awakeFromNib {
+    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:@"SKTableFontSize"];
+    if (fontSize)
+        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+}
+
 - (void)removeTrackingRects {
     if (trackingRects) {
         CFIndex idx = CFArrayGetCount(trackingRects);
