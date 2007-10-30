@@ -45,7 +45,7 @@ static NSString *startColorKey = nil;
 static NSString *endColorKey = nil;
 
 + (void)initialize {
-    if (floor(NSAppKitVersionNumber) <= 824) {
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         // in Tiger the input colors are reversed
         startColorKey = [@"inputColor1" retain];
         endColorKey = [@"inputColor0" retain];

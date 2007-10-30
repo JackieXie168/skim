@@ -8,6 +8,10 @@
     #import <objc/objc-class.h>
     #import <Quartz/Quartz.h>
 
+    #ifndef NSAppKitVersionNumber10_4
+    #define NSAppKitVersionNumber10_4 824
+    #endif
+
     #define __SKFILENAMEASNSSTRING \
       [[NSString stringWithCString:__FILE__] lastPathComponent]
 
