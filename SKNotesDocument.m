@@ -232,6 +232,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     id cell = [tableColumn dataCell];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - 17.0, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
+    NSSize smallSize = NSMakeSize(width - [outlineView indentationPerLevel], FLT_MAX);
     
     NSMutableArray *items = [NSMutableArray array];
     id item = [sender representedObject];
@@ -251,7 +252,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
         item = [items objectAtIndex:i];
         [cell setObjectValue:[item valueForKey:@"string"]];
         NSAttributedString *attrString = [cell attributedStringValue];
-        NSRect rect = [attrString boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin];
+        NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)] forKey:@"rowHeight"];
         row = [outlineView rowForItem:item];
         if (row != -1)
