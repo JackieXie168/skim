@@ -324,10 +324,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSAssert1(commandName == nil || [commandName isEqualToString:@"dvips"] || [commandName isEqualToString:@"dvipdf"] || [commandName isEqualToString:@"dvipdfm"] || [commandName isEqualToString:@"dvipdfmx"], @"DVI converter %@ is not supported", commandName);
     
     while ([fm isExecutableFileAtPath:commandPath] == NO) {
-        if (i < count)
-            commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
-        else
+        if (i >= count) {
             commandPath = nil;
+            break;
+        }
+        commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
     }
     
     NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
