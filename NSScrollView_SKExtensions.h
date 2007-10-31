@@ -46,6 +46,10 @@
 - (BOOL)replacementHasVerticalScroller;
 - (void)replacementSetHasHorizontalScroller:(BOOL)flag;
 - (void)replacementSetHasVerticalScroller:(BOOL)flag;
+- (void)replacementTile;
+
+- (NSArray *)subcontrols;
+- (void)setSubcontrols:(NSArray *)newSubcontrols;
 
 // new API allows ignoring PDFView's attempts to remove the horizontal scroller
 - (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
