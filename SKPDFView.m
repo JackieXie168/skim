@@ -1014,12 +1014,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 case SKNoteToolMode:
                     if ([self selectAnnotationWithEvent:theEvent] == NO &&
                         (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
-                        if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)
+                        if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil) {
                             [self dragWithEvent:theEvent];
-                        else if (nil == activeAnnotation && mouseDownInAnnotation)
+                        } else if (nil == activeAnnotation && mouseDownInAnnotation) {
                             [self selectTextWithEvent:theEvent];
-                        else
+                        } else {
                             [super mouseDown:theEvent];
+                            if (NSAppKitVersion floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                                [self addAnnotationFromSelectionWithType:annotationMode];
+                                [self setCurrentSelection:nil];
+                            }
+                        }
                     }
                     break;
                 case SKMoveToolMode:
@@ -1079,7 +1084,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (didBeginUndoGrouping) {
                 [[self undoManager] endUndoGrouping];
                 // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
-                [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
+                if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+                    [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
             }
             draggingAnnotation = NO;
             break;
