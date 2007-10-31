@@ -39,6 +39,7 @@
 #import "SKNotesPanelController.h"
 #import "SKMainWindowController.h"
 
+static NSString *SKNotesPanelFrameAutosaveName = @"SKNotesPanel";
 
 @implementation SKNotesPanelController
 
@@ -71,6 +72,10 @@ static SKNotesPanelController *sharedController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
+
+- (void)windowDidLoad {
+    [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];
+}
 
 - (IBAction)addNote:(id)sender {
     id controller = [[NSApp mainWindow] windowController];
