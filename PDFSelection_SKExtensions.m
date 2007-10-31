@@ -303,7 +303,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     NSEnumerator *pageEnum = [pages objectEnumerator];
     PDFPage *page;
     while (page = [pageEnum nextObject]) {
-        int i, iMax = [self safeNumberOfRangesOnPage:page];
+        unsigned int i, iMax = [self safeNumberOfRangesOnPage:page];
         for (i = 0; i < iMax; i++) {
             NSRange range = [self safeRangeAtIndex:i onPage:page];
             if (range.length == 0)
@@ -358,9 +358,12 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         NSArray *pages = [selection pages];
         PDFPage *firstPage = [pages objectAtIndex:0];
         PDFPage *lastPage = [pages lastObject];
-        int firstIndex = [selection safeRangeAtIndex:0 onPage:firstPage].location;
-        int lastIndex = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
-        selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
+        
+        unsigned int numRanges = [selection safeNumberOfRangesOnPage:lastPage];
+        unsigned int firstIndex = numRanges ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
+        unsigned int lastIndex = numRanges ? NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:lastPage]) : NSNotFound;
+        if (firstIndex != NSNotFound && lastIndex != NSNotFound)
+            selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex - 1];
     }
     return selection ? [selection objectSpecifier] : [NSArray array];
 }
@@ -469,7 +472,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];
         if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0])) {
-            int count = [selection safeNumberOfRangesOnPage:page];
+            unsigned int count = [selection safeNumberOfRangesOnPage:page];
             if (count > 0) {
                 NSRange range = [selection safeRangeAtIndex:last ? count - 1 : 0 onPage:page];
                 if (range.length) {

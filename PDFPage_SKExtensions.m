@@ -263,9 +263,9 @@ static IMP originalDealloc = NULL;
     
     for (i = 0; i < iMax; i++) {
         NSRange range = [sel safeRangeAtIndex:i onPage:self];
-        unsigned j;
+        unsigned j, jMax = NSMaxRange(range);
         
-        for (j = range.location; j < NSMaxRange(range); j++) {
+        for (j = range.location; j < jMax; j++) {
             if ([indexes containsIndex:j])
                 continue;
             
@@ -276,10 +276,12 @@ static IMP originalDealloc = NULL;
             
             for (k = 0; k < kMax; k++) {
                 NSRange selRange = [s safeRangeAtIndex:k onPage:self];
-                [indexes addIndexesInRange:selRange];
-                // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
-                if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
-                    notEmpty = YES;
+                if (selRange.location != NSNotFound) {
+                    [indexes addIndexesInRange:selRange];
+                    // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
+                    if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
+                        notEmpty = YES;
+                }
             }
             if (notEmpty)
                 [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];

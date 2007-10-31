@@ -1425,10 +1425,15 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)checkSpelling:(id)sender {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
-    int index = 0;
+    unsigned int numRanges, index = 0;
     if ([[selection pages] count]) {
         page = [[selection pages] lastObject];
-        index = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:page] - 1 onPage:page]);
+        numRanges = [selection safeNumberOfRangesOnPage:page];
+        if (numRanges > 0) {
+            index = NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:page]);
+            if (index == NSNotFound)
+                index = 0;
+        }
     }
     [self checkSpellingStartingAtIndex:index onPage:page];
 }
@@ -1436,10 +1441,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)showGuessPanel:(id)sender {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
-    int index = 0;
+    unsigned int index = 0;
     if ([[selection pages] count]) {
         page = [[selection pages] objectAtIndex:0];
-        index = [selection safeRangeAtIndex:0 onPage:page].location;
+        if ([selection safeNumberOfRangesOnPage:page] > 0) {
+            index = [selection safeRangeAtIndex:0 onPage:page].location;
+            if (index == NSNotFound)
+                index = 0;
+        }
     }
     [self checkSpellingStartingAtIndex:index onPage:page];
     [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
@@ -3870,9 +3879,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         unsigned int pageIndex = [self indexForPage:page];
         unsigned int firstPageIndex = [self indexForPage:firstPage];
         unsigned int lastPageIndex = [self indexForPage:lastPage];
-        int n = [selection safeNumberOfRangesOnPage:lastPage];
-        int firstChar = [selection safeRangeAtIndex:0 onPage:firstPage].location;
-        int lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) - 1 : NSNotFound - 1;
+        unsigned int n = [selection safeNumberOfRangesOnPage:lastPage];
+        unsigned int firstChar = n ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
+        unsigned int lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) : NSNotFound;
         NSRect firstRect, lastRect;
         
         if (firstChar != NSNotFound) {
@@ -3881,8 +3890,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             NSRect bounds = [selection boundsForPage:firstPage];
             firstRect = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - 10.0, 5.0, 10.0);
         }
-        if (lastChar != NSNotFound - 1) {
-            lastRect = [lastPage characterBoundsAtIndex:lastChar];
+        if (lastChar != NSNotFound && lastChar != 0) {
+            lastRect = [lastPage characterBoundsAtIndex:lastChar - 1];
         } else {
             NSRect bounds = [selection boundsForPage:lastPage];
             lastRect = NSMakeRect(NSMaxX(bounds) - 5.0, NSMinY(bounds), 5.0, 10.0);
