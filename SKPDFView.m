@@ -1020,7 +1020,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                             [self selectTextWithEvent:theEvent];
                         } else {
                             [super mouseDown:theEvent];
-                            if (NSAppKitVersion floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                                 [self addAnnotationFromSelectionWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
