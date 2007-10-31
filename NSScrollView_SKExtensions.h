@@ -39,14 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSScrollView (BDSKZoomablePDFViewExtensions) 
-
-- (void)replacementDealloc;
-- (BOOL)replacementHasHorizontalScroller;
-- (BOOL)replacementHasVerticalScroller;
-- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
-- (void)replacementSetHasVerticalScroller:(BOOL)flag;
-- (void)replacementTile;
+@interface NSScrollView (SKExtensions) 
 
 - (NSArray *)subcontrols;
 - (void)setSubcontrols:(NSArray *)newSubcontrols;

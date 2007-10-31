@@ -41,7 +41,18 @@
 #import "BDSKEdgeView.h"
 
 
-@implementation NSScrollView (BDSKZoomablePDFViewExtensions)
+@interface NSScrollView (SKPrivateExtensions) 
+
+- (BOOL)replacementHasHorizontalScroller;
+- (BOOL)replacementHasVerticalScroller;
+- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
+- (void)replacementSetHasVerticalScroller:(BOOL)flag;
+- (void)replacementDealloc;
+- (void)replacementTile;
+
+@end
+
+@implementation NSScrollView (SKExtensions)
 
 static IMP originalSetHasHorizontalScroller = NULL;
 static IMP originalSetHasVerticalScroller = NULL;
