@@ -38,6 +38,7 @@
 
 #import "NSScrollView_SKExtensions.h"
 #import "OBUtilities.h"
+#import "BDSKEdgeView.h"
 
 
 @implementation NSScrollView (BDSKZoomablePDFViewExtensions)
@@ -47,11 +48,13 @@ static IMP originalSetHasVerticalScroller = NULL;
 static BOOL (*originalHasHorizontalScroller)(id, SEL) = NULL;
 static BOOL (*originalHasVerticalScroller)(id, SEL) = NULL;
 static IMP originalDealloc = NULL;
+static IMP originalTile = NULL;
 
 static CFMutableSetRef scrollViewsWithHorizontalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithoutHorizontalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithVerticalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
+static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
 
 + (void)load{
     originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
@@ -59,12 +62,14 @@ static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
     originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
     originalHasVerticalScroller = (typeof(originalHasVerticalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasVerticalScroller), @selector(replacementHasVerticalScroller));
     originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    originalTile = OBReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
     
     // set doesn't retain, so no retain cycles; pointer equality used to compare views
     scrollViewsWithHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
     scrollViewsWithoutHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
     scrollViewsWithVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
     scrollViewsWithoutVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
+    scrollViewSubcontrols = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
 - (void)replacementDealloc;
@@ -73,6 +78,7 @@ static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
     CFSetRemoveValue(scrollViewsWithoutHorizontalScrollers, self);
     CFSetRemoveValue(scrollViewsWithVerticalScrollers, self);
     CFSetRemoveValue(scrollViewsWithoutVerticalScrollers, self);
+    CFDictionaryRemoveValue(scrollViewSubcontrols, self);
     originalDealloc(self, _cmd);
 }
 
@@ -156,6 +162,70 @@ static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
     else
         flag = originalHasVerticalScroller(self, _cmd);
     return flag;
+}
+
+- (void)replacementTile {
+    originalTile(self, _cmd);
+    
+    NSArray *subcontrols = [self subcontrols];
+    
+    if ([subcontrols count]) {
+        NSEnumerator *viewEnum = [subcontrols objectEnumerator];
+        NSView *view;
+        NSScroller *horizScroller = [self horizontalScroller];
+        NSRect viewFrame, horizScrollerFrame = [horizScroller frame];
+        float height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
+        BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
+        
+        if (edgeView == nil) {
+            edgeView = [[[BDSKEdgeView alloc] init] autorelease];
+            [edgeView setEdgeColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0]];
+            [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxYEdgeMask];
+            [self addSubview:edgeView];
+        }
+        
+        while (view = [viewEnum nextObject]) {
+            viewFrame = NSMakeRect(totalWidth, 0.0, NSWidth([view frame]), height);
+            totalWidth += NSWidth(viewFrame);
+            [view setFrame:viewFrame];
+            if ([view isDescendantOf:edgeView] == NO)
+                [edgeView addSubview:view];
+        }
+        
+        NSDivideRect(horizScrollerFrame, &viewFrame, &horizScrollerFrame, totalWidth + 1.0, NSMaxXEdge);
+        [horizScroller setFrame:horizScrollerFrame];
+        [edgeView setFrame:viewFrame];
+    }
+}
+
+
+- (NSArray *)subcontrols {
+    return (NSArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);
+}
+
+- (void)setSubcontrols:(NSArray *)newSubControls {
+    BDSKEdgeView *edgeView = nil;
+    NSMutableArray *subcontrols = (NSMutableArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);
+    if (subcontrols == nil && [newSubControls count]) {
+        subcontrols = [NSMutableArray array];
+        CFDictionarySetValue(scrollViewSubcontrols, self, subcontrols);
+    }
+    
+    if ([subcontrols count])
+        edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
+    
+    [subcontrols makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [subcontrols setArray:newSubControls];
+    
+    if ([subcontrols count] == 0 && subcontrols) {
+        [edgeView removeFromSuperview];
+        CFDictionaryRemoveValue(scrollViewSubcontrols, self);
+        subcontrols = nil;
+    }
+    
+    [self setAlwaysHasHorizontalScroller:[subcontrols count] != 0];
+    
+    [self tile];
 }
 
 @end

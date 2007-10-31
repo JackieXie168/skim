@@ -41,10 +41,6 @@
 #import "NSScrollView_SKExtensions.h"
 
 
-@interface PDFView (SKApplePrivateOverride)
-- (void)adjustScrollbars:(id)obj;
-@end
-
 @implementation SKSecondaryPDFView
 
 /* For genstrings:
@@ -68,6 +64,9 @@ static float SKPopUpMenuFontSize = 11.0;
     if (self = [super initWithFrame:frameRect]) {
         scalePopUpButton = nil;
         pagePopUpButton = nil;
+        
+        [self makePopUpButtons];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                      name:PDFViewPageChangedNotification object:self];
     }
@@ -78,6 +77,9 @@ static float SKPopUpMenuFontSize = 11.0;
     if (self = [super initWithCoder:decoder]) {
         scalePopUpButton = nil;
         pagePopUpButton = nil;
+        
+        [self makePopUpButtons];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                      name:PDFViewPageChangedNotification object:self];
     }
@@ -94,24 +96,6 @@ static float SKPopUpMenuFontSize = 11.0;
                                                      name:PDFDocumentDidUnlockNotification object:document];
 }
 
-- (void)drawRect:(NSRect)rect {
-    [self layoutScrollView];
-    [super drawRect:rect];
-
-    if ([scalePopUpButton superview]) {
-        NSRect shadowRect = NSUnionRect([scalePopUpButton frame], [pagePopUpButton frame]);
-        shadowRect.origin.x -= 1.0;
-        shadowRect.origin.y -= 1.0;
-        shadowRect.size.width += 1.0;
-        shadowRect.size.height += 1.0;
-		shadowRect = [self convertRect:shadowRect fromView:[scalePopUpButton superview]];
-        if (NSIntersectsRect(rect, shadowRect)) {
-            [[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] set];
-            NSRectFill(shadowRect);
-        }
-    }
-}
-
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
     NSRect rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
     float scale = [self scaleFactor];
@@ -126,17 +110,54 @@ static float SKPopUpMenuFontSize = 11.0;
 
 #pragma mark Popup buttons
 
-- (void)makeScalePopUpButton {
+- (void)reloadPagePopUpButton {
+    PDFDocument *pdfDoc = [self document];
+    unsigned i, count = [pagePopUpButton numberOfItems];
+    NSString *label;
+    float width, maxWidth = 0.0;
+    NSSize size = NSMakeSize(1000.0, 1000.0);
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
+    unsigned maxIndex = 0;
+    
+    while (count--)
+        [pagePopUpButton removeItemAtIndex:count];
+    
+    if (count = [pdfDoc pageCount]) {
+        for (i = 0; i < count; i++) {
+            label = [[pdfDoc pageAtIndex:i] label];
+            if (label == nil)
+                label = [NSString stringWithFormat:@"%i", i + 1];
+            width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
+            if (width > maxWidth) {
+                maxWidth = width;
+                maxIndex = i;
+            }
+            [pagePopUpButton addItemWithTitle:label];
+        }
+        
+        i = [pagePopUpButton indexOfSelectedItem];
+        [pagePopUpButton selectItemAtIndex:maxIndex];
+        [pagePopUpButton sizeToFit];
+        [pagePopUpButton selectItemAtIndex:i];
+        
+        [pagePopUpButton selectItemAtIndex:[pdfDoc indexForPage:[self currentPage]]];
+    }
+}
+
+
+- (void)makePopUpButtons {
+    if (scalePopUpButton && pagePopUpButton)
+        return;
+    
+    NSScrollView *scrollView = [self scrollView];
+    [scrollView setAlwaysHasHorizontalScroller:YES];
+    NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
     
     if (scalePopUpButton == nil) {
-        
-        NSScrollView *scrollView = [self scrollView];
-        [scrollView setAlwaysHasHorizontalScroller:YES];
 
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
-        NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
         [[scalePopUpButton cell] setControlSize:controlSize];
 
         // set a suitable font, the control size is 0, 1 or 2
@@ -180,57 +201,14 @@ static float SKPopUpMenuFontSize = 11.0;
         // hook it up
         [scalePopUpButton setTarget:self];
         [scalePopUpButton setAction:@selector(scalePopUpAction:)];
-
-        // put it in the scrollview
-        [scrollView addSubview:scalePopUpButton];
-        [scalePopUpButton release];
+        
     }
-}
-
-- (void)reloadPagePopUpButton {
-    PDFDocument *pdfDoc = [self document];
-    unsigned i, count = [pagePopUpButton numberOfItems];
-    NSString *label;
-    float width, maxWidth = 0.0;
-    NSSize size = NSMakeSize(1000.0, 1000.0);
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
-    unsigned maxIndex = 0;
-    
-    while (count--)
-        [pagePopUpButton removeItemAtIndex:count];
-    
-    count = [pdfDoc pageCount];
-    for (i = 0; i < count; i++) {
-        label = [[pdfDoc pageAtIndex:i] label];
-        if (label == nil)
-            label = [NSString stringWithFormat:@"%i", i + 1];
-        width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
-        if (width > maxWidth) {
-            maxWidth = width;
-            maxIndex = i;
-        }
-        [pagePopUpButton addItemWithTitle:label];
-    }
-    
-    i = [pagePopUpButton indexOfSelectedItem];
-    [pagePopUpButton selectItemAtIndex:maxIndex];
-    [pagePopUpButton sizeToFit];
-    [pagePopUpButton selectItemAtIndex:i];
-    
-    [pagePopUpButton selectItemAtIndex:[pdfDoc indexForPage:[self currentPage]]];
-}
-
-- (void)makePagePopUpButton {
     
     if (pagePopUpButton == nil) {
-        
-        NSScrollView *scrollView = [self scrollView];
-        [scrollView setAlwaysHasHorizontalScroller:YES];
         
         // create it        
         pagePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
-        NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
         [[pagePopUpButton cell] setControlSize:controlSize];
 
         // set a suitable font, the control size is 0, 1 or 2
@@ -246,7 +224,8 @@ static float SKPopUpMenuFontSize = 11.0;
         [pagePopUpButton setAction:@selector(pagePopUpAction:)];
 
         // put it in the scrollview
-        [scrollView addSubview:pagePopUpButton];
+        [scrollView setSubcontrols:[NSArray arrayWithObjects:pagePopUpButton, scalePopUpButton, nil]];
+        [scalePopUpButton release];
         [pagePopUpButton release];
     }
 }
@@ -406,67 +385,6 @@ static float SKPopUpMenuFontSize = 11.0;
 	}
 }
 
-- (void)adjustScrollbars:(id)obj;
-{
-    // this private method is only called by PDFView, so super must implement it if it's called
-    [super adjustScrollbars:obj];
-    [self layoutScrollView];
-    // be careful here; check the comment in -layoutScrollView before changing anything
-}
-
-- (void)layoutScrollView;
-{
-    NSScrollView *scrollView = [self scrollView];
-    
-    // Don't force scroller display on the scrollview; PDFView apparently uses a timer to call adjustScrollbars:, and preventing autohide will cause an endless loop if you zoom so that the vertical scroller is not displayed (regardless of whether we swizzle -[NSScrollView tile] or override -[PDFView adjustScrollbars:]).  Therefore, we always display the button,  even though it looks stupid without the scrollers.  Since it's not really readable anyway at 25%, this probably isn't a big deal, since this isn't supposed to be a thumbnail view.
-    
-    NSControlSize controlSize = NSRegularControlSize;
-    
-    if ([scrollView hasHorizontalScroller])
-        controlSize = [[scrollView horizontalScroller] controlSize];
-    else if ([scrollView hasVerticalScroller])
-        controlSize = [[scrollView verticalScroller] controlSize];
-    
-    float scrollerWidth = [NSScroller scrollerWidthForControlSize:controlSize];
-    
-    if (scalePopUpButton == nil)
-        [self makeScalePopUpButton];
-    if (pagePopUpButton == nil)
-        [self makePagePopUpButton];
-    
-    NSRect horizScrollerFrame, scaleButtonFrame, pageButtonFrame;
-    scaleButtonFrame = [scalePopUpButton frame];
-    pageButtonFrame = [pagePopUpButton frame];
-    
-    NSScroller *horizScroller = [scrollView horizontalScroller];
-    
-    if (horizScroller) {
-        horizScrollerFrame = [horizScroller frame];
-        
-        // Now we'll just adjust the horizontal scroller size and set the button size and location.
-        // Set it based on our frame, not the scroller's frame, since this gets called repeatedly.
-        horizScrollerFrame.size.width = NSWidth([scrollView frame]) - NSWidth(scaleButtonFrame) - NSWidth(pageButtonFrame) - scrollerWidth - 1.0;
-        [horizScroller setFrameSize:horizScrollerFrame.size];
-    }
-    scaleButtonFrame.size.height = scrollerWidth - 1.0;
-    pageButtonFrame.size.height = scrollerWidth - 1.0;
-
-    if ([scrollView isFlipped]) {
-        scaleButtonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(scaleButtonFrame);
-        scaleButtonFrame.origin.y = NSMaxY([scrollView frame]) - NSHeight(scaleButtonFrame);            
-        pageButtonFrame.origin.x = NSMinX(scaleButtonFrame) - NSWidth(pageButtonFrame);
-        pageButtonFrame.origin.y = NSMaxY([scrollView frame]) - NSHeight(pageButtonFrame);            
-    }
-    else {
-        scaleButtonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(scaleButtonFrame);
-        scaleButtonFrame.origin.y = NSMinY([scrollView frame]);
-        pageButtonFrame.origin.x = NSMinX(scaleButtonFrame) - NSWidth(pageButtonFrame);
-        pageButtonFrame.origin.y = NSMinY([scrollView frame]);
-    }
-    [scalePopUpButton setFrame:scaleButtonFrame];
-    [pagePopUpButton setFrame:pageButtonFrame];
-}
-
 #pragma mark Dragging
 
 - (void)mouseDown:(NSEvent *)theEvent{
@@ -536,7 +454,7 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [self reloadPagePopUpButton];
-    [self layoutScrollView];
+    [[self scrollView] tile];
 }
 
 @end

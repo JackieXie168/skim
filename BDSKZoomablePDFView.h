@@ -53,10 +53,10 @@
 - (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;
 - (NSScrollView *)scrollView;
-- (void)layoutScrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)resetAutoFitRectIfNeeded;
+- (void)makeScalePopUpButton;
 
 @end

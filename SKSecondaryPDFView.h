@@ -50,12 +50,14 @@
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
 - (NSScrollView *)scrollView;
-- (void)layoutScrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)reloadPagePopUpButton;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
+
+- (void)makePopUpButtons;
+- (void)reloadPagePopUpButton;
 
 @end
