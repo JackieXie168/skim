@@ -42,6 +42,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKDocument.h"
+#import "SKStringConstants.h"
 
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
@@ -67,7 +68,9 @@
 	NSString *ellipse = [NSString stringWithFormat:@"%C", 0x2026];
 	NSRange foundRange;
     NSDictionary *attributes;
-	
+    NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
+	float fontSize = fontSizeNumber ? [fontSizeNumber floatValue] : 0.0;
+    
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];
 	[extendedSelection extendSelectionAtEnd:50];
@@ -85,7 +88,7 @@
 	foundRange = [sample rangeOfString:searchString options:NSCaseInsensitiveSearch];
     if (foundRange.location != NSNotFound) {
         // Bold the text range where the search term was found.
-        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]], NSFontAttributeName, nil];
+        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:fontSize], NSFontAttributeName, nil];
         [attributedSample setAttributes:attributes range:NSMakeRange(foundRange.location + 1, foundRange.length)];
         [attributes release];
     }
