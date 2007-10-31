@@ -39,6 +39,7 @@
                 myAction = id; 
                 newDocumentFromClipboard = id; 
                 orderFrontLineInspector = id; 
+                orderFrontNotesPanel = id; 
                 password = id; 
                 performFit = id; 
                 readNotes = id; 
