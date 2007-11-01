@@ -188,7 +188,7 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
         float height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
         BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
         
-        if (edgeView == nil) {
+        if ([edgeView isDescendantOf:self] == NO) {
             edgeView = [[[BDSKEdgeView alloc] init] autorelease];
             [edgeView setEdgeColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0]];
             [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxYEdgeMask];
@@ -222,14 +222,14 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
         CFDictionarySetValue(scrollViewSubcontrols, self, subcontrols);
     }
     
-    if ([subcontrols count])
+    if ([subcontrols count]) {
+        [subcontrols makeObjectsPerformSelector:@selector(removeFromSuperview)];
         edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
-    
-    [subcontrols makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        [edgeView removeFromSuperview];
+    }
     [subcontrols setArray:newSubControls];
     
     if ([subcontrols count] == 0 && subcontrols) {
-        [edgeView removeFromSuperview];
         CFDictionaryRemoveValue(scrollViewSubcontrols, self);
         subcontrols = nil;
     }
