@@ -482,6 +482,11 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     return dict;
 }
 
+- (void)setPDFDataUndoable:(NSData *)data {
+    [[[self undoManager] prepareWithInvocationTarget:self] setPDFDataUndoable:pdfData];
+    [self setPDFData:data];
+}
+
 - (void)setPDFData:(NSData *)data {
     if (pdfData != data) {
         [pdfData release];
@@ -741,6 +746,69 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                      modalDelegate:self
                     didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];		
+}
+
+- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertAlternateReturn)
+        return;
+    
+    [[[self windowForSheet] attachedSheet] orderOut:self];
+        
+    [[self progressController] setMessage:[NSLocalizedString(@"Converting notes", @"Message for progress sheet") stringByAppendingEllipsis]];
+    [[self progressController] setIndeterminate:YES];
+    [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+    
+    PDFDocument *pdfDoc = [self pdfDocument];
+    int i, count = [pdfDoc pageCount];
+    BOOL didConvert = NO;
+    
+    for (i = 0; i < count; i++) {
+        PDFPage *page = [pdfDoc pageAtIndex:i];
+        NSEnumerator *annEnum = [[page annotations] objectEnumerator];
+        PDFAnnotation *annotation;
+        
+        while (annotation = [annEnum nextObject]) {
+            if ([annotation isNoteAnnotation] == NO && [annotation isConvertibleAnnotation]) {
+                PDFAnnotation *newAnnotation = [annotation copyNoteAnnotation];
+                [[self pdfView] removeAnnotation:annotation];
+                [[self pdfView] addAnnotation:newAnnotation toPage:page];
+                [newAnnotation release];
+                didConvert = YES;
+            }
+        }
+    }
+    
+    if (didConvert) {
+        pdfDoc = [[PDFDocument alloc] initWithData:pdfData];
+        count = [pdfDoc pageCount];
+        for (i = 0; i < count; i++) {
+            PDFPage *page = [pdfDoc pageAtIndex:i];
+            NSEnumerator *annEnum = [[page annotations] objectEnumerator];
+            PDFAnnotation *annotation;
+            
+            while (annotation = [annEnum nextObject]) {
+                if ([annotation isNoteAnnotation] == NO && [annotation isConvertibleAnnotation])
+                    [page removeAnnotation:annotation];
+            }
+        }
+        
+        [self setPDFDataUndoable:[pdfDoc dataRepresentation]];
+        [pdfDoc release];
+    }
+    
+    [[self progressController] endSheet];
+}
+
+- (IBAction)convertNotes:(id)sender {
+    NSString *message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog");
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. This will loose the Table of Contents. Do you want to proceed?", @"Informative text in alert dialog");
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Convert Notes", @"Alert text when trying to convert notes")
+                                     defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                       otherButton:nil
+                         informativeTextWithFormat:message];
+    [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {

@@ -77,6 +77,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (BOOL)isMovable;
 - (BOOL)isEditable;
 
+- (BOOL)isConvertibleAnnotation;
+- (id)copyNoteAnnotation;
+
 - (NSUndoManager *)undoManager;
 
 - (BOOL)hitTest:(NSPoint)point;

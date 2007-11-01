@@ -411,6 +411,10 @@ static IMP originalSetBorder = NULL;
 
 - (BOOL)isEditable { return NO; }
 
+- (BOOL)isConvertibleAnnotation { return NO; }
+
+- (id)copyNoteAnnotation { return nil; }
+
 - (BOOL)hitTest:(NSPoint)point {
     return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
 }
@@ -690,6 +694,26 @@ static IMP originalSetBorder = NULL;
 
 #pragma mark -
 
+@interface PDFAnnotationCircle (SKExtensions)
+@end
+
+@implementation PDFAnnotationCircle (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    SKPDFAnnotationCircle *annotation = [[SKPDFAnnotationCircle alloc] initWithBounds:[self bounds]];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    [annotation setInteriorColor:[self interiorColor]];
+    return annotation;
+}
+
+@end
+
+#pragma mark -
+
 @implementation SKPDFAnnotationSquare
 
 - (id)initWithBounds:(NSRect)bounds {
@@ -759,6 +783,26 @@ static IMP originalSetBorder = NULL;
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     [properties removeObjectsForKeys:[NSArray arrayWithObjects:@"richText", @"fontName", @"fontSize", @"asIconType", @"startPointAsQDPoint", @"endPointAsQDPoint", @"asStartLineStyle", @"asEndLineStyle", @"selectionSpecifier", nil]];
     return properties;
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationSquare (SKExtensions)
+@end
+
+@implementation PDFAnnotationSquare (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    SKPDFAnnotationSquare *annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:[self bounds]];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    [annotation setInteriorColor:[self interiorColor]];
+    return annotation;
 }
 
 @end
@@ -1080,6 +1124,27 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 #pragma mark -
 
+@interface PDFAnnotationMarkup (SKExtensions)
+@end
+
+@implementation PDFAnnotationMarkup (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
+    SKPDFAnnotationMarkup *annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:[self bounds] markupType:[self markupType] quadrilateralPointsAsStrings:quadPoints];
+    [quadPoints release];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    return annotation;
+}
+
+@end
+
+#pragma mark -
+
 @implementation SKPDFAnnotationFreeText
 
 - (id)initWithBounds:(NSRect)bounds {
@@ -1183,6 +1248,28 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (font)
         [self setFont:font];
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationFreeText (SKExtensions)
+@end
+
+@implementation PDFAnnotationFreeText (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    SKPDFAnnotationFreeText *annotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:[self bounds]];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    [annotation setFont:[self font]];
+    if ([self respondsToSelector:@selector(rotation)] && [annotation respondsToSelector:@selector(setRotation:)])
+        [annotation setRotation:[self rotation]];
+    return annotation;
 }
 
 @end
@@ -1427,6 +1514,26 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         return value;
     else
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationText (SKExtensions)
+@end
+
+@implementation PDFAnnotationText (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initWithBounds:[self bounds]];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    [annotation setIconType:[self iconType]];
+    return annotation;
 }
 
 @end
@@ -1735,6 +1842,29 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         case SKASLineStyleClosedArrow: endLineStyle = kPDFLineStyleClosedArrow; break;
     }
     [self setEndLineStyle:endLineStyle];
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationLine (SKExtensions)
+@end
+
+@implementation PDFAnnotationLine (SKExtensions)
+
+- (BOOL)isConvertibleAnnotation { return YES; }
+
+- (id)copyNoteAnnotation {
+    SKPDFAnnotationLine *annotation = [[SKPDFAnnotationLine alloc] initWithBounds:[self bounds]];
+    [annotation setString:[self string]];
+    [annotation setColor:[self color]];
+    [annotation setBorder:[self border]];
+    [annotation setStartPoint:[self startPoint]];
+    [annotation setEndPoint:[self endPoint]];
+    [annotation setStartLineStyle:[self startLineStyle]];
+    [annotation setEndLineStyle:[self endLineStyle]];
+    return annotation;
 }
 
 @end
