@@ -215,18 +215,13 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
 }
 
 - (void)setSubcontrols:(NSArray *)newSubControls {
-    BDSKEdgeView *edgeView = nil;
     NSMutableArray *subcontrols = (NSMutableArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);
     if (subcontrols == nil && [newSubControls count]) {
         subcontrols = [NSMutableArray array];
         CFDictionarySetValue(scrollViewSubcontrols, self, subcontrols);
     }
     
-    if ([subcontrols count]) {
-        [subcontrols makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
-        [edgeView removeFromSuperview];
-    }
+    [[[[subcontrols lastObject] superview] superview] removeFromSuperview];
     [subcontrols setArray:newSubControls];
     
     if ([subcontrols count] == 0 && subcontrols) {
