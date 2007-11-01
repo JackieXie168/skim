@@ -106,6 +106,8 @@
                 togglePresentation = id; 
                 toggleRightSidePane = id; 
                 toggleStatusBar = id; 
+                zoomInActualOut = id; 
+                zoomInOut = id; 
             }; 
             CLASS = SKMainWindowController; 
             LANGUAGE = ObjC; 
@@ -161,6 +163,8 @@
                 thumbnailView = NSView; 
                 tocView = NSView; 
                 toolModeButton = NSSegmentedControl; 
+                zoomInActualOutButton = NSSegmentedControl; 
+                zoomInOutButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

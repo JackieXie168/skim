@@ -117,6 +117,8 @@ static NSString *SKDocumentToolbarZoomOutItemIdentifier = @"SKDocumentZoomOutToo
 static NSString *SKDocumentToolbarZoomActualItemIdentifier = @"SKDocumentZoomActualToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomToSelectionItemIdentifier = @"SKDocumentToolbarZoomToSelectionItemIdentifier";
 static NSString *SKDocumentToolbarZoomToFitItemIdentifier = @"SKDocumentToolbarZoomToFitItemIdentifier";
+static NSString *SKDocumentToolbarZoomInOutItemIdentifier = @"SKDocumentToolbarZoomInOutItemIdentifier";
+static NSString *SKDocumentToolbarZoomInActualOutItemIdentifier = @"SKDocumentToolbarZoomInActualOutItemIdentifier";
 static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotateRightToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
 static NSString *SKDocumentToolbarCropItemIdentifier = @"SKDocumentToolbarCropItemIdentifier";
@@ -1524,6 +1526,22 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView setAutoScales:NO];
 }
 
+- (IBAction)zoomInOut:(id)sender {
+    if ([sender selectedSegment] == 0)
+        [pdfView zoomOut:sender];
+    else
+        [pdfView zoomIn:sender];
+}
+
+- (IBAction)zoomInActualOut:(id)sender {
+    if ([sender selectedSegment] == 0)
+        [pdfView zoomOut:sender];
+    else if ([sender selectedSegment] == 1)
+        [pdfView setScaleFactor:1.0];
+    else
+        [pdfView zoomIn:sender];
+}
+
 - (IBAction)doAutoScale:(id)sender {
     [pdfView setAutoScales:YES];
 }
@@ -2912,6 +2930,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
+    
+    [zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
+    [zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
+    [zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
+    [zoomInActualOutButton setEnabled:fabsf([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
@@ -4341,6 +4365,49 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomToFitItemIdentifier];
     [item release];
     
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Zoom In", @"Menu item title") action:@selector(doZoomIn:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Zoom Out", @"Menu item title") action:@selector(doZoomOut:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
+    [menuItem setSubmenu:menu];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomInOutItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Zoom", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
+    [[zoomInOutButton cell] setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
+    [[zoomInOutButton cell] setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
+    frame = [zoomInOutButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [zoomInOutButton setFrame:frame];
+    [item setViewWithSizes:zoomInOutButton];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInOutItemIdentifier];
+    [item release];
+    
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Zoom In", @"Menu item title") action:@selector(doZoomIn:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Zoom Out", @"Menu item title") action:@selector(doZoomOut:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToActualSize:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
+    [menuItem setSubmenu:menu];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomInActualOutItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Zoom", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
+    [[zoomInActualOutButton cell] setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
+    [[zoomInActualOutButton cell] setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
+    [[zoomInActualOutButton cell] setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
+    frame = [zoomInActualOutButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [zoomInActualOutButton setFrame:frame];
+    [item setViewWithSizes:zoomInActualOutButton];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInActualOutItemIdentifier];
+    [item release];
+    
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarRotateRightItemIdentifier];
     [item setLabels:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
@@ -4771,6 +4838,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarZoomActualItemIdentifier, 
         SKDocumentToolbarZoomToSelectionItemIdentifier, 
         SKDocumentToolbarZoomToFitItemIdentifier, 
+        SKDocumentToolbarZoomInOutItemIdentifier, 
+        SKDocumentToolbarZoomInActualOutItemIdentifier, 
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
         SKDocumentToolbarCropItemIdentifier, 

@@ -152,6 +152,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *previousPageButton;
     IBOutlet NSSegmentedControl *nextPageButton;
     IBOutlet NSTextField        *pageNumberButtonsField;
+    IBOutlet NSSegmentedControl *zoomInOutButton;
+    IBOutlet NSSegmentedControl *zoomInActualOutButton;
     IBOutlet NSSegmentedControl *toolModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
@@ -227,6 +229,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)doZoomToActualSize:(id)sender;
 - (IBAction)doZoomToFit:(id)sender;
 - (IBAction)doZoomToSelection:(id)sender;
+- (IBAction)zoomInOut:(id)sender;
+- (IBAction)zoomInActualOut:(id)sender;
 - (IBAction)doAutoScale:(id)sender;
 - (IBAction)toggleAutoScale:(id)sender;
 - (IBAction)toggleAutoActualSize:(id)sender;

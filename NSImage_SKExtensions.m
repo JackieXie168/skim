@@ -72,6 +72,9 @@
     static NSImage *forwardAdornImage = nil;
     static NSImage *firstAdornImage = nil;
     static NSImage *lastAdornImage = nil;
+    static NSImage *zoomInAdornImage = nil;
+    static NSImage *zoomOutAdornImage = nil;
+    static NSImage *zoomActualAdornImage = nil;
     static NSImage *outlineViewAdornImage = nil;
     static NSImage *thumbnailViewAdornImage = nil;
     static NSImage *noteViewAdornImage = nil;
@@ -169,6 +172,38 @@
     [path fill];
     [lastAdornImage unlockFocus];
     [lastAdornImage setName:@"LastAdorn"];
+    
+    zoomInAdornImage = [[NSImage alloc] initWithSize:size];
+    [zoomInAdornImage lockFocus];
+    [shadow set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path appendBezierPathWithRect:NSMakeRect(8.0, 6.0, 11.0, 3.0)];
+    [path appendBezierPathWithRect:NSMakeRect(12.0, 2.0, 3.0, 11.0)];
+    [path fill];
+    [zoomInAdornImage unlockFocus];
+    [zoomInAdornImage setName:@"ZoomInAdorn"];
+    
+    zoomOutAdornImage = [[NSImage alloc] initWithSize:size];
+    [zoomOutAdornImage lockFocus];
+    [shadow set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path appendBezierPathWithRect:NSMakeRect(6.0, 6.0, 11.0, 3.0)];
+    [path fill];
+    [zoomOutAdornImage unlockFocus];
+    [zoomOutAdornImage setName:@"ZoomOutAdorn"];
+    
+    zoomActualAdornImage = [[NSImage alloc] initWithSize:size];
+    [zoomActualAdornImage lockFocus];
+    [shadow set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path appendBezierPathWithRect:NSMakeRect(7.0, 4.0, 11.0, 3.0)];
+    [path appendBezierPathWithRect:NSMakeRect(7.0, 8.0, 11.0, 3.0)];
+    [path fill];
+    [zoomActualAdornImage unlockFocus];
+    [zoomActualAdornImage setName:@"ZoomActualAdorn"];
     
     outlineViewAdornImage = [[NSImage alloc] initWithSize:size];
     [outlineViewAdornImage lockFocus];
