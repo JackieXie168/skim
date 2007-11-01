@@ -1043,12 +1043,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             BOOL isDVI = NO;
             if (extension) {
                 NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-                if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("application/x-dvi")))) {
-                    isDVI = YES;
-                } if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
+                if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
                     NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
                     if (pdfFile == nil) return;
                     fileName = [fileName stringByAppendingPathComponent:pdfFile];
+                } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
+                    isDVI = YES;
                 }
             }
             
