@@ -79,10 +79,13 @@ static SKNotesPanelController *sharedController = nil;
 
 - (IBAction)addNote:(id)sender {
     id controller = [[NSApp mainWindow] windowController];
-    if ([controller respondsToSelector:@selector(createNewNote:)])
+    if ([controller respondsToSelector:@selector(createNewNote:)]) {
         [(SKMainWindowController *)controller createNewNote:sender];
-    else
+        [[controller window] makeKeyWindow];
+        [[controller window] makeFirstResponder:(NSResponder *)[(SKMainWindowController *)controller pdfView]];
+    } else {
         NSBeep();
+    }
 }
 
 @end
