@@ -1731,6 +1731,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote || annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);
+        else if (annotationType == SKAnchoredNote)
+            bounds = ANCHORED_NOTE_SIZE;
 	} else if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
         NSBeep();
         return;
