@@ -48,14 +48,10 @@ static NSString *endColorKey = nil;
 + (void)initialize {
     OBINITIALIZE;
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        // in Tiger the input colors are reversed
-        startColorKey = [@"inputColor1" retain];
-        endColorKey = [@"inputColor0" retain];
-    } else {
-        startColorKey = [@"inputColor0" retain];
-        endColorKey = [@"inputColor1" retain];
-    }
+    // @@ Leopard: change this when compiling against 10.5 SDK
+    // in Tiger the input colors are reversed
+    startColorKey = [@"inputColor1" retain];
+    endColorKey = [@"inputColor0" retain];
 }
 
 + (CIImage *)imageWithConstantColor:(CIColor *)color;
