@@ -1054,6 +1054,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                         [self editActiveAnnotation:nil];
                     else
                         [self setActiveAnnotation:nil];
+                } else if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString]) {
+                    [self editActiveAnnotation:self];
                 }
                 mouseDownInAnnotation = NO;
                 [wasSelection release];
