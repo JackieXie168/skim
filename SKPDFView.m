@@ -2731,7 +2731,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         // Hit test annotation.
         if ([annotation isNoteAnnotation]) {
-            if ([annotation hitTest:pagePoint]) {
+            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
                 mouseDownInAnnotation = YES;
                 newActiveAnnotation = annotation;
                 // Remember click point relative to annotation origin.
