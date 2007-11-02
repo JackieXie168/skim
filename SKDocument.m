@@ -1541,11 +1541,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 #pragma mark Passwords
 
-- (void)savePasswordInKeychain:(NSString *)password {
+- (void)savePasswordInKeychain:(NSString *)aPassword {
     if ([[self pdfDocument] isLocked])
         return;
     
-    [self setPassword:password];
+    [self setPassword:aPassword];
     
     int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption != NSAlertAlternateReturn) {
@@ -1577,7 +1577,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     SecKeychainItemFreeContent(NULL, (void *)passwordData);
                     passwordData = NULL;
                     
-                    passwordData = [password UTF8String];
+                    passwordData = [aPassword UTF8String];
                     SecKeychainAttribute attrs[] = {
                         { kSecAccountItemAttr, strlen(userNameCString), (char *)userNameCString },
                         { kSecServiceItemAttr, strlen(nameCString), (char *)nameCString } };
@@ -1606,14 +1606,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             void *passwordData = NULL;
             UInt32 passwordLength = 0;
             NSData *data = nil;
-            NSString *password = nil;
+            NSString *aPassword = nil;
             OSErr err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, &passwordData, NULL);
             if (err == noErr) {
                 data = [NSData dataWithBytes:passwordData length:passwordLength];
                 SecKeychainItemFreeContent(NULL, passwordData);
-                password = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-                if ([document unlockWithPassword:password])
-                    [self setPassword:password];
+                aPassword = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+                if ([document unlockWithPassword:aPassword])
+                    [self setPassword:aPassword];
             }
         }
     }
