@@ -104,14 +104,13 @@ typedef enum _SKNoteType {
 	NSPoint clickDelta;
     NSRect selectionRect;
     float magnification;
-	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
-	BOOL draggingStartPoint;
     BOOL didDrag;
     BOOL didBeginUndoGrouping;
     BOOL mouseDownInAnnotation;
     BOOL extendSelection;
     BOOL rectSelection;
+    int dragMask;
     
     int trackingRect;
     NSMutableArray *hoverRects;
