@@ -2939,8 +2939,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             } else if (dragMask & BDSKMinXEdgeMask) {
                 newBounds.origin.x += relPoint.x;
                 newBounds.size.width -= relPoint.x;
-                if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
-                    newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                if (NSMinX(newBounds) < NSMinX(pageBounds)) {
+                    newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
+                    newBounds.origin.x = NSMinX(pageBounds);
                 }
                 if (NSWidth(newBounds) < 8.0) {
                     newBounds.origin.x = NSMaxX(newBounds) - 8.0;
@@ -2958,8 +2959,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             } else if (dragMask & BDSKMinYEdgeMask) {
                 newBounds.origin.y += relPoint.y;
                 newBounds.size.height -= relPoint.y;
-                if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
-                    newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                if (NSMinY(newBounds) < NSMinY(pageBounds)) {
+                    newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
+                    newBounds.origin.y = NSMinY(pageBounds);
                 }
                 if (NSHeight(newBounds) < 8.0) {
                     newBounds.origin.y = NSMaxY(newBounds) - 8.0;
