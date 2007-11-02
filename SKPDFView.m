@@ -2969,6 +2969,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
                 }
                 if (NSWidth(newBounds) < 8.0) {
+                    newBounds.origin.x = NSMaxX(newBounds) - 8.0;
                     newBounds.size.width = 8.0;
                 }
             }
@@ -2987,6 +2988,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
                 }
                 if (NSHeight(newBounds) < 8.0) {
+                    newBounds.origin.y = NSMaxY(newBounds) - 8.0;
                     newBounds.size.height = 8.0;
                 }
             }
@@ -3654,6 +3656,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 PDFPage *page = [self pageForPoint:p nearest:NO];
                 p = [self convertPoint:p toPage:page];
                 PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+                if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
+                    area = kPDFAnnotationArea;
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
@@ -3843,14 +3847,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float radius)
 {
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect)), radius);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect)), radius);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius);
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMidY(rect)), radius);
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMidY(rect)), radius);
-    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)), radius);
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius);
 }
 
 @implementation PDFDocument (SKExtensions)
