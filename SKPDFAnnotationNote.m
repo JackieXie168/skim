@@ -416,7 +416,10 @@ static IMP originalSetBorder = NULL;
 - (id)copyNoteAnnotation { return nil; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
+    NSRect bounds = [self bounds];
+    if ([self isResizable])
+        bounds = NSInsetRect(bounds, -4.0, -4.0);
+    return [self shouldDisplay] ? NSPointInRect(point, bounds) : NO;
 }
 
 - (NSUndoManager *)undoManager {

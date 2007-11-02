@@ -58,6 +58,7 @@
 #import "SKTypeSelectHelper.h"
 #import "OBUtilities.h"
 #import "NSAffineTransform_SKExtensions.h"
+#import "BDSKEdgeView.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -83,6 +84,7 @@ static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, 
 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius);
+static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float radius);
 
 @interface PDFDocument (SKExtensions)
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
@@ -198,9 +200,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
     magnification = 0.0;
-    resizingAnnotation = NO;
     draggingAnnotation = NO;
-    draggingStartPoint = NO;
     didDrag = NO;
     didBeginUndoGrouping = NO;
     mouseDownInAnnotation = NO;
@@ -346,21 +346,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 CGContextStrokePath(context);
                 CGPathRelease(path);
             } else if ([[activeAnnotation type] isEqualToString:SKLineString]) {
-                color[3] = 0.7;
-                rect = NSIntegralRect([self resizeThumbForRect:bounds point:[(SKPDFAnnotationLine *)activeAnnotation startPoint]]);
-                CGContextSetFillColor(context, color);
-                CGContextFillRect(context, *(CGRect *)&rect);
-                rect = NSIntegralRect([self resizeThumbForRect:bounds point:[(SKPDFAnnotationLine *)activeAnnotation endPoint]]);
-                CGContextSetFillColor(context, color);
-                CGContextFillRect(context, *(CGRect *)&rect);
-            } else {
+                NSPoint point = SKAddPoints(bounds.origin, [(SKPDFAnnotationLine *)activeAnnotation startPoint]);
+                SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0);
+                point = SKAddPoints(bounds.origin, [(SKPDFAnnotationLine *)activeAnnotation endPoint]);
+                SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0);
+            } else if (editField == nil) {
+                float color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
                 CGContextSetStrokeColor(context, color);
                 CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
                 
                 if ([activeAnnotation isResizable]) {
-                    rect = NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]);
-                    CGContextSetFillColor(context, color);
-                    CGContextFillRect(context, *(CGRect *)&rect);
+                    SKCGContextDrawGrabHandles(context, *(CGRect *)&bounds, 4.0);
                 }
             }
         }
@@ -419,14 +415,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             CGContextSetFillColor(context, color);
             CGContextFillRect(context, *(CGRect *)&selectionRect);
         }
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMaxY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMidY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMidY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMinY(selectionRect)), radius);
-        SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMaxY(selectionRect)), radius);
+        SKCGContextDrawGrabHandles(context, *(CGRect *)&selectionRect, radius);
     }
     
     CGContextRestoreGState(context);
@@ -453,7 +442,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         bounds.size.height += delta;
     } else if ([[annotation type] isEqualToString:SKLineString]) {
         // need a large padding amount for large line width and cap changes
-        bounds = NSInsetRect(bounds, -20, -20);
+        bounds = NSInsetRect(bounds, -20.0, -20.0);
+    } else if ([annotation isResizable]) {
+        bounds = NSInsetRect(bounds, -4.0, -4.0);
     }
     [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
 }
@@ -1945,6 +1936,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self documentView] addSubview:editField];
         [editField selectText:self];
         
+        [self setNeedsDisplayForAnnotation:activeAnnotation];
     }
     
 }
@@ -1958,6 +1950,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [editField removeFromSuperview];
         [editField release];
         editField = nil;
+        
+        if ([[activeAnnotation type] isEqualToString:SKFreeTextString])
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
     }
 }
 
@@ -2861,18 +2856,38 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
+        dragMask = 0;
         if ([[activeAnnotation type] isEqualToString:SKLineString]) {
             if (NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds point:[(SKPDFAnnotationLine *)activeAnnotation endPoint]])) {
-                resizingAnnotation = YES;
-                draggingStartPoint = NO;
+                dragMask = BDSKMinXEdgeMask;
             } else if (NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds point:[(SKPDFAnnotationLine *)activeAnnotation startPoint]])) {
-                resizingAnnotation = YES;
-                draggingStartPoint = YES;
-            } else {
-                resizingAnnotation = NO;
+                dragMask = BDSKMaxXEdgeMask;
             }
         }  else {
-            resizingAnnotation = [activeAnnotation isResizable] && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[page rotation]]);
+            if ([activeAnnotation isResizable]) {
+                if ([page rotation] < 180) {
+                    if (pagePoint.x > NSMaxX(wasBounds) - 4.0)
+                        dragMask |= BDSKMaxXEdgeMask;
+                    else if (pagePoint.x < NSMinX(wasBounds) + 4.0)
+                        dragMask |= BDSKMinXEdgeMask;
+                } else {
+                    if (pagePoint.x < NSMinX(wasBounds) + 4.0)
+                        dragMask |= BDSKMinXEdgeMask;
+                    else if (pagePoint.x > NSMaxX(wasBounds) - 4.0)
+                        dragMask |= BDSKMaxXEdgeMask;
+                }
+                if ([page rotation] % 270 != 0) {
+                    if (pagePoint.y > NSMaxY(wasBounds) - 4.0)
+                        dragMask |= BDSKMaxYEdgeMask;
+                    else if (pagePoint.y < NSMinY(wasBounds) + 4.0)
+                        dragMask |= BDSKMinYEdgeMask;
+                } else {
+                    if (pagePoint.y < NSMinY(wasBounds) + 4.0)
+                        dragMask |= BDSKMinYEdgeMask;
+                    else if (pagePoint.y > NSMaxY(wasBounds) - 4.0)
+                        dragMask |= BDSKMaxYEdgeMask;
+                }
+            }
         }
     }
     
@@ -2885,7 +2900,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSRect currentBounds = [activeAnnotation bounds];
     NSRect pageBounds = [page  boundsForBox:[self displayBox]];
     
-    if (resizingAnnotation) {
+    if (dragMask != 0) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:page];
         NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
@@ -2897,7 +2912,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
             NSPoint endPoint = SKIntegralPoint(SKAddPoints(wasEndPoint, wasBounds.origin));
             startPoint = SKIntegralPoint(SKAddPoints(wasStartPoint, wasBounds.origin));
-            NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
+            NSPoint *draggedPoint = (dragMask & BDSKMinXEdgeMask) ? &startPoint : &endPoint;
             
             *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
             draggedPoint->x = floorf(draggedPoint->x);
@@ -2915,7 +2930,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
-                NSPoint *fixedPoint = draggingStartPoint ? &endPoint : &startPoint;
+                NSPoint *fixedPoint = (dragMask & BDSKMinXEdgeMask) ? &endPoint : &startPoint;
                 NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
                 float dx = fabsf(diffPoint.x), dy = fabsf(diffPoint.y);
                 
@@ -2939,85 +2954,42 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             
         } else {
             
-            switch ([page rotation]) {
-                case 0:
-                    newBounds.origin.y += relPoint.y;
-                    newBounds.size.width += relPoint.x;
-                    newBounds.size.height -= relPoint.y;
-                    if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
-                        newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
-                    }
-                    if (NSMinY(newBounds) < NSMinY(pageBounds)) {
-                        newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
-                        newBounds.origin.y = NSMinY(pageBounds);
-                    }
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.size.width = 8.0;
-                    }
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                        newBounds.size.height = 8.0;
-                    }
-                    break;
-                case 90:
-                    newBounds.size.width += relPoint.x;
-                    newBounds.size.height += relPoint.y;
-                    if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
-                        newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
-                    }
-                    if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
-                        newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
-                    }
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.size.width = 8.0;
-                    }
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.size.height = 8.0;
-                    }
-                    break;
-                case 180:
-                    newBounds.origin.x += relPoint.x;
-                    newBounds.size.width -= relPoint.x;
-                    newBounds.size.height += relPoint.y;
-                    if (NSMinX(newBounds) < NSMinX(pageBounds)) {
-                        newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
-                        newBounds.origin.x = NSMinX(pageBounds);
-                    }
-                    if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
-                        newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
-                    }
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                        newBounds.size.width = 8.0;
-                    }
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.size.height = 8.0;
-                    }
-                    break;
-                case 270:
-                    newBounds.origin.x += relPoint.x;
-                    newBounds.origin.y += relPoint.y;
-                    newBounds.size.width -= relPoint.x;
-                    newBounds.size.height -= relPoint.y;
-                    if (NSMinX(newBounds) < NSMinX(pageBounds)) {
-                        newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
-                        newBounds.origin.x = NSMinX(pageBounds);
-                    }
-                    if (NSMinY(newBounds) < NSMinY(pageBounds)) {
-                        newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
-                        newBounds.origin.y = NSMinY(pageBounds);
-                    }
-                    if (NSWidth(newBounds) < 8.0) {
-                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                        newBounds.size.width = 8.0;
-                    }
-                    if (NSHeight(newBounds) < 8.0) {
-                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                        newBounds.size.height = 8.0;
-                    }
-                    break;
+            if (dragMask & BDSKMaxXEdgeMask) {
+                newBounds.size.width += relPoint.x;
+                if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
+                    newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                }
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.size.width = 8.0;
+                }
+            } else if (dragMask & BDSKMinXEdgeMask) {
+                newBounds.origin.x += relPoint.x;
+                newBounds.size.width -= relPoint.x;
+                if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
+                    newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                }
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.size.width = 8.0;
+                }
             }
-            
+            if (dragMask & BDSKMaxYEdgeMask) {
+                newBounds.size.height += relPoint.y;
+                if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                    newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.size.height = 8.0;
+                }
+            } else if (dragMask & BDSKMinYEdgeMask) {
+                newBounds.origin.y += relPoint.y;
+                newBounds.size.height -= relPoint.y;
+                if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                    newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.size.height = 8.0;
+                }
+            }
             // Keep integer.
             newBounds = NSIntegralRect(newBounds);
             
@@ -3859,14 +3831,26 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius)
 {
-    float white[4] = { 1.0, 1.0, 1.0, 0.8 };
-    float gray[4] = { 0.0, 0.0, 0.0, 0.4 };
-    CGRect outerRect = CGRectMake(point.x - radius, point.y - radius, 2.0 * radius, 2.0 * radius);
-    CGRect innerRect = CGRectMake(point.x - 0.75 * radius, point.y - 0.75 * radius, 1.5 * radius, 1.5 * radius);
-    CGContextSetFillColor(context, white);
-    CGContextFillEllipseInRect(context, outerRect);
-    CGContextSetFillColor(context, gray);
-    CGContextFillEllipseInRect(context, innerRect);
+    float fillColor[4] = { 0.737118, 0.837339, 0.983108, 0.8 };
+    float strokeColor[4] = { 0.278477, 0.467857, 0.810941, 0.8 };
+    CGRect rect = CGRectMake(point.x - 0.875 * radius, point.y - 0.875 * radius, 1.75 * radius, 1.75 * radius);
+    CGContextSetLineWidth(context, 0.25 * radius);
+    CGContextSetFillColor(context, fillColor);
+    CGContextFillEllipseInRect(context, rect);
+    CGContextSetStrokeColor(context, strokeColor);
+    CGContextStrokeEllipseInRect(context, rect);
+}
+
+static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float radius)
+{
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMinX(rect), CGRectGetMidY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMidY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)), radius);
+    SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect)), radius);
 }
 
 @implementation PDFDocument (SKExtensions)
