@@ -42,16 +42,16 @@
 
 @implementation CIImage (BDSKExtensions)
 
-static NSString *startColorKey = nil;
-static NSString *endColorKey = nil;
+static NSString *startColorKey = @"inputColor0";
+static NSString *endColorKey = @"inputColor1";
 
-+ (void)initialize {
-    OBINITIALIZE;
++ (void)load {
     
-    // @@ Leopard: change this when compiling against 10.5 SDK
-    // in Tiger the input colors are reversed
-    startColorKey = [@"inputColor1" retain];
-    endColorKey = [@"inputColor0" retain];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        // in Tiger the input colors are backwards
+        startColorKey = @"inputColor1";
+        endColorKey = @"inputColor0";
+    }
 }
 
 + (CIImage *)imageWithConstantColor:(CIColor *)color;
