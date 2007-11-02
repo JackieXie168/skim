@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # displayline (Skim)
 #
@@ -21,8 +21,7 @@ fi
 
 # pass arguments as NULL-separated string to osascript
 # pass through cat to get them as raw bytes to preserve non-ASCII characters
-shopt -s xpg_echo
-echo "${line}\x00${file}\x00${source}\x00" | \
+echo -ne "${line}\x00${file}\x00${source}\x00" | \
 /usr/bin/osascript \
   -e "set theArgv to do shell script \"/bin/cat\"" \
   -e "set AppleScript's text item delimiters to ASCII character 0" \
