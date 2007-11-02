@@ -89,6 +89,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 - (void)setPDFData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
+- (void)setPassword:(NSString *)newPassword;
 
 - (void)tryToUnlockDocument:(PDFDocument *)document;
 
@@ -115,6 +116,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     [synchronizer release];
     [watchedFile release];
     [pdfData release];
+    [password release];
     [noteDicts release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
@@ -152,7 +154,6 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     }
     
     [mainController setPdfDocument:pdfDocument];
-    [self setPDFDoc:nil];
     
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
@@ -508,6 +509,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     }
 }
 
+- (void)setPassword:(NSString *)newPassword {
+    if (password != newPassword) {
+        [password release];
+        password = [newPassword retain];
+    }
+}
+
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
 {
     BOOL didRead = NO;
@@ -780,6 +788,8 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     if (didConvert) {
         pdfDoc = [[PDFDocument alloc] initWithData:pdfData];
+        if ([pdfDoc isLocked] && password)
+            [pdfDoc unlockWithPassword:password];
         count = [pdfDoc pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDoc pageAtIndex:i];
@@ -985,6 +995,8 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         return [self isDocumentEdited] || fileChangedOnDisk;
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
+    } else if ([anItem action] == @selector(convertNotes:)) {
+        return [[self pdfDocument] isLocked] == NO;
     }
     return [super validateUserInterfaceItem:anItem];
 }
@@ -1530,8 +1542,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 #pragma mark Passwords
 
 - (void)savePasswordInKeychain:(NSString *)password {
+    if ([[self pdfDocument] isLocked])
+        return;
+    
+    [self setPassword:password];
+    
     int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
-    if ([[self pdfDocument] isLocked] == NO && saveOption != NSAlertAlternateReturn) {
+    if (saveOption != NSAlertAlternateReturn) {
         NSArray *fileIDStrings = [self fileIDStrings];
         NSString *fileIDString = [fileIDStrings count] ? [fileIDStrings objectAtIndex:0] : nil;
         if (fileIDString) {
@@ -1595,7 +1612,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 data = [NSData dataWithBytes:passwordData length:passwordLength];
                 SecKeychainItemFreeContent(NULL, passwordData);
                 password = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-                [document unlockWithPassword:password];
+                if ([document unlockWithPassword:password])
+                    [self setPassword:password];
             }
         }
     }

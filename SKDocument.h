@@ -67,6 +67,7 @@ enum {
     
     // variables to be saved:
     NSData *pdfData;
+    NSString *password;
     
     // temporary variables:
     PDFDocument *pdfDocument;
