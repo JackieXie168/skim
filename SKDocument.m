@@ -150,6 +150,8 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
             [printInfo setOrientation:requiredOrientation];
             [self setPrintInfo:printInfo];
             [printInfo release];
+            [[self undoManager] removeAllActions];
+            [self updateChangeCount:NSChangeCleared];
         }
     }
     
