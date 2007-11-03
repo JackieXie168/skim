@@ -68,6 +68,8 @@
         <integer>0</integer>
         <key>SKLastAnnotationMode</key>
         <integer>0</integer>
+        <key>SKTableFontSize</key>
+        <real>12.0</real>
         <key>SKGreekingThreshold</key>
         <real>3.0</real>
         <key>SKShouldAntiAlias</key>
@@ -274,6 +276,7 @@
         <array>
             <string>SKThumbnailSize</string>
             <string>SKSnapshotThumbnailSize</string>
+            <string>SKTableFontSize</string>
             <string>SKShouldAntiAlias</string>
             <string>SKGreekingThreshold</string>
             <string>SKBackgroundColor</string>

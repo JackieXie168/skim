@@ -548,7 +548,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
-                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
+                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, 
+                                  SKTableFontSizeKey, nil]];
 }
 
 - (void)unregisterAsObserver {
@@ -556,7 +557,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
-                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
+                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, 
+                                  SKTableFontSizeKey, nil]];
 }
 
 - (void)setupWindow:(NSDictionary *)setup{
@@ -3271,6 +3273,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
+        } else if ([key isEqualToString:SKTableFontSizeKey]) {
+            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
+            [outlineView setFont:font];
+            [noteOutlineView setFont:font];
+            [findTableView setFont:font];
+            [self updatePageColumnWidthForTableView:outlineView];
+            [self updatePageColumnWidthForTableView:noteOutlineView];
+            [self updatePageColumnWidthForTableView:findTableView];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
