@@ -325,7 +325,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     if ([menuItem action] == @selector(doAutoFit:)) {
         [menuItem setState:[self autoFits] ? NSOnState : NSOffState];
         return YES;
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
     }
     return YES;

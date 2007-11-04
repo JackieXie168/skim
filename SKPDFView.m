@@ -648,7 +648,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
         [document printDocument:sender];
-    else if ([PDFView instancesRespondToSelector:_cmd])
+    else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
         [(id)super printDocument:sender];
 }
 
@@ -1496,7 +1496,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     if (pboardType) {
         return [self draggingUpdated:sender];
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingEntered:sender];
     }
     return dragOp;
@@ -1534,7 +1534,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingUpdated:sender];
     }
     return dragOp;
@@ -1548,7 +1548,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super draggingExited:sender];
     }
 }
@@ -1582,7 +1582,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         performedDrag = [super performDragOperation:sender];
     }
     return performedDrag;

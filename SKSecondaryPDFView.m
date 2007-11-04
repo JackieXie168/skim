@@ -355,7 +355,7 @@ static float SKPopUpMenuFontSize = 11.0;
     } else if ([menuItem action] == @selector(toggleDisplayPageBreaksFromMenu:)) {
         [menuItem setState:[self displaysPageBreaks] ? NSOnState : NSOffState];
         return YES;
-    } else if ([PDFView instancesRespondToSelector:_cmd]) {
+    } else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
     }
     return YES;

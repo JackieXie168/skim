@@ -82,7 +82,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
  	id source = [args objectForKey:@"source"];
     
     if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1)) {
-        if ([NSApplication instancesRespondToSelector:_cmd])
+        if ([[SKApplication superclass] instancesRespondToSelector:_cmd])
             [super handleOpenScriptCommand:command];
         return;
     }
