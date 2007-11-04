@@ -50,6 +50,18 @@ extern NSString *SKNotesFDFDocumentType;
 extern NSString *SKPostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 
+extern NSString *SKPDFDocumentUTI;
+extern NSString *SKPDFBundleDocumentUTI;
+extern NSString *SKEmbeddedPDFDocumentUTI;
+extern NSString *SKBarePDFDocumentUTI;
+extern NSString *SKNotesDocumentUTI;
+extern NSString *SKTextDocumentUTI;
+extern NSString *SKRTFDocumentUTI;
+extern NSString *SKRTFDDocumentUTI;
+extern NSString *SKFDFDocumentUTI;
+extern NSString *SKPostScriptDocumentUTI;
+extern NSString *SKDVIDocumentUTI;
+
 enum {
     SKImagePboardTypesMask = 1,
     SKURLPboardTypesMask = 2

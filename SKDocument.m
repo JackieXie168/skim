@@ -230,7 +230,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     BOOL success = NO;
     
     // we check for notes and may save a .skim as well:
-    if ([typeName isEqualToString:SKPDFDocumentType]) {
+    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqual:SKPDFDocumentUTI]) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         
@@ -267,7 +267,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
             }
         }
         
-    } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+    } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqual:SKPDFBundleDocumentUTI]) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [absoluteURL path];
@@ -355,11 +355,11 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
-    if ([typeName isEqualToString:SKPDFDocumentType]) {
+    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
                    [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
-    } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+    } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI]) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
             name = [name stringByAppendingString:@"1"];
@@ -382,37 +382,37 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         }
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
-    } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
+    } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentUTI]) {
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
-    } else if ([typeName isEqualToString:SKBarePDFDocumentType]) {
+    } else if ([typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentUTI]) {
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
-    } else if ([typeName isEqualToString:SKNotesDocumentType]) {
+    } else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
         NSData *data = [self notesData];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
+    } else if ([typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
         NSData *data = [self notesRTFData];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesRTFDDocumentType]) {
+    } else if ([typeName isEqualToString:SKNotesRTFDDocumentType] || [typeName isEqualToString:SKRTFDDocumentUTI]) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
+    } else if ([typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI]) {
         NSString *string = [self notesString];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType]) {
+    } else if ([typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI]) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
         if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
@@ -467,17 +467,19 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKNotesDocumentType]))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType]))
+    if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
+        [typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType] ||
+        [typeName isEqualToString:SKPDFDocumentUTI] || [typeName isEqualToString:SKEmbeddedPDFDocumentUTI] || [typeName isEqualToString:SKBarePDFDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'PDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [typeName isEqualToString:SKPDFBundleDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'PDFD'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [typeName isEqualToString:SKNotesFDFDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'FDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKRTFDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI])
         [dict setObject:[NSNumber numberWithUnsignedLong:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -526,7 +528,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if ([docType isEqualToString:SKPostScriptDocumentType]) {
+    if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentUTI]) {
         SKPSProgressController *psProgressController = [[[SKPSProgressController alloc] init] autorelease];
         data = [psProgressController PDFDataWithPostScriptData:data];
     }
@@ -559,7 +561,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if ([docType isEqualToString:SKPDFDocumentType]) {
+    if ([docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentType]) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithData:data])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
@@ -596,7 +598,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPDFBundleDocumentType]) {
+    } else if ([docType isEqualToString:SKPDFBundleDocumentType] || [docType isEqualToString:SKPDFBundleDocumentType]) {
         NSString *path = [absoluteURL path];
         NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:path];
         if (pdfFile) {
@@ -611,14 +613,14 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
+    } else if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
             if (data = [[psProgressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
             [psProgressController autorelease];
         }
-    } else if ([docType isEqualToString:SKDVIDocumentType]) {
+    } else if ([docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKDVIDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKDVIProgressController *dviProgressController = [[SKDVIProgressController alloc] init];
             if (data = [[dviProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
