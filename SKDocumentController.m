@@ -57,6 +57,17 @@ NSString *SKNotesFDFDocumentType = @"Notes as FDF";
 NSString *SKPostScriptDocumentType = @"PostScript document";
 NSString *SKDVIDocumentType = @"DVI document";
 
+NSString *SKPDFDocumentUTI = @"com.adobe.pdf";
+NSString *SKPDFBundleDocumentUTI = @"net.sourceforge.skim-app.pdfd";
+NSString *SKEmbeddedPDFDocumentUTI = @"net.sourceforge.skim-app.embedded.pdf";
+NSString *SKBarePDFDocumentUTI = @"net.sourceforge.skim-app.bare.pdf";
+NSString *SKNotesDocumentUTI = @"net.sourceforge.skim-app.skimnotes";
+NSString *SKTextDocumentUTI = @"public.plain-text";
+NSString *SKRTFDocumentUTI = @"com.apple.rtf";
+NSString *SKRTFDDocumentUTI = @"com.apple.rtfd";
+NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
+NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
+NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
 
 @implementation SKDocumentController
 
@@ -92,7 +103,7 @@ NSString *SKDVIDocumentType = @"DVI document";
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
     
-    if (type == nil || [type isEqualToString:SKNotesRTFDocumentType] || [type isEqualToString:SKNotesTextDocumentType]) {
+    if (type == nil || [type isEqualToString:SKNotesTextDocumentType] || [type isEqualToString:SKTextDocumentUTI]) {
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
