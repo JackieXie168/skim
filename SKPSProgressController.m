@@ -184,7 +184,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)conversionStarted;
 {
     [progressBar startAnimation:nil];
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [self fileType]] stringByAppendingEllipsis]];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:[self fileType]]] stringByAppendingEllipsis]];
 }
 
 @end
