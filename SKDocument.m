@@ -415,7 +415,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     } else if ([typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI]) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
-        if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
+        if (filename && ([[self fileType] isEqualToString:SKPDFBundleDocumentType] || [[self fileType] isEqualToString:SKPDFBundleDocumentUTI])) {
             NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
             filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
         }
@@ -1494,7 +1494,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSString *)notesFDFString {
     NSString *filePath = [[self fileURL] path];
     NSString *filename = [filePath lastPathComponent];
-    if (filename && [[self fileType] isEqualToString:SKPDFBundleDocumentType]) {
+    if (filename && ([[self fileType] isEqualToString:SKPDFBundleDocumentType] || [[self fileType] isEqualToString:SKPDFBundleDocumentUTI])) {
         NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
         filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
     }
