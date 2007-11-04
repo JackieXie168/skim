@@ -150,8 +150,6 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
             [printInfo setOrientation:requiredOrientation];
             [self setPrintInfo:printInfo];
             [printInfo release];
-            [[self undoManager] removeAllActions];
-            [self updateChangeCount:NSChangeCleared];
         }
     }
     
@@ -1518,10 +1516,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)setPrintInfo:(NSPrintInfo *)printInfo {
+    [[self undoManager] disableUndoRegistration];
     [super setPrintInfo:printInfo];
+    [[self undoManager] enableUndoRegistration];
     if (autoRotateButton)
         autoRotate = [autoRotateButton state] == NSOnState;
-    [self updateChangeCount:[[self undoManager] isUndoing] ? NSChangeDone : NSChangeUndone];
 }
 
 - (BOOL)preparePageLayout:(NSPageLayout *)pageLayout {
