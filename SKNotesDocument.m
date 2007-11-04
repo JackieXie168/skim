@@ -133,7 +133,9 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
             NSMutableDictionary *note = [dict mutableCopy];
             
             [note setValue:[dict valueForKey:@"contents"] forKey:@"string"];
-            if ([[dict valueForKey:@"type"] isEqualToString:SKNoteString]) {
+            if ([[note valueForKey:@"type"] isEqualToString:SKTextString])
+                [note setValue:SKNoteString forKey:@"type"];
+            if ([[note valueForKey:@"type"] isEqualToString:SKNoteString]) {
                 [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"string", nil] forKey:@"child"];
                 NSMutableString *contents = [[NSMutableString alloc] init];
                 if ([[dict valueForKey:@"contents"] length])

@@ -320,7 +320,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 - (NSString *)typeName {
     if ([self isEqualToString:SKFreeTextString])
         return NSLocalizedString(@"Text Note", @"Description for export");
-    else if ([self isEqualToString:SKNoteString])
+    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
         return NSLocalizedString(@"Anchored Note", @"Description for export");
     else if ([self isEqualToString:SKCircleString])
         return NSLocalizedString(@"Circle", @"Description for export");
