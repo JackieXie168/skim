@@ -10,7 +10,7 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>pdf</string>
-				<string>PDF</string>
+				<string>ai</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>PDFDocument</string>
@@ -26,10 +26,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -64,10 +60,6 @@
 			<string>Editor</string>
 			<key>LSIsAppleDefaultForType</key>
 			<true/>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.pdfd</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>
 			<key>NSDocumentClass</key>
@@ -104,10 +96,6 @@
 			<string>Editor</string>
 			<key>LSIsAppleDefaultForType</key>
 			<true/>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.skimnotes</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -123,72 +111,11 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>ai</string>
-				<string>AI</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>PDFDocument</string>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/pdf</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>NSPDFPboardType</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPDFPboardType</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
 				<string>ps</string>
-				<string>PS</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>PSDocument</string>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/postscript</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>PostScript document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.postscript</string>
-			</array>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPDFPboardType</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
 				<string>epi</string>
-				<string>EPI</string>
 				<string>eps</string>
-				<string>EPS</string>
 				<string>epsf</string>
-				<string>EPSF</string>
 				<string>epsi</string>
-				<string>EPSI</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>PSDocument</string>
@@ -200,10 +127,6 @@
 			<string>PostScript document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.postscript</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -258,10 +181,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -288,10 +207,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -361,7 +276,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
 			<key>LSTypeIsPackage</key>
-			<false/>
+			<true/>
 			<key>NSDocumentClass</key>
 			<string>SKDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
