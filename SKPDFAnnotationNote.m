@@ -185,7 +185,7 @@ static IMP originalSetBorder = NULL;
     NSRect bounds = NSRectFromString([dict objectForKey:BOUNDS_KEY]);
     Class annotationClass = NULL;
     
-    if ([type isEqualToString:SKNoteString])
+    if ([type isEqualToString:SKNoteString] || [type isEqualToString:SKTextString])
         annotationClass = [SKPDFAnnotationNote class];
     else if ([type isEqualToString:SKFreeTextString])
         annotationClass = [SKPDFAnnotationFreeText class];
