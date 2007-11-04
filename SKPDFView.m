@@ -3758,10 +3758,16 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (isVisible) {
             NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
             [editField setFrame:editBounds];
-            if ([editField superview] == nil)
+            if ([editField superview] == nil) {
                 [[self documentView] addSubview:editField];
+                if ([[[self window] firstResponder] isEqual:self])
+                    [editField selectText:self];
+            }
         } else if ([editField superview]) {
+            BOOL wasFirstResponder = [[[self window] firstResponder] isEqual:[editField currentEditor]];
             [editField removeFromSuperview];
+            if (wasFirstResponder)
+                [[self window] makeFirstResponder:self];
         }
     }
 }
