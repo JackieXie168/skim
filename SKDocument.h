@@ -88,6 +88,8 @@ enum {
     NSTimer *fileUpdateTimer;
 }
 
+- (void)undoableActionDoesntDirtyDocument;
+
 - (IBAction)readNotes:(id)sender;
 - (IBAction)convertNotes:(id)sender;
 - (IBAction)saveArchive:(id)sender;

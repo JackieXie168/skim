@@ -188,6 +188,20 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:@"currentSetup"]];
 }
 
+- (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
+	[self updateChangeCount:[anUndoState boolValue] ? NSChangeRedone : NSChangeUndone];
+}
+
+- (void)undoableActionDoesntDirtyDocument {
+	// This action, while undoable, shouldn't mark the document dirty
+	BOOL isUndoing = [[self undoManager] isUndoing];
+	if (floor(NSAppKitVersion) <= NSAppKitVersion10_4) {
+		[self updateChangeCount:isUndoing ? NSChangeDone : NSChangeUndone];
+	} else {
+		[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:isUndoing] afterDelay:0.0];
+	}
+}
+
 #pragma mark Document read/write
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
