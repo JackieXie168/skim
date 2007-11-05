@@ -189,13 +189,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 }
 
 - (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
-	[self updateChangeCount:[anUndoState boolValue] ? NSChangeRedone : NSChangeUndone];
+	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
 }
 
 - (void)undoableActionDoesntDirtyDocument {
 	// This action, while undoable, shouldn't mark the document dirty
 	BOOL isUndoing = [[self undoManager] isUndoing];
-	if (floor(NSAppKitVersion) <= NSAppKitVersion10_4) {
+	if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
 		[self updateChangeCount:isUndoing ? NSChangeDone : NSChangeUndone];
 	} else {
 		[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:isUndoing] afterDelay:0.0];
