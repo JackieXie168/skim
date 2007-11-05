@@ -48,6 +48,11 @@ typedef enum _SKRightSidePaneState {
     SKSnapshotSidePaneState
 } SKRightSidePaneState;
 
+typedef enum _SKFindPaneState {
+    SKSingularFindPaneState,
+    SKGroupedFindPaneState
+} SKFindPaneState;
+
 enum {
     SKDefaultWindowOption,
     SKMaximizeWindowOption,
@@ -123,6 +128,13 @@ typedef struct _SKPDFViewState {
     BOOL                        findPanelFind;
     CFMutableSetRef             temporaryAnnotations;
     NSTimer                     *temporaryAnnotationTimer;
+    
+    IBOutlet NSArrayController  *groupedFindArrayController;
+    IBOutlet NSTableView        *groupedFindTableView;
+    IBOutlet NSView             *groupedFindView;
+    NSMutableArray              *groupedSearchResults;
+    IBOutlet NSSegmentedControl *findButton;
+    SKFindPaneState             findPaneState;
     
     IBOutlet NSArrayController  *noteArrayController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
@@ -254,6 +266,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)changeLeftSidePaneState:(id)sender;
 - (IBAction)changeRightSidePaneState:(id)sender;
+- (IBAction)changeFindPaneState:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)searchPDF:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
@@ -311,6 +324,8 @@ typedef struct _SKPDFViewState {
 - (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState;
 - (SKRightSidePaneState)rightSidePaneState;
 - (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState;
+- (SKFindPaneState)findPaneState;
+- (void)setFindPaneState:(SKFindPaneState)newFindPaneState;
 
 - (BOOL)leftSidePaneIsOpen;
 - (BOOL)rightSidePaneIsOpen;
@@ -321,6 +336,8 @@ typedef struct _SKPDFViewState {
 - (void)fadeInThumbnailView;
 - (void)displaySearchView;
 - (void)fadeInSearchView;
+- (void)displayGroupedSearchView;
+- (void)fadeInGroupedSearchView;
 - (void)displayNoteView;
 - (void)displaySnapshotView;
 

@@ -79,6 +79,8 @@
     static NSImage *thumbnailViewAdornImage = nil;
     static NSImage *noteViewAdornImage = nil;
     static NSImage *snapshotViewAdornImage = nil;
+    static NSImage *findViewAdornImage = nil;
+    static NSImage *groupedFindViewAdornImage = nil;
     static NSImage *textToolAdornImage = nil;
     static NSImage *moveToolAdornImage = nil;
     static NSImage *magnifyToolAdornImage = nil;
@@ -278,6 +280,40 @@
     [path stroke];
     [snapshotViewAdornImage unlockFocus];
     [snapshotViewAdornImage setName:@"SnapshotViewAdorn"];
+    
+    findViewAdornImage = [[NSImage alloc] initWithSize:size];
+    [findViewAdornImage lockFocus];
+    [shadow set];
+    [color setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(8.0, 2.5)];
+    [path lineToPoint:NSMakePoint(19.0, 2.5)];
+    [path moveToPoint:NSMakePoint(8.0, 5.5)];
+    [path lineToPoint:NSMakePoint(19.0, 5.5)];
+    [path moveToPoint:NSMakePoint(8.0, 8.5)];
+    [path lineToPoint:NSMakePoint(19.0, 8.5)];
+    [path moveToPoint:NSMakePoint(8.0, 11.5)];
+    [path lineToPoint:NSMakePoint(19.0, 11.5)];
+    [path stroke];
+    [findViewAdornImage unlockFocus];
+    [findViewAdornImage setName:@"FindViewAdorn"];
+    
+    groupedFindViewAdornImage = [[NSImage alloc] initWithSize:size];
+    [groupedFindViewAdornImage lockFocus];
+    [shadow set];
+    [color setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(8.0, 2.5)];
+    [path lineToPoint:NSMakePoint(12.0, 2.5)];
+    [path moveToPoint:NSMakePoint(8.0, 5.5)];
+    [path lineToPoint:NSMakePoint(15.0, 5.5)];
+    [path moveToPoint:NSMakePoint(8.0, 8.5)];
+    [path lineToPoint:NSMakePoint(17.0, 8.5)];
+    [path moveToPoint:NSMakePoint(8.0, 11.5)];
+    [path lineToPoint:NSMakePoint(19.0, 11.5)];
+    [path stroke];
+    [groupedFindViewAdornImage unlockFocus];
+    [groupedFindViewAdornImage setName:@"GroupedFindViewAdorn"];
     
     textToolAdornImage = [[NSImage alloc] initWithSize:size];
     [textToolAdornImage lockFocus];

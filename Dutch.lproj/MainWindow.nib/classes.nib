@@ -49,6 +49,7 @@
                 changeColor = id; 
                 changeColorFill = id; 
                 changeDisplayBox = id; 
+                changeFindPaneState = id; 
                 changeFont = id; 
                 changeLeftSidePaneState = id; 
                 changeRightSidePaneState = id; 
@@ -119,8 +120,12 @@
                 currentRightSideView = NSView; 
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
+                findButton = NSSegmentedControl; 
                 findTableView = NSTableView; 
                 findView = NSView; 
+                groupedFindArrayController = NSArrayController; 
+                groupedFindTableView = NSTableView; 
+                groupedFindView = NSView; 
                 leftSideButton = NSSegmentedControl; 
                 leftSideCollapsibleView = BDSKCollapsibleView; 
                 leftSideContentView = NSView; 

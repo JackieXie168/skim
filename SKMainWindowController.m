@@ -176,7 +176,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)goToSelectedOutlineItem;
 
-- (void)goToFindResults:(NSArray *)findResults;
+- (void)updateFindResultHighlights:(BOOL)scroll;
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest;
 
@@ -223,6 +223,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
+        groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
         snapshots = [[NSMutableArray alloc] init];
@@ -252,6 +253,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [(id)temporaryAnnotations release];
     [dirtySnapshots release];
 	[searchResults release];
+	[groupedSearchResults release];
     [pdfOutline release];
 	[thumbnails release];
 	[notes release];
@@ -417,6 +419,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
     
+    NSSortDescriptor *scoreSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"score" ascending:NO] autorelease];
+    [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:scoreSortDescriptor, nil]];
+    [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] dataCell] setEnabled:NO];
+        
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
@@ -918,6 +924,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             
             // these will be invalid. If needed, the document will restore them
             [[self mutableArrayValueForKey:@"searchResults"] removeAllObjects];
+            [[self mutableArrayValueForKey:@"groupedSearchResults"] removeAllObjects];
             [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
             [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
             
@@ -1097,6 +1104,25 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [self displayNoteView];
         else if (rightSidePaneState == SKSnapshotSidePaneState)
             [self displaySnapshotView];
+    }
+}
+
+- (SKFindPaneState)findPaneState {
+    return findPaneState;
+}
+
+- (void)setFindPaneState:(SKFindPaneState)newFindPaneState {
+    if (findPaneState != newFindPaneState) {
+        findPaneState = newFindPaneState;
+        
+        if (findPaneState == SKSingularFindPaneState) {
+            if ([groupedFindView window])
+                [self displaySearchView];
+        } else if (findPaneState == SKGroupedFindPaneState) {
+            if ([findView window])
+                [self displayGroupedSearchView];
+        }
+        [self updateFindResultHighlights:YES];
     }
 }
 
@@ -2015,6 +2041,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (IBAction)changeFindPaneState:(id)sender {
+    [self setFindPaneState:[sender tag]];
+}
+
 - (void)scrollSecondaryPdfView {
     NSPoint point = [pdfView bounds].origin;
     PDFPage *page = [pdfView pageForPoint:point nearest:YES];
@@ -2445,10 +2475,24 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
     if ([newView window] == nil) {
-        BOOL wasFirstResponder = [[[oldView window] firstResponder] isDescendantOf:oldView];
+        BOOL wasFirstResponder;
         
-        if ([oldView isEqual:tocView] || [oldView isEqual:findView])
+        if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        
+        if ((oldView == findView || oldView == groupedFindView) && (newView != findView && newView != groupedFindView)) {
+            NSView *view = [leftSideButton superview];
+            wasFirstResponder =  [[[findButton window] firstResponder] isEqual:findButton];
+            [leftSideButton setFrame:[findButton frame]];
+            [findButton retain];
+            [[findButton superview] replaceSubview:findButton with:leftSideButton];
+            [view addSubview:findButton];
+            [findButton release];
+            if (wasFirstResponder)
+                [[leftSideButton window] makeFirstResponder:leftSideButton];
+        }
+        
+        wasFirstResponder = [[[oldView window] firstResponder] isDescendantOf:oldView];
         
         [newView setFrame:[oldView frame]];
         [newView setHidden:animate];
@@ -2476,6 +2520,18 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [oldView removeFromSuperview];
         [oldView setHidden:NO];
         [[newView window] recalculateKeyViewLoop];
+        
+        if ((oldView != findView && oldView != groupedFindView) && (newView == findView || newView == groupedFindView)) {
+            NSView *view = [findButton superview];
+            wasFirstResponder =  [[[leftSideButton window] firstResponder] isEqual:leftSideButton];
+            [findButton setFrame:[leftSideButton frame]];
+            [leftSideButton retain];
+            [[leftSideButton superview] replaceSubview:leftSideButton with:findButton];
+            [view addSubview:leftSideButton];
+            [leftSideButton release];
+            if (wasFirstResponder)
+                [[findButton window] makeFirstResponder:findButton];
+        }
     }
 }
 
@@ -2513,6 +2569,16 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     currentLeftSideView = findView;
 }
 
+- (void)displayGroupedSearchView {
+    [self  replaceSideView:currentLeftSideView withView:groupedFindView animate:NO];
+    currentLeftSideView = groupedFindView;
+}
+
+- (void)fadeInGroupedSearchView {
+    [self  replaceSideView:currentLeftSideView withView:groupedFindView animate:YES];
+    currentLeftSideView = groupedFindView;
+}
+
 - (void)displayNoteView {
     [self  replaceSideView:currentRightSideView withView:noteView animate:NO];
     currentRightSideView = noteView;
@@ -2528,9 +2594,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
+        NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
         [findArrayController removeObjects:searchResults];
-        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
+        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
+        [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] headerCell] setStringValue:message];
+        [[groupedFindTableView headerView] setNeedsDisplay:YES];
+        [groupedFindArrayController removeObjects:groupedSearchResults];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
         [[statusBar progressIndicator] setDoubleValue:0.0];
@@ -2540,10 +2610,15 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
+        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
         [self willChangeValueForKey:@"searchResults"];
         [self didChangeValueForKey:@"searchResults"];
-        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]]];
+        [self willChangeValueForKey:@"groupedSearchResults"];
+        [self didChangeValueForKey:@"groupedSearchResults"];
+        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
+        [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] headerCell] setStringValue:message];
+        [[groupedFindTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
     }
@@ -2556,9 +2631,32 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)didMatchString:(PDFSelection *)instance {
     if (findPanelFind == NO) {
         [searchResults addObject:instance];
+        
+        PDFPage *page = [[instance pages] objectAtIndex:0];
+        NSMutableDictionary *dict = [groupedSearchResults lastObject];
+        if ([[dict valueForKey:@"pageIndex"] unsignedIntValue] != [page pageIndex]) {
+            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                [NSNumber numberWithUnsignedInt:[page pageIndex]], @"pageIndex",
+                [page label], @"pageLabel",
+                [NSMutableArray array], @"results", nil];
+            [groupedSearchResults addObject:dict];
+        }
+        [[dict valueForKey:@"results"] addObject:instance];
+        
+        unsigned int max = 0;
+        NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
+        while (dict = [dictEnum nextObject])
+            max = MAX(max, [[dict valueForKey:@"results"] count]);
+        
+        dictEnum = [groupedSearchResults objectEnumerator];
+        while (dict = [dictEnum nextObject])
+            [dict setValue:[NSNumber numberWithFloat:(float)[[dict valueForKey:@"results"] count] / max] forKey:@"score"];
+        
         if ([searchResults count] % 50 == 0) {
             [self willChangeValueForKey:@"searchResults"];
             [self didChangeValueForKey:@"searchResults"];
+            [self willChangeValueForKey:@"groupedSearchResults"];
+            [self didChangeValueForKey:@"groupedSearchResults"];
         }
     }
 }
@@ -2650,7 +2748,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self fadeInOutlineView];
     } else {
         [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
-        [self fadeInSearchView];
+        if (findPaneState == SKSingularFindPaneState)
+            [self fadeInSearchView];
+        else
+            [self fadeInGroupedSearchView];
         
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
@@ -2679,6 +2780,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		[pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
         [findTableView deselectAll:self];
+        [groupedFindTableView deselectAll:self];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
             [self removeTemporaryAnnotations];
             [self addAnnotationsForSelection:selection];
@@ -2689,8 +2791,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
-- (void)goToFindResults:(NSArray *)findResults {
+- (void)updateFindResultHighlights:(BOOL)scroll {
     BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
+    NSArray *findResults = nil;
+    
+    if (findPaneState == SKSingularFindPaneState && [findView window])
+        findResults = [findArrayController selectedObjects];
+    else if (findPaneState == SKGroupedFindPaneState && [groupedFindView window])
+        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.results"];
     
     // union all selected objects
     NSEnumerator *selE = [findResults objectEnumerator];
@@ -2700,7 +2808,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
     
     [pdfView setCurrentSelection:currentSel];
-    [pdfView scrollSelectionToVisible:self];
+    
+    if (scroll && [findResults count])
+        [pdfView scrollSelectionToVisible:self];
     
     [self removeTemporaryAnnotations];
     
@@ -2713,6 +2823,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (highlight)
             [self addAnnotationsForSelection:sel];
     }
+    
+    [pdfView setCurrentSelection:currentSel];
 }
 
 - (IBAction)searchNotes:(id)sender {
@@ -3240,28 +3352,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             }
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
-                [[searchField stringValue] length] && [findTableView numberOfSelectedRows]) {
+                [[searchField stringValue] length] && 
+                (([findView window] && [findTableView numberOfSelectedRows]) || ([groupedFindView window] && [groupedFindTableView numberOfSelectedRows]))) {
                 // clear the selection
-                [self removeTemporaryAnnotations];
-                
-                NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-                PDFSelection *sel;
-                
-                while (sel = [selE nextObject])
-                    [self addAnnotationsForSelection:sel];
+                [self updateFindResultHighlights:NO];
             }
         } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
-            if ([[searchField stringValue] length] && [findTableView numberOfSelectedRows]) {
+            if ([[searchField stringValue] length] &&  ([findTableView numberOfSelectedRows] || [groupedFindTableView numberOfSelectedRows])) {
                 // clear the selection
-                [self removeTemporaryAnnotations];
-                
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
-                    NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-                    PDFSelection *sel;
-                    
-                    while (sel = [selE nextObject])
-                        [self addAnnotationsForSelection:sel];
-                }
+                [self updateFindResultHighlights:NO];
             }
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
@@ -3278,9 +3377,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [outlineView setFont:font];
             [noteOutlineView setFont:font];
             [findTableView setFont:font];
+            [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
-            [self updatePageColumnWidthForTableView:noteOutlineView];
-            [self updatePageColumnWidthForTableView:findTableView];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -3709,7 +3807,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
-        [self goToFindResults:[findArrayController selectedObjects]];
+        [self updateFindResultHighlights:YES];
+        
+        if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+            [self hideLeftSideWindow];
+    } else if ([[aNotification object] isEqual:groupedFindTableView]) {
+        [self updateFindResultHighlights:YES];
         
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
@@ -3821,6 +3924,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
         return YES;
+    } else if ([tv isEqual:groupedFindTableView]) {
+        return YES;
     }
     return NO;
 }
@@ -3829,11 +3934,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([tv isEqual:findTableView]) {
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
         [self showHoverWindowForDestination:dest];
+    } else if ([tv isEqual:groupedFindTableView]) {
+        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:@"results"] objectAtIndex:0] destination];
+        [self showHoverWindowForDestination:dest];
     }
 }
 
 - (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
+    } else if ([tv isEqual:groupedFindTableView]) {
         [[SKPDFHoverWindow sharedHoverWindow] hide];
     }
 }
@@ -5007,7 +5117,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
-        [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
+        [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
         return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
