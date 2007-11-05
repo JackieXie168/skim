@@ -1566,7 +1566,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:index by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
-    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    [[self document] undoableActionDoesntDirtyDocument];
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
     [page setRotation:[page rotation] + rotation];
@@ -1587,7 +1587,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllLeft:nil];
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
-    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    [[self document] undoableActionDoesntDirtyDocument];
     
     int i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++) {
@@ -1602,7 +1602,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllRight:nil];
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
-    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    [[self document] undoableActionDoesntDirtyDocument];
     
     int i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++) {
@@ -1618,7 +1618,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:index toRect:oldRect];
     [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
-    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    [[self document] undoableActionDoesntDirtyDocument];
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
     rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
@@ -1652,7 +1652,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPagesToRects:oldRects];
     [undoManager setActionName:NSLocalizedString(@"Crop", @"Undo action name")];
-    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    [[self document] undoableActionDoesntDirtyDocument];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", nil]];
