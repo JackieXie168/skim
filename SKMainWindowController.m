@@ -235,6 +235,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
+        findPaneState = SKSingularFindPaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
         isAnimating = NO;
         updatingColor = NO;
