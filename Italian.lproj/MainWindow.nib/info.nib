@@ -23,9 +23,9 @@
 		<key>677</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>773</key>
-		<string>642 252 220 442 0 0 1440 938 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>791</key>
-		<string>642 592 115 102 0 0 1440 938 </string>
+		<string>662 590 115 102 0 0 1440 938 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
@@ -33,17 +33,17 @@
 	<array/>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>791</integer>
-		<integer>224</integer>
-		<integer>5</integer>
-		<integer>314</integer>
-		<integer>168</integer>
 		<integer>256</integer>
-		<integer>677</integer>
-		<integer>773</integer>
-		<integer>676</integer>
-		<integer>502</integer>
 		<integer>511</integer>
+		<integer>224</integer>
+		<integer>168</integer>
+		<integer>677</integer>
+		<integer>502</integer>
+		<integer>676</integer>
+		<integer>773</integer>
+		<integer>314</integer>
+		<integer>791</integer>
+		<integer>5</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>

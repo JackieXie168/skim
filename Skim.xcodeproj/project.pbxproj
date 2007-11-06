@@ -140,7 +140,6 @@
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */; };
 		CE6C96A90CD924C70022D69F /* NotesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE6C96A70CD924C70022D69F /* NotesPanel.nib */; };
-		CE6C96B10CD925550022D69F /* SKNotesPanelController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6C96AF0CD925550022D69F /* SKNotesPanelController.h */; };
 		CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C96B00CD925550022D69F /* SKNotesPanelController.m */; };
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
 		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
@@ -288,7 +287,6 @@
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 				CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */,
-				CE6C96B10CD925550022D69F /* SKNotesPanelController.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
