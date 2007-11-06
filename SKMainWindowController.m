@@ -176,6 +176,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)goToSelectedOutlineItem;
 
+- (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll;
+- (void)goToFindResults:(NSArray *)findResults;
 - (void)updateFindResultHighlights:(BOOL)scroll;
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest;
@@ -2787,15 +2789,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
-- (void)updateFindResultHighlights:(BOOL)scroll {
+- (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
     BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
-    NSArray *findResults = nil;
-    
-    if (findPaneState == SKSingularFindPaneState && [findView window])
-        findResults = [findArrayController selectedObjects];
-    else if (findPaneState == SKGroupedFindPaneState && [groupedFindView window])
-        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.results"];
-    
     // union all selected objects
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
@@ -2821,6 +2816,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     
     [pdfView setCurrentSelection:currentSel];
+}
+
+- (void)goToFindResults:(NSArray *)findResults {
+    [self goToFindResults:findResults scrollToVisible:YES];
+}
+
+- (void)updateFindResultHighlights:(BOOL)scroll {
+    NSArray *findResults = nil;
+    
+    if (findPaneState == SKSingularFindPaneState && [findView window])
+        findResults = [findArrayController selectedObjects];
+    else if (findPaneState == SKGroupedFindPaneState && [groupedFindView window])
+        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.results"];
+    [self goToFindResults:findResults scrollToVisible:scroll];
 }
 
 - (IBAction)searchNotes:(id)sender {
