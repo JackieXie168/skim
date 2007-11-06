@@ -329,7 +329,6 @@
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
-    [NSBezierPath setDefaultLineWidth:2.0];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 3.0)];
     [path lineToPoint:NSMakePoint(13.0, 3.0)];
@@ -337,6 +336,7 @@
     [path lineToPoint:NSMakePoint(17.0, 7.0)];
     [path moveToPoint:NSMakePoint(8.0, 11.0)];
     [path lineToPoint:NSMakePoint(19.0, 11.0)];
+    [path setLineWidth:2.0];
     [path stroke];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [groupedFindViewAdornImage unlockFocus];
