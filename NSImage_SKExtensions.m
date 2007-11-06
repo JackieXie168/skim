@@ -50,6 +50,7 @@
     
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 13.0)];
     [image lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [self compositeToPoint:NSMakePoint(2.0, 1.0) operation:NSCompositeCopy];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] setFill];
     [arrowPath fill];
@@ -61,6 +62,7 @@
 - (NSImage *)createLargeNoteAdornImage {
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(19.0, 11.0)];
     [image lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [self compositeToPoint:NSMakePoint(2.0, 0.0) operation:NSCompositeCopy];
     [image unlockFocus];
     
@@ -123,6 +125,7 @@
     
     backAdornImage = [[NSImage alloc] initWithSize:size];
     [backAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     //[shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
@@ -131,11 +134,13 @@
     [path lineToPoint:NSMakePoint(16.0, 11.5)];
     [path closePath];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [backAdornImage unlockFocus];
     [backAdornImage setName:@"BackAdorn"];
     
     forwardAdornImage = [[NSImage alloc] initWithSize:size];
     [forwardAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     //[shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
@@ -144,11 +149,13 @@
     [path lineToPoint:NSMakePoint(9.0, 11.5)];
     [path closePath];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [forwardAdornImage unlockFocus];
     [forwardAdornImage setName:@"ForwardAdorn"];
     
     firstAdornImage = [[NSImage alloc] initWithSize:size];
     [firstAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     //[shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
@@ -158,11 +165,13 @@
     [path closePath];
     [path appendBezierPathWithRect:NSMakeRect(5.0, 3.0, 3.0, 8.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [firstAdornImage unlockFocus];
     [firstAdornImage setName:@"FirstAdorn"];
     
     lastAdornImage = [[NSImage alloc] initWithSize:size];
     [lastAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     //[shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
@@ -172,43 +181,51 @@
     [path closePath];
     [path appendBezierPathWithRect:NSMakeRect(17.0, 3.0, 3.0, 8.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [lastAdornImage unlockFocus];
     [lastAdornImage setName:@"LastAdorn"];
     
     zoomInAdornImage = [[NSImage alloc] initWithSize:size];
     [zoomInAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(8.0, 6.0, 11.0, 3.0)];
     [path appendBezierPathWithRect:NSMakeRect(12.0, 2.0, 3.0, 11.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [zoomInAdornImage unlockFocus];
     [zoomInAdornImage setName:@"ZoomInAdorn"];
     
     zoomOutAdornImage = [[NSImage alloc] initWithSize:size];
     [zoomOutAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(6.0, 6.0, 11.0, 3.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [zoomOutAdornImage unlockFocus];
     [zoomOutAdornImage setName:@"ZoomOutAdorn"];
     
     zoomActualAdornImage = [[NSImage alloc] initWithSize:size];
     [zoomActualAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.1 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 4.0, 11.0, 3.0)];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 8.0, 11.0, 3.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [zoomActualAdornImage unlockFocus];
     [zoomActualAdornImage setName:@"ZoomActualAdorn"];
     
     outlineViewAdornImage = [[NSImage alloc] initWithSize:size];
     [outlineViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -221,11 +238,13 @@
     [path moveToPoint:NSMakePoint(8.0, 11.5)];
     [path lineToPoint:NSMakePoint(19.0, 11.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [outlineViewAdornImage unlockFocus];
     [outlineViewAdornImage setName:@"OutlineViewAdorn"];
     
     thumbnailViewAdornImage = [[NSImage alloc] initWithSize:size];
     [thumbnailViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -236,11 +255,13 @@
     [path appendBezierPathWithRect:NSMakeRect(8.5, 1.5, 4.0, 4.0)];
     [path appendBezierPathWithRect:NSMakeRect(8.5, 8.5, 4.0, 4.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [thumbnailViewAdornImage unlockFocus];
     [thumbnailViewAdornImage setName:@"ThumbnailViewAdorn"];
     
     noteViewAdornImage = [[NSImage alloc] initWithSize:size];
     [noteViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -267,22 +288,26 @@
     [path lineToPoint:NSMakePoint(11.5, 9.5)];
     [path lineToPoint:NSMakePoint(12.5, 9.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [noteViewAdornImage unlockFocus];
     [noteViewAdornImage setName:@"NoteViewAdorn"];
     
     snapshotViewAdornImage = [[NSImage alloc] initWithSize:size];
     [snapshotViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(8.5, 1.5, 10.0, 4.0)];
     [path appendBezierPathWithRect:NSMakeRect(8.5, 8.5, 10.0, 4.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [snapshotViewAdornImage unlockFocus];
     [snapshotViewAdornImage setName:@"SnapshotViewAdorn"];
     
     findViewAdornImage = [[NSImage alloc] initWithSize:size];
     [findViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -295,11 +320,13 @@
     [path moveToPoint:NSMakePoint(8.0, 11.5)];
     [path lineToPoint:NSMakePoint(19.0, 11.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [findViewAdornImage unlockFocus];
     [findViewAdornImage setName:@"FindViewAdorn"];
     
     groupedFindViewAdornImage = [[NSImage alloc] initWithSize:size];
     [groupedFindViewAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     [NSBezierPath setDefaultLineWidth:2.0];
@@ -311,11 +338,13 @@
     [path moveToPoint:NSMakePoint(8.0, 11.0)];
     [path lineToPoint:NSMakePoint(19.0, 11.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [groupedFindViewAdornImage unlockFocus];
     [groupedFindViewAdornImage setName:@"GroupedFindViewAdorn"];
     
     textToolAdornImage = [[NSImage alloc] initWithSize:size];
     [textToolAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setFill];
     path = [NSBezierPath bezierPath];
@@ -333,11 +362,13 @@
     [path lineToPoint:NSMakePoint(12.25, 10.125)];
     [path closePath];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [textToolAdornImage unlockFocus];
     [textToolAdornImage setName:@"TextToolAdorn"];
     
     moveToolAdornImage = [[NSImage alloc] initWithSize:size];
     [moveToolAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor blackColor] set];
     path = [NSBezierPath bezierPath];
@@ -367,11 +398,13 @@
     [path lineToPoint:NSMakePoint(9.0, 7.0)];
     [path closePath];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [moveToolAdornImage unlockFocus];
     [moveToolAdornImage setName:@"MoveToolAdorn"];
     
     magnifyToolAdornImage = [[NSImage alloc] initWithSize:size];
     [magnifyToolAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -380,11 +413,13 @@
     [path lineToPoint:NSMakePoint(18.0, 1.0)];
     [path setLineWidth:2.0];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [magnifyToolAdornImage unlockFocus];
     [magnifyToolAdornImage setName:@"MagnifyToolAdorn"];
     
     selectToolAdornImage = [[NSImage alloc] initWithSize:size];
     [selectToolAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -409,11 +444,13 @@
     [path moveToPoint:NSMakePoint(7.5, 6.0)];
     [path lineToPoint:NSMakePoint(7.5, 8.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [selectToolAdornImage unlockFocus];
     [selectToolAdornImage setName:@"SelectToolAdorn"];
     
     textNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [textNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     //[shadow set];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(4.5, 3.5)];
@@ -472,6 +509,7 @@
     [path closePath];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.95] set];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [textNoteAdornImage unlockFocus];
     [textNoteAdornImage setName:@"TextNoteAdorn"];
 
@@ -483,6 +521,7 @@
     
     anchoredNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [anchoredNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPath];
@@ -502,6 +541,7 @@
     [path moveToPoint:NSMakePoint(4.0, 8.5)];
     [path lineToPoint:NSMakePoint(11.0, 8.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [anchoredNoteAdornImage unlockFocus];
     [anchoredNoteAdornImage setName:@"AnchoredNoteAdorn"];
 
@@ -513,6 +553,7 @@
     
     circleNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [circleNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     NSBezierPath *clipPath = [NSBezierPath bezierPath];
@@ -530,6 +571,7 @@
     [clipPath addClip];
     [path appendBezierPathWithOvalInRect:NSMakeRect(0.5, 3.5, 10.0, 7.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [circleNoteAdornImage unlockFocus];
     [circleNoteAdornImage setName:@"CircleNoteAdorn"];
 
@@ -541,6 +583,7 @@
     
     squareNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [squareNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [color setStroke];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.5, 1.5, 9.0, 5.0)];
@@ -550,6 +593,7 @@
     [path lineToPoint:NSMakePoint(10.5, 10.5)];
     [path lineToPoint:NSMakePoint(10.5, 7.0)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [squareNoteAdornImage unlockFocus];
     [squareNoteAdornImage setName:@"SquareNoteAdorn"];
 
@@ -561,6 +605,7 @@
     
     highlightNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [highlightNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.70] setFill];
     path = [NSBezierPath bezierPath];
@@ -574,6 +619,7 @@
     [path lineToPoint:NSMakePoint(5.0, 3.0)];
     [path lineToPoint:NSMakePoint(5.0, 5.0)];
     [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [highlightNoteAdornImage unlockFocus];
     [highlightNoteAdornImage setName:@"HighlightNoteAdorn"];
 
@@ -585,6 +631,7 @@
     
     underlineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [underlineNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.70] setStroke];
     path = [NSBezierPath bezierPath];
@@ -593,6 +640,7 @@
     [path moveToPoint:NSMakePoint(0.0, 6.5)];
     [path lineToPoint:NSMakePoint(12.0, 6.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [underlineNoteAdornImage unlockFocus];
     [underlineNoteAdornImage setName:@"UnderlineNoteAdorn"];
 
@@ -604,6 +652,7 @@
     
     strikeOutNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [strikeOutNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.70] setStroke];
     path = [NSBezierPath bezierPath];
@@ -612,6 +661,7 @@
     [path moveToPoint:NSMakePoint(0.0, 8.5)];
     [path lineToPoint:NSMakePoint(14.0, 2.5)];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [strikeOutNoteAdornImage unlockFocus];
     [strikeOutNoteAdornImage setName:@"StrikeOutNoteAdorn"];
 
@@ -623,6 +673,7 @@
     
     lineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [lineNoteAdornImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.70] setStroke];
     path = [NSBezierPath bezierPath];
@@ -633,6 +684,7 @@
     [path lineToPoint:NSMakePoint(11.0, 5.0)];
     [path setLineWidth:1.2];
     [path stroke];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [lineNoteAdornImage unlockFocus];
     [lineNoteAdornImage setName:@"LineNoteAdorn"];
 
@@ -652,7 +704,7 @@
 	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(iconSize.width, iconSize.height)]; 
 	CGRect rect =  CGRectMake(0.0, 0.0, iconSize.width, iconSize.height);
 	
-	[image lockFocus]; 
+	[image lockFocus];
 	PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
                          &rect,
 						 kAlignAbsoluteCenter, //kAlignNone,
