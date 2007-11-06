@@ -2628,7 +2628,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
-    [[statusBar progressIndicator] setDoubleValue:[[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
+    NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
+    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
+    if ([pageIndex unsignedIntValue] % 10 == 0) {
+        [self willChangeValueForKey:@"searchResults"];
+        [self didChangeValueForKey:@"searchResults"];
+        [self willChangeValueForKey:@"groupedSearchResults"];
+        [self didChangeValueForKey:@"groupedSearchResults"];
+    }
 }
 
 - (void)didMatchString:(PDFSelection *)instance {
@@ -2637,30 +2644,16 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
         NSMutableDictionary *dict = [groupedSearchResults lastObject];
-        if ([[dict valueForKey:@"pageIndex"] unsignedIntValue] != [page pageIndex]) {
-            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                [NSNumber numberWithUnsignedInt:[page pageIndex]], @"pageIndex",
-                [page label], @"pageLabel",
-                [NSMutableArray array], @"results", nil];
+        if ([[dict valueForKey:@"page"] isEqual:page] == NO) {
+            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"page", [NSMutableArray array], @"results", nil];
             [groupedSearchResults addObject:dict];
         }
         [[dict valueForKey:@"results"] addObject:instance];
         
-        unsigned int max = 0;
+        float maxCount = [[groupedSearchResults valueForKeyPath:@"@max.results.@count"] floatValue];
         NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
         while (dict = [dictEnum nextObject])
-            max = MAX(max, [[dict valueForKey:@"results"] count]);
-        
-        dictEnum = [groupedSearchResults objectEnumerator];
-        while (dict = [dictEnum nextObject])
-            [dict setValue:[NSNumber numberWithFloat:(float)[[dict valueForKey:@"results"] count] / max] forKey:@"score"];
-        
-        if ([searchResults count] % 50 == 0) {
-            [self willChangeValueForKey:@"searchResults"];
-            [self didChangeValueForKey:@"searchResults"];
-            [self willChangeValueForKey:@"groupedSearchResults"];
-            [self didChangeValueForKey:@"groupedSearchResults"];
-        }
+            [dict setValue:[NSNumber numberWithFloat:(float)[[dict valueForKey:@"results"] count] / maxCount] forKey:@"score"];
     }
 }
 
