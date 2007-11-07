@@ -2640,18 +2640,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
         NSMutableDictionary *dict = [groupedSearchResults lastObject];
+        NSNumber *maxCount = [dict valueForKey:@"maxCount"];
         if ([[dict valueForKey:@"page"] isEqual:page] == NO) {
-            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"page", [NSMutableArray array], @"results", nil];
+            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"page", [NSMutableArray array], @"results", maxCount, @"maxCount", nil];
             [groupedSearchResults addObject:dict];
         }
         NSMutableArray *results = [dict valueForKey:@"results"];
         [results addObject:instance];
         [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:@"count"];
         
-        NSNumber *maxCount = [groupedSearchResults valueForKeyPath:@"@max.count"];
-        NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
-        while (dict = [dictEnum nextObject])
-            [dict setValue:maxCount forKey:@"maxCount"];
+        if ([results count] > [maxCount unsignedIntValue]) {
+            NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
+            maxCount = [NSNumber numberWithUnsignedInt:[results count]];
+            while (dict = [dictEnum nextObject])
+                [dict setValue:maxCount forKey:@"maxCount"];
+        }
     }
 }
 
