@@ -40,8 +40,6 @@
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
-#import "SKLineInspector.h"
-#import "SKNotesPanelController.h"
 #import "NSString_SKExtensions.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
@@ -52,40 +50,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 
 @implementation SKApplication
-
-- (IBAction)orderFrontLineInspector:(id)sender {
-    if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
-        [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
-    else
-        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
-}
-
-- (IBAction)orderFrontNotesPanel:(id)sender {
-    if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
-        [[[SKNotesPanelController sharedController] window] orderOut:sender];
-    else
-        [[[SKNotesPanelController sharedController] window] orderFront:sender];
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    SEL action = [menuItem action];
-    if (action == @selector(orderFrontLineInspector:)) {
-        if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
-            [menuItem setTitle:NSLocalizedString(@"Hide Lines", @"Menu item title")];
-        else
-            [menuItem setTitle:NSLocalizedString(@"Show Lines", @"Menu item title")];
-        return YES;
-    } else if (action == @selector(orderFrontNotesPanel:)) {
-        if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
-        else
-            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
-        return YES;
-    } else if ([[SKApplication superclass] respondsToSelector:_cmd]) {
-        return [super validateMenuItem:menuItem];
-    }
-    return YES;
-}
 
 - (void)sendEvent:(NSEvent *)anEvent {
     if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask) {
