@@ -2480,62 +2480,56 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
     if ([newView window] == nil) {
-        BOOL wasFirstResponder;
+        NSMutableArray *viewAnimations = animate ? [NSMutableArray arrayWithCapacity:4] : nil;
+        NSResponder *oldFirstResponder = [[oldView window] firstResponder];
+        BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
+        BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
+        NSSegmentedControl *oldButton = wasFind ? findButton : leftSideButton;
+        NSSegmentedControl *newButton = isFind ? findButton : leftSideButton;
+        NSView *containerView = [newButton superview];
         
         if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         
-        if ((oldView == findView || oldView == groupedFindView) && (newView != findView && newView != groupedFindView)) {
-            NSView *view = [leftSideButton superview];
-            wasFirstResponder =  [[[findButton window] firstResponder] isEqual:findButton];
-            [leftSideButton setFrame:[findButton frame]];
-            [findButton retain];
-            [[findButton superview] replaceSubview:findButton with:leftSideButton];
-            [view addSubview:findButton];
-            [findButton release];
-            if (wasFirstResponder)
-                [[leftSideButton window] makeFirstResponder:leftSideButton];
+        if (wasFind != isFind) {
+            [newButton setFrame:[oldButton frame]];
+            [newButton setHidden:animate];
+            [[oldButton superview] addSubview:newButton];
+            if (animate) {
+                [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil]];
+                [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil]];
+            }
         }
-        
-        wasFirstResponder = [[[oldView window] firstResponder] isDescendantOf:oldView];
         
         [newView setFrame:[oldView frame]];
         [newView setHidden:animate];
         [[oldView superview] addSubview:newView];
         
         if (animate) {
-            isAnimating = YES;
-            NSViewAnimation *animation;
-            NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+            [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil]];
+            [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil]];
             
-            animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
-            [fadeOutDict release];
-            [fadeInDict release];
+            NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
             
             [animation setAnimationBlockingMode:NSAnimationBlocking];
             [animation setDuration:0.75];
             [animation setAnimationCurve:NSAnimationEaseIn];
+            isAnimating = YES;
             [animation startAnimation];
             isAnimating = NO;
         }
         
-        if (wasFirstResponder)
+        if ([oldFirstResponder isDescendantOf:oldView])
             [[newView window] makeFirstResponder:[newView nextKeyView]];
         [oldView removeFromSuperview];
         [oldView setHidden:NO];
         [[newView window] recalculateKeyViewLoop];
         
-        if ((oldView != findView && oldView != groupedFindView) && (newView == findView || newView == groupedFindView)) {
-            NSView *view = [findButton superview];
-            wasFirstResponder =  [[[leftSideButton window] firstResponder] isEqual:leftSideButton];
-            [findButton setFrame:[leftSideButton frame]];
-            [leftSideButton retain];
-            [[leftSideButton superview] replaceSubview:leftSideButton with:findButton];
-            [view addSubview:leftSideButton];
-            [leftSideButton release];
-            if (wasFirstResponder)
-                [[findButton window] makeFirstResponder:findButton];
+        if (wasFind != isFind) {
+            [containerView addSubview:oldButton];
+            [oldButton setHidden:NO];
+            if ([oldFirstResponder isEqual:oldButton])
+                [[newButton window] makeFirstResponder:newButton];
         }
     }
 }
