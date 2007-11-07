@@ -58,6 +58,10 @@ static SKLineInspector *sharedLineInspector = nil;
     return sharedLineInspector;
 }
 
++ (BOOL)sharedLineInspectorExists {
+    return sharedLineInspector != nil;
+}
+
 + (id)allocWithZone:(NSZone *)zone {
     if (sharedLineInspector == nil)
         return [super allocWithZone:[self zone]];

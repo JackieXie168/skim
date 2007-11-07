@@ -64,6 +64,7 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 }
 
 + (id)sharedLineInspector;
++ (BOOL)sharedLineInspectorExists;
 
 - (float)lineWidth;
 - (void)setLineWidth:(float)width;

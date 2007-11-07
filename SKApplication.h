@@ -42,6 +42,7 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 @interface SKApplication : NSApplication
 - (IBAction)orderFrontLineInspector:(id)sender;
+- (IBAction)orderFrontNotesPanel:(id)sender;
 @end
 
 
