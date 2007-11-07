@@ -3775,11 +3775,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([noteOutlineView isRowSelected:[noteOutlineView rowForItem:item]] == NO)
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:item]] byExtendingSelection:NO];
         
-        NSMutableArray *items = [NSMutableArray array];
+        NSArray *items = [NSMutableArray array];
         NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
         unsigned int row = [rowIndexes firstIndex];
         while (row != NSNotFound) {
-            [items addObject:[noteOutlineView itemAtRow:row]];
+            [(NSMutableArray *)items addObject:[noteOutlineView itemAtRow:row]];
             row = [rowIndexes indexGreaterThanIndex:row];
         }
         
@@ -3794,21 +3794,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setTarget:self];
             [menuItem setRepresentedObject:item];
         }
-        if ([pdfView hideNotes] == NO && [items count] == 1) {
-            PDFAnnotation *annotation = [items lastObject];
-            if ([annotation type] == nil)
-                annotation = [(SKNoteText *)annotation annotation];
-            if ([annotation isEditable]) {
-                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
-                [menuItem setTarget:pdfView];
+        if ([pdfView hideNotes] == NO) {
+            items = [self noteItems:items];
+            if ([items count] == 1) {
+                PDFAnnotation *annotation = [items lastObject];
+                if ([annotation isEditable]) {
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
+                    [menuItem setTarget:pdfView];
+                    [menuItem setRepresentedObject:annotation];
+                }
+                if ([pdfView activeAnnotation] == annotation)
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) keyEquivalent:@""];
+                else
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) keyEquivalent:@""];
+                [menuItem setTarget:self];
                 [menuItem setRepresentedObject:annotation];
             }
-            if ([pdfView activeAnnotation] == annotation)
-                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) keyEquivalent:@""];
-            else
-                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) keyEquivalent:@""];
-            [menuItem setTarget:self];
-            [menuItem setRepresentedObject:annotation];
         }
         if ([menu numberOfItems] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
