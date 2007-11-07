@@ -3775,11 +3775,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([noteOutlineView isRowSelected:[noteOutlineView rowForItem:item]] == NO)
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:item]] byExtendingSelection:NO];
         
-        NSArray *items = [NSMutableArray array];
+        NSMutableArray *items = [NSMutableArray array];
         NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
         unsigned int row = [rowIndexes firstIndex];
         while (row != NSNotFound) {
-            [(NSMutableArray *)items addObject:[noteOutlineView itemAtRow:row]];
+            [items addObject:[noteOutlineView itemAtRow:row]];
             row = [rowIndexes indexGreaterThanIndex:row];
         }
         
@@ -3795,9 +3795,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setRepresentedObject:item];
         }
         if ([pdfView hideNotes] == NO) {
-            items = [self noteItems:items];
-            if ([items count] == 1) {
-                PDFAnnotation *annotation = [items lastObject];
+            NSArray *noteItems = [self noteItems:items];
+            if ([noteItems count] == 1) {
+                PDFAnnotation *annotation = [noteItems lastObject];
                 if ([annotation isEditable]) {
                     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
                     [menuItem setTarget:pdfView];
