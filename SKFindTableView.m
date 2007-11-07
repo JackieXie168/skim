@@ -164,7 +164,7 @@ static IMP originalDrawWithFrameInView = NULL;
 // see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
 - (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
-    NSRectClip(cellFrame);
+    [[NSBezierPath bezierPathWithRect:cellFrame] addClip];
     originalDrawWithFrameInView(self, _cmd, cellFrame, controlView);
     [NSGraphicsContext restoreGraphicsState];
 }
