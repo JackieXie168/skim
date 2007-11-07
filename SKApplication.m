@@ -55,16 +55,16 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 - (IBAction)orderFrontLineInspector:(id)sender {
     if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
-        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
-    else
         [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
+    else
+        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
 }
 
 - (IBAction)orderFrontNotesPanel:(id)sender {
     if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
-        [[[SKNotesPanelController sharedController] window] orderFront:sender];
-    else
         [[[SKNotesPanelController sharedController] window] orderOut:sender];
+    else
+        [[[SKNotesPanelController sharedController] window] orderFront:sender];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
