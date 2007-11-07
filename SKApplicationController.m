@@ -37,6 +37,8 @@
  */
 
 #import "SKApplicationController.h"
+#import "SKLineInspector.h"
+#import "SKNotesPanelController.h"
 #import "SKPreferenceController.h"
 #import "SKReleaseNotesController.h"
 #import "SKStringConstants.h"
@@ -226,6 +228,20 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         NSBeep();
 }
 
+- (IBAction)orderFrontLineInspector:(id)sender {
+    if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
+        [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
+    else
+        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
+}
+
+- (IBAction)orderFrontNotesPanel:(id)sender {
+    if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
+        [[[SKNotesPanelController sharedController] window] orderOut:sender];
+    else
+        [[[SKNotesPanelController sharedController] window] orderFront:sender];
+}
+
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];
 }
@@ -245,6 +261,24 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 - (IBAction)openBookmark:(id)sender {
     SKBookmark *bookmark = [sender representedObject];
     [[SKBookmarkController sharedBookmarkController] openBookmarks:[NSArray arrayWithObjects:bookmark, nil]];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(orderFrontLineInspector:)) {
+        if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
+            [menuItem setTitle:NSLocalizedString(@"Hide Lines", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Lines", @"Menu item title")];
+        return YES;
+    } else if (action == @selector(orderFrontNotesPanel:)) {
+        if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
+        return YES;
+    }
+    return YES;
 }
 
 #pragma mark Support
