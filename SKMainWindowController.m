@@ -1249,15 +1249,20 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [snapshots removeObjectAtIndex:theIndex];
 }
 
-- (PDFAnnotation *)selectedNote {
-    int row = [noteOutlineView selectedRow];
+- (NSArray *)selectedNotes {
+    NSMutableArray *selectedNotes = [NSMutableArray array];
+    NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
+    unsigned int row = [rowIndexes firstIndex];
     id item = nil;
-    if (row != -1) {
+    while (row != NSNotFound) {
         item = [noteOutlineView itemAtRow:row];
         if ([item type] == nil)
             item = [(SKNoteText *)item annotation];
+        if ([selectedNotes containsObject:item] == NO)
+            [selectedNotes addObject:item];
+        row = [rowIndexes indexGreaterThanIndex:row];
     }
-    return item;
+    return selectedNotes;
 }
 
 #pragma mark Actions
@@ -1363,8 +1368,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)selectSelectedNote{
     if ([pdfView hideNotes] == NO) {
-        id annotation = [self selectedNote];
-        if (annotation) {
+        NSArray *selectedNotes = [self selectedNotes];
+        if ([selectedNotes count] == 1) {
+            PDFAnnotation *annotation = [selectedNotes lastObject];
             [pdfView scrollAnnotationToVisible:annotation];
             [pdfView setActiveAnnotation:annotation];
         }
@@ -3102,7 +3108,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self updateLineInspector];
     }
     if ([annotation isNoteAnnotation]) {
-        if ([self selectedNote] != annotation) {
+        if ([[self selectedNotes] containsObject:annotation]) {
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
     } else {
@@ -3138,7 +3144,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     PDFPage *page = [[notification userInfo] objectForKey:@"page"];
     
-    if ([self selectedNote] == annotation)
+    if ([[self selectedNotes] containsObject:annotation])
         [noteOutlineView deselectAll:self];
     
     if (annotation) {
@@ -3708,14 +3714,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)deleteNote:(id)sender {
-    PDFAnnotation *annotation = [sender representedObject];
-    [self outlineView:noteOutlineView deleteItems:[NSArray arrayWithObjects:annotation, nil]];
+- (void)deleteNotes:(id)sender {
+    [self outlineView:noteOutlineView deleteItems:[sender representedObject]];
 }
 
-- (void)copyNote:(id)sender {
-    PDFAnnotation *annotation = [sender representedObject];
-    [self outlineView:noteOutlineView copyItems:[NSArray arrayWithObjects:annotation, nil]];
+- (void)copyNotes:(id)sender {
+    [self outlineView:noteOutlineView copyItems:[sender representedObject]];
 }
 
 - (void)selectNote:(id)sender {
@@ -3736,19 +3740,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSSize size = NSMakeSize(width, FLT_MAX);
     NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
-    NSMutableArray *items = [NSMutableArray array];
-    id item = [sender representedObject];
+    NSArray *items = [sender representedObject];
     
-    if (item) {
-        [items addObject:item];
-    } else {
-        [items addObjectsFromArray:[self notes]];
-        [items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
+    if (items == nil) {
+        items = [NSMutableArray array];
+        [(NSMutableArray *)items addObjectsFromArray:[self notes]];
+        [(NSMutableArray *)items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
     }
     
     int i, count = [items count];
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     int row;
+    id item;
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
@@ -3769,21 +3772,32 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSMenuItem *menuItem;
     
     if ([ov isEqual:noteOutlineView]) {
-        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:item]] byExtendingSelection:NO];
+        if ([noteOutlineView isRowSelected:[noteOutlineView rowForItem:item]] == NO)
+            [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:item]] byExtendingSelection:NO];
         
-        PDFAnnotation *annotation = [item type] ? item : [(SKNoteText *)item annotation];
+        NSMutableArray *items = [NSMutableArray array];
+        NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
+        unsigned int row = [rowIndexes firstIndex];
+        while (row != NSNotFound) {
+            [items addObject:[noteOutlineView itemAtRow:row]];
+            row = [rowIndexes indexGreaterThanIndex:row];
+        }
+        
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        if ([self outlineView:ov canDeleteItems:[NSArray arrayWithObjects:item, nil]]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNote:) keyEquivalent:@""];
+        if ([self outlineView:ov canDeleteItems:items]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) keyEquivalent:@""];
             [menuItem setTarget:self];
-            [menuItem setRepresentedObject:item];
+            [menuItem setRepresentedObject:items];
         }
         if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) keyEquivalent:@""];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) keyEquivalent:@""];
             [menuItem setTarget:self];
             [menuItem setRepresentedObject:item];
         }
-        if ([pdfView hideNotes] == NO) {
+        if ([pdfView hideNotes] == NO && [items count] == 1) {
+            PDFAnnotation *annotation = [items lastObject];
+            if ([annotation type] == nil)
+                annotation = [(SKNoteText *)annotation annotation];
             if ([annotation isEditable]) {
                 menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
                 [menuItem setTarget:pdfView];
@@ -3798,9 +3812,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
         if ([menu numberOfItems] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
+        menuItem = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
         [menuItem setTarget:self];
-        [menuItem setRepresentedObject:item];
+        [menuItem setRepresentedObject:items];
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
         [menuItem setTarget:self];
     }
@@ -4205,9 +4219,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFAnnotation *annotation, *selAnnotation = nil;
     unsigned int pageIndex = [[pdfView currentPage] pageIndex];
 	int i, count = [orderedNotes count];
-    unsigned int selPageIndex = [noteOutlineView selectedRow] != -1 ? [[self selectedNote] pageIndex] : NSNotFound;
+    NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
+    NSEnumerator *selEnum = [[self selectedNotes] objectEnumerator];
     
-    if (count == 0 || selPageIndex == pageIndex)
+    while (selAnnotation = [selEnum nextObject])
+        [selPageIndexes addIndex:[selAnnotation pageIndex]];
+    
+    if (count == 0 || [selPageIndexes containsIndex:pageIndex])
 		return;
 	
 	// Walk outline view looking for best firstpage number match.
@@ -4221,7 +4239,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		} else if ([annotation pageIndex] > pageIndex) {
 			if (i == 0)
 				selAnnotation = [orderedNotes objectAtIndex:0];
-			else if ([[orderedNotes objectAtIndex:i - 1] pageIndex] != selPageIndex)
+			else if ([selPageIndexes containsIndex:[[orderedNotes objectAtIndex:i - 1] pageIndex]])
                 selAnnotation = [orderedNotes objectAtIndex:i - 1];
 			break;
 		}

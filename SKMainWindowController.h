@@ -308,7 +308,7 @@ typedef struct _SKPDFViewState {
 - (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
 
-- (PDFAnnotation *)selectedNote;
+- (NSArray *)selectedNotes;
 
 - (unsigned int)pageNumber;
 - (void)setPageNumber:(unsigned int)pageNumber;
