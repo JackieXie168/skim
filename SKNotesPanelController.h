@@ -41,10 +41,6 @@
 
 @interface SKNotesPanelController : NSWindowController
 + (id)sharedController;
++ (BOOL)sharedControllerExists;
 - (IBAction)addNote:(id)sender;
-@end
-
-
-@interface NSApplication (SKNotesPanelControllerExtensions)
-- (IBAction)orderFrontNotesPanel:(id)sender;
 @end

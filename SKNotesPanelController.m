@@ -51,6 +51,10 @@ static SKNotesPanelController *sharedController = nil;
     return sharedController;
 }
 
++ (BOOL)sharedControllerExists {
+    return sharedController != nil;
+}
+
 + (id)allocWithZone:(NSZone *)zone {
     if (sharedController == nil)
         return [super allocWithZone:[self zone]];
@@ -88,11 +92,4 @@ static SKNotesPanelController *sharedController = nil;
     }
 }
 
-@end
-
-
-@implementation NSApplication (SKNotesPanelControllerExtensions)
-- (IBAction)orderFrontNotesPanel:(id)sender {
-    [[[SKNotesPanelController sharedController] window] orderFront:sender];
-}
 @end
