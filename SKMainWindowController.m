@@ -424,8 +424,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
     
-    NSSortDescriptor *scoreSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"score" ascending:NO] autorelease];
-    [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:scoreSortDescriptor, nil]];
+    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"count" ascending:NO] autorelease];
+    [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
     [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] dataCell] setEnabled:NO];
         
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
@@ -2644,12 +2644,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"page", [NSMutableArray array], @"results", nil];
             [groupedSearchResults addObject:dict];
         }
-        [[dict valueForKey:@"results"] addObject:instance];
+        NSMutableArray *results = [dict valueForKey:@"results"];
+        [results addObject:instance];
+        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:@"count"];
         
-        float maxCount = [[groupedSearchResults valueForKeyPath:@"@max.results.@count"] floatValue];
+        NSNumber *maxCount = [groupedSearchResults valueForKeyPath:@"@max.count"];
         NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
         while (dict = [dictEnum nextObject])
-            [dict setValue:[NSNumber numberWithFloat:(float)[[dict valueForKey:@"results"] count] / maxCount] forKey:@"score"];
+            [dict setValue:maxCount forKey:@"maxCount"];
     }
 }
 

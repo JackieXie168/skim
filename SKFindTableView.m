@@ -38,6 +38,7 @@
 
 #import "SKFindTableView.h"
 #import "SKStringConstants.h"
+#import "OBUtilities.h"
 
 
 @implementation SKFindTableView
@@ -141,6 +142,31 @@
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
         [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
 	}
+}
+
+@end
+
+#pragma mark -
+
+@interface NSLevelIndicatorCell (SKExtensions)
+- (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+@end
+
+@implementation NSLevelIndicatorCell (SKExtensions)
+
+static IMP originalDrawWithFrameInView = NULL;
+
++ (void)load {
+    originalDrawWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
+}
+
+// Drawing does not restrict the clip, while in discrete style it heavily uses gaussian blur, leading to unacceptable slow drawing
+// see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
+- (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    [NSGraphicsContext saveGraphicsState];
+    NSRectClip(cellFrame);
+    originalDrawWithFrameInView(self, _cmd, cellFrame, controlView);
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 @end
