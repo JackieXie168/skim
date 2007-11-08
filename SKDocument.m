@@ -875,61 +875,15 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
-        BOOL success = tmpDir != nil;
-        
         NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
         NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
-        NSString *name = [[targetPath lastPathComponent] stringByDeletingPathExtension];
-        NSString *tmpImagePath1 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"sparseimage"];
-        NSString *tmpImagePath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
-        NSString *tmpMountPath = SKUniqueDirectoryCreating(@"/tmp", NO); // we don't use tmpDir because the mountpath has a maximum length of 90
-        BOOL didAttach = NO;
+        NSString *scriptPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"archivedmg.sh"];
+        NSTask *task = [NSTask launchedTaskWithLaunchPath:scriptPath arguments:[NSArray arrayWithObjects:sourcePath, targetPath, nil]];
         
-        
-        
-        @try {            
-            if (success) {
-                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"create", @"-type", @"SPARSE", @"-fs", @"HFS+", @"-volname", name, tmpImagePath1, nil]
-                                   currentDirectoryPath:tmpDir];
-            }
-            
-            // asr (used by "hdiutil create") has a bug in Tiger: it loses the EAs, so we need to copy another version with the EAs
-            
-            if (success) {
-                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"attach", @"-nobrowse", @"-mountpoint", tmpMountPath, tmpImagePath1, nil]
-                                   currentDirectoryPath:tmpDir];
-                didAttach = success;
-            }
-            
-            if (success) {
-                success = noErr == FSPathCopyObjectSync((const char *)[sourcePath fileSystemRepresentation], (const char *)[tmpMountPath fileSystemRepresentation], (CFStringRef)[sourcePath lastPathComponent], NULL, kFSFileOperationOverwrite);
-            }
-            
-            if (didAttach) {
-                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"detach", tmpMountPath, nil]
-                                   currentDirectoryPath:tmpDir] && success;
-            }
-            
-            if (success) {
-                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"convert", @"-format", @"UDZO", @"-o", tmpImagePath2, tmpImagePath1, nil]
-                                   currentDirectoryPath:tmpDir];
-            }
-            
-            if (success) {
-                success = noErr == FSPathCopyObjectSync((const char *)[tmpImagePath2 fileSystemRepresentation], (const char *)[[targetPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[targetPath lastPathComponent], NULL, kFSFileOperationOverwrite);
-            }
-            
-            FSPathDeleteContainer((const UInt8 *)[tmpDir fileSystemRepresentation]);
-                    
-        }
-        @catch(id exception) {
-            NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, targetPath);
-        }
+        if ([task isRunning])
+            [task waitUntilExit];
+        if ([task isRunning])
+            [task terminate];
         
         [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
         

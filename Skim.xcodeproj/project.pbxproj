@@ -66,6 +66,7 @@
 		CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
+		CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -402,6 +403,7 @@
 		CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = notesTemplate.rtfd; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
+		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -1214,6 +1216,7 @@
 			isa = PBXGroup;
 			children = (
 				CE1E2F120BDB86A10011D9DD /* displayline */,
+				CE2A11660CE3B51600A0499B /* archivedmg.sh */,
 				CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */,
 				CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */,
 				CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */,
@@ -1435,6 +1438,7 @@
 				CEAE39350CA4429A00849B0F /* BookmarkSheet.nib in Resources */,
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE6C96A90CD924C70022D69F /* NotesPanel.nib in Resources */,
+				CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
