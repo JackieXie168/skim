@@ -2632,7 +2632,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)documentDidEndPageFind:(NSNotification *)note {
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
     [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
-    if ([pageIndex unsignedIntValue] % 10 == 0) {
+    if ([pageIndex unsignedIntValue] % 50 == 0) {
         [self willChangeValueForKey:@"searchResults"];
         [self didChangeValueForKey:@"searchResults"];
         [self willChangeValueForKey:@"groupedSearchResults"];
