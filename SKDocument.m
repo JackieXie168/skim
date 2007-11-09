@@ -269,13 +269,15 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                 
                 if (canMove) {
                     NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-                    if ([self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
+                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
                         if (fileExists)
                             canMove = [fm removeFileAtPath:notesPath handler:nil];
-                        if (canMove)
-                            [fm movePath:tmpPath toPath:notesPath handler:nil];
-                        else
-                            [fm removeFileAtPath:tmpPath handler:nil];
+                        if ([[self notes] count]) {
+                            if (canMove)
+                                [fm movePath:tmpPath toPath:notesPath handler:nil];
+                            else
+                                [fm removeFileAtPath:tmpPath handler:nil];
+                        }
                     }
                 }
             }
