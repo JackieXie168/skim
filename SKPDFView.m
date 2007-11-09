@@ -1694,6 +1694,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         bounds = [selection boundsForPage:page];
         if (annotationType == SKCircleNote || annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);
+        else if (annotationType == SKAnchoredNote)
+            bounds.size = ANCHORED_NOTE_SIZE;
     } else {
         float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
