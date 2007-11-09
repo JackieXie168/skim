@@ -67,6 +67,8 @@
 		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
+		CE2A1E620CE513E400A0499B /* RemoteControl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2A1E600CE513E300A0499B /* RemoteControl.h */; };
+		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -134,7 +136,6 @@
 		CE5BEA190C7C635400EBDCF7 /* NSGeometry_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */; };
 		CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */; };
 		CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */; };
-		CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F42AD0BF89FE00069D89C /* AppleRemote.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE5F71560C8CDF9A008BE480 /* NSCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
@@ -288,6 +289,7 @@
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 				CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */,
+				CE2A1E620CE513E400A0499B /* RemoteControl.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +406,8 @@
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
+		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RemoteControl.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.h; sourceTree = "<group>"; };
+		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RemoteControl.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -527,8 +531,6 @@
 		CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTableView.m; sourceTree = "<group>"; };
 		CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
-		CE5F42AC0BF89FE00069D89C /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.h; sourceTree = "<group>"; };
-		CE5F42AD0BF89FE00069D89C /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCell_SKExtensions.h; sourceTree = "<group>"; };
 		CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCell_SKExtensions.m; sourceTree = "<group>"; };
@@ -884,8 +886,8 @@
 		453DC2740B4F23E500A72509 /* 3rd-party Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CE5F42AC0BF89FE00069D89C /* AppleRemote.h */,
-				CE5F42AD0BF89FE00069D89C /* AppleRemote.m */,
+				CE2A1E600CE513E300A0499B /* RemoteControl.h */,
+				CE2A1E610CE513E300A0499B /* RemoteControl.m */,
 				453DC2750B4F242200A72509 /* BDAlias.m */,
 				453DC2760B4F242200A72509 /* BDAlias.h */,
 				F9F220840C14BD9C00041284 /* UKFileWatcher.h */,
@@ -1626,7 +1628,6 @@
 				CE49726D0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m in Sources */,
 				CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */,
 				CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */,
-				CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */,
 				CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */,
 				F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */,
 				CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */,
@@ -1667,6 +1668,7 @@
 				CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */,
 				CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,
+				CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

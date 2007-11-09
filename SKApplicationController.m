@@ -51,7 +51,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
-#import "AppleRemote.h"
+#import "RemoteControl.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
@@ -166,8 +166,9 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
 	
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
-        [[AppleRemote sharedRemote] setDelegate:self];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+        remoteControl = [[RemoteControl alloc] initWithDelegate:self];
+    }
     
     [self doSpotlightImportIfNeeded];
     
@@ -176,12 +177,12 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
-        [[AppleRemote sharedRemote] setListeningToRemote:YES];
+        [remoteControl setListeningToRemote:YES];
 }
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
-        [[AppleRemote sharedRemote] setListeningToRemote:NO];
+        [remoteControl setListeningToRemote:NO];
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
@@ -193,8 +194,9 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
-        [[AppleRemote sharedRemote] setListeningToRemote:NO];
-        [[AppleRemote sharedRemote] setDelegate:nil];
+        [remoteControl setListeningToRemote:NO];
+        [remoteControl release];
+        remoteControl = nil;
     }
 }
 
@@ -316,7 +318,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     [self addMenuItemsForBookmarks:bookmarks toMenu:menu];
 }
 
-- (void)appleRemoteButton:(AppleRemoteEventIdentifier)buttonIdentifier pressedDown:(BOOL)pressedDown {
+- (void)sendRemoteButtonEvent:(RemoteControlEventIdentifier)event pressedDown:(BOOL)pressedDown remoteControl:(RemoteControl *)remoteControl {
     NSArray *docs = [NSApp orderedDocuments];
     id document = [docs count] ? [docs objectAtIndex:0] : nil;
     SKMainWindowController *controller = [document respondsToSelector:@selector(mainWindowController)]? [document mainWindowController] : nil;
@@ -324,8 +326,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     if (controller == nil)
         return;
     
-    switch (buttonIdentifier) {
-        case kRemoteButtonVolume_Plus:
+    switch (event) {
+        case kRemoteButtonPlus:
             if (pressedDown == NO)
                 break;
             if (remoteScrolling)
@@ -335,7 +337,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             else
                 [controller doZoomIn:nil];
             break;
-        case kRemoteButtonVolume_Minus:
+        case kRemoteButtonMinus:
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineDown];
             else if (pressedDown == NO)
