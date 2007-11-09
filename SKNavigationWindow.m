@@ -66,6 +66,7 @@
         [self setReleasedWhenClosed:NO];
         [self setLevel:[[pdfView window] level]];
         [self setHidesOnDeactivate:YES];
+        [self setMovableByWindowBackground:YES];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
