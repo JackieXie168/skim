@@ -43,8 +43,11 @@
 extern NSString *SKDocumentSetupAliasKey;
 extern NSString *SKDocumentSetupFileNameKey;
 
+@class RemoteControl;
+
 @interface SKApplicationController : NSObject {
     NSTimer *currentDocumentsTimer;
+    RemoteControl *remoteControl;
     BOOL remoteScrolling;
 }
 
