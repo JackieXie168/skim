@@ -191,7 +191,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (void)setBookmarks:(NSArray *)newBookmarks {
     [[[self undoManager] prepareWithInvocationTarget:self] setBookmarks:[[bookmarks copy] autorelease]];
-    return [bookmarks setArray:newBookmarks];
+    [bookmarks setArray:newBookmarks];
 }
 
 - (unsigned)countOfBookmarks {
