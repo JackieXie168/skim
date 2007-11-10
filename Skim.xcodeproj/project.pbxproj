@@ -66,7 +66,6 @@
 		CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
-		CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
@@ -1426,6 +1425,7 @@
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
 				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
 				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
+				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 				CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */,
 				CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */,
@@ -1436,9 +1436,7 @@
 				CEAE392F0CA4423A00849B0F /* ScaleSheet.nib in Resources */,
 				CEAE39320CA4426B00849B0F /* PasswordSheet.nib in Resources */,
 				CEAE39350CA4429A00849B0F /* BookmarkSheet.nib in Resources */,
-				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE6C96A90CD924C70022D69F /* NotesPanel.nib in Resources */,
-				CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
