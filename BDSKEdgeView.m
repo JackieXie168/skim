@@ -144,4 +144,36 @@
 	return rect;
 }
 
+- (void)adjustSubviews {
+	NSEnumerator *viewEnum = [[contentView subviews] objectEnumerator];
+	NSView *view;
+	NSRect contentRect;
+	NSRect frame;
+	
+	[contentView setFrame:[self contentRect]];
+	contentRect = [contentView bounds];
+	 
+	while (view = [viewEnum nextObject]) {
+		frame = [view frame];
+		if (NSContainsRect(contentRect, frame)) 
+			continue;
+		if (NSMinX(frame) > NSMaxX(contentRect)) { 
+			frame.origin.x = NSMaxX(contentRect);
+			frame.size.width = 0.0;
+		} else if (NSMaxX(frame) < NSMinX(contentRect)) {
+			frame.origin.x = NSMinX(contentRect);
+			frame.size.width = 0.0;
+		}
+		if (NSMinY(frame) > NSMaxY(contentRect)) { 
+			frame.origin.y = NSMaxY(contentRect);
+			frame.size.height = 0.0;
+		} else if (NSMaxY(frame) < NSMinY(contentRect)) {
+			frame.origin.y = NSMinY(contentRect);
+			frame.size.height = 0.0;
+		}
+		frame = NSIntersectionRect(frame, contentRect);
+		[view setFrame:frame];
+	}
+}
+
 @end
