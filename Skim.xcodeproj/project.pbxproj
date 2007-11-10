@@ -67,7 +67,6 @@
 		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE2A11670CE3B51600A0499B /* archivedmg.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
-		CE2A1E620CE513E400A0499B /* RemoteControl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2A1E600CE513E300A0499B /* RemoteControl.h */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
@@ -90,6 +89,7 @@
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */; };
 		CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */; };
+		CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
 		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
 		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
@@ -175,7 +175,6 @@
 		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
 		CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */; };
-		CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEAE39040CA43E7300849B0F /* SKSheetController.h */; };
 		CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE39050CA43E7300849B0F /* SKSheetController.m */; };
 		CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE392A0CA441F700849B0F /* PageSheet.nib */; };
 		CEAE392F0CA4423A00849B0F /* ScaleSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE392D0CA4423A00849B0F /* ScaleSheet.nib */; };
@@ -288,8 +287,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CEAE39060CA43E7300849B0F /* SKSheetController.h in CopyFiles */,
-				CE2A1E620CE513E400A0499B /* RemoteControl.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +298,7 @@
 			files = (
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
+				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
 				CE48BC330C08B58700A166C6 /* notesTemplate.txt in CopyFiles */,
 				CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */,
 				CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */,
