@@ -83,6 +83,7 @@
 #import "SKSecondaryPDFView.h"
 #import "SKSheetController.h"
 #import "OBUtilities.h"
+#import "SKApplicationController.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
