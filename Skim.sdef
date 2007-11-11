@@ -50,6 +50,30 @@
                 description="The default colors used for new notes.">
                 <cocoa key="defaultNoteColors"/>
             </property>
+            <property name="default note line widths" type="note line widths" code="DNtW"
+                description="The default line width used for new notes.">
+                <cocoa key="defaultLineWidths"/>
+            </property>
+            <property name="default note line styles" type="note line styles" code="DNtS"
+                description="The default line styles used for new notes.">
+                <cocoa key="defaultLineStyles"/>
+            </property>
+            <property name="default note dash patterns" type="note dash patterns" code="DNtD"
+                description="The default dash patterns used for new notes.">
+                <cocoa key="defaultDashPatterns"/>
+            </property>
+            <property name="default note start line style" type="line ending style" code="DNSL"
+                description="The default start line style used for new lines.">
+                <cocoa key="defaultStartLineStyle"/>
+            </property>
+            <property name="default note end line style" type="line ending style" code="DNEL"
+                description="The default end line style used for new lines.">
+                <cocoa key="defaultEndLineStyle"/>
+            </property>
+            <property name="default note icon type" type="icon type" code="DNtI"
+                description="The default icon type used for new anchored notes.">
+                <cocoa key="defaultIconType"/>
+            </property>
 			<responds-to name="open">
 				<cocoa method="handleOpenScriptCommand:"/>
 			</responds-to>
@@ -864,6 +888,67 @@
             <property name="box note interior color" code="CSqI" type="RGBA color"
                 description="Default box fill color.">
                 <cocoa key="squareNoteInterior"/>
+            </property>
+        </record-type>
+
+        <record-type name="note line widths" code="NLWd">
+            <property name="text note" code="NTxt" type="real"
+                description="Default text note line width.">
+                <cocoa key="textNote"/>
+            </property>
+            <property name="circle note" code="NCir" type="real"
+                description="Default circle line width.">
+                <cocoa key="circleNote"/>
+            </property>
+            <property name="box note" code="NSqu" type="real"
+                description="Default box line width.">
+                <cocoa key="squareNote"/>
+            </property>
+            <property name="line note" code="NLin" type="real"
+                description="Default line line width.">
+                <cocoa key="lineNote"/>
+            </property>
+        </record-type>
+
+        <record-type name="note line styles" code="NLSt">
+            <property name="text note" code="NTxt" type="note line style"
+                description="Default text note line width.">
+                <cocoa key="textNote"/>
+            </property>
+            <property name="circle note" code="NCir" type="note line style"
+                description="Default circle line width.">
+                <cocoa key="circleNote"/>
+            </property>
+            <property name="box note" code="NSqu" type="note line style"
+                description="Default box line width.">
+                <cocoa key="squareNote"/>
+            </property>
+            <property name="line note" code="NLin" type="note line style"
+                description="Default line line width.">
+                <cocoa key="lineNote"/>
+            </property>
+        </record-type>
+
+        <record-type name="note dash patterns" code="NDsh">
+            <property name="text note" code="NTxt"
+                description="Default text note dash pattern.">
+                <type type="real" list="yes"/>
+                <cocoa key="textNote"/>
+            </property>
+            <property name="circle note" code="NCir"
+                description="Default circle dash pattern.">
+                <type type="real" list="yes"/>
+                <cocoa key="circleNote"/>
+            </property>
+            <property name="box note" code="NSqu"
+                description="Default box dash pattern.">
+                <type type="real" list="yes"/>
+                <cocoa key="squareNote"/>
+            </property>
+            <property name="line note" code="NLin"
+                description="Default line dash pattern.">
+                <type type="real" list="yes"/>
+                <cocoa key="lineNote"/>
             </property>
         </record-type>
 
