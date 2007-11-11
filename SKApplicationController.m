@@ -511,7 +511,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", 
-            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineSyle", @"defaultEndLineSyle", @"defaultIconType", @"lines", nil];
+            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultIconType", @"lines", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
