@@ -1357,7 +1357,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (IBAction)createNewNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         int type = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
-        [pdfView addAnnotationFromSelectionWithType:type];
+        [pdfView addAnnotationWithType:type];
     } else NSBeep();
 }
 

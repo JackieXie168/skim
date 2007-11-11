@@ -152,8 +152,9 @@ typedef enum _SKNoteType {
 - (IBAction)deselectAll:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
 
-- (void)addAnnotationFromMenu:(id)sender;
-- (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType;
+- (void)addAnnotation:(id)sender;
+- (void)addAnnotationWithType:(SKNoteType)annotationType;
+- (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
 - (void)removeActiveAnnotation:(id)sender;

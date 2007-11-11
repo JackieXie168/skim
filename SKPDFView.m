@@ -1007,7 +1007,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                         } else {
                             [super mouseDown:theEvent];
                             if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
-                                [self addAnnotationFromSelectionWithType:annotationMode];
+                                [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
                         }
@@ -1067,7 +1067,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     [activeAnnotation setString:selString];
                 }
             } else if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
-                [self addAnnotationFromSelectionWithType:annotationMode];
+                [self addAnnotationWithType:annotationMode];
                 [self setCurrentSelection:nil];
                 [super mouseUp:theEvent]; // this may be necssary to clean up a selection rect
             } else
@@ -1231,12 +1231,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [item setSubmenu:submenu];
     [submenu release];
     
-    NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
-    [item setRepresentedObject:[NSValue valueWithPoint:point]];
     [item setTarget:self];
     
     if ([self toolMode] == SKTextToolMode) {
@@ -1259,45 +1256,37 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         submenu = [[NSMenu allocWithZone:[menu zone]] init];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKFreeTextNote];
         [item setTarget:self];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKAnchoredNote];
         [item setTarget:self];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKCircleNote];
         [item setTarget:self];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKSquareNote];
         [item setTarget:self];
         
         if ([self currentSelection]) {
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKHighlightNote];
             [item setTarget:self];
             
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKUnderlineNote];
             [item setTarget:self];
             
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKStrikeOutNote];
             [item setTarget:self];
         }
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
         [item setTag:SKLineNote];
         [item setTarget:self];
         
@@ -1307,6 +1296,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:point nearest:YES];
         PDFAnnotation *annotation = nil;
         
@@ -1682,36 +1672,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 #pragma mark Annotation management
 
-- (void)addAnnotationFromMenu:(id)sender {
-    PDFSelection *selection = [self currentSelection];
-    NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    SKNoteType annotationType = [sender tag];
-    NSPoint point = [[sender representedObject] pointValue];
-	PDFPage *page = [self pageForPoint:point nearest:YES];
-    NSRect bounds;
-
-    if (selection && page) {
-        bounds = [selection boundsForPage:page];
-        if (annotationType == SKCircleNote || annotationType == SKSquareNote)
-            bounds = NSInsetRect(bounds, -5.0, -5.0);
-        else if (annotationType == SKAnchoredNote)
-            bounds.size = ANCHORED_NOTE_SIZE;
-    } else {
-        float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
-        float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        NSSize defaultSize = (annotationType == SKAnchoredNote) ? ANCHORED_NOTE_SIZE : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
-        
-        point = [self convertPoint:point toPage:page];
-        bounds = SKRectFromCenterAndSize(point, defaultSize);
-    }
-    
-    // Make sure it fits in the page
-    bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
-    
-    [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
+- (void)addAnnotation:(id)sender {
+    NSEvent *event = [NSApp currentEvent];
+    NSPoint point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
+    [self addAnnotationWithType:[sender tag] defaultPoint:point];
 }
 
-- (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType {
+- (void)addAnnotationWithType:(SKNoteType)annotationType {
+    [self addAnnotationWithType:annotationType defaultPoint:[[self window] mouseLocationOutsideOfEventStream]];
+}
+
+- (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point {
 	PDFPage *page;
 	NSRect bounds;
     PDFSelection *selection = [self currentSelection];
@@ -1735,7 +1706,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     } else {
         
 		// First try the current mouse position
-        NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        NSPoint center = [self convertPoint:point fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
         page = NSPointInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self]) ? [self pageForPoint:center nearest:NO] : nil;
@@ -2091,6 +2062,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark Snapshots
 
 - (void)takeSnapshot:(id)sender {
+    NSEvent *event;
     NSPoint point;
     PDFPage *page = nil;
     NSRect rect = NSZeroRect;
@@ -2102,19 +2074,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         autoFits = YES;
 	}
     if (NSIsEmptyRect(rect)) {
-        if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
-            point = [[sender representedObject] pointValue];
+        // First try the current mouse position
+        event = [NSApp currentEvent];
+        point = ([[event window] isEqual:[self window]] && ([event type] == NSLeftMouseDown || [event type] == NSRightMouseDown)) ? [event locationInWindow] : [[self window] mouseLocationOutsideOfEventStream];
+        page = [self pageForPoint:point nearest:NO];
+        if (page == nil) {
+            // Get the center
+            NSRect viewFrame = [self frame];
+            point = SKCenterPoint(viewFrame);
             page = [self pageForPoint:point nearest:YES];
-        } else {
-            // First try the current mouse position
-            point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
-            page = [self pageForPoint:point nearest:NO];
-            if (page == nil) {
-                // Get the center
-                NSRect viewFrame = [self frame];
-                point = SKCenterPoint(viewFrame);
-                page = [self pageForPoint:point nearest:YES];
-            }
         }
         
         point = [self convertPoint:point toPage:page];
