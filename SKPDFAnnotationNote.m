@@ -84,6 +84,78 @@ enum {
     SKASBorderStyleUnderline = 'Undl'
 };
 
+int SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
+    switch (borderStyle) {
+        case kPDFBorderStyleSolid: return SKASBorderStyleSolid;
+        case kPDFBorderStyleDashed: return SKASBorderStyleDashed;
+        case kPDFBorderStyleBeveled: return SKASBorderStyleBeveled;
+        case kPDFBorderStyleInset: return SKASBorderStyleInset;
+        case kPDFBorderStyleUnderline: return SKASBorderStyleUnderline;
+        default: return SKASBorderStyleSolid;
+    }
+}
+
+int SKBorderStyleFromScriptingBorderStyle(int borderStyle) {
+    switch (borderStyle) {
+        case SKASBorderStyleSolid: return kPDFBorderStyleSolid;
+        case SKASBorderStyleDashed: return kPDFBorderStyleDashed;
+        case SKASBorderStyleBeveled: return kPDFBorderStyleBeveled;
+        case SKASBorderStyleInset: return kPDFBorderStyleInset;
+        case SKASBorderStyleUnderline: return kPDFBorderStyleUnderline;
+        default: return kPDFBorderStyleSolid;
+    }
+}
+
+int SKScriptingLineStyleFromLineStyle(int lineStyle) {
+    switch (lineStyle) {
+        case kPDFLineStyleNone: return SKASLineStyleNone;
+        case kPDFLineStyleSquare: return SKASLineStyleSquare;
+        case kPDFLineStyleCircle: return SKASLineStyleCircle;
+        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
+        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
+        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
+        default: return SKASLineStyleNone;
+    }
+}
+
+int SKLineStyleFromScriptingLineStyle(int lineStyle) {
+    switch (lineStyle) {
+        case kPDFLineStyleNone: return SKASLineStyleNone;
+        case kPDFLineStyleSquare: return SKASLineStyleSquare;
+        case kPDFLineStyleCircle: return SKASLineStyleCircle;
+        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
+        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
+        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
+        default: return SKASLineStyleNone;
+    }
+}
+
+int SKScriptingIconTypeFromIconType(int iconType) {
+    switch (iconType) {
+        case kPDFTextAnnotationIconComment: return SKASTextAnnotationIconComment;
+        case kPDFTextAnnotationIconKey: return SKASTextAnnotationIconKey;
+        case kPDFTextAnnotationIconNote: return SKASTextAnnotationIconNote;
+        case kPDFTextAnnotationIconHelp: return SKASTextAnnotationIconHelp;
+        case kPDFTextAnnotationIconNewParagraph: return SKASTextAnnotationIconNewParagraph;
+        case kPDFTextAnnotationIconParagraph: return SKASTextAnnotationIconParagraph;
+        case kPDFTextAnnotationIconInsert: return SKASTextAnnotationIconInsert;
+        default: return kPDFTextAnnotationIconNote;
+    }
+}
+
+int SKIconTypeFromScriptingIconType(int iconType) {
+    switch (iconType) {
+        case SKASTextAnnotationIconComment: return kPDFTextAnnotationIconComment;
+        case SKASTextAnnotationIconKey: return kPDFTextAnnotationIconKey;
+        case SKASTextAnnotationIconNote: return kPDFTextAnnotationIconNote;
+        case SKASTextAnnotationIconHelp: return kPDFTextAnnotationIconHelp;
+        case SKASTextAnnotationIconNewParagraph: return kPDFTextAnnotationIconNewParagraph;
+        case SKASTextAnnotationIconParagraph: return kPDFTextAnnotationIconParagraph;
+        case SKASTextAnnotationIconInsert: return kPDFTextAnnotationIconInsert;
+        default: return kPDFTextAnnotationIconNote;
+    }
+}
+
 #define TYPE_KEY                    @"type"
 #define BOUNDS_KEY                  @"bounds"
 #define PAGE_INDEX_KEY              @"pageIndex"
@@ -574,26 +646,11 @@ static IMP originalSetBorder = NULL;
 }
 
 - (int)asBorderStyle {
-    switch ([self borderStyle]) {
-        case kPDFBorderStyleSolid: return SKASBorderStyleSolid;
-        case kPDFBorderStyleDashed: return SKASBorderStyleDashed;
-        case kPDFBorderStyleBeveled: return SKASBorderStyleBeveled;
-        case kPDFBorderStyleInset: return SKASBorderStyleInset;
-        case kPDFBorderStyleUnderline: return SKASBorderStyleUnderline;
-        default: return SKASBorderStyleSolid;
-    }
+    return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }
 
 - (void)setAsBorderStyle:(int)borderStyle {
-    PDFBorderStyle style = kPDFBorderStyleSolid;
-    switch (borderStyle) {
-        case SKASBorderStyleSolid: style = kPDFBorderStyleSolid; break;
-        case SKASBorderStyleDashed: style = kPDFBorderStyleDashed; break;
-        case SKASBorderStyleBeveled: style = kPDFBorderStyleBeveled; break;
-        case SKASBorderStyleInset: style = kPDFBorderStyleInset; break;
-        case SKASBorderStyleUnderline: style = kPDFBorderStyleUnderline; break;
-    }
-    [self setBorderStyle:style];
+    [self setBorderStyle:SKBorderStyleFromScriptingBorderStyle(borderStyle)];
 }
 
 - (NSData *)startPointAsQDPoint {
@@ -1468,30 +1525,11 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (int)asIconType {
-    switch ([self iconType]) {
-        case kPDFTextAnnotationIconComment: return SKASTextAnnotationIconComment;
-        case kPDFTextAnnotationIconKey: return SKASTextAnnotationIconKey;
-        case kPDFTextAnnotationIconNote: return SKASTextAnnotationIconNote;
-        case kPDFTextAnnotationIconHelp: return SKASTextAnnotationIconHelp;
-        case kPDFTextAnnotationIconNewParagraph: return SKASTextAnnotationIconNewParagraph;
-        case kPDFTextAnnotationIconParagraph: return SKASTextAnnotationIconParagraph;
-        case kPDFTextAnnotationIconInsert: return SKASTextAnnotationIconInsert;
-        default: return kPDFTextAnnotationIconNote;
-    }
+    return SKScriptingIconTypeFromIconType([self iconType]);
 }
 
 - (void)setAsIconType:(int)type {
-    PDFTextAnnotationIconType iconType = SKASTextAnnotationIconNote;
-    switch (type) {
-        case SKASTextAnnotationIconComment: iconType = kPDFTextAnnotationIconComment; break;
-        case SKASTextAnnotationIconKey: iconType = kPDFTextAnnotationIconKey; break;
-        case SKASTextAnnotationIconNote: iconType = kPDFTextAnnotationIconNote; break;
-        case SKASTextAnnotationIconHelp: iconType = kPDFTextAnnotationIconHelp; break;
-        case SKASTextAnnotationIconNewParagraph: iconType = kPDFTextAnnotationIconNewParagraph; break;
-        case SKASTextAnnotationIconParagraph: iconType = kPDFTextAnnotationIconParagraph; break;
-        case SKASTextAnnotationIconInsert: iconType = kPDFTextAnnotationIconInsert; break;
-    }
-    [self setIconType:iconType];
+    [self setIconType:SKIconTypeFromScriptingIconType(type)];
 }
 
 - (id)richText;
@@ -1798,53 +1836,19 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (int)asStartLineStyle {
-    switch ([self startLineStyle]) {
-        case kPDFLineStyleNone: return SKASLineStyleNone;
-        case kPDFLineStyleSquare: return SKASLineStyleSquare;
-        case kPDFLineStyleCircle: return SKASLineStyleCircle;
-        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
-        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
-        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
-        default: return SKASLineStyleNone;
-    }
+    return SKScriptingLineStyleFromLineStyle([self startLineStyle]);
 }
 
 - (int)asEndLineStyle {
-    switch ([self endLineStyle]) {
-        case kPDFLineStyleNone: return SKASLineStyleNone;
-        case kPDFLineStyleSquare: return SKASLineStyleSquare;
-        case kPDFLineStyleCircle: return SKASLineStyleCircle;
-        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
-        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
-        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
-        default: return SKASLineStyleNone;
-    }
+    return SKScriptingLineStyleFromLineStyle([self endLineStyle]);
 }
 
 - (void)setAsStartLineStyle:(int)style {
-    int startLineStyle = 0;
-    switch (style) {
-        case SKASLineStyleNone: startLineStyle = kPDFLineStyleNone; break;
-        case SKASLineStyleSquare: startLineStyle = kPDFLineStyleSquare; break;
-        case SKASLineStyleCircle: startLineStyle = kPDFLineStyleCircle; break;
-        case SKASLineStyleDiamond: startLineStyle = kPDFLineStyleDiamond; break;
-        case SKASLineStyleOpenArrow: startLineStyle = kPDFLineStyleOpenArrow; break;
-        case SKASLineStyleClosedArrow: startLineStyle = kPDFLineStyleClosedArrow; break;
-    }
-    [self setStartLineStyle:startLineStyle];
+    [self setStartLineStyle:SKLineStyleFromScriptingLineStyle(style)];
 }
 
 - (void)setAsEndLineStyle:(int)style {
-    int endLineStyle = 0;
-    switch (style) {
-        case SKASLineStyleNone: endLineStyle = kPDFLineStyleNone; break;
-        case SKASLineStyleSquare: endLineStyle = kPDFLineStyleSquare; break;
-        case SKASLineStyleCircle: endLineStyle = kPDFLineStyleCircle; break;
-        case SKASLineStyleDiamond: endLineStyle = kPDFLineStyleDiamond; break;
-        case SKASLineStyleOpenArrow: endLineStyle = kPDFLineStyleOpenArrow; break;
-        case SKASLineStyleClosedArrow: endLineStyle = kPDFLineStyleClosedArrow; break;
-    }
-    [self setEndLineStyle:endLineStyle];
+    [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
 }
 
 @end

@@ -206,6 +206,15 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
+extern int SKScriptingBorderStyleFromBorderStyle(int borderStyle);
+extern int SKBorderStyleFromScriptingBorderStyle(int borderStyle);
+extern int SKScriptingLineStyleFromLineStyle(int lineStyle);
+extern int SKLineStyleFromScriptingLineStyle(int lineStyle);
+extern int SKScriptingIconTypeFromIconType(int iconType);
+extern int SKIconTypeFromScriptingIconType(int iconType);
+
+#pragma mark -
+
 static inline
 Rect RectFromNSRect(NSRect rect) {
     Rect qdRect;

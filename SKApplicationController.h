@@ -83,6 +83,18 @@ extern NSString *SKDocumentSetupFileNameKey;
 - (void)setFullScreenBackgroundColor:(NSColor *)color;
 - (NSDictionary *)defaultNoteColors;
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict;
+- (NSDictionary *)defaultLineWidths;
+- (void)setDefaultLineWidth:(NSDictionary *)dict;
+- (NSDictionary *)defaultLineStyles;
+- (void)setDefaultLineStyles:(NSDictionary *)dict;
+- (NSDictionary *)defaultDashPatterns;
+- (void)setDefaultDashPattern:(NSDictionary *)dict;
+- (int)defaultStartLineStyle;
+- (void)setDefaultStartLineStyle:(int)style;
+- (int)defaultEndLineStyle;
+- (void)setDefaultEndLineStyle:(int)style;
+- (int)defaultIconType;
+- (void)setDefaultIconType:(int)type;
 - (unsigned int)countOfLines;
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 
