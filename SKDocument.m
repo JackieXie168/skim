@@ -242,13 +242,14 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     }
     
     BOOL success = NO;
+    NSError *error = nil;
     
     // we check for notes and may save a .skim as well:
     if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqual:SKPDFDocumentUTI]) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         
-        if (success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError]) {
+        if (success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error]) {
             
             BOOL saveNotesOK = NO;
             
@@ -304,14 +305,14 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         BOOL isDir = NO;
         
         if ([fm fileExistsAtPath:path isDirectory:&isDir] == NO || isDir == NO) {
-            success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
+            success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
         } else {
             NSString *filename = [path lastPathComponent];
             NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
             NSString *tmpPath = [tmpDir stringByAppendingPathComponent:filename];
             NSURL *tmpURL = [NSURL fileURLWithPath:tmpPath];
             
-            if (success = [self writeToURL:tmpURL ofType:typeName error:outError]) {
+            if (success = [self writeToURL:tmpURL ofType:typeName error:&error]) {
                 
                 NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
                 NSSet *ourImportantExtensions = [NSSet setWithObjects:@"pdf", @"skim", nil];
@@ -358,7 +359,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         
     } else {
         
-        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
+        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
         
     }
     
@@ -377,7 +378,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     exportUsingPanel = NO;
     
     if (success == NO && outError != NULL)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return success;
 }
@@ -385,12 +386,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
+    NSError *error = nil;
     if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:&error];
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
         if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
-            didWrite = [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
+            didWrite = [self saveNotesToExtendedAttributesAtURL:absoluteURL error:&error];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI]) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
@@ -418,32 +420,32 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
     } else if ([typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentUTI]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:&error];
     } else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
         NSData *data = [self notesData];
         if (data)
-            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
-        else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+        else
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
     } else if ([typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
         NSData *data = [self notesRTFData];
         if (data)
-            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
-        else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+        else
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesRTFDDocumentType] || [typeName isEqualToString:SKRTFDDocumentUTI]) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
-        else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        else
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI]) {
         NSString *string = [self notesString];
         if (string)
-            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:outError];
-        else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        else
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI]) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
@@ -453,13 +455,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         }
         NSString *string = [self notesFDFStringForFile:filename];
         if (string)
-            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:outError];
-        else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:&error];
+        else 
+            error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     
     if (didWrite == NO && outError != NULL)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didWrite;
 }
