@@ -75,16 +75,21 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     
     NSCAssert1(buffer != NULL, @"failed to allocate memory for string of length %d", length);
     
-    BOOL isFirst = NO;
+    BOOL isFirst = NO, wasHyphen = NO;
     int bufCnt = 0;
     for(cnt = 0; cnt < length; cnt++){
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, cnt);
         if(NO == CFCharacterSetIsCharacterMember(CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline), ch)){
+            wasHyphen = (ch == '-');
             isFirst = YES;
             buffer[bufCnt++] = ch; // not whitespace, so we want to keep it
         } else {
             if(isFirst){
-                buffer[bufCnt++] = ' '; // if it's the first whitespace, we add a single space
+                if(wasHyphen && CFCharacterSetIsCharacterMember((CFCharacterSetRef)[NSCharacterSet newlineCharacterSet], ch))
+                    bufCnt--; // ignore the last hyphen and current newline
+                else
+                    buffer[bufCnt++] = ' '; // if it's the first whitespace, we add a single space
+                wasHyphen = NO;
                 isFirst = NO;
             }
         }
