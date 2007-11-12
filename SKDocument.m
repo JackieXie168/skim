@@ -250,11 +250,10 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         
         if (success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError]) {
             
-            [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
+            BOOL saveNotesOK = NO;
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
                 NSString *notesPath = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
-                BOOL canMove = YES;
                 BOOL fileExists = [fm fileExistsAtPath:notesPath];
                 
                 if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
@@ -264,23 +263,38 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                                                        otherButton:nil
                                          informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
                     
-                    canMove = NSAlertDefaultReturn == [alert runModal];
+                    saveNotesOK = NSAlertDefaultReturn == [alert runModal];
+                } else {
+                    saveNotesOK = YES;
                 }
                 
-                if (canMove) {
+                if (saveNotesOK) {
                     NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
                     if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
                         if (fileExists)
-                            canMove = [fm removeFileAtPath:notesPath handler:nil];
+                            saveNotesOK = [fm removeFileAtPath:notesPath handler:nil];
                         if ([[self notes] count]) {
-                            if (canMove)
-                                [fm movePath:tmpPath toPath:notesPath handler:nil];
+                            if (saveNotesOK)
+                                saveNotesOK = [fm movePath:tmpPath toPath:notesPath handler:nil];
                             else
                                 [fm removeFileAtPath:tmpPath handler:nil];
                         }
                     }
                 }
+                
             }
+            
+            if (NO == [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL]) {
+                NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
+                                                  NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
+                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")]
+                                                 defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                               alternateButton:nil
+                                                   otherButton:nil
+                                     informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
+                [alert runModal];
+            }
+            
         }
         
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqual:SKPDFBundleDocumentUTI]) {
@@ -372,9 +386,11 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
+        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
-                   [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
+        // if we automatically save a .skim backup we silently ignore this problem
+        if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
+            didWrite = [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI]) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
