@@ -121,50 +121,80 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
-    NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
+    NSWindowController *mainWindowController = [[[[aWindow windowController] document] windowControllers] objectAtIndex:0];
     int numberOfItems = [windowsMenu numberOfItems];
     int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
     if (itemIndex != -1) {
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
+        NSString *title = [item title];
         
         if ([windowController document] == nil) {
             int index = numberOfItems;
             while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && 
-                   [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
-            if (index >= 0) {
-                if (itemIndex < index) {
-                    [item retain];
-                    [windowsMenu removeItem:item];
-                    [windowsMenu insertItem:item atIndex:index];
-                    [item release];
-                    index--;
-                }
-                if ([[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
-                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index + 1];
+                   [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {
+                    if ([[[windowsMenu itemAtIndex:index] title] caseInsensitiveCompare:title] == NSOrderedAscending)
+                        break;
             }
-        } else if ([windowController isEqual:mainWindowController]) {
-            int index = itemIndex;
-            if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
-                if ([[[[windowsMenu itemAtIndex:itemIndex - 1] target] windowController] document]) {
-                    while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-                    if (index == numberOfItems) {
-                        [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
-                        numberOfItems++;
-                    }
-                } else {
-                    while (--index >= 0 && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-                }
-                itemIndex = index < itemIndex ? index + 1 : index;
+            if (itemIndex != index + 1) {
                 [item retain];
                 [windowsMenu removeItem:item];
+                [windowsMenu insertItem:item atIndex:itemIndex <= index ? index : ++index];
+                [item release];
+                if (index > 0 && [[windowsMenu itemAtIndex:index - 1] isSeparatorItem] == NO)
+                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+            }
+        } else if ([windowController isEqual:mainWindowController]) {
+            NSMutableArray *subitems = [NSMutableArray array];
+            NSMenuItem *anItem;
+            int index = numberOfItems;
+            int nextIndex = numberOfItems;
+            
+            while (index--) {
+                anItem = [windowsMenu itemAtIndex:index];
+                if (anItem != item && [anItem action] == @selector(makeKeyAndOrderFront:)) {
+                    id target = [anItem target];
+                    NSWindowController *aMainWindowController = [[[[target windowController] document] windowControllers] objectAtIndex:0];
+                    if ([aMainWindowController isEqual:mainWindowController]) {
+                        [subitems insertObject:anItem atIndex:0];
+                        [windowsMenu removeItemAtIndex:index];
+                        nextIndex--;
+                    } else if ([aMainWindowController isEqual:[target windowController]]) {
+                        NSComparisonResult comparison = [[anItem title] caseInsensitiveCompare:title];
+                        if (comparison == NSOrderedDescending)
+                            nextIndex = index;
+                    } else if ([[target windowController] document] == nil) {
+                        nextIndex = index;
+                    }
+                }
+            }
+            
+            if (itemIndex != nextIndex) {
+                [item retain];
+                [windowsMenu removeItemAtIndex:itemIndex];
+                if (nextIndex > itemIndex)
+                    nextIndex--;
+                if (itemIndex < [windowsMenu numberOfItems] && itemIndex > 0 && [[windowsMenu itemAtIndex:itemIndex] isSeparatorItem] && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem]) {
+                    [windowsMenu removeItemAtIndex:itemIndex];
+                    if (nextIndex > itemIndex)
+                        nextIndex--;
+                }
+                itemIndex = nextIndex++;
                 [windowsMenu insertItem:item atIndex:itemIndex];
                 [item release];
             }
-            index = itemIndex;
-            while (++index < numberOfItems && [[[[[windowsMenu itemAtIndex:index] target] windowController] document] isEqual:[windowController document]]) {}
-            if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
-                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+            if (itemIndex > 1 && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
+                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex];
+                nextIndex++;
+            }
+            
+            NSEnumerator *itemEnum = [subitems objectEnumerator];
+            while (anItem = [itemEnum nextObject])
+                [windowsMenu insertItem:anItem atIndex:nextIndex++];
+            
+            if (nextIndex < [windowsMenu numberOfItems] && [[windowsMenu itemAtIndex:nextIndex] isSeparatorItem] == NO)
+                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:nextIndex];
+            
         } else {
             int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window] andAction:@selector(makeKeyAndOrderFront:)];
             int index = mainIndex;
@@ -172,8 +202,11 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [item setIndentationLevel:1];
             
             if (index >= 0) {
-                while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-                if (itemIndex < mainIndex || itemIndex > index) {
+                while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {
+                    if ([[[windowsMenu itemAtIndex:index] title] caseInsensitiveCompare:title] == NSOrderedDescending)
+                        break;
+                }
+                if (itemIndex != index - 1) {
                     [item retain];
                     [windowsMenu removeItem:item];
                     [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
