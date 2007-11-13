@@ -159,6 +159,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                         [subitems insertObject:anItem atIndex:0];
                         [windowsMenu removeItemAtIndex:index];
                         nextIndex--;
+                        if (itemIndex > index)
+                            itemIndex--;
                     } else if ([aMainWindowController isEqual:[target windowController]]) {
                         NSComparisonResult comparison = [[anItem title] caseInsensitiveCompare:title];
                         if (comparison == NSOrderedDescending)
