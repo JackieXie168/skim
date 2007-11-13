@@ -168,9 +168,11 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     // Get the search string keyword if available (Spotlight passes this)
     NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-    NSString *searchString = [[event descriptorForKeyword:keyAESearchText] stringValue];
+    NSString *searchString;
     
-    if([event eventID] == kAEOpenDocuments && searchString != nil && [@"" isEqualToString:searchString] == NO){
+    if ([event eventID] == kAEOpenDocuments && 
+        (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) && 
+        [@"" isEqualToString:searchString] == NO) {
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
 }
