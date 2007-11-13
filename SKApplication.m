@@ -174,7 +174,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 [windowsMenu removeItemAtIndex:itemIndex];
                 if (nextIndex > itemIndex)
                     nextIndex--;
-                if (itemIndex < [windowsMenu numberOfItems] && itemIndex > 0 && [[windowsMenu itemAtIndex:itemIndex] isSeparatorItem] && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem]) {
+                if (itemIndex < [windowsMenu numberOfItems] && [[windowsMenu itemAtIndex:itemIndex] isSeparatorItem] && 
+                    (itemIndex == [windowsMenu numberOfItems] - 1 || (itemIndex > 0 && [[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem]))) {
                     [windowsMenu removeItemAtIndex:itemIndex];
                     if (nextIndex > itemIndex)
                         nextIndex--;
