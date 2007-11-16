@@ -116,6 +116,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     [synchronizer release];
     [watchedFile release];
     [pdfData release];
+    [pdfDocument release];
     [password release];
     [noteDicts release];
     [readNotesAccessoryView release];
