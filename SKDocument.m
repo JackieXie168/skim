@@ -480,8 +480,6 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     if (success) {
         [[self mainWindowController] setPdfDocument:pdfDocument];
-        [pdfDocument autorelease];
-        pdfDocument = nil;
         if (noteDicts) {
             [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
             [self setNoteDicts:nil];
