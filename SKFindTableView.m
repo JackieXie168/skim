@@ -163,10 +163,15 @@ static IMP originalDrawWithFrameInView = NULL;
 // Drawing does not restrict the clip, while in discrete style it heavily uses gaussian blur, leading to unacceptable slow drawing
 // see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
 - (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    BOOL drawDiscreteContinuous = ([self levelIndicatorStyle] == NSDiscreteCapacityLevelIndicatorStyle) && ((NSWidth(cellFrame) + 1.0) / [self maxValue] < 3.0);
+    if (drawDiscreteContinuous)
+        [self setLevelIndicatorStyle:NSContinuousCapacityLevelIndicatorStyle];
     [NSGraphicsContext saveGraphicsState];
     [[NSBezierPath bezierPathWithRect:cellFrame] addClip];
     originalDrawWithFrameInView(self, _cmd, cellFrame, controlView);
     [NSGraphicsContext restoreGraphicsState];
+    if (drawDiscreteContinuous)
+        [self setLevelIndicatorStyle:NSDiscreteCapacityLevelIndicatorStyle];
 }
 
 @end
