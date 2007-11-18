@@ -240,6 +240,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         rightSidePaneState = SKNoteSidePaneState;
         findPaneState = SKSingularFindPaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
+        markedPageIndex = NSNotFound;
         isAnimating = NO;
         updatingColor = NO;
         updatingFont = NO;
@@ -1506,6 +1507,18 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [pdfView goForward:sender];
     else
         [pdfView goBack:sender];
+}
+
+- (IBAction)goToMarkedPage:(id)sender {
+    PDFDocument *pdfDoc = [pdfView document];
+    if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0);
+        NSBeep();
+    else
+        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
+}
+
+- (IBAction)markPage:(id)sender {
+    markedPageIndex = [[pdfView currentPage] pageIndex];
 }
 
 - (IBAction)doZoomIn:(id)sender {
@@ -5107,6 +5120,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [pdfView canGoBack];
     } else if (action == @selector(doGoForward:)) {
         return [pdfView canGoForward];
+    } else if (action == @selector(goToMarkedPage:)) {
+        return markedPageIndex != NSNotFound;
     } else if (action == @selector(doZoomIn:)) {
         return [self isPresentation] == NO && [pdfView canZoomIn];
     } else if (action == @selector(doZoomOut:)) {
