@@ -36,6 +36,8 @@
                 editBookmarks = id; 
                 editNote = id; 
                 getInfo = id; 
+                goToMarkedPage = id; 
+                markPage = id; 
                 newDocumentFromClipboard = id; 
                 orderFrontLineInspector = id; 
                 orderFrontNotesPanel = id; 

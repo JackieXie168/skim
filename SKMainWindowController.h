@@ -193,6 +193,8 @@ typedef struct _SKPDFViewState {
     
     NSMutableArray              *pageLabels;
     
+    unsigned int                markedPageIndex;
+    
     NSMutableArray              *lastViewedPages;
     
     NSTimer                     *activityTimer;
@@ -236,6 +238,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
 - (IBAction)goBackOrForward:(id)sender;
+- (IBAction)goToMarkedPage:(id)sender;
+- (IBAction)markPage:(id)sender;
 - (IBAction)doZoomIn:(id)sender;
 - (IBAction)doZoomOut:(id)sender;
 - (IBAction)doZoomToActualSize:(id)sender;
