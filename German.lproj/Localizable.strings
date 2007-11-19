@@ -326,6 +326,9 @@
 /* Tool tip message */
 "Go To Last page" = "Zur letzten Seite springen";
 
+/* Menu item title */
+"Go To Marked Page" = "Zur markierten Seite springen";
+
 /* Tool tip message */
 "Go To Next Page" = "Zur nŠchsten Seite";
 
@@ -380,6 +383,9 @@
 
 /* Undo action name */
 "Join Notes" = "Anmerkungen verbinden";
+
+/* Menu item title */
+"Jump Back From Marked Page" = "Von der markierten Seite zurŸck springen";
 
 /* Menu item title */
 "Last" = "Letzte";

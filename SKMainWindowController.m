@@ -241,6 +241,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         findPaneState = SKSingularFindPaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
         markedPageIndex = NSNotFound;
+        beforeMarkedPageIndex = NSNotFound;
         isAnimating = NO;
         updatingColor = NO;
         updatingFont = NO;
@@ -1511,10 +1512,15 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (IBAction)goToMarkedPage:(id)sender {
     PDFDocument *pdfDoc = [pdfView document];
-    if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0)
+    unsigned int currentPageIndex = [[pdfView currentPage] pageIndex];
+    if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0) {
         NSBeep();
-    else
+    } else if (beforeMarkedPageIndex != NSNotFound) {
+        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)]];
+    } else if (currentPageIndex != markedPageIndex) {
+        beforeMarkedPageIndex = currentPageIndex;
         [pdfView goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
+    }
 }
 
 - (IBAction)markPage:(id)sender {
@@ -3062,6 +3068,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self updateOutlineSelection];
     [self updateNoteSelection];
     [self updateThumbnailSelection];
+    
+    if (beforeMarkedPageIndex != NSNotFound && [[pdfView currentPage] pageIndex] != markedPageIndex)
+        beforeMarkedPageIndex = NSNotFound;
     
     [self updateLeftStatus];
 }
@@ -5121,7 +5130,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(doGoForward:)) {
         return [pdfView canGoForward];
     } else if (action == @selector(goToMarkedPage:)) {
-        return markedPageIndex != NSNotFound;
+        if (beforeMarkedPageIndex != NSNotFound) {
+            [menuItem setTitle:NSLocalizedString(@"Jump Back From Marked Page", @"Menu item title")];
+            return YES;
+        } else {
+            [menuItem setTitle:NSLocalizedString(@"Go To Marked Page", @"Menu item title")];
+            return markedPageIndex != NSNotFound && markedPageIndex != [[pdfView currentPage] pageIndex];
+        }
     } else if (action == @selector(doZoomIn:)) {
         return [self isPresentation] == NO && [pdfView canZoomIn];
     } else if (action == @selector(doZoomOut:)) {
