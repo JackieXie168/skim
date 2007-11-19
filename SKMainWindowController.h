@@ -194,6 +194,7 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *pageLabels;
     
     unsigned int                markedPageIndex;
+    unsigned int                beforeMarkedPageIndex;
     
     NSMutableArray              *lastViewedPages;
     
