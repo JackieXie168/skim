@@ -187,6 +187,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
 
+- (void)goToDestination:(PDFDestination *)destination;
+- (void)goToPage:(PDFPage *)page;
+
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification;
 - (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification;
@@ -1047,9 +1050,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // Check that the page number exists
     unsigned int pageCount = [[pdfView document] pageCount];
     if (pageNumber > pageCount)
-        [pdfView goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
+        [self goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
     else if (pageNumber > 0)
-        [pdfView goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+        [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
 }
 
 - (NSString *)pageLabel {
@@ -1059,7 +1062,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)setPageLabel:(NSString *)label {
     unsigned int index = [pageLabels indexOfObject:label];
     if (index != NSNotFound)
-        [pdfView goToPage:[[pdfView document] pageAtIndex:index]];
+        [self goToPage:[[pdfView document] pageAtIndex:index]];
 }
 
 - (BOOL)validatePageLabel:(id *)value error:(NSError **)error {
@@ -1393,7 +1396,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)goToSelectedOutlineItem {
     updatingOutlineSelection = YES;
-    [pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+    [self goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
     updatingOutlineSelection = NO;
 }
 
@@ -1516,10 +1519,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0) {
         NSBeep();
     } else if (beforeMarkedPageIndex != NSNotFound) {
-        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)]];
+        [self goToPage:[pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)]];
     } else if (currentPageIndex != markedPageIndex) {
         beforeMarkedPageIndex = currentPageIndex;
-        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
+        [self goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
     }
 }
 
@@ -2888,6 +2891,42 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+#pragma mark Tiger history fixes
+
+- (void)goToDestination:(PDFDestination *)destination {
+    PDFDestination *dest = [pdfView currentDestination];
+    [pdfView goToDestination:destination];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        @try {
+            NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
+            int historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
+            if (historyIndex < (int)[destinationHistory count])
+                [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
+            [destinationHistory addObject:dest];
+            [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PDFViewChangedHistoryNotification object:pdfView];
+        }
+        @catch (id exception) {}
+    }
+}
+
+- (void)goToPage:(PDFPage *)page {
+    PDFDestination *dest = [pdfView currentDestination];
+    [pdfView goToPage:page];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        @try {
+            NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
+            int historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
+            if (historyIndex < (int)[destinationHistory count])
+                [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
+            [destinationHistory addObject:dest];
+            [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PDFViewChangedHistoryNotification object:pdfView];
+        }
+        @catch (id exception) {}
+    }
+}
+
 #pragma mark Sub- and note- windows
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(int)scaleFactor autoFits:(BOOL)autoFits {
@@ -3598,7 +3637,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
         updatingOutlineSelection = YES;
-		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+		[self goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
         updatingOutlineSelection = NO;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
@@ -3882,7 +3921,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (updatingThumbnailSelection == NO) {
             int row = [thumbnailTableView selectedRow];
             if (row != -1)
-                [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
+                [self goToPage:[[pdfView document] pageAtIndex:row]];
             
             if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
                 [self hideLeftSideWindow];
