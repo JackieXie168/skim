@@ -1585,6 +1585,23 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [pdfView setAutoScales:NO];
 }
 
+- (IBAction)alternateZoomToFit:(id)sender {
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    NSRect frame = [pdfView frame];
+    float scaleFactor = [pdfView scaleFactor];
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
+        // zoom to width
+        float width = NSWidth([pdfView convertRect:[[pdfView documentView] bounds] fromView:[pdfView documentView]]) / scaleFactor;
+        [pdfView setScaleFactor:NSWidth(frame) / width];
+    } else {
+        // zoom to height
+        float height = NSHeight([pdfView convertRect:[[pdfView currentPage] boundsForBox:[pdfView displayBox]] fromPage:[pdfView currentPage]]) / scaleFactor;
+        if ([pdfView displaysPageBreaks])
+            height += 10.0;
+        [pdfView setScaleFactor:NSHeight(frame) / height];
+    }
+}
+
 - (IBAction)zoomInOut:(id)sender {
     if ([sender selectedSegment] == 0)
         [pdfView zoomOut:sender];
@@ -5149,6 +5166,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [self isPresentation] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
         return [self isPresentation] == NO && [pdfView autoScales] == NO;
+    } else if (action == @selector(alternateZoomToFit:)) {
+        PDFDisplayMode displayMode = [pdfView displayMode];
+        if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
+            [menuItem setTitle:NSLocalizedString(@"Zoom To Width", @"Menu item title")];
+        } else {
+            [menuItem setTitle:NSLocalizedString(@"Zoom To Height", @"Menu item title")];
+        }
+        return [self isPresentation] == NO;
     } else if (action == @selector(doAutoScale:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleAutoScale:)) {
