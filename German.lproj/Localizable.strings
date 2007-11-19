@@ -829,7 +829,13 @@
    Toolbar item label */
 "Zoom To Fit" = "Grš§e anpassen";
 
+/* Menu item title */
+"Zoom To Height" = "Hšhe anpassen";
+
 /* Tool tip message
    Toolbar item label */
 "Zoom To Selection" = "Grš§e an Auswahl anpassen";
+
+/* Menu item title */
+"Zoom To Width" = "Breite anpassen";
 
