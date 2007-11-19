@@ -2893,16 +2893,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Tiger history fixes
 
-- (void)goToDestination:(PDFDestination *)destination {
-    PDFDestination *dest = [pdfView currentDestination];
-    [pdfView goToDestination:destination];
+- (void)registerDestinationHistory:(PDFDestination *)destination {
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         @try {
             NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
             int historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
             if (historyIndex < (int)[destinationHistory count])
                 [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
-            [destinationHistory addObject:dest];
+            [destinationHistory addObject:destination];
             [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
             [[NSNotificationCenter defaultCenter] postNotificationName:PDFViewChangedHistoryNotification object:pdfView];
         }
@@ -2910,21 +2908,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (void)goToDestination:(PDFDestination *)destination {
+    PDFDestination *dest = [pdfView currentDestination];
+    [pdfView goToDestination:destination];
+    [self registerDestinationHistory:dest];
+}
+
 - (void)goToPage:(PDFPage *)page {
     PDFDestination *dest = [pdfView currentDestination];
     [pdfView goToPage:page];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        @try {
-            NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
-            int historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
-            if (historyIndex < (int)[destinationHistory count])
-                [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
-            [destinationHistory addObject:dest];
-            [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:PDFViewChangedHistoryNotification object:pdfView];
-        }
-        @catch (id exception) {}
-    }
+    [self registerDestinationHistory:dest];
 }
 
 #pragma mark Sub- and note- windows
