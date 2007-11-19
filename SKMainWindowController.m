@@ -1595,10 +1595,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [pdfView setScaleFactor:NSWidth(frame) / width];
     } else {
         // zoom to height
-        float height = NSHeight([pdfView convertRect:[[pdfView currentPage] boundsForBox:[pdfView displayBox]] fromPage:[pdfView currentPage]]) / scaleFactor;
+        NSRect pageRect = [[pdfView currentPage] boundsForBox:[pdfView displayBox]];
+        float height = NSHeight([pdfView convertRect:pageRect fromPage:[pdfView currentPage]]) / scaleFactor;
         if ([pdfView displaysPageBreaks])
             height += 10.0;
         [pdfView setScaleFactor:NSHeight(frame) / height];
+        [pdfView layoutDocumentView];
+        [pdfView scrollRect:pageRect inPageToVisible:[pdfView currentPage]];
     }
 }
 
