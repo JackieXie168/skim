@@ -1163,12 +1163,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    if (toolMode != SKTextToolMode && [self currentSelection])
-        [self setCurrentSelection:nil];
-    
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
     NSMenuItem *item;
+    
+    // On Leopard the selection is automatically set. In some cases we never want a selection though.
+    if ((hasNavigation && autohidesCursor) || (toolMode != SKTextToolMode && [self currentSelection]))
+        [self setCurrentSelection:nil];
     
     if (hasNavigation && autohidesCursor)
         return menu;
