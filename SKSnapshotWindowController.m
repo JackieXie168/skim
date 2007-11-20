@@ -309,6 +309,53 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALE_FACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTO_FITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HAS_WINDOW_KEY, nil];
 }
 
+#pragma mark Actions
+
+- (IBAction)doZoomIn:(id)sender {
+    [pdfView zoomIn:sender];
+}
+
+- (IBAction)doZoomOut:(id)sender {
+    [pdfView zoomOut:sender];
+}
+
+- (IBAction)doZoomToPhysicalSize:(id)sender {
+    float scaleFactor = 1.0;
+    NSScreen *screen = [[self window] screen];
+	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
+	CGSize physicalSize = CGDisplayScreenSize(displayID);
+    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
+	
+    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
+        scaleFactor = CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
+    [pdfView setScaleFactor:scaleFactor];
+}
+
+- (IBAction)doZoomToActualSize:(id)sender {
+    [pdfView setScaleFactor:1.0];
+}
+
+- (IBAction)toggleAutoScale:(id)sender {
+    [pdfView setAutoFits:[pdfView autoFits] == NO];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(doZoomIn:)) {
+        return [pdfView canZoomIn];
+    } else if (action == @selector(doZoomOut:)) {
+        return [pdfView canZoomOut];
+    } else if (action == @selector(doZoomToActualSize:)) {
+        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+    } else if (action == @selector(doZoomToPhysicalSize:)) {
+        return YES;
+    } else if (action == @selector(toggleAutoScale:)) {
+        [menuItem setState:[pdfView autoFits] ? NSOnState : NSOffState];
+        return YES;
+    }
+    return YES;
+}
+
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(float)size {
