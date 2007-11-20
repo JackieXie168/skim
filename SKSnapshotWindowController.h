@@ -39,10 +39,10 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class PDFView, PDFDocument, PDFPage;
+@class BDSKZoomablePDFView, PDFDocument, PDFPage;
 
 @interface SKSnapshotWindowController : NSWindowController {
-    IBOutlet PDFView* pdfView;
+    IBOutlet BDSKZoomablePDFView* pdfView;
     NSImage *thumbnail;
     id delegate;
     BOOL miniaturizing;
