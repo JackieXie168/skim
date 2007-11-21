@@ -142,13 +142,11 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         PDFPage *page = [pdfDocument pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
-        BOOL isWide = pageSize.width > pageSize.height;
-        BOOL isRotated = [page rotation] % 180 == 90;
-        NSPrintingOrientation requiredOrientation = isWide == isRotated ? NSPortraitOrientation : NSLandscapeOrientation;
-        NSPrintingOrientation currentOrientation = [printInfo orientation];
-        if (requiredOrientation != currentOrientation) {
+        if ([page rotation] % 180 == 90)
+            pageSize = NSMakeSize(pageSize.height, pageSize.width);
+        if (NO == NSEqualSizes(pageSize, [printInfo paperSize])) {
             printInfo = [printInfo copy];
-            [printInfo setOrientation:requiredOrientation];
+            [printInfo setPaperSize:pageSize];
             [self setPrintInfo:printInfo];
             [printInfo release];
         }
