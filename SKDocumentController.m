@@ -233,7 +233,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
         NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
         return ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]] != nil);
-    } else if ([super respondsToSelector:_cmd]) {
+    } else if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd]) {
         return [super validateUserInterfaceItem:anItem];
     } else
         return YES;
