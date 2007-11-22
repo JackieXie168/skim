@@ -190,17 +190,11 @@
 		CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */; };
-		CEC7B3990CF5F2D2008CCD63 /* AppleRemote.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */; };
 		CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */; };
-		CEC7B39B0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */; };
 		CEC7B39C0CF5F2D2008CCD63 /* GlobalKeyboardDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */; };
-		CEC7B39D0CF5F2D2008CCD63 /* HIDRemoteControlDevice.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */; };
 		CEC7B39E0CF5F2D2008CCD63 /* HIDRemoteControlDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */; };
-		CEC7B39F0CF5F2D2008CCD63 /* KeyspanFrontRowControl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */; };
 		CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */; };
-		CEC7B3A10CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */; };
 		CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */; };
-		CEC7B3A30CF5F2D2008CCD63 /* RemoteControlContainer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */; };
 		CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
@@ -298,12 +292,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CEC7B3990CF5F2D2008CCD63 /* AppleRemote.h in CopyFiles */,
-				CEC7B39B0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h in CopyFiles */,
-				CEC7B39D0CF5F2D2008CCD63 /* HIDRemoteControlDevice.h in CopyFiles */,
-				CEC7B39F0CF5F2D2008CCD63 /* KeyspanFrontRowControl.h in CopyFiles */,
-				CEC7B3A10CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h in CopyFiles */,
-				CEC7B3A30CF5F2D2008CCD63 /* RemoteControlContainer.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
