@@ -96,7 +96,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	BOOL startSimulateHold = NO;
 	RemoteControlEventIdentifier event = lastHoldEvent;
 	@synchronized(self) {
-		startSimulateHold = (lastHoldEvent>0 && lastHoldEventTime == [time doubleValue]);
+		startSimulateHold = (lastHoldEvent>0 && fabs(lastHoldEventTime - [time doubleValue]) < 0.001);
 	}
 	if (startSimulateHold) {
 		lastEventSimulatedHold = YES;
@@ -113,7 +113,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	int finalClickCount = eventClickCount;	
 	
 	@synchronized(self) {
-		finishedClicking = (event != lastClickCountEvent || eventTimePoint == lastClickCountEventTime);
+		finishedClicking = (event != lastClickCountEvent || fabs(eventTimePoint - lastClickCountEventTime) < 0.001);
 		if (finishedClicking) {
 			eventClickCount = 0;		
 			lastClickCountEvent = 0;

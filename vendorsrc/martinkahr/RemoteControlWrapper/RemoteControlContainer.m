@@ -67,14 +67,14 @@
 }
 
 - (void) setListeningToRemote: (BOOL) value {
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] setListeningToRemote: value];
 	}
 	if (value && value != [self isListeningToRemote]) [self performSelector:@selector(reset) withObject:nil afterDelay:0.01];
 }
 - (BOOL) isListeningToRemote {
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		if ([[remoteControls objectAtIndex: i] isListeningToRemote]) {
 			return YES;
@@ -84,13 +84,13 @@
 }
 
 - (IBAction) startListening: (id) sender {
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] startListening: sender];
 	}	
 }
 - (IBAction) stopListening: (id) sender {
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] stopListening: sender];
 	}	
@@ -98,14 +98,14 @@
 
 - (BOOL) isOpenInExclusiveMode {
 	BOOL mode = YES;
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		mode = mode && ([[remoteControls objectAtIndex: i] isOpenInExclusiveMode]);
 	}
 	return mode;	
 }
 - (void) setOpenInExclusiveMode: (BOOL) value {
-	int i;
+	unsigned int i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] setOpenInExclusiveMode:value];
 	}	
