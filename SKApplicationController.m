@@ -347,7 +347,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         case kRemoteButtonMinus:
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineDown];
-            if ([controller isPresentation])
+            else if ([controller isPresentation])
                 [controller doZoomToActualSize:nil];
             else
                 [controller doZoomOut:nil];
