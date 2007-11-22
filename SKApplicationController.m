@@ -52,6 +52,11 @@
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
 #import "RemoteControl.h"
+#import "AppleRemote.h"
+#import "KeyspanFrontRowControl.h"
+#import "GlobalKeyboardDevice.h"
+#import "RemoteControlContainer.h"
+#import "MultiClickRemoteBehavior.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
@@ -167,23 +172,26 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
 	
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
-        remoteControl = [[RemoteControl alloc] initWithDelegate:self];
-    }
-    
     [self doSpotlightImportIfNeeded];
     
     currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
-        [remoteControl setListeningToRemote:YES];
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    RemoteControlContainer *container = [[RemoteControlContainer alloc] initWithDelegate:self];
+    if ([sud boolForKey:SKEnableAppleRemoteKey])
+        [container instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
+    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey])
+        [container instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
+    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
+        [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
+    remoteControl = container;
+    [remoteControl startListening:self];
 }
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
-        [remoteControl setListeningToRemote:NO];
+	[remoteControl stopListening:self];
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {

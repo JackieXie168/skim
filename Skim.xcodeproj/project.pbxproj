@@ -190,6 +190,18 @@
 		CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */; };
+		CEC7B3990CF5F2D2008CCD63 /* AppleRemote.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */; };
+		CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */; };
+		CEC7B39B0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */; };
+		CEC7B39C0CF5F2D2008CCD63 /* GlobalKeyboardDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */; };
+		CEC7B39D0CF5F2D2008CCD63 /* HIDRemoteControlDevice.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */; };
+		CEC7B39E0CF5F2D2008CCD63 /* HIDRemoteControlDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */; };
+		CEC7B39F0CF5F2D2008CCD63 /* KeyspanFrontRowControl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */; };
+		CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */; };
+		CEC7B3A10CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */; };
+		CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */; };
+		CEC7B3A30CF5F2D2008CCD63 /* RemoteControlContainer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */; };
+		CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
@@ -286,6 +298,12 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CEC7B3990CF5F2D2008CCD63 /* AppleRemote.h in CopyFiles */,
+				CEC7B39B0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h in CopyFiles */,
+				CEC7B39D0CF5F2D2008CCD63 /* HIDRemoteControlDevice.h in CopyFiles */,
+				CEC7B39F0CF5F2D2008CCD63 /* KeyspanFrontRowControl.h in CopyFiles */,
+				CEC7B3A10CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h in CopyFiles */,
+				CEC7B3A30CF5F2D2008CCD63 /* RemoteControlContainer.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +362,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -688,6 +706,18 @@
 		CEC4C3530CA90CA200299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEC4C3540CA90CA200299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CEC4C3550CA90CEE00299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Spanish; path = "Spanish.lproj/Skim Help"; sourceTree = "<group>"; };
+		CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/RemoteControlWrapper/AppleRemote.h; sourceTree = "<group>"; };
+		CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/RemoteControlWrapper/AppleRemote.m; sourceTree = "<group>"; };
+		CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GlobalKeyboardDevice.h; path = vendorsrc/martinkahr/RemoteControlWrapper/GlobalKeyboardDevice.h; sourceTree = "<group>"; };
+		CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GlobalKeyboardDevice.m; path = vendorsrc/martinkahr/RemoteControlWrapper/GlobalKeyboardDevice.m; sourceTree = "<group>"; };
+		CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HIDRemoteControlDevice.h; path = vendorsrc/martinkahr/RemoteControlWrapper/HIDRemoteControlDevice.h; sourceTree = "<group>"; };
+		CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = HIDRemoteControlDevice.m; path = vendorsrc/martinkahr/RemoteControlWrapper/HIDRemoteControlDevice.m; sourceTree = "<group>"; };
+		CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = KeyspanFrontRowControl.h; path = vendorsrc/martinkahr/RemoteControlWrapper/KeyspanFrontRowControl.h; sourceTree = "<group>"; };
+		CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = KeyspanFrontRowControl.m; path = vendorsrc/martinkahr/RemoteControlWrapper/KeyspanFrontRowControl.m; sourceTree = "<group>"; };
+		CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MultiClickRemoteBehavior.h; path = vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.h; sourceTree = "<group>"; };
+		CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MultiClickRemoteBehavior.m; path = vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.m; sourceTree = "<group>"; };
+		CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RemoteControlContainer.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.h; sourceTree = "<group>"; };
+		CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RemoteControlContainer.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.m; sourceTree = "<group>"; };
 		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -910,8 +940,20 @@
 		453DC2740B4F23E500A72509 /* 3rd-party Sources */ = {
 			isa = PBXGroup;
 			children = (
+				CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */,
+				CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */,
+				CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */,
+				CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */,
+				CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */,
+				CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */,
+				CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */,
+				CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */,
+				CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */,
+				CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */,
 				CE2A1E600CE513E300A0499B /* RemoteControl.h */,
 				CE2A1E610CE513E300A0499B /* RemoteControl.m */,
+				CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */,
+				CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */,
 				453DC2750B4F242200A72509 /* BDAlias.m */,
 				453DC2760B4F242200A72509 /* BDAlias.h */,
 				F9F220840C14BD9C00041284 /* UKFileWatcher.h */,
@@ -1692,6 +1734,12 @@
 				CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,
 				CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */,
+				CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */,
+				CEC7B39C0CF5F2D2008CCD63 /* GlobalKeyboardDevice.m in Sources */,
+				CEC7B39E0CF5F2D2008CCD63 /* HIDRemoteControlDevice.m in Sources */,
+				CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */,
+				CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */,
+				CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
