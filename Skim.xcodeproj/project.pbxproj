@@ -19,6 +19,19 @@
 			name = DiskImage;
 			productName = DiskImage;
 		};
+		CEC7B4F70CF60834008CCD63 /* Skim+QuickLook */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CEC7B5090CF608CC008CCD63 /* Build configuration list for PBXAggregateTarget "Skim+QuickLook" */;
+			buildPhases = (
+				CEC7B5000CF6086D008CCD63 /* CopyFiles */,
+			);
+			dependencies = (
+				CEC7B4F90CF6083B008CCD63 /* PBXTargetDependency */,
+				CEC7B4FB0CF60841008CCD63 /* PBXTargetDependency */,
+			);
+			name = "Skim+QuickLook";
+			productName = "Skim+QuickLook";
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -196,6 +209,7 @@
 		CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */; };
 		CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */; };
 		CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */; };
+		CEC7B5040CF608AE008CCD63 /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
@@ -268,6 +282,27 @@
 			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
 			remoteInfo = Skim;
 		};
+		CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D576316048677EA00EA77CD /* Skim.qlgenerator */;
+			remoteInfo = Skim;
+		};
+		CEC7B4F80CF6083B008CCD63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D15AC270486D014006FF6A4 /* Skim */;
+			remoteInfo = Skim;
+		};
+		CEC7B4FA0CF60841008CCD63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* Skim */;
+			remoteInfo = Skim;
+		};
 		CEFD68680C01D3BB0027B933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
@@ -285,6 +320,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		CEC7B5000CF6086D008CCD63 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Skim.app/Contents/Library/QuickLook;
+			dstSubfolderSpec = 16;
+			files = (
+				CEC7B5040CF608AE008CCD63 /* Skim.qlgenerator in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEE112760BCBF52500BF2D3E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -706,6 +751,7 @@
 		CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MultiClickRemoteBehavior.m; path = vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.m; sourceTree = "<group>"; };
 		CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RemoteControlContainer.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.h; sourceTree = "<group>"; };
 		CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RemoteControlContainer.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.m; sourceTree = "<group>"; };
+		CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "QuickLook-Skim.xcodeproj"; path = "QuickLook-Skim/QuickLook-Skim.xcodeproj"; sourceTree = "<group>"; };
 		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1018,6 +1064,7 @@
 			children = (
 				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */,
+				CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */,
 			);
 			name = Subprojects;
 			sourceTree = "<group>";
@@ -1268,6 +1315,14 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		CEC7B4E70CF607CA008CCD63 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CEE22EA20BFB8631002B746B /* Shared Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -1365,6 +1420,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = CEC7B4E70CF607CA008CCD63 /* Products */;
+					ProjectRef = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
+				},
+				{
 					ProductGroup = CEFD68620C01D3BB0027B933 /* Products */;
 					ProjectRef = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
 				},
@@ -1378,6 +1437,7 @@
 				8D15AC270486D014006FF6A4 /* Skim */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
+				CEC7B4F70CF60834008CCD63 /* Skim+QuickLook */,
 			);
 		};
 /* End PBXProject section */
@@ -1395,6 +1455,13 @@
 			fileType = wrapper.application;
 			path = "Sparkle Test App.app";
 			remoteRef = CE2BD8210BD4127A00A5F4DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Skim.qlgenerator;
+			remoteRef = CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */ = {
@@ -1757,6 +1824,16 @@
 			isa = PBXTargetDependency;
 			target = 8D15AC270486D014006FF6A4 /* Skim */;
 			targetProxy = CE592C610B9239CD00C113DF /* PBXContainerItemProxy */;
+		};
+		CEC7B4F90CF6083B008CCD63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D15AC270486D014006FF6A4 /* Skim */;
+			targetProxy = CEC7B4F80CF6083B008CCD63 /* PBXContainerItemProxy */;
+		};
+		CEC7B4FB0CF60841008CCD63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Skim;
+			targetProxy = CEC7B4FA0CF60841008CCD63 /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2236,6 +2313,28 @@
 			};
 			name = Release;
 		};
+		CEC7B50A0CF608CC008CCD63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Skim+QuickLook";
+			};
+			name = Debug;
+		};
+		CEC7B50B0CF608CC008CCD63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = "Skim+QuickLook";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		CEF3BF7C0B99CA4800E12E3D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2332,6 +2431,15 @@
 			buildConfigurations = (
 				CE592C5F0B9239C600C113DF /* Debug */,
 				CE592C600B9239C600C113DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEC7B5090CF608CC008CCD63 /* Build configuration list for PBXAggregateTarget "Skim+QuickLook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEC7B50A0CF608CC008CCD63 /* Debug */,
+				CEC7B50B0CF608CC008CCD63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
