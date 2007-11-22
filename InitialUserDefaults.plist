@@ -216,6 +216,10 @@
         <true/>
         <key>SKEnableAppleRemote</key>
         <true/>
+        <key>SKEnableKeyspanFrontRowControl</key>
+        <false/>
+        <key>SKEnableKeyboardRemoteSimulation</key>
+        <false/>
         <key>SKAppleRemoteSwitchIndicationTimeout</key>
         <real>2.0</real>
         <key>SKReadMissingNotesFromSkimFileOption</key>
