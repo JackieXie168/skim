@@ -332,13 +332,11 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     id document = [docs count] ? [docs objectAtIndex:0] : nil;
     SKMainWindowController *controller = [document respondsToSelector:@selector(mainWindowController)]? [document mainWindowController] : nil;
     
-    if (controller == nil)
+    if (controller == nil || pressedDown == NO)
         return;
     
     switch (event) {
         case kRemoteButtonPlus:
-            if (pressedDown == NO)
-                break;
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineUp];
             else if ([controller isPresentation])
@@ -349,16 +347,12 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         case kRemoteButtonMinus:
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineDown];
-            else if (pressedDown == NO)
-                break;
             if ([controller isPresentation])
                 [controller doZoomToActualSize:nil];
             else
                 [controller doZoomOut:nil];
             break;
         case kRemoteButtonRight_Hold:
-            if (pressedDown == NO)
-                break;
         case kRemoteButtonRight:
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineRight];
@@ -366,8 +360,6 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
                 [controller doGoToNextPage:nil];
             break;
         case kRemoteButtonLeft_Hold:
-            if (pressedDown == NO)
-                break;
         case kRemoteButtonLeft:
             if (remoteScrolling)
                 [[[controller pdfView] documentView] scrollLineLeft];
