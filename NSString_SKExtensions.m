@@ -449,4 +449,42 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[self url] smallIcon];
 }
 
+- (NSAttributedString *)typeIcon {
+    NSAttributedString *attrString = nil;
+    
+    NSString *imageName = nil;
+    if ([self isEqualToString:SKFreeTextString])
+        imageName = @"TextNoteAdorn";
+    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
+        imageName = @"AnchoredNoteAdorn";
+    else if ([self isEqualToString:SKCircleString])
+        imageName = @"CircleNoteAdorn";
+    else if ([self isEqualToString:SKSquareString])
+        imageName = @"SquareNoteAdorn";
+    else if ([self isEqualToString:SKHighlightString] || [self isEqualToString:SKMarkUpString])
+        imageName = @"HighlightNoteAdorn";
+    else if ([self isEqualToString:SKUnderlineString])
+        imageName = @"UnderlineNoteAdorn";
+    else if ([self isEqualToString:SKStrikeOutString])
+        imageName = @"StrikeOutNoteAdorn";
+    else if ([self isEqualToString:SKLineString])
+        imageName = @"LineNoteAdorn";
+    
+    if (imageName) {
+        NSImage *image = [NSImage imageNamed:imageName];
+        NSString *name = [self stringByAppendingPathExtension:@"tiff"];
+        
+        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+        [wrapper setFilename:name];
+        [wrapper setPreferredFilename:name];
+
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+        [wrapper release];
+        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+        [attachment release];
+    }
+    
+    return attrString;
+}
+
 @end
