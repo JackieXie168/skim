@@ -127,7 +127,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 [noteParStyle setHeadIndent:20.0];
                  
                 if (array) {
-                    NSEnumerator *noteEnum = [array objectEnumerator];
+                    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+                    NSEnumerator *noteEnum = [[array sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
                     NSDictionary *note;
                     while (note = [noteEnum nextObject]) {
                         NSString *type = [note objectForKey:@"type"];

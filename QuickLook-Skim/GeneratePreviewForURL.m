@@ -97,7 +97,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             [data release];
             
             if (array) {
-                NSEnumerator *noteEnum = [array objectEnumerator];
+                NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+                NSEnumerator *noteEnum = [[array sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
                 NSDictionary *note;
                 while (note = [noteEnum nextObject]) {
                     NSString *type = [note objectForKey:@"type"];
