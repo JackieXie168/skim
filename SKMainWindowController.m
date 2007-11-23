@@ -2044,6 +2044,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         [self splitViewDidResizeSubviews:nil];
     }
+    if ([currentLeftSideView isEqual:thumbnailView])
+        [thumbnailTableView sizeToFit];
+    else if ([currentLeftSideView isEqual:outlineView])
+        [outlineView sizeToFit];
+    else if ([currentLeftSideView isEqual:findView])
+        [findTableView sizeToFit];
+    else if ([currentLeftSideView isEqual:groupedFindView])
+        [groupedFindTableView sizeToFit];
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
@@ -2085,6 +2093,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         [self splitViewDidResizeSubviews:nil];
     }
+    if ([currentRightSideView isEqual:noteView])
+        [noteOutlineView sizeToFit];
+    else if ([currentRightSideView isEqual:snapshotView])
+        [snapshotTableView sizeToFit];
 }
 
 - (IBAction)changeLeftSidePaneState:(id)sender {
