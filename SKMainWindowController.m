@@ -239,7 +239,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         // @@ remove or set to nil for Leopard?
         pdfOutlineItems = [[NSMutableArray alloc] init];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
-        leftSidePaneState = SKOutlineSidePaneState;
+        leftSidePaneState = SKThumbnailSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
         findPaneState = SKSingularFindPaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
@@ -353,7 +353,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
     
     [outlineView setAutoresizesOutlineColumn: NO];
-    [self displayOutlineView];
+    [self displayThumbnailView];
     [self displayNoteView];
     
     // Set up the tool bar
@@ -444,10 +444,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // Show/hide left side pane if necessary
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == (pdfOutline == nil))
         [self toggleLeftSidePane:self];
-    if (pdfOutline == nil) {
-        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+    if (pdfOutline)
+        [self setLeftSidePaneState:SKOutlineSidePaneState];
+    else
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
-    }
     
     // Go to page?
     if ([sud boolForKey:SKRememberLastPageViewedKey]) {
