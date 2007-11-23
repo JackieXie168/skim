@@ -96,4 +96,6 @@
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 
+- (NSAttributedString *)typeIcon;
+
 @end
