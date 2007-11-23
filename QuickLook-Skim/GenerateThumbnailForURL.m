@@ -37,6 +37,36 @@
 #include <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
 
+@interface NSAttributedString (SKQLExtensions)
++ (NSAttributedString *)imageAttachmentForType:(NSString *)type;
+@end
+
+@implementation NSAttributedString (SKQLExtensions)
++ (NSAttributedString *)imageAttachmentForType:(NSString *)type {
+    static NSMutableDictionary *imageAttachments = nil;
+    
+    NSAttributedString *attrString = nil;
+    if (attrString == nil) {
+        if (imageAttachments == nil) {
+            imageAttachments = [[NSMutableDictionary alloc] init];
+        NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
+        image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
+        [image release];
+        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+        [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+        [wrapper release];
+        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+        [imageAttachments setObject:attrString forKey:type];
+        [attachment release];
+    }
+    
+    return attrString;
+}
+@end
+
+
 /* -----------------------------------------------------------------------------
     Generate a thumbnail for file
 
@@ -73,11 +103,72 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                     QLThumbnailRequestSetImage(thumbnail, image, properties);
                     CGImageRelease(image);
                     CFRelease(properties);
-                } else {
-                    err = 2;
+
+                    // !!! early return
+                    [pool release];
+                    return noErr;
                 }
-            } else {
-                err = 2;
+            }
+            
+        } else if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.skimnotes"), contentTypeUTI)) {
+            
+            NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
+            if (data) {
+                NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+                [data release];
+                
+                NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
+                NSFont *font = [self userFontOfSize:0.0];
+                NSFont *boldFont = [[NSFontManager sharedFontManager] convertFont:font toHaveTrait:NSBoldFontMask];
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+                NSDictionary *boldAttrs = [NSDictionary dictionaryWithObjectsAndKeys:boldFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
+                NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+                [noteParStyle setFirstLineHeadIndent:20.0];
+                [noteParStyle setHeadIndent:20.0];
+                 
+                if (array) {
+                    NSEnumerator *noteEnum = [array objectEnumerator];
+                    NSDictionary *note;
+                    while (note = [noteEnum nextObject]) {
+                        NSString *type = [note objectForKey:@"type"];
+                        NSString *contents = [note objectForKey:@"contents"];
+                        NSString *text = [[note objectForKey:@"text"] string];
+                        NSString *color = [note objectForKey:@"color"];
+                        unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+                        int start;
+                        
+                        [attrString appendAttributedString:[NSAttributedString imageAttachmentForType:type]];
+                        [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
+                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
+                        start = [attrString length];
+                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:boldAttrs] autorelease]];
+                        if (text) {
+                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:attrs] autorelease]];
+                        }
+                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+                        [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
+                    }
+                    [attrString fixAttributesInRange:NSMakerange(0, [attrString length])];
+                }
+                
+                NSSize paperSize = NSMakeSize(612, 792);
+                CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, *(CGSize *)&paperSize, FALSE, NULL);
+                NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
+                [NSGraphicsContext saveGraphicsState];
+                [NSGraphicsContext setCurrentContext:nsContext];
+                [[NSColor whiteColor] setFill];
+                NSRect pageRect = NSMakeRect(0, 0, paperSize.width, paperSize.height);
+                NSRectFillUsingOperation(pageRect, NSCompositeSourceOver);
+                [attrString drawInRect:NSInsetRect(pageRect, 20.0f, 20.0f)];
+                QLThumbnailRequestFlushContext(thumbnail, ctxt);
+                CGContextRelease(ctxt);
+                [attrString release];
+                [NSGraphicsContext restoreGraphicsState];
+                
+                // !!! early return
+                [pool release];
+                return noErr;
             }
             
         }
