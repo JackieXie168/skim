@@ -12,6 +12,7 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
 			</array>
 		</dict>
 	</array>

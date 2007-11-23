@@ -35,7 +35,24 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
+
+@interface NSColor (SKQLExtensions)
+- (NSString *)hexString;
+@end
+
+@implementation NSColor (SKQLExtensions)
+- (NSString *)hexString {
+    static char hexChars[16] = "0123456789abcdef";
+    NSColor *color = self;
+    if ([self alphaComponent] < 1.0)
+        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[self alphaComponent] ofColor:[self colorWithAlphaComponent:1.0]];
+    int red = (int)roundf(255 * [color redComponent]);
+    int green = (int)roundf(255 * [color greenComponent]);
+    int blue = (int)roundf(255 * [color blueComponent]);
+    return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
+}
+@end
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
@@ -67,6 +84,106 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         NSData *data = pdfFile ? [NSData dataWithContentsOfFile:pdfFile] : nil;
         if (data) {
             QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypePDF, (CFDictionaryRef)properties);
+        } else {
+            err = 2;
+        }
+        
+    } else if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.skimnotes"), contentTypeUTI)) {
+        
+        NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
+        if (data) {
+            NSMutableString *htmlString = [[NSMutableString alloc] initWithString:@"<html><body><dl>\n"];
+            NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            [data release];
+            
+            if (array) {
+                NSEnumerator *noteEnum = [array objectEnumerator];
+                NSDictionary *note;
+                while (note = [noteEnum nextObject]) {
+                    NSString *type = [note objectForKey:@"type"];
+                    NSString *contents = [note objectForKey:@"contents"];
+                    NSString *text = [[note objectForKey:@"text"] string];
+                    NSString *color = [note objectForKey:@"color"];
+                    unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+                    [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#\" />%@ (page %i)</dt>", type, [color hexString], type, pageIndex+1];
+                    [htmlString appendFormat:@"<dd><b>%@</b>", contents];
+                    if (text)
+                        [htmlString appendFormat:@"<br />%@", text];
+                    [htmlString appendString:@"</dd>"];
+                }
+            }
+            
+            [htmlString appendString:@"</dl></body></html>"];
+            
+            NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
+            [props setObject:@"UTF-8" forKey:(NSString *)kQLPreviewPropertyTextEncodingNameKey];
+            [props setObject:@"text/html" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];            
+            
+            NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
+            NSMutableDictionary *imgProps;
+            NSImage *image;
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"FreeText" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"FreeText.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Note.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Circle" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Circle.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Square" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Square.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Highlight" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Highlight.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Underline" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Underline.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"StrikeOut" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"StrikeOut.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            imgProps = [[NSMutableDictionary alloc] init];
+            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Line" ofType:@"png"]];
+            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
+            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Line.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [imgProps release];
+            
+            QLPreviewRequestSetDataRepresentation(preview,(CFDataRef)[htmlString dataUsingEncoding:NSUTF8StringEncoding], kUTTypeHTML, (CFDictionaryRef)props);
+            
+            [htmlString release];
+            [props release];
+            
         } else {
             err = 2;
         }
