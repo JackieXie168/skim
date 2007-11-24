@@ -156,14 +156,19 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                     [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
                 }
                 
+                NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
+                NSImage *skimIcon = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Skim" ofType:@"icns"] autorelease];
+                NSRect sourceRect = {NSZeroPoint, [skimIcon size]};
+                NSRect targetRect = NSMakeRect(50, 140, 512, 512);
                 NSSize paperSize = NSMakeSize(612, 792);
+                NSRect pageRect = NSMakeRect(0, 0, paperSize.width, paperSize.height);
                 CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, *(CGSize *)&paperSize, FALSE, NULL);
                 NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
                 [NSGraphicsContext saveGraphicsState];
                 [NSGraphicsContext setCurrentContext:nsContext];
                 [[NSColor whiteColor] setFill];
-                NSRect pageRect = NSMakeRect(0, 0, paperSize.width, paperSize.height);
                 NSRectFillUsingOperation(pageRect, NSCompositeSourceOver);
+                [skimIcon drawInRect:targetRect fromRect:sourceRect operation:NSCompositeSourceOver fraction:0.5];
                 [attrString drawInRect:NSInsetRect(pageRect, 20.0f, 20.0f)];
                 QLThumbnailRequestFlushContext(thumbnail, ctxt);
                 CGContextRelease(ctxt);
