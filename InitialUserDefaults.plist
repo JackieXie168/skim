@@ -217,7 +217,7 @@
         <key>SKEnableAppleRemote</key>
         <true/>
         <key>SKEnableKeyspanFrontRowControl</key>
-        <false/>
+        <true/>
         <key>SKEnableKeyboardRemoteSimulation</key>
         <false/>
         <key>SKAppleRemoteSwitchIndicationTimeout</key>
