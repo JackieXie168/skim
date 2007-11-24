@@ -92,9 +92,15 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         if (data) {
-            NSMutableString *htmlString = [[NSMutableString alloc] initWithString:@"<html><body><dl>\n"];
+            NSMutableString *htmlString = [[NSMutableString alloc] init];
             NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
             [data release];
+            
+            [htmlString appendString:@"<html><head><style type=\"text/css\">"];
+            [htmlString appendString:@"body {font-family:Helvetica} "];
+            [htmlString appendString:@"dd {font-family:LucidaHandwriting-Italic, Helvetica;font-style:italic} "];
+            [htmlString appendString:@".note-text {font-size:smaller} "];
+            [htmlString appendString:@"</style></head><body><dl>"];
             
             if (array) {
                 NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
@@ -107,9 +113,9 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
                     NSColor *color = [note objectForKey:@"color"];
                     unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
                     [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#\" />%@ (page %i)</dt>", type, [color hexString], type, pageIndex+1];
-                    [htmlString appendFormat:@"<dd><b>%@</b>", contents];
+                    [htmlString appendFormat:@"<dd>%@", contents];
                     if (text)
-                        [htmlString appendFormat:@"<br />%@", text];
+                        [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", text];
                     [htmlString appendString:@"</dd>"];
                 }
             }
