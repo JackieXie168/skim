@@ -52,21 +52,55 @@
 {
     self = [super initWithFrame:frame];
     [self setDefaultColors];
+    layer = NULL;
     return self;
 }
 
 - (void)dealloc
 {
+    CGLayerRelease(layer);
     [lowerColor release];
     [upperColor release];
     [super dealloc];
 }
 
-- (void)drawRect:(NSRect)aRect
+- (void)setBounds:(NSRect)aRect
 {
+    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
+    if (ABS(NSHeight(aRect) - NSHeight([self bounds])) > 0.01) {
+        CGLayerRelease(layer);
+        layer = NULL;
+    }
+    [super setBounds:aRect];
+}
+
+
+- (void)drawRect:(NSRect)aRect
+{        
     // fill entire view, not just the (possibly clipped) aRect
-    if ([[self window] styleMask] & NSClosableWindowMask)
-        [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[self lowerColor] endColor:[self upperColor]];
+    if ([[self window] styleMask] & NSClosableWindowMask) {
+        
+        CGContextRef viewContext = [[NSGraphicsContext currentContext] graphicsPort];
+        NSRect bounds = [self bounds];
+
+        if (NULL == layer) {
+            NSSize layerSize = bounds.size;
+            layer = CGLayerCreateWithContext(viewContext, *(CGSize *)&layerSize, NULL);
+            
+            CGContextRef layerContext = CGLayerGetContext(layer);
+            [NSGraphicsContext saveGraphicsState];
+            [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:layerContext flipped:NO]];
+            NSRect layerRect = NSZeroRect;
+            layerRect.size = layerSize;
+            
+            [[NSBezierPath bezierPathWithRect:bounds] fillPathVerticallyWithStartColor:[self lowerColor] endColor:[self upperColor]];
+            [NSGraphicsContext restoreGraphicsState];
+        }
+        
+        // normal blend mode is copy
+        CGContextSetBlendMode(viewContext, kCGBlendModeNormal);
+        CGContextDrawLayerInRect(viewContext, *(CGRect *)&bounds, layer);
+    }
 }
 
 // -[CIColor initWithColor:] fails (returns nil) with +[NSColor gridColor] rdar://problem/4789043

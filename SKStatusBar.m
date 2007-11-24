@@ -72,11 +72,13 @@
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
 		progressIndicator = nil;
+        layer = NULL;
     }
     return self;
 }
 
 - (void)dealloc {
+    CGLayerRelease(layer);
 	[leftCell release];
 	[rightCell release];
 	[super dealloc];
@@ -86,12 +88,44 @@
 
 - (BOOL)isFlipped { return NO; }
 
+- (void)setBounds:(NSRect)aRect
+{
+    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
+    if (ABS(NSHeight(aRect) - NSHeight([self bounds])) > 0.01) {
+        CGLayerRelease(layer);
+        layer = NULL;
+    }
+    [super setBounds:aRect];
+}
+
 - (void)drawRect:(NSRect)rect {
-	NSRect textRect, ignored;
+    
+    CGContextRef viewContext = [[NSGraphicsContext currentContext] graphicsPort];
+    NSRect bounds = [self bounds];
+    
+    if (NULL == layer) {
+        NSSize layerSize = bounds.size;
+        layer = CGLayerCreateWithContext(viewContext, *(CGSize *)&layerSize, NULL);
+        
+        CGContextRef layerContext = CGLayerGetContext(layer);
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:layerContext flipped:NO]];
+        NSRect layerRect = NSZeroRect;
+        layerRect.size = layerSize;
+        
+        [[NSBezierPath bezierPathWithRect:bounds] fillPathVerticallyWithStartColor:[[self class] lowerColor] endColor:[[self class] upperColor]];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    
+    // normal blend mode is copy
+    CGContextSaveGState(viewContext);
+    CGContextSetBlendMode(viewContext, kCGBlendModeNormal);
+    CGContextDrawLayerInRect(viewContext, *(CGRect *)&bounds, layer);
+    CGContextRestoreGState(viewContext);
+
+    NSRect textRect, ignored;
     float rightMargin = RIGHT_MARGIN;
-    
-    [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[[self class] lowerColor] endColor:[[self class] upperColor]];
-    
+
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
     NSDivideRect([self bounds], &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
