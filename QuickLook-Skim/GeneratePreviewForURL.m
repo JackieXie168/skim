@@ -37,22 +37,16 @@
 #include <QuickLook/QuickLook.h>
 #import <Cocoa/Cocoa.h>
 
-@interface NSColor (SKQLExtensions)
-- (NSString *)hexString;
-@end
-
-@implementation NSColor (SKQLExtensions)
-- (NSString *)hexString {
+static NSString *hexStringWithColor(NSColor *color)
+{
     static char hexChars[16] = "0123456789abcdef";
-    NSColor *color = self;
-    if ([self alphaComponent] < 1.0)
-        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[self alphaComponent] ofColor:[self colorWithAlphaComponent:1.0]];
+    if ([color alphaComponent] < 1.0)
+        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
     int red = (int)roundf(255 * [color redComponent]);
     int green = (int)roundf(255 * [color greenComponent]);
     int blue = (int)roundf(255 * [color blueComponent]);
     return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
 }
-@end
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
@@ -70,20 +64,20 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         
         NSString *filePath = [(NSURL *)url path];
         NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:filePath];
-        NSString *fileName = [[[path stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+        NSString *fileName = [[[filePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
         NSString *pdfFile = nil;
         
-        if ([subfiles containsObject:fileName]) {
+        if ([files containsObject:fileName]) {
             pdfFile = fileName;
         } else {
-            unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+            unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
             if (index != NSNotFound)
-                pdfFile = [subfiles objectAtIndex:index];
+                pdfFile = [files objectAtIndex:index];
         }
         pdfFile = pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
         NSData *data = pdfFile ? [NSData dataWithContentsOfFile:pdfFile] : nil;
         if (data) {
-            QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypePDF, (CFDictionaryRef)properties);
+            QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypePDF, NULL);
         } else {
             err = 2;
         }
@@ -112,7 +106,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
                     NSString *text = [[note objectForKey:@"text"] string];
                     NSColor *color = [note objectForKey:@"color"];
                     unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
-                    [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#\" />%@ (page %i)</dt>", type, [color hexString], type, pageIndex+1];
+                    [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %i)</dt>", type, hexStringWithColor(color), type, pageIndex+1];
                     [htmlString appendFormat:@"<dd>%@", contents];
                     if (text)
                         [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", text];
@@ -128,63 +122,21 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
             NSImage *image;
             
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"FreeText" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"FreeText.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Note.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Circle" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Circle.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Square" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Square.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Highlight" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Highlight.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Underline" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Underline.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"StrikeOut" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"StrikeOut.png"];
-            [imgProps release];
-            
-            imgProps = [[NSMutableDictionary alloc] init];
-            image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Line" ofType:@"png"]];
-            [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
-            [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [attachmentProps setObject:imgProps forKey:@"Line.png"];
-            [imgProps release];
+            NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
+            NSString *imageName;
+            for (imageName in allImageNames) {
+                imgProps = [[NSMutableDictionary alloc] init];
+                image = [NSData dataWithContentsOfFile:[bundle pathForResource:imageName ofType:@"png"]];
+                if (image) {
+                    [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+                    [attachmentProps setObject:imgProps forKey:[imageName stringByAppendingPathExtension:@"png"]];
+                }
+                [imgProps release];
+            }
             
             [props setObject:attachmentProps forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps release];
+            
             [props setObject:@"UTF-8" forKey:(NSString *)kQLPreviewPropertyTextEncodingNameKey];
             [props setObject:@"text/html" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];            
             
@@ -197,9 +149,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             err = 2;
         }
         
-static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef inEvent, void* refCon );
-    }
-    
+    }    
     [pool release];
     
     return err;

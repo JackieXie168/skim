@@ -121,9 +121,6 @@ void DeallocQuickLookGeneratorPluginType(QuickLookGeneratorPluginType *thisInsta
 {
     CFUUIDRef theFactoryID;
     
-    extern void BDSKSpotlightIconControllerFreeStatics();
-    BDSKSpotlightIconControllerFreeStatics();
-    
     theFactoryID = thisInstance->factoryID;
         /* Free the conduitInterface table up */
     free(thisInstance->conduitInterface);
