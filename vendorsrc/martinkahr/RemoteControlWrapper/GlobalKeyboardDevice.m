@@ -58,6 +58,8 @@
 
 @implementation GlobalKeyboardDevice
 
+static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef inEvent, void* refCon );
+
 - (id) initWithDelegate: (id) _remoteControlDelegate {	
 	if (self = [super initWithDelegate: _remoteControlDelegate]) {
 		hotKeyRemoteEventMapping = [[NSMutableDictionary alloc] init];
@@ -81,7 +83,7 @@
 }
 
 - (void) mapRemoteButton: (RemoteControlEventIdentifier) remoteButtonIdentifier defaultKeycode: (unsigned int) defaultKeycode defaultModifiers: (unsigned int) defaultModifiers {
-	NSString* defaultsKey;	
+	NSString* defaultsKey = nil;	
 	
 	switch(remoteButtonIdentifier) {
 		case kRemoteButtonPlus:
