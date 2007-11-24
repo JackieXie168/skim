@@ -118,10 +118,12 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 [data release];
                 
                 NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
-                NSFont *font = [self userFontOfSize:0.0];
-                NSFont *boldFont = [[NSFontManager sharedFontManager] convertFont:font toHaveTrait:NSBoldFontMask];
+                NSFont *font = [NSFont userFontOfSize:0.0];
+                NSFont *noteFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize]];
+                NSFont *noteTextFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize] - 2.0];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-                NSDictionary *boldAttrs = [NSDictionary dictionaryWithObjectsAndKeys:boldFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
+                NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
+                NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
                 NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
                 [noteParStyle setFirstLineHeadIndent:20.0];
                 [noteParStyle setHeadIndent:20.0];
@@ -142,10 +144,10 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                         [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
                         [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
                         start = [attrString length];
-                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:boldAttrs] autorelease]];
+                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:noteAttrs] autorelease]];
                         if (text) {
                             [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:attrs] autorelease]];
+                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:noteTextAttrs] autorelease]];
                         }
                         [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
                         [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
