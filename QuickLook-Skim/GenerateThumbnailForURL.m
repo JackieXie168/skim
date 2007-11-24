@@ -37,35 +37,21 @@
 #include <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
 
-@interface NSAttributedString (SKQLExtensions)
-+ (NSAttributedString *)imageAttachmentForType:(NSString *)type;
-@end
-
-@implementation NSAttributedString (SKQLExtensions)
-+ (NSAttributedString *)imageAttachmentForType:(NSString *)type {
-    static NSMutableDictionary *imageAttachments = nil;
+static NSAttributedString *imageAttachmentForType(NSString *type)
+{        
+    NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
+    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [image release];
+    [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
     
-    NSAttributedString *attrString = nil;
-    if (attrString == nil) {
-        if (imageAttachments == nil)
-            imageAttachments = [[NSMutableDictionary alloc] init];
-        NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
-        NSImage *image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
-        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-        [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
-        [image release];
-        
-        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-        [wrapper release];
-        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
-        [imageAttachments setObject:attrString forKey:type];
-        [attachment release];
-    }
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
     
     return attrString;
 }
-@end
-
 
 /* -----------------------------------------------------------------------------
     Generate a thumbnail for file
@@ -85,25 +71,39 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
             
             NSString *filePath = [(NSURL *)url path];
             NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:filePath];
-            NSString *fileName = [[[path stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+            NSString *fileName = [[[filePath stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
             NSString *pdfFile = nil;
             
-            if ([subfiles containsObject:fileName]) {
+            if ([files containsObject:fileName]) {
                 pdfFile = fileName;
             } else {
-                unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+                unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
                 if (index != NSNotFound)
-                    pdfFile = [subfiles objectAtIndex:index];
+                    pdfFile = [files objectAtIndex:index];
             }
             if (pdfFile) {
+                // sadly, we can't use the system's QL generator from inside quicklookd, so we don't get the fancy binder on the left edge
                 pdfFile = [filePath stringByAppendingPathComponent:pdfFile];
-                CGImageRef image = QLThumbnailImageCreate(kCFAllocatorDefault, (CFURLRef)[NSURL fileURLWithPath:pdfFile], maxSize, options);
-                if (image != NULL) {
-                    CFDictionaryRef properties = CFDictionaryCreate(NULL, NULL, NULL, 0, NULL, NULL);
-                    QLThumbnailRequestSetImage(thumbnail, image, properties);
-                    CGImageRelease(image);
-                    CFRelease(properties);
-
+                CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((CFURLRef)[NSURL fileURLWithPath:pdfFile]);
+                CGPDFPageRef pdfPage = NULL;
+                if (pdfDoc && CGPDFDocumentGetNumberOfPages(pdfDoc) > 0)
+                    pdfPage = CGPDFDocumentGetPage(pdfDoc, 1);
+                
+                BOOL failed = NO;
+                if (pdfPage) {
+                    CGRect pageRect = CGPDFPageGetBoxRect(pdfPage, kCGPDFCropBox);
+                    CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, pageRect.size, FALSE, NULL);
+                    CGAffineTransform t = CGPDFPageGetDrawingTransform(pdfPage, kCGPDFCropBox, pageRect, 0, true);
+                    CGContextConcatCTM(ctxt, t);
+                    CGContextClipToRect(ctxt, pageRect);
+                    CGContextDrawPDFPage(ctxt, pdfPage);
+                    QLThumbnailRequestFlushContext(thumbnail, ctxt);
+                }
+                else {
+                    failed = YES;
+                }
+                CGPDFDocumentRelease(pdfDoc);
+                if (NO == failed) {
                     // !!! early return
                     [pool release];
                     return noErr;
@@ -118,7 +118,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 [data release];
                 
                 NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
-                NSFont *font = [NSFont userFontOfSize:0.0];
+                // large font size for thumbnails
+                NSFont *font = [NSFont userFontOfSize:20.0];
                 NSFont *noteFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize]];
                 NSFont *noteTextFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize] - 2.0];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
@@ -140,7 +141,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                         unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
                         int start;
                         
-                        [attrString appendAttributedString:[NSAttributedString imageAttachmentForType:type]];
+                        [attrString appendAttributedString:imageAttachmentForType(type)];
                         [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
                         [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
                         start = [attrString length];
