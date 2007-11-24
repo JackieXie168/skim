@@ -123,68 +123,70 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             [htmlString appendString:@"</dl></body></html>"];
             
             NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
-            [props setObject:@"UTF-8" forKey:(NSString *)kQLPreviewPropertyTextEncodingNameKey];
-            [props setObject:@"text/html" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];            
-            
-            NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
+            NSMutableDictionary *attachmentProps = [[NSMutableDictionary alloc] init];
             NSMutableDictionary *imgProps;
+            NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
             NSImage *image;
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"FreeText" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"FreeText.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"FreeText.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Note.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Note.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Circle" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Circle.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Circle.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Square" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Square.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Square.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Highlight" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Highlight.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Highlight.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Underline" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Underline.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Underline.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"StrikeOut" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"StrikeOut.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"StrikeOut.png"];
             [imgProps release];
             
             imgProps = [[NSMutableDictionary alloc] init];
             image = [NSData dataWithContentsOfFile:[bundle pathForResource:@"Line" ofType:@"png"]];
             [imgProps setObject:@"image/png" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];
             [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-            [props setObject:[NSDictionary dictionaryWithObject:imgProps forKey:@"Line.png"] forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [attachmentProps setObject:imgProps forKey:@"Line.png"];
             [imgProps release];
+            
+            [props setObject:attachmentProps forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
+            [props setObject:@"UTF-8" forKey:(NSString *)kQLPreviewPropertyTextEncodingNameKey];
+            [props setObject:@"text/html" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];            
             
             QLPreviewRequestSetDataRepresentation(preview,(CFDataRef)[htmlString dataUsingEncoding:NSUTF8StringEncoding], kUTTypeHTML, (CFDictionaryRef)props);
             
@@ -195,6 +197,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
             err = 2;
         }
         
+static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef inEvent, void* refCon );
     }
     
     [pool release];
