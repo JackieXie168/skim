@@ -47,13 +47,13 @@
     
     NSAttributedString *attrString = nil;
     if (attrString == nil) {
-        if (imageAttachments == nil) {
+        if (imageAttachments == nil)
             imageAttachments = [[NSMutableDictionary alloc] init];
         NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
-        image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
-        [image release];
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
         NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
         [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
+        [image release];
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
         [wrapper release];
@@ -134,7 +134,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                         NSString *type = [note objectForKey:@"type"];
                         NSString *contents = [note objectForKey:@"contents"];
                         NSString *text = [[note objectForKey:@"text"] string];
-                        NSString *color = [note objectForKey:@"color"];
+                        NSColor *color = [note objectForKey:@"color"];
                         unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
                         int start;
                         
@@ -150,7 +150,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                         [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
                         [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
                     }
-                    [attrString fixAttributesInRange:NSMakerange(0, [attrString length])];
+                    [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
                 }
                 
                 NSSize paperSize = NSMakeSize(612, 792);
