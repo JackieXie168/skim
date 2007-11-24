@@ -44,6 +44,7 @@
     @private
     CIColor *lowerColor;
     CIColor *upperColor;
+    CGLayerRef layer;
 }
 
 - (void)setLowerColor:(NSColor *)color;
