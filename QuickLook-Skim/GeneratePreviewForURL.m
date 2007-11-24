@@ -104,7 +104,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
                     NSString *type = [note objectForKey:@"type"];
                     NSString *contents = [note objectForKey:@"contents"];
                     NSString *text = [[note objectForKey:@"text"] string];
-                    NSString *color = [note objectForKey:@"color"];
+                    NSColor *color = [note objectForKey:@"color"];
                     unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
                     [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#\" />%@ (page %i)</dt>", type, [color hexString], type, pageIndex+1];
                     [htmlString appendFormat:@"<dd><b>%@</b>", contents];
