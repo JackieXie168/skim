@@ -42,6 +42,7 @@
 
 @interface SKSplitView : NSSplitView {
     BOOL blendEnds;
+    CGLayerRef dividerLayer;
 }
 + (CIColor *)startColor;
 + (CIColor *)endColor;
