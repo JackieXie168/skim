@@ -58,6 +58,20 @@
    return endColor;
 }
 
+- (id)initWithFrame:(NSRect)frameRect{
+    if (self = [super initWithFrame:frameRect]) {
+        blendEnds = NO;
+        dividerLayer = NULL;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    if (dividerLayer)
+        CGLayerRelease(dividerLayer);
+    [super dealloc];
+}
+
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent clickCount] > 1 && [[self delegate] respondsToSelector:@selector(splitView:doubleClickedDividerAt:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -87,13 +101,19 @@
 }
 
 - (void)drawDividerInRect:(NSRect)aRect {
-    NSPoint startPoint, endPoint;
-    float handleSize = 20.0;
-    NSColor *darkColor = [NSColor colorWithCalibratedWhite:0.6 alpha:1.0];
-    NSColor *lightColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
-    
-    // Draw the gradient
-    [[NSBezierPath bezierPathWithRect:aRect] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
+    CGContextRef currentContext = [[NSGraphicsContext currentContext] graphicsPort];
+    if (NULL == dividerLayer) {
+        CGSize dividerSize = CGSizeMake(aRect.size.width, aRect.size.height);
+        dividerLayer = CGLayerCreateWithContext(currentContext, dividerSize, NULL);
+        [NSGraphicsContext saveGraphicsState];
+        NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:CGLayerGetContext(dividerLayer) flipped:NO];
+        [NSGraphicsContext setCurrentContext:nsContext];
+        NSRect rectToFill = aRect;
+        rectToFill.origin = NSZeroPoint;
+        [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    CGContextDrawLayerInRect(currentContext, *(CGRect *)&aRect, dividerLayer);
     
     if (blendEnds) {
         NSRect endRect, ignored;
@@ -106,8 +126,12 @@
     [NSGraphicsContext saveGraphicsState];
     
     // Draw the handle
-    [NSBezierPath setDefaultLineWidth:1.0];
+    NSPoint startPoint, endPoint;
+    float handleSize = 20.0;
+    NSColor *darkColor = [NSColor colorWithCalibratedWhite:0.6 alpha:1.0];
+    NSColor *lightColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
     
+    [NSBezierPath setDefaultLineWidth:1.0];
     if ([self isVertical]) {
         handleSize = fminf(handleSize, 2.0 * floorf(0.5 * NSHeight(aRect)));
         startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
