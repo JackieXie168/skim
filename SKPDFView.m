@@ -2903,44 +2903,89 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ((dragMask & BDSKMinYEdgeMask) && (dragMask & BDSKMaxYEdgeMask))
                 dragMask &= relPoint.y <= 0.0 ? ~BDSKMaxYEdgeMask : ~BDSKMinYEdgeMask;
             
-            if (dragMask & BDSKMaxXEdgeMask) {
-                newBounds.size.width += relPoint.x;
-                if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
-                    newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+            if ([theEvent modifierFlags] & NSShiftKeyMask) {
+                float width = NSWidth(newBounds);
+                float height = NSHeight(newBounds);
+                
+                if (dragMask & BDSKMaxXEdgeMask)
+                    width = fmaxf(8.0, width + relPoint.x);
+                else if (dragMask & BDSKMinXEdgeMask)
+                    width = fmaxf(8.0, width - relPoint.x);
+                if (dragMask & BDSKMaxYEdgeMask)
+                    height = fmaxf(8.0, height + relPoint.y);
+                else if (dragMask & BDSKMinYEdgeMask)
+                    height = fmaxf(8.0, height - relPoint.y);
+                
+                if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
+                    if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
+                        width = height = fmaxf(width, height);
+                    else
+                        height = width;
+                } else {
+                    width = height;
                 }
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
+                
+                if (dragMask & BDSKMinXEdgeMask) {
+                    if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
+                        width = height = fmaxf(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
+                } else {
+                    if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
+                        width = height = fmaxf(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
                 }
-            } else if (dragMask & BDSKMinXEdgeMask) {
-                newBounds.origin.x += relPoint.x;
-                newBounds.size.width -= relPoint.x;
-                if (NSMinX(newBounds) < NSMinX(pageBounds)) {
-                    newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
-                    newBounds.origin.x = NSMinX(pageBounds);
+                if (dragMask & BDSKMinYEdgeMask) {
+                    if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
+                        width = height = fmaxf(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
+                } else {
+                    if (NSMinY(newBounds) + height > NSMaxY(pageBounds))
+                        width = height = fmaxf(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
                 }
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x = NSMaxX(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
+                
+                if (dragMask & BDSKMinXEdgeMask)
+                    newBounds.origin.x = NSMaxX(newBounds) - width;
+                if (dragMask & BDSKMinYEdgeMask)
+                    newBounds.origin.y = NSMaxY(newBounds) - height;
+                newBounds.size.width = width;
+                newBounds.size.height = height;
+               
+            } else {
+                if (dragMask & BDSKMaxXEdgeMask) {
+                    newBounds.size.width += relPoint.x;
+                    if (NSMaxX(newBounds) > NSMaxX(pageBounds))
+                        newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.size.width = 8.0;
+                    }
+                } else if (dragMask & BDSKMinXEdgeMask) {
+                    newBounds.origin.x += relPoint.x;
+                    newBounds.size.width -= relPoint.x;
+                    if (NSMinX(newBounds) < NSMinX(pageBounds)) {
+                        newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
+                        newBounds.origin.x = NSMinX(pageBounds);
+                    }
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.origin.x = NSMaxX(newBounds) - 8.0;
+                        newBounds.size.width = 8.0;
+                    }
                 }
-            }
-            if (dragMask & BDSKMaxYEdgeMask) {
-                newBounds.size.height += relPoint.y;
-                if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
-                    newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
-                }
-            } else if (dragMask & BDSKMinYEdgeMask) {
-                newBounds.origin.y += relPoint.y;
-                newBounds.size.height -= relPoint.y;
-                if (NSMinY(newBounds) < NSMinY(pageBounds)) {
-                    newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
-                    newBounds.origin.y = NSMinY(pageBounds);
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y = NSMaxY(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
+                if (dragMask & BDSKMaxYEdgeMask) {
+                    newBounds.size.height += relPoint.y;
+                    if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.size.height = 8.0;
+                    }
+                } else if (dragMask & BDSKMinYEdgeMask) {
+                    newBounds.origin.y += relPoint.y;
+                    newBounds.size.height -= relPoint.y;
+                    if (NSMinY(newBounds) < NSMinY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
+                        newBounds.origin.y = NSMinY(pageBounds);
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.origin.y = NSMaxY(newBounds) - 8.0;
+                        newBounds.size.height = 8.0;
+                    }
                 }
             }
             // Keep integer.
