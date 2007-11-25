@@ -13,6 +13,7 @@
                 changeRightSidePaneState = id; 
                 changeToolMode = id; 
                 chooseTransition = id; 
+                convertNotes = id; 
                 createNewNote = id; 
                 crop = id; 
                 cropAll = id; 
