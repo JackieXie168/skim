@@ -389,7 +389,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     BOOL didWrite = NO;
     NSError *error = nil;
     if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
         if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
@@ -421,18 +421,18 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
     } else if ([typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentUTI]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
     } else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
         NSData *data = [self notesData];
         if (data)
-            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+            didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
     } else if ([typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
         NSData *data = [self notesRTFData];
         if (data)
-            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:&error];
+            didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if ([typeName isEqualToString:SKNotesRTFDDocumentType] || [typeName isEqualToString:SKRTFDDocumentUTI]) {
