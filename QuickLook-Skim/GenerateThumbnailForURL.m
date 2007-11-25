@@ -120,8 +120,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
                 // large font size for thumbnails
                 NSFont *font = [NSFont userFontOfSize:20.0];
-                NSFont *noteFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize]];
-                NSFont *noteTextFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:[font pointSize] - 2.0];
+                NSFont *noteFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:20.0];
+                NSFont *noteTextFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:10.0];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
                 NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
                 NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
