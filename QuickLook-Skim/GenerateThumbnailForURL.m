@@ -49,6 +49,9 @@ static const CGFloat _verticalMargin = 20;
 static const NSSize _containerSize = (NSSize) { 572, 752 };
 static const NSRect _iconRect = (NSRect) { 50, 140, 512, 512 };
 
+// readable in Cover Flow view, and distinguishable as text in icon view
+static const _fontSize 20.0;
+
 // wash the app icon over a white page background
 static void drawBackgroundAndApplicationIconInCurrentContext()
 {
@@ -169,7 +172,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         
         if (data) {
-            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] fontSize:_fontSize];
             [data release];
             
             if (attrString) {

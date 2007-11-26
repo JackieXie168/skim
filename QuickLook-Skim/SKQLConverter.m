@@ -33,10 +33,8 @@
 
 #import "SKQLConverter.h"
 
-static const NSString *_noteFont = @"LucidaHandwriting-Italic";
+static NSString *_noteFont = @"LucidaHandwriting-Italic";
 static const CGFloat _fontSize = 20.0;
-static const CGFloat _smallFontSize = 10.0;
-static const CGFloat _noteIndent = 20.0;
 
 NSBundle *SKQLGetMainBundle() { return [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"]; }
 
@@ -75,12 +73,12 @@ static NSAttributedString *imageAttachmentForType(NSString *type)
 
 @implementation SKQLConverter
 
-- (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes;
+- (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
 {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     NSFont *font = [NSFont userFontOfSize:_fontSize];
-    NSFont *noteFont = [NSFont fontWithName:_noteFont size:_fontSize];
-    NSFont *noteTextFont = [NSFont fontWithName:_noteFont size:_smallFontSize];
+    NSFont *noteFont = [NSFont fontWithName:_noteFont size:fontSize];
+    NSFont *noteTextFont = [NSFont fontWithName:_noteFont size:MAX(fontSize / 2, 10.0)];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
     NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
