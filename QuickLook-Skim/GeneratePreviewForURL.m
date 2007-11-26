@@ -36,17 +36,7 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 #import <Cocoa/Cocoa.h>
-
-static NSString *hexStringWithColor(NSColor *color)
-{
-    static char hexChars[16] = "0123456789abcdef";
-    if ([color alphaComponent] < 1.0)
-        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
-    int red = (int)roundf(255 * [color redComponent]);
-    int green = (int)roundf(255 * [color greenComponent]);
-    int blue = (int)roundf(255 * [color blueComponent]);
-    return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
-}
+#import "SKQLConverter.h"
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
@@ -57,99 +47,34 @@ static NSString *hexStringWithColor(NSColor *color)
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    OSStatus err = noErr;
+    OSStatus err = 2;
     
     if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.pdfd"), contentTypeUTI)) {
         
-        NSString *filePath = [(NSURL *)url path];
-        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:filePath];
-        NSString *fileName = [[[filePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        NSString *pdfFile = nil;
-        
-        if ([files containsObject:fileName]) {
-            pdfFile = fileName;
-        } else {
-            unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
-            if (index != NSNotFound)
-                pdfFile = [files objectAtIndex:index];
-        }
-        pdfFile = pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
-        NSData *data = pdfFile ? [NSData dataWithContentsOfFile:pdfFile] : nil;
-        if (data) {
-            QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypePDF, NULL);
-        } else {
-            err = 2;
+        NSString *pdfFile = SKQLPDFPathForPDFBundleURL((NSURL *)url);
+        if (pdfFile) {
+            NSData *data = [NSData dataWithContentsOfFile:pdfFile];
+            if (data) {
+                QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypePDF, NULL);
+                err = noErr;
+            }
         }
         
     } else if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.skimnotes"), contentTypeUTI)) {
         
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         if (data) {
-            NSMutableString *htmlString = [[NSMutableString alloc] init];
-            NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
             [data release];
             
-            [htmlString appendString:@"<html><head><style type=\"text/css\">"];
-            [htmlString appendString:@"body {font-family:Helvetica} "];
-            [htmlString appendString:@"dd {font-family:LucidaHandwriting-Italic, Helvetica;font-style:italic} "];
-            [htmlString appendString:@".note-text {font-size:smaller} "];
-            [htmlString appendString:@"</style></head><body><dl>"];
-            
-            if (array) {
-                NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-                NSEnumerator *noteEnum = [[array sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
-                NSDictionary *note;
-                while (note = [noteEnum nextObject]) {
-                    NSString *type = [note objectForKey:@"type"];
-                    NSString *contents = [note objectForKey:@"contents"];
-                    NSString *text = [[note objectForKey:@"text"] string];
-                    NSColor *color = [note objectForKey:@"color"];
-                    unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
-                    [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %i)</dt>", type, hexStringWithColor(color), type, pageIndex+1];
-                    [htmlString appendFormat:@"<dd>%@", contents];
-                    if (text)
-                        [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", text];
-                    [htmlString appendString:@"</dd>"];
-                }
+            if (attrString && (data = [attrString RTFDFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil])) {
+                QLPreviewRequestSetDataRepresentation(preview, (CFDateRef *)data, kUTTypeRTFD, NULL);
+                err = noErr;
             }
-            
-            [htmlString appendString:@"</dl></body></html>"];
-            
-            NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
-            NSMutableDictionary *attachmentProps = [[NSMutableDictionary alloc] init];
-            NSMutableDictionary *imgProps;
-            NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
-            NSImage *image;
-            
-            NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
-            NSString *imageName;
-            for (imageName in allImageNames) {
-                imgProps = [[NSMutableDictionary alloc] init];
-                image = [NSData dataWithContentsOfFile:[bundle pathForResource:imageName ofType:@"png"]];
-                if (image) {
-                    [imgProps setObject:image forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
-                    [attachmentProps setObject:imgProps forKey:[imageName stringByAppendingPathExtension:@"png"]];
-                }
-                [imgProps release];
-            }
-            
-            [props setObject:attachmentProps forKey:(NSString *)kQLPreviewPropertyAttachmentsKey];
-            [attachmentProps release];
-            
-            [props setObject:@"UTF-8" forKey:(NSString *)kQLPreviewPropertyTextEncodingNameKey];
-            [props setObject:@"text/html" forKey:(NSString *)kQLPreviewPropertyMIMETypeKey];            
-            
-            QLPreviewRequestSetDataRepresentation(preview,(CFDataRef)[htmlString dataUsingEncoding:NSUTF8StringEncoding], kUTTypeHTML, (CFDictionaryRef)props);
-            
-            [htmlString release];
-            [props release];
-            
-        } else {
-            err = 2;
         }
         
-    }    
+    }
+    
     [pool release];
     
     return err;
