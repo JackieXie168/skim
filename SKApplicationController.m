@@ -175,9 +175,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     [self doSpotlightImportIfNeeded];
     
     currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
-}
-
-- (void)applicationDidBecomeActive:(NSNotification *)aNotification {
+    
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     RemoteControlContainer *container = [[RemoteControlContainer alloc] initWithDelegate:self];
     if ([sud boolForKey:SKEnableAppleRemoteKey])
@@ -187,6 +185,9 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
         [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
     remoteControl = container;
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)aNotification {
     [remoteControl startListening:self];
 }
 
