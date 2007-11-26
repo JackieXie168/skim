@@ -33,9 +33,10 @@
 
 #import "SKQLConverter.h"
 
-static NSString *_noteFont = @"LucidaHandwriting-Italic";
+static NSString *_noteFontName = @"LucidaHandwriting-Italic";
+// readable in Cover Flow view, and distinguishable as text in icon view
 static const CGFloat _fontSize = 20.0;
-static const CGFloat _noteIndent = 20.0;
+static const CGFloat _smallFontSize = 10.0;
 
 NSBundle *SKQLGetMainBundle() { return [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"]; }
 
@@ -71,15 +72,76 @@ static NSAttributedString *imageAttachmentForType(NSString *type)
     return attrString;
 }
 
+static NSString *hexStringWithColor(NSColor *color)
+{
+    static char hexChars[16] = "0123456789abcdef";
+    if ([color alphaComponent] < 1.0)
+        color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
+    int red = (int)roundf(255 * [color redComponent]);
+    int green = (int)roundf(255 * [color greenComponent]);
+    int blue = (int)roundf(255 * [color blueComponent]);
+    return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
+}
+
+// Stolen from OmniFoundation
+static NSString *HTMLEscapeString(NSString *string)
+{
+    unichar *ptr, *begin, *end;
+    NSMutableString *result;
+    NSString *string;
+    int length;
+    
+#define APPEND_PREVIOUS() \
+    string = [[NSString alloc] initWithCharacters:begin length:(ptr - begin)]; \
+    [result appendString:string]; \
+    [string release]; \
+    begin = ptr + 1;
+    
+    length = [self length];
+    ptr = alloca(length * sizeof(unichar));
+    end = ptr + length;
+    [self getCharacters:ptr];
+    result = [NSMutableString stringWithCapacity:length];
+    
+    begin = ptr;
+    while (ptr < end) {
+        if (*ptr > 127) {
+            APPEND_PREVIOUS();
+            [result appendFormat:@"&#%d;", (int)*ptr];
+        } else if (*ptr == '&') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&amp;"];
+        } else if (*ptr == '\"') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&quot;"];
+        } else if (*ptr == '<') {
+             APPEND_PREVIOUS();
+            [result appendString:@"&lt;"];
+        } else if (*ptr == '>') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&gt;"];
+        } else if (*ptr == '\r') {
+            APPEND_PREVIOUS();
+            if (ptr+1 == end || *(ptr+1) != '\n')
+                [result appendString:@"<br />"];
+        } else if (*ptr == '\n') {
+            APPEND_PREVIOUS();
+            [result appendString:@"<br />"];
+        }
+        ptr++;
+    }
+    APPEND_PREVIOUS();
+    return result;
+}
 
 @implementation SKQLConverter
 
-+ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
++ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes;
 {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     NSFont *font = [NSFont userFontOfSize:_fontSize];
-    NSFont *noteFont = [NSFont fontWithName:_noteFont size:fontSize];
-    NSFont *noteTextFont = [NSFont fontWithName:_noteFont size:MAX(fontSize / 2, 10.0)];
+    NSFont *noteFont = [NSFont fontWithName:_noteFontName size:_fontSize];
+    NSFont *noteTextFont = [NSFont fontWithName:_noteFontName size:_smallFontSize];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
     NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
@@ -115,6 +177,38 @@ static NSAttributedString *imageAttachmentForType(NSString *type)
     }
     
     return attrString;
+}
+
++ (NSString *)htmlStringWithNotes:(NSArray *)notes;
+{
+    NSMutableString *htmlString = [NSMutableString string];
+    [htmlString appendString:@"<html><head><style type=\"text/css\">"];
+    [htmlString appendString:@"body {font-family:Helvetica} "];
+    [htmlString appendString:@"dd {font-family:LucidaHandwriting-Italic, Helvetica;font-style:italic} "];
+    [htmlString appendString:@".note-text {font-size:smaller} "];
+    [htmlString appendString:@"</style></head><body><dl>"];
+    
+    if (notes) {
+        NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+        NSEnumerator *noteEnum = [[notes sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
+        NSDictionary *note;
+        while (note = [noteEnum nextObject]) {
+            NSString *type = [note objectForKey:@"type"];
+            NSString *contents = [note objectForKey:@"contents"];
+            NSString *text = [[note objectForKey:@"text"] string];
+            NSColor *color = [note objectForKey:@"color"];
+            unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+            [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %i)</dt>", type, hexStringWithColor(color), type, pageIndex+1];
+            [htmlString appendFormat:@"<dd>%@", HTMLEscapeString(contents)];
+            if (text)
+                [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", HTMLEscapeString(text)];
+            [htmlString appendString:@"</dd>"];
+        }
+    }
+    
+    [htmlString appendString:@"</dl></body></html>"];
+    
+    return htmlString;
 }
 
 @end

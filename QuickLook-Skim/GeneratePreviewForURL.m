@@ -40,6 +40,26 @@
 
 static const CGFloat _fontSize = 12.0;
 
+static NSDictionary *imageAttachments()
+{
+    NSMutableDictionary *attachments = [NSMutableDictionary dictionary];
+    NSBundle *bundle = SKQLGetMainBundle();
+    NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
+    NSString *imageName;
+    NSMutableDictionary *imgProps;
+    NSData *imgData;
+    
+    for (imageName in allImageNames) {
+        if (imgData = [NSData dataWithContentsOfFile:[bundle pathForResource:imageName ofType:@"png"]]) {
+            imgProps = [[NSMutableDictionary alloc] init];
+            [imgProps setObject:imgData forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
+            [attachments setObject:imgProps forKey:[imageName stringByAppendingPathExtension:@"png"]];
+            [imgProps release];
+        }
+    }
+    return attachments;
+}
+
 /* -----------------------------------------------------------------------------
    Generate a preview for file
 
@@ -66,11 +86,14 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         if (data) {
-            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] fontSize:_fontSize];
+            NSString *htmlString = [SKQLConverter htmlStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] fontSize:_fontSize];
             [data release];
-#warning kUTTypeRTFD not supported
-            if (attrString && (data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil])) {
-                QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypeRTF, NULL);
+            if (data = [htmlString dataUsingEncoding:NSUTF8StringEncoding]) {
+                NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            @"UTF-8", (NSString *)kQLPreviewPropertyTextEncodingNameKey,
+                                            @"text/html", (NSString *)kQLPreviewPropertyMIMETypeKey,
+                                            imageAttachments(), (NSString *)kQLPreviewPropertyAttachmentsKey, nil];
+                QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypeHTML, (CFDictionaryRef)props);
                 err = noErr;
             }
         }
