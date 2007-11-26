@@ -37,5 +37,5 @@ extern NSBundle *SKQLGetMainBundle();
 extern NSString *SKQLPDFPathForPDFBundleURL(NSURL *url);
 
 @interface SKQLConverter : NSObject
-- (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
++ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
 @end

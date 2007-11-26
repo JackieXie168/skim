@@ -50,7 +50,7 @@ static const NSSize _containerSize = (NSSize) { 572, 752 };
 static const NSRect _iconRect = (NSRect) { 50, 140, 512, 512 };
 
 // readable in Cover Flow view, and distinguishable as text in icon view
-static const _fontSize 20.0;
+static const CGFloat _fontSize = 20.0;
 
 // wash the app icon over a white page background
 static void drawBackgroundAndApplicationIconInCurrentContext()
@@ -143,7 +143,6 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         
         if (pdfFile) {
             // sadly, we can't use the system's QL generator from inside quicklookd, so we don't get the fancy binder on the left edge
-            pdfFile = [filePath stringByAppendingPathComponent:pdfFile];
             CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((CFURLRef)[NSURL fileURLWithPath:pdfFile]);
             CGPDFPageRef pdfPage = NULL;
             if (pdfDoc && CGPDFDocumentGetNumberOfPages(pdfDoc) > 0)
@@ -188,7 +187,6 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 CGContextRelease(ctxt);
                 
                 [NSGraphicsContext restoreGraphicsState];    
-                [attrString release];
                 didGenerate = true;
             }
         }
@@ -219,7 +217,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
             ReleaseIconRef(iconRef);
         }
     }
-    
+    [pool release];
     return noErr;
 }
 
