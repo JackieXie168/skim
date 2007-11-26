@@ -29,6 +29,8 @@
 		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		C88FB7D7067446EC006EBB30 /* schema.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = schema.xml; sourceTree = "<group>"; };
 		C88FB7DB0674470F006EBB30 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/schema.strings; sourceTree = "<group>"; };
+		CE4F97280CFB4B9300DBEA14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/schema.strings; sourceTree = "<group>"; };
+		CE4F972B0CFB4B9D00DBEA14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE68C69E0CEF8A3C00B082F1 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/schema.strings; sourceTree = "<group>"; };
 		CE68C6A10CEF8A4300B082F1 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CEC4BE480CA90A9000299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/schema.strings; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				Dutch,
 				Italian,
 				Spanish,
+				ru,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* SkimImporter */;
 			projectDirPath = "";
@@ -213,6 +216,7 @@
 				CECD97A50C57A40C0026AAEC /* French */,
 				CEC4BE4B0CA90A9700299397 /* Spanish */,
 				CE68C6A10CEF8A4300B082F1 /* German */,
+				CE4F972B0CFB4B9D00DBEA14 /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -226,6 +230,7 @@
 				CECD97A20C57A4050026AAEC /* French */,
 				CEC4BE480CA90A9000299397 /* Spanish */,
 				CE68C69E0CEF8A3C00B082F1 /* German */,
+				CE4F97280CFB4B9300DBEA14 /* ru */,
 			);
 			name = schema.strings;
 			sourceTree = "<group>";
