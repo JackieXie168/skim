@@ -38,7 +38,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKQLConverter.h"
 
-static const _fontSize 12.0;
+static const CGFloat _fontSize = 12.0;
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
@@ -68,9 +68,9 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         if (data) {
             NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] fontSize:_fontSize];
             [data release];
-            
-            if (attrString && (data = [attrString RTFDFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil])) {
-                QLPreviewRequestSetDataRepresentation(preview, (CFDateRef *)data, kUTTypeRTFD, NULL);
+#warning kUTTypeRTFD not supported
+            if (attrString && (data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil])) {
+                QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypeRTF, NULL);
                 err = noErr;
             }
         }

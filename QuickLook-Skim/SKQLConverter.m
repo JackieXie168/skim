@@ -35,6 +35,7 @@
 
 static NSString *_noteFont = @"LucidaHandwriting-Italic";
 static const CGFloat _fontSize = 20.0;
+static const CGFloat _noteIndent = 20.0;
 
 NSBundle *SKQLGetMainBundle() { return [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"]; }
 
@@ -52,7 +53,7 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
         if (index != NSNotFound)
             pdfFile = [files objectAtIndex:index];
     }
-    returns pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
+    return pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
 }
 
 static NSAttributedString *imageAttachmentForType(NSString *type)
@@ -73,7 +74,7 @@ static NSAttributedString *imageAttachmentForType(NSString *type)
 
 @implementation SKQLConverter
 
-- (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
++ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes fontSize:(CGFloat)fontSize;
 {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     NSFont *font = [NSFont userFontOfSize:_fontSize];
