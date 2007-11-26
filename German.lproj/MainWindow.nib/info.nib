@@ -34,12 +34,12 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>830</integer>
-		<integer>314</integer>
-		<integer>796</integer>
-		<integer>5</integer>
-		<integer>502</integer>
 		<integer>687</integer>
+		<integer>502</integer>
+		<integer>796</integer>
+		<integer>314</integer>
 		<integer>168</integer>
+		<integer>5</integer>
 		<integer>256</integer>
 	</array>
 	<key>IBSystem Version</key>
