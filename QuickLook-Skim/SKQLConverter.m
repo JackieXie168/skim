@@ -1,0 +1,121 @@
+/*
+ This software is Copyright (c) 2007
+ Christiaan Hofman. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 
+ - Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 
+ - Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
+ distribution.
+ 
+ - Neither the name of Christiaan Hofman nor the names of any
+ contributors may be used to endorse or promote products derived
+ from this software without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#import "SKQLConverter.h"
+
+static const NSString *_noteFont = @"LucidaHandwriting-Italic";
+static const CGFloat _fontSize = 20.0;
+static const CGFloat _smallFontSize = 10.0;
+static const CGFloat _noteIndent = 20.0;
+
+NSBundle *SKQLGetMainBundle() { return [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"]; }
+
+NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
+{
+    NSString *filePath = [url path];
+    NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:filePath];
+    NSString *fileName = [[[filePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+    NSString *pdfFile = nil;
+    
+    if ([files containsObject:fileName]) {
+        pdfFile = fileName;
+    } else {
+        unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+        if (index != NSNotFound)
+            pdfFile = [files objectAtIndex:index];
+    }
+    returns pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
+}
+
+static NSAttributedString *imageAttachmentForType(NSString *type)
+{        
+    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[SKQLGetMainBundle() pathForResource:@"Note" ofType:@"png"]];
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [image release];
+    [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
+    
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
+    return attrString;
+}
+
+
+@implementation SKQLConverter
+
+- (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes;
+{
+    NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
+    NSFont *font = [NSFont userFontOfSize:_fontSize];
+    NSFont *noteFont = [NSFont fontWithName:_noteFont size:_fontSize];
+    NSFont *noteTextFont = [NSFont fontWithName:_noteFont size:_smallFontSize];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+    NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
+    NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
+    NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+    [noteParStyle setFirstLineHeadIndent:_noteIndent];
+    [noteParStyle setHeadIndent:_noteIndent];
+     
+    if (notes) {
+        NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+        NSEnumerator *noteEnum = [[notes sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
+        NSDictionary *note;
+        while (note = [noteEnum nextObject]) {
+            NSString *type = [note objectForKey:@"type"];
+            NSString *contents = [note objectForKey:@"contents"];
+            NSString *text = [[note objectForKey:@"text"] string];
+            NSColor *color = [note objectForKey:@"color"];
+            unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+            int start;
+            
+            [attrString appendAttributedString:imageAttachmentForType(type)];
+            [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
+            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
+            start = [attrString length];
+            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:noteAttrs] autorelease]];
+            if (text) {
+                [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+                [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:noteTextAttrs] autorelease]];
+            }
+            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+            [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
+        }
+        [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
+    }
+    
+    return attrString;
+}
+
+@end

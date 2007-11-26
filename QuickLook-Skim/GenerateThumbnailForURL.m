@@ -36,21 +36,91 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 #import <Foundation/Foundation.h>
+#import <QuartzCore/QuartzCore.h>
+#import "SKQLConverter.h"
 
-static NSAttributedString *imageAttachmentForType(NSString *type)
-{        
-    NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
-    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Note" ofType:@"png"]];
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-    [image release];
-    [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
+// Same size as [[NSPrintInfo sharedPrintInfo] paperSize] on my system
+// NSPrintInfo must not be used in a non-main thread (and it's hellishly slow in some circumstances)
+static const NSSize _paperSize = (NSSize) { 612, 792 };
+
+// page margins 20 pt on all edges
+static const CGFloat _horizontalMargin = 20;
+static const CGFloat _verticalMargin = 20;
+static const NSSize _containerSize = (NSSize) { 572, 752 };
+static const NSRect _iconRect = (NSRect) { 50, 140, 512, 512 };
+
+// wash the app icon over a white page background
+static void drawBackgroundAndApplicationIconInCurrentContext()
+{
+    [[NSColor whiteColor] setFill];
+    NSRect pageRect = { NSZeroPoint, _paperSize };
+    NSRectFillUsingOperation(pageRect, NSCompositeSourceOver);
     
-    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-    [wrapper release];
-    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
-    [attachment release];
+    NSString *iconPath = [SKQLGetMainBundle() pathForResource:@"Skim" ofType:@"icns"];
+    NSImage *appIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
     
-    return attrString;
+    [appIcon drawInRect:_iconRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.3];
+    [appIcon release];    
+}
+
+// creates a new NSTextStorage/NSLayoutManager/NSTextContainer system suitable for drawing in a thread
+static NSTextStorage *createTextStorage()
+{
+    NSTextStorage *textStorage = [[NSTextStorage alloc] init];
+    NSLayoutManager *lm = [[NSLayoutManager alloc] init];
+    NSTextContainer *tc = [[NSTextContainer alloc] init];
+    [tc setContainerSize:_containerSize];
+    [lm addTextContainer:tc];
+    // don't let the layout manager use its threaded layout (see header)
+    [lm setBackgroundLayoutEnabled:NO];
+    [textStorage addLayoutManager:lm];
+    // retained by layout manager
+    [tc release];
+    // retained by text storage
+    [lm release];
+    // see header; the CircleView example sets it to NO
+    [lm setUsesScreenFonts:YES];
+
+    return textStorage;
+}
+
+// assumes that the current NSGraphicsContext is the destination
+static void drawAttributedStringInCurrentContext(NSAttributedString *attrString)
+{
+    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    
+    NSTextStorage *textStorage = createTextStorage();
+    [textStorage beginEditing];
+    [textStorage setAttributedString:attrString];
+    
+    [textStorage endEditing];
+    NSRect stringRect = NSZeroRect;
+    stringRect.size = _paperSize;
+    
+    CGContextSaveGState(ctxt);
+    
+    CGAffineTransform t1 = CGAffineTransformMakeTranslation(_horizontalMargin, _paperSize.height - _verticalMargin);
+    CGAffineTransform t2 = CGAffineTransformMakeScale(1, -1);
+    CGAffineTransform pageTransform = CGAffineTransformConcat(t2, t1);
+    CGContextConcatCTM(ctxt, pageTransform);
+    
+    // objectAtIndex:0 is safe, since we added these to the text storage (so there's at least one)
+    NSLayoutManager *lm = [[textStorage layoutManagers] objectAtIndex:0];
+    NSTextContainer *tc = [[lm textContainers] objectAtIndex:0];
+    
+    NSRange glyphRange;
+    
+    // we now have a properly flipped graphics context, so force layout and then draw the text
+    glyphRange = [lm glyphRangeForBoundingRect:stringRect inTextContainer:tc];
+    NSRect usedRect = [lm usedRectForTextContainer:tc];
+    
+    // NSRunStorage raises if we try drawing a zero length range (happens if you have an empty text file)
+    if (glyphRange.length > 0) {
+        [lm drawBackgroundForGlyphRange:glyphRange atPoint:usedRect.origin];
+        [lm drawGlyphsForGlyphRange:glyphRange atPoint:usedRect.origin];
+    }        
+    CGContextRestoreGState(ctxt);
+    [textStorage release];    
 }
 
 /* -----------------------------------------------------------------------------
@@ -62,154 +132,90 @@ static NSAttributedString *imageAttachmentForType(NSString *type)
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    bool didGenerate = false;
     
-    
-    // return file icons for tiny sizes; this doesn't seem to be used, though; Finder asks for 108 x 107 icons when I have my desktop icon size set to 48 x 48
-    if (maxSize.height > 32) {
+    if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.pdfd"), contentTypeUTI)) {
         
-        if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.pdfd"), contentTypeUTI)) {
+        NSString *pdfFile = SKQLPDFPathForPDFBundleURL((NSURL *)url);
+        
+        if (pdfFile) {
+            // sadly, we can't use the system's QL generator from inside quicklookd, so we don't get the fancy binder on the left edge
+            pdfFile = [filePath stringByAppendingPathComponent:pdfFile];
+            CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((CFURLRef)[NSURL fileURLWithPath:pdfFile]);
+            CGPDFPageRef pdfPage = NULL;
+            if (pdfDoc && CGPDFDocumentGetNumberOfPages(pdfDoc) > 0)
+                pdfPage = CGPDFDocumentGetPage(pdfDoc, 1);
             
-            NSString *filePath = [(NSURL *)url path];
-            NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:filePath];
-            NSString *fileName = [[[filePath stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-            NSString *pdfFile = nil;
-            
-            if ([files containsObject:fileName]) {
-                pdfFile = fileName;
-            } else {
-                unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
-                if (index != NSNotFound)
-                    pdfFile = [files objectAtIndex:index];
-            }
-            if (pdfFile) {
-                // sadly, we can't use the system's QL generator from inside quicklookd, so we don't get the fancy binder on the left edge
-                pdfFile = [filePath stringByAppendingPathComponent:pdfFile];
-                CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((CFURLRef)[NSURL fileURLWithPath:pdfFile]);
-                CGPDFPageRef pdfPage = NULL;
-                if (pdfDoc && CGPDFDocumentGetNumberOfPages(pdfDoc) > 0)
-                    pdfPage = CGPDFDocumentGetPage(pdfDoc, 1);
-                
-                BOOL failed = NO;
-                if (pdfPage) {
-                    CGRect pageRect = CGPDFPageGetBoxRect(pdfPage, kCGPDFCropBox);
-                    CGRect thumbRect = {0.0, 0.0, CGRectGetWidth(pageRect), CGRectGetHeight(pageRect)};
-                    CGFloat color[4] = {1.0, 1.0, 1.0, 1.0};
-                    CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, thumbRect.size, FALSE, NULL);
-                    CGAffineTransform t = CGPDFPageGetDrawingTransform(pdfPage, kCGPDFCropBox, thumbRect, 0, true);
-                    CGContextConcatCTM(ctxt, t);
-                    CGContextClipToRect(ctxt, pageRect);
-                    CGContextSetFillColor(ctxt, color);
-                    CGContextFillRect(ctxt, pageRect);
-                    CGContextDrawPDFPage(ctxt, pdfPage);
-                    QLThumbnailRequestFlushContext(thumbnail, ctxt);
-                }
-                else {
-                    failed = YES;
-                }
-                CGPDFDocumentRelease(pdfDoc);
-                if (NO == failed) {
-                    // !!! early return
-                    [pool release];
-                    return noErr;
-                }
-            }
-            
-        } else if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.skimnotes"), contentTypeUTI)) {
-            
-            NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
-            if (data) {
-                NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-                [data release];
-                
-                NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
-                // large font size for thumbnails
-                NSFont *font = [NSFont userFontOfSize:20.0];
-                NSFont *noteFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:20.0];
-                NSFont *noteTextFont = [NSFont fontWithName:@"LucidaHandwriting-Italic" size:10.0];
-                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-                NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
-                NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
-                NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-                [noteParStyle setFirstLineHeadIndent:20.0];
-                [noteParStyle setHeadIndent:20.0];
-                 
-                if (array) {
-                    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-                    NSEnumerator *noteEnum = [[array sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
-                    NSDictionary *note;
-                    while (note = [noteEnum nextObject]) {
-                        NSString *type = [note objectForKey:@"type"];
-                        NSString *contents = [note objectForKey:@"contents"];
-                        NSString *text = [[note objectForKey:@"text"] string];
-                        NSColor *color = [note objectForKey:@"color"];
-                        unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
-                        int start;
-                        
-                        [attrString appendAttributedString:imageAttachmentForType(type)];
-                        [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
-                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
-                        start = [attrString length];
-                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:noteAttrs] autorelease]];
-                        if (text) {
-                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-                            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:noteTextAttrs] autorelease]];
-                        }
-                        [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-                        [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
-                    }
-                    [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
-                }
-                
-                NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"];
-                NSImage *skimIcon = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Skim" ofType:@"icns"] autorelease];
-                NSRect sourceRect = {NSZeroPoint, [skimIcon size]};
-                NSRect targetRect = NSMakeRect(50, 140, 512, 512);
-                NSSize paperSize = NSMakeSize(612, 792);
-                NSRect pageRect = NSMakeRect(0, 0, paperSize.width, paperSize.height);
-                CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, *(CGSize *)&paperSize, FALSE, NULL);
-                NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
-                [NSGraphicsContext saveGraphicsState];
-                [NSGraphicsContext setCurrentContext:nsContext];
-                [[NSColor whiteColor] setFill];
-                NSRectFillUsingOperation(pageRect, NSCompositeSourceOver);
-                [skimIcon drawInRect:targetRect fromRect:sourceRect operation:NSCompositeSourceOver fraction:0.5];
-                [attrString drawInRect:NSInsetRect(pageRect, 20.0f, 20.0f)];
+            if (pdfPage) {
+                CGRect pageRect = CGPDFPageGetBoxRect(pdfPage, kCGPDFCropBox);
+                CGRect thumbRect = {0.0, 0.0, CGRectGetWidth(pageRect), CGRectGetHeight(pageRect)};
+                CGFloat color[4] = {1.0, 1.0, 1.0, 1.0};
+                CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, thumbRect.size, FALSE, NULL);
+                CGAffineTransform t = CGPDFPageGetDrawingTransform(pdfPage, kCGPDFCropBox, thumbRect, 0, true);
+                CGContextConcatCTM(ctxt, t);
+                CGContextClipToRect(ctxt, pageRect);
+                CGContextSetFillColor(ctxt, color);
+                CGContextFillRect(ctxt, pageRect);
+                CGContextDrawPDFPage(ctxt, pdfPage);
                 QLThumbnailRequestFlushContext(thumbnail, ctxt);
                 CGContextRelease(ctxt);
-                [attrString release];
-                [NSGraphicsContext restoreGraphicsState];
-                
-                // !!! early return
-                [pool release];
-                return noErr;
+                didGenerate = true;
             }
+            CGPDFDocumentRelease(pdfDoc);
+        }
+        
+    } else if (UTTypeEqual(CFSTR("net.sourceforge.skim-app.skimnotes"), contentTypeUTI)) {
+        
+        NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
+        
+        if (data) {
+            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+            [data release];
             
+            if (attrString) {
+                CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, *(CGSize *)&_paperSize, FALSE, NULL);
+                NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:YES];
+                [NSGraphicsContext saveGraphicsState];
+                [NSGraphicsContext setCurrentContext:nsContext];
+                
+                drawBackgroundAndApplicationIconInCurrentContext();
+                drawAttributedStringInCurrentContext(attrString);
+                
+                QLThumbnailRequestFlushContext(thumbnail, ctxt);
+                CGContextRelease(ctxt);
+                
+                [NSGraphicsContext restoreGraphicsState];    
+                [attrString release];
+                didGenerate = true;
+            }
+        }
+        
+    }
+    
+    /* fallback case: draw the file icon using Icon Services */
+    if (false == didGenerate) {
+        
+        FSRef fileRef;
+        OSStatus err;
+        if (CFURLGetFSRef(url, &fileRef))
+            err = noErr;
+        else
+            err = fnfErr;
+        
+        IconRef iconRef;
+        CGRect rect = CGRectZero;
+        CGFloat side = MIN(maxSize.width, maxSize.height);
+        rect.size.width = side;
+        rect.size.height = side;
+        if (noErr == err)
+            err = GetIconRefFromFileInfo(&fileRef, 0, NULL, kFSCatInfoNone, NULL, kIconServicesNormalUsageFlag, &iconRef, NULL);
+        if (noErr == err) {
+            CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, rect.size, TRUE, NULL);
+            err = PlotIconRefInContext(ctxt, &rect, kAlignAbsoluteCenter, kTransformNone, NULL, kPlotIconRefNormalFlags, iconRef);
+            CGContextRelease(ctxt);
+            ReleaseIconRef(iconRef);
         }
     }
-    /* fallback case: draw the file icon using Icon Services */
-    
-    FSRef fileRef;
-    OSStatus err;
-    if (CFURLGetFSRef(url, &fileRef))
-        err = noErr;
-    else
-        err = fnfErr;
-    
-    IconRef iconRef;
-    CGRect rect = CGRectZero;
-    CGFloat side = MIN(maxSize.width, maxSize.height);
-    rect.size.width = side;
-    rect.size.height = side;
-    if (noErr == err)
-        err = GetIconRefFromFileInfo(&fileRef, 0, NULL, kFSCatInfoNone, NULL, kIconServicesNormalUsageFlag, &iconRef, NULL);
-    if (noErr == err) {
-        CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, rect.size, TRUE, NULL);
-        err = PlotIconRefInContext(ctxt, &rect, kAlignAbsoluteCenter, kTransformNone, NULL, kPlotIconRefNormalFlags, iconRef);
-        CGContextRelease(ctxt);
-        ReleaseIconRef(iconRef);
-    }
-    
-    [pool release];
     
     return noErr;
 }

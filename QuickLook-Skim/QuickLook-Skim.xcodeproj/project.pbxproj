@@ -13,6 +13,8 @@
 		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
+		CE4F80EB0CFB06EE00DBEA14 /* SKQLConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4F80E90CFB06EE00DBEA14 /* SKQLConverter.h */; };
+		CE4F80EC0CFB06EE00DBEA14 /* SKQLConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4F80EA0CFB06EE00DBEA14 /* SKQLConverter.m */; };
 		CEC7BCE20CF763A0008CCD63 /* StrikeOut.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCDA0CF7639E008CCD63 /* StrikeOut.png */; };
 		CEC7BCE30CF763A0008CCD63 /* Note.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCDB0CF7639E008CCD63 /* Note.png */; };
 		CEC7BCE40CF763A0008CCD63 /* Line.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCDC0CF7639E008CCD63 /* Line.png */; };
@@ -37,6 +39,8 @@
 		8D576316048677EA00EA77CD /* Skim.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Skim.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		CE4F80E90CFB06EE00DBEA14 /* SKQLConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKQLConverter.h; sourceTree = "<group>"; };
+		CE4F80EA0CFB06EE00DBEA14 /* SKQLConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKQLConverter.m; sourceTree = "<group>"; };
 		CEC7BCDA0CF7639E008CCD63 /* StrikeOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StrikeOut.png; sourceTree = "<group>"; };
 		CEC7BCDB0CF7639E008CCD63 /* Note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Note.png; sourceTree = "<group>"; };
 		CEC7BCDC0CF7639E008CCD63 /* Line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Line.png; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 				61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.m */,
 				2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.m */,
 				08FB77B6FE84183AC02AAC07 /* main.c */,
+				CE4F80E90CFB06EE00DBEA14 /* SKQLConverter.h */,
+				CE4F80EA0CFB06EE00DBEA14 /* SKQLConverter.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -136,6 +142,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE4F80EB0CFB06EE00DBEA14 /* SKQLConverter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +224,7 @@
 				8D576312048677EA00EA77CD /* main.c in Sources */,
 				2C05A19C06CAA52B00D84F6F /* GeneratePreviewForURL.m in Sources */,
 				61E3BCFB0870B4F2002186A0 /* GenerateThumbnailForURL.m in Sources */,
+				CE4F80EC0CFB06EE00DBEA14 /* SKQLConverter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
