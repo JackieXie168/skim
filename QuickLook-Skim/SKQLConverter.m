@@ -83,8 +83,8 @@ static NSString *hexStringWithColor(NSColor *color)
     return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
 }
 
-// Stolen from OmniFoundation
-static NSString *HTMLEscapeString(NSString *string)
+// Stolen from OmniFoundation; modified to use malloc instead of alloca()
+static NSString *HTMLEscapeString(NSString *htmlString)
 {
     unichar *ptr, *begin, *end;
     NSMutableString *result;
@@ -97,10 +97,16 @@ static NSString *HTMLEscapeString(NSString *string)
     [string release]; \
     begin = ptr + 1;
     
-    length = [self length];
-    ptr = alloca(length * sizeof(unichar));
+    length = [htmlString length];
+    ptr = NSZoneMalloc(NULL, length * sizeof(unichar));
+    if (!ptr)
+        return nil;
+    
+    // keep a pointer that we can free later
+    unichar *originalPtr = ptr;
+
     end = ptr + length;
-    [self getCharacters:ptr];
+    [htmlString getCharacters:ptr];
     result = [NSMutableString stringWithCapacity:length];
     
     begin = ptr;
@@ -131,6 +137,7 @@ static NSString *HTMLEscapeString(NSString *string)
         ptr++;
     }
     APPEND_PREVIOUS();
+    NSZoneFree(NULL, originalPtr);
     return result;
 }
 
@@ -146,9 +153,12 @@ static NSString *HTMLEscapeString(NSString *string)
     NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+#warning _noteIndent removed?
+    /*
+
     [noteParStyle setFirstLineHeadIndent:_noteIndent];
     [noteParStyle setHeadIndent:_noteIndent];
-     
+     */
     if (notes) {
         NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
         NSEnumerator *noteEnum = [[notes sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
