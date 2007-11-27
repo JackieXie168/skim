@@ -860,15 +860,9 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     if (NSOKButton == returnCode && [self fileURL]) {
                             
-        @try {            
-            // create a tar archive; make sure we use a relative path in the archive
-            [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                                arguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]
-                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
-        }
-        @catch(id exception) {
-            NSLog(@"caught exception %@ while archiving %@ to %@", exception, [[self fileURL] path], [sheet filename]);
-        }
+        [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
+                            arguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]
+                 currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
     }
 }
 
@@ -891,22 +885,28 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 }
 
 - (void)saveDiskImageWithInfo:(NSDictionary *)info {
-        
-        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-        
-        NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
-        NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
-        NSString *scriptPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"archivedmg.sh"];
-        NSTask *task = [NSTask launchedTaskWithLaunchPath:scriptPath arguments:[NSArray arrayWithObjects:sourcePath, targetPath, nil]];
-        
-        if ([task isRunning])
-            [task waitUntilExit];
-        if ([task isRunning])
-            [task terminate];
-        
-        [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
-        
-        [pool release];
+    
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
+    NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
+    NSString *scriptPath = nil;
+    NSArray *arguments = nil;
+    
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        // hdiutil on Tiger looses EAs, so we use a more complicated path
+        scriptPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"archivedmg.sh"];
+        arguments = [NSArray arrayWithObjects:sourcePath, targetPath, nil];
+    } else {
+        scriptPath = @"/usr/bin/hdiutil";
+        arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
+    }
+    
+    [NSTask runTaskWithLaunchPath:scriptPath arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]];
+    
+    [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
+    
+    [pool release];
 }
 
 - (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
