@@ -123,6 +123,8 @@
     NSSize noteSize = NSMakeSize(15.0, 11.0);
     NSBezierPath *path;
     
+    [NSBezierPath setDefaultLineWidth:1.0];
+    
     backAdornImage = [[NSImage alloc] initWithSize:size];
     [backAdornImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
