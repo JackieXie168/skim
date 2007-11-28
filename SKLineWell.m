@@ -299,6 +299,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     [[NSBezierPath bezierPathWithRect:rect] addClip];
     
     [[NSColor blackColor] setStroke];
+    [NSBezierPath setDefaultLineWidth:1.0];
     [[self path] stroke];
     
     [NSGraphicsContext restoreGraphicsState];
@@ -322,6 +323,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     NSRectFill(bounds);
     [[NSColor controlBackgroundColor] setFill];
     NSRectFill(NSInsetRect(bounds, 2.0, 2.0));
+    [NSBezierPath setDefaultLineWidth:1.0];
     [[self path] stroke];
     [image unlockFocus];
     

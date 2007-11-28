@@ -3405,6 +3405,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         [image lockFocus];
         [[NSColor lightGrayColor] setStroke];
+        [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:lineRect];
         [color drawSwatchInRect:swatchRect];
         [image unlockFocus];
