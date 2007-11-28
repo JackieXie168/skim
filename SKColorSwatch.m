@@ -142,6 +142,7 @@ static NSString *SKColorsBindingName = @"colors";
     for (i = 0; i < count; i++) {
         NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.66667 alpha:1.0];
         [borderColor set];
+        [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(r, 0.5, 0.5)];
         borderColor = highlightedIndex == i ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
         [borderColor set];
@@ -197,6 +198,7 @@ static NSString *SKColorsBindingName = @"colors";
                     NSImage *image = [[NSImage alloc] initWithSize:rect.size];
                     [image lockFocus];
                     [[NSColor blackColor] set];
+                    [NSBezierPath setDefaultLineWidth:1.0];
                     [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
                     [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
                     [image unlockFocus];

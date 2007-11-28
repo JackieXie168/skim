@@ -3413,6 +3413,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         [self lockFocus];
         [[NSColor blackColor] set];
+        [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
         [self unlockFocus];
         [[self window] enableFlushWindow];

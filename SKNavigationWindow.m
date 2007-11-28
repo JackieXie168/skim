@@ -181,12 +181,15 @@
 @implementation SKNavigationContentView
 
 - (void)drawRect:(NSRect)rect {
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     rect = NSInsetRect([self bounds], 1.0, 1.0);
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
     [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
+    [NSBezierPath setDefaultLineWidth:1.0];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
 @end

@@ -390,6 +390,7 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
         NSRect rect = cellFrame;
         rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - NSWidth(cellFrame)));
         rect.size.height = NSWidth(rect);
+        [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         [[NSGraphicsContext currentContext] restoreGraphicsState];
     }
