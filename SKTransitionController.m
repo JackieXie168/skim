@@ -67,26 +67,6 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@interface SKTransitionView : NSOpenGLView {
-    SKTransitionAnimation *animation;
-    CIImage *image;
-    CIContext *context;
-    BOOL needsReshape;
-}
-- (SKTransitionAnimation *)animation;
-- (void)setAnimation:(SKTransitionAnimation *)newAnimation;
-- (CIImage *)image;
-- (void)setImage:(CIImage *)newImage;
-- (CIImage *)currentImage;
-@end
-
-#pragma mark -
-
-@interface SKTransitionWindow : NSWindow
-@end
-
-#pragma mark -
-
 @implementation SKTransitionController
 
 + (NSArray *)transitionFilterNames {
@@ -103,7 +83,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (id)initWithView:(NSView *)aView {
     if (self = [super init]) {
-        view = aView;
+        view = aView; // don't retain as it may retain us
         transitionStyle = SKNoTransition;
         duration = 1.0;
         shouldRestrict = YES;
@@ -113,6 +93,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)dealloc {
     [initialImage release];
+    [filters release];
     [super dealloc];
 }
 
@@ -164,7 +145,6 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {
-    static NSMutableDictionary *filters = nil;
     if (filters == nil)
         filters = [[NSMutableDictionary alloc] init];
     CIFilter *filter = [filters objectForKey:name];
@@ -273,21 +253,14 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (NSWindow *)transitionWindow {
-    if (transitionWindow == nil) {
-        transitionWindow = [[SKTransitionWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-        [transitionWindow setReleasedWhenClosed:NO];
-        [transitionWindow setIgnoresMouseEvents:YES];
-        
-        transitionView = [[SKTransitionView alloc] init];
-        [transitionWindow setContentView:transitionView];
-        [transitionView release];
-    }
+    if (transitionWindow == nil)
+        [self window];
     return transitionWindow;
 }
 
 - (SKTransitionView *)transitionView {
     if (transitionView == nil)
-        [self transitionWindow];
+        [self window];
     return transitionView;
 }
 
@@ -411,7 +384,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         
         [[self transitionWindow] setFrame:frame display:NO];
         [[self transitionWindow] orderBack:nil];
-        [[view window] addChildWindow:transitionWindow ordered:NSWindowAbove];
+        [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
         
         [animation startAnimation];
         
@@ -421,7 +394,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         [[view window] enableFlushWindow];
         [[view window] flushWindow];
         
-        [[view window] removeChildWindow:transitionWindow];
+        [[view window] removeChildWindow:[self transitionWindow]];
         [[self transitionWindow] orderOut:nil];
         [[self transitionView] setAnimation:nil];
         
@@ -435,8 +408,6 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         [self setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
         [self setDuration:fmaxf([transitionDurationField floatValue], 0.0)];
         [self setShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
-        // create the window to avoid delaying the first transition
-        [self transitionWindow];
     }
 }
 
@@ -629,6 +600,16 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 
 @implementation SKTransitionWindow
+
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:bufferingType defer:deferCreation]) {
+        [self setReleasedWhenClosed:NO];
+        [self setIgnoresMouseEvents:YES];
+    }
+    return self;
+}
+
 - (BOOL)canBecomeMainWindow { return NO; }
 - (BOOL)canBecomeKeyWindow { return NO; }
+
 @end
