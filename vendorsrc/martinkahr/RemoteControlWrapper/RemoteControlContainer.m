@@ -38,6 +38,10 @@
 }
 
 - (void) dealloc {
+	unsigned int i;
+	for(i=0; i < [remoteControls count]; i++) {
+		[[remoteControls objectAtIndex: i] removeObserver: self forKeyPath:@"listeningToRemote"];
+	}	
 	[self stopListening: self];
 	[remoteControls release];
 	[super dealloc];
@@ -48,6 +52,7 @@
 	if (remoteControl) {
 		[remoteControls addObject: remoteControl];
 		[remoteControl addObserver: self forKeyPath:@"listeningToRemote" options:NSKeyValueObservingOptionNew context:nil];
+        [remoteControl release];
 		return YES;		
 	}
 	return NO;	
