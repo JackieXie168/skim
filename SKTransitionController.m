@@ -435,6 +435,8 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         [self setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
         [self setDuration:fmaxf([transitionDurationField floatValue], 0.0)];
         [self setShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
+        // create the window to avoid delaying the first transition
+        [self transitionWindow];
     }
 }
 
