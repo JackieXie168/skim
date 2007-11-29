@@ -112,19 +112,21 @@ typedef enum _SKAnimationTransitionStyle {
     SKCoreImageTransition
 } SKAnimationTransitionStyle;
 
-@class CIImage, SKTransitionView;
+@class CIImage, SKTransitionWindow, SKTransitionView;
 
 @interface SKTransitionController : NSWindowController {
-    IBOutlet NSPopUpButton  *transitionStylePopUpButton;
-    IBOutlet NSTextField    *transitionDurationField;
-    IBOutlet NSSlider       *transitionDurationSlider;
-    IBOutlet NSMatrix       *transitionExtentMatrix;
+    IBOutlet NSPopUpButton      *transitionStylePopUpButton;
+    IBOutlet NSTextField        *transitionDurationField;
+    IBOutlet NSSlider           *transitionDurationSlider;
+    IBOutlet NSMatrix           *transitionExtentMatrix;
+    IBOutlet SKTransitionWindow *transitionWindow;
+    IBOutlet SKTransitionView   *transitionView;
     
-    NSWindow *transitionWindow;
-    SKTransitionView *transitionView;
     NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
+    
+    NSMutableDictionary *filters;
     
     SKAnimationTransitionStyle transitionStyle;
     float duration;
@@ -153,4 +155,26 @@ typedef enum _SKAnimationTransitionStyle {
 - (void)chooseTransitionModalForWindow:(NSWindow *)window;
 - (IBAction)dismissTransitionSheet:(id)sender;
 
+@end
+
+#pragma mark -
+
+@class SKTransitionAnimation, CIImage, CIContext;
+
+@interface SKTransitionView : NSOpenGLView {
+    SKTransitionAnimation *animation;
+    CIImage *image;
+    CIContext *context;
+    BOOL needsReshape;
+}
+- (SKTransitionAnimation *)animation;
+- (void)setAnimation:(SKTransitionAnimation *)newAnimation;
+- (CIImage *)image;
+- (void)setImage:(CIImage *)newImage;
+- (CIImage *)currentImage;
+@end
+
+#pragma mark -
+
+@interface SKTransitionWindow : NSWindow
 @end

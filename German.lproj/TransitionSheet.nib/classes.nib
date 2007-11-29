@@ -10,9 +10,13 @@
                 transitionDurationSlider = NSSlider; 
                 transitionExtentMatrix = NSMatrix; 
                 transitionStylePopUpButton = NSPopUpButton; 
+                transitionView = SKTransitionView; 
+                transitionWindow = SKTransitionWindow; 
             }; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {CLASS = SKTransitionView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }, 
+        {CLASS = SKTransitionWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }
     ); 
     IBVersion = 1; 
 }
