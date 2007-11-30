@@ -4529,6 +4529,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [backForwardButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [backForwardButton setFrame:frame];
+    if ([backForwardButton respondsToSelector:@selector(setSegmentStyle:)])
+        [backForwardButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:backForwardButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarBackForwardItemIdentifier];
@@ -4567,9 +4569,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [previousPageButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [previousPageButton setFrame:frame];
+    if ([previousPageButton respondsToSelector:@selector(setSegmentStyle:)])
+        [previousPageButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     frame = [nextPageButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [nextPageButton setFrame:frame];
+    if ([nextPageButton respondsToSelector:@selector(setSegmentStyle:)])
+        [nextPageButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:pageNumberButtonsView];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberButtonsItemIdentifier];
@@ -4645,6 +4651,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [zoomInOutButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [zoomInOutButton setFrame:frame];
+    if ([zoomInOutButton respondsToSelector:@selector(setSegmentStyle:)])
+        [zoomInOutButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:zoomInOutButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInOutItemIdentifier];
@@ -4668,6 +4676,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [zoomInActualOutButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [zoomInActualOutButton setFrame:frame];
+    if ([zoomInActualOutButton respondsToSelector:@selector(setSegmentStyle:)])
+        [zoomInActualOutButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:zoomInActualOutButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInActualOutItemIdentifier];
@@ -4862,6 +4872,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [noteButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [noteButton setFrame:frame];
+    if ([noteButton respondsToSelector:@selector(setSegmentStyle:)])
+        [noteButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:noteButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNotesItemIdentifier];
@@ -4918,6 +4930,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [toolModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [toolModeButton setFrame:frame];
+    if ([toolModeButton respondsToSelector:@selector(setSegmentStyle:)])
+        [toolModeButton setSegmentStyle:NSSegmentStyleTexturedRounded];
     [item setViewWithSizes:toolModeButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
