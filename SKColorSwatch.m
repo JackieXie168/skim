@@ -96,11 +96,11 @@ static NSString *SKColorsBindingName = @"colors";
     if ([coder allowsKeyedCoding]) {
         [coder encodeObject:colors forKey:@"colors"];
         [coder encodeObject:NSStringFromSelector(action) forKey:@"action"];
-        [coder encodeObject:target forKey:@"target"];
+        [coder encodeConditionalObject:target forKey:@"target"];
     } else {
         [coder encodeObject:colors];
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
-        [coder encodeObject:target];
+        [coder encodeConditionalObject:target];
     }
 }
 
