@@ -49,7 +49,7 @@ enum {
 };
 
 @interface SKConversionProgressController (Private)
-- (int)runModalConversionInWithInfo:(NSDictionary *)info;
+- (int)runModalConversionWithInfo:(NSDictionary *)info;
 - (void)doConversionWithInfo:(NSDictionary *)info;
 - (void)stopModalOnMainThread:(BOOL)success;
 - (void)conversionCompleted:(BOOL)didComplete;
@@ -132,7 +132,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @implementation SKConversionProgressController (Private)
 
-- (int)runModalConversionInWithInfo:(NSDictionary *)info {
+- (int)runModalConversionWithInfo:(NSDictionary *)info {
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     BOOL didDetach = NO;
@@ -224,7 +224,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
     
-    int rv = [self runModalConversionInWithInfo:dictionary];
+    int rv = [self runModalConversionWithInfo:dictionary];
     
     CGDataProviderRelease(provider);
     CGDataConsumerRelease(consumer);
@@ -294,7 +294,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", nil];
     
-    int rv = [self runModalConversionInWithInfo:dictionary];
+    int rv = [self runModalConversionWithInfo:dictionary];
     
     if (rv != SKConversionSucceeded) {
         [pdfData release];
@@ -313,17 +313,17 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    
     NSString *dviFile = [info objectForKey:@"dviFile"];
     NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
     NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
-    NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
     int i = 0, count = [paths count];
     
     NSAssert1(commandName == nil || [commandName isEqualToString:@"dvips"] || [commandName isEqualToString:@"dvipdf"] || [commandName isEqualToString:@"dvipdfm"] || [commandName isEqualToString:@"dvipdfmx"], @"DVI converter %@ is not supported", commandName);
     
-    while ([fm isExecutableFileAtPath:commandPath] == NO) {
+    // should we also check executable permissions? That would require a thread safe version of isExecutableFileAtPath:
+    // but the paths we check should be executable or it's the user's responsibility
+    while (SKFileExistsAtPath(commandPath) == NO) {
         if (i >= count) {
             commandPath = nil;
             break;
@@ -335,14 +335,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
     NSString *outFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
-    BOOL success = commandPath != nil && [fm fileExistsAtPath:dviFile];
+    BOOL success = commandPath != nil && SKFileExistsAtPath(dviFile);
     
     NSMethodSignature *ms;
     NSInvocation *invocation;
     
     if (success) {
-        
-        [fm createDirectoryAtPath:tmpDir attributes:nil];
         
         task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
         
@@ -397,7 +395,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         [self stopModalOnMainThread:success];
     }
     
-    [fm removeFileAtPath:tmpDir handler:nil];
+    FSPathDeleteContainer((UInt8 *)[tmpDir fileSystemRepresentation]);
     
     [pool release];
 }
