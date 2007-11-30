@@ -146,6 +146,24 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNoteToolAdorn", @"CircleNoteToolAdorn", @"SquareNoteToolAdorn", @"HighlightNoteToolAdorn", @"UnderlineNoteToolAdorn", @"StrikeOutNoteToolAdorn", @"LineNoteToolAdorn"};
 
+#if !defined(MAC_OS_X_VERSION_10_5) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
+typedef enum _NSSegmentStyle {
+    NSSegmentStyleAutomatic,
+    NSSegmentStyleCapsule,
+    NSSegmentStyleRounded,
+    NSSegmentStyleRoundRect,
+    NSSegmentStyleSmallSquare,
+    NSSegmentStyleTexturedRounded,
+    NSSegmentStyleTexturedSquare
+} NSSegmentStyle;
+@interface NSSegmentedControl (SKLeopardOnly)
+- (NSSegmentStyle)segmentStyle;
+- (void)setSegmentStyle:(NSSegmentStyle)style;
+@end
+#else
+#warning remove this
+#endif
+
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
 @end
@@ -314,6 +332,14 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         frame = [rightSideButton frame];
         frame.size.height = SEGMENTED_CONTROL_HEIGHT;
         [rightSideButton setFrame:frame];
+        frame = [findButton frame];
+        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        [findButton setFrame:frame];
+        if ([leftSideButton respondsToSelector:@selector(setSegmentStyle:)]) {
+            [leftSideButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+            [rightSideButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+            [findButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        }
     }
     
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
