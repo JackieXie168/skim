@@ -67,9 +67,7 @@
         return [self bezierPathWithRect:rect];
     
     NSRect innerRect = NSInsetRect(rect, radius, radius); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];    
     
@@ -114,9 +112,7 @@
     
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMinXEdge); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];    
     
@@ -159,9 +155,7 @@
     
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMaxXEdge); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];    
     
@@ -204,9 +198,7 @@
     
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, radius, 0.0), &ignored, &innerRect, radius, NSMaxYEdge); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];    
     
@@ -249,9 +241,7 @@
     
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, radius, 0.0), &ignored, &innerRect, radius, NSMinYEdge); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];    
     
@@ -296,10 +286,7 @@
 + (NSBezierPath *)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect
 {
     float radius = 0.5f * rect.size.height;
-    
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
     
@@ -330,10 +317,7 @@
     float radiusX = 0.5 * NSWidth(rect);
     float radiusY = 0.5 * NSHeight(rect);
     int i = 0;
-    
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
     
@@ -351,10 +335,7 @@
     float radiusX = 0.5 * NSWidth(rect);
     float radiusY = 0.5 * NSHeight(rect);
     int i;
-    
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
+    NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
     
