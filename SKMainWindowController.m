@@ -2567,7 +2567,6 @@ typedef enum _NSSegmentStyle {
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
     if ([newView window] == nil) {
-        NSMutableArray *viewAnimations = animate ? [NSMutableArray arrayWithCapacity:4] : nil;
         NSResponder *oldFirstResponder = [[oldView window] firstResponder];
         BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
         BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
@@ -2582,10 +2581,6 @@ typedef enum _NSSegmentStyle {
             [newButton setFrame:[oldButton frame]];
             [newButton setHidden:animate];
             [[oldButton superview] addSubview:newButton];
-            if (animate) {
-                [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil]];
-                [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil]];
-            }
         }
         
         [newView setFrame:[oldView frame]];
@@ -2593,17 +2588,29 @@ typedef enum _NSSegmentStyle {
         [[oldView superview] addSubview:newView];
         
         if (animate) {
-            [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil]];
-            [viewAnimations addObject:[NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil]];
+            NSArray *viewAnimations = [NSArray arrayWithObjects:
+                [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
+                [NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
             
             NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-            
             [animation setAnimationBlockingMode:NSAnimationBlocking];
-            [animation setDuration:0.75];
+            [animation setDuration:0.7];
             [animation setAnimationCurve:NSAnimationEaseIn];
             isAnimating = YES;
             [animation startAnimation];
             isAnimating = NO;
+            
+            if (wasFind != isFind) {
+                viewAnimations = [NSArray arrayWithObjects:
+                    [NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
+                    [NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
+                
+                animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
+                [animation setAnimationBlockingMode:NSAnimationBlocking];
+                [animation setDuration:0.3];
+                [animation setAnimationCurve:NSAnimationEaseIn];
+                [animation startAnimation];
+            }
         }
         
         if ([oldFirstResponder isDescendantOf:oldView])
@@ -2615,6 +2622,7 @@ typedef enum _NSSegmentStyle {
         if (wasFind != isFind) {
             [containerView addSubview:oldButton];
             [oldButton setHidden:NO];
+            [newButton setHidden:NO];
             if ([oldFirstResponder isEqual:oldButton])
                 [[newButton window] makeFirstResponder:newButton];
         }
