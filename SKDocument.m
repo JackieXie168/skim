@@ -156,6 +156,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
+    [self setPDFDoc:nil];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
