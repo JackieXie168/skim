@@ -153,10 +153,10 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     }
     
     [mainController setPdfDocument:pdfDocument];
+    [self setPDFDoc:nil];
     
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
-    [self setPDFDoc:nil];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
@@ -478,7 +478,10 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
     if (success) {
+        if ([pdfDocument isLocked])
+            [self tryToUnlockDocument:pdfDocument];
         [[self mainWindowController] setPdfDocument:pdfDocument];
+        [self setPDFDoc:nil];
         if (noteDicts) {
             [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
             [self setNoteDicts:nil];
