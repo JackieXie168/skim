@@ -288,7 +288,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         NSAssert1([supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
         
-        while ([fm isExecutableFileAtPath:commandPath]) {
+        while ([fm isExecutableFileAtPath:commandPath] == NO) {
             if (i >= count) {
                 commandPath = nil;
                 break;
@@ -320,8 +320,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSMutableData *pdfData = nil;
     
     if (dviToolPath) {
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", dviToolPath, @"dviToolPath", nil];
         pdfData = [[NSMutableData alloc] init];
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", dviToolPath, @"dviToolPath", nil];
         
         int rv = [self runModalConversionWithInfo:dictionary];
         
