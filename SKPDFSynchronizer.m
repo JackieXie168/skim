@@ -72,7 +72,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 @end
 
 @protocol SKPDFSynchronizerMainThread
-- (oneway void)setLocalServer:(byref id)anObject;
+- (void)setLocalServer:(byref id)anObject;
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
 - (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
 @end
