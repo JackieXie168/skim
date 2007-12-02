@@ -222,7 +222,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark Main thread
 #pragma mark | DO server
 
-- (oneway void)setLocalServer:(byref id)anObject {
+- (void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
 }
