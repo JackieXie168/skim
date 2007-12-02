@@ -1881,9 +1881,7 @@ typedef enum _NSSegmentStyle {
 }
 
 - (IBAction)getInfo:(id)sender {
-    SKInfoWindowController *infoController = [SKInfoWindowController sharedInstance];
-    [infoController fillInfoForDocument:[self document]];
-    [infoController showWindow:self];
+    [[SKInfoWindowController sharedInstance] showWindow:self];
 }
 
 - (IBAction)changeScaleFactor:(id)sender {

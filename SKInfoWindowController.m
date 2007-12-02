@@ -64,15 +64,12 @@ static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 - (id)init {
     if (self = [super init]) {
         info = [[NSMutableDictionary alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidBecomeKeyNotification:) 
-                                                     name: NSWindowDidBecomeMainNotification object: nil];
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidResignKeyNotification:) 
-                                                     name: NSWindowDidResignMainNotification object: nil];
     }
     return self;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [info release];
     [super dealloc];
 }
@@ -83,6 +80,13 @@ static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
+    
+    [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidBecomeMainNotification:) 
+                                                 name: NSWindowDidBecomeMainNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidResignMainNotification:) 
+                                                 name: NSWindowDidResignMainNotification object: nil];
 }
 
 static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
@@ -208,10 +212,6 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     return dictionary;
 }
 
-- (void)fillInfoForDocument:(NSDocument *)doc {
-    [self setInfo:[self infoForDocument:doc]];
-}
-
 - (NSDictionary *)info {
     return info;
 }
@@ -220,12 +220,12 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     [info setDictionary:newInfo];
 }
 
-- (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification {
+- (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification {
     NSDocument *doc = [[[notification object] windowController] document];
     [self setInfo:[self infoForDocument:doc]];
 }
 
-- (void)handleWindowDidResignKeyNotification:(NSNotification *)notification {
+- (void)handleWindowDidResignMainNotification:(NSNotification *)notification {
     [self setInfo:nil];
 }
 
