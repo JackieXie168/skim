@@ -49,10 +49,9 @@
 - (void)setInfo:(NSDictionary *)newInfo;
 
 - (NSDictionary *)infoForDocument:(NSDocument *)doc;
-- (void)fillInfoForDocument:(NSDocument *)doc;
 
-- (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification;
-- (void)handleWindowDidResignKeyNotification:(NSNotification *)notification;
+- (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification;
+- (void)handleWindowDidResignMainNotification:(NSNotification *)notification;
 
 @end
 
