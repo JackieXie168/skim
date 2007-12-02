@@ -142,7 +142,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         [coder encodeBool:active forKey:@"active"];
         [coder encodeBool:ignoresLineEndings forKey:@"ignoresLineEndings"];
         [coder encodeObject:NSStringFromSelector(action) forKey:@"action"];
-        [coder encodeObject:target forKey:@"target"];
+        [coder encodeConditionalObject:target forKey:@"target"];
     } else {
         [coder encodeValueOfObjCType:@encode(float) at:&lineWidth];
         [coder encodeValueOfObjCType:@encode(int) at:&style];
@@ -152,7 +152,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         [coder encodeValueOfObjCType:@encode(BOOL) at:&active];
         [coder encodeValueOfObjCType:@encode(BOOL) at:&ignoresLineEndings];
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
-        [coder encodeObject:target];
+        [coder encodeConditionalObject:target];
     }
 }
 
