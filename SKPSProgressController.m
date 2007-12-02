@@ -275,6 +275,32 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @implementation SKDVIProgressController
 
++ (NSString *)dviToolPath {
+    static NSString *dviToolPath = nil;
+    
+    if (dviToolPath == nil) {
+        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
+        NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
+        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
+        int i = 0, count = [paths count];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSSet *supportedTools = [NSSet setWithObjects:@"dvips", @"dvipdf", @"dvipdfm", @"dvipdfmx", nil];
+        
+        NSAssert1([supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
+        
+        while ([fm isExecutableFileAtPath:commandPath]) {
+            if (i >= count) {
+                commandPath = nil;
+                break;
+            }
+            commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
+        }
+        dviToolPath = [commandPath retain];
+    }
+    
+    return dviToolPath;
+}
+
 - (IBAction)cancel:(id)sender
 {
     if (convertingPS) {
@@ -290,17 +316,22 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 }
 
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
-    NSMutableData *pdfData = [[NSMutableData alloc] init];
+    NSString *dviToolPath = [[self class] dviToolPath];
+    NSMutableData *pdfData = nil;
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", nil];
-    
-    int rv = [self runModalConversionWithInfo:dictionary];
-    
-    if (rv != SKConversionSucceeded) {
-        [pdfData release];
-        pdfData = nil;
+    if (dviToolPath) {
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", dviToolPath, @"dviToolPath", nil];
+        pdfData = [[NSMutableData alloc] init];
+        
+        int rv = [self runModalConversionWithInfo:dictionary];
+        
+        if (rv != SKConversionSucceeded) {
+            [pdfData release];
+            pdfData = nil;
+        }
+    } else {
+        NSBeep();
     }
-    
     return [pdfData autorelease];
 }
 
@@ -314,28 +345,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *dviFile = [info objectForKey:@"dviFile"];
-    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
-    NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
-    NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
-    int i = 0, count = [paths count];
-    
-    NSAssert1(commandName == nil || [commandName isEqualToString:@"dvips"] || [commandName isEqualToString:@"dvipdf"] || [commandName isEqualToString:@"dvipdfm"] || [commandName isEqualToString:@"dvipdfmx"], @"DVI converter %@ is not supported", commandName);
-    
-    // should we also check executable permissions? That would require a thread safe version of isExecutableFileAtPath:
-    // but the paths we check should be executable or it's the user's responsibility
-    while (SKFileExistsAtPath(commandPath) == NO) {
-        if (i >= count) {
-            commandPath = nil;
-            break;
-        }
-        commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
-    }
-    
+    NSString *commandPath = [info objectForKey:@"dviToolPath"];
+    NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
     NSString *outFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
-    BOOL success = commandPath != nil && SKFileExistsAtPath(dviFile);
+    BOOL success = SKFileExistsAtPath(dviFile);
     
     NSMethodSignature *ms;
     NSInvocation *invocation;
