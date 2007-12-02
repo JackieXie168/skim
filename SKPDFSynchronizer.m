@@ -121,10 +121,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
         serverOnServerThread = nil;
        
         shouldKeepRunning = 1;
+        serverReady = 0;
         
         // run a background thread to connect to the remote server
         // this will connect back to the connection we just set up
         [NSThread detachNewThreadSelector:@selector(runDOServerForPorts:) toTarget:self withObject:[NSArray arrayWithObjects:port2, port1, nil]];
+        
+        // wait till the server is set up
+        do {
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        } while (serverReady == 0 && shouldKeepRunning == 1);
     }
     return self;
 }
@@ -206,14 +212,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | Finding
 
 - (void)findLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    while (shouldKeepRunning && serverOnServerThread == nil)
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [serverOnServerThread serverFindLineForLocation:point inRect:rect atPageIndex:pageIndex];
 }
 
 - (void)findPageLocationForLine:(int)line inFile:(NSString *)file {
-    while (shouldKeepRunning && serverOnServerThread == nil)
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [serverOnServerThread serverFindPageLocationForLine:line inFile:file];
 }
 
@@ -275,6 +277,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         // handshake, this sets the proxy at the other side
         [serverOnMainThread setLocalServer:self];
         
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
+        
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
         
@@ -289,6 +293,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
         // reset the flag so we can start over; shouldn't be necessary
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&shouldKeepRunning);
+        // allow the main thread to continue, anyway
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
     }
     
     @finally {
