@@ -56,6 +56,7 @@
     NSConnection *localThreadConnection;
     
     volatile int32_t shouldKeepRunning __attribute__ ((aligned (4)));
+    volatile int32_t serverReady __attribute__ ((aligned (4)));
 }
 
 
