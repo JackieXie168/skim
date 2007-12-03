@@ -448,8 +448,8 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
-    [filter setValue:[NSNumber numberWithFloat:[self currentValue]] forKey:@"inputTime"];
     [super setCurrentProgress:progress];
+    [filter setValue:[NSNumber numberWithFloat:[self currentValue]] forKey:@"inputTime"];
     [[self delegate] display];
 }
 
