@@ -84,7 +84,7 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)animationDidStop:(NSAnimation *)animation {
+- (void)animationDidStop:(NSAnimation *)anAnimation {
     [animation release];
     animation = nil;
     [self orderOut:self];
