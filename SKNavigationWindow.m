@@ -425,11 +425,10 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    if ([[self window] isVisible] && NSPointInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds])) {
-        [self setState:[[notification object] autoScales]];
+    [self setState:[[notification object] autoScales]];
+    [self setNeedsDisplay:YES];
+    if ([[self window] isVisible] && NSPointInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds]))
         [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
-        [self setNeedsDisplay:YES];
-    }
 }
 
 @end
