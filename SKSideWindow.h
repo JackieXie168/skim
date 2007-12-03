@@ -37,11 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKMainWindow.h"
 
 
 @class SKMainWindowController;
 
-@interface SKSideWindow : NSWindow {
+@interface SKSideWindow : SKMainWindow {
     SKMainWindowController *controller;
     NSDrawerState state;
     NSRectEdge edge;

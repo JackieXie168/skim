@@ -39,7 +39,6 @@
 #import "SKSideWindow.h"
 #import "SKMainWindowController.h"
 #import "NSBezierPath_BDSKExtensions.h"
-#import "SKPDFHoverWindow.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -175,12 +174,6 @@
 
 - (void)setEnabled:(BOOL)flag {
     [(SKSideWindowContentView *)[self contentView] setEnabled:flag];
-}
-
-- (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super sendEvent:theEvent];
 }
 
 - (void)keyDown:(NSEvent *)theEvent {

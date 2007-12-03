@@ -37,10 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKMainWindow.h"
 
 
-@interface SKFullScreenWindow : NSWindow{
-}
+@interface SKFullScreenWindow : SKMainWindow
 
 - (id)initWithScreen:(NSScreen *)screen;
 

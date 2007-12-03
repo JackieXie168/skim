@@ -38,7 +38,6 @@
 
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
-#import "SKPDFHoverWindow.h"
 
 
 @implementation SKFullScreenWindow
@@ -87,8 +86,6 @@
 
 - (void)sendEvent:(NSEvent *)theEvent {
     if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown) {
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-        
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
         if ([wc isPresentation] && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
             [wc doGoToPreviousPage:self];
@@ -96,16 +93,6 @@
         }
     }
     [super sendEvent:theEvent];
-}
-
-- (void)resignMainWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super resignMainWindow];
-}
-
-- (void)resignKeyWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super resignKeyWindow];
 }
 
 @end

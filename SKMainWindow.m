@@ -43,7 +43,7 @@
 @implementation SKMainWindow
 
 - (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSKeyDown)
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
     [super sendEvent:theEvent];
 }
