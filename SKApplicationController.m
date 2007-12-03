@@ -56,19 +56,17 @@
 #import "KeyspanFrontRowControl.h"
 #import "GlobalKeyboardDevice.h"
 #import "RemoteControlContainer.h"
-#import "MultiClickRemoteBehavior.h"
-#import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
 #import "SKDownloadController.h"
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "Files_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "OBUtilities.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKRemoteStateWindow.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
@@ -374,10 +372,10 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             remoteScrolling = !remoteScrolling;
             float timeout = [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
             if (timeout > 0.0) {
-                NSWindow *window = [controller window];
-                NSRect rect = [window frame];
-                SKSplashWindow *splashWindow = [[[SKSplashWindow alloc] initWithType:remoteScrolling ? SKSplashTypeScroll : SKSplashTypeResize atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease];
-                [splashWindow showWithTimeout:timeout];
+                NSRect rect = [[controller window] frame];
+                NSPoint point = NSMakePoint(NSMidX(rect), NSMidY(rect));
+                int type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
+                [SKRemoteStateWindow showWithType:type atPoint:point timeout:timeout];
             }
             break;
         default:
@@ -698,148 +696,6 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index {
     return [[[SKLine alloc] initWithLine:index] autorelease];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKSplashWindow
-
-- (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen {
-    NSRect contentRect = NSMakeRect(point.x - 30.0, point.y - 30.0, 60.0, 60.0);
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
-        [self setIgnoresMouseEvents:YES];
-		[self setBackgroundColor:[NSColor clearColor]];
-        [self setAlphaValue:0.95];
-		[self setOpaque:NO];
-        [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setLevel:NSStatusWindowLevel];
-        [self setContentView:[[[SKSplashContentView alloc] initWithType:splashType] autorelease]];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeKeyWindow { return NO; }
-
-- (BOOL)canBecomeMainWindow { return NO; }
-    
-- (void)animationDidEnd:(NSAnimation *)animation { [self close]; }
-
-- (void)animationDidStop:(NSAnimation *)animation { [self close]; }
-
-- (void)fadeOut:(id)sender {
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]] autorelease];
-    [fadeOutDict release];
-    [animation setDuration:1.0];
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)showWithTimeout:(NSTimeInterval)timeout {
-    [self retain]; // isReleasedWhenClosed is true by default
-    [self orderFrontRegardless];
-    [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKSplashContentView
-
-- (id)initWithType:(int)aSplashType {
-    if (self = [super init]) {
-        splashType = aSplashType;
-    }
-    return self;
-}
-
-- (void)drawRect:(NSRect)rect {
-    NSRect bounds = [self bounds];
-    NSPoint center = SKCenterPoint(bounds);
-    
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-    [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
-    
-    NSBezierPath *path = nil;
-    
-    if (splashType == SKSplashTypeResize) {
-        
-        path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 20.0, 20.0) radius:3.0];
-        [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 24.0, 24.0)]];
-        
-        NSBezierPath *arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 10.0, NSMinY(bounds) + 10.0)];
-        [arrow relativeLineToPoint:NSMakePoint(6.0, 0.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, 2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(0.0, 6.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-6.0, 0.0)];
-        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
-        [arrow closePath];
-        
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 5.0, NSMidY(bounds))];
-        [arrow relativeLineToPoint:NSMakePoint(10.0, 5.0)];
-        [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
-        [arrow closePath];
-        [path appendBezierPath:arrow];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        [path setWindingRule:NSEvenOddWindingRule];
-        
-    } else if (splashType == SKSplashTypeScroll) {
-        
-        path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)];
-        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 9.0, 9.0)]];
-        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 25.0, 25.0)]];
-        
-        NSBezierPath *arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds) + 12.0)];
-        [arrow relativeLineToPoint:NSMakePoint(7.0, 7.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-14.0, 0.0)];
-        [arrow closePath];
-        
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:center.x yBy:center.y];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-center.x yBy:-center.y];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        [path setWindingRule:NSEvenOddWindingRule];
-        
-    }
-    
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
-    [path fill];
 }
 
 @end

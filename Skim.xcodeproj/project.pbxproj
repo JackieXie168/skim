@@ -168,6 +168,8 @@
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
 		CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */; };
+		CE9B951D0D04657A00EB1A6C /* SKRemoteStateWindow.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */; };
+		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
@@ -337,6 +339,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CE9B951D0D04657A00EB1A6C /* SKRemoteStateWindow.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,6 +674,8 @@
 		CE9A878E0C0C9E9A004F1F97 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87960C0C9EA3004F1F97 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87970C0C9EA7004F1F97 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
+		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
+		CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRemoteStateWindow.m; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
 		CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarHighlightNote.tiff; path = Images/ToolbarHighlightNote.tiff; sourceTree = "<group>"; };
 		CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSData_SKExtensions.h; sourceTree = "<group>"; };
@@ -1165,6 +1170,8 @@
 				CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */,
 				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
 				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
+				CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */,
+				CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */,
 				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
 				CE2DE4FB0B85DBD400D0DA12 /* SKPDFHoverWindow.h */,
@@ -1823,6 +1830,7 @@
 				CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */,
 				CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */,
 				CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */,
+				CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

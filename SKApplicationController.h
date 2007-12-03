@@ -99,24 +99,3 @@ extern NSString *SKDocumentSetupFileNameKey;
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 
 @end
-
-#pragma mark -
-
-enum {
-    SKSplashTypeResize,
-    SKSplashTypeScroll
-};
-
-@interface SKSplashWindow : NSWindow
-- (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen;
-- (void)showWithTimeout:(NSTimeInterval)timeout;
-- (void)fadeOut:(id)sender;
-@end
-
-
-@interface SKSplashContentView : NSView {
-    int splashType;
-}
-- (id)initWithType:(int)aSplashType;
-@end
-
