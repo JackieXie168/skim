@@ -58,10 +58,6 @@
     return sharedRemoteStateWindow;
 }
 
-+ (void)showWithType:(int)remoteState atPoint:(NSPoint)point timeout:(NSTimeInterval)timeout {
-    [[[self class] sharedRemoteStateWindow] showWithType:remoteState atPoint:point timeout:timeout];
-}
-
 - (id)init {
     NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(60.0));
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
@@ -88,7 +84,12 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)animationDidStop:(NSAnimation *)animation { [self close]; }
+- (void)animationDidStop:(NSAnimation *)animation {
+    [animation release];
+    animation = nil;
+    [self orderOut:self];
+    [self setAlphaValue:1.0];
+}
 
 - (void)fadeOut:(id)sender {
     [timer invalidate];
@@ -120,6 +121,10 @@
     timer = [[NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO] retain];
 }
 
++ (void)showWithType:(int)remoteState atPoint:(NSPoint)point timeout:(NSTimeInterval)timeout {
+    [[[self class] sharedRemoteStateWindow] showWithType:remoteState atPoint:point timeout:timeout];
+}
+
 @end
 
 #pragma mark -
@@ -132,6 +137,7 @@
 
 - (void)setRemoteState:(int)newRemoteState {
     remoteState = newRemoteState;
+    [self setNeedsDisplay:YES];
 }
 
 - (void)drawRect:(NSRect)rect {
