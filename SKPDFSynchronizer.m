@@ -72,7 +72,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 @end
 
 @protocol SKPDFSynchronizerMainThread
-- (void)setLocalServer:(byref id)anObject;
+- (oneway void)setLocalServer:(byref id)anObject;
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
 - (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
 @end
@@ -121,7 +121,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         serverOnServerThread = nil;
        
         shouldKeepRunning = 1;
-        serverReady = 0;
+        serverReady = NO;
         
         // run a background thread to connect to the remote server
         // this will connect back to the connection we just set up
@@ -130,7 +130,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         // wait till the server is set up
         do {
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        } while (serverReady == 0 && shouldKeepRunning == 1);
+            OSMemoryBarrier();
+        } while (serverReady == NO && shouldKeepRunning == 1);
     }
     return self;
 }
@@ -222,19 +223,22 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark Main thread
 #pragma mark | DO server
 
-- (void)setLocalServer:(byref id)anObject {
+- (oneway void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
+    serverReady = YES;
 }
 
 #pragma mark | Finding
 
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file {
+    OSMemoryBarrier();
     if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
 - (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
+    OSMemoryBarrier();
     if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
         [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
 }
@@ -277,8 +281,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
         // handshake, this sets the proxy at the other side
         [serverOnMainThread setLocalServer:self];
         
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
-        
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
         
@@ -287,6 +289,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             [pool release];
             pool = [NSAutoreleasePool new];
             didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+            OSMemoryBarrier();
         } while (shouldKeepRunning == 1 && didRun);
     }
     @catch(id exception) {
@@ -370,6 +373,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
     
+    OSMemoryBarrier();
     while (shouldKeepRunning && [scanner scanCharacter:&ch]) {
         
         if (ch == 'l') {
@@ -418,6 +422,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         
         [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
         [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+        
+        OSMemoryBarrier();
     }
     
     [scanner release];
@@ -431,7 +437,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                            withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
     
-    return shouldKeepRunning;
+    OSMemoryBarrier();
+    BOOL returnValue = shouldKeepRunning == 1;
+
+    return returnValue;
 }
 
 - (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
@@ -439,6 +448,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSString *foundFile = nil;
     NSDictionary *record = nil;
     
+    OSMemoryBarrier();
     if (shouldKeepRunning && [self parsePdfsyncFileIfNeeded] && pageIndex < [pages count]) {
         
         NSDictionary *beforeRecord = nil;
@@ -496,8 +506,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
             foundFile = [record objectForKey:@"file"];
         }
         
+        OSMemoryBarrier();
     }
     
+    OSMemoryBarrier();
     if (shouldKeepRunning)
         [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
 }
@@ -507,6 +519,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSPoint foundPoint = NSZeroPoint;
     NSDictionary *record = nil;
     
+    OSMemoryBarrier();
     if (shouldKeepRunning && file && [self parsePdfsyncFileIfNeeded] && [lines objectForKey:file]) {
         
         NSDictionary *beforeRecord = nil;
@@ -548,8 +561,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
             foundPageIndex = [[record objectForKey:@"page"] unsignedIntValue];
             foundPoint = NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]);
         }
+        
+        OSMemoryBarrier();
     }
     
+    OSMemoryBarrier();
     if (shouldKeepRunning)
         [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex];
 }
