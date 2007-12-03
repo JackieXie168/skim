@@ -5253,7 +5253,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(doZoomOut:)) {
         return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return [self isPresentation] == NO && fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(doZoomToSelection:)) {
