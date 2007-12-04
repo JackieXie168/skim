@@ -43,11 +43,11 @@
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateString:(NSString *)template;
-+ (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object;
++ (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 + (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template;
-+ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object;
++ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 @end
 
@@ -70,8 +70,17 @@
 - (NSData *)RTFRepresentation;
 @end
 
+
 @interface NSString (SKTemplateParser)
 - (NSString *)xmlString;
+@end
+
+
+@interface NSNumber (SKTemplateParser)
+- (NSNumber *)numberByAddingOne;
+- (NSString *)romanNumeralValue;
+- (NSString *)alphaCounterValue;
+- (NSString *)greekCounterValue;
 @end
 
 
