@@ -56,9 +56,11 @@
 
 @interface SKNavigationToolTipWindow : NSWindow {
     SKNavigationToolTipView *toolTipView;
+    NSView *view;
 }
 + (id)sharedToolTipWindow;
-- (void)showToolTip:(NSString *)toolTip forView:(NSView *)view;
+- (void)showToolTip:(NSString *)toolTip forView:(NSView *)aView;
+- (NSView *)view;
 @end
 
 @interface SKNavigationToolTipView : NSView {

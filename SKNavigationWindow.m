@@ -75,16 +75,16 @@
         [button setTarget:controller];
         [button setAction:@selector(doGoToPreviousPage:)];
         [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
+        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         button = [[[SKNavigationNextButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(doGoToNextPage:)];
         [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
+        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -99,8 +99,8 @@
         [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
         [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
         [button setState:[pdfView autoScales]];
+        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
         [[NSNotificationCenter defaultCenter] addObserver: button selector: @selector(handleScaleChangedNotification:) 
                                                      name: PDFViewScaleChangedNotification object: pdfView];
         
@@ -115,8 +115,8 @@
         [button setTarget:controller];
         [button setAction:@selector(exitFullScreen:)];
         [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
+        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
     }
     return self;
 }
@@ -195,9 +195,7 @@
 @end
 
 
-@implementation SKNavigationToolTipWindow : NSWindow {
-    SKNavigationToolTipView *toolTipView;
-}
+@implementation SKNavigationToolTipWindow
 
 static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
@@ -224,7 +222,9 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (BOOL)canBecomeMainWindow { return NO; }
 
-- (void)showToolTip:(NSString *)toolTip forView:(NSView *)view {
+- (void)showToolTip:(NSString *)toolTip forView:(NSView *)aView {
+    [view release];
+    view = [aView retain];
     [toolTipView setStringValue:toolTip];
     [toolTipView sizeToFit];
     NSRect newFrame = [self frameRectForContentRect:[toolTipView frame]];
@@ -243,6 +243,12 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 - (void)orderOut:(id)sender {
     [[self parentWindow] removeChildWindow:self];
     [super orderOut:sender];
+    [view release];
+    view = nil;
+}
+
+- (NSView *)view {
+    return view;
 }
 
 @end
@@ -344,14 +350,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     }
 }
 
-- (void)mouseEntered:(NSEvent *)theEvent {
-    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
-}
-
 @end
 
 @implementation SKNavigationButtonCell
@@ -372,6 +370,19 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
     return nil;
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    SKNavigationButton *button = (SKNavigationButton *)[self controlView];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[button currentToolTip] forView:button];
+    [super mouseEntered:theEvent];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    SKNavigationButton *button = (SKNavigationButton *)[self controlView];
+    if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:button])
+        [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:button];
+    [super mouseExited:theEvent];
 }
 
 @end
