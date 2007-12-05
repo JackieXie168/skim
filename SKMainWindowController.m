@@ -700,12 +700,9 @@ typedef enum _NSSegmentStyle {
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    if ([pdfView document]) {
-        if ([[pdfView document] pageCount] == 1)
-            return [NSString stringWithFormat:NSLocalizedString(@"%@ (1 page)", @"Window title format"), displayName];
-        else
-            return [NSString stringWithFormat:NSLocalizedString(@"%@ (%i pages)", @"Window title format"), displayName, [[pdfView document] pageCount]];
-    } else
+    if ([pdfView document])
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ (page %i of %i)", @"Window title format"), displayName, [self pageNumber], [[pdfView document] pageCount]];
+    else
         return displayName;
 }
 
@@ -1002,7 +999,7 @@ typedef enum _NSSegmentStyle {
         }
         
         // the number of pages may have changed
-        [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+        [mainWindow setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
         [self updateLeftStatus];
         [self updateRightStatus];
     }
@@ -3168,6 +3165,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (beforeMarkedPageIndex != NSNotFound && [[pdfView currentPage] pageIndex] != markedPageIndex)
         beforeMarkedPageIndex = NSNotFound;
     
+    [mainWindow setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
     [self updateLeftStatus];
 }
 
