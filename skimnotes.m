@@ -6,7 +6,7 @@
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
 static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes help";
-static char *versionStr = "SkimNotes command-line client, version 0.3.";
+static char *versionStr = "SkimNotes command-line client, version 1.0.";
 
 enum {
     SKNActionGet,
@@ -43,7 +43,7 @@ int main (int argc, const char * argv[]) {
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     
     if (argc < 3) {
-        if (argc == 2 && ([[args objectAtIndex:1] isEqualToString:@"-h"] || [[args objectAtIndex:1] isEqualToString:@"-help"] || [[args objectAtIndex:1] isEqualToString:@"help"])) {
+        if (argc == 2 && ([[args objectAtIndex:1] caseInsensitiveCompare:@"-h"] == NSOrderedSame || [[args objectAtIndex:1] caseInsensitiveCompare:@"-help"] == NSOrderedSame || [[args objectAtIndex:1] caseInsensitiveCompare:@"help"] == NSOrderedSame)) {
             SKNWriteUsageAndVersion();
             exit (0);
         } else {
@@ -53,11 +53,11 @@ int main (int argc, const char * argv[]) {
     } 
     
     NSString *actionString = [args objectAtIndex:1];
-    if ([actionString isEqualToString:@"get"]) {
+    if ([actionString caseInsensitiveCompare:@"get"] == NSOrderedSame) {
         action = SKNActionGet;
-    } else if ([actionString isEqualToString:@"set"]) {
+    } else if ([actionString caseInsensitiveCompare:@"set"] == NSOrderedSame) {
         action = SKNActionSet;
-    } else if ([actionString isEqualToString:@"remove"]) {
+    } else if ([actionString caseInsensitiveCompare:@"remove"] == NSOrderedSame) {
         action = SKNActionRemove;
     } else {
         SKNWriteUsageAndVersion();
