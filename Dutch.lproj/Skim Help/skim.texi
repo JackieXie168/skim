@@ -888,10 +888,14 @@ In Skim kunt u de tekstregel die u aan het lezen bent markeren, zodat u zich bet
 @item Om de leesbalk te tonen, kies Weergave > Toon Leesbalk.
 @end itemize
 @itemize
-@item Om de leesbalk naar de volgende of vorige regel te verplaatsen, houd de Option-toets ingedrukt en druk de Lijn-Omlaagtoets of Pijl-Omhoogtoets in.
+@item Om de leesbalk naar de volgende of vorige regel te verplaatsen, houd de Control-toets ingedrukt en druk de Lijn-Omlaagtoets of Pijl-Omhoogtoets in.
 @end itemize
 @itemize
-@item Om de leesbalk naar de volgende of vorige pagina te verplaatsen, houd de Option-toets ingedrukt en druk de Pijl-Rechtstoets of Pijl-Linkstoets in.
+@item Om de leesbalk naar de volgende of vorige pagina te verplaatsen, houd de Control-toets ingedrukt en druk de Pijl-Rechtstoets of Pijl-Linkstoets in.
+@end itemize
+@endbox
+@itemize
+@item Om het aantal lijnen in de leesbalk te vergroten (verkleinen), houd de Control en Shift toetsen ingedrukt en druk de Lijn-Omlaagtoets of Pijl-Omhoogtoets in.
 @end itemize
 @endbox
 

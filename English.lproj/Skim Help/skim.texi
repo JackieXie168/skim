@@ -884,10 +884,14 @@ In skim you can highlight the line of text you are reading, to help you concentr
 @item To show the reading bar, choose View > Show Reading Bar.
 @end itemize
 @itemize
-@item To move the reading bar to the next (previous) line, hold down the Option key and press the Down Arrow (Up Arrow) key.
+@item To move the reading bar to the next (previous) line, hold down the Control key and press the Down Arrow (Up Arrow) key.
 @end itemize
 @itemize
-@item To move the reading bar to the next (previous) page, hold down the Option key and press the Right Arrow (Left Arrow) key.
+@item To move the reading bar to the next (previous) page, hold down the Control key and press the Right Arrow (Left Arrow) key.
+@end itemize
+@endbox
+@itemize
+@item To increase (decrease) the number of lines the reading bar spans, hold down the Control and Shift keys and press the Down Arrow (Up Arrow) key.
 @end itemize
 @endbox
 
