@@ -27,9 +27,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleVersion</key>
-	<string>17</string>
+	<string>18</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0RC2</string>
+    <string>1.0</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
