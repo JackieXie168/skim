@@ -917,10 +917,10 @@
 			isa = PBXGroup;
 			children = (
 				45B113BF0B329A7E00DE0660 /* LICENSE */,
-				453DC2740B4F23E500A72509 /* 3rd-party Sources */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
-				CEF3BF840B99CA9900E12E3D /* Skimnotes */,
+				453DC2740B4F23E500A72509 /* Third Party Sources */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
+				CEF3BF840B99CA9900E12E3D /* Skimnotes */,
 				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
@@ -1001,31 +1001,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		453DC2740B4F23E500A72509 /* 3rd-party Sources */ = {
+		453DC2740B4F23E500A72509 /* Third Party Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */,
-				CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */,
-				CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */,
-				CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */,
-				CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */,
-				CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */,
-				CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */,
-				CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */,
-				CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */,
-				CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */,
-				CE2A1E600CE513E300A0499B /* RemoteControl.h */,
-				CE2A1E610CE513E300A0499B /* RemoteControl.m */,
-				CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */,
-				CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */,
-				453DC2750B4F242200A72509 /* BDAlias.m */,
-				453DC2760B4F242200A72509 /* BDAlias.h */,
-				F9F220840C14BD9C00041284 /* UKFileWatcher.h */,
-				F9F220860C14BDFF00041284 /* UKFileWatcher.m */,
-				F9F220870C14BDFF00041284 /* UKKQueue.h */,
-				F9F220880C14BDFF00041284 /* UKKQueue.m */,
+				CE9BD6FB0D096F0500EB1A6C /* BDAlias */,
+				CE9BD6FA0D096EE300EB1A6C /* RemoteControl */,
+				CE9BD6FC0D096F1800EB1A6C /* UKKQueue */,
 			);
-			name = "3rd-party Sources";
+			name = "Third Party Sources";
 			sourceTree = "<group>";
 		};
 		CE070EC10B89063400733CC8 /* Categories */ = {
@@ -1345,6 +1328,47 @@
 				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		CE9BD6FA0D096EE300EB1A6C /* RemoteControl */ = {
+			isa = PBXGroup;
+			children = (
+				CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */,
+				CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */,
+				CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */,
+				CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */,
+				CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */,
+				CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */,
+				CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */,
+				CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */,
+				CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */,
+				CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */,
+				CE2A1E600CE513E300A0499B /* RemoteControl.h */,
+				CE2A1E610CE513E300A0499B /* RemoteControl.m */,
+				CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */,
+				CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */,
+			);
+			name = RemoteControl;
+			sourceTree = "<group>";
+		};
+		CE9BD6FB0D096F0500EB1A6C /* BDAlias */ = {
+			isa = PBXGroup;
+			children = (
+				453DC2750B4F242200A72509 /* BDAlias.m */,
+				453DC2760B4F242200A72509 /* BDAlias.h */,
+			);
+			name = BDAlias;
+			sourceTree = "<group>";
+		};
+		CE9BD6FC0D096F1800EB1A6C /* UKKQueue */ = {
+			isa = PBXGroup;
+			children = (
+				F9F220840C14BD9C00041284 /* UKFileWatcher.h */,
+				F9F220860C14BDFF00041284 /* UKFileWatcher.m */,
+				F9F220870C14BDFF00041284 /* UKKQueue.h */,
+				F9F220880C14BDFF00041284 /* UKKQueue.m */,
+			);
+			name = UKKQueue;
 			sourceTree = "<group>";
 		};
 		CEC7B4E70CF607CA008CCD63 /* Products */ = {
