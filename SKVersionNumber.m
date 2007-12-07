@@ -189,8 +189,8 @@
 
     unsigned int index, count = MAX(componentCount, [otherVersion componentCount]);
     for (index = 0; index < count; index++) {
-        unsigned int component = [self componentAtIndex:index];
-        unsigned int otherComponent = [otherVersion componentAtIndex:index];
+        int component = [self componentAtIndex:index];
+        int otherComponent = [otherVersion componentAtIndex:index];
 
         if (component < otherComponent)
             return NSOrderedAscending;
