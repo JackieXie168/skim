@@ -79,7 +79,7 @@
                 
                 componentCount++;
                 components = realloc(components, sizeof(*components) * componentCount);
-                components[componentCount - 1] = releaseType;
+                components[componentCount - 1] = -releaseType;
             } else
                 break;
             [scanner setScanLocation:[scanner scanLocation] + 1];
