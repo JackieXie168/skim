@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>IBDocumentLocation</key>
-	<string>39 207 564 369 0 0 1440 938 </string>
+	<string>68 81 564 369 0 0 1440 938 </string>
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>168</key>
-		<string>672 652 255 329 0 0 1600 1178 </string>
+		<string>592 476 255 329 0 0 1440 938 </string>
 		<key>224</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>256</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>314</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>502</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>511</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>687</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>694</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>796</key>
-		<string>690 567 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>830</key>
 		<string>662 590 115 102 0 0 1440 938 </string>
 	</dict>
@@ -31,11 +31,7 @@
 	<string>489.0</string>
 	<key>IBLockedObjects</key>
 	<array/>
-	<key>IBOpenObjects</key>
-	<array>
-		<integer>830</integer>
-	</array>
 	<key>IBSystem Version</key>
-	<string>8S165</string>
+	<string>9B18</string>
 </dict>
 </plist>
