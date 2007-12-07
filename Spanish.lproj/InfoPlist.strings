@@ -1,0 +1,16 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleName = "Skim";
+CFBundleGetInfoString = "Skim versi—n 1.0, Copyright 2006-07 Michael O. McCracken.";
+NSHumanReadableCopyright = "Copyright 2006-07 Michael O. McCracken.";
+
+NSPDFPboardType = "PDF";
+"PDF Bundle" = "PDF Bundle";
+"PostScript document" = "PostScript";
+"PDF With Embedded Notes" = "PDF Con Notas";
+"PDF Without Notes" = "PDF Sin Notas";
+"Skim Notes" = "Notas Skim";
+"Notes as Text" = "Notas como Texto";
+"Notes as RTF" = "Notas como RTF";
+"Notes as RTFD" = "Notas como RTFD";
+"Notes as FDF" = "Notas como FDF";

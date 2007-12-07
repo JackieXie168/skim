@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+
+\usepackage[bookmarks=true,bookmarksopen=true,pdfhighlight=/I,bookmarksnumbered=true,hypertexnames=false,
+   colorlinks,linkcolor={blue},citecolor={blue},urlcolor={red},
+   pdfstartview={FitH},backref,pagebackref]{hyperref}
+   
+\usepackage{graphicx}
+   
+\newcommand{\myTitle}{An Introduction to Skim\\ \small A better way to read PDFs on-screen}
+
+\pagestyle{myheadings}
+\markboth{\myTitle}{\myTitle}
+
+\title{\myTitle}
+
+\author{Skim Development Team}
+%\date{}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Welcome to Skim, an application that improves the experience of reading PDFs, especially academic articles, online.  
+
+\section{Features}
+
+This PDF is intended to explain and demonstrate the features of Skim.
+
+\subsection{Reading PDFs}
+Firstly, it's a great PDF reader, with Bookmarks, zooming and a full-screen reading mode.
+
+\subsection{Links}
+When PDFs have links, you can follow them by clicking, which will move you around in the PDF if the link is internal, like a link to section \ref{link-dest}.  If the link is a URL, like this one (\url{http://bibdesk.sourceforge.net}), it will open in your default browser.
+ 
+Hovering over internal links shows the text at the other end of the link.  This is especially useful for academic references, like the ones at the end of this sentence \cite{saltzer84endtoend,raymond1998the-cathedr,davis71interesting,brooks1975the-mythica}.
+
+\subsection{Snapshots}
+
+One of the difficulties of reading papers on the screen is that one looses the ability to quickly flip backwards and forwards to check figures and other parts of the paper.  Skim allows you to create pop-up windows that display other portions of papers.  You can create a pop-up by holding cmd and clicking (or dragging a box to limit the section focused on).
+
+Snapshots are particularly useful for tables and figures, like Figure \ref{skim-logo}.  Try holding cmd and dragging around the figure, creating a Snapshot.  Then minimize it to the Snapshot pane.
+
+If you open the `Notes Pane' and switch to the `View Snapshots' tab you'll see all of your created pop-up windows.  If you minimize the pop-ups they will `dock' into that pane and clicking them there will bring the pop-up back.
+
+\begin{figure}
+\begin{center}
+\includegraphics[]{SkimLogo}
+\caption{The Skim logo}
+\label{skim-logo}
+\end{center}
+\end{figure}
+
+Snapshot windows will stay in front of the PDF text in full screen reading mode.
+
+\subsection{Annotations}
+
+Having a pen in hand while reading a printed out PDF is a great help for thinking.  Skim allows three types of on-screen annotations, all of which are shown in the Notes pane (on the right of the PDF display).  Clicking on the note there will take you to the associated part of the PDF.
+
+Notes (obviously) persist through saves of the file, but no changes are made to the underlying PDF.  Everything done in Skim is saved using xattrs, meaning that opening the PDF in other PDF viewers will not display your Notes and Snapshots.
+
+\textit{Is Export meant to `bake in' some of the Notes?  Doesn't seem to do that currently}
+
+\subsubsection{On-page Notes}
+
+Notes are just like stickies stuck to your PDF, their content shows up right on the page.
+
+\subsubsection{Anchored Notes}
+
+For longer notes, or where there isn't any spare space on the page, an Anchored note shows with a small icon and allows you to write a longer note in a window that double-clicking the icon will bring up.
+
+\subsubsection{Circle Notes}
+
+Circle notes show red circles to highlight a portion of the text.  The content of the note content is whatever is encircled.
+
+\subsection{Better search highlighting}
+
+The search-box is at the top of the Table of Contents pane, to the left of the PDF.   Clicking on a result will show the result highlighted with a red circle, making it easier to find on the page than in other PDF readers.
+
+\subsection{Bibdesk integration}
+
+Skim has increasing integration with BibDesk.
+
+\textit{Someone else needs to explain how this works, somehow you can search notes from within BibDesk, right?  And BibDesk data gets used to title the file?}
+
+\subsection{Using Skim as a PDF previewer for \LaTeX}
+
+Skim can notify you when the PDF changes on disk, check ``Check file changes'' in the Updates pane of the Preferences.
+
+
+\section{Another major section}
+\subsection{with a minor section}
+
+\label{link-dest}
+This is destination text for the internal link. You can get back using the left (back) arrow in the toolbar.
+
+\subsubsection{and a third level heading}
+
+These sections are just here to demonstrate the table of contents, using bookmarks from the PDF.  On the right you can see that you can switch between the Table of Contents and thumbnails to navigate around the document.
+
+\bibliographystyle{plain}
+\bibliography{SkimIntro}                                            
+                                             
+\end{document}
