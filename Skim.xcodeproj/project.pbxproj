@@ -654,7 +654,7 @@
 		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
-		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallMenu.tiff; sourceTree = "<group>"; };
+		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLineNote.tiff; path = Images/ToolbarLineNote.tiff; sourceTree = "<group>"; };
