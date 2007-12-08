@@ -221,6 +221,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
                 if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
                     [formatPopup selectItemAtIndex:index];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+                    [savePanel setAllowedFileTypes:[[NSDocumentController sharedDocumentController] fileExtensionsFromType:lastExportedType]];
                 }
             }
         }
