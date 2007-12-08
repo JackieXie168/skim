@@ -600,7 +600,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
     
     if ([docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentType]) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
-            (pdfDoc = [[PDFDocument alloc] initWithData:data])) {
+            (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
                 NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
                                                  defaultButton:NSLocalizedString(@"No", @"Button title")
@@ -641,7 +641,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
         if (pdfFile) {
             NSURL *pdfURL = [NSURL fileURLWithPath:[path stringByAppendingPathComponent:pdfFile]];
             if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
-                (pdfDoc = [[PDFDocument alloc] initWithData:data])) {
+                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
                 NSString *skimFile = [[NSFileManager defaultManager] subfileWithExtension:@"skim" inPDFBundleAtPath:path];
                 if (skimFile) {
                     NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[path stringByAppendingPathComponent:skimFile]];
