@@ -75,7 +75,6 @@
         [button setTarget:controller];
         [button setAction:@selector(doGoToPreviousPage:)];
         [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
-        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -83,7 +82,6 @@
         [button setTarget:controller];
         [button setAction:@selector(doGoToNextPage:)];
         [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
-        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -99,7 +97,6 @@
         [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
         [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
         [button setState:[pdfView autoScales]];
-        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
         [[NSNotificationCenter defaultCenter] addObserver: button selector: @selector(handleScaleChangedNotification:) 
                                                      name: PDFViewScaleChangedNotification object: pdfView];
@@ -115,7 +112,6 @@
         [button setTarget:controller];
         [button setAction:@selector(exitFullScreen:)];
         [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
-        [button setShowsBorderOnlyWhileMouseInside:YES];
         [[self contentView] addSubview:button];
     }
     return self;
@@ -332,6 +328,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     if (toolTip != string) {
         [toolTip release];
         toolTip = [string retain];
+        [self setShowsBorderOnlyWhileMouseInside:[toolTip length] > 0];
     }
 }
 
@@ -348,6 +345,15 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
         [alternateToolTip release];
         alternateToolTip = [string retain];
     }
+}
+
+- (void)viewDidMoveToWindow {
+    // fix for a Tiger bug when a button is added to a window, it does not reset the tracking rects
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [self showsBorderOnlyWhileMouseInside]) {
+        [self setShowsBorderOnlyWhileMouseInside:NO];
+        [self setShowsBorderOnlyWhileMouseInside:YES];
+    }
+    [super viewDidMoveToWindow];
 }
 
 @end
