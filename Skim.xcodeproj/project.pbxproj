@@ -1701,18 +1701,24 @@
 				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/Dutch.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
-				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
-				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/French.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/French.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/German.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/German.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/ru.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/ru.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/Spanish.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/Spanish.lproj/Skim Help/version.texi",
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
-				"$(DERIVED_FILE_DIR)/Skim Help/Italian.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/French.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/German.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Italian.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/ru.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/Spanish.lproj/Skim Help/Skim Help.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
