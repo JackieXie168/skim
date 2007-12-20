@@ -77,6 +77,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
+static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 
 @interface NSFileManager (SKDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
@@ -108,6 +109,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 #pragma mark -
 
 @implementation SKDocument
+
+- (id)init {
+    if (self = [super init]) {
+        autoRotate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRotatePrintedPagesKey];
+    }
+    return self;
+}
 
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
@@ -1513,8 +1521,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self undoManager] disableUndoRegistration];
     [super setPrintInfo:printInfo];
     [[self undoManager] enableUndoRegistration];
-    if (autoRotateButton)
-        autoRotate = [autoRotateButton state] == NSOnState;
+    if (autoRotateButton) {
+        BOOL newAutoRotate = [autoRotateButton state] == NSOnState;
+        if (newAutoRotate != autoRotate) {
+            autoRotate = newAutoRotate;
+            [[NSUserDefaults standardUserDefaults] setBool:autoRotate forKey:SKAutoRotatePrintedPagesKey];
+        }
+    }
 }
 
 - (BOOL)preparePageLayout:(NSPageLayout *)pageLayout {
