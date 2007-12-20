@@ -31,6 +31,14 @@
 	<string>489.0</string>
 	<key>IBLockedObjects</key>
 	<array/>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>314</integer>
+		<integer>511</integer>
+		<integer>796</integer>
+		<integer>256</integer>
+		<integer>502</integer>
+	</array>
 	<key>IBSystem Version</key>
 	<string>8S165</string>
 </dict>
