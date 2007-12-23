@@ -1,5 +1,5 @@
 <$notes.@arraySortedByPageIndex>
-* <$type.typeName/>, page <$pageIndex.numberByAddingOne/>
+* <$type.typeName/>, page <$page.label?><$page.label/><?$page.label?><$pageIndex.numberByAddingOne/></$page.label?>
 
 <$string?>
 <$string/>
