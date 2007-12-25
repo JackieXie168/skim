@@ -1952,8 +1952,8 @@ typedef enum _NSSegmentStyle {
     
     PDFDisplayMode displayMode = [pdfView displayMode];
     NSRect frame = [splitView frame];
+    float top = NSMaxY(frame);
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
-    float bottomOffset = -1.0;
     
     if ([[self pdfView] autoScales]) {
         documentRect.size.width /= [[self pdfView] scaleFactor];
@@ -1975,10 +1975,8 @@ typedef enum _NSSegmentStyle {
         frame.size.width += [NSScroller scrollerWidth];
     }
     
-    if ([statusBar isVisible])
-        bottomOffset = NSHeight([statusBar frame]);
-    frame.origin.y -= bottomOffset;
-    frame.size.height += bottomOffset;
+    frame.size.height += [statusBar isVisible] ? NSHeight([statusBar frame]) : -1;
+    frame.origin.y = top - NSHeight(frame);
     
     frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
     frame = [[self window] frameRectForContentRect:frame];
