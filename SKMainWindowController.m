@@ -1951,8 +1951,8 @@ typedef enum _NSSegmentStyle {
     }
     
     PDFDisplayMode displayMode = [pdfView displayMode];
-    NSRect frame = [splitView frame];
-    float top = NSMaxY(frame);
+    NSSize size, oldSize = [[self pdfView] frame].size;
+    NSRect frame = [[self window] frame];
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     
     if ([[self pdfView] autoScales]) {
@@ -1960,26 +1960,24 @@ typedef enum _NSSegmentStyle {
         documentRect.size.height /= [[self pdfView] scaleFactor];
     }
     
-    frame.size.width = NSWidth(documentRect);
-    if (usesDrawers == NO)
-        frame.size.width += NSWidth([leftSideContentView frame]) + NSWidth([rightSideContentView frame]) + 2 * [splitView dividerThickness] + 2.0;
+    size.width = NSWidth(documentRect);
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
-        frame.size.height = NSHeight(documentRect) + 1.0;
+        size.height = NSHeight(documentRect) + 1.0;
     } else {
         NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
         if ([[self pdfView] autoScales]) {
             pageBounds.size.width /= [[self pdfView] scaleFactor];
             pageBounds.size.height /= [[self pdfView] scaleFactor];
         }
-        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
-        frame.size.width += [NSScroller scrollerWidth];
+        size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
+        if ([[[self pdfView] document] pageCount] > 1)
+            size.width += [NSScroller scrollerWidth];
     }
     
-    frame.size.height += [statusBar isVisible] ? NSHeight([statusBar frame]) : -1;
-    frame.origin.y = top - NSHeight(frame);
-    
-    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
-    frame = [[self window] frameRectForContentRect:frame];
+    size.width += NSWidth(frame) - oldSize.width;
+    size.height += NSHeight(frame) - oldSize.height;
+    frame.origin.y = NSMaxY(frame) - size.height;
+    frame.size = size;
     frame = SKConstrainRect(frame, [[[self window] screen] visibleFrame]);
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
