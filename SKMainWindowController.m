@@ -1951,31 +1951,40 @@ typedef enum _NSSegmentStyle {
     }
     
     PDFDisplayMode displayMode = [pdfView displayMode];
-    NSSize size, oldSize = [[self pdfView] frame].size;
+    float scaleFactor = [[self pdfView] scaleFactor];
+    BOOL autoScales = [[self pdfView] autoScales];
+    BOOL isSingleRow;
+    
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)
+        isSingleRow = YES;
+    else if (displayMode == kPDFDisplaySinglePageContinuous || [[self pdfView] displaysAsBook])
+        isSingleRow = [[[self pdfView] document] pageCount] <= 1;
+    else
+        isSingleRow = [[[self pdfView] document] pageCount] <= 2;
+    
     NSRect frame = [[self window] frame];
+    NSSize size, oldSize = [[self pdfView] frame].size;
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     
-    if ([[self pdfView] autoScales]) {
-        documentRect.size.width /= [[self pdfView] scaleFactor];
-        documentRect.size.height /= [[self pdfView] scaleFactor];
-    }
-    
+    // Calculate the new size for the pdfView
     size.width = NSWidth(documentRect);
-    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
-        size.height = NSHeight(documentRect) + 1.0;
+    if (autoScales)
+        size.width /= scaleFactor;
+    if (isSingleRow) {
+        size.height = NSHeight(documentRect);
     } else {
-        NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
-        if ([[self pdfView] autoScales]) {
-            pageBounds.size.width /= [[self pdfView] scaleFactor];
-            pageBounds.size.height /= [[self pdfView] scaleFactor];
-        }
-        size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
-        if ([[[self pdfView] document] pageCount] > 1)
-            size.width += [NSScroller scrollerWidth];
+        size.height = NSHeight([[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]]);
+        if ([[self pdfView] displaysPageBreaks])
+            size.height += 8.0 * scaleFactor;
+        size.width += [NSScroller scrollerWidth];
     }
+    if (autoScales)
+        size.height /= scaleFactor;
     
-    size.width += NSWidth(frame) - oldSize.width;
-    size.height += NSHeight(frame) - oldSize.height;
+    // Calculate the new size for the window
+    size.width = ceilf(NSWidth(frame) + size.width - oldSize.width);
+    size.height = ceilf(NSHeight(frame) + size.height - oldSize.height);
+    // Align the window frame from the old topleft point and constrain to the screen
     frame.origin.y = NSMaxY(frame) - size.height;
     frame.size = size;
     frame = SKConstrainRect(frame, [[[self window] screen] visibleFrame]);
