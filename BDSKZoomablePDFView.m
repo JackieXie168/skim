@@ -306,6 +306,14 @@ static float BDSKScaleMenuFontSize = 11.0;
     [self setAutoFits:YES];
 }
 
+- (void)printDocument:(id)sender{
+    id document = [[[self window] windowController] document];
+    if ([document respondsToSelector:_cmd])
+        [document printDocument:sender];
+    else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+        [(id)super printDocument:sender];
+}
+
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [super menuForEvent:theEvent];
     int i, count = [menu numberOfItems];
@@ -327,6 +335,8 @@ static float BDSKScaleMenuFontSize = 11.0;
         return YES;
     } else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
+    } else if ([menuItem action] == @selector(printDocument:)) {
+        return [[self document] allowsPrinting];
     }
     return YES;
 }

@@ -330,6 +330,14 @@ static float SKPopUpMenuFontSize = 11.0;
     [self setDisplaysPageBreaks:[self displaysPageBreaks] == NO];
 }
 
+- (void)printDocument:(id)sender{
+    id document = [[[self window] windowController] document];
+    if ([document respondsToSelector:_cmd])
+        [document printDocument:sender];
+    else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
+        [(id)super printDocument:sender];
+}
+
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [super menuForEvent:theEvent];
     int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
@@ -355,6 +363,8 @@ static float SKPopUpMenuFontSize = 11.0;
     } else if ([menuItem action] == @selector(toggleDisplayPageBreaksFromMenu:)) {
         [menuItem setState:[self displaysPageBreaks] ? NSOnState : NSOffState];
         return YES;
+    } else if ([menuItem action] == @selector(printDocument:)) {
+        return [[self document] allowsPrinting];
     } else if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
     }
