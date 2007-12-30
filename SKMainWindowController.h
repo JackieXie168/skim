@@ -380,7 +380,7 @@ typedef struct _SKPDFViewState {
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
 
-- (void)setupWindow:(NSDictionary *)setup;
+- (void)setInitialSetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;
 - (void)applyPDFSettings:(NSDictionary *)setup;
 - (NSDictionary *)currentPDFSettings;
