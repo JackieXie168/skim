@@ -142,7 +142,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
                 if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
                     [document makeWindowControllers];
                     if ([document respondsToSelector:@selector(mainWindowController)])
-                        [[document mainWindowController] setupWindow:dict];
+                        [[document mainWindowController] setInitialSetup:dict];
                     [document showWindows];
                 } else {
                     [NSApp presentError:error];

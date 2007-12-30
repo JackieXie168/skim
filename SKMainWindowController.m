@@ -309,6 +309,7 @@ typedef enum _NSSegmentStyle {
 
 - (void)windowDidLoad{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    BOOL hasWindowSetup = [savedNormalSetup count] > 0;
     NSRect frame;
     
     settingUpWindow = YES;
@@ -393,24 +394,36 @@ typedef enum _NSSegmentStyle {
     
     [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     
-    int windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
-    if (windowSizeOption == SKMaximizeWindowOption)
-        [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
-    
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];
+    
+    int windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
+    if (hasWindowSetup) {
+        NSString *rectString = [savedNormalSetup objectForKey:WINDOW_FRAME_KEY];
+        if (rectString)
+            [[self window] setFrame:NSRectFromString(rectString) display:NO];
+    } else if (windowSizeOption == SKMaximizeWindowOption) {
+        [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
+    }
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     
     // Set up the PDF
-    [self applyPDFSettings:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
     
-    if ([sud objectForKey:SKLeftSidePaneWidthKey]) {
-        float width = [sud floatForKey:SKLeftSidePaneWidthKey];
+    NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFT_SIDE_PANE_WIDTH_KEY];
+    NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHT_SIDE_PANE_WIDTH_KEY];
+    if (leftWidth == nil)
+        leftWidth = [sud objectForKey:SKLeftSidePaneWidthKey];
+    if (rightWidth == nil)
+        rightWidth = [sud objectForKey:SKRightSidePaneWidthKey];
+    
+    if (leftWidth && rightWidth) {
+        float width = [leftWidth floatValue];
         if (width >= 0.0) {
             frame = [leftSideContentView frame];
             frame.size.width = width;
@@ -423,7 +436,7 @@ typedef enum _NSSegmentStyle {
                 [leftSideDrawer close];
             }
         }
-        width = [sud floatForKey:SKRightSidePaneWidthKey];
+        width = [rightWidth floatValue];
         if (width >= 0.0) {
             frame = [rightSideContentView frame];
             frame.size.width = width;
@@ -476,14 +489,16 @@ typedef enum _NSSegmentStyle {
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
     
     // Go to page?
-    if ([sud boolForKey:SKRememberLastPageViewedKey]) {
-        unsigned int pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
-        if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
-            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
-    }
+    unsigned int pageIndex = NSNotFound;
+    if (hasWindowSetup)
+        pageIndex = [[savedNormalSetup objectForKey:PAGE_INDEX_KEY] unsignedIntValue];
+    else if ([sud boolForKey:SKRememberLastPageViewedKey])
+        pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
+    if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
+        [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
     
     // We can fit only after the PDF has been loaded
-    if (windowSizeOption == SKFitWindowOption)
+    if (windowSizeOption == SKFitWindowOption && hasWindowSetup == NO)
         [self performFit:self];
     
     // Open snapshots?
@@ -519,6 +534,9 @@ typedef enum _NSSegmentStyle {
     // Observe notifications and KVO
     [self registerForNotifications];
     [self registerAsObserver];
+    
+    if (hasWindowSetup)
+        [savedNormalSetup removeAllObjects];
     
     settingUpWindow = NO;
 }
@@ -604,48 +622,11 @@ typedef enum _NSSegmentStyle {
                                   SKTableFontSizeKey, nil]];
 }
 
-- (void)setupWindow:(NSDictionary *)setup{
-    NSString *rectString;
-    NSNumber *number;
-    NSRect frame;
-    
-    if (rectString = [setup objectForKey:WINDOW_FRAME_KEY])
-        [[self window] setFrame:NSRectFromString(rectString) display:NO];
-    if (number = [setup objectForKey:LEFT_SIDE_PANE_WIDTH_KEY]) {
-        frame = [leftSideContentView frame];
-        frame.size.width = [number floatValue];
-        if (usesDrawers == NO) {
-            [leftSideContentView setFrame:frame];
-        } else if (NSWidth(frame) > 0.0) {
-            [leftSideDrawer setContentSize:frame.size];
-            [leftSideDrawer openOnEdge:NSMinXEdge];
-        } else {
-            [leftSideDrawer close];
-        }
-    }
-    if (number = [setup objectForKey:RIGHT_SIDE_PANE_WIDTH_KEY]) {
-        frame = [rightSideContentView frame];
-        frame.size.width = [number floatValue];
-        frame.origin.x = NSMaxX([splitView frame]) - NSWidth(frame);
-        if (usesDrawers == NO) {
-            [rightSideContentView setFrame:frame];
-        } else if (NSWidth(frame) > 0.0) {
-            [rightSideDrawer setContentSize:frame.size];
-            [rightSideDrawer openOnEdge:NSMaxXEdge];
-        } else {
-            [rightSideDrawer close];
-        }
-    }
-    if (usesDrawers == NO) {
-        frame = [pdfSplitView frame];
-        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
-        frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
-        [pdfSplitView setFrame:frame];
-    }
-    
-    [self applyPDFSettings:setup];
-    if (number = [setup objectForKey:PAGE_INDEX_KEY])
-        [pdfView goToPage:[[pdfView document] pageAtIndex:[number intValue]]];
+- (void)setInitialSetup:(NSDictionary *)setup{
+    if ([self isWindowLoaded] == NO)
+        [savedNormalSetup setDictionary:setup];
+    else
+        NSLog(@"-[NSMainWindowController setupWindow:] called after window was loaded");
 }
 
 - (NSDictionary *)currentSetup {
