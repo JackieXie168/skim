@@ -258,6 +258,8 @@
         <true/>
         <key>SKShowBookmarkStatusBar</key>
         <true/>
+        <key>SKAutoRotatePrintedPages</key>
+        <true/>
     </dict>
     <key>ResettableKeys</key>
     <dict>
