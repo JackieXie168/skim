@@ -1445,32 +1445,30 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 #pragma mark Tracking mousemoved fix
 
-- (void)setFrame:(NSRect)frame {
-    [super setFrame:frame];
+- (void)resetBoundsTrackingRect {
     if ([self window] && trackingRect)
         [self removeTrackingRect:trackingRect];
     trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
+- (void)setFrame:(NSRect)frame {
+    [super setFrame:frame];
+    [self resetBoundsTrackingRect];
+}
+
 - (void)setFrameSize:(NSSize)size {
     [super setFrameSize:size];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self resetBoundsTrackingRect];
 }
  
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self resetBoundsTrackingRect];
 }
  
 - (void)setBoundsSize:(NSSize)size {
     [super setBoundsSize:size];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self resetBoundsTrackingRect];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
