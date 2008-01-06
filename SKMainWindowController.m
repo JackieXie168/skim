@@ -441,7 +441,7 @@ typedef enum _NSSegmentStyle {
             frame = [rightSideContentView frame];
             frame.size.width = width;
             if (usesDrawers == NO) {
-                frame.origin.x = NSMaxX([splitView frame]) - width;
+                frame.origin.x = NSMaxX([splitView bounds]) - width;
                 [rightSideContentView setFrame:frame];
             } else if (width > 0.0) {
                 [rightSideDrawer setContentSize:frame.size];
