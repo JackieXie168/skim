@@ -279,7 +279,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [self removeHoverRects];
     
     NSRange range = [self visiblePageIndexRange];
-    int i, iMax = NSMaxRange(range);
+    unsigned i, iMax = NSMaxRange(range);
     NSRect visibleRect = [self visibleContentRect];
     
     for (i = range.location; i < iMax; i++) {
@@ -2264,16 +2264,21 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (NSRange)visiblePageIndexRange {
-    NSRect visibleRect = [self visibleContentRect];
-    PDFPage *page;
-    unsigned first, last;
-    
-    page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
-    first = [page pageIndex];
-    page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
-    last = [page pageIndex];
-    
-    return NSMakeRange(first, last - first + 1);
+    NSRange range;
+    if ([[self document] pageCount]) {
+        NSRect visibleRect = [self visibleContentRect];
+        PDFPage *page;
+        unsigned first, last;
+        
+        page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
+        first = [page pageIndex];
+        page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
+        last = [page pageIndex];
+        range = NSMakeRange(first, last - first + 1);
+    } else {
+        range = NSMakeRange(NSNotFound, 0);
+    }
+    return range;
 }
 
 #pragma mark Autohide timer
