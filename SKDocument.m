@@ -78,6 +78,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
+static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
 @interface NSFileManager (SKDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
@@ -478,11 +479,15 @@ static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    [[[self windowForSheet] attachedSheet] orderOut:self];
+    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey];
+    
+    if (disableAlert == NO) {
+        [[[self windowForSheet] attachedSheet] orderOut:self];
         
-    [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
-    [[self progressController] setIndeterminate:YES];
-    [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+        [[self progressController] setMessage:[NSLocalizedString(@"Reloading document", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [[self progressController] setIndeterminate:YES];
+        [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
+    }
     
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
@@ -501,7 +506,8 @@ static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
             [self checkFileUpdatesIfNeeded];
     }
 
-    [[self progressController] endSheet];
+    if (disableAlert == NO)
+        [[self progressController] endSheet];
     
     return success;
 }
