@@ -406,8 +406,6 @@ typedef enum _NSSegmentStyle {
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     }
     
-    [[self window] makeFirstResponder:[pdfView documentView]];
-    
     // Set up the PDF
     [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
@@ -477,8 +475,13 @@ typedef enum _NSSegmentStyle {
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
+    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+    [pdfEdgeView addSubview:pdfView];
+    
     // this is mainly needed when the pdf auto-scales
-    [pdfView layoutDocumentView];
+    //[pdfView layoutDocumentView];
+    
+    [[self window] makeFirstResponder:[pdfView documentView]];
     
     // Show/hide left side pane if necessary
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == (pdfOutline == nil))
