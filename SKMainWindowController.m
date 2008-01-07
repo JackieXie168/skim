@@ -475,14 +475,6 @@ typedef enum _NSSegmentStyle {
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
-    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-    [pdfEdgeView addSubview:pdfView];
-    
-    // this is mainly needed when the pdf auto-scales
-    //[pdfView layoutDocumentView];
-    
-    [[self window] makeFirstResponder:[pdfView documentView]];
-    
     // Show/hide left side pane if necessary
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == (pdfOutline == nil))
         [self toggleLeftSidePane:self];
@@ -490,6 +482,12 @@ typedef enum _NSSegmentStyle {
         [self setLeftSidePaneState:SKOutlineSidePaneState];
     else
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
+    
+    // Due to a bug in Leopard we should only resize and swap in the PDFView after loading the PDFDocument
+    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+    [pdfEdgeView addSubview:pdfView];
+    
+    [[self window] makeFirstResponder:[pdfView documentView]];
     
     // Go to page?
     unsigned int pageIndex = NSNotFound;
