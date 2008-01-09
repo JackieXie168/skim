@@ -173,9 +173,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
     NSNumber *resizeReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKResizeReadingBarModifiersKey];
     if (moveReadingBarModifiersNumber)
-        moveReadingBarModifiers = [moveReadingBarModifiersNumber unsignedIntValue];
+        moveReadingBarModifiers = [moveReadingBarModifiersNumber intValue];
     if (resizeReadingBarModifiersNumber)
-        resizeReadingBarModifiers = [resizeReadingBarModifiersNumber unsignedIntValue];
+        resizeReadingBarModifiers = [resizeReadingBarModifiersNumber intValue];
 }
 
 - (void)commonInitialization {
