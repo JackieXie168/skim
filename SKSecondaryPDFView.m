@@ -173,7 +173,7 @@ static float SKPopUpMenuFontSize = 11.0;
         
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
-            label = NSLocalizedStringFromTable(SKDefaultScaleMenuLabels[cnt], @"ZoomValues", nil);
+            label = [[NSBundle mainBundle] localizedStringForKey:BDSKDefaultScaleMenuLabels[cnt] value:@"" table:@"ZoomValues"];
             width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
             if (width > maxWidth) {
                 maxWidth = width;
