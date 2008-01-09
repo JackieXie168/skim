@@ -1674,7 +1674,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\n# Check to see if a previous version exists and create it\n# if not, or else pbxcp will complain.\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nexit 0\nfi\n#\n# Run the genstrings build phase\n#\nfi\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\n\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj *.m 2>&1 | sed -e 's/^.*Warning:/warning:/g' >&2\n";
+			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\n# Check to see if a previous version exists and create it\n# if not, or else pbxcp will complain.\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nexit 0\nfi\n#\n# Run the genstrings build phase\n#\nfi\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\n\n/usr/bin/genstrings -q -o ${SOURCE_ROOT}/English.lproj *.m 2>&1 | sed -e 's/^/warning: /g' | sed -e 's/warning:.*Warning:/warning:/g' >&2\n";
 		};
 		CEE22EA50BFB8691002B746B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
