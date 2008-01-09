@@ -916,13 +916,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setAnnotationMode:(annotationMode + 1) % 8];
         } else if ((eventChar == NSUpArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
             [self setAnnotationMode:(annotationMode + 7) % 8];
-        } else if ([self hasReadingBar] == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
+        } else if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
             [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([self hasReadingBar] == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
+        } else if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
             [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([self hasReadingBar] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask)) {
+        } else if ([self hasReadingBar] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
             [self moveReadingBarForKey:eventChar];
-        } else if ([self hasReadingBar] && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
+        } else if ([self hasReadingBar] && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) {
             [self resizeReadingBarForKey:eventChar];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
             [self setAnnotationMode:SKFreeTextNote];
