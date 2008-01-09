@@ -77,6 +77,11 @@ static NSString *SKSmallMagnificationWidthKey = @"SKSmallMagnificationWidth";
 static NSString *SKSmallMagnificationHeightKey = @"SKSmallMagnificationHeight";
 static NSString *SKLargeMagnificationWidthKey = @"SKLargeMagnificationWidth";
 static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
+static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
+static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
+
+static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
+static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
 #define ANCHORED_NOTE_SIZE SKMakeSquareSize(16.0)
 
@@ -162,12 +167,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 + (void)initialize {
     OBINITIALIZE;
     
-    static BOOL initialized = NO;
-    if (initialized == YES) return;
-    initialized = YES;
- 
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:nil];
+    
+    NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
+    NSNumber *resizeReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKResizeReadingBarModifiersKey];
+    if (moveReadingBarModifiersNumber)
+        moveReadingBarModifiers = [moveReadingBarModifiersNumber unsignedIntValue];
+    if (resizeReadingBarModifiersNumber)
+        resizeReadingBarModifiers = [resizeReadingBarModifiersNumber unsignedIntValue];
 }
 
 - (void)commonInitialization {
@@ -908,6 +916,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
             [self selectPreviousActiveAnnotation:self];
+        } else if ([self hasReadingBar] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == moveReadingBarModifiers)) {
+            [self moveReadingBarForKey:eventChar];
+        } else if ([self hasReadingBar] && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == resizeReadingBarModifiers)) {
+            [self resizeReadingBarForKey:eventChar];
         } else if ((eventChar == NSRightArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
             [self setToolMode:(toolMode + 1) % 5];
         } else if ((eventChar == NSLeftArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
@@ -920,10 +932,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
             [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([self hasReadingBar] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-            [self moveReadingBarForKey:eventChar];
-        } else if ([self hasReadingBar] && (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) {
-            [self resizeReadingBarForKey:eventChar];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'n') {
