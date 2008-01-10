@@ -113,7 +113,7 @@ typedef enum _SKNoteType {
     int dragMask;
     
     int trackingRect;
-    NSMutableArray *hoverRects;
+    CFMutableArrayRef hoverRects;
     int hoverRect;
     
     int spellingTag;
