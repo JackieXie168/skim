@@ -892,60 +892,60 @@
         </record-type>
 
         <record-type name="note line widths" code="NLWd">
-            <property name="text note width" code="WTxt" type="real"
+            <property name="text note line width" code="WTxt" type="real"
                 description="Default text note line width.">
                 <cocoa key="textNote"/>
             </property>
-            <property name="circle note width" code="WCir" type="real"
+            <property name="circle note line width" code="WCir" type="real"
                 description="Default circle line width.">
                 <cocoa key="circleNote"/>
             </property>
-            <property name="box note width" code="WSqu" type="real"
+            <property name="box note line width" code="WSqu" type="real"
                 description="Default box line width.">
                 <cocoa key="squareNote"/>
             </property>
-            <property name="line note width" code="WLin" type="real"
+            <property name="line note line width" code="WLin" type="real"
                 description="Default line line width.">
                 <cocoa key="lineNote"/>
             </property>
         </record-type>
 
         <record-type name="note line styles" code="NLSt">
-            <property name="text note style" code="STxt" type="note line style"
+            <property name="text note line style" code="STxt" type="note line style"
                 description="Default text note line width.">
                 <cocoa key="textNote"/>
             </property>
-            <property name="circle note style" code="SCir" type="note line style"
+            <property name="circle note line style" code="SCir" type="note line style"
                 description="Default circle line width.">
                 <cocoa key="circleNote"/>
             </property>
-            <property name="box note style" code="SSqu" type="note line style"
+            <property name="box note line style" code="SSqu" type="note line style"
                 description="Default box line width.">
                 <cocoa key="squareNote"/>
             </property>
-            <property name="line note style" code="SLin" type="note line style"
+            <property name="line note line style" code="SLin" type="note line style"
                 description="Default line line width.">
                 <cocoa key="lineNote"/>
             </property>
         </record-type>
 
         <record-type name="note dash patterns" code="NDsh">
-            <property name="text note pattern" code="PTxt"
+            <property name="text note dash pattern" code="DTxt"
                 description="Default text note dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="textNote"/>
             </property>
-            <property name="circle note pattern" code="DCir"
+            <property name="circle note dash pattern" code="DCir"
                 description="Default circle dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="circleNote"/>
             </property>
-            <property name="box note pattern" code="DSqu"
+            <property name="box note dash pattern" code="DSqu"
                 description="Default box dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="squareNote"/>
             </property>
-            <property name="line note pattern" code="DLin"
+            <property name="line note dash pattern" code="DLin"
                 description="Default line dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="lineNote"/>
