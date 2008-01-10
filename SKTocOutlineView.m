@@ -130,20 +130,22 @@
     else
         [self removeTrackingRects];
     
-    NSRange rowRange = [self rowsInRect:[self visibleRect]];
-    NSRange columnRange = [self columnsInRect:[self visibleRect]];
-    unsigned int row, column;
-	NSTableColumn *tableColumn;
-    int userData;
-    NSTrackingRectTag tag;
-    
-    for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
-        tableColumn = [[self tableColumns] objectAtIndex:column];
-		for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
-            if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
-                userData = row * [self numberOfColumns] + column;
-                tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
-                CFArrayAppendValue(trackingRects, (const void *)tag);
+    if ([self window]) {
+        NSRange rowRange = [self rowsInRect:[self visibleRect]];
+        NSRange columnRange = [self columnsInRect:[self visibleRect]];
+        unsigned int row, column;
+        NSTableColumn *tableColumn;
+        int userData;
+        NSTrackingRectTag tag;
+        
+        for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
+            tableColumn = [[self tableColumns] objectAtIndex:column];
+            for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
+                if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
+                    userData = row * [self numberOfColumns] + column;
+                    tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
+                    CFArrayAppendValue(trackingRects, (const void *)tag);
+                }
             }
         }
     }
