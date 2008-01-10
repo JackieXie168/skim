@@ -251,7 +251,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [self removeHoverRects];
-    [hoverRects release];
+    if (hoverRects)
+        CFRelease(hoverRects);
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [transitionController release];
@@ -273,34 +274,35 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)scheduleAddingToolips {}
 
 - (void)removeHoverRects {
-    CFIndex idx = [hoverRects count];
-    while (idx--) {
-        [self removeTrackingRect:(NSTrackingRectTag)[hoverRects objectAtIndex:idx]];
-        [hoverRects removeObjectAtIndex:idx];
-    }
+    CFIndex idx = CFArrayGetCount(hoverRects);
+    while (idx--)
+        [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(hoverRects, idx)];
+    CFArrayRemoveAllValues(hoverRects);
 }
 
 - (void)resetHoverRects {
     if (hoverRects == nil)
-        hoverRects = (NSMutableArray *)CFArrayCreateMutable(NULL, 0, NULL);
+        hoverRects = CFArrayCreateMutable(NULL, 0, NULL);
     else
         [self removeHoverRects];
     
-    NSRange range = [self visiblePageIndexRange];
-    unsigned i, iMax = NSMaxRange(range);
-    NSRect visibleRect = [self visibleContentRect];
-    
-    for (i = range.location; i < iMax; i++) {
-        PDFPage *page = [[self document] pageAtIndex:i];
-        NSArray *annotations = [page annotations];
-        unsigned j, jMax = [annotations count];
-        for (j = 0; j < jMax; j++) {
-            PDFAnnotation *annotation = [annotations objectAtIndex:j];
-            if ([[annotation type] isEqualToString:SKNoteString] || [[annotation type] isEqualToString:SKLinkString]) {
-                NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
-                if (NSIsEmptyRect(rect) == NO) {
-                    NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
-                    [hoverRects addObject:(id)tag];
+    if ([self document] && [self window]) {
+        NSRange range = [self visiblePageIndexRange];
+        unsigned i, iMax = NSMaxRange(range);
+        NSRect visibleRect = [self visibleContentRect];
+        
+        for (i = range.location; i < iMax; i++) {
+            PDFPage *page = [[self document] pageAtIndex:i];
+            NSArray *annotations = [page annotations];
+            unsigned j, jMax = [annotations count];
+            for (j = 0; j < jMax; j++) {
+                PDFAnnotation *annotation = [annotations objectAtIndex:j];
+                if ([[annotation type] isEqualToString:SKNoteString] || [[annotation type] isEqualToString:SKLinkString]) {
+                    NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
+                    if (NSIsEmptyRect(rect) == NO) {
+                        NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
+                        CFArrayAppendValue(hoverRects, (void *)tag);
+                    }
                 }
             }
         }
@@ -1371,7 +1373,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super mouseEntered:theEvent];
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
+    } else if (NSNotFound != CFArrayGetFirstIndexOfValue(hoverRects, CFRangeMake(0, CFArrayGetCount(hoverRects)), (void *)trackingNumber)) {
         [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
         hoverRect = trackingNumber;
     }
