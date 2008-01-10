@@ -214,6 +214,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     rectSelection = NO;
     
     trackingRect = 0;
+    hoverRects = CFArrayCreateMutable(NULL, 0, NULL);
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     
@@ -251,8 +252,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [self removeHoverRects];
-    if (hoverRects)
-        CFRelease(hoverRects);
+    CFRelease(hoverRects);
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [transitionController release];
@@ -281,10 +281,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)resetHoverRects {
-    if (hoverRects == nil)
-        hoverRects = CFArrayCreateMutable(NULL, 0, NULL);
-    else
-        [self removeHoverRects];
+    [self removeHoverRects];
     
     if ([self document] && [self window]) {
         NSRange range = [self visiblePageIndexRange];
