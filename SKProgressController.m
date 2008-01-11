@@ -37,6 +37,7 @@
  */
 
 #import "SKProgressController.h"
+#import "SKApplication.h"
 
 
 @implementation SKProgressController
@@ -115,7 +116,9 @@
 - (void)beginSheetModalForWindow:(NSWindow *)window {
     [self window];
     [progressBar startAnimation:self];
+    [(SKApplication *)NSApp setUserAttentionDisabled:YES];
     [NSApp beginSheet:[self window] modalForWindow:window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    [(SKApplication *)NSApp setUserAttentionDisabled:NO];
 }
 
 - (void)endSheet {
