@@ -40,7 +40,11 @@
 
 extern NSString *SKApplicationStartsTerminatingNotification;
 
-@interface SKApplication : NSApplication
+@interface SKApplication : NSApplication {
+    BOOL userAttentionDisabled;
+}
+- (BOOL)isUserAttentionDisabled;
+- (void)setUserAttentionDisabled:(BOOL)flag;
 @end
 
 

@@ -51,6 +51,18 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 @implementation SKApplication
 
+- (BOOL)isUserAttentionDisabled {
+    return userAttentionDisabled;
+}
+
+- (void)setUserAttentionDisabled:(BOOL)flag {
+    userAttentionDisabled = flag;
+}
+
+- (int)requestUserAttention:(NSRequestUserAttentionType)requestType {
+    return userAttentionDisabled ? 0 : [super requestUserAttention:requestType];
+}
+
 - (void)sendEvent:(NSEvent *)anEvent {
     if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask) {
         id target = [self targetForAction:@selector(magnifyWheel:)];
