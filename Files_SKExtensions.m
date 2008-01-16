@@ -72,21 +72,14 @@ NSURL *SKDownloadFolderURL() {
 
 BOOL SKFileIsInTrash(NSURL *fileURL) {
     NSCParameterAssert([fileURL isFileURL]);    
-    FSRef parentRef;
-    CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(CFGetAllocator((CFURLRef)fileURL), (CFURLRef)fileURL);
-    [(id)parentURL autorelease];
-    if (CFURLGetFSRef(parentURL, &parentRef)) {
-        OSStatus err;
-        FSRef fsRef;
-        err = FSFindFolder(kUserDomain, kTrashFolderType, TRUE, &fsRef);
-        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
-            return YES;
-        
-        err = FSFindFolder(kOnAppropriateDisk, kSystemTrashFolderType, TRUE, &fsRef);
-        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
-            return YES;
+    FSRef fileRef;
+    Boolean result = false;
+    if (CFURLGetFSRef((CFURLRef)fileURL, &fileRef)) {
+        FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
+        if (result == false)
+            FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
     }
-    return NO;
+    return result;
 }
 
 BOOL SKFileExistsAtPath(NSString *path) {
