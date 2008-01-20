@@ -2802,8 +2802,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)displaySearchResultsForString:(NSString *)string {
     if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:self];
+    // strip extra search criteria, such as kind:pdf
+    NSRange range = [string rangeOfString:@":"];
+    if (range.location != NSNotFound) {
+        range = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
+        if (range.location != NSNotFound && range.location > 0)
+            string = [string substringWithRange:NSMakeRange(0, range.location)];
+    }
     [searchField setStringValue:string];
-    [self search:searchField];
+    [searchField sendAction:[searchField action] to:[searchField target]];
 }
 
 - (IBAction)search:(id)sender {
