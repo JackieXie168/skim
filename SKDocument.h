@@ -41,6 +41,7 @@
 extern NSString *SKDocumentErrorDomain;
 
 extern NSString *SKDocumentWillSaveNotification;
+extern NSString *SKSkimFileDidSaveNotification;
 
 enum {
     SKASDisplaySinglePage = '1Pg ',
