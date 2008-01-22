@@ -74,6 +74,7 @@
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
+NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
@@ -308,6 +309,9 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 [alert runModal];
             }
             
+            if (success)
+                [[NSDistributedNotificationCenter defaultCenter]
+                    postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
         }
         
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqual:SKPDFBundleDocumentUTI]) {
@@ -368,6 +372,10 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
             
             [fm removeFileAtPath:tmpDir handler:nil];
         }
+        
+        if (success)
+            [[NSDistributedNotificationCenter defaultCenter]
+                postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
         
     } else {
         
