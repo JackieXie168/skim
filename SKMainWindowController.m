@@ -825,7 +825,7 @@ typedef enum _NSSegmentStyle {
            message = @"";
     } else {
         if ([statusBar state] == NSOnState) {
-            BOOL useMetric = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppleMetricUnits"];
+            BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
             float factor = useMetric ? 0.035277778 : 0.013888889;
             message = [NSString stringWithFormat:@"%.2f x %.2f %@", NSWidth(selRect) * factor, NSHeight(selRect) * factor, units];
