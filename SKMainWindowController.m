@@ -3904,7 +3904,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) keyEquivalent:@""];
             [menuItem setTarget:self];
-            [menuItem setRepresentedObject:item];
+            [menuItem setRepresentedObject:items];
         }
         if ([pdfView hideNotes] == NO) {
             NSArray *noteItems = [self noteItems:items];
