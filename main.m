@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     if (noErr != err || version < 0x00001040) {
         DialogRef alert;
         
-        // pool required for NSLocalizedString
+        // pool required for localized strings
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
         AlertStdCFStringAlertParamRec alertParamRec = {
