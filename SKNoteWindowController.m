@@ -95,7 +95,8 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
     if ([self isNoteType] && [[textView string] length] == 0) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
-        [textView setFont:font];
+        if (font)
+            [textView setFont:font];
     }
     
     [self updateStatusMessage];
@@ -248,7 +249,8 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
         if ([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey] && [self isNoteType] && [[textView string] length] == 0) {
             NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
                                            size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
-            [textView setFont:font];
+            if (font)
+                [textView setFont:font];
         }
     } else if (object == note) {
         if ([keyPath isEqualToString:@"page"] || [keyPath isEqualToString:@"bounds"])

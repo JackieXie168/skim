@@ -1212,7 +1212,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [self setShouldPrint:YES];
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
-        [super setFont:font];
+        if (font)
+            [super setFont:font];
         originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]);
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
