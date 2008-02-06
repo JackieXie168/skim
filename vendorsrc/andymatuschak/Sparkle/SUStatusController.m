@@ -68,6 +68,8 @@
 	buttonTitle = [aButtonTitle copy];
 	[self didChangeValueForKey:@"buttonTitle"];	
 	
+	// Make sure the window is loaded.
+    [self window];
 	[actionButton sizeToFit];
 	// Except we're going to add 15 px for padding.
 	[actionButton setFrameSize:NSMakeSize([actionButton frame].size.width + 15, [actionButton frame].size.height)];
@@ -93,9 +95,7 @@
 
 - (void)setProgressValue:(double)value
 {
-	[self willChangeValueForKey:@"progressValue"];
 	progressValue = value;
-	[self didChangeValueForKey:@"progressValue"];	
 }
 
 - (double)maxProgressValue
@@ -105,17 +105,13 @@
 
 - (void)setMaxProgressValue:(double)value
 {
-	[self willChangeValueForKey:@"maxProgressValue"];
 	maxProgressValue = value;
-	[self didChangeValueForKey:@"maxProgressValue"];
 	[self setProgressValue:0];
 }
 
 - (void)setStatusText:(NSString *)aStatusText
 {
-	[self willChangeValueForKey:@"statusText"];
 	statusText = [aStatusText copy];
-	[self didChangeValueForKey:@"statusText"];	
 }
 
 @end
