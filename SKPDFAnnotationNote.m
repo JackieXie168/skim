@@ -1942,10 +1942,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 #pragma mark -
 
-@interface PDFAnnotationLine (SKExtensions)
+@interface PDFAnnotationLink (SKExtensions)
 @end
 
-@implementation PDFAnnotationLine (SKExtensions)
+@implementation PDFAnnotationLink (SKExtensions)
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
 - (NSString *)toolTip { return nil; }
