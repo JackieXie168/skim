@@ -1517,6 +1517,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     rowHeight = newRowHeight;
 }
 
+// override these Leopard methods to avoid showing the standard tool tips over our own
+- (NSString *)toolTip { return nil; }
+- (NSString *)toolTipNoLabel { return nil; }
+
 #pragma mark Scripting support
 
 - (NSDictionary *)scriptingProperties {
@@ -1933,5 +1937,18 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [self didChangeValueForKey:@"string"];
     }
 }
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationLine (SKExtensions)
+@end
+
+@implementation PDFAnnotationLine (SKExtensions)
+
+// override these Leopard methods to avoid showing the standard tool tips over our own
+- (NSString *)toolTip { return nil; }
+- (NSString *)toolTipNoLabel { return nil; }
 
 @end
