@@ -43,14 +43,14 @@
 
 - (BOOL)scanCharacter:(unichar *)ch {
     int location, length = [[self string] length];
-    unichar character;
+    unichar character = 0;
     BOOL success = NO;
     for (location = [self scanLocation]; success == NO && location < length; location++) {
         character = [[self string] characterAtIndex:location];
         success = [[self charactersToBeSkipped] characterIsMember:character] == NO;
     }
     if (success) {
-        if (ch != NULL)
+        if (ch != 0)
             *ch = character;
         [self setScanLocation:location];
     }
@@ -59,13 +59,13 @@
 
 - (BOOL)peekCharacter:(unichar *)ch {
     int location, length = [[self string] length];
-    unichar character;
+    unichar character = 0;
     BOOL success = NO;
     for (location = [self scanLocation]; success == NO && location < length; location++) {
         character = [[self string] characterAtIndex:location];
         success = [[self charactersToBeSkipped] characterIsMember:character] == NO;
     }
-    if (success && ch != NULL)
+    if (success && ch != 0)
         *ch = character;
     return success;
 }
