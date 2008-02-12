@@ -202,6 +202,9 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
 - (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
 	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
+    // this should be automatic, but Leopard does not seem to do this
+    if ([[self valueForKey:@"changeCount"] intValue] == 0)
+        [self updateChangeCount:NSChangeCleared];
 }
 
 - (void)undoableActionDoesntDirtyDocument {
