@@ -5248,14 +5248,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(doGoToNextPage:) || action == @selector(allGoToNextPage:)) {
+    } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];
-    } else if (action == @selector(doGoToPreviousPage:) || action == @selector(allGoToPreviousPage:)) {
+    } else if (action == @selector(doGoToPreviousPage:) ) {
         return [pdfView canGoToPreviousPage];
-    } else if (action == @selector(doGoToFirstPage:) || action == @selector(allGoToFirstPage:)) {
+    } else if (action == @selector(doGoToFirstPage:)) {
         return [pdfView canGoToFirstPage];
-    } else if (action == @selector(doGoToLastPage:) || action == @selector(allGoToLastPage:)) {
+    } else if (action == @selector(doGoToLastPage:)) {
         return [pdfView canGoToLastPage];
+    } else if (action == @selector(allGoToNextPage:)) {
+        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToNextPage"] containsObject:[NSNumber numberWithBool:NO]];
+    } else if (action == @selector(allGoToPreviousPage:)) {
+        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToPreviousPage"] containsObject:[NSNumber numberWithBool:NO]];
+    } else if (action == @selector(allGoToFirstPage:)) {
+        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToFirstPage"] containsObject:[NSNumber numberWithBool:NO]];
+    } else if (action == @selector(allGoToLastPage:)) {
+        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToLastPage"] containsObject:[NSNumber numberWithBool:NO]];
     } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];
     } else if (action == @selector(doGoForward:)) {
