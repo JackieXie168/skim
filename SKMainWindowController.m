@@ -85,7 +85,6 @@
 #import "OBUtilities.h"
 #import "SKApplicationController.h"
 
-#define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
 
@@ -102,6 +101,9 @@
 #define HAS_VERTICAL_SCROLLER_KEY   @"hasVerticalScroller"
 #define AUTO_HIDES_SCROLLERS_KEY    @"autoHidesScrollers"
 #define PAGE_INDEX_KEY              @"pageIndex"
+
+static float segmentedControlHeight = 23.0;
+static float segmentedControlOffset = 1.0;
 
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
@@ -149,12 +151,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 #if !defined(MAC_OS_X_VERSION_10_5) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
 typedef enum _NSSegmentStyle {
     NSSegmentStyleAutomatic,
-    NSSegmentStyleCapsule,
     NSSegmentStyleRounded,
-    NSSegmentStyleRoundRect,
-    NSSegmentStyleSmallSquare,
     NSSegmentStyleTexturedRounded,
-    NSSegmentStyleTexturedSquare
+    NSSegmentStyleRoundRect,
+    NSSegmentStyleTexturedSquare,
+    NSSegmentStyleCapsule,
+    NSSegmentStyleSmallSquare
 } NSSegmentStyle;
 @interface NSSegmentedControl (SKLeopardOnly)
 - (NSSegmentStyle)segmentStyle;
@@ -239,6 +241,11 @@ typedef enum _NSSegmentStyle {
     OBINITIALIZE;
     
     [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
+    
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        segmentedControlHeight = 25.0;
+        segmentedControlOffset = 0.0;
+    }
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -327,20 +334,23 @@ typedef enum _NSSegmentStyle {
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
     if (usesDrawers == NO) {
+        if ([leftSideButton respondsToSelector:@selector(setSegmentStyle:)]) {
+            [leftSideButton setSegmentStyle:NSSegmentStyleCapsule];
+            [rightSideButton setSegmentStyle:NSSegmentStyleCapsule];
+            [findButton setSegmentStyle:NSSegmentStyleCapsule];
+        }
         frame = [leftSideButton frame];
-        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        frame.size.height = segmentedControlHeight;
+        frame.origin.y += segmentedControlOffset;
         [leftSideButton setFrame:frame];
         frame = [rightSideButton frame];
-        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        frame.size.height = segmentedControlHeight;
+        frame.origin.y += segmentedControlOffset;
         [rightSideButton setFrame:frame];
         frame = [findButton frame];
-        frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+        frame.size.height = segmentedControlHeight;
+        frame.origin.y += segmentedControlOffset;
         [findButton setFrame:frame];
-        if ([leftSideButton respondsToSelector:@selector(setSegmentStyle:)]) {
-            [leftSideButton setSegmentStyle:NSSegmentStyleTexturedRounded];
-            [rightSideButton setSegmentStyle:NSSegmentStyleTexturedRounded];
-            [findButton setSegmentStyle:NSSegmentStyleTexturedRounded];
-        }
     }
     
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
@@ -4517,10 +4527,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
     frame = [backForwardButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
     [backForwardButton setFrame:frame];
     if ([backForwardButton respondsToSelector:@selector(setSegmentStyle:)])
-        [backForwardButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [backForwardButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:backForwardButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarBackForwardItemIdentifier];
@@ -4557,15 +4567,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[nextPageButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
     [[nextPageButton cell] setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
     frame = [previousPageButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
+    frame.origin.y += segmentedControlOffset;
     [previousPageButton setFrame:frame];
     if ([previousPageButton respondsToSelector:@selector(setSegmentStyle:)])
-        [previousPageButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [previousPageButton setSegmentStyle:NSSegmentStyleCapsule];
     frame = [nextPageButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
+    frame.origin.y += segmentedControlOffset;
     [nextPageButton setFrame:frame];
     if ([nextPageButton respondsToSelector:@selector(setSegmentStyle:)])
-        [nextPageButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [nextPageButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:pageNumberButtonsView];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberButtonsItemIdentifier];
@@ -4639,10 +4651,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[zoomInOutButton cell] setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
     [[zoomInOutButton cell] setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
     frame = [zoomInOutButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
     [zoomInOutButton setFrame:frame];
     if ([zoomInOutButton respondsToSelector:@selector(setSegmentStyle:)])
-        [zoomInOutButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [zoomInOutButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:zoomInOutButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInOutItemIdentifier];
@@ -4664,10 +4676,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[zoomInActualOutButton cell] setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
     [[zoomInActualOutButton cell] setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
     frame = [zoomInActualOutButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
     [zoomInActualOutButton setFrame:frame];
     if ([zoomInActualOutButton respondsToSelector:@selector(setSegmentStyle:)])
-        [zoomInActualOutButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [zoomInActualOutButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:zoomInActualOutButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInActualOutItemIdentifier];
@@ -4860,10 +4872,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
     [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
     frame = [noteButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
     [noteButton setFrame:frame];
     if ([noteButton respondsToSelector:@selector(setSegmentStyle:)])
-        [noteButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [noteButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:noteButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNotesItemIdentifier];
@@ -4918,10 +4930,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
     frame = [toolModeButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    frame.size.height = segmentedControlHeight;
     [toolModeButton setFrame:frame];
     if ([toolModeButton respondsToSelector:@selector(setSegmentStyle:)])
-        [toolModeButton setSegmentStyle:NSSegmentStyleTexturedRounded];
+        [toolModeButton setSegmentStyle:NSSegmentStyleCapsule];
     [item setViewWithSizes:toolModeButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
