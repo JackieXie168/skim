@@ -280,7 +280,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     NSShadow *shadow = [[NSShadow alloc] init];
     [shadow setShadowColor:[NSColor blackColor]];
     [shadow setShadowBlurRadius:3.0];
-    [shadow setShadowOffset:NSMakeSize(0.0, -1.5)];
+    [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSFont boldSystemFontOfSize:15.0], NSFontAttributeName, 
         [NSColor whiteColor], NSForegroundColorAttributeName, 
