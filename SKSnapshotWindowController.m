@@ -197,11 +197,11 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {
     [self window];
     
-    [pdfView setDocument:pdfDocument];
     [pdfView setScaleFactor:factor];
     [pdfView setAutoScales:NO];
     [pdfView setDisplaysPageBreaks:NO];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
+    [pdfView setDocument:pdfDocument];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
