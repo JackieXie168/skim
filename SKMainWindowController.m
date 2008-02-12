@@ -1481,6 +1481,22 @@ typedef enum _NSSegmentStyle {
     [pdfView goToLastPage:sender];
 }
 
+- (IBAction)allGoToNextPage:(id)sender {
+    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToNextPage:) withObject:sender];
+}
+
+- (IBAction)allGoToPreviousPage:(id)sender {
+    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToPreviousPage:) withObject:sender];
+}
+
+- (IBAction)allGoToFirstPage:(id)sender {
+    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToFirstPage:) withObject:sender];
+}
+
+- (IBAction)allGoToLastPage:(id)sender {
+    [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
+}
+
 - (IBAction)goToFirstOrPreviousPage:(id)sender {
     if ([sender selectedSegment] == 0)
         [pdfView goToFirstPage:sender];
@@ -5232,13 +5248,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(doGoToNextPage:)) {
+    } else if (action == @selector(doGoToNextPage:) || action == @selector(allGoToNextPage:)) {
         return [pdfView canGoToNextPage];
-    } else if (action == @selector(doGoToPreviousPage:)) {
+    } else if (action == @selector(doGoToPreviousPage:) || action == @selector(allGoToPreviousPage:)) {
         return [pdfView canGoToPreviousPage];
-    } else if (action == @selector(doGoToFirstPage:)) {
+    } else if (action == @selector(doGoToFirstPage:) || action == @selector(allGoToFirstPage:)) {
         return [pdfView canGoToFirstPage];
-    } else if (action == @selector(doGoToLastPage:)) {
+    } else if (action == @selector(doGoToLastPage:) || action == @selector(allGoToLastPage:)) {
         return [pdfView canGoToLastPage];
     } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];

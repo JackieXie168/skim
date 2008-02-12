@@ -233,6 +233,10 @@ typedef struct _SKPDFViewState {
 - (IBAction)doGoToPreviousPage:(id)sender;
 - (IBAction)doGoToFirstPage:(id)sender;
 - (IBAction)doGoToLastPage:(id)sender;
+- (IBAction)allGoToNextPage:(id)sender;
+- (IBAction)allGoToPreviousPage:(id)sender;
+- (IBAction)allGoToFirstPage:(id)sender;
+- (IBAction)allGoToLastPage:(id)sender;
 - (IBAction)goToFirstOrPreviousPage:(id)sender;
 - (IBAction)goToNextOrLastPage:(id)sender;
 - (IBAction)doGoToPage:(id)sender;
