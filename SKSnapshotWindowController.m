@@ -76,8 +76,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
-    [[self window] makeFirstResponder:pdfView];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
 }
 
@@ -165,6 +163,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 - (void)goToDestination:(PDFDestination *)destination {
     [pdfView goToDestination:destination];
+    
+    [[self window] makeFirstResponder:pdfView];
 	
     [self handlePageChangedNotification:nil];
     
@@ -213,6 +213,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     frame.size = [[self window] frameRectForContentRect:contentRect].size;
     frame = SKConstrainRect(frame, [[[self window] screen] visibleFrame]);
     
+    [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
     [pdfView goToPage:page];
