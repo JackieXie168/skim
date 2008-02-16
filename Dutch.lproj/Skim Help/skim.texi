@@ -1018,7 +1018,7 @@ Skim kan automatisch de bestanden die u bekijkt herladen wanneer deze bestanden 
 
 @box{taskbox}
 @itemize
-@item Om bestanden te herladen zodra hun inhoud op de disk verandert, kies Skim > Voorkeuren, klik op Algemeen, and selecteer "Check voor veranderingen van het bestand".
+@item Om bestanden te herladen zodra hun inhoud op de disk verandert, kies Skim > Voorkeuren, klik op Sync, and selecteer "Check voor veranderingen van het bestand".
 @end itemize
 @endbox
 
