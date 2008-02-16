@@ -1008,15 +1008,15 @@ You can set whether Skim should circle highlight results of a text searches well
 
 @topic Automatically update files for external updates
 
-Skim can automatically reload files you view when their contents changes on disc, by another program. 
+Skim can automatically reload files you view when their contents changes on disk, by another program. 
 
 @box{taskbox}
 @itemize
-@item To reload files when their contents changes on disc, choose Skim > Preferences, click General, and select "Check for file changes".
+@item To reload files when their contents changes on disk, choose Skim > Preferences, click Sync, and select "Check for file changes".
 @end itemize
 @endbox
 
-Skim will always first ask you whether it should reload the file when the contents changes on disc, unless you have chosen Auto. 
+Skim will always first ask you whether it should reload the file when the contents changes on disk, unless you have chosen Auto. 
 
 @c ======================================================================================
 
