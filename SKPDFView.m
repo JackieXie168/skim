@@ -59,6 +59,7 @@
 #import "OBUtilities.h"
 #import "NSAffineTransform_SKExtensions.h"
 #import "BDSKEdgeView.h"
+#import "PDFDocument_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -90,10 +91,6 @@ static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius, bool active);
 static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float radius, int mask);
-
-@interface PDFDocument (SKExtensions)
-- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
-@end
 
 #pragma mark -
 
@@ -3882,45 +3879,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMaxYEdgeMask));
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMinYEdgeMask));
 }
-
-@implementation PDFDocument (SKExtensions)
-
-- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {
-    PDFSelection *sel = selection;
-    NSArray *pages = [selection pages];
-    
-    if ([pages count]) {
-        PDFPage *firstPage = [pages objectAtIndex:0];
-        PDFPage *lastPage = [pages lastObject];
-        unsigned int pageIndex = [self indexForPage:page];
-        unsigned int firstPageIndex = [self indexForPage:firstPage];
-        unsigned int lastPageIndex = [self indexForPage:lastPage];
-        unsigned int n = [selection safeNumberOfRangesOnPage:lastPage];
-        unsigned int firstChar = n ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
-        unsigned int lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) : NSNotFound;
-        NSRect firstRect, lastRect;
-        
-        if (firstChar != NSNotFound) {
-            firstRect = [firstPage characterBoundsAtIndex:firstChar];
-        } else {
-            NSRect bounds = [selection boundsForPage:firstPage];
-            firstRect = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - 10.0, 5.0, 10.0);
-        }
-        if (lastChar != NSNotFound && lastChar != 0) {
-            lastRect = [lastPage characterBoundsAtIndex:lastChar - 1];
-        } else {
-            NSRect bounds = [selection boundsForPage:lastPage];
-            lastRect = NSMakeRect(NSMaxX(bounds) - 5.0, NSMinY(bounds), 5.0, 10.0);
-        }
-        if (pageIndex < firstPageIndex || (pageIndex == firstPageIndex && (point.y > NSMaxY(firstRect) || (point.y > NSMinY(firstRect) && point.x < NSMinX(firstRect)))))
-            sel = [self selectionFromPage:page atPoint:point toPage:lastPage atPoint:NSMakePoint(NSMaxX(lastRect), NSMidY(lastRect))];
-        if (pageIndex > lastPageIndex || (pageIndex == lastPageIndex && (point.y < NSMinY(lastRect) || (point.y < NSMaxY(lastRect) && point.x > NSMaxX(lastRect)))))
-            sel = [self selectionFromPage:firstPage atPoint:NSMakePoint(NSMinX(firstRect), NSMidY(firstRect)) toPage:page atPoint:point];
-    }
-    return sel;
-}
-
-@end
 
 #pragma mark -
 

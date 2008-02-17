@@ -1,10 +1,10 @@
 //
-//  NSImage_SKExtensions.h
+//  SKPrintAccessoryViewController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/27/07.
+//  Created by Christiaan Hofman on 2/17/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,20 +37,25 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 
-@interface NSImage (SKExtensions)
+@interface SKPrintAccessoryViewController : NSWindowController {
+    IBOutlet NSView *view;
+    IBOutlet NSButton *autoRotateButton;
+    IBOutlet NSMatrix *printScalingModeMatrix;
+    NSPrintOperation *printOperation;
+    PDFDocument *document;
+}
 
-+ (void)makeToolbarImages;
-+ (void)makeAdornImages;
+- (id)initWithPrintOperation:(NSPrintOperation *)aPrintOperation document:(PDFDocument *)aDocument;
 
-+ (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
-+ (NSImage *)imageWithIconForToolboxCode:(OSType)code;
+- (NSView *)view;
 
-+ (NSImage *)smallMissingFileImage;
-+ (NSImage *)missingFileImage;
+- (BOOL)autoRotate;
+- (void)setAutoRotate:(BOOL)autoRotate;
 
-- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
-- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
+- (PDFPrintScalingMode)printScalingMode;
+- (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode;
 
 @end
