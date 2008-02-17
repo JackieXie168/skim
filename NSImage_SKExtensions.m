@@ -362,7 +362,7 @@
     [toolbarRotateLeftImage unlockFocus];
     [toolbarRotateLeftImage setName:@"ToolbarRotateLeft"];
     
-    toolbarRotateRightImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 20.0)];
+    toolbarRotateRightImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarRotateRightImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
@@ -554,9 +554,6 @@
     [toolbarRightPaneImage unlockFocus];
     [toolbarRightPaneImage setName:@"ToolbarRightPane"];
     
-    [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-    
     toolbarTextNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTextNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
@@ -572,22 +569,6 @@
     [path lineToPoint:NSMakePoint(9.0, 8.0)];
     [path closePath];
     [path fill];
-    /*path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.5, 4.0)];
-    [path lineToPoint:NSMakePoint(12.5, 14.0)];
-    [path lineToPoint:NSMakePoint(14.5, 14.0)];
-    [path lineToPoint:NSMakePoint(18.5, 4.0)];
-    [path lineToPoint:NSMakePoint(16.5, 4.0)];
-    [path lineToPoint:NSMakePoint(15.7, 6.0)];
-    [path lineToPoint:NSMakePoint(11.3, 6.0)];
-    [path lineToPoint:NSMakePoint(10.5, 4.0)];
-    [path closePath];
-    [path moveToPoint:NSMakePoint(12.1, 8.0)];
-    [path lineToPoint:NSMakePoint(14.9, 8.0)];
-    [path lineToPoint:NSMakePoint(13.5, 11.5)];
-    [path closePath];
-    [path fill];
-    */
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     path = [NSBezierPath bezierPath];
@@ -689,7 +670,7 @@
     toolbarAnchoredNoteMenuImage = [toolbarAnchoredNoteImage createMenuImage];
     [toolbarAnchoredNoteMenuImage setName:@"ToolbarAnchoredNoteMenu"];
 
-    toolbarCircleNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 19.0)];
+    toolbarCircleNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarCircleNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
@@ -869,6 +850,7 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
     [toolbarTextToolImage setName:@"ToolbarTextTool"];
+    
     /*
     toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
     [toolbarMoveToolImage lockFocus];
@@ -906,17 +888,22 @@
     [toolbarMoveToolImage unlockFocus];
     [toolbarMoveToolImage setName:@"ToolbarMoveTool"];
     */
-    toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
+    
+    toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 19.0)];
     [toolbarMagnifyToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow set];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
     path = [NSBezierPath bezierPath];
-    [path appendBezierPathWithOvalInRect:NSMakeRect(7.0, 6.0, 8.0, 8.0)];
-    [path moveToPoint:NSMakePoint(14.0, 7.0)];
-    [path lineToPoint:NSMakePoint(18.0, 3.0)];
+    [path moveToPoint:NSMakePoint(14.0, 8.0)];
+    [path lineToPoint:NSMakePoint(18.0, 4.0)];
+    [path setLineWidth:3.0];
+    [path stroke];
+    path = [NSBezierPath bezierPath];
+    [path appendBezierPathWithOvalInRect:NSMakeRect(6.0, 7.0, 9.0, 9.0)];
     [path setLineWidth:2.0];
     [path stroke];
+    [path setLineWidth:1.0];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarMagnifyToolImage unlockFocus];
     [toolbarMagnifyToolImage setName:@"ToolbarMagnifyTool"];
@@ -927,26 +914,26 @@
     [shadow set];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
     path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(7.0, 13.0)];
-    [path lineToPoint:NSMakePoint(7.0, 15.0)];
-    [path lineToPoint:NSMakePoint(9.0, 15.0)];
-    [path moveToPoint:NSMakePoint(11.0, 15.0)];
-    [path lineToPoint:NSMakePoint(14.0, 15.0)];
-    [path moveToPoint:NSMakePoint(16.0, 15.0)];
-    [path lineToPoint:NSMakePoint(18.0, 15.0)];
-    [path lineToPoint:NSMakePoint(18.0, 13.0)];
-    [path moveToPoint:NSMakePoint(18.0, 11.0)];
-    [path lineToPoint:NSMakePoint(18.0, 8.0)];
-    [path moveToPoint:NSMakePoint(18.0, 6.0)];
-    [path lineToPoint:NSMakePoint(18.0, 4.0)];
-    [path lineToPoint:NSMakePoint(16.0, 4.0)];
-    [path moveToPoint:NSMakePoint(14.0, 4.0)];
-    [path lineToPoint:NSMakePoint(11.0, 4.0)];
-    [path moveToPoint:NSMakePoint(9.0, 4.0)];
-    [path lineToPoint:NSMakePoint(7.0, 4.0)];
-    [path lineToPoint:NSMakePoint(7.0, 6.0)];
-    [path moveToPoint:NSMakePoint(7.0, 8.0)];
-    [path lineToPoint:NSMakePoint(7.0, 11.0)];
+    [path moveToPoint:NSMakePoint(7.0, 14.0)];
+    [path lineToPoint:NSMakePoint(7.0, 16.0)];
+    [path lineToPoint:NSMakePoint(9.0, 16.0)];
+    [path moveToPoint:NSMakePoint(11.0, 16.0)];
+    [path lineToPoint:NSMakePoint(14.0, 16.0)];
+    [path moveToPoint:NSMakePoint(16.0, 16.0)];
+    [path lineToPoint:NSMakePoint(18.0, 16.0)];
+    [path lineToPoint:NSMakePoint(18.0, 14.0)];
+    [path moveToPoint:NSMakePoint(18.0, 12.0)];
+    [path lineToPoint:NSMakePoint(18.0, 9.0)];
+    [path moveToPoint:NSMakePoint(18.0, 7.0)];
+    [path lineToPoint:NSMakePoint(18.0, 5.0)];
+    [path lineToPoint:NSMakePoint(16.0, 5.0)];
+    [path moveToPoint:NSMakePoint(14.0, 5.0)];
+    [path lineToPoint:NSMakePoint(11.0, 5.0)];
+    [path moveToPoint:NSMakePoint(9.0, 5.0)];
+    [path lineToPoint:NSMakePoint(7.0, 5.0)];
+    [path lineToPoint:NSMakePoint(7.0, 7.0)];
+    [path moveToPoint:NSMakePoint(7.0, 9.0)];
+    [path lineToPoint:NSMakePoint(7.0, 12.0)];
     [path setLineWidth:2.0];
     [path stroke];
     [path setLineWidth:1.0];
