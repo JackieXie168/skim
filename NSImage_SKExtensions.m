@@ -61,9 +61,6 @@
 }
 
 + (void)makeToolbarImages {
-NSImage *image = [NSImage imageNamed:@"NSListViewTemplate"];
-[[image TIFFRepresentation] writeToFile:@"/Users/hofman/Desktop/NSListViewTemplate.tiff" atomically:YES];
-
     static NSImage *toolbarPageUpImage = nil;
     static NSImage *toolbarPageDownImage = nil;
     static NSImage *toolbarFirstPageImage = nil;
@@ -651,7 +648,6 @@ NSImage *image = [NSImage imageNamed:@"NSListViewTemplate"];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarTextNoteImage unlockFocus];
     [toolbarTextNoteImage setName:@"ToolbarTextNote"];
-    //[[toolbarTextNoteImage TIFFRepresentation] writeToFile:@"/Users/hofman/Desktop/ToolbarTextNote.tiff" atomically:YES];
     
     toolbarTextNoteMenuImage = [toolbarTextNoteImage createMenuImage];
     [toolbarTextNoteMenuImage setName:@"ToolbarTextNoteMenu"];
