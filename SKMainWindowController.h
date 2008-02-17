@@ -70,7 +70,7 @@ typedef struct _SKPDFViewState {
 
 @class PDFOutline, SKThumbnail;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPrintAccessoryViewController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
@@ -157,21 +157,37 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *blankingWindows;
     
     IBOutlet NSSegmentedControl *backForwardButton;
-    IBOutlet NSView             *pageNumberView;
-    IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
-    IBOutlet NSView             *pageNumberButtonsView;
+    IBOutlet NSSegmentedControl *previousNextPageButton;
     IBOutlet NSSegmentedControl *previousPageButton;
     IBOutlet NSSegmentedControl *nextPageButton;
-    IBOutlet NSTextField        *pageNumberButtonsField;
+    IBOutlet NSSegmentedControl *previousNextFirstLastPageButton;
     IBOutlet NSSegmentedControl *zoomInOutButton;
     IBOutlet NSSegmentedControl *zoomInActualOutButton;
+    IBOutlet NSSegmentedControl *zoomActualButton;
+    IBOutlet NSSegmentedControl *zoomFitButton;
+    IBOutlet NSSegmentedControl *zoomSelectionButton;
+    IBOutlet NSSegmentedControl *rotateLeftButton;
+    IBOutlet NSSegmentedControl *rotateRightButton;
+    IBOutlet NSSegmentedControl *rotateLeftRightButton;
+    IBOutlet NSSegmentedControl *cropButton;
+    IBOutlet NSSegmentedControl *fullScreenButton;
+    IBOutlet NSSegmentedControl *presentationButton;
+    IBOutlet NSSegmentedControl *leftPaneButton;
+    IBOutlet NSSegmentedControl *rightPaneButton;
     IBOutlet NSSegmentedControl *toolModeButton;
+    IBOutlet NSSegmentedControl *textNoteButton;
+    IBOutlet NSSegmentedControl *circleNoteButton;
+    IBOutlet NSSegmentedControl *markupNoteButton;
+    IBOutlet NSSegmentedControl *lineNoteButton;
+    IBOutlet NSSegmentedControl *displayBoxButton;
+    IBOutlet NSSegmentedControl *infoButton;
+    IBOutlet NSSegmentedControl *colorsButton;
+    IBOutlet NSSegmentedControl *fontsButton;
+    IBOutlet NSSegmentedControl *linesButton;
+    IBOutlet NSSegmentedControl *printButton;
+    IBOutlet NSSegmentedControl *customizeButton;
     IBOutlet NSTextField        *scaleField;
-    IBOutlet NSPopUpButton      *displayBoxPopUpButton;
-    IBOutlet BDSKImagePopUpButton *notePopUpButton;
-    IBOutlet BDSKImagePopUpButton *circlePopUpButton;
-    IBOutlet BDSKImagePopUpButton *markupPopUpButton;
     IBOutlet NSSegmentedControl *noteButton;
     IBOutlet SKColorSwatch      *colorSwatch;
     NSMutableDictionary         *toolbarItems;
@@ -181,6 +197,8 @@ typedef struct _SKPDFViewState {
     SKScaleSheetController      *scaleSheetController;
     SKPasswordSheetController   *passwordSheetController;
     SKBookmarkSheetController   *bookmarkSheetController;
+    
+    SKPrintAccessoryViewController *printAccessoryViewController;
     
     SKProgressController        *progressController;
     
@@ -220,6 +238,10 @@ typedef struct _SKPDFViewState {
 - (IBAction)selectColor:(id)sender;
 - (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
+- (IBAction)createNewTextNote:(id)sender;
+- (IBAction)createNewCircleNote:(id)sender;
+- (IBAction)createNewMarkupNote:(id)sender;
+- (IBAction)createNewLineNote:(id)sender;
 - (IBAction)editNote:(id)sender;
 - (IBAction)toggleHideNotes:(id)sender;
 - (IBAction)takeSnapshot:(id)sender;
@@ -231,6 +253,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeDisplayBox:(id)sender;
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
+- (IBAction)goToPreviousOrNextPage:(id)sender;
 - (IBAction)doGoToFirstPage:(id)sender;
 - (IBAction)doGoToLastPage:(id)sender;
 - (IBAction)allGoToNextPage:(id)sender;
@@ -260,6 +283,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)rotateLeft:(id)sender;
 - (IBAction)rotateAllRight:(id)sender;
 - (IBAction)rotateAllLeft:(id)sender;
+- (IBAction)rotateAllLeftRight:(id)sender;
 - (IBAction)crop:(id)sender;
 - (IBAction)cropAll:(id)sender;
 - (IBAction)autoCropAll:(id)sender;

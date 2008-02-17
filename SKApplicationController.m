@@ -156,6 +156,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeAdornImages];
+    [NSImage makeToolbarImages];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{

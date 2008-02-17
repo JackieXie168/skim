@@ -31,6 +31,83 @@
 
     #endif
 
+//
+// everything inside this #define should be removed when we start using the 10.5 SDK
+//
+#if !defined(MAC_OS_X_VERSION_10_5) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
+
+#ifndef NSAppKitVersionNumber10_4
+#define NSAppKitVersionNumber10_4 824
+#endif
+
+// From NSObjCRuntime.h
+#ifndef NSINTEGER_DEFINED
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
+#define NSIntegerMax    LONG_MAX
+#define NSIntegerMin    LONG_MIN
+#define NSUIntegerMax   ULONG_MAX
+#define NSINTEGER_DEFINED 1
+#endif /* NSINTEGER_DEFINED */
+
+// From CGBase.h
+#ifndef	CGFLOAT_DEFINED
+typedef float CGFloat;
+#define CGFLOAT_MIN FLT_MIN
+#define CGFLOAT_MAX FLT_MAX
+#define CGFLOAT_IS_DOUBLE 0
+#define CGFLOAT_DEFINED 1
+#endif /* CGFLOAT_DEFINED */
+
+@interface NSImage (SKLeopardOnly)
+- (BOOL)isTemplate;
+- (void)setTemplate:(BOOL)flag;
+@end
+
+enum {
+    NSSegmentStyleAutomatic,
+    NSSegmentStyleRounded,
+    NSSegmentStyleTexturedRounded,
+    NSSegmentStyleRoundRect,
+    NSSegmentStyleTexturedSquare,
+    NSSegmentStyleCapsule,
+    NSSegmentStyleSmallSquare
+};
+typedef NSInteger NSSegmentStyle;
+
+@interface NSSegmentedControl (SKLeopardOnly)
+- (NSSegmentStyle)segmentStyle;
+- (void)setSegmentStyle:(NSSegmentStyle)style;
+@end
+
+enum {
+   NSPrintPanelShowsCopies = 0x01,
+   NSPrintPanelShowsPageRange = 0x02,
+   NSPrintPanelShowsPaperSize = 0x04,
+   NSPrintPanelShowsOrientation = 0x08,
+   NSPrintPanelShowsScaling = 0x10,
+   NSPrintPanelShowsPageSetupAccessory = 0x100,
+   NSPrintPanelShowsPreview = 0x20000
+};
+typedef NSInteger NSPrintPanelOptions;
+
+@interface NSPrintPanel (SKLeopardOnly)
+- (NSPrintPanelOptions)options;
+- (void)setOptions:(NSPrintPanelOptions)options;
+@end
+
+enum {
+   kPDFPrintPageScaleNone = 0,
+   kPDFPrintPageScaleToFit,
+   kPDFPrintPageScaleDownToFit
+};
+typedef NSInteger PDFPrintScalingMode;
+
+#else
+#warning 10.5: remove this
+#endif // end of 10.4 transition defines
+
+
 #else
 
 /* this should work for C or C++ */

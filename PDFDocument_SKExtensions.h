@@ -1,10 +1,10 @@
 //
-//  NSImage_SKExtensions.h
+//  PDFDocument_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/27/07.
+//  Created by Christiaan Hofman on 2/17/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,20 +37,23 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 
-@interface NSImage (SKExtensions)
+@interface PDFDocument (SKPrivateDeclarations)
+- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
+- (void)cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
+- (void)setAutoRotate:(BOOL)autoRotate forPrintOperation:(NSPrintOperation *)printOperation;
+- (void)setPrintScalingMode:(int)printScalingMode forPrintOperation:(NSPrintOperation *)printOperation;
+@end
 
-+ (void)makeToolbarImages;
-+ (void)makeAdornImages;
 
-+ (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
-+ (NSImage *)imageWithIconForToolboxCode:(OSType)code;
+@interface PDFDocument (SKExtensions)
+- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
+@end
 
-+ (NSImage *)smallMissingFileImage;
-+ (NSImage *)missingFileImage;
 
-- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
-- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
-
+@interface PDFDocument (SKExtendedPDFDocumentDelegate)
+- (void)document:(PDFDocument *)document preparePrintOperation:(NSPrintOperation *)printOperation;
+- (void)document:(PDFDocument *)document cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
 @end
