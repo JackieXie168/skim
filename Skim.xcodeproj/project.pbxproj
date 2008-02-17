@@ -662,6 +662,12 @@
 		CE6DC77A0D687272003A072F /* SKPrintAccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryViewController.m; sourceTree = "<group>"; };
 		CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_SKExtensions.m; sourceTree = "<group>"; };
+		CE6DC8220D68B2F9003A072F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CE6DC8230D68B30E003A072F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CE6DC8240D68B324003A072F /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CE6DC8250D68B33B003A072F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CE6DC8260D68B354003A072F /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CE6DC8270D68B36E003A072F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
 		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
@@ -968,7 +974,6 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CE6DC7750D687252003A072F /* PrintAccessoryView.nib */,
 				CE5475A00B33058B00F8AFB6 /* Images */,
 				CE4DA9190B9E190D0039E89C /* Skim Help */,
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
@@ -981,13 +986,14 @@
 				CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */,
 				CE6C96A70CD924C70022D69F /* NotesPanel.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
-				CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */,
 				CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */,
+				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
+				CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */,
+				CE6DC7750D687252003A072F /* PrintAccessoryView.nib */,
+				CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */,
 				CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */,
-				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
-				CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */,
 				CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */,
 				CEAE392A0CA441F700849B0F /* PageSheet.nib */,
 				CEAE392D0CA4423A00849B0F /* ScaleSheet.nib */,
@@ -2132,6 +2138,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CE6DC7760D687252003A072F /* English */,
+				CE6DC8220D68B2F9003A072F /* Dutch */,
+				CE6DC8230D68B30E003A072F /* French */,
+				CE6DC8240D68B324003A072F /* German */,
+				CE6DC8250D68B33B003A072F /* Italian */,
+				CE6DC8260D68B354003A072F /* ru */,
+				CE6DC8270D68B36E003A072F /* Spanish */,
 			);
 			name = PrintAccessoryView.nib;
 			sourceTree = "<group>";
