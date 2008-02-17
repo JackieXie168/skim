@@ -98,7 +98,7 @@
     static NSImage *toolbarStrikeOutNoteMenuImage = nil;
     static NSImage *toolbarLineNoteMenuImage = nil;
     static NSImage *toolbarTextToolImage = nil;
-    static NSImage *toolbarMoveToolImage = nil;
+    //static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
     
@@ -869,7 +869,7 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
     [toolbarTextToolImage setName:@"ToolbarTextTool"];
-    
+    /*
     toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
     [toolbarMoveToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
@@ -905,7 +905,7 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarMoveToolImage unlockFocus];
     [toolbarMoveToolImage setName:@"ToolbarMoveTool"];
-    
+    */
     toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
     [toolbarMagnifyToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
