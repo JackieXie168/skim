@@ -119,6 +119,13 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             [menuItem setIndentationLevel:1];
     }
     
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        NSMenu *fileMenu = [[[NSApp mainMenu] itemAtIndex:1] submenu];
+        unsigned int idx = [fileMenu indexOfItemWithTarget:nil andAction:@selector(runPageLayout:)];
+        if (idx != NSNotFound)
+            [fileMenu removeItemAtIndex:idx];
+    }
+    
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
