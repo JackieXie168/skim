@@ -3023,7 +3023,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)document:(PDFDocument *)document preparePrintOperation:(NSPrintOperation *)printOperation {
     NSPrintPanel *printPanel = [printOperation printPanel];
     if ([printPanel respondsToSelector:@selector(setOptions:)])
-        [printPanel setOptions:[printPanel options] | NSPrintPanelShowsOrientation];
+        [printPanel setOptions:[printPanel options] | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling];
     
     if (printAccessoryViewController)
         [printAccessoryViewController release];
