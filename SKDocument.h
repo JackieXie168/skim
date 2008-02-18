@@ -63,8 +63,7 @@ enum {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;
     
-    IBOutlet NSButton *autoRotateButton;
-    BOOL autoRotate;
+    NSButton *autoRotateButton;
     
     // variables to be saved:
     NSData *pdfData;
