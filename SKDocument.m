@@ -112,13 +112,6 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
 @implementation SKDocument
 
-- (id)init {
-    if (self = [super init]) {
-        autoRotate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRotatePrintedPagesKey];
-    }
-    return self;
-}
-
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -149,17 +142,19 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         [self tryToUnlockDocument:pdfDocument];
     
     if ([pdfDocument pageCount]) {
+        BOOL autoRotate = (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) ? [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRotatePrintedPagesKey] : YES;
         PDFPage *page = [pdfDocument pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
+        
+        printInfo = [printInfo copy];
+        [printInfo setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"dictionary.PDFPrintAutoRotate"];
         if ([page rotation] % 180 == 90)
             pageSize = NSMakeSize(pageSize.height, pageSize.width);
-        if (NO == NSEqualSizes(pageSize, [printInfo paperSize])) {
-            printInfo = [printInfo copy];
+        if (NO == NSEqualSizes(pageSize, [printInfo paperSize]))
             [printInfo setPaperSize:pageSize];
-            [self setPrintInfo:printInfo];
-            [printInfo release];
-        }
+        [self setPrintInfo:printInfo];
+        [printInfo release];
     }
     
     [mainController setPdfDocument:pdfDocument];
@@ -767,6 +762,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 #pragma mark Actions
 
 - (IBAction)printDocument:(id)sender{
+    BOOL autoRotate = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
     [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate];
 }
 
@@ -1535,16 +1531,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)setPrintInfo:(NSPrintInfo *)printInfo {
-    [[self undoManager] disableUndoRegistration];
-    [super setPrintInfo:printInfo];
-    [[self undoManager] enableUndoRegistration];
     if (autoRotateButton) {
-        BOOL newAutoRotate = [autoRotateButton state] == NSOnState;
-        if (newAutoRotate != autoRotate) {
-            autoRotate = newAutoRotate;
+        BOOL autoRotate = [autoRotateButton state] == NSOnState;
+        if (autoRotate != [[printInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue]) {
+            [printInfo setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"dictionary.PDFPrintAutoRotate"];
             [[NSUserDefaults standardUserDefaults] setBool:autoRotate forKey:SKAutoRotatePrintedPagesKey];
         }
     }
+    [[self undoManager] disableUndoRegistration];
+    [super setPrintInfo:printInfo];
+    [[self undoManager] enableUndoRegistration];
 }
 
 - (BOOL)preparePageLayout:(NSPageLayout *)pageLayout {
@@ -1555,6 +1551,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [autoRotateButton setTitle:NSLocalizedString(@"Auto Rotate Pages", @"Print layout sheet button title")];
         [autoRotateButton sizeToFit];
     }
+    BOOL autoRotate = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
     [autoRotateButton setState:autoRotate ? NSOnState : NSOffState];
     [pageLayout setAccessoryView:autoRotateButton];
     return YES;
@@ -1812,7 +1809,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
     
-    [[self pdfView] printWithInfo:printInfo autoRotate:NO];
+    [[self pdfView] printWithInfo:printInfo autoRotate:YES];
     
     return nil;
 }
