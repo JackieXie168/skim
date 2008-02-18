@@ -5234,8 +5234,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
     return [NSArray arrayWithObjects: 
         SKDocumentToolbarPreviousNextItemIdentifier, 
-        SKDocumentToolbarPageNumberItemIdentifier, 
         SKDocumentToolbarPreviousItemIdentifier, 
+        SKDocumentToolbarPageNumberItemIdentifier, 
         SKDocumentToolbarNextItemIdentifier, 
         SKDocumentToolbarPreviousNextFirstLastItemIdentifier, 
         SKDocumentToolbarBackForwardItemIdentifier, 
