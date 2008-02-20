@@ -5234,14 +5234,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
     return [NSArray arrayWithObjects: 
         SKDocumentToolbarPreviousNextItemIdentifier, 
+        SKDocumentToolbarPreviousNextFirstLastItemIdentifier, 
         SKDocumentToolbarPreviousItemIdentifier, 
         SKDocumentToolbarPageNumberItemIdentifier, 
         SKDocumentToolbarNextItemIdentifier, 
-        SKDocumentToolbarPreviousNextFirstLastItemIdentifier, 
         SKDocumentToolbarBackForwardItemIdentifier, 
         SKDocumentToolbarScaleItemIdentifier, 
-        SKDocumentToolbarZoomInOutItemIdentifier, 
         SKDocumentToolbarZoomInActualOutItemIdentifier, 
+        SKDocumentToolbarZoomInOutItemIdentifier, 
         SKDocumentToolbarZoomActualItemIdentifier, 
         SKDocumentToolbarZoomToFitItemIdentifier, 
         SKDocumentToolbarZoomToSelectionItemIdentifier, 
