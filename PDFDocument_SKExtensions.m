@@ -40,7 +40,6 @@
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
 
-
 @interface PDFDocument (SKPrivateExtensions)
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 - (void)replacementCleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
@@ -56,7 +55,7 @@ static IMP originalCleanupAfterPrintOperation = NULL;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
         originalGetPrintOperationForPrintInfo = OBReplaceMethodImplementationWithSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:));
-    if ([self instancesRespondToSelector:@selector(cleanupAfterPrintOperation:autoRotate:)])
+    if ([self instancesRespondToSelector:@selector(cleanupAfterPrintOperation:)])
         originalCleanupAfterPrintOperation = OBReplaceMethodImplementationWithSelector(self, @selector(cleanupAfterPrintOperation:), @selector(replacementCleanupAfterPrintOperation:));
     [pool release];
 }
