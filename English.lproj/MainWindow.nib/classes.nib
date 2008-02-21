@@ -136,10 +136,8 @@
                 exitFullScreen = id;
                 getInfo = id;
                 goBackOrForward = id;
-                goToFirstOrPreviousPage = id;
                 goToMarkedPage = id;
-                goToNextOrLastPage = id;
-                goToPreviousOrNextPage = id;
+                goToPreviousNextFirstLastPage = id;
                 markPage = id;
                 password = id;
                 performFit = id;
@@ -167,7 +165,6 @@
                 toggleRightSidePane = id;
                 toggleStatusBar = id;
                 zoomInActualOut = id;
-                zoomInOut = id;
             };
             CLASS = SKMainWindowController;
             LANGUAGE = ObjC;

@@ -154,6 +154,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 @interface NSSegmentedControl (SKExtensions)
 - (void)makeCapsule;
 - (void)makeTexturedRounded;
+- (NSInteger)selectedTag;
 @end
 
 @implementation NSSegmentedControl (SKExtensions)
@@ -176,6 +177,10 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
         [self setSegmentStyle:NSSegmentStyleTexturedRounded];
     }
+}
+
+- (NSInteger)selectedTag {
+    return [[self cell] tagForSegment:[self selectedSegment]];
 }
 
 @end
@@ -1524,12 +1529,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [pdfView goToPreviousPage:sender];
 }
 
-- (IBAction)goToPreviousOrNextPage:(id)sender {
-    if ([sender selectedSegment] == 0)
-        [pdfView goToPreviousPage:sender];
-    else
-        [pdfView goToNextPage:sender];
-}
 
 - (IBAction)doGoToFirstPage:(id)sender {
     [pdfView goToFirstPage:sender];
@@ -1555,18 +1554,17 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [[NSApp valueForKeyPath:@"orderedDocuments.pdfView"] makeObjectsPerformSelector:@selector(goToLastPage:) withObject:sender];
 }
 
-- (IBAction)goToFirstOrPreviousPage:(id)sender {
-    if ([sender selectedSegment] == 0)
-        [pdfView goToFirstPage:sender];
-    else
+- (IBAction)goToPreviousNextFirstLastPage:(id)sender {
+    int tag = [sender selectedTag];
+    if (tag == -1)
         [pdfView goToPreviousPage:sender];
-}
-
-- (IBAction)goToNextOrLastPage:(id)sender {
-    if ([sender selectedSegment] == 0)
+    else if (tag == 1)
         [pdfView goToNextPage:sender];
-    else
+    else if (tag == -2)
+        [pdfView goToFirstPage:sender];
+    else if (tag == 2)
         [pdfView goToLastPage:sender];
+        
 }
 
 - (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -1697,19 +1695,13 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     }
 }
 
-- (IBAction)zoomInOut:(id)sender {
-    if ([sender selectedSegment] == 0)
-        [pdfView zoomOut:sender];
-    else
-        [pdfView zoomIn:sender];
-}
-
 - (IBAction)zoomInActualOut:(id)sender {
-    if ([sender selectedSegment] == 0)
+    int tag = [sender selectedTag];
+    if (tag == -1)
         [pdfView zoomOut:sender];
-    else if ([sender selectedSegment] == 1)
+    else if (tag == 0)
         [pdfView setScaleFactor:1.0];
-    else
+    else if (tag == 1)
         [pdfView zoomIn:sender];
 }
 

@@ -253,15 +253,13 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeDisplayBox:(id)sender;
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
-- (IBAction)goToPreviousOrNextPage:(id)sender;
 - (IBAction)doGoToFirstPage:(id)sender;
 - (IBAction)doGoToLastPage:(id)sender;
 - (IBAction)allGoToNextPage:(id)sender;
 - (IBAction)allGoToPreviousPage:(id)sender;
 - (IBAction)allGoToFirstPage:(id)sender;
 - (IBAction)allGoToLastPage:(id)sender;
-- (IBAction)goToFirstOrPreviousPage:(id)sender;
-- (IBAction)goToNextOrLastPage:(id)sender;
+- (IBAction)goToPreviousNextFirstLastPage:(id)sender;
 - (IBAction)doGoToPage:(id)sender;
 - (IBAction)doGoBack:(id)sender;
 - (IBAction)doGoForward:(id)sender;
@@ -274,7 +272,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)doZoomToFit:(id)sender;
 - (IBAction)alternateZoomToFit:(id)sender;
 - (IBAction)doZoomToSelection:(id)sender;
-- (IBAction)zoomInOut:(id)sender;
 - (IBAction)zoomInActualOut:(id)sender;
 - (IBAction)doAutoScale:(id)sender;
 - (IBAction)toggleAutoScale:(id)sender;
