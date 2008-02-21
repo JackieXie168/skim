@@ -4716,7 +4716,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarScaleItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToAcualSize:) keyEquivalent:@""] autorelease];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToActualSize:) keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomActualItemIdentifier];
     [item setLabels:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
@@ -4879,7 +4879,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setTag:SKCircleNote];
     [menuItem setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
     [menuItem setTarget:self];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewSquareNote:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewCircleNote:) keyEquivalent:@""];
     [menuItem setTag:SKSquareNote];
     [menuItem setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
     [menuItem setTarget:self];
