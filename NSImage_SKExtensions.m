@@ -110,7 +110,7 @@
     NSShadow *shadow2 = [[NSShadow alloc] init];
     [shadow2 setShadowBlurRadius:2.0];
     [shadow2 setShadowOffset:NSMakeSize(0.0, -1.0)];
-    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.6]];
+    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
     NSBezierPath *path;
     
