@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>IBDocumentLocation</key>
@@ -7,27 +7,27 @@
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>168</key>
-		<string>592 475 255 331 0 0 1440 938 </string>
+		<string>592 441 368 359 0 0 1440 938 </string>
 		<key>224</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>256</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>314</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>502</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>511</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>676</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>677</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>773</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>791</key>
-		<string>662 590 115 102 0 0 1440 938 </string>
+		<string>662 641 115 102 0 0 1440 938 </string>
 		<key>815</key>
-		<string>642 484 188 210 0 0 1440 938 </string>
+		<string>626 560 188 210 0 0 1440 938 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>489.0</string>
@@ -35,20 +35,20 @@
 	<array/>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>314</integer>
-		<integer>677</integer>
+		<integer>168</integer>
 		<integer>676</integer>
+		<integer>314</integer>
+		<integer>502</integer>
 		<integer>224</integer>
 		<integer>256</integer>
-		<integer>791</integer>
-		<integer>168</integer>
 		<integer>815</integer>
-		<integer>511</integer>
 		<integer>5</integer>
+		<integer>511</integer>
 		<integer>773</integer>
-		<integer>502</integer>
+		<integer>791</integer>
+		<integer>677</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8S165</string>
+	<string>9C31</string>
 </dict>
 </plist>
