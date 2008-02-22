@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>IBDocumentLocation</key>
@@ -7,43 +7,33 @@
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>168</key>
-		<string>592 476 255 329 0 0 1440 938 </string>
+		<string>536 448 368 359 0 0 1440 938 </string>
 		<key>224</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>256</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>314</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>502</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>511</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>687</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>694</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>796</key>
-		<string>610 420 220 442 0 0 1440 938 </string>
+		<string>610 386 220 442 0 0 1440 938 </string>
 		<key>830</key>
-		<string>662 590 115 102 0 0 1440 938 </string>
-		<key>864</key>
-		<string>642 484 188 210 0 0 1440 938 </string>
+		<string>662 641 115 102 0 0 1440 938 </string>
+		<key>855</key>
+		<string>626 560 188 210 0 0 1440 938 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>489.0</string>
 	<key>IBLockedObjects</key>
 	<array/>
-	<key>IBOpenObjects</key>
-	<array>
-		<integer>5</integer>
-		<integer>511</integer>
-		<integer>314</integer>
-		<integer>256</integer>
-		<integer>502</integer>
-		<integer>864</integer>
-		<integer>796</integer>
-	</array>
 	<key>IBSystem Version</key>
-	<string>8S165</string>
+	<string>9C31</string>
 </dict>
 </plist>
