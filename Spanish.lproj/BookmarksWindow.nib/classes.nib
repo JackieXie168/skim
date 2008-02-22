@@ -1,45 +1,75 @@
 {
-    IBClasses = (
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSObject; LANGUAGE = ObjC; }, 
-        {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {
-                doubleClickBookmark = id; 
-                insertBookmarkFolder = id; 
-                insertBookmarkSeparator = id; 
-            }; 
-            CLASS = SKBookmarkController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {outlineView = SKBookmarkOutlineView; statusBar = SKStatusBar; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = SKBookmarkOutlineView; LANGUAGE = ObjC; SUPERCLASS = SKOutlineView; }, 
-        {
-            ACTIONS = {
-                copy = id; 
-                delete = id; 
-                scrollToBeginningOfDocument = id; 
-                scrollToEndOfDocument = id; 
-            }; 
-            CLASS = SKOutlineView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSOutlineView; 
-        }, 
-        {
-            ACTIONS = {startAnimation = id; stopAnimation = id; }; 
-            CLASS = SKStatusBar; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {leftCell = id; rightCell = id; }; 
-            SUPERCLASS = NSControl; 
-        }, 
-        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
-        {CLASS = SKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
-    ); 
-    IBVersion = 1; 
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                "" = id;
+            };
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            CLASS = SKBookmark;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                doubleClickBookmark = id;
+                insertBookmarkFolder = id;
+                insertBookmarkSeparator = id;
+            };
+            CLASS = SKBookmarkController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                outlineView = SKBookmarkOutlineView;
+                statusBar = SKStatusBar;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = SKBookmarkOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKOutlineView;
+        },
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
+            CLASS = SKOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSOutlineView;
+        },
+                {
+            ACTIONS =             {
+                startAnimation = id;
+                stopAnimation = id;
+            };
+            CLASS = SKStatusBar;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                leftCell = id;
+                rightCell = id;
+            };
+            SUPERCLASS = NSControl;
+        },
+                {
+            CLASS = SKTableView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSTableView;
+        },
+                {
+            CLASS = SKTextWithIconCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSTextFieldCell;
+        }
+    );
+    IBVersion = 1;
 }

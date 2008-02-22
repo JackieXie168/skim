@@ -6,8 +6,6 @@
             SUPERCLASS = NSObject;
         },
                 {
-            ACTIONS =             {
-            };
             CLASS = SKPrintAccessoryViewController;
             LANGUAGE = ObjC;
             OUTLETS =             {

@@ -1,13 +1,22 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {download = id; }; 
-            CLASS = SKReleaseNotesController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {downloadButton = NSButton; textView = NSTextView; }; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                download = id;
+            };
+            CLASS = SKReleaseNotesController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                downloadButton = NSButton;
+                textView = NSTextView;
+            };
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
