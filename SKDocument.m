@@ -619,7 +619,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if ([docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentType]) {
+    if ([docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentUTI]) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
@@ -656,7 +656,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPDFBundleDocumentType] || [docType isEqualToString:SKPDFBundleDocumentType]) {
+    } else if ([docType isEqualToString:SKPDFBundleDocumentType] || [docType isEqualToString:SKPDFBundleDocumentUTI]) {
         NSString *path = [absoluteURL path];
         NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:path];
         if (pdfFile) {
@@ -671,14 +671,14 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentType]) {
+    } else if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentUTI]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
             if (data = [[psProgressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
             [psProgressController autorelease];
         }
-    } else if ([docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKDVIDocumentType]) {
+    } else if ([docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKDVIDocumentUTI]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKDVIProgressController *dviProgressController = [[SKDVIProgressController alloc] init];
             if (data = [[dviProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
