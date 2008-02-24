@@ -16,18 +16,46 @@
 #import "OBUtilities.h"
 #import <Foundation/Foundation.h>
 
-static void _OBRegisterMethod(IMP methodImp, Class class, const char *methodTypes, SEL selector)
+
+static IMP SK_method_getImplementation(struct objc_method *aMethod)
 {
-    struct objc_method_list *newMethodList;
-    
-    newMethodList = (struct objc_method_list *) NSZoneMalloc(NSDefaultMallocZone(), sizeof(struct objc_method_list));
-    
-    newMethodList->method_count = 1;
-    newMethodList->method_list[0].method_name = selector;
-    newMethodList->method_list[0].method_imp = methodImp;
-    newMethodList->method_list[0].method_types = (char *)methodTypes;
-    
-    class_addMethods(class, newMethodList);
+    return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
+} 
+
+static void SK_method_setImplementation(struct objc_method *aMethod, IMP anImp)
+{
+    if (method_setImplementation != NULL)
+        method_setImplementation(aMethod, anImp);
+    else
+        aMethod->method_imp = anImp;
+} 
+
+static const char *SK_method_getTypeEncoding(struct objc_method *aMethod)
+{
+    return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
+}
+
+static Class SK_class_getSuperclass(Class aClass)
+{
+    return class_getSuperclass != NULL ? class_getSuperclass(aClass) : aClass->super_class;
+}
+
+static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes)
+{
+    if (class_addMethod != NULL) {
+        class_addMethod(aClass, selector, methodImp, methodTypes);
+    } else {
+        struct objc_method_list *newMethodList;
+        
+        newMethodList = (struct objc_method_list *) NSZoneMalloc(NSDefaultMallocZone(), sizeof(struct objc_method_list));
+        
+        newMethodList->method_count = 1;
+        newMethodList->method_list[0].method_name = selector;
+        newMethodList->method_list[0].method_imp = methodImp;
+        newMethodList->method_list[0].method_types = (char *)methodTypes;
+        
+        class_addMethods(aClass, newMethodList);
+    }
 }
 
 IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
@@ -36,8 +64,8 @@ IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newS
     IMP oldImp = NULL;
     
     if ((thisMethod = class_getInstanceMethod(aClass, oldSelector))) {
-        oldImp = thisMethod->method_imp;
-        _OBRegisterMethod(thisMethod->method_imp, aClass, thisMethod->method_types, newSelector);
+        oldImp = SK_method_getImplementation(thisMethod);
+        SK_class_addMethod(aClass, newSelector, oldImp, SK_method_getTypeEncoding(thisMethod));
     }
     
     return oldImp;
@@ -45,20 +73,22 @@ IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newS
 
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 {
-    struct objc_method *localMethod, *superMethod;
+    struct objc_method *localMethod, *superMethod = NULL;
     IMP oldImp = NULL;
+    Class superCls = Nil;
     extern void _objc_flush_caches(Class);
     
     if ((localMethod = class_getInstanceMethod(aClass, oldSelector))) {
-        oldImp = localMethod->method_imp;
-        superMethod = aClass->super_class ? class_getInstanceMethod(aClass->super_class, oldSelector) : NULL;
+        oldImp = SK_method_getImplementation(localMethod);
+        if (superCls = SK_class_getSuperclass(aClass))
+            superMethod = class_getInstanceMethod(superCls, oldSelector);
         
         if (superMethod == localMethod) {
             // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
-            _OBRegisterMethod(newImp, aClass, localMethod->method_types, oldSelector);
+            SK_class_addMethod(aClass, oldSelector, newImp, SK_method_getTypeEncoding(localMethod));
         } else {
             // Replace the method in place
-            localMethod->method_imp = newImp;
+            SK_method_setImplementation(localMethod, newImp);
         }
         
         // Flush the method cache
@@ -70,9 +100,7 @@ IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
 {
-    struct objc_method *newMethod;
+    struct objc_method *newMethod = class_getInstanceMethod(aClass, newSelector);
     
-    newMethod = class_getInstanceMethod(aClass, newSelector);
-    
-    return OBReplaceMethodImplementation(aClass, oldSelector, newMethod->method_imp);
+    return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(newMethod));
 }
