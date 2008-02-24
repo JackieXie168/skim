@@ -17,12 +17,14 @@
 #import <Foundation/Foundation.h>
 
 
-static IMP SK_method_getImplementation(struct objc_method *aMethod)
+// wrappers around 10.5 only functions, use 10.4 API when the function is not defined
+
+static IMP SK_method_getImplementation(Method aMethod)
 {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 } 
 
-static void SK_method_setImplementation(struct objc_method *aMethod, IMP anImp)
+static void SK_method_setImplementation(Method aMethod, IMP anImp)
 {
     if (method_setImplementation != NULL)
         method_setImplementation(aMethod, anImp);
@@ -30,7 +32,7 @@ static void SK_method_setImplementation(struct objc_method *aMethod, IMP anImp)
         aMethod->method_imp = anImp;
 } 
 
-static const char *SK_method_getTypeEncoding(struct objc_method *aMethod)
+static const char *SK_method_getTypeEncoding(Method aMethod)
 {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
 }
@@ -60,7 +62,7 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
 
 IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
 {
-    struct objc_method *thisMethod;
+    Method thisMethod;
     IMP oldImp = NULL;
     
     if ((thisMethod = class_getInstanceMethod(aClass, oldSelector))) {
@@ -73,7 +75,7 @@ IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newS
 
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 {
-    struct objc_method *localMethod, *superMethod = NULL;
+    Method localMethod, superMethod = NULL;
     IMP oldImp = NULL;
     Class superCls = Nil;
     extern void _objc_flush_caches(Class);
@@ -100,7 +102,7 @@ IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
 {
-    struct objc_method *newMethod = class_getInstanceMethod(aClass, newSelector);
+    Method newMethod = class_getInstanceMethod(aClass, newSelector);
     
     return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(newMethod));
 }
