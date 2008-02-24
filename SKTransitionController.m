@@ -492,7 +492,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)prepareOpenGL {
     // Enable beam-synced updates.
-    long parm = 1;
+    GLint parm = 1;
     [[self openGLContext] setValues:&parm forParameter:NSOpenGLCPSwapInterval];
     
     // Make sure that everything we don't need is disabled.

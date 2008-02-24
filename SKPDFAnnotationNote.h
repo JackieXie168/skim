@@ -145,6 +145,14 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
+@interface PDFAnnotationText (SKLeopardDeprecated)
+// these are deprecated on 10.5, but we don't want to use the popup for 10.4 compatibility; we check for existence before using this anyway
+- (BOOL)windowIsOpen;
+- (void)setWindowIsOpen:(BOOL)isOpen;
+@end
+
+#pragma mark -
+
 @interface SKPDFAnnotationNote : PDFAnnotationText {
     NSString *string;
     NSImage *image;
