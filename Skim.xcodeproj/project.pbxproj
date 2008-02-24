@@ -136,6 +136,10 @@
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
+		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
+		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
+		CE816B0E0D719700008D807D /* Leopard.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Leopard.bundle */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
@@ -259,6 +263,13 @@
 			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* Skim */;
 			remoteInfo = Skim;
 		};
+		CE816AB50D7195E8008D807D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE816AAA0D71958F008D807D /* Leopard */;
+			remoteInfo = Leopard;
+		};
 		CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
@@ -290,6 +301,16 @@
 			dstSubfolderSpec = 1;
 			files = (
 				CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE816B080D7196F2008D807D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				CE816B0E0D719700008D807D /* Leopard.bundle in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -614,6 +635,10 @@
 		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
+		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
+		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
+		CE816AAB0D71958F008D807D /* Leopard.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Leopard.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE816AAC0D71958F008D807D /* Leopard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Leopard-Info.plist"; sourceTree = "<group>"; };
 		CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask_SKExtensions.h; sourceTree = "<group>"; };
 		CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTask_SKExtensions.m; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
@@ -818,6 +843,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE816AA90D71958F008D807D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */,
+				CE816B040D71963B008D807D /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEF3BF730B99CA2900E12E3D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -859,6 +893,7 @@
 			children = (
 				8D15AC370486D014006FF6A4 /* Skim.app */,
 				CEF3BF750B99CA2900E12E3D /* skimnotes */,
+				CE816AAB0D71958F008D807D /* Leopard.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -875,6 +910,7 @@
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
 				CE2BD8160BD4123D00A5F4DB /* Subprojects */,
+				CE816AA10D718C5B008D807D /* Leopard */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -1262,6 +1298,16 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		CE816AA10D718C5B008D807D /* Leopard */ = {
+			isa = PBXGroup;
+			children = (
+				CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */,
+				CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */,
+				CE816AAC0D71958F008D807D /* Leopard-Info.plist */,
+			);
+			name = Leopard;
+			sourceTree = "<group>";
+		};
 		CE9BD6FA0D096EE300EB1A6C /* RemoteControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1356,6 +1402,7 @@
 				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CEFD68720C01D3FE0027B933 /* CopyFiles */,
 				CE816A0A0D70F9B6008D807D /* CopyFiles */,
+				CE816B080D7196F2008D807D /* CopyFiles */,
 				CEE22EA50BFB8691002B746B /* ShellScript */,
 				CE4B67590BF4DC3000A73E42 /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
@@ -1367,12 +1414,30 @@
 				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
 				CE816A030D70F8F7008D807D /* PBXTargetDependency */,
+				CE816AB60D7195E8008D807D /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Skim;
 			productReference = 8D15AC370486D014006FF6A4 /* Skim.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CE816AAA0D71958F008D807D /* Leopard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Leopard" */;
+			buildPhases = (
+				CE816AA70D71958F008D807D /* Resources */,
+				CE816AA80D71958F008D807D /* Sources */,
+				CE816AA90D71958F008D807D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Leopard;
+			productName = Leopard;
+			productReference = CE816AAB0D71958F008D807D /* Leopard.bundle */;
+			productType = "com.apple.product-type.bundle";
 		};
 		CEF3BF740B99CA2900E12E3D /* skimnotes */ = {
 			isa = PBXNativeTarget;
@@ -1429,6 +1494,7 @@
 				8D15AC270486D014006FF6A4 /* Skim */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
+				CE816AAA0D71958F008D807D /* Leopard */,
 			);
 		};
 /* End PBXProject section */
@@ -1534,6 +1600,13 @@
 				CE6DC7770D687252003A072F /* PrintAccessoryView.nib in Resources */,
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE816AA70D71958F008D807D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1778,6 +1851,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE816AA80D71958F008D807D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEF3BF720B99CA2900E12E3D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1809,6 +1890,11 @@
 			isa = PBXTargetDependency;
 			name = Skim;
 			targetProxy = CE816A020D70F8F7008D807D /* PBXContainerItemProxy */;
+		};
+		CE816AB60D7195E8008D807D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE816AAA0D71958F008D807D /* Leopard */;
+			targetProxy = CE816AB50D7195E8008D807D /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2248,8 +2334,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
 					i386,
+					ppc,
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2327,6 +2413,61 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				PRODUCT_NAME = DiskImage;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CE816AAD0D719591008D807D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Leopard-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Leopard;
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CE816AAE0D719591008D807D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Leopard-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Leopard;
+				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2427,6 +2568,15 @@
 			buildConfigurations = (
 				CE592C5F0B9239C600C113DF /* Debug */,
 				CE592C600B9239C600C113DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Leopard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE816AAD0D719591008D807D /* Debug */,
+				CE816AAE0D719591008D807D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

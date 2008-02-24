@@ -331,6 +331,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [passwordSheetController release];
     [bookmarkSheetController release];
     [secondaryPdfEdgeView release];
+    [printAccessoryViewController release];
     [super dealloc];
 }
 
@@ -3014,14 +3015,25 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)document:(PDFDocument *)document preparePrintOperation:(NSPrintOperation *)printOperation {
     NSPrintPanel *printPanel = [printOperation printPanel];
-    if ([printPanel respondsToSelector:@selector(setOptions:)])
-        [printPanel setOptions:[printPanel options] | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling];
     
-    if (printAccessoryViewController)
-        [printAccessoryViewController release];
-    printAccessoryViewController = [[SKPrintAccessoryViewController alloc] initWithPrintOperation:printOperation document:document];
-    if (printAccessoryViewController)
-        [printOperation setAccessoryView:[printAccessoryViewController view]];
+    [printAccessoryViewController release];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        [printPanel setOptions:[printPanel options] | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling];
+        
+        Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
+        if (printAccessoryControllerClass == Nil) {
+            [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Leopard" ofType:@"bundle"]] load];
+            printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
+        }
+        printAccessoryViewController = [[printAccessoryControllerClass alloc] initWithPrintOperation:printOperation document:document];
+        if (printAccessoryViewController)
+            [printPanel addAccessoryController:printAccessoryViewController];
+    } else {
+        printAccessoryViewController = [[SKPrintAccessoryViewController alloc] initWithPrintOperation:printOperation document:document];
+        if (printAccessoryViewController)
+            [printPanel setAccessoryView:[printAccessoryViewController view]];
+    }
 }
 
 - (void)document:(PDFDocument *)document cleanupAfterPrintOperation:(NSPrintOperation *)printOperation {

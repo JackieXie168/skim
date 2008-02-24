@@ -70,7 +70,7 @@ typedef struct _SKPDFViewState {
 
 @class PDFOutline, SKThumbnail;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPrintAccessoryViewController;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
@@ -198,7 +198,7 @@ typedef struct _SKPDFViewState {
     SKPasswordSheetController   *passwordSheetController;
     SKBookmarkSheetController   *bookmarkSheetController;
     
-    SKPrintAccessoryViewController *printAccessoryViewController;
+    id                          printAccessoryViewController;
     
     SKProgressController        *progressController;
     
