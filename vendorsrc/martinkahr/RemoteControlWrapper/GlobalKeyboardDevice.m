@@ -174,7 +174,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 	hotKeyID.signature = 'PTHk';
 	hotKeyID.id = (long)keycode;
 	
-	err = RegisterEventHotKey(keycode, modifiers, hotKeyID, GetEventDispatcherTarget(), nil, &carbonHotKey );
+	err = RegisterEventHotKey(keycode, modifiers, hotKeyID, GetEventDispatcherTarget(), 0, &carbonHotKey );
 	
 	if( err )
 		return NO;

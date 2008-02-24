@@ -59,6 +59,9 @@ typedef float CGFloat;
 #define CGFLOAT_DEFINED 1
 #endif /* CGFLOAT_DEFINED */
 
+// From gl.h
+typedef int GLint;
+
 @interface NSImage (SKLeopardOnly)
 - (BOOL)isTemplate;
 - (void)setTemplate:(BOOL)flag;
