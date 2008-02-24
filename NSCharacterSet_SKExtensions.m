@@ -41,7 +41,7 @@
 
 @implementation NSCharacterSet (SKExtensions)
 
-+ (NSCharacterSet *)newlineCharacterSet {
++ (id)newlineCharacterSet {
     static NSCharacterSet *newlineCharacterSet = nil;
     if (newlineCharacterSet == nil) {
         NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
@@ -53,14 +53,14 @@
     return newlineCharacterSet;
 }
 
-+ (NSCharacterSet *)nonWhitespaceCharacterSet {
++ (id)nonWhitespaceCharacterSet {
     static NSCharacterSet *nonWhitespaceCharacterSet = nil;
     if (nonWhitespaceCharacterSet == nil)
         nonWhitespaceCharacterSet = [[[NSCharacterSet whitespaceCharacterSet] invertedSet] copy];
     return nonWhitespaceCharacterSet;
 }
 
-+ (NSCharacterSet *)nonWhitespaceAndNewlineCharacterSet {
++ (id)nonWhitespaceAndNewlineCharacterSet {
     static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
     if (nonWhitespaceAndNewlineCharacterSet == nil)
         nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
