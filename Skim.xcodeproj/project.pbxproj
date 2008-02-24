@@ -19,19 +19,6 @@
 			name = DiskImage;
 			productName = DiskImage;
 		};
-		CEC7B4F70CF60834008CCD63 /* Skim+QuickLook */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = CEC7B5090CF608CC008CCD63 /* Build configuration list for PBXAggregateTarget "Skim+QuickLook" */;
-			buildPhases = (
-				CEC7B5000CF6086D008CCD63 /* CopyFiles */,
-			);
-			dependencies = (
-				CEC7B4F90CF6083B008CCD63 /* PBXTargetDependency */,
-				CEC7B4FB0CF60841008CCD63 /* PBXTargetDependency */,
-			);
-			name = "Skim+QuickLook";
-			productName = "Skim+QuickLook";
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -148,6 +135,7 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
+		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
@@ -194,7 +182,6 @@
 		CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */; };
 		CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */; };
 		CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */; };
-		CEC7B5040CF608AE008CCD63 /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
@@ -265,25 +252,18 @@
 			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
 			remoteInfo = Skim;
 		};
+		CE816A020D70F8F7008D807D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* Skim */;
+			remoteInfo = Skim;
+		};
 		CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8D576316048677EA00EA77CD;
-			remoteInfo = Skim;
-		};
-		CEC7B4F80CF6083B008CCD63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
-			remoteInfo = Skim;
-		};
-		CEC7B4FA0CF60841008CCD63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
 			remoteInfo = Skim;
 		};
 		CEFD68680C01D3BB0027B933 /* PBXContainerItemProxy */ = {
@@ -303,13 +283,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CEC7B5000CF6086D008CCD63 /* CopyFiles */ = {
+		CE816A0A0D70F9B6008D807D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Skim.app/Contents/Library/QuickLook;
-			dstSubfolderSpec = 16;
+			dstSubfolderSpec = 1;
 			files = (
-				CEC7B5040CF608AE008CCD63 /* Skim.qlgenerator in CopyFiles */,
+				CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1372,9 +1352,10 @@
 				CEF82CAD0C772A4200A3AD51 /* ShellScript */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CEE22EA00BFB8614002B746B /* CopyFiles */,
+				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CEFD68720C01D3FE0027B933 /* CopyFiles */,
+				CE816A0A0D70F9B6008D807D /* CopyFiles */,
 				CEE22EA50BFB8691002B746B /* ShellScript */,
 				CE4B67590BF4DC3000A73E42 /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
@@ -1385,6 +1366,7 @@
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
 				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
+				CE816A030D70F8F7008D807D /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -1447,7 +1429,6 @@
 				8D15AC270486D014006FF6A4 /* Skim */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
-				CEC7B4F70CF60834008CCD63 /* Skim+QuickLook */,
 			);
 		};
 /* End PBXProject section */
@@ -1824,15 +1805,10 @@
 			target = 8D15AC270486D014006FF6A4 /* Skim */;
 			targetProxy = CE592C610B9239CD00C113DF /* PBXContainerItemProxy */;
 		};
-		CEC7B4F90CF6083B008CCD63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8D15AC270486D014006FF6A4 /* Skim */;
-			targetProxy = CEC7B4F80CF6083B008CCD63 /* PBXContainerItemProxy */;
-		};
-		CEC7B4FB0CF60841008CCD63 /* PBXTargetDependency */ = {
+		CE816A030D70F8F7008D807D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Skim;
-			targetProxy = CEC7B4FA0CF60841008CCD63 /* PBXContainerItemProxy */;
+			targetProxy = CE816A020D70F8F7008D807D /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2316,8 +2292,9 @@
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
@@ -2326,8 +2303,9 @@
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};
@@ -2349,28 +2327,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				PRODUCT_NAME = DiskImage;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		CEC7B50A0CF608CC008CCD63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Skim+QuickLook";
-			};
-			name = Debug;
-		};
-		CEC7B50B0CF608CC008CCD63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = "Skim+QuickLook";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2471,15 +2427,6 @@
 			buildConfigurations = (
 				CE592C5F0B9239C600C113DF /* Debug */,
 				CE592C600B9239C600C113DF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CEC7B5090CF608CC008CCD63 /* Build configuration list for PBXAggregateTarget "Skim+QuickLook" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CEC7B50A0CF608CC008CCD63 /* Debug */,
-				CEC7B50B0CF608CC008CCD63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
