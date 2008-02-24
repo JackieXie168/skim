@@ -40,7 +40,7 @@
 
 
 @interface NSCharacterSet (SKExtensions)
-+ (NSCharacterSet *)newlineCharacterSet;
-+ (NSCharacterSet *)nonWhitespaceCharacterSet;
-+ (NSCharacterSet *)nonWhitespaceAndNewlineCharacterSet;
++ (id)newlineCharacterSet;
++ (id)nonWhitespaceCharacterSet;
++ (id)nonWhitespaceAndNewlineCharacterSet;
 @end
