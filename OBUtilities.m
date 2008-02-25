@@ -24,12 +24,15 @@ static IMP SK_method_getImplementation(Method aMethod)
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 } 
 
-static void SK_method_setImplementation(Method aMethod, IMP anImp)
+static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
 {
     if (method_setImplementation != NULL)
-        method_setImplementation(aMethod, anImp);
-    else
+        return method_setImplementation(aMethod, anImp);
+    } else {
+        IMP oldImp = aMethod->method_imp;
         aMethod->method_imp = anImp;
+        return oldImp;
+    }
 } 
 
 static const char *SK_method_getTypeEncoding(Method aMethod)
@@ -81,20 +84,21 @@ IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
     extern void _objc_flush_caches(Class);
     
     if ((localMethod = class_getInstanceMethod(aClass, oldSelector))) {
-        oldImp = SK_method_getImplementation(localMethod);
         if (superCls = SK_class_getSuperclass(aClass))
             superMethod = class_getInstanceMethod(superCls, oldSelector);
         
         if (superMethod == localMethod) {
             // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
+            oldImp = SK_method_getImplementation(localMethod);
             SK_class_addMethod(aClass, oldSelector, newImp, SK_method_getTypeEncoding(localMethod));
         } else {
             // Replace the method in place
-            SK_method_setImplementation(localMethod, newImp);
+            oldImp = SK_method_setImplementation(localMethod, newImp);
         }
         
-        // Flush the method cache
-        _objc_flush_caches(aClass);
+        // Flush the method cache, deprecated on 10.5
+        if (_objc_flush_caches != NULL)
+            _objc_flush_caches(aClass);
     }
     
     return oldImp;
