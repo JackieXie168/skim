@@ -26,7 +26,7 @@ static IMP SK_method_getImplementation(Method aMethod)
 
 static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
 {
-    if (method_setImplementation != NULL)
+    if (method_setImplementation != NULL) {
         return method_setImplementation(aMethod, anImp);
     } else {
         IMP oldImp = aMethod->method_imp;
