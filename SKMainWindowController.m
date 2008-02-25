@@ -3026,11 +3026,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Leopard" ofType:@"bundle"]] load];
             printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
         }
-        printAccessoryViewController = [[printAccessoryControllerClass alloc] initWithPrintOperation:printOperation document:document];
+        printAccessoryViewController = [[printAccessoryControllerClass alloc] init];
         if (printAccessoryViewController)
             [printPanel addAccessoryController:printAccessoryViewController];
     } else {
-        printAccessoryViewController = [[SKPrintAccessoryViewController alloc] initWithPrintOperation:printOperation document:document];
+        printAccessoryViewController = [[SKPrintAccessoryViewController alloc] initWithPrintInfo:[printOperation printInfo]];
         if (printAccessoryViewController)
             [printPanel setAccessoryView:[printAccessoryViewController view]];
     }

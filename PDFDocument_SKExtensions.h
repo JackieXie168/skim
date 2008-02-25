@@ -40,14 +40,6 @@
 #import <Quartz/Quartz.h>
 
 
-@interface PDFDocument (SKPrivateDeclarations)
-- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
-- (void)cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
-- (void)setAutoRotate:(BOOL)autoRotate forPrintOperation:(NSPrintOperation *)printOperation;
-- (void)setPrintScalingMode:(int)printScalingMode forPrintOperation:(NSPrintOperation *)printOperation;
-@end
-
-
 @interface PDFDocument (SKExtensions)
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
 @end

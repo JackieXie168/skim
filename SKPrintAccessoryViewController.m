@@ -37,27 +37,22 @@
  */
 
 #import "SKPrintAccessoryViewController.h"
-#import "PDFDocument_SKExtensions.h"
 
 
 @implementation SKPrintAccessoryViewController
 
-- (id)initWithPrintOperation:(NSPrintOperation *)aPrintOperation document:(PDFDocument *)aDocument {
-    if (aDocument == nil || aPrintOperation == nil || 
-        (NO == [aDocument respondsToSelector:@selector(setAutoRotate:forPrintOperation:)] && 
-         nil == [aPrintOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"])) {
+- (id)initWithPrintInfo:(NSPrintInfo *)aPrintInfo {
+    if (aPrintInfo == nil || nil == [aPrintInfo valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"]) {
         [self release];
         self = nil;
     } else if (self = [super init]) {
-        printOperation = [aPrintOperation retain];
-        document = [aDocument retain];
+        printInfo = [aPrintInfo retain];
     }
     return self;
 }
 
 - (void)dealloc {
-    [printOperation release];
-    [document release];
+    [printInfo release];
     [view release];
     [super dealloc];
 }
@@ -71,7 +66,7 @@
     
     [autoRotateButton setState:[self autoRotate] ? NSOnState : NSOffState];
     [printScalingModeMatrix selectCellWithTag:[self printScalingMode]];
-    [printScalingModeMatrix setEnabled:[document respondsToSelector:@selector(setPrintScalingMode:forPrintOperation:)]];
+    [printScalingModeMatrix setEnabled:floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4];
 }
 
 - (NSView *)view {
@@ -80,25 +75,19 @@
 }
 
 - (BOOL)autoRotate {
-    return [[printOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"] boolValue];
+    return [[printInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
 }
 
 - (void)setAutoRotate:(BOOL)autoRotate {
-    // @@ for Tiger we set the printInfo key, should be tested to see whether it actually works
-    if ([document respondsToSelector:@selector(setAutoRotate:forPrintOperation:)])
-        [document setAutoRotate:autoRotate forPrintOperation:printOperation];
-    else
-        [printOperation setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"];
+    [printInfo setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"dictionary.PDFPrintAutoRotate"];
 }
 
 - (PDFPrintScalingMode)printScalingMode {
-    return [[printOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintScalingMode"] intValue];
+    return [[printInfo valueForKeyPath:@"dictionary.PDFPrintScalingMode"] intValue];
 }
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {
-    // Tiger does not support printScalingMode, so we don't bother setting it there
-    if ([document respondsToSelector:@selector(setAutoRotate:forPrintOperation:)])
-        [document setPrintScalingMode:printScalingMode forPrintOperation:printOperation];
+    [printInfo setValue:[NSNumber numberWithInt:printScalingMode] forKeyPath:@"dictionary.PDFPrintScalingMode"];
 }
 
 @end
