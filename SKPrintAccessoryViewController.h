@@ -44,11 +44,10 @@
     IBOutlet NSView *view;
     IBOutlet NSButton *autoRotateButton;
     IBOutlet NSMatrix *printScalingModeMatrix;
-    NSPrintOperation *printOperation;
-    PDFDocument *document;
+    NSPrintInfo *printInfo;
 }
 
-- (id)initWithPrintOperation:(NSPrintOperation *)aPrintOperation document:(PDFDocument *)aDocument;
+- (id)initWithPrintInfo:(NSPrintInfo *)aPrintInfo;
 
 - (NSView *)view;
 

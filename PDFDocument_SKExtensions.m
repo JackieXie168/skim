@@ -40,6 +40,13 @@
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
 
+
+@interface PDFDocument (SKPrivateDeclarations)
+- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
+- (void)cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
+@end
+
+
 @interface PDFDocument (SKPrivateExtensions)
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 - (void)replacementCleanupAfterPrintOperation:(NSPrintOperation *)printOperation;

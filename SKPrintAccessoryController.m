@@ -39,69 +39,53 @@
 #import "SKPrintAccessoryController.h"
 
 
-@interface PDFDocument (SKLeopardPrivateDeclarations)
-- (void)setAutoRotate:(BOOL)autoRotate forPrintOperation:(NSPrintOperation *)printOperation;
-- (void)setPrintScalingMode:(int)printScalingMode forPrintOperation:(NSPrintOperation *)printOperation;
-@end
-
-
 @implementation SKPrintAccessoryController
 
-- (id)initWithPrintOperation:(NSPrintOperation *)aPrintOperation document:(PDFDocument *)aDocument {
-    if (aDocument == nil || aPrintOperation == nil || 
-        (NO == [aDocument respondsToSelector:@selector(setAutoRotate:forPrintOperation:)] && 
-         nil == [aPrintOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"])) {
-        [self release];
-        self = nil;
-    } else if (self = [super initWithNibName:@"PrintAccessoryView" bundle:[NSBundle mainBundle]]) {
-        printOperation = [aPrintOperation retain];
-        document = [aDocument retain];
-    }
-    return self;
++ (void)initialize {
+    [self setKeys:[NSArray arrayWithObjects:@"autoRotate", @"printScalingMode", nil] triggerChangeNotificationsForDependentKey:@"localizedSummaryItems"];
+    [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"autoRotate"];
+    [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"printScalingMode"];
 }
 
-- (void)dealloc {
-    [printOperation release];
-    [document release];
-    [super dealloc];
+- (NSString *)nibName {
+    return @"PrintAccessoryView";
 }
 
-- (void)windowDidLoad {
-    [autoRotateButton setState:[self autoRotate] ? NSOnState : NSOffState];
-    [printScalingModeMatrix selectCellWithTag:[self printScalingMode]];
-    [printScalingModeMatrix setEnabled:[document respondsToSelector:@selector(setPrintScalingMode:forPrintOperation:)]];
+- (NSBundle *)nibBundle {
+    return [NSBundle mainBundle];
 }
 
 - (BOOL)autoRotate {
-    return [[printOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"] boolValue];
+    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintAutoRotate"] boolValue];
 }
 
 - (void)setAutoRotate:(BOOL)autoRotate {
-    [self willChangeValueForKey:@"localizedSummaryItems"];
-    if ([document respondsToSelector:@selector(setAutoRotate:forPrintOperation:)])
-        [document setAutoRotate:autoRotate forPrintOperation:printOperation];
-    [self didChangeValueForKey:@"localizedSummaryItems"];
+    [self setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"representedObject.dictionary.PDFPrintAutoRotate"];
 }
 
 - (PDFPrintScalingMode)printScalingMode {
-    return [[printOperation valueForKeyPath:@"printInfo.dictionary.PDFPrintScalingMode"] intValue];
+    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"] intValue];
 }
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {
-    [self willChangeValueForKey:@"localizedSummaryItems"];
-    if ([document respondsToSelector:@selector(setAutoRotate:forPrintOperation:)])
-        [document setPrintScalingMode:printScalingMode forPrintOperation:printOperation];
-    [self didChangeValueForKey:@"localizedSummaryItems"];
+    [self setValue:[NSNumber numberWithInteger:printScalingMode] forKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"];
 }
 
 - (NSSet *)keyPathsForValuesAffectingPreview {
-    return [NSSet setWithObjects:@"printAutoRotate", @"printScalingMode", nil];
+    return [NSSet setWithObjects:@"autoRotate", @"printScalingMode", nil];
 }
 
 - (NSArray *)localizedSummaryItems {
+    NSString *autoRotation = [self autoRotate] ? NSLocalizedString(@"On", @"Print panel setting") : NSLocalizedString(@"Off", @"Print panel setting");
+    NSString *autoScaling = nil;
+    switch ([self printScalingMode]) {
+        case kPDFPrintPageScaleNone: autoScaling = NSLocalizedString(@"None", @"Print panel setting"); break;
+        case kPDFPrintPageScaleToFit: autoScaling = NSLocalizedString(@"Scale Each Page", @"Print panel setting"); break;
+        case kPDFPrintPageScaleDownToFit: autoScaling = NSLocalizedString(@"Only Scale Down Large Pages", @"Print panel setting"); break;
+    }
     return [NSArray arrayWithObjects:
-            [NSDictionary dictionaryWithObjectsAndKeys:@"autoRotate", NSPrintPanelAccessorySummaryItemNameKey, [[self valueForKey:@"printAutoRotate"] description], NSPrintPanelAccessorySummaryItemDescriptionKey, nil], 
-            [NSDictionary dictionaryWithObjectsAndKeys:@"printScalingMode", NSPrintPanelAccessorySummaryItemNameKey, [[self valueForKey:@"printScalingMode"] description], NSPrintPanelAccessorySummaryItemDescriptionKey, nil], nil];
+            [NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Page Auto Rotation", @"Print panel setting description"), NSPrintPanelAccessorySummaryItemNameKey, autoRotation, NSPrintPanelAccessorySummaryItemDescriptionKey, nil], 
+            [NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Page Auto Scaling", @"Print panel setting description"), NSPrintPanelAccessorySummaryItemNameKey, autoScaling, NSPrintPanelAccessorySummaryItemDescriptionKey, nil], nil];
 }
 
 @end

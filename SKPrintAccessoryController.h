@@ -43,11 +43,7 @@
 @interface SKPrintAccessoryController : NSViewController <NSPrintPanelAccessorizing> {
     IBOutlet NSButton *autoRotateButton;
     IBOutlet NSMatrix *printScalingModeMatrix;
-    NSPrintOperation *printOperation;
-    PDFDocument *document;
 }
-
-- (id)initWithPrintOperation:(NSPrintOperation *)aPrintOperation document:(PDFDocument *)aDocument;
 
 - (BOOL)autoRotate;
 - (void)setAutoRotate:(BOOL)autoRotate;
