@@ -89,15 +89,17 @@ NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know th
 }
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
+    unsigned int headerLength = 5;
+    
     static NSData *pdfHeaderData = nil;
     if (nil == pdfHeaderData) {
         char *h = "%PDF-";
-        pdfHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+        pdfHeaderData = [[NSData alloc] initWithBytes:h length:headerLength];
     }
     static NSData *psHeaderData = nil;
     if (nil == psHeaderData) {
         char *h = "%!PS-";
-        psHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+        psHeaderData = [[NSData alloc] initWithBytes:h length:headerLength];
     }
     
     NSError *error = nil;
@@ -107,11 +109,11 @@ NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know th
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-            NSData *leadingData = [fh readDataOfLength:5];
+            NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
-                type = SKPDFDocumentType;
+                type = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentType : SKPDFDocumentUTI;
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
-                type = SKPostScriptDocumentType;
+                type = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentType : SKPostScriptDocumentUTI;
             }
         }
         if (type == nil && outError)

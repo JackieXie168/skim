@@ -225,11 +225,16 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                     [formatPopup removeItemAtIndex:index];
             }
             if (lastExportedType) {
-                int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
-                if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
-                    [formatPopup selectItemAtIndex:index];
+                int idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
+                    [formatPopup selectItemAtIndex:idx];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
-                    [savePanel setAllowedFileTypes:[[NSDocumentController sharedDocumentController] fileExtensionsFromType:lastExportedType]];
+                    NSArray *fileTypes = nil;
+                    if ([self respondsToSelector:@selector(fileNameExtensionForType:saveOperation:)])
+                        fileTypes = [NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil];
+                    else
+                        fileTypes = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:lastExportedType];
+                    [savePanel setAllowedFileTypes:fileTypes];
                 }
             }
         }
