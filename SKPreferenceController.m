@@ -134,17 +134,17 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     [textLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
     [textLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
-    [textLineWell setIgnoresLineEndings:YES];
+    [textLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
     [circleLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
     [circleLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
     [circleLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
-    [circleLineWell setIgnoresLineEndings:YES];
+    [circleLineWell setDisplayStyle:SKLineWellDisplayStyleOval];
     
     [boxLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
     [boxLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
     [boxLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
-    [boxLineWell setIgnoresLineEndings:YES];
+    [boxLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
     [lineLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
     [lineLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];

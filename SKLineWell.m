@@ -76,9 +76,9 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         dashPattern = nil;
         startLineStyle = kPDFLineStyleNone;
         endLineStyle = kPDFLineStyleNone;
+        displayStyle = SKLineWellDisplayStyleLine;
         active = NO;
         canActivate = YES;
-        ignoresLineEndings = NO;
         
         target = nil;
         action = NULL;
@@ -103,8 +103,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             dashPattern = [[decoder decodeObjectForKey:@"dashPattern"] retain];
             startLineStyle = [decoder decodeIntForKey:@"startLineStyle"];
             endLineStyle = [decoder decodeIntForKey:@"endLineStyle"];
+            displayStyle = [decoder decodeIntForKey:@"displayStyle"];
             active = [decoder decodeBoolForKey:@"active"];
-            ignoresLineEndings = [decoder decodeBoolForKey:@"ignoresLineEndings"];
             action = NSSelectorFromString([decoder decodeObjectForKey:@"action"]);
             target = [decoder decodeObjectForKey:@"target"];
         } else {
@@ -113,8 +113,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             dashPattern = [[decoder decodeObject] retain];
             [decoder decodeValueOfObjCType:@encode(int) at:&startLineStyle];
             [decoder decodeValueOfObjCType:@encode(int) at:&endLineStyle];
+            [decoder decodeValueOfObjCType:@encode(int) at:&displayStyle];
             [decoder decodeValueOfObjCType:@encode(BOOL) at:&active];
-            [decoder decodeValueOfObjCType:@encode(BOOL) at:&ignoresLineEndings];
             [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
             target = [decoder decodeObject];
         }
@@ -139,8 +139,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         [coder encodeObject:dashPattern forKey:@"dashPattern"];
         [coder encodeInt:startLineStyle forKey:@"startLineStyle"];
         [coder encodeInt:endLineStyle forKey:@"endLineStyle"];
+        [coder encodeInt:displayStyle forKey:@"displayStyle"];
         [coder encodeBool:active forKey:@"active"];
-        [coder encodeBool:ignoresLineEndings forKey:@"ignoresLineEndings"];
         [coder encodeObject:NSStringFromSelector(action) forKey:@"action"];
         [coder encodeConditionalObject:target forKey:@"target"];
     } else {
@@ -149,8 +149,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         [coder encodeObject:dashPattern];
         [coder encodeValueOfObjCType:@encode(int) at:&startLineStyle];
         [coder encodeValueOfObjCType:@encode(int) at:&endLineStyle];
+        [coder encodeValueOfObjCType:@encode(int) at:&displayStyle];
         [coder encodeValueOfObjCType:@encode(BOOL) at:&active];
-        [coder encodeValueOfObjCType:@encode(BOOL) at:&ignoresLineEndings];
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
         [coder encodeConditionalObject:target];
     }
@@ -184,7 +184,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     NSBezierPath *path = [NSBezierPath bezierPath];
     NSRect bounds = [self bounds];
     
-    if ([self ignoresLineEndings] == NO) {
+    if ([self displayStyle] == SKLineWellDisplayStyleLine) {
         float offset = 0.5 * lineWidth - floorf(0.5 * lineWidth);
         NSPoint startPoint = NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset);
         NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset);
@@ -193,10 +193,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             case kPDFLineStyleNone:
                 break;
             case kPDFLineStyleSquare:
-                [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(startPoint.x - 1.5 * lineWidth, startPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)]];
+                [path appendBezierPathWithRect:NSMakeRect(startPoint.x - 1.5 * lineWidth, startPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleCircle:
-                [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(startPoint.x - 1.5 * lineWidth, startPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)]];
+                [path appendBezierPathWithOvalInRect:NSMakeRect(startPoint.x - 1.5 * lineWidth, startPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleDiamond:
                 [path moveToPoint:NSMakePoint(startPoint.x - 2.0 * lineWidth, startPoint.y)];
@@ -225,10 +225,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             case kPDFLineStyleNone:
                 break;
             case kPDFLineStyleSquare:
-                [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSMakeRect(endPoint.x - 1.5 * lineWidth, endPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)]];
+                [path appendBezierPathWithRect:NSMakeRect(endPoint.x - 1.5 * lineWidth, endPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleCircle:
-                [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(endPoint.x - 1.5 * lineWidth, endPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)]];
+                [path appendBezierPathWithOvalInRect:NSMakeRect(endPoint.x - 1.5 * lineWidth, endPoint.y - 1.5 * lineWidth, 3 * lineWidth, 3 * lineWidth)];
                 break;
             case kPDFLineStyleDiamond:
                 [path moveToPoint:NSMakePoint(endPoint.x + 2.0 * lineWidth, endPoint.y)];
@@ -249,9 +249,12 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
                 [path closePath];
                 break;
         }
+    } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
+        float inset = 7.0 + 0.5 * lineWidth;
+        [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];
     } else {
         float inset = 7.0 + 0.5 * lineWidth;
-        [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, inset, inset)]];
+        [path appendBezierPathWithOvalInRect:NSInsetRect(bounds, inset, inset)];
     }
     
     [path setLineWidth:lineWidth];
@@ -356,7 +359,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
                     [pboard declareTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil] owner:nil];
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                         [NSNumber numberWithFloat:lineWidth], @"lineWidth", [NSNumber numberWithInt:style], @"style", dashPattern, @"dashPattern", nil];
-                    if ([self ignoresLineEndings] == NO) {
+                    if ([self displayStyle] == SKLineWellDisplayStyleLine) {
                         [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:@"startLineStyle"];
                         [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:@"endLineStyle"];
                     }
@@ -427,7 +430,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             [self setLineWidth:[inspector lineWidth]];
             [self setDashPattern:[inspector dashPattern]];
             [self setStyle:[inspector style]];
-            if ([self ignoresLineEndings] == NO) {
+            if ([self displayStyle] == SKLineWellDisplayStyleLine) {
                 [self setStartLineStyle:[inspector startLineStyle]];
                 [self setEndLineStyle:[inspector endLineStyle]];
             }
@@ -436,7 +439,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
             [inspector setLineWidth:[self lineWidth]];
             [inspector setDashPattern:[self dashPattern]];
             [inspector setStyle:[self style]];
-            if ([self ignoresLineEndings] == NO) {
+            if ([self displayStyle] == SKLineWellDisplayStyleLine) {
                 [inspector setStartLineStyle:[self startLineStyle]];
                 [inspector setEndLineStyle:[self endLineStyle]];
             }
@@ -453,7 +456,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
                    name:SKLineInspectorLineStyleDidChangeNotification object:inspector];
         [nc addObserver:self selector:@selector(lineInspectorDashPatternChanged:)
                    name:SKLineInspectorDashPatternDidChangeNotification object:inspector];
-        if ([self ignoresLineEndings] == NO) {
+        if ([self displayStyle] == SKLineWellDisplayStyleLine) {
             [nc addObserver:self selector:@selector(lineInspectorStartLineStyleChanged:)
                        name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
             [nc addObserver:self selector:@selector(lineInspectorEndLineStyleChanged:)
@@ -534,24 +537,24 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     }
 }
 
-- (BOOL)ignoresLineEndings {
-    return ignoresLineEndings;
+- (SKLineWellDisplayStyle)displayStyle {
+    return displayStyle;
 }
 
-- (void)setIgnoresLineEndings:(BOOL)flag {
-    if (ignoresLineEndings != flag) {
-        ignoresLineEndings = flag;
+- (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle {
+    if (displayStyle != newStyle) {
+        displayStyle = newStyle;
         if ([self isActive]) {
             NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
             SKLineInspector *inspector = [SKLineInspector sharedLineInspector];
-            if ([self ignoresLineEndings]) {
-                [nc removeObserver:self name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
-                [nc removeObserver:self name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
-            } else {
+            if ([self displayStyle] == SKLineWellDisplayStyleLine) {
                 [nc addObserver:self selector:@selector(lineInspectorStartLineStyleChanged:)
                           name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
                 [nc addObserver:self selector:@selector(lineInspectorEndLineStyleChanged:)
                           name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
+            } else {
+                [nc removeObserver:self name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
+                [nc removeObserver:self name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
             }
         }
         [self setNeedsDisplay:YES];
@@ -767,7 +770,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     if (number = [dict objectForKey:@"style"])
         [self setStyle:[number intValue]];
     [self setDashPattern:[dict objectForKey:@"dashPattern"]];
-    if ([self ignoresLineEndings] == NO) {
+    if ([self displayStyle] == SKLineWellDisplayStyleLine) {
         if (number = [dict objectForKey:@"startLineStyle"])
             [self setStartLineStyle:[number intValue]];
         if (number = [dict objectForKey:@"endLineStyle"])

@@ -41,16 +41,22 @@
 
 extern NSString *SKLineStylePboardType;
 
+typedef enum _SKLineWellDisplayStyle {
+    SKLineWellDisplayStyleLine,
+    SKLineWellDisplayStyleRectangle,
+    SKLineWellDisplayStyleOval
+} SKLineWellDisplayStyle;
+
 @interface SKLineWell : NSControl {
     float lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;
     PDFLineStyle startLineStyle;
     PDFLineStyle endLineStyle;
+    SKLineWellDisplayStyle displayStyle;
     BOOL active;
     BOOL canActivate;
     BOOL isHighlighted;
-    BOOL ignoresLineEndings;
     BOOL existsActiveLineWell;
     
     id target;
@@ -73,8 +79,8 @@ extern NSString *SKLineStylePboardType;
 - (BOOL)isHighlighted;
 - (void)setHighlighted:(BOOL)flag;
 
-- (BOOL)ignoresLineEndings;
-- (void)setIgnoresLineEndings:(BOOL)flag;
+- (SKLineWellDisplayStyle)displayStyle;
+- (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle;
 
 - (float)lineWidth;
 - (void)setLineWidth:(float)width;
