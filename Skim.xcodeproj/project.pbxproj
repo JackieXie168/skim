@@ -787,6 +787,9 @@
 		CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCenteredTextFieldCell.m; sourceTree = "<group>"; };
 		CECDDBAB0C5BB95F0026AAEC /* SKFindTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFindTableView.h; sourceTree = "<group>"; };
 		CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindTableView.m; sourceTree = "<group>"; };
+		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "Configurations/Skim-Common.xcconfig"; sourceTree = "<group>"; };
+		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "Configurations/Skim-Debug.xcconfig"; sourceTree = "<group>"; };
+		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "Configurations/Skim-Release.xcconfig"; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
@@ -913,6 +916,7 @@
 				CE816AA10D718C5B008D807D /* Leopard */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
+				CED8D4050D744D520028E3E2 /* Configurations */,
 			);
 			name = Skim;
 			sourceTree = "<group>";
@@ -1355,6 +1359,16 @@
 				CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CED8D4050D744D520028E3E2 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */,
+				CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */,
+				CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */,
+			);
+			name = Configurations;
 			sourceTree = "<group>";
 		};
 		CEE22EA20BFB8631002B746B /* Shared Support */ = {
@@ -2371,27 +2385,21 @@
 		};
 		C05733CC08A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */;
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
 		C05733CD08A9546B00998B17 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};

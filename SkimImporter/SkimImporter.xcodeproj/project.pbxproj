@@ -37,6 +37,9 @@
 		CEC4BE4B0CA90A9700299397 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CECD97A20C57A4050026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/schema.strings; sourceTree = "<group>"; };
 		CECD97A50C57A40C0026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CED8D41D0D744E060028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "../Configurations/Skim-Common.xcconfig"; sourceTree = SOURCE_ROOT; };
+		CED8D41E0D744E060028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "../Configurations/Skim-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
+		CED8D41F0D744E060028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "../Configurations/Skim-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CEFD60CE0C01D0E40027B933 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		CEFD60D20C01D1040027B933 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		CEFD6C620C01EF770027B933 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/schema.strings; sourceTree = "<group>"; };
@@ -69,6 +72,7 @@
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
 				19C28FB6FE9D52B211CA2CBB /* Products */,
+				CED8D41C0D744DDE0028E3E2 /* Configurations */,
 			);
 			name = SkimImporter;
 			sourceTree = "<group>";
@@ -111,6 +115,16 @@
 				8D576316048677EA00EA77CD /* SkimImporter.mdimporter */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CED8D41C0D744DDE0028E3E2 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				CED8D41D0D744E060028E3E2 /* Skim-Common.xcconfig */,
+				CED8D41E0D744E060028E3E2 /* Skim-Debug.xcconfig */,
+				CED8D41F0D744E060028E3E2 /* Skim-Release.xcconfig */,
+			);
+			name = Configurations;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,10 +275,6 @@
 		70138C860896BE9A00968C2F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -278,23 +288,21 @@
 		};
 		70138C890896BE9A00968C2F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CED8D41E0D744E060028E3E2 /* Skim-Debug.xcconfig */;
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
 		70138C8A0896BE9A00968C2F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CED8D41F0D744E060028E3E2 /* Skim-Release.xcconfig */;
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};
