@@ -110,6 +110,18 @@
     [super mouseDown:theEvent];
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+    
+    [super keyDown:theEvent];
+    if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
+        [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
+        [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
+    }
+}
+
 - (void)drawRect:(NSRect)aRect {
     [super drawRect:aRect];
     if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {

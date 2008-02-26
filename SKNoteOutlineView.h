@@ -61,6 +61,7 @@
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(int)newHeight byItem:(id)item;
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
+- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 @end
 
 
