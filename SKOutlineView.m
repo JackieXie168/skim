@@ -51,11 +51,11 @@
 - (NSArray *)selectedItems {
     NSMutableArray *items = [NSMutableArray array];
     NSIndexSet *indexes = [self selectedRowIndexes];
-    unsigned int index = [indexes firstIndex];
+    unsigned int idx = [indexes firstIndex];
     
-    while (index != NSNotFound) {
-        [items addObject:[self itemAtRow:index]];
-        index = [indexes indexGreaterThanIndex:index];
+    while (idx != NSNotFound) {
+        [items addObject:[self itemAtRow:idx]];
+        idx = [indexes indexGreaterThanIndex:idx];
     }
     return items;
 }

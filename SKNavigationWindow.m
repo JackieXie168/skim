@@ -277,16 +277,16 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 - (NSAttributedString *)attributedStringValue {
     if (stringValue == nil)
         return nil;
-    NSShadow *shadow = [[NSShadow alloc] init];
-    [shadow setShadowColor:[NSColor blackColor]];
-    [shadow setShadowBlurRadius:3.0];
-    [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
+    NSShadow *aShadow = [[NSShadow alloc] init];
+    [aShadow setShadowColor:[NSColor blackColor]];
+    [aShadow setShadowBlurRadius:3.0];
+    [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSFont boldSystemFontOfSize:15.0], NSFontAttributeName, 
         [NSColor whiteColor], NSForegroundColorAttributeName, 
         [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, 
-        shadow, NSShadowAttributeName, nil];
-    [shadow release];
+        aShadow, NSShadowAttributeName, nil];
+    [aShadow release];
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 

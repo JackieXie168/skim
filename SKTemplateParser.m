@@ -905,16 +905,16 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 - (id)initWithAttributedString:(NSAttributedString *)attributedString attributes:(NSDictionary *)attributes {
     [[self init] release];
     NSMutableAttributedString *tmpStr = [attributedString mutableCopy];
-    unsigned index = 0, length = [attributedString length];
+    unsigned idx = 0, length = [attributedString length];
     NSRange range = NSMakeRange(0, length);
     NSDictionary *attrs;
     [tmpStr addAttributes:attributes range:range];
-    while (index < length) {
-        attrs = [attributedString attributesAtIndex:index effectiveRange:&range];
+    while (idx < length) {
+        attrs = [attributedString attributesAtIndex:idx effectiveRange:&range];
         if (range.length > 0) {
             [tmpStr addAttributes:attrs range:range];
-            index = NSMaxRange(range);
-        } else index++;
+            idx = NSMaxRange(range);
+        } else idx++;
     }
     [tmpStr fixAttributesInRange:NSMakeRange(0, length)];
     self = [tmpStr copy];

@@ -248,10 +248,10 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
     return children;
 }
 
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index {
+- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)anIndex {
     NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
     [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] removeChild:child];
-    [children insertObject:child atIndex:index];
+    [children insertObject:child atIndex:anIndex];
     [child setParent:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
 }

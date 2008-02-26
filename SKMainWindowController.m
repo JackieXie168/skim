@@ -1085,9 +1085,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)setPageLabel:(NSString *)label {
-    unsigned int index = [pageLabels indexOfObject:label];
-    if (index != NSNotFound)
-        [self goToPage:[[pdfView document] pageAtIndex:index]];
+    unsigned int idx = [pageLabels indexOfObject:label];
+    if (idx != NSNotFound)
+        [self goToPage:[[pdfView document] pageAtIndex:idx]];
 }
 
 - (BOOL)validatePageLabel:(id *)value error:(NSError **)error {
@@ -1724,13 +1724,13 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [self doAutoScale:sender];
 }
 
-- (void)rotatePageAtIndex:(unsigned int)index by:(int)rotation {
+- (void)rotatePageAtIndex:(unsigned int)idx by:(int)rotation {
     NSUndoManager *undoManager = [[self document] undoManager];
-    [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:index by:-rotation];
+    [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
     [[self document] undoableActionDoesntDirtyDocument];
     
-    PDFPage *page = [[pdfView document] pageAtIndex:index];
+    PDFPage *page = [[pdfView document] pageAtIndex:idx];
     [page setRotation:[page rotation] + rotation];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
@@ -1782,14 +1782,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", nil]];
 }
 
-- (void)cropPageAtIndex:(unsigned int)index toRect:(NSRect)rect {
-    NSRect oldRect = [[[pdfView document] pageAtIndex:index] boundsForBox:kPDFDisplayBoxCropBox];
+- (void)cropPageAtIndex:(unsigned int)anIndex toRect:(NSRect)rect {
+    NSRect oldRect = [[[pdfView document] pageAtIndex:anIndex] boundsForBox:kPDFDisplayBoxCropBox];
     NSUndoManager *undoManager = [[self document] undoManager];
-    [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:index toRect:oldRect];
+    [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:anIndex toRect:oldRect];
     [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
     [[self document] undoableActionDoesntDirtyDocument];
     
-    PDFPage *page = [[pdfView document] pageAtIndex:index];
+    PDFPage *page = [[pdfView document] pageAtIndex:anIndex];
     rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
     [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     
@@ -2480,8 +2480,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
     NSWindow *window;
     while (window = [blankScreenEnumerator nextObject]) {
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:window, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObject:fadeOutDict]];
+        fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:window, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObject:fadeOutDict]];
         [fadeOutDict release];
         [animation setAnimationBlockingMode:NSAnimationNonblockingThreaded];
         [animation setDelegate:self];
@@ -3195,7 +3195,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest {
-        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
+        PDFAnnotationLink *annotation = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
         NSPoint point = [dest point];
         switch ([[dest page] rotation]) {
             case 0:
@@ -3215,8 +3215,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 point.y += 50.0;
                 break;
         }
-        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+        [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
 }
 
 #pragma mark Bookmarks
@@ -3493,7 +3493,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (displayChanged)
         [pdfView layoutDocumentView];
     if (page) {
-        unsigned int index = [page pageIndex];
+        unsigned int idx = [page pageIndex];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -3503,7 +3503,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             }
         }
         if (displayChanged)
-            [self updateThumbnailAtPageIndex:index];
+            [self updateThumbnailAtPageIndex:idx];
     } else {
         [snapshots makeObjectsPerformSelector:@selector(redisplay)];
         [self allSnapshotsNeedUpdate];
@@ -3656,12 +3656,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     return 0;
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item{
+- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil){
             if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
                 // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
-                id obj = [pdfOutline childAtIndex:index];
+                id obj = [pdfOutline childAtIndex:anIndex];
                 if (obj)
                     [pdfOutlineItems addObject:obj];
                 return obj;
@@ -3670,14 +3670,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 return nil;
             }
         }else{
-            id obj = [(PDFOutline *)item childAtIndex:index];
+            id obj = [(PDFOutline *)item childAtIndex:anIndex];
             if (obj)
                 [pdfOutlineItems addObject:obj];
             return obj;
         }
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil) {
-            return [[noteArrayController arrangedObjects] objectAtIndex:index];
+            return [[noteArrayController arrangedObjects] objectAtIndex:anIndex];
         } else {
             return [[item texts] lastObject];
         }
@@ -4151,9 +4151,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:thumbnailTableView]) {
-        unsigned int index = [rowIndexes firstIndex];
-        if (index != NSNotFound) {
-            PDFPage *page = [[pdfView document] pageAtIndex:index];
+        unsigned int idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *pdfData = [page dataRepresentation];
             NSData *tiffData = [[page imageForBox:[pdfView displayBox]] TIFFRepresentation];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
@@ -4437,8 +4437,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)updateThumbnailAtPageIndex:(unsigned)index {
-    [[self objectInThumbnailsAtIndex:index] setDirty:YES];
+- (void)updateThumbnailAtPageIndex:(unsigned)anIndex {
+    [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
     [thumbnailTableView reloadData];
 }
 
@@ -4578,8 +4578,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         newSize = [image size];
         if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
-            unsigned index = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
-            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
+            unsigned idx = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
         }
     }
     if ([dirtySnapshots count] == 0) {

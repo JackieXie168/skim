@@ -121,22 +121,22 @@
         return 0;
 }
 
-- (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page {
+- (NSRange)safeRangeAtIndex:(int)anIndex onPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
-        return [self rangeAtIndex:index onPage:page];
+        return [self rangeAtIndex:anIndex onPage:page];
     else
         return NSMakeRange(NSNotFound, 0);
 }
 
 
-static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, unsigned int index) {
+static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, unsigned int anIndex) {
     unsigned int length = [string length];
     NSRange range = NSMakeRange(0, 0);
     unsigned int i, iMax = [substrings count];
     
-    if (index >= iMax)
+    if (anIndex >= iMax)
         return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i <= index; i++) {
+    for (i = 0; i <= anIndex; i++) {
         NSString *substring = [substrings objectAtIndex:i];
         NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
         if ([substring length] == 0)
@@ -244,11 +244,11 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
                 continue;
             
             for (i = 0; i < count; i++) {
-                unsigned int index = indices[i];
-                if (numRanges == 0 || index > NSMaxRange(ranges[numRanges - 1])) {
+                unsigned int idx = indices[i];
+                if (numRanges == 0 || idx > NSMaxRange(ranges[numRanges - 1])) {
                     numRanges++;
                     ranges = NSZoneRealloc([self zone], ranges, numRanges * sizeof(NSRange));
-                    ranges[numRanges - 1] = NSMakeRange(index, 1);
+                    ranges[numRanges - 1] = NSMakeRange(idx, 1);
                 } else {
                     ++(ranges[numRanges - 1].length);
                 }
@@ -460,14 +460,14 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
     BOOL last = [[args objectForKey:@"Last"] boolValue];
-    unsigned int index = NSNotFound;
+    unsigned int idx = NSNotFound;
     
     if ([dPO isKindOfClass:[SKDocument class]]) {
-        index = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
+        idx = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
-        index = [dPO pageIndex];
+        idx = [dPO pageIndex];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
-        index = [[(page ? (id)page : (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
+        idx = [[(page ? (id)page : (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];
@@ -476,13 +476,13 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
             if (count > 0) {
                 NSRange range = [selection safeRangeAtIndex:last ? count - 1 : 0 onPage:page];
                 if (range.length) {
-                    index = last ? NSMaxRange(range) - 1 : range.location;
+                    idx = last ? NSMaxRange(range) - 1 : range.location;
                 }
             }
         }
     }
     
-    return [NSNumber numberWithInt:index == NSNotFound ? 0 : (int)index + 1];
+    return [NSNumber numberWithInt:idx == NSNotFound ? 0 : (int)idx + 1];
 }
 
 @end

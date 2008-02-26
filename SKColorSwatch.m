@@ -152,11 +152,11 @@ static NSString *SKColorsBindingName = @"colors";
     }
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
-        NSRect rect = NSInsetRect([self bounds], 1.0, 1.0);
-        rect.size.width = NSHeight(rect);
-        rect.origin.x += focusedIndex * (NSWidth(rect) - 1.0);
+        r = NSInsetRect([self bounds], 1.0, 1.0);
+        r.size.width = NSHeight(r);
+        r.origin.x += focusedIndex * (NSWidth(r) - 1.0);
         NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill(rect);
+        NSRectFill(r);
     }
 }
 
@@ -289,8 +289,8 @@ static NSString *SKColorsBindingName = @"colors";
 }
 
 - (NSColor *)color {
-    int index = clickedIndex;
-    return index == -1 ? nil : [colors objectAtIndex:index];
+    int i = clickedIndex;
+    return i == -1 ? nil : [colors objectAtIndex:i];
 }
 
 - (SEL)action {

@@ -115,13 +115,13 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 #pragma mark Actions
 
 - (IBAction)clearDownloads:(id)sender {
-    int index = [downloads count];
+    int i = [downloads count];
     
-    if (index) {
-        while (index-- > 0) {
-            SKDownload *download = [downloads objectAtIndex:index];
+    if (i) {
+        while (i-- > 0) {
+            SKDownload *download = [downloads objectAtIndex:i];
             if ([download status] != SKDownloadStatusDownloading)
-                [downloads removeObjectAtIndex:index];
+                [downloads removeObjectAtIndex:i];
         }
         [self reloadTableView];
         [self updateButtons];

@@ -304,9 +304,9 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     return [[item valueForKey:@"type"] isEqualToString:SKNoteString];
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item {
+- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
     if (item == nil) {
-        return [[arrayController arrangedObjects] objectAtIndex:index];
+        return [[arrayController arrangedObjects] objectAtIndex:anIndex];
     } else {
         return [item valueForKey:@"child"];
     }

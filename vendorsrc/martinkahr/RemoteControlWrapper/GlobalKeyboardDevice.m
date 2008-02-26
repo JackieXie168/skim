@@ -208,8 +208,8 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 }
 */
 
-- (RemoteControlEventIdentifier) remoteControlEventIdentifierForID: (unsigned int) id {
-	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInt: id]];
+- (RemoteControlEventIdentifier) remoteControlEventIdentifierForID: (unsigned int) anId {
+	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInt: anId]];
 	return [remoteEventIdentifier unsignedIntValue];
 }
 

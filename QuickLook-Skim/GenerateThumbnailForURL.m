@@ -47,7 +47,7 @@ static const NSSize _paperSize = (NSSize) { 612, 792 };
 static const CGFloat _horizontalMargin = 20;
 static const CGFloat _verticalMargin = 20;
 static const NSSize _containerSize = (NSSize) { 572, 752 };
-static const NSRect _iconRect = (NSRect) { 50, 140, 512, 512 };
+static const NSRect _iconRect = (NSRect) { { 50, 140 }, { 512, 512 } };
 
 // wash the app icon over a white page background
 static void drawBackgroundAndApplicationIconInCurrentContext()
@@ -129,7 +129,7 @@ static void drawAttributedStringInCurrentContext(NSAttributedString *attrString)
    This function's job is to create thumbnail for designated file as fast as possible
    ----------------------------------------------------------------------------- */
 
-OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
+OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maximumSize)
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     bool didGenerate = false;
@@ -147,7 +147,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
             
             if (pdfPage) {
                 CGRect pageRect = CGPDFPageGetBoxRect(pdfPage, kCGPDFCropBox);
-                CGRect thumbRect = {0.0, 0.0, CGRectGetWidth(pageRect), CGRectGetHeight(pageRect)};
+                CGRect thumbRect = {{0.0, 0.0}, {CGRectGetWidth(pageRect), CGRectGetHeight(pageRect)}};
                 CGFloat color[4] = {1.0, 1.0, 1.0, 1.0};
                 CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, thumbRect.size, FALSE, NULL);
                 CGAffineTransform t = CGPDFPageGetDrawingTransform(pdfPage, kCGPDFCropBox, thumbRect, 0, true);
@@ -202,7 +202,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         
         IconRef iconRef;
         CGRect rect = CGRectZero;
-        CGFloat side = MIN(maxSize.width, maxSize.height);
+        CGFloat side = MIN(maximumSize.width, maximumSize.height);
         rect.size.width = side;
         rect.size.height = side;
         if (noErr == err)

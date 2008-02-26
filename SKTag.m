@@ -199,11 +199,11 @@
     return matchStrings;
 }
 
-- (NSArray *)subtemplateAtIndex:(unsigned)index {
-    id subtemplate = [subtemplates objectAtIndex:index];
+- (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
+    id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
          subtemplate = [[SKTemplateParser arrayByParsingTemplateString:subtemplate] retain];
-        [subtemplates replaceObjectAtIndex:index withObject:subtemplate];
+        [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;
 }
@@ -214,11 +214,11 @@
 
 @implementation SKRichConditionTag
 
-- (NSArray *)subtemplateAtIndex:(unsigned)index {
-    id subtemplate = [subtemplates objectAtIndex:index];
+- (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
+    id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
         subtemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate] retain];
-        [subtemplates replaceObjectAtIndex:index withObject:subtemplate];
+        [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;
 }

@@ -702,8 +702,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     return UINT_MAX;
 }
 
-- (SKLine *)objectInLinesAtIndex:(unsigned int)index {
-    return [[[SKLine alloc] initWithLine:index] autorelease];
+- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
+    return [[[SKLine alloc] initWithLine:anIndex] autorelease];
 }
 
 @end

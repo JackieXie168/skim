@@ -118,8 +118,8 @@ static IMP originalTrackKnob = NULL;
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend {
-    [super selectRowIndexes:indexes byExtendingSelection:extend];
+- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
+    [super selectRowIndexes:indexes byExtendingSelection:extendSelection];
     [self setNeedsDisplay:YES];
 }
 
@@ -235,14 +235,14 @@ static NSColor *deselectedColor = nil;
         BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
         float radius = 2.0;
         NSBezierPath *path = [NSBezierPath bezierPath];
-        NSShadow *shadow;
+        NSShadow *aShadow;
         NSColor *fillColor;
         
         if (isSelected) {
-            shadow = selectedShadow;
+            aShadow = selectedShadow;
             fillColor = selectedColor;
         } else {
-            shadow = deselectedShadow;
+            aShadow = deselectedShadow;
             fillColor = deselectedColor;
         }
         
@@ -264,7 +264,7 @@ static NSColor *deselectedColor = nil;
         
         [NSGraphicsContext saveGraphicsState];
         
-        [shadow set];
+        [aShadow set];
         [fillColor setFill];
 
         [path fill];

@@ -174,12 +174,12 @@ static IMP originalDealloc = NULL;
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
     if (hasShadow) {
-        NSShadow *shadow = [[NSShadow alloc] init];
-        [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-        [shadow setShadowBlurRadius:shadowBlurRadius];
-        [shadow setShadowOffset:shadowOffset];
-        [shadow set];
-        [shadow release];
+        NSShadow *aShadow = [[NSShadow alloc] init];
+        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        [aShadow setShadowBlurRadius:shadowBlurRadius];
+        [aShadow setShadowOffset:shadowOffset];
+        [aShadow set];
+        [aShadow release];
     }
     pageRect.size = thumbnailSize;
     pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
@@ -319,11 +319,11 @@ static IMP originalDealloc = NULL;
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     SKDocument *document = [self containingDocument];
-	unsigned index = [self pageIndex];
+	unsigned idx = [self pageIndex];
     
-    if (document && index != NSNotFound) {
+    if (document && idx != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
-        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:index] autorelease];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:idx] autorelease];
     } else {
         return nil;
     }
@@ -424,12 +424,12 @@ static IMP originalDealloc = NULL;
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 }
 
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index {
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeFromNotesAtIndex:(unsigned int)index {
-    PDFAnnotation *note = [[self notes] objectAtIndex:index];
+- (void)removeFromNotesAtIndex:(unsigned int)anIndex {
+    PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
     SKPDFView *pdfView = [[self containingDocument] pdfView];
     
     [pdfView removeAnnotation:note];

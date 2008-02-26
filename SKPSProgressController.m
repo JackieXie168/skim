@@ -287,15 +287,16 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSSet *supportedTools = [NSSet setWithObjects:@"dvips", @"dvipdf", @"dvipdfm", @"dvipdfmx", nil];
         
         NSAssert1([supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
-        
-        while ([fm isExecutableFileAtPath:commandPath] == NO) {
-            if (i >= count) {
-                commandPath = nil;
-                break;
+        if ([supportedTools containsObject:commandName]) {
+            while ([fm isExecutableFileAtPath:commandPath] == NO) {
+                if (i >= count) {
+                    commandPath = nil;
+                    break;
+                }
+                commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
             }
-            commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
+            dviToolPath = [commandPath retain];
         }
-        dviToolPath = [commandPath retain];
     }
     
     return dviToolPath;

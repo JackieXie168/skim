@@ -164,14 +164,14 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 }
 
 - (void)searchWithEvent:(NSEvent *)keyEvent {
-    NSWindow *keyWindow = [NSApp keyWindow];
-    NSText *fieldEditor = [keyWindow fieldEditor:YES forObject:self];
+    NSWindow *keyWin = [NSApp keyWindow];
+    NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
     
     if (processing == NO) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWindow];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWindow];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:keyWindow];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWin];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWin];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:keyWin];
         [fieldEditor setDelegate:self];
         [fieldEditor setString:@""];
     }
@@ -297,8 +297,8 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     [self stopTimer];
     processing = NO;
     
-    NSWindow *keyWindow = [NSApp keyWindow];
-    NSText *fieldEditor = [keyWindow fieldEditor:YES forObject:self];
+    NSWindow *keyWin = [NSApp keyWindow];
+    NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
     if ([fieldEditor delegate] == self) {
         // we pass a dummy key event to the field editor to clear any hanging dead keys (marked text)
         NSEvent *keyEvent = [NSEvent keyEventWithType:NSKeyDown

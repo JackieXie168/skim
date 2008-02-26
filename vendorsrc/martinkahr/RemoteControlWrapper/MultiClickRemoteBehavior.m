@@ -92,11 +92,11 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	maxClickTimeDifference = timeDiff;
 }
 
-- (void) sendSimulatedHoldEvent: (id) time {
+- (void) sendSimulatedHoldEvent: (id) aTime {
 	BOOL startSimulateHold = NO;
 	RemoteControlEventIdentifier event = lastHoldEvent;
 	@synchronized(self) {
-		startSimulateHold = (lastHoldEvent>0 && fabs(lastHoldEventTime - [time doubleValue]) < 0.001);
+		startSimulateHold = (lastHoldEvent>0 && fabs(lastHoldEventTime - [aTime doubleValue]) < 0.001);
 	}
 	if (startSimulateHold) {
 		lastEventSimulatedHold = YES;

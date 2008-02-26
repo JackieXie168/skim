@@ -34,6 +34,7 @@
 #import "SKQLConverter.h"
 
 static NSString *_noteFontName = @"LucidaHandwriting-Italic";
+static const CGFloat _noteIndent = 20.0;
 // readable in Cover Flow view, and distinguishable as text in icon view
 static const CGFloat _fontSize = 20.0;
 static const CGFloat _smallFontSize = 10.0;
@@ -50,9 +51,9 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
     if ([files containsObject:fileName]) {
         pdfFile = fileName;
     } else {
-        unsigned int index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
-        if (index != NSNotFound)
-            pdfFile = [files objectAtIndex:index];
+        unsigned int idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+        if (idx != NSNotFound)
+            pdfFile = [files objectAtIndex:idx];
     }
     return pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
 }
@@ -153,12 +154,10 @@ static NSString *HTMLEscapeString(NSString *htmlString)
     NSDictionary *noteAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSDictionary *noteTextAttrs = [NSDictionary dictionaryWithObjectsAndKeys:noteTextFont, NSFontAttributeName, [NSParagraphStyle defaultParagraphStyle], NSParagraphStyleAttributeName, nil];
     NSMutableParagraphStyle *noteParStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-#warning _noteIndent removed?
-    /*
-
+    
     [noteParStyle setFirstLineHeadIndent:_noteIndent];
     [noteParStyle setHeadIndent:_noteIndent];
-     */
+    
     if (notes) {
         NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
         NSEnumerator *noteEnum = [[notes sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
