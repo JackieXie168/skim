@@ -139,7 +139,7 @@
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
-		CE816B0E0D719700008D807D /* Leopard.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Leopard.bundle */; };
+		CE816B0E0D719700008D807D /* Skim-Leopard.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
@@ -297,7 +297,7 @@
 		CE816A0A0D70F9B6008D807D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = Skim.app/Contents/Library/QuickLook;
+			dstPath = Contents/Library/QuickLook;
 			dstSubfolderSpec = 1;
 			files = (
 				CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */,
@@ -310,7 +310,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				CE816B0E0D719700008D807D /* Leopard.bundle in CopyFiles */,
+				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,7 +637,7 @@
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
 		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
-		CE816AAB0D71958F008D807D /* Leopard.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Leopard.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Skim-Leopard.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE816AAC0D71958F008D807D /* Leopard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Leopard-Info.plist"; sourceTree = "<group>"; };
 		CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask_SKExtensions.h; sourceTree = "<group>"; };
 		CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTask_SKExtensions.m; sourceTree = "<group>"; };
@@ -896,7 +896,7 @@
 			children = (
 				8D15AC370486D014006FF6A4 /* Skim.app */,
 				CEF3BF750B99CA2900E12E3D /* skimnotes */,
-				CE816AAB0D71958F008D807D /* Leopard.bundle */,
+				CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1436,9 +1436,9 @@
 			productReference = 8D15AC370486D014006FF6A4 /* Skim.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CE816AAA0D71958F008D807D /* Leopard */ = {
+		CE816AAA0D71958F008D807D /* Skim-Leopard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Leopard" */;
+			buildConfigurationList = CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Skim-Leopard" */;
 			buildPhases = (
 				CE816AA70D71958F008D807D /* Resources */,
 				CE816AA80D71958F008D807D /* Sources */,
@@ -1448,9 +1448,9 @@
 			);
 			dependencies = (
 			);
-			name = Leopard;
+			name = "Skim-Leopard";
 			productName = Leopard;
-			productReference = CE816AAB0D71958F008D807D /* Leopard.bundle */;
+			productReference = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 		CEF3BF740B99CA2900E12E3D /* skimnotes */ = {
@@ -1508,7 +1508,7 @@
 				8D15AC270486D014006FF6A4 /* Skim */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
-				CE816AAA0D71958F008D807D /* Leopard */,
+				CE816AAA0D71958F008D807D /* Skim-Leopard */,
 			);
 		};
 /* End PBXProject section */
@@ -1907,7 +1907,7 @@
 		};
 		CE816AB60D7195E8008D807D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CE816AAA0D71958F008D807D /* Leopard */;
+			target = CE816AAA0D71958F008D807D /* Skim-Leopard */;
 			targetProxy = CE816AB50D7195E8008D807D /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
@@ -2445,7 +2445,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = Leopard;
+				PRODUCT_NAME = "Skim-Leopard";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = YES;
@@ -2471,7 +2471,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = Leopard;
+				PRODUCT_NAME = "Skim-Leopard";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = NO;
@@ -2574,7 +2574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Leopard" */ = {
+		CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Skim-Leopard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE816AAD0D719591008D807D /* Debug */,
