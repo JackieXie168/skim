@@ -397,6 +397,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     }
     
     [outlineView setAutoresizesOutlineColumn: NO];
+    [noteOutlineView setAutoresizesOutlineColumn: NO];
     [self displayThumbnailView];
     [self displayNoteView];
     
