@@ -3346,7 +3346,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self updateLineInspector];
     }
     if ([annotation isNoteAnnotation]) {
-        if ([[self selectedNotes] containsObject:annotation]) {
+        if ([[self selectedNotes] containsObject:annotation] == NO) {
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
     } else {
@@ -4059,6 +4059,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [menuItem setTarget:self];
     }
     return menu;
+}
+
+- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)ov {
+    PDFAnnotation *annotation = [[self selectedNotes] lastObject];
+    if (annotation)
+        [pdfView setActiveAnnotation:annotation];
 }
 
 #pragma mark NSTableView delegate protocol
