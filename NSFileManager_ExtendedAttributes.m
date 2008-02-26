@@ -157,7 +157,7 @@ static NSString *xattrError(int err, const char *path);
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
     if(status == -1){
-        int err = errno;
+        err = errno;
         errMsg = xattrError(err, fsPath);
         if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         return nil;

@@ -114,20 +114,20 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     
     NSString *editorPreset = [sud stringForKey:SKTeXEditorPresetKey];
     int i = sizeof(SKTeXEditors) / sizeof(NSString *);
-    int index = -1;
+    int idx = -1;
     
     while (i--) {
         [texEditorPopUpButton insertItemWithTitle:SKTeXEditors[i] atIndex:0];
         if ([SKTeXEditors[i] isEqualToString:editorPreset])
-            index = i;
+            idx = i;
     }
     
-    [self setCustomTeXEditor:index == -1];
+    [self setCustomTeXEditor:idx == -1];
     
     if (isCustomTeXEditor)
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
     else
-        [texEditorPopUpButton selectItemAtIndex:index];
+        [texEditorPopUpButton selectItemAtIndex:idx];
     
     [self updateRevertButtons];
     
@@ -177,8 +177,8 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     return sizeof(SKDefaultFontSizes) / sizeof(float);
 }
 
-- (id)objectInSizesAtIndex:(unsigned)index {
-    return [NSNumber numberWithFloat:SKDefaultFontSizes[index]];
+- (id)objectInSizesAtIndex:(unsigned)anIndex {
+    return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
 }
 
 - (BOOL)isCustomTeXEditor {
@@ -214,11 +214,11 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
-    int index = [sender indexOfSelectedItem];
-    if (index < [sender numberOfItems] - 1) {
+    int idx = [sender indexOfSelectedItem];
+    if (idx < [sender numberOfItems] - 1) {
         [sud setObject:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [sud setObject:SKTeXEditorCommands[index] forKey:SKTeXEditorCommandKey];
-        [sud setObject:SKTeXEditorArguments[index] forKey:SKTeXEditorArgumentsKey];
+        [sud setObject:SKTeXEditorCommands[idx] forKey:SKTeXEditorCommandKey];
+        [sud setObject:SKTeXEditorArguments[idx] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
         [sud setObject:@"" forKey:SKTeXEditorPresetKey];

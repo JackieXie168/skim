@@ -220,9 +220,9 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             if ([[self pdfDocument] allowsPrinting] == NO) {
-                int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
-                if (index != -1)
-                    [formatPopup removeItemAtIndex:index];
+                int idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+                if (idx != -1)
+                    [formatPopup removeItemAtIndex:idx];
             }
             if (lastExportedType) {
                 int idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
@@ -1661,8 +1661,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self pdfDocument] pageCount];
 }
 
-- (PDFPage *)objectInPagesAtIndex:(unsigned int)index {
-    return [[self pdfDocument] pageAtIndex:index];
+- (PDFPage *)objectInPagesAtIndex:(unsigned int)anIndex {
+    return [[self pdfDocument] pageAtIndex:anIndex];
 }
 
 - (NSArray *)notes {
@@ -1679,12 +1679,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index {
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeFromNotesAtIndex:(unsigned int)index {
-    PDFAnnotation *note = [[self notes] objectAtIndex:index];
+- (void)removeFromNotesAtIndex:(unsigned int)anIndex {
+    PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
     
     [[self pdfView] removeAnnotation:note];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
@@ -1694,8 +1694,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return UINT_MAX;
 }
 
-- (SKLine *)objectInLinesAtIndex:(unsigned int)index {
-    return [[[SKLine alloc] initWithLine:index] autorelease];
+- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
+    return [[[SKLine alloc] initWithLine:anIndex] autorelease];
 }
 
 - (PDFPage *)currentPage {
@@ -2002,9 +2002,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([subfiles containsObject:fileName]) {
         pdfFile = fileName;
     } else {
-        unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
-        if (index != NSNotFound)
-            pdfFile = [subfiles objectAtIndex:index];
+        unsigned int idx = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
+        if (idx != NSNotFound)
+            pdfFile = [subfiles objectAtIndex:idx];
     }
     return pdfFile;
 }

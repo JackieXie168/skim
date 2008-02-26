@@ -44,20 +44,20 @@
 - (NSComparisonResult)boundsCompare:(NSValue *)aValue {
     NSRect rect1 = [self rectValue];
     NSRect rect2 = [aValue rectValue];
-    float y1 = NSMaxY(rect1);
-    float y2 = NSMaxY(rect2);
+    float top1 = NSMaxY(rect1);
+    float top2 = NSMaxY(rect2);
     
-    if (y1 > y2)
+    if (top1 > top2)
         return NSOrderedAscending;
-    else if (y1 < y2)
+    else if (top1 < top2)
         return NSOrderedDescending;
     
-    float x1 = NSMinX(rect1);
-    float x2 = NSMinX(rect2);
+    float left1 = NSMinX(rect1);
+    float left2 = NSMinX(rect2);
     
-    if (x1 < x2)
+    if (left1 < left2)
         return NSOrderedAscending;
-    else if (x1 > x2)
+    else if (left1 > left2)
         return NSOrderedDescending;
     else
         return NSOrderedSame;

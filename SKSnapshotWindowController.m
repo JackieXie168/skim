@@ -249,12 +249,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
-    unsigned first, last, index = [page pageIndex];
+    unsigned first, last, idx = [page pageIndex];
     
     first = [[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES] pageIndex];
     last = [[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES] pageIndex];
     
-    return index >= first && index <= last;
+    return idx >= first && idx <= last;
 }
 
 #pragma mark Acessors
@@ -403,12 +403,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
     if (hasShadow) {
-        NSShadow *shadow = [[NSShadow alloc] init];
-        [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-        [shadow setShadowBlurRadius:shadowBlurRadius];
-        [shadow setShadowOffset:shadowOffset];
-        [shadow set];
-        [shadow release];
+        NSShadow *aShadow = [[NSShadow alloc] init];
+        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        [aShadow setShadowBlurRadius:shadowBlurRadius];
+        [aShadow setShadowOffset:shadowOffset];
+        [aShadow set];
+        [aShadow release];
     }
     bounds.origin = NSZeroPoint;
     NSRectFill(bounds);

@@ -187,10 +187,10 @@
     if (otherVersion == nil)
         return NSOrderedAscending;
 
-    unsigned int index, count = MAX(componentCount, [otherVersion componentCount]);
-    for (index = 0; index < count; index++) {
-        int component = [self componentAtIndex:index];
-        int otherComponent = [otherVersion componentAtIndex:index];
+    unsigned int idx, count = MAX(componentCount, [otherVersion componentCount]);
+    for (idx = 0; idx < count; idx++) {
+        int component = [self componentAtIndex:idx];
+        int otherComponent = [otherVersion componentAtIndex:idx];
 
         if (component < otherComponent)
             return NSOrderedAscending;

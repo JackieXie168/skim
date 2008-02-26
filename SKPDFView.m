@@ -617,8 +617,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark Actions
 
 - (void)animateTransitionForNextPage:(BOOL)next {
-    unsigned int index = [[self currentPage] pageIndex];
-    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++index : --index] label]] == NO;
+    unsigned int idx = [[self currentPage] pageIndex];
+    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++idx : --idx] label]] == NO;
     NSRect rect;
     if (shouldAnimate) {
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
@@ -1392,7 +1392,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)checkSpellingStartingAtIndex:(int)index onPage:(PDFPage *)page {
+- (void)checkSpellingStartingAtIndex:(int)anIndex onPage:(PDFPage *)page {
     unsigned int i, first = [page pageIndex];
     unsigned int count = [[self document] pageCount];
     BOOL didWrap = NO;
@@ -1400,7 +1400,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSRange range = NSMakeRange(NSNotFound, 0);
     
     while (YES) {
-        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:index language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
+        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:anIndex language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
         if (range.location != NSNotFound) break;
         if (didWrap && i == first) break;
         if (++i >= count) {
@@ -1408,7 +1408,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             didWrap = YES;
         }
         page = [[self document] pageAtIndex:i];
-        index = 0;
+        anIndex = 0;
     }
     
     if (range.location != NSNotFound) {
@@ -1422,32 +1422,32 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)checkSpelling:(id)sender {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
-    unsigned int numRanges, index = 0;
+    unsigned int numRanges, idx = 0;
     if ([[selection pages] count]) {
         page = [[selection pages] lastObject];
         numRanges = [selection safeNumberOfRangesOnPage:page];
         if (numRanges > 0) {
-            index = NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:page]);
-            if (index == NSNotFound)
-                index = 0;
+            idx = NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:page]);
+            if (idx == NSNotFound)
+                idx = 0;
         }
     }
-    [self checkSpellingStartingAtIndex:index onPage:page];
+    [self checkSpellingStartingAtIndex:idx onPage:page];
 }
 
 - (void)showGuessPanel:(id)sender {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
-    unsigned int index = 0;
+    unsigned int idx = 0;
     if ([[selection pages] count]) {
         page = [[selection pages] objectAtIndex:0];
         if ([selection safeNumberOfRangesOnPage:page] > 0) {
-            index = [selection safeRangeAtIndex:0 onPage:page].location;
-            if (index == NSNotFound)
-                index = 0;
+            idx = [selection safeRangeAtIndex:0 onPage:page].location;
+            if (idx == NSNotFound)
+                idx = 0;
         }
     }
-    [self checkSpellingStartingAtIndex:index onPage:page];
+    [self checkSpellingStartingAtIndex:idx onPage:page];
     [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
 }
 
@@ -1700,7 +1700,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSString *text = nil;
 	
     if (selection != nil) {
-        PDFSelection *selection = [self currentSelection];
+        selection = [self currentSelection];
         
         text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         
@@ -2151,10 +2151,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [navWindow orderOut:self];
 }
 
-- (void)enableNavigationActivatedAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
+- (void)enableNavigationActivatedAtBottom:(BOOL)activateAtBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
     hasNavigation = YES;
     autohidesCursor = hideCursor;
-    activateNavigationAtBottom = atBottom;
+    activateNavigationAtBottom = activateAtBottom;
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
     if (navWindow != nil)
@@ -2311,18 +2311,18 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
     NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    BOOL link = NO;
+    BOOL doLink = NO;
     
     if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
         PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
         if (ann != NULL && [[ann destination] page]){
             dest = [ann destination];
-            link = YES;
+            doLink = YES;
         } 
         // Set link = NO if the annotation links outside the document (e.g. for a URL); currently this is only used for the hover window.  We could do something clever like show a URL icon in the hover window (or a WebView!), but for now we'll just ignore these links.
     }
     
-    if (isLink) *isLink = link;
+    if (isLink) *isLink = doLink;
     return dest;
 }
 
@@ -3326,7 +3326,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             continue;
         
         currentLine = SKIndexOfRectAtYInOrderedRects(mouseLocInPage.y, lineBounds, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
-        currentLine = MAX(0, MIN((int)[lineBounds count] - (int)[readingBar numberOfLines], currentLine));
+        currentLine = MIN((int)[lineBounds count] - (int)[readingBar numberOfLines], currentLine);
+        currentLine = MAX(0, currentLine);
         
         if ([page isEqual:[readingBar page]] == NO || currentLine != [readingBar currentLine]) {
             [userInfo setObject:[readingBar page] forKey:@"oldPage"];
@@ -3519,10 +3520,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, largeSize);
     NSBezierPath *path;
     NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
-    NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
-    [shadow setShadowBlurRadius:4.0];
-    [shadow setShadowOffset:NSMakeSize(0.0, -2.0)];
-    [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+    NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
+    [aShadow setShadowBlurRadius:4.0];
+    [aShadow setShadowOffset:NSMakeSize(0.0, -2.0)];
+    [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
     [documentView setPostsBoundsChangedNotifications: NO];
 	
@@ -3576,7 +3577,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             
             [clipView lockFocus];
             outlineRect = [clipView convertRect:magRect fromView:nil];
-            [shadow set];
+            [aShadow set];
             [color set];
             path = [NSBezierPath bezierPathWithRoundRectInRect:outlineRect radius:9.5];
             [path fill];

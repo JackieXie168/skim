@@ -556,10 +556,10 @@ static IMP originalSetBorder = NULL;
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-	unsigned index = [[[self page] notes] indexOfObjectIdenticalTo:self];
-    if (index != NSNotFound) {
+	unsigned idx = [[[self page] notes] indexOfObjectIdenticalTo:self];
+    if (idx != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
-        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" index:index] autorelease];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" index:idx] autorelease];
     } else {
         return nil;
     }

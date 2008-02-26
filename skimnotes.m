@@ -113,12 +113,10 @@ int main (int argc, const char * argv[]) {
                 format = SKNFormatSkim;
         }
         if (format == SKNFormatSkim) {
-            NSError *error = nil;
             data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             if (data == nil && [error code] == ENOATTR)
                 data = [NSData data];
         } else if (format == SKNFormatText) {
-            NSError *error = nil;
             NSString *string = [fm propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             data = [string dataUsingEncoding:NSUTF8StringEncoding];
             if (string == nil && [error code] == ENOATTR)
@@ -147,7 +145,6 @@ int main (int argc, const char * argv[]) {
         }
     } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:@"-"] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
         NSData *data = nil;
-        NSError *error = nil;
         if ([notesPath isEqualToString:@"-"])
             data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
         else
@@ -158,7 +155,6 @@ int main (int argc, const char * argv[]) {
                 success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:&error];
         }
     } else if (action == SKNActionRemove) {
-        NSError *error = nil;
         BOOL success1 = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
         if (success1 == NO && [error code] == ENOATTR)
             success1 = YES;

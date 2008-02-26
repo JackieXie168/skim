@@ -63,8 +63,8 @@ Boolean GetMetadataForFile(void* thisInterface,
         if ([files containsObject:noteFilename] == NO) {
             noteFilename = [[[(NSString *)pathToFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
             if ([files containsObject:noteFilename] == NO) {
-                unsigned index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-                noteFilename = index == NSNotFound ? nil : [files objectAtIndex:index];
+                unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+                noteFilename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
             }
         }
         if (noteFilename)

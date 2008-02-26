@@ -198,20 +198,20 @@ static unsigned int maxRecentDocumentsCount = 0;
     return [bookmarks count];
 }
 
-- (id)objectInBookmarksAtIndex:(unsigned)index {
-    return [bookmarks objectAtIndex:index];
+- (id)objectInBookmarksAtIndex:(unsigned)anIndex {
+    return [bookmarks objectAtIndex:anIndex];
 }
 
-- (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index {
-    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectFromBookmarksAtIndex:index];
-    [bookmarks insertObject:obj atIndex:index];
+- (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)anIndex {
+    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectFromBookmarksAtIndex:anIndex];
+    [bookmarks insertObject:obj atIndex:anIndex];
     [self handleBookmarkChangedNotification:nil];
 }
 
-- (void)removeObjectFromBookmarksAtIndex:(unsigned)index {
-    [[[self undoManager] prepareWithInvocationTarget:self] insertObject:[bookmarks objectAtIndex:index] inBookmarksAtIndex:index];
+- (void)removeObjectFromBookmarksAtIndex:(unsigned)anIndex {
+    [[[self undoManager] prepareWithInvocationTarget:self] insertObject:[bookmarks objectAtIndex:anIndex] inBookmarksAtIndex:anIndex];
     [self handleBookmarkWillBeRemovedNotification:nil];
-    [bookmarks removeObjectAtIndex:index];
+    [bookmarks removeObjectAtIndex:anIndex];
     [self handleBookmarkChangedNotification:nil];
 }
 
@@ -223,11 +223,11 @@ static unsigned int maxRecentDocumentsCount = 0;
     return [[self childrenOfBookmark:[bookmark parent]] indexOfObject:bookmark];
 }
 
-- (void)bookmark:(SKBookmark *)bookmark insertChildBookmark:(SKBookmark *)child atIndex:(unsigned int)index {
+- (void)bookmark:(SKBookmark *)bookmark insertChildBookmark:(SKBookmark *)child atIndex:(unsigned int)anIndex {
     if (bookmark)
-        [bookmark insertChild:child atIndex:index];
+        [bookmark insertChild:child atIndex:anIndex];
     else
-        [self insertObject:child inBookmarksAtIndex:index];
+        [self insertObject:child inBookmarksAtIndex:anIndex];
 }
 
 - (void)removeChildBookmark:(SKBookmark *)bookmark {
@@ -279,7 +279,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (unsigned int)indexOfRecentDocumentAtPath:(NSString *)path {
-    unsigned int index = NSNotFound, i, iMax = [recentDocuments count];
+    unsigned int idx = NSNotFound, i, iMax = [recentDocuments count];
     for (i = 0; i < iMax; i++) {
         NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
         BDAlias *alias = [info valueForKey:ALIAS_KEY];
@@ -288,20 +288,20 @@ static unsigned int maxRecentDocumentsCount = 0;
             [info setValue:alias forKey:ALIAS_KEY];
         }
         if ([[alias fullPathNoUI] isEqualToString:path]) {
-            index = i;
+            idx = i;
             break;
         }
     }
-    return index;
+    return idx;
 }
 
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups {
     if (path == nil)
         return;
     
-    unsigned int index = [self indexOfRecentDocumentAtPath:path];
-    if (index != NSNotFound)
-        [recentDocuments removeObjectAtIndex:index];
+    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    if (idx != NSNotFound)
+        [recentDocuments removeObjectAtIndex:idx];
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
     NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, [alias aliasData], ALIAS_DATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
@@ -313,15 +313,15 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return NSNotFound;
-    unsigned int index = [self indexOfRecentDocumentAtPath:path];
-    return index == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:index] objectForKey:PAGE_INDEX_KEY] unsignedIntValue];
+    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGE_INDEX_KEY] unsignedIntValue];
 }
 
 - (NSArray *)snapshotsAtPath:(NSString *)path {
     if (path == nil)
         return nil;
-    unsigned int index = [self indexOfRecentDocumentAtPath:path];
-    NSArray *setups = index == NSNotFound ? nil : [[recentDocuments objectAtIndex:index] objectForKey:SNAPSHOTS_KEY];
+    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SNAPSHOTS_KEY];
     return [setups count] ? setups : nil;
 }
 
@@ -386,19 +386,19 @@ static unsigned int maxRecentDocumentsCount = 0;
     SKBookmark *folder = [[[SKBookmark alloc] initFolderWithLabel:NSLocalizedString(@"Folder", @"default folder name")] autorelease];
     int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = nil;
-    unsigned int index = [bookmarks count];
+    unsigned int idx = [bookmarks count];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
         if ([outlineView isItemExpanded:selectedItem]) {
             item = selectedItem;
-            index = [[item children] count];
+            idx = [[item children] count];
         } else {
             item = [selectedItem parent];
-            index = [self indexOfChildBookmark:selectedItem] + 1;
+            idx = [self indexOfChildBookmark:selectedItem] + 1;
         }
     }
-    [self bookmark:item insertChildBookmark:folder atIndex:index];
+    [self bookmark:item insertChildBookmark:folder atIndex:idx];
     
     int row = [outlineView rowForItem:folder];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -409,19 +409,19 @@ static unsigned int maxRecentDocumentsCount = 0;
     SKBookmark *separator = [[[SKBookmark alloc] initSeparator] autorelease];
     int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = nil;
-    unsigned int index = [bookmarks count];
+    unsigned int idx = [bookmarks count];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
         if ([outlineView isItemExpanded:selectedItem]) {
             item = selectedItem;
-            index = [[item children] count];
+            idx = [[item children] count];
         } else {
             item = [selectedItem parent];
-            index = [self indexOfChildBookmark:selectedItem] + 1;
+            idx = [self indexOfChildBookmark:selectedItem] + 1;
         }
     }
-    [self bookmark:item insertChildBookmark:separator atIndex:index];
+    [self bookmark:item insertChildBookmark:separator atIndex:idx];
     
     int row = [outlineView rowForItem:separator];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -484,8 +484,8 @@ static unsigned int maxRecentDocumentsCount = 0;
     return [item bookmarkType] == SKBookmarkTypeFolder;
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item {
-    return [[self childrenOfBookmark:item] objectAtIndex:index];
+- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
+    return [[self childrenOfBookmark:item] objectAtIndex:anIndex];
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
@@ -522,12 +522,12 @@ static unsigned int maxRecentDocumentsCount = 0;
     return YES;
 }
 
-- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(int)index {
+- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(int)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
     if (type) {
-        if (index == NSOutlineViewDropOnItemIndex) {
+        if (anIndex == NSOutlineViewDropOnItemIndex) {
             if ([item bookmarkType] == SKBookmarkTypeFolder && [outlineView isItemExpanded:item]) {
                 [ov setDropItem:item dropChildIndex:0];
             } else if ([item parent]) {
@@ -543,7 +543,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     return NSDragOperationNone;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(int)index {
+- (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(int)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
@@ -554,13 +554,13 @@ static unsigned int maxRecentDocumentsCount = 0;
 		while (bookmark = [bmEnum nextObject]) {
             int bookmarkIndex = [self indexOfChildBookmark:bookmark];
             if (item == [bookmark parent]) {
-                if (index > bookmarkIndex)
-                    index--;
-                if (index == bookmarkIndex)
+                if (anIndex > bookmarkIndex)
+                    anIndex--;
+                if (anIndex == bookmarkIndex)
                     continue;
             }
             [self removeChildBookmark:bookmark];
-            [self bookmark:item insertChildBookmark:bookmark atIndex:index++];
+            [self bookmark:item insertChildBookmark:bookmark atIndex:anIndex++];
 		}
         return YES;
     }

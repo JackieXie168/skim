@@ -102,8 +102,8 @@
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend {
-    [super selectRowIndexes:indexes byExtendingSelection:extend];
+- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
+    [super selectRowIndexes:indexes byExtendingSelection:extendSelection];
     [self setNeedsDisplay:YES];
 }
 
