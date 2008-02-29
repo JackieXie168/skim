@@ -3020,7 +3020,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [printAccessoryViewController release];
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        [printPanel setOptions:[printPanel options] | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling];
+        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
         
         Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
         if (printAccessoryControllerClass == Nil) {
