@@ -179,10 +179,26 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
 				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.embedded.pdf</string>
+				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>com.apple.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
 			</array>
 		</dict>
 		<dict>
@@ -212,6 +228,30 @@
 			<false/>
 			<key>NSDocumentClass</key>
 			<string>SKDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+				<string>net.sourceforge.skim-app.pdfd</string>
+				<string>net.sourceforge.skim-app.embedded.pdf</string>
+				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>net.sourceforge.skim-app.skimnotes</string>
+				<string>public.plain-text</string>
+				<string>com.apple.rtf</string>
+				<string>com.apple.rtfd</string>
+				<string>com.adobe.fdf</string>
+			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
