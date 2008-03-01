@@ -180,7 +180,7 @@
 			<array>
 				<string>NSPDFPboardType</string>
 			</array>
-			<key>NSExportableType</key>
+			<key>NSExportableTypes</key>
 			<array>
 				<string>com.adobe.pdf</string>
 			</array>
