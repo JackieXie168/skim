@@ -107,7 +107,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     PSConverterBeginPageCallback,   /* haven't seen this called in my testing */
     NULL, 
     NULL, 
-    PSConverterMessageCallback,     /* haven't seen this called in my testing */
+    NULL,     /* could use PSConverterMessageCallback, but messages are usually not useful */
     NULL 
 };
 
