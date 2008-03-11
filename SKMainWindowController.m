@@ -1796,6 +1796,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", page, @"page", nil]];
+    
+    // make sure we show the crop box
+    [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
 }
 
 - (IBAction)crop:(id)sender {
@@ -1827,6 +1830,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", nil]];
     
+    // make sure we show the crop box
+    [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
     // layout after cropping when you're in the middle of a document can lose the current page
     [pdfView goToPage:currentPage];
     [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:currentPage] toView:[pdfView documentView]]];
