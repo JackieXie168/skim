@@ -58,7 +58,7 @@
 
 @interface SKDVIProgressController : SKPSProgressController {
     NSTask *task;
-    volatile int32_t convertingPS __attribute__ ((aligned (4)));
+    volatile int32_t convertingPS __attribute__ ((aligned (32)));
 }
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 @end
