@@ -92,14 +92,14 @@ static void PSConverterEndDocumentCallback(void *info, bool success)
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
     }
 }
-
+/*
 static void PSConverterMessageCallback(void *info, CFStringRef message)
 {
     id delegate = (id)info;
     if (delegate && [delegate respondsToSelector:@selector(showPostScriptConversionMessage:)])
         [delegate performSelectorOnMainThread:@selector(showPostScriptConversionMessage:) withObject:(id)message waitUntilDone:NO];
 }
-
+*/
 CGPSConverterCallbacks SKPSConverterCallbacks = { 
     0, 
     PSConverterBeginDocumentCallback, 
