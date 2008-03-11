@@ -73,6 +73,7 @@ extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
 - (NSData *)boundsAsQDRect;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)mediaBoundsAsQDRect;
+- (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)contentBoundsAsQDRect;
 - (id)richText;
 - (NSArray *)notes;
