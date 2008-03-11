@@ -395,6 +395,27 @@ static IMP originalDealloc = NULL;
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
+- (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData {
+    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setMediaBoundsAsQDRect:[self mediaBoundsAsQDRect]];
+        [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
+        NSRect newBounds = NSRectFromRect(*qdBounds);
+        if (NSWidth(newBounds) < 0.0)
+            newBounds.size.width = 0.0;
+        if (NSHeight(newBounds) < 0.0)
+            newBounds.size.height = 0.0;
+        [self setBounds:newBounds forBox:kPDFDisplayBoxMediaBox];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
+    }
+}
+
 - (NSData *)contentBoundsAsQDRect {
     Rect qdBounds = RectFromNSRect([self foregroundBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];

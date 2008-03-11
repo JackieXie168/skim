@@ -615,7 +615,7 @@
                 description="The bounding rectangle for the crop box of the page (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
-            <property name="media bounds" code="MBnd" type="rectangle" access="r"
+            <property name="media bounds" code="MBnd" type="rectangle"
                 description="The bounding rectangle for the media box of the page (left, top, right, bottom).">
                 <cocoa key="mediaBoundsAsQDRect"/>
             </property>
