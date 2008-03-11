@@ -88,6 +88,14 @@ NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know th
 	return type;
 }
 
+static inline NSString *SKPDFDocumentTypeOrUTI(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentType : SKPDFDocumentUTI;
+}
+
+static inline NSString *SKPostScriptDocumentTypeOrUTI(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentType : SKPostScriptDocumentUTI;
+}
+
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
     unsigned int headerLength = 5;
     
@@ -111,9 +119,9 @@ NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know th
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
-                type = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentType : SKPDFDocumentUTI;
+                type = SKPostScriptDocumentTypeOrUTI();
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
-                type = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentType : SKPostScriptDocumentUTI;
+                type = SKPostScriptDocumentTypeOrUTI();
             }
         }
         if (type == nil && outError)
@@ -172,7 +180,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             pboardType = NSPDFPboardType;
         }
         
-        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
+        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentTypeOrUTI() : SKPDFDocumentTypeOrUTI();
         NSError *error = nil;
         
         document = [self makeUntitledDocumentOfType:type error:&error];
@@ -219,7 +227,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    if ([type isEqualToString:SKNotesDocumentType]) {
+    if ([type isEqualToString:SKNotesDocumentType] || [type isEqualToString:SKNotesDocumentUTI]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
             NSString *pdfFile = [[absoluteURL path] stringByReplacingPathExtension:@"pdf"];
