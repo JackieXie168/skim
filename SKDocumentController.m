@@ -45,29 +45,97 @@
 #import "OBUtilities.h"
 
 // See CFBundleTypeName in Info.plist
-NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
-NSString *SKPDFBundleDocumentType = @"PDF Bundle";
-NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
-NSString *SKBarePDFDocumentType = @"PDF Without Notes";
-NSString *SKNotesDocumentType = @"Skim Notes";
-NSString *SKNotesTextDocumentType = @"Notes as Text";
-NSString *SKNotesRTFDocumentType = @"Notes as RTF";
-NSString *SKNotesRTFDDocumentType = @"Notes as RTFD";
-NSString *SKNotesFDFDocumentType = @"Notes as FDF";
-NSString *SKPostScriptDocumentType = @"PostScript document";
-NSString *SKDVIDocumentType = @"DVI document";
+static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
+static NSString *SKPDFBundleDocumentType = @"PDF Bundle";
+static NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
+static NSString *SKBarePDFDocumentType = @"PDF Without Notes";
+static NSString *SKNotesDocumentType = @"Skim Notes";
+static NSString *SKNotesTextDocumentType = @"Notes as Text";
+static NSString *SKNotesRTFDocumentType = @"Notes as RTF";
+static NSString *SKNotesRTFDDocumentType = @"Notes as RTFD";
+static NSString *SKNotesFDFDocumentType = @"Notes as FDF";
+static NSString *SKPostScriptDocumentType = @"PostScript document";
+static NSString *SKDVIDocumentType = @"DVI document";
 
-NSString *SKPDFDocumentUTI = @"com.adobe.pdf";
-NSString *SKPDFBundleDocumentUTI = @"net.sourceforge.skim-app.pdfd";
-NSString *SKEmbeddedPDFDocumentUTI = @"net.sourceforge.skim-app.embedded.pdf";
-NSString *SKBarePDFDocumentUTI = @"net.sourceforge.skim-app.bare.pdf";
-NSString *SKNotesDocumentUTI = @"net.sourceforge.skim-app.skimnotes";
-NSString *SKTextDocumentUTI = @"public.plain-text";
-NSString *SKRTFDocumentUTI = @"com.apple.rtf";
-NSString *SKRTFDDocumentUTI = @"com.apple.rtfd";
-NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
-NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
-NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
+static NSString *SKPDFDocumentUTI = @"com.adobe.pdf";
+static NSString *SKPDFBundleDocumentUTI = @"net.sourceforge.skim-app.pdfd";
+static NSString *SKEmbeddedPDFDocumentUTI = @"net.sourceforge.skim-app.embedded.pdf";
+static NSString *SKBarePDFDocumentUTI = @"net.sourceforge.skim-app.bare.pdf";
+static NSString *SKNotesDocumentUTI = @"net.sourceforge.skim-app.skimnotes";
+static NSString *SKTextDocumentUTI = @"public.plain-text";
+static NSString *SKRTFDocumentUTI = @"com.apple.rtf";
+static NSString *SKRTFDDocumentUTI = @"com.apple.rtfd";
+static NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
+static NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
+static NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
+
+BOOL SKIsPDFDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentUTI];
+}
+BOOL SKIsPDFBundleDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKPDFBundleDocumentType] || [docType isEqualToString:SKPDFBundleDocumentUTI];
+}
+BOOL SKIsEmbeddedPDFDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKEmbeddedPDFDocumentType] || [docType isEqualToString:SKEmbeddedPDFDocumentUTI];
+}
+BOOL SKIsBarePDFDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKBarePDFDocumentType] || [docType isEqualToString:SKBarePDFDocumentUTI];
+}
+BOOL SKIsNotesDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKNotesDocumentType] || [docType isEqualToString:SKNotesDocumentUTI];
+}
+BOOL SKIsNotesTextDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKNotesTextDocumentType] || [docType isEqualToString:SKTextDocumentUTI];
+}
+BOOL SKIsNotesRTFDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKNotesRTFDocumentType] || [docType isEqualToString:SKRTFDocumentUTI];
+}
+BOOL SKIsNotesRTFDDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKNotesRTFDDocumentType] || [docType isEqualToString:SKRTFDDocumentUTI];
+}
+BOOL SKIsNotesFDFDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKNotesFDFDocumentType] || [docType isEqualToString:SKFDFDocumentUTI];
+}
+BOOL SKIsPostScriptDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentUTI];
+}
+BOOL SKIsDVIDocumentType(NSString *docType) {
+    return [docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKDVIDocumentUTI];
+}
+
+NSString *SKGetPDFDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentType : SKPDFDocumentUTI;
+}
+NSString *SKGetPDFBundleDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFBundleDocumentType : SKPDFBundleDocumentUTI;
+}
+NSString *SKGetEmbeddedPDFDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKEmbeddedPDFDocumentType : SKEmbeddedPDFDocumentUTI;
+}
+NSString *SKGetBarePDFDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKBarePDFDocumentType : SKBarePDFDocumentUTI;
+}
+NSString *SKGetNotesDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesDocumentType : SKNotesDocumentUTI;
+}
+NSString *SKGetNotesTextDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesTextDocumentType : SKTextDocumentUTI;
+}
+NSString *SKGetNotesRTFDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesRTFDocumentType : SKRTFDocumentUTI;
+}
+NSString *SKGetNotesRTFDDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesRTFDDocumentType : SKRTFDDocumentUTI;
+}
+NSString *SKGetNotesFDFDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesFDFDocumentType : SKFDFDocumentUTI;
+}
+NSString *SKGetPostScriptDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentType : SKPostScriptDocumentUTI;
+}
+NSString *SKGetDVIDocumentType(void) {
+    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKDVIDocumentType : SKDVIDocumentUTI;
+}
 
 @implementation SKDocumentController
 
@@ -80,20 +148,12 @@ NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know th
 
 - (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
 	NSString *type = [super typeFromFileExtension:fileExtensionOrHFSFileType];
-    if ([type isEqualToString:SKEmbeddedPDFDocumentType] || [type isEqualToString:SKBarePDFDocumentType]) {
-        // fix of bug when reading a PDF file
+    if (SKIsEmbeddedPDFDocumentType(type) || SKIsBarePDFDocumentType(type)) {
+        // fix of bug when reading a PDF file on 10.4
         // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
-        type = NSPDFPboardType;
+        type = SKGetPDFDocumentType();
     }
 	return type;
-}
-
-static inline NSString *SKPDFDocumentTypeOrUTI(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentType : SKPDFDocumentUTI;
-}
-
-static inline NSString *SKPostScriptDocumentTypeOrUTI(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentType : SKPostScriptDocumentUTI;
 }
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
@@ -113,15 +173,15 @@ static inline NSString *SKPostScriptDocumentTypeOrUTI(void) {
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
     
-    if (type == nil || [type isEqualToString:SKNotesTextDocumentType] || [type isEqualToString:SKTextDocumentUTI]) {
+    if (type == nil || SKIsNotesTextDocumentType(type)) {
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
-                type = SKPostScriptDocumentTypeOrUTI();
+                type = SKGetPostScriptDocumentType();
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
-                type = SKPostScriptDocumentTypeOrUTI();
+                type = SKGetPostScriptDocumentType();
             }
         }
         if (type == nil && outError)
@@ -180,7 +240,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             pboardType = NSPDFPboardType;
         }
         
-        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentTypeOrUTI() : SKPDFDocumentTypeOrUTI();
+        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKGetPostScriptDocumentType() : SKGetPDFDocumentType();
         NSError *error = nil;
         
         document = [self makeUntitledDocumentOfType:type error:&error];
@@ -227,7 +287,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    if ([type isEqualToString:SKNotesDocumentType] || [type isEqualToString:SKNotesDocumentUTI]) {
+    if (SKIsNotesTextDocumentType(type)) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
             NSString *pdfFile = [[absoluteURL path] stringByReplacingPathExtension:@"pdf"];

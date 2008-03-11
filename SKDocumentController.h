@@ -38,29 +38,31 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKPDFDocumentType;
-extern NSString *SKPDFBundleDocumentType;
-extern NSString *SKEmbeddedPDFDocumentType;
-extern NSString *SKBarePDFDocumentType;
-extern NSString *SKNotesDocumentType;
-extern NSString *SKNotesTextDocumentType;
-extern NSString *SKNotesRTFDocumentType;
-extern NSString *SKNotesRTFDDocumentType;
-extern NSString *SKNotesFDFDocumentType;
-extern NSString *SKPostScriptDocumentType;
-extern NSString *SKDVIDocumentType;
+// these functions are compatible for 10.4 and 10.5
 
-extern NSString *SKPDFDocumentUTI;
-extern NSString *SKPDFBundleDocumentUTI;
-extern NSString *SKEmbeddedPDFDocumentUTI;
-extern NSString *SKBarePDFDocumentUTI;
-extern NSString *SKNotesDocumentUTI;
-extern NSString *SKTextDocumentUTI;
-extern NSString *SKRTFDocumentUTI;
-extern NSString *SKRTFDDocumentUTI;
-extern NSString *SKFDFDocumentUTI;
-extern NSString *SKPostScriptDocumentUTI;
-extern NSString *SKDVIDocumentUTI;
+extern BOOL SKIsPDFDocumentType(NSString *docType);
+extern BOOL SKIsPDFBundleDocumentType(NSString *docType);
+extern BOOL SKIsEmbeddedPDFDocumentType(NSString *docType);
+extern BOOL SKIsBarePDFDocumentType(NSString *docType);
+extern BOOL SKIsNotesDocumentType(NSString *docType);
+extern BOOL SKIsNotesTextDocumentType(NSString *docType);
+extern BOOL SKIsNotesRTFDocumentType(NSString *docType);
+extern BOOL SKIsNotesRTFDDocumentType(NSString *docType);
+extern BOOL SKIsNotesFDFDocumentType(NSString *docType);
+extern BOOL SKIsPostScriptDocumentType(NSString *docType);
+extern BOOL SKIsDVIDocumentType(NSString *docType);
+
+extern NSString *SKGetPDFDocumentType();
+extern NSString *SKGetPDFBundleDocumentType();
+extern NSString *SKGetEmbeddedPDFDocumentType();
+extern NSString *SKGetBarePDFDocumentType();
+extern NSString *SKGetNotesDocumentType();
+extern NSString *SKGetNotesTextDocumentType();
+extern NSString *SKGetNotesRTFDocumentType();
+extern NSString *SKGetNotesRTFDDocumentType();
+extern NSString *SKGetNotesFDFDocumentType();
+extern NSString *SKGetPostScriptDocumentType();
+extern NSString *SKGetDVIDocumentType();
 
 enum {
     SKImagePboardTypesMask = 1,

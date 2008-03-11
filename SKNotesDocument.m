@@ -91,7 +91,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
     NSData *data = nil;
     
-    if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
+    if (SKIsNotesDocumentType(typeName)) {
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:[notes count]];
         NSEnumerator *noteEnum = [notes objectEnumerator];
         NSMutableDictionary *note;
@@ -103,9 +103,9 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
             [note release];
         }
         data = [NSKeyedArchiver archivedDataWithRootObject:array];
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKRTFDocumentUTI]) {
+    } else if (SKIsNotesRTFDocumentType(typeName)) {
         data = [self notesRTFData];
-    } else if ([typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI]) {
+    } else if (SKIsNotesTextDocumentType(typeName)) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
     }
     
@@ -119,9 +119,9 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     BOOL didRead = NO;
     NSArray *array = nil;
     
-    if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
+    if (SKIsNotesDocumentType(typeName)) {
         array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI]) {
+    } else if (SKIsNotesFDFDocumentType(typeName)) {
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }
     if (array) {
@@ -166,14 +166,14 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && SKIsNotesDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
-    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI])
+    if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || SKIsNotesDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKRTFDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || SKIsNotesRTFDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || SKIsNotesTextDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;

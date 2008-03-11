@@ -220,7 +220,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             if ([[self pdfDocument] allowsPrinting] == NO) {
-                int idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+                int idx = [formatPopup indexOfItemWithRepresentedObject:SKGetEmbeddedPDFDocumentType()];
                 if (idx != -1)
                     [formatPopup removeItemAtIndex:idx];
             }
@@ -261,7 +261,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     NSError *error = nil;
     
     // we check for notes and may save a .skim as well:
-    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqual:SKPDFDocumentUTI]) {
+    if (SKIsPDFDocumentType(typeName)) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         
@@ -287,7 +287,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 
                 if (saveNotesOK) {
                     NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
+                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKGetNotesDocumentType() error:NULL]) {
                         if (fileExists)
                             saveNotesOK = [fm removeFileAtPath:notesPath handler:nil];
                         if ([[self notes] count]) {
@@ -317,7 +317,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                     postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
         }
         
-    } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqual:SKPDFBundleDocumentUTI]) {
+    } else if (SKIsPDFBundleDocumentType(typeName)) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [absoluteURL path];
@@ -410,13 +410,13 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     NSError *error = nil;
-    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
+    if (SKIsPDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
         if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
             didWrite = [self saveNotesToExtendedAttributesAtURL:absoluteURL error:&error];
-    } else if ([typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI]) {
+    } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
             name = [name stringByAppendingString:@"1"];
@@ -439,40 +439,40 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         }
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
-    } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentUTI]) {
+    } else if (SKIsEmbeddedPDFDocumentType(typeName)) {
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
-    } else if ([typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentUTI]) {
+    } else if (SKIsBarePDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if ([typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI]) {
+    } else if (SKIsNotesDocumentType(typeName)) {
         NSData *data = [self notesData];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
-    } else if ([typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKPDFDocumentUTI]) {
+    } else if (SKIsNotesRTFDocumentType(typeName)) {
         NSData *data = [self notesRTFData];
         if (data)
             didWrite = [data writeToURL:absoluteURL options:0 error:&error];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesRTFDDocumentType] || [typeName isEqualToString:SKRTFDDocumentUTI]) {
+    } else if (SKIsNotesRTFDDocumentType(typeName)) {
         NSFileWrapper *fileWrapper = [self notesRTFDFileWrapper];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI]) {
+    } else if (SKIsNotesTextDocumentType(typeName)) {
         NSString *string = [self notesString];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
         else
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI]) {
+    } else if (SKIsNotesFDFDocumentType(typeName)) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
-        if (filename && ([[self fileType] isEqualToString:SKPDFBundleDocumentType] || [[self fileType] isEqualToString:SKPDFBundleDocumentUTI])) {
+        if (filename && SKIsPDFBundleDocumentType([self fileType])) {
             NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
             filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
         }
@@ -527,22 +527,21 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKNotesDocumentType]))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
-        [typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType] ||
-        [typeName isEqualToString:SKPDFDocumentUTI] || [typeName isEqualToString:SKEmbeddedPDFDocumentUTI] || [typeName isEqualToString:SKBarePDFDocumentUTI])
+        SKIsPDFDocumentType(typeName) || SKIsEmbeddedPDFDocumentType(typeName) || SKIsBarePDFDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'PDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || SKIsPDFBundleDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'PDFD'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || [typeName isEqualToString:SKNotesDocumentType] || [typeName isEqualToString:SKNotesDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || SKIsNotesDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKNT'] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || [typeName isEqualToString:SKNotesFDFDocumentType] || [typeName isEqualToString:SKFDFDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || SKIsNotesFDFDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'FDF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType] || [typeName isEqualToString:SKRTFDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || SKIsNotesRTFDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'RTF '] forKey:NSFileHFSTypeCode];
-    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || [typeName isEqualToString:SKNotesTextDocumentType] || [typeName isEqualToString:SKTextDocumentUTI])
+    else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || SKIsNotesTextDocumentType(typeName))
         [dict setObject:[NSNumber numberWithUnsignedLong:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
@@ -591,7 +590,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentUTI]) {
+    if (SKIsPostScriptDocumentType(docType)) {
         SKPSProgressController *psProgressController = [[[SKPSProgressController alloc] init] autorelease];
         data = [psProgressController PDFDataWithPostScriptData:data];
     }
@@ -624,7 +623,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if ([docType isEqualToString:SKPDFDocumentType] || [docType isEqualToString:SKPDFDocumentUTI]) {
+    if (SKIsPDFDocumentType(docType)) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
@@ -661,7 +660,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPDFBundleDocumentType] || [docType isEqualToString:SKPDFBundleDocumentUTI]) {
+    } else if (SKIsPDFBundleDocumentType(docType)) {
         NSString *path = [absoluteURL path];
         NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:path];
         if (pdfFile) {
@@ -676,14 +675,14 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 }
             }
         }
-    } else if ([docType isEqualToString:SKPostScriptDocumentType] || [docType isEqualToString:SKPostScriptDocumentUTI]) {
+    } else if (SKIsPostScriptDocumentType(docType)) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
             if (data = [[psProgressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
             [psProgressController autorelease];
         }
-    } else if ([docType isEqualToString:SKDVIDocumentType] || [docType isEqualToString:SKDVIDocumentUTI]) {
+    } else if (SKIsDVIDocumentType(docType)) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKDVIProgressController *dviProgressController = [[SKDVIProgressController alloc] init];
             if (data = [[dviProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
@@ -1512,7 +1511,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSString *)notesFDFString {
     NSString *filePath = [[self fileURL] path];
     NSString *filename = [filePath lastPathComponent];
-    if (filename && ([[self fileType] isEqualToString:SKPDFBundleDocumentType] || [[self fileType] isEqualToString:SKPDFBundleDocumentUTI])) {
+    if (filename && SKIsPDFBundleDocumentType([self fileType])) {
         NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
         filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
     }
