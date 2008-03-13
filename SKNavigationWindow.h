@@ -37,16 +37,15 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKAnimatedBorderlessWindow.h"
 
 @class PDFView, SKNavigationToolTipView, SKNavigationButton;
 
-@interface SKNavigationWindow : NSWindow {
+@interface SKNavigationWindow : SKAnimatedBorderlessWindow {
     NSMutableArray *buttons;
-    NSViewAnimation *animation;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)moveToScreen:(NSScreen *)screen;
-- (void)hide;
 @end
 
 

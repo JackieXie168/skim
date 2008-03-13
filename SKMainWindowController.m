@@ -2099,7 +2099,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
         if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
         else
@@ -2112,7 +2112,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     } else if (usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
-                [[SKPDFHoverWindow sharedHoverWindow] hide];
+                [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
             [leftSideDrawer close];
         } else {
             [leftSideDrawer openOnEdge:NSMinXEdge];
@@ -2123,7 +2123,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         
         if ([self leftSidePaneIsOpen]) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
-                [[SKPDFHoverWindow sharedHoverWindow] hide];
+                [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
             lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastLeftSidePaneWidth;
             sideFrame.size.width = 0.0;
@@ -3954,7 +3954,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineView:(NSOutlineView *)ov mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:outlineView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
     }
 }
 
@@ -4211,9 +4211,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
     } else if ([tv isEqual:groupedFindTableView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
     }
 }
 

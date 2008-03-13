@@ -1,10 +1,10 @@
 //
-//  SKRemoteStateWindow.h
+//  SKAnimatedBorderlessWindow.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 12/3/07.
+//  Created by Christiaan Hofman on 3/13/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,32 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKAnimatedBorderlessWindow.h"
 
-enum {
-    SKRemoteStateResize,
-    SKRemoteStateScroll
-};
 
-@interface SKRemoteStateWindow : SKAnimatedBorderlessWindow
-+ (void)showWithType:(int)remoteState atPoint:(NSPoint)point;
+@interface SKAnimatedBorderlessWindow : NSWindow {
+    NSViewAnimation *animation;
+    NSTimer *timer;
+}
+
+- (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen;
+- (id)initWithContentRect:(NSRect)contentRect;
+
+- (void)willClose;
+
+- (float)defaultAlphaValue;
+
+- (NSTimeInterval)fadeInDuration;
+- (NSTimeInterval)fadeOutDuration;
+- (NSTimeInterval)autoHideTimeInterval;
+
+- (void)fadeIn;
+- (void)fadeOut;
+
+- (void)orderOut:(id)sender;
+- (void)orderFront:(id)sender;
+- (void)orderFrontRegardless;
+
+- (void)stopAnimation;
+- (void)cancelDelayedAnimations;
+
 @end
