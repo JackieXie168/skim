@@ -94,6 +94,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 #pragma mark -
 
+@interface PDFView (SKLeopardPrivate)
+- (void)addTooltipsForVisiblePages;
+@end
+
+#pragma mark -
+
 @interface SKPDFView (Private)
 
 - (NSRange)visiblePageIndexRange;
@@ -258,9 +264,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super dealloc];
 }
 
-
+// this is not called on Leopard
 - (void)resetCursorRects {
 	[super resetCursorRects];
+    [self resetHoverRects];
+}
+
+// this is a private method not defined on Tiger
+- (void)addTooltipsForVisiblePages {
+	[super addTooltipsForVisiblePages];
     [self resetHoverRects];
 }
 
