@@ -41,7 +41,6 @@
 
 @interface SKAnimatedBorderlessWindow : NSWindow {
     NSViewAnimation *animation;
-    NSTimer *timer;
 }
 
 - (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen;
