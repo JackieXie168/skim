@@ -37,24 +37,22 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKAnimatedBorderlessWindow.h"
 
 @class PDFAnnotation;
 
-@interface SKPDFHoverWindow : NSPanel {
+@interface SKPDFHoverWindow : SKAnimatedBorderlessWindow {
     NSFont *font;
     NSColor *backgroundColor;
     NSFont *labelFont;
     NSColor *labelColor;
     PDFAnnotation *annotation;
     NSPoint point;
-    NSViewAnimation *animation;
-    NSTimer *timer;
 }
 
 + (id)sharedHoverWindow;
 
 - (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)aPoint;
-- (void)hide;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 

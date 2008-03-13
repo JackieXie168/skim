@@ -39,6 +39,7 @@
 #import "SKRemoteStateWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @interface SKRemoteStateView : NSView {
@@ -60,12 +61,8 @@
 
 - (id)init {
     NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(60.0));
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+    if (self = [super initWithContentRect:contentRect]) {
         [self setIgnoresMouseEvents:YES];
-        [self setReleasedWhenClosed:NO];
-		[self setBackgroundColor:[NSColor clearColor]];
-        [self setAlphaValue:0.95];
-		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:NO];
         [self setLevel:NSStatusWindowLevel];
         [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
@@ -73,56 +70,25 @@
     return self;
 }
 
-- (BOOL)canBecomeKeyWindow { return NO; }
+- (float)defaultAlphaValue { return 0.95; }
 
-- (BOOL)canBecomeMainWindow { return NO; }
-    
-- (void)animationDidEnd:(NSAnimation *)anAnimation {  
-    [animation release];
-    animation = nil;
-    [self orderOut:self];
-    [self setAlphaValue:1.0];
+- (NSTimeInterval)autoHideTimeInterval {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
 }
 
-- (void)animationDidStop:(NSAnimation *)anAnimation {
-    [animation release];
-    animation = nil;
-    [self orderOut:self];
-    [self setAlphaValue:1.0];
+- (void)showWithType:(int)remoteState atPoint:(NSPoint)point {
+    if ([self autoHideTimeInterval] > 0.0) {
+        [self stopAnimation];
+        
+        [self setFrame:SKRectFromCenterAndSize(point, SKMakeSquareSize(60.0)) display:NO animate:NO];
+        [(SKRemoteStateView *)[self contentView] setRemoteState:remoteState];
+        
+        [self orderFrontRegardless];
+    }
 }
 
-- (void)fadeOut:(id)sender {
-    [timer invalidate];
-    [timer release];
-    timer = nil;
-    
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    [animation setDuration:1.0];
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)showWithType:(int)remoteState atPoint:(NSPoint)point timeout:(NSTimeInterval)timeout {
-    [timer invalidate];
-    [timer release];
-    timer = nil;
-    
-    [animation stopAnimation];
-    [animation release];
-    animation = nil;
-    
-    [self setFrame:SKRectFromCenterAndSize(point, SKMakeSquareSize(60.0)) display:NO animate:NO];
-    [(SKRemoteStateView *)[self contentView] setRemoteState:remoteState];
-    
-    [self orderFrontRegardless];
-    timer = [[NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO] retain];
-}
-
-+ (void)showWithType:(int)remoteState atPoint:(NSPoint)point timeout:(NSTimeInterval)timeout {
-    [[[self class] sharedRemoteStateWindow] showWithType:remoteState atPoint:point timeout:timeout];
++ (void)showWithType:(int)remoteState atPoint:(NSPoint)point {
+    [[self sharedRemoteStateWindow] showWithType:remoteState atPoint:point];
 }
 
 @end

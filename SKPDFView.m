@@ -1159,7 +1159,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [super mouseMoved:theEvent];
     
     if ([[activeAnnotation type] isEqualToString:SKLinkString]) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
         [self setActiveAnnotation:nil];
     }
     
@@ -1400,7 +1400,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:NO];
     } else if (hoverRect == trackingNumber) {
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
         hoverRect = 0;
     }
 }
@@ -2312,7 +2312,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (autohidesCursor)
         [NSCursor setHiddenUntilMouseMoves:YES];
     if (hasNavigation)
-        [navWindow hide];
+        [navWindow fadeOut];
 }
 
 #pragma mark Event handling

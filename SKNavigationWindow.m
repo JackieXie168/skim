@@ -57,13 +57,10 @@
         screen = [NSScreen mainScreen];
     float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    if (self = [super initWithContentRect:contentRect screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
         
-		[self setBackgroundColor:[NSColor clearColor]];
-		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setReleasedWhenClosed:NO];
         [self setLevel:[[pdfView window] level]];
         [self setHidesOnDeactivate:YES];
         [self setMovableByWindowBackground:YES];
@@ -117,15 +114,6 @@
     return self;
 }
 
-- (void)dealloc {
-    [animation stopAnimation];
-    [super dealloc];
-}
-
-- (BOOL)canBecomeKeyWindow { return NO; }
-
-- (BOOL)canBecomeMainWindow { return NO; }
-
 - (void)moveToScreen:(NSScreen *)screen {
     NSRect winFrame = [self frame];
     winFrame.origin.x = NSMidX([screen frame]) - 0.5 * NSWidth(winFrame);
@@ -133,42 +121,9 @@
     [self setFrame:winFrame display:NO];
 }
 
-- (void)orderFront:(id)sender {
-    [animation stopAnimation];
-    [super orderFront:sender];
-}
-
 - (void)orderOut:(id)sender {
-    [animation stopAnimation];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
     [super orderOut:sender];
-}
-
-- (void)hide {
-    [animation stopAnimation];
-    
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:1.0];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)animationDidEnd:(NSAnimation*)anAnimation {
-    [animation release];
-    animation = nil;
-    [self orderOut:self];
-    [self setAlphaValue:1.0];
-}
-
-- (void)animationDidStop:(NSAnimation*)anAnimation {
-    [animation release];
-    animation = nil;
-    [self setAlphaValue:1.0];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
 }
 
 @end

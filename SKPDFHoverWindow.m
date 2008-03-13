@@ -68,14 +68,13 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 }
 
 - (id)init {
-    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+    if (self = [super initWithContentRect:NSZeroRect]) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
+		[self setOpaque:YES];
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
-        [self setReleasedWhenClosed:NO];
         [self setLevel:NSStatusWindowLevel];
-        [self setAlphaValue:ALPHA_VALUE];
         
         NSImageView *imageView = [[NSImageView alloc] init];
         [imageView setImageFrameStyle:NSImageFrameNone];
@@ -89,8 +88,6 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         
         annotation = nil;
         point = NSZeroPoint;
-        animation = nil;
-        timer = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
@@ -151,43 +148,21 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 }
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self orderOut:self];
 }
 
-- (void)stopTimer {
-    [timer invalidate];
-    [timer release];
-    timer = nil;
-}
+- (float)defaultAlphaValue { return 0.95; }
 
-- (BOOL)canBecomeKeyWindow { return NO; }
+- (NSTimeInterval)autoHideTimeInterval { return 7.0; }
 
-- (BOOL)canBecomeMainWindow { return NO; }
-
-- (void)orderFront:(id)sender {
-    [self stopTimer];
-    [animation stopAnimation];
-    [self setAlphaValue:ALPHA_VALUE];
-    [super orderFront:sender];
-}
-
-- (void)orderOut:(id)sender {
-    [self stopTimer];
-    [animation stopAnimation];
-    [self setAlphaValue:ALPHA_VALUE];
+- (void)willClose {
     [annotation release];
     annotation = nil;
     point = NSZeroPoint;
-    [super orderOut:sender];
 }
 
-- (void)hideWithTimer:(NSTimer *)aTimer {
-    [self stopTimer];
-    [animation stopAnimation];
-    [self hide];
-}
-
-- (void)showWithTimer:(NSTimer *)aTimer {
+- (void)showDelayed {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
     NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, [sud floatForKey:SKToolTipWidthKey], [sud floatForKey:SKToolTipHeightKey]);
@@ -196,7 +171,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     NSString *string = nil;
     NSColor *color = nil;
     
-    [self stopTimer];
+    [self cancelDelayedAnimations];
     
     if ([[annotation type] isEqualToString:SKLinkString]) {
         
@@ -329,85 +304,38 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
-        [animation stopAnimation];
-        if ([self isVisible] && [self alphaValue] > 0.9) {
+        [self stopAnimation];
+        if ([self isVisible] && [self alphaValue] > 0.9)
             [self orderFront:self];
-        } else {
-            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-            
-            animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-            [fadeInDict release];
-            
-            [self setAlphaValue:0.0];
-            [super orderFront:self];
-            
-            [animation setAnimationBlockingMode:NSAnimationNonblocking];
-            [animation setDuration:0.3];
-            [animation setDelegate:self];
-            [animation startAnimation];
-        }
-        
-        timer = [[NSTimer scheduledTimerWithTimeInterval:7.0 target:self selector:@selector(hideWithTimer:) userInfo:NULL repeats:NO] retain];
+        else
+            [self fadeIn];
         
     } else {
         
-        [self hide];
+        [self fadeOut];
         
     }
+}
+
+- (void)cancelDelayedAnimations {
+    [super cancelDelayedAnimations];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
 - (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)aPoint {
     point = aPoint;
     
     if ([note isEqual:annotation] == NO) {
-        [self stopTimer];
+        [self cancelDelayedAnimations];
         
         if ([self isVisible] && [self alphaValue] > 0.9)
-            [animation stopAnimation];
+            [self stopAnimation];
         
         [annotation release];
         annotation = [note retain];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSinceNow:[self isVisible] ? 0.1 : 1.0];
-        timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(showWithTimer:) userInfo:NULL repeats:NO];
-        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+        [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? 0.1 : 1.0];
     }
-}
-
-- (void)hide {
-    if (annotation == nil)
-        return;
-    
-    [self stopTimer];
-    [animation stopAnimation];
-    
-    [annotation release];
-    annotation = nil;
-    point = NSZeroPoint;
-    
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:1.0];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)animationDidEnd:(NSAnimation*)anAnimation {
-    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
-    [animation release];
-    animation = nil;
-    if (isFadeOut)
-        [self orderOut:self];
-    [self setAlphaValue:ALPHA_VALUE];
-}
-
-- (void)animationDidStop:(NSAnimation*)anAnimation {
-    [animation release];
-    animation = nil;
 }
 
 @end

@@ -378,12 +378,11 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             break;
 		case kRemoteButtonMenu:
             remoteScrolling = !remoteScrolling;
-            float timeout = [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
-            if (timeout > 0.0) {
+            if ([[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey] > 0.0) {
                 NSRect rect = [[controller window] frame];
                 NSPoint point = NSMakePoint(NSMidX(rect), NSMidY(rect));
                 int type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
-                [SKRemoteStateWindow showWithType:type atPoint:point timeout:timeout];
+                [SKRemoteStateWindow showWithType:type atPoint:point];
             }
             break;
         default:
