@@ -274,6 +274,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
+        findPanelFind = NO;
+        caseInsensitiveSearch = YES;
+        wholeWordSearch = NO;
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
@@ -2097,6 +2100,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [[[self pdfView] transitionController] chooseTransitionModalForWindow:[self window]];
 }
 
+- (IBAction)toggleCaseInsensitiveSearch:(id)sender {
+    caseInsensitiveSearch = NO == caseInsensitiveSearch;
+}
+
+- (IBAction)toggleWholeWordSearch:(id)sender {
+    wholeWordSearch = NO == wholeWordSearch;
+}
+
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
         [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
@@ -2919,7 +2930,19 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else 
             [self fadeInOutlineView];
     } else {
-        [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+        int options = caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
+        if (wholeWordSearch && [[pdfView document] respondsToSelector:@selector(beginFindStrings:withOptions:)]) {
+            NSMutableArray *words = [NSMutableArray array];
+            NSEnumerator *wordEnum = [[[sender stringValue] componentsSeparatedByString:@" "] objectEnumerator];
+            NSString *word;
+            while (word = [wordEnum nextObject]) {
+                if ([word isEqualToString:@""] == NO)
+                    [words addObject:word];
+            }
+            [[pdfView document] beginFindStrings:words withOptions:options];
+        } else {
+            [[pdfView document] beginFindString:[sender stringValue] withOptions:options];
+        }
         if (findPaneState == SKSingularFindPaneState)
             [self fadeInSearchView];
         else
@@ -5530,6 +5553,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
         return [self isPresentation] == NO;
+    } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
+        [menuItem setState:caseInsensitiveSearch ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleWholeWordSearch:)) {
+        [menuItem setState:wholeWordSearch ? NSOnState : NSOffState];
+        return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4;
     }
     return YES;
 }
