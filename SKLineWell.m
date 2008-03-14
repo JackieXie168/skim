@@ -302,8 +302,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     [[NSBezierPath bezierPathWithRect:rect] addClip];
     
     [[NSColor blackColor] setStroke];
-    [NSBezierPath setDefaultLineWidth:1.0];
-    [[self path] stroke];
+    if (lineWidth > 0.0)
+        [[self path] stroke];
     
     [NSGraphicsContext restoreGraphicsState];
     
