@@ -155,6 +155,7 @@
                 takeSnapshot = id;
                 toggleAutoActualSize = id;
                 toggleAutoScale = id;
+                toggleCaseInsensitiveSearch = id;
                 toggleDisplayAsBook = id;
                 toggleDisplayContinuous = id;
                 toggleDisplayPageBreaks = id;
@@ -164,6 +165,7 @@
                 togglePresentation = id;
                 toggleRightSidePane = id;
                 toggleStatusBar = id;
+                toggleWholeWordSearch = id;
                 zoomInActualOut = id;
             };
             CLASS = SKMainWindowController;
