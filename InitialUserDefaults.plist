@@ -209,7 +209,7 @@
         <key>SKDefaultNoteHeight</key>
         <real>64.0</real>
         <key>SKActivateFullScreenNavigationAtBottom</key>
-        <false/>
+        <true/>
         <key>SKActivatePresentationNavigationAtBottom</key>
         <true/>
         <key>SKAutoHidePresentationContents</key>
