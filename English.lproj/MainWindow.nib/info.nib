@@ -28,6 +28,8 @@
 		<string>662 641 115 102 0 0 1440 938 </string>
 		<key>855</key>
 		<string>626 560 188 210 0 0 1440 938 </string>
+		<key>942</key>
+		<string>68 455 75 76 0 0 1440 938 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>489.0</string>
@@ -36,6 +38,8 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>168</integer>
+		<integer>942</integer>
+		<integer>687</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>9C31</string>

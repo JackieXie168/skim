@@ -126,6 +126,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *findView;
     NSMutableArray              *searchResults;
     BOOL                        findPanelFind;
+    BOOL                        caseInsensitiveSearch;
+    BOOL                        wholeWordSearch;
     CFMutableSetRef             temporaryAnnotations;
     NSTimer                     *temporaryAnnotationTimer;
     
@@ -309,6 +311,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)password:(id)sender;
 - (IBAction)savePDFSettingToDefaults:(id)sender;
 - (IBAction)chooseTransition:(id)sender;
+- (IBAction)toggleCaseInsensitiveSearch:(id)sender;
+- (IBAction)toggleWholeWordSearch:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotWithSetups:(NSArray *)setups;
