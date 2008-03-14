@@ -326,8 +326,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     NSRectFill(bounds);
     [[NSColor controlBackgroundColor] setFill];
     NSRectFill(NSInsetRect(bounds, 2.0, 2.0));
-    [NSBezierPath setDefaultLineWidth:1.0];
-    [[self path] stroke];
+    if (lineWidth > 0.0)
+        [[self path] stroke];
     [image unlockFocus];
     
     NSImage *dragImage = [[[NSImage alloc] initWithSize:targetRect.size] autorelease];
