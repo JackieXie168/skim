@@ -162,6 +162,10 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     point = NSZeroPoint;
 }
 
+- (void)fadeOut {
+    [super fadeOut];
+}
+
 - (void)showDelayed {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
@@ -326,10 +330,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     point = aPoint;
     
     if ([note isEqual:annotation] == NO) {
-        [self cancelDelayedAnimations];
-        
-        if ([self isVisible] && [self alphaValue] > 0.9)
-            [self stopAnimation];
+        [self stopAnimation];
         
         [annotation release];
         annotation = [note retain];
