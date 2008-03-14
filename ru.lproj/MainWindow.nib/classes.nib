@@ -19,7 +19,12 @@
             OUTLETS = {delegate = id; }; 
             SUPERCLASS = NSPopUpButton; 
         }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {orderFrontFontPanel = id; orderFrontLineInspector = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
         {ACTIONS = {splitViewDoubleClick = id; }; CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
@@ -44,6 +49,11 @@
         {
             ACTIONS = {
                 addBookmark = id; 
+                allGoToFirstPage = id; 
+                allGoToLastPage = id; 
+                allGoToNextPage = id; 
+                allGoToPreviousPage = id; 
+                alternateZoomToFit = id; 
                 autoCropAll = id; 
                 autoSelectContent = id; 
                 changeColor = id; 
@@ -57,7 +67,11 @@
                 changeToolMode = id; 
                 chooseScale = id; 
                 chooseTransition = id; 
+                createNewCircleNote = id; 
+                createNewLineNote = id; 
+                createNewMarkupNote = id; 
                 createNewNote = id; 
+                createNewTextNote = id; 
                 crop = id; 
                 cropAll = id; 
                 displayFacingPages = id; 
@@ -81,11 +95,13 @@
                 exitFullScreen = id; 
                 getInfo = id; 
                 goBackOrForward = id; 
-                goToFirstOrPreviousPage = id; 
-                goToNextOrLastPage = id; 
+                goToMarkedPage = id; 
+                goToPreviousNextFirstLastPage = id; 
+                markPage = id; 
                 password = id; 
                 performFit = id; 
                 rotateAllLeft = id; 
+                rotateAllLeftRight = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 
                 rotateRight = id; 
@@ -108,68 +124,83 @@
                 toggleRightSidePane = id; 
                 toggleStatusBar = id; 
                 zoomInActualOut = id; 
-                zoomInOut = id; 
             }; 
             CLASS = SKMainWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backForwardButton = NSSegmentedControl; 
-                circlePopUpButton = BDSKImagePopUpButton; 
+                circleNoteButton = NSSegmentedControl; 
                 colorSwatch = SKColorSwatch; 
+                colorsButton = NSSegmentedControl; 
+                cropButton = NSSegmentedControl; 
                 currentLeftSideView = NSView; 
                 currentRightSideView = NSView; 
-                displayBoxPopUpButton = NSPopUpButton; 
+                customizeButton = NSSegmentedControl; 
+                displayBoxButton = NSSegmentedControl; 
                 findArrayController = NSArrayController; 
                 findButton = NSSegmentedControl; 
                 findTableView = NSTableView; 
                 findView = NSView; 
+                fontsButton = NSSegmentedControl; 
+                fullScreenButton = NSSegmentedControl; 
                 groupedFindArrayController = NSArrayController; 
                 groupedFindTableView = NSTableView; 
                 groupedFindView = NSView; 
+                infoButton = NSSegmentedControl; 
+                leftPaneButton = NSSegmentedControl; 
                 leftSideButton = NSSegmentedControl; 
                 leftSideCollapsibleView = BDSKCollapsibleView; 
                 leftSideContentView = NSView; 
                 leftSideEdgeView = BDSKEdgeView; 
                 leftSideGradientView = BDSKGradientView; 
                 leftSideView = NSView; 
-                markupPopUpButton = BDSKImagePopUpButton; 
+                lineNoteButton = NSSegmentedControl; 
+                linesButton = NSSegmentedControl; 
+                markupNoteButton = NSSegmentedControl; 
                 nextPageButton = NSSegmentedControl; 
                 noteArrayController = NSArrayController; 
                 noteButton = NSSegmentedControl; 
                 noteOutlineView = SKNoteOutlineView; 
-                notePopUpButton = BDSKImagePopUpButton; 
                 noteSearchField = NSSearchField; 
                 noteView = NSView; 
                 outlineView = SKTocOutlineView; 
                 ownerController = NSObjectController; 
-                pageNumberButtonsField = NSTextField; 
-                pageNumberButtonsView = NSView; 
                 pageNumberField = NSTextField; 
-                pageNumberStepper = NSStepper; 
-                pageNumberView = NSView; 
                 pdfEdgeView = BDSKEdgeView; 
                 pdfSplitView = SKSplitView; 
                 pdfView = SKPDFView; 
+                presentationButton = NSSegmentedControl; 
+                previousNextFirstLastPageButton = NSSegmentedControl; 
+                previousNextPageButton = NSSegmentedControl; 
                 previousPageButton = NSSegmentedControl; 
+                printButton = NSSegmentedControl; 
+                rightPaneButton = NSSegmentedControl; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideCollapsibleView = BDSKCollapsibleView; 
                 rightSideContentView = NSView; 
                 rightSideEdgeView = BDSKEdgeView; 
                 rightSideGradientView = BDSKGradientView; 
                 rightSideView = NSView; 
+                rotateLeftButton = NSSegmentedControl; 
+                rotateLeftRightButton = NSSegmentedControl; 
+                rotateRightButton = NSSegmentedControl; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
                 snapshotArrayController = NSArrayController; 
                 snapshotTableView = SKSnapshotTableView; 
                 snapshotView = NSView; 
                 splitView = SKSplitView; 
+                textNoteButton = NSSegmentedControl; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = SKThumbnailTableView; 
                 thumbnailView = NSView; 
                 tocView = NSView; 
                 toolModeButton = NSSegmentedControl; 
+                zoomActualButton = NSSegmentedControl; 
+                zoomFitButton = NSSegmentedControl; 
                 zoomInActualOutButton = NSSegmentedControl; 
                 zoomInOutButton = NSSegmentedControl; 
+                zoomSelectionButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

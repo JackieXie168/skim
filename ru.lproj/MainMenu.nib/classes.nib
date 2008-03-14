@@ -3,6 +3,10 @@
         {
             ACTIONS = {
                 addBookmark = id; 
+                allGoToFirstPage = id; 
+                allGoToLastPage = id; 
+                allGoToNextPage = id; 
+                allGoToPreviousPage = id; 
                 alternatePaste = id; 
                 alternateZoomToFit = id; 
                 autoCropAll = id; 
