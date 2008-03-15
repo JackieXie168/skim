@@ -101,6 +101,8 @@
     //static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
+    static NSImage *toolbarNewFolderImage = nil;
+    static NSImage *smallFolderImage = nil;
     
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:2.0];
@@ -944,6 +946,44 @@
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarSelectToolImage unlockFocus];
     [toolbarSelectToolImage setName:@"ToolbarSelectTool"];
+    
+	IconRef iconRef;
+	OSErr err = GetIconRef(kOnSystemDisk, kSystemIconsCreator, kGenericFolderIcon, &iconRef);
+    CGRect rect;
+    
+    if (err == noErr) {
+        toolbarNewFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        [toolbarNewFolderImage lockFocus];
+        rect = CGRectMake(0.0, 0.0, 32.0, 32.0);
+        PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
+                             &rect,
+                             kAlignAbsoluteCenter, //kAlignNone,
+                             kTransformNone,
+                             NULL /*inLabelColor*/,
+                             kPlotIconRefNormalFlags,
+                             iconRef); 
+        [[NSImage imageNamed:@"ToolbarAddBadge"] drawInRect:NSMakeRect(18.0, 18.0, 14.0, 14.0)
+                                                   fromRect:NSMakeRect(0.0, 0.0, 14.0, 14.0)
+                                                  operation:NSCompositeSourceOver
+                                                   fraction:1.0];
+        [toolbarNewFolderImage unlockFocus];
+        [toolbarNewFolderImage setName:@"ToolbarNewFolder"];
+        
+        smallFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [smallFolderImage lockFocus];
+        rect = CGRectMake(0.0, 0.0, 16.0, 16.0);
+        PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
+                             &rect,
+                             kAlignAbsoluteCenter, //kAlignNone,
+                             kTransformNone,
+                             NULL /*inLabelColor*/,
+                             kPlotIconRefNormalFlags,
+                             iconRef); 
+        [smallFolderImage unlockFocus];
+        [smallFolderImage setName:@"SmallFolder"];
+        
+        err = ReleaseIconRef(iconRef);
+    }
     
     [shadow1 release];
     [shadow2 release];
