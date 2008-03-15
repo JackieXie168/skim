@@ -1402,7 +1402,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [textNoteButton tag]) {
             [textNoteButton setTag:type];
-            NSString *imgName = type == SKFreeTextNote ? @"ToolbarTextNoteMenu" : @"ToolbarAnchoredNoteMenu";
+            NSString *imgName = type == SKFreeTextNote ? @"ToolbarAddTextNoteMenu" : @"ToolbarAddAnchoredNoteMenu";
             [textNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
@@ -1415,7 +1415,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [circleNoteButton tag]) {
             [circleNoteButton setTag:type];
-            NSString *imgName = type == SKCircleNote ? @"ToolbarCircleNoteMenu" : @"ToolbarSquareNoteMenu";
+            NSString *imgName = type == SKCircleNote ? @"ToolbarAddCircleNoteMenu" : @"ToolbarAddSquareNoteMenu";
             [circleNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
@@ -1428,7 +1428,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [markupNoteButton tag]) {
             [markupNoteButton setTag:type];
-            NSString *imgName = type == SKHighlightNote ? @"ToolbarHighlightNoteMenu" : SKUnderlineNote ? @"ToolbarUnderlineNoteMenu" : @"ToolbarStrikeOutNoteMenu";
+            NSString *imgName = type == SKHighlightNote ? @"ToolbarAddHighlightNoteMenu" : SKUnderlineNote ? @"ToolbarAddUnderlineNoteMenu" : @"ToolbarAddStrikeOutNoteMenu";
             [markupNoteButton setImage:[NSImage imageNamed:imgName] forSegment:0];
         }
     } else NSBeep();
@@ -4911,21 +4911,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(createNewTextNote:) keyEquivalent:@""];
     [menuItem setTag:SKFreeTextNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddTextNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(createNewTextNote:) keyEquivalent:@""];
     [menuItem setTag:SKAnchoredNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarAnchoredNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddAnchoredNote"]];
     [menuItem setTarget:self];
     [textNoteButton setMenu:menu forSegment:0];
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKFreeTextNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddTextNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKAnchoredNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarAnchoredNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddAnchoredNote"]];
     [menuItem setTarget:self];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
@@ -4941,21 +4941,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(createNewCircleNote:) keyEquivalent:@""];
     [menuItem setTag:SKCircleNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddCircleNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewCircleNote:) keyEquivalent:@""];
     [menuItem setTag:SKSquareNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddSquareNote"]];
     [menuItem setTarget:self];
     [circleNoteButton setMenu:menu forSegment:0];
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKCircleNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddCircleNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKSquareNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddSquareNote"]];
     [menuItem setTarget:self];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Shape", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
@@ -4971,29 +4971,29 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(createNewMarkupNote:) keyEquivalent:@""];
     [menuItem setTag:SKHighlightNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddHighlightNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewMarkupNote:) keyEquivalent:@""];
     [menuItem setTag:SKUnderlineNote];
     [menuItem setTarget:self];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddUnderlineNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewMarkupNote:) keyEquivalent:@""];
     [menuItem setTag:SKStrikeOutNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddStrikeOutNote"]];
     [menuItem setTarget:self];
     [markupNoteButton setMenu:menu forSegment:0];
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKHighlightNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddHighlightNote"]];
     [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKUnderlineNote];
     [menuItem setTarget:self];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddUnderlineNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKStrikeOutNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarAddStrikeOutNote"]];
     [menuItem setTarget:self];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Markup", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
@@ -5006,12 +5006,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewMarkupItemIdentifier];
     [item release];
     
+    menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Line", @"Toolbar item label") action:@selector(createNewNote:) keyEquivalent:@""] autorelease];
+    [menuItem setTag:SKLineNote];
+    [menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewLineItemIdentifier];
     [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
     [item setTag:SKLineNote];
     [lineNoteButton makeCapsule];
     [item setViewWithSizes:lineNoteButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewLineItemIdentifier];
     [item release];
     
@@ -5019,35 +5023,35 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKFreeTextNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddTextNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKAnchoredNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarAnchoredNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddAnchoredNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKCircleNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddCircleNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKSquareNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddSquareNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKHighlightNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddHighlightNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKUnderlineNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddUnderlineNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKStrikeOutNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddStrikeOutNote"]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKLineNote];
-	[menuItem setImage:[NSImage imageNamed:@"ToolbarLineNote"]];
+	[menuItem setImage:[NSImage imageNamed:@"ToolbarAddLineNote"]];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
@@ -5197,17 +5201,19 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
     [colorsButton makeCapsule];
     [item setViewWithSizes:colorsButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarColorsItemIdentifier];
     [item release];
     
-    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarFontsItemIdentifier];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Fonts", @"Menu item title") action:@selector(orderFrontFontPanel:) keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarFontsItemIdentifier];
     [item setLabels:NSLocalizedString(@"Fonts", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
     [item setImageNamed:@"ToolbarFonts"];
     [fontsButton makeCapsule];
     [item setViewWithSizes:fontsButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarFontsItemIdentifier];
     [item release];
     
@@ -5218,6 +5224,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Lines", @"Tool tip message")];
     [linesButton makeCapsule];
     [item setViewWithSizes:linesButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarLinesItemIdentifier];
     [item release];
     
@@ -5228,6 +5235,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
     [infoButton makeCapsule];
     [item setViewWithSizes:infoButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarInfoItemIdentifier];
     [item release];
     
@@ -5238,6 +5246,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
     [leftPaneButton makeCapsule];
     [item setViewWithSizes:leftPaneButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarContentsPaneItemIdentifier];
     [item release];
     
@@ -5248,6 +5257,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
     [rightPaneButton makeCapsule];
     [item setViewWithSizes:rightPaneButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNotesPaneItemIdentifier];
     [item release];
     
@@ -5257,6 +5267,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Print Document", @"Tool tip message")];
     [printButton makeCapsule];
     [item setViewWithSizes:printButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPrintItemIdentifier];
     [item release];
     
@@ -5266,6 +5277,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Customize Toolbar", @"Tool tip message")];
     [customizeButton makeCapsule];
     [item setViewWithSizes:customizeButton];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarCustomizeItemIdentifier];
     [item release];
     

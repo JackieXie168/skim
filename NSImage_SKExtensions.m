@@ -51,10 +51,35 @@
     
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [image lockFocus];
-    [[NSGraphicsContext currentContext] saveGraphicsState];
     [self compositeToPoint:NSMakePoint(-2.0, 0.0) operation:NSCompositeCopy];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] setFill];
     [arrowPath fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
+    [image unlockFocus];
+    
+    return image;
+}
+
+- (NSImage *)createAddImage {
+    NSBezierPath *addPath = [NSBezierPath bezierPath];
+    addPath = [NSBezierPath bezierPath];
+    [addPath appendBezierPathWithRect:NSMakeRect(17.0, 4.0, 6.0, 2.0)];
+    [addPath appendBezierPathWithRect:NSMakeRect(19.0, 2.0, 2.0, 6.0)];
+    
+    NSShadow *shadow1 = [[NSShadow alloc] init];
+    [shadow1 setShadowBlurRadius:2.0];
+    [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
+    [image lockFocus];
+    [self compositeToPoint:NSMakePoint(0.0, 0.0) operation:NSCompositeCopy];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
+    [shadow1 set];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [addPath fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
     [image unlockFocus];
     
     return image;
@@ -97,6 +122,22 @@
     static NSImage *toolbarUnderlineNoteMenuImage = nil;
     static NSImage *toolbarStrikeOutNoteMenuImage = nil;
     static NSImage *toolbarLineNoteMenuImage = nil;
+    static NSImage *toolbarAddTextNoteImage = nil;
+    static NSImage *toolbarAddAnchoredNoteImage = nil;
+    static NSImage *toolbarAddCircleNoteImage = nil;
+    static NSImage *toolbarAddSquareNoteImage = nil;
+    static NSImage *toolbarAddHighlightNoteImage = nil;
+    static NSImage *toolbarAddUnderlineNoteImage = nil;
+    static NSImage *toolbarAddStrikeOutNoteImage = nil;
+    static NSImage *toolbarAddLineNoteImage = nil;
+    static NSImage *toolbarAddTextNoteMenuImage = nil;
+    static NSImage *toolbarAddAnchoredNoteMenuImage = nil;
+    static NSImage *toolbarAddCircleNoteMenuImage = nil;
+    static NSImage *toolbarAddSquareNoteMenuImage = nil;
+    static NSImage *toolbarAddHighlightNoteMenuImage = nil;
+    static NSImage *toolbarAddUnderlineNoteMenuImage = nil;
+    static NSImage *toolbarAddStrikeOutNoteMenuImage = nil;
+    static NSImage *toolbarAddLineNoteMenuImage = nil;
     static NSImage *toolbarTextToolImage = nil;
     //static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
@@ -640,6 +681,12 @@
     toolbarTextNoteMenuImage = [toolbarTextNoteImage createMenuImage];
     [toolbarTextNoteMenuImage setName:@"ToolbarTextNoteMenu"];
     
+    toolbarAddTextNoteImage = [toolbarTextNoteImage createAddImage];
+    [toolbarAddTextNoteImage setName:@"ToolbarAddTextNote"];
+    
+    toolbarAddTextNoteMenuImage = [toolbarAddTextNoteImage createMenuImage];
+    [toolbarAddTextNoteMenuImage setName:@"ToolbarAddTextNoteMenu"];
+    
     toolbarAnchoredNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarAnchoredNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
@@ -675,6 +722,12 @@
     
     toolbarAnchoredNoteMenuImage = [toolbarAnchoredNoteImage createMenuImage];
     [toolbarAnchoredNoteMenuImage setName:@"ToolbarAnchoredNoteMenu"];
+    
+    toolbarAddAnchoredNoteImage = [toolbarAnchoredNoteImage createAddImage];
+    [toolbarAddAnchoredNoteImage setName:@"ToolbarAddAnchoredNote"];
+    
+    toolbarAddAnchoredNoteMenuImage = [toolbarAddAnchoredNoteImage createMenuImage];
+    [toolbarAddAnchoredNoteMenuImage setName:@"ToolbarAddAnchoredNoteMenu"];
 
     toolbarCircleNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarCircleNoteImage lockFocus];
@@ -691,6 +744,12 @@
     
     toolbarCircleNoteMenuImage = [toolbarCircleNoteImage createMenuImage];
     [toolbarCircleNoteMenuImage setName:@"ToolbarCircleNoteMenu"];
+    
+    toolbarAddCircleNoteImage = [toolbarCircleNoteImage createAddImage];
+    [toolbarAddCircleNoteImage setName:@"ToolbarAddCircleNote"];
+    
+    toolbarAddCircleNoteMenuImage = [toolbarAddCircleNoteImage createMenuImage];
+    [toolbarAddCircleNoteMenuImage setName:@"ToolbarAddCircleNoteMenu"];
 
     toolbarSquareNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarSquareNoteImage lockFocus];
@@ -707,6 +766,12 @@
     
     toolbarSquareNoteMenuImage = [toolbarSquareNoteImage createMenuImage];
     [toolbarSquareNoteMenuImage setName:@"ToolbarSquareNoteMenu"];
+    
+    toolbarAddSquareNoteImage = [toolbarSquareNoteImage createAddImage];
+    [toolbarAddSquareNoteImage setName:@"ToolbarAddSquareNote"];
+    
+    toolbarAddSquareNoteMenuImage = [toolbarAddSquareNoteImage createMenuImage];
+    [toolbarAddSquareNoteMenuImage setName:@"ToolbarAddSquareNoteMenu"];
     
     toolbarHighlightNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarHighlightNoteImage lockFocus];
@@ -740,6 +805,12 @@
     
     toolbarHighlightNoteMenuImage = [toolbarHighlightNoteImage createMenuImage];
     [toolbarHighlightNoteMenuImage setName:@"ToolbarHighlightNoteMenu"];
+    
+    toolbarAddHighlightNoteImage = [toolbarHighlightNoteImage createAddImage];
+    [toolbarAddHighlightNoteImage setName:@"ToolbarAddHighlightNote"];
+    
+    toolbarAddHighlightNoteMenuImage = [toolbarAddHighlightNoteImage createMenuImage];
+    [toolbarAddHighlightNoteMenuImage setName:@"ToolbarAddHighlightNoteMenu"];
 
     toolbarUnderlineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarUnderlineNoteImage lockFocus];
@@ -772,6 +843,12 @@
     
     toolbarUnderlineNoteMenuImage = [toolbarUnderlineNoteImage createMenuImage];
     [toolbarUnderlineNoteMenuImage setName:@"ToolbarUnderlineNoteMenu"];
+    
+    toolbarAddUnderlineNoteImage = [toolbarUnderlineNoteImage createAddImage];
+    [toolbarAddUnderlineNoteImage setName:@"ToolbarAddUnderlineNote"];
+    
+    toolbarAddUnderlineNoteMenuImage = [toolbarAddUnderlineNoteImage createMenuImage];
+    [toolbarAddUnderlineNoteMenuImage setName:@"ToolbarAddUnderlineNoteMenu"];
 
     toolbarStrikeOutNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarStrikeOutNoteImage lockFocus];
@@ -804,6 +881,12 @@
     
     toolbarStrikeOutNoteMenuImage = [toolbarStrikeOutNoteImage createMenuImage];
     [toolbarStrikeOutNoteMenuImage setName:@"ToolbarStrikeOutNoteMenu"];
+    
+    toolbarAddStrikeOutNoteImage = [toolbarStrikeOutNoteImage createAddImage];
+    [toolbarAddStrikeOutNoteImage setName:@"ToolbarAddStrikeOutNote"];
+    
+    toolbarAddStrikeOutNoteMenuImage = [toolbarAddStrikeOutNoteImage createMenuImage];
+    [toolbarAddStrikeOutNoteMenuImage setName:@"ToolbarAddStrikeOutNoteMenu"];
 
     toolbarLineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarLineNoteImage lockFocus];
@@ -826,6 +909,12 @@
     
     toolbarLineNoteMenuImage = [toolbarLineNoteImage createMenuImage];
     [toolbarLineNoteMenuImage setName:@"ToolbarLineNoteMenu"];
+    
+    toolbarAddLineNoteImage = [toolbarLineNoteImage createAddImage];
+    [toolbarAddLineNoteImage setName:@"ToolbarAddLineNote"];
+    
+    toolbarAddLineNoteMenuImage = [toolbarAddLineNoteImage createMenuImage];
+    [toolbarAddLineNoteMenuImage setName:@"ToolbarAddLineNoteMenu"];
     
     toolbarTextToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 19.0)];
     [toolbarTextToolImage lockFocus];
