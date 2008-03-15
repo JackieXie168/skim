@@ -4097,8 +4097,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)ov {
     PDFAnnotation *annotation = [[self selectedNotes] lastObject];
-    if (annotation)
+    if (annotation) {
+        [pdfView scrollAnnotationToVisible:annotation];
         [pdfView setActiveAnnotation:annotation];
+    }
 }
 
 #pragma mark NSTableView delegate protocol
