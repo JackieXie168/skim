@@ -2154,6 +2154,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [leftSideContentView setFrame:sideFrame];
         [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
+        [[self window] invalidateCursorRectsForView:splitView];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -2203,6 +2204,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [rightSideContentView setFrame:sideFrame];
         [pdfSplitView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
+        [[self window] invalidateCursorRectsForView:splitView];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -5597,6 +5599,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [pdfSplitView setNeedsDisplay:YES];
         [secondaryPdfView layoutDocumentView];
         [secondaryPdfView setNeedsDisplay:YES];
+        [[self window] invalidateCursorRectsForView:sender];
     }
 }
 
