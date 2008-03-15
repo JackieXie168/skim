@@ -2102,10 +2102,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
     caseInsensitiveSearch = NO == caseInsensitiveSearch;
+    if ([[searchField stringValue] length])
+        [self search:searchField];
 }
 
 - (IBAction)toggleWholeWordSearch:(id)sender {
     wholeWordSearch = NO == wholeWordSearch;
+    if ([[searchField stringValue] length])
+        [self search:searchField];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
