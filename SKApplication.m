@@ -143,19 +143,20 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         
         if ([windowController document] == nil) {
             int anIndex = numberOfItems;
-            while (anIndex-- && [[windowsMenu itemAtIndex:anIndex] isSeparatorItem] == NO && 
+            while (anIndex-- && anIndex >= 0 && [[windowsMenu itemAtIndex:anIndex] isSeparatorItem] == NO && 
                    [[[[windowsMenu itemAtIndex:anIndex] target] windowController] document] == nil) {
                     if ([[[windowsMenu itemAtIndex:anIndex] title] caseInsensitiveCompare:title] == NSOrderedAscending)
                         break;
             }
-            if (itemIndex != anIndex + 1) {
+            ++anIndex;
+            if (itemIndex != anIndex) {
                 [item retain];
                 [windowsMenu removeItem:item];
-                [windowsMenu insertItem:item atIndex:itemIndex <= anIndex ? anIndex : ++anIndex];
+                [windowsMenu insertItem:item atIndex:itemIndex < anIndex ? --anIndex : anIndex];
                 [item release];
-                if (anIndex > 0 && [[windowsMenu itemAtIndex:anIndex - 1] isSeparatorItem] == NO)
-                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:anIndex];
             }
+            if (anIndex > 0 && [[windowsMenu itemAtIndex:anIndex - 1] isSeparatorItem] == NO && [[[[windowsMenu itemAtIndex:anIndex - 1] target] windowController] document] != nil)
+                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:anIndex];
         } else if ([windowController isEqual:mainWindowController]) {
             NSMutableArray *subitems = [NSMutableArray array];
             NSMenuItem *anItem;
