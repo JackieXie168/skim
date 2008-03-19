@@ -689,6 +689,24 @@
 				</array>
 			</dict>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DVI</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.dvi</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>dvi</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>
