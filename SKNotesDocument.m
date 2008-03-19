@@ -216,9 +216,15 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 
 - (IBAction)openPDF:(id)sender {
     NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
-    NSError *error;
+    NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL fileURLWithPath:path] display:YES error:&error])
+        FSRef ref;
+        NSURL *url = nil;
+        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &ref, NULL))
+            url = [(NSURL *)CFURLCreateFromFSRef(NULL, &ref) autorelease];
+        if (url == nil)
+            url = [NSURL fileURLWithPath:path];
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error])
             [NSApp presentError:error];
     } else NSBeep();
 }
