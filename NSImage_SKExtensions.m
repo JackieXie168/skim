@@ -139,7 +139,7 @@
     static NSImage *toolbarAddStrikeOutNoteMenuImage = nil;
     static NSImage *toolbarAddLineNoteMenuImage = nil;
     static NSImage *toolbarTextToolImage = nil;
-    //static NSImage *toolbarMoveToolImage = nil;
+    static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
     static NSImage *toolbarNewFolderImage = nil;
@@ -155,6 +155,14 @@
     [shadow2 setShadowOffset:NSMakeSize(0.0, -1.0)];
     [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
+    NSColor *fgColor = [NSColor whiteColor];
+    
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        [shadow1 setShadowBlurRadius:1.0];
+        [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        fgColor = [NSColor blackColor];
+    }
+    
     NSBezierPath *path;
     
     [NSBezierPath setDefaultLineWidth:1.0];
@@ -163,7 +171,7 @@
     [toolbarPageUpImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.0, 3.0)];
     [path lineToPoint:NSMakePoint(17.0, 3.0)];
@@ -182,7 +190,7 @@
     [toolbarPageDownImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.0, 17.0)];
     [path lineToPoint:NSMakePoint(17.0, 17.0)];
@@ -201,7 +209,7 @@
     [toolbarFirstPageImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.0, 3.0)];
     [path lineToPoint:NSMakePoint(17.0, 3.0)];
@@ -225,7 +233,7 @@
     [toolbarLastPageImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.0, 17.0)];
     [path lineToPoint:NSMakePoint(17.0, 17.0)];
@@ -249,7 +257,7 @@
     [toolbarBackImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(17.0, 2.5)];
     [path lineToPoint:NSMakePoint(8.5, 7.0)];
@@ -264,7 +272,7 @@
     [toolbarForwardImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(10.0, 2.5)];
     [path lineToPoint:NSMakePoint(18.5, 7.0)];
@@ -279,7 +287,7 @@
     [toolbarZoomInImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 9.0, 13.0, 3.0)];
     [path appendBezierPathWithRect:NSMakeRect(12.0, 4.0, 3.0, 13.0)];
@@ -292,7 +300,7 @@
     [toolbarZoomOutImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 4.0, 13.0, 3.0)];
     [path fill];
@@ -304,7 +312,7 @@
     [toolbarZoomActualImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 4.0, 13.0, 3.0)];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 9.0, 13.0, 3.0)];
@@ -317,7 +325,7 @@
     [toolbarZoomToFitImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
     [path setLineWidth:2.0];
     [path stroke];
@@ -328,7 +336,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.337 blue:0.814 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 7.0, 11.0, 7.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 7.0)];
     [path lineToPoint:NSMakePoint(11.5, 7.0)];
@@ -347,7 +355,7 @@
     [toolbarZoomToSelectionImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(6.0, 14.0)];
     [path lineToPoint:NSMakePoint(6.0, 16.0)];
@@ -378,7 +386,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.337 blue:0.814 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 7.0, 11.0, 7.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 7.0)];
     [path lineToPoint:NSMakePoint(11.5, 7.0)];
@@ -397,7 +405,7 @@
     [toolbarRotateLeftImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] set];
+    [fgColor set];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithArcWithCenter:NSMakePoint(13.5, 10.0) radius:6.0 startAngle:-180.0 endAngle:90.0 clockwise:NO];
     [path lineToPoint:NSMakePoint(13.5, 19.0)];
@@ -414,7 +422,7 @@
     [toolbarRotateRightImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] set];
+    [fgColor set];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithArcWithCenter:NSMakePoint(13.5, 10.0) radius:6.0 startAngle:360.0 endAngle:90.0 clockwise:YES];
     [path lineToPoint:NSMakePoint(13.5, 19.0)];
@@ -431,16 +439,16 @@
     [toolbarCropImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 5.0, 15.0 , 11.0)];
     [path setLineWidth:2.0];
     [path stroke];
     [path setLineWidth:1.0];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [[NSGraphicsContext currentContext] saveGraphicsState];
-    path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.0, 6.0, 13.0, 9.0)];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 6.0, 13.0, 9.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.337 blue:0.814 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.584 blue:0.872 alpha:1.0]];
-    path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 7.0, 11.0, 7.0)];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.0, 7.0, 11.0, 7.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [shadow1 set];
     [[NSColor colorWithCalibratedRed:1.0 green:0.865 blue:0.296 alpha:1.0] setFill];
@@ -457,7 +465,7 @@
     [toolbarFullScreenImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] set];
+    [fgColor set];
     path = [NSBezierPath bezierPathWithRoundRectInRect:NSMakeRect(5.0, 4.0, 17.0, 14.0) radius:2.0];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 6.0, 13.0, 10.0)];
     [path moveToPoint:NSMakePoint(8.0, 7.0)];
@@ -486,7 +494,7 @@
     [toolbarPresentationImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] set];
+    [fgColor set];
     path = [NSBezierPath bezierPathWithRoundRectInRect:NSMakeRect(5.0, 4.0, 17.0, 14.0) radius:2.0];
     [path appendBezierPathWithRect:NSMakeRect(7.0, 6.0, 13.0, 10.0)];
     [path moveToPoint:NSMakePoint(11.0, 7.0)];
@@ -503,7 +511,7 @@
     [toolbarMediaBoxImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
     [path setLineWidth:2.0];
     [path stroke];
@@ -522,7 +530,7 @@
     [toolbarCropBoxImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 15.0 , 11.0)];
     [path setLineWidth:2.0];
     [path stroke];
@@ -548,10 +556,11 @@
     [toolbarLeftPaneImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+    [path fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(12.0, 5.0, 9.0, 9.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.868 green:0.868 blue:0.868 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
@@ -561,7 +570,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.502 green:0.537 blue:0.640 alpha:1.0] endColor:[CIColor colorWithRed:0.761 green:0.784 blue:0.900 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 3.0, 9.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.382 green:0.435 blue:0.547 alpha:1.0] endColor:[CIColor colorWithRed:0.696 green:0.722 blue:0.843 alpha:1.0]];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(6.0, 5.0, 3.0, 1.0)];
     [path appendBezierPathWithRect:NSMakeRect(6.0, 7.0, 3.0, 1.0)];
@@ -577,10 +586,11 @@
     [toolbarRightPaneImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+    [path fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 9.0, 9.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.868 green:0.868 blue:0.868 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
@@ -590,7 +600,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.502 green:0.537 blue:0.640 alpha:1.0] endColor:[CIColor colorWithRed:0.761 green:0.784 blue:0.900 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(18.0, 5.0, 3.0, 9.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.382 green:0.435 blue:0.547 alpha:1.0] endColor:[CIColor colorWithRed:0.696 green:0.722 blue:0.843 alpha:1.0]];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path appendBezierPathWithRect:NSMakeRect(18.0, 5.0, 3.0, 1.0)];
     [path appendBezierPathWithRect:NSMakeRect(18.0, 7.0, 3.0, 1.0)];
@@ -606,7 +616,7 @@
     [toolbarTextNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 5.0)];
     [path lineToPoint:NSMakePoint(12.0, 6.0)];
@@ -691,7 +701,7 @@
     [toolbarAnchoredNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(15.0, 6.0)];
     [path appendBezierPathWithArcFromPoint:NSMakePoint(20.0, 6.0) toPoint:NSMakePoint(20.0, 16.0) radius:3.0];
@@ -715,7 +725,8 @@
     [path closePath];
     [path appendBezierPathWithRect:NSMakeRect(12.0, 7.0, 2.0, 2.0)];
     [path setWindingRule:NSEvenOddWindingRule];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.988 green:0.988 blue:0.988 alpha:1.0] endColor:[CIColor colorWithRed:0.762 green:0.762 blue:0.762 alpha:1.0]];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.988 green:0.988 blue:0.988 alpha:1.0] endColor:[CIColor colorWithRed:0.762 green:0.762 blue:0.762 alpha:1.0]];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarAnchoredNoteImage unlockFocus];
     [toolbarAnchoredNoteImage setName:@"ToolbarAnchoredNote"];
@@ -783,7 +794,7 @@
     [redShadow setShadowOffset:NSZeroSize];
     [redShadow setShadowColor:[NSColor colorWithCalibratedRed:0.7 green:0.0 blue:0.0 alpha:1.0]];
     [redShadow set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.5, 5.0)];
     [path lineToPoint:NSMakePoint(12.5, 15.0)];
@@ -816,7 +827,7 @@
     [toolbarUnderlineNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.5, 6.0)];
     [path lineToPoint:NSMakePoint(12.5, 16.0)];
@@ -854,7 +865,7 @@
     [toolbarStrikeOutNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.5, 4.0)];
     [path lineToPoint:NSMakePoint(12.5, 14.0)];
@@ -920,7 +931,7 @@
     [toolbarTextToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 4.0, 13.0, 13.0)];
     [path setWindingRule:NSEvenOddWindingRule];
     [path moveToPoint:NSMakePoint(7.5, 6.0)];
@@ -941,54 +952,55 @@
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [path setClip];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 4.0, 13.0, 6.0)];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.0] endColor:[CIColor colorWithRed:0.798 green:0.798 blue:0.798 alpha:1.0]];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.0] endColor:[CIColor colorWithRed:0.798 green:0.798 blue:0.798 alpha:1.0]];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
     [toolbarTextToolImage setName:@"ToolbarTextTool"];
     
-    /*
-    toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
-    [toolbarMoveToolImage lockFocus];
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(9.0, 7.5)];
-    [path lineToPoint:NSMakePoint(7.0, 9.5)];
-    [path lineToPoint:NSMakePoint(9.0, 11.5)];
-    [path lineToPoint:NSMakePoint(9.0, 10.0)];
-    [path lineToPoint:NSMakePoint(12.0, 10.0)];
-    [path lineToPoint:NSMakePoint(12.0, 13.0)];
-    [path lineToPoint:NSMakePoint(10.5, 13.0)];
-    [path lineToPoint:NSMakePoint(12.5, 15.0)];
-    [path lineToPoint:NSMakePoint(14.5, 13.0)];
-    [path lineToPoint:NSMakePoint(13.0, 13.0)];
-    [path lineToPoint:NSMakePoint(13.0, 10.0)];
-    [path lineToPoint:NSMakePoint(16.0, 10.0)];
-    [path lineToPoint:NSMakePoint(16.0, 11.5)];
-    [path lineToPoint:NSMakePoint(18.0, 9.5)];
-    [path lineToPoint:NSMakePoint(16.0, 7.5)];
-    [path lineToPoint:NSMakePoint(16.0, 9.0)];
-    [path lineToPoint:NSMakePoint(13.0, 9.0)];
-    [path lineToPoint:NSMakePoint(13.0, 6.0)];
-    [path lineToPoint:NSMakePoint(14.5, 6.0)];
-    [path lineToPoint:NSMakePoint(12.5, 4.0)];
-    [path lineToPoint:NSMakePoint(10.5, 6.0)];
-    [path lineToPoint:NSMakePoint(12.0, 6.0)];
-    [path lineToPoint:NSMakePoint(12.0, 9.0)];
-    [path lineToPoint:NSMakePoint(9.0, 9.0)];
-    [path closePath];
-    [path fill];
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
-    [toolbarMoveToolImage unlockFocus];
-    [toolbarMoveToolImage setName:@"ToolbarMoveTool"];
-    */
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
+        [toolbarMoveToolImage lockFocus];
+        [[NSGraphicsContext currentContext] saveGraphicsState];
+        [shadow1 set];
+        [fgColor setFill];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.0, 7.5)];
+        [path lineToPoint:NSMakePoint(7.0, 9.5)];
+        [path lineToPoint:NSMakePoint(9.0, 11.5)];
+        [path lineToPoint:NSMakePoint(9.0, 10.0)];
+        [path lineToPoint:NSMakePoint(12.0, 10.0)];
+        [path lineToPoint:NSMakePoint(12.0, 13.0)];
+        [path lineToPoint:NSMakePoint(10.5, 13.0)];
+        [path lineToPoint:NSMakePoint(12.5, 15.0)];
+        [path lineToPoint:NSMakePoint(14.5, 13.0)];
+        [path lineToPoint:NSMakePoint(13.0, 13.0)];
+        [path lineToPoint:NSMakePoint(13.0, 10.0)];
+        [path lineToPoint:NSMakePoint(16.0, 10.0)];
+        [path lineToPoint:NSMakePoint(16.0, 11.5)];
+        [path lineToPoint:NSMakePoint(18.0, 9.5)];
+        [path lineToPoint:NSMakePoint(16.0, 7.5)];
+        [path lineToPoint:NSMakePoint(16.0, 9.0)];
+        [path lineToPoint:NSMakePoint(13.0, 9.0)];
+        [path lineToPoint:NSMakePoint(13.0, 6.0)];
+        [path lineToPoint:NSMakePoint(14.5, 6.0)];
+        [path lineToPoint:NSMakePoint(12.5, 4.0)];
+        [path lineToPoint:NSMakePoint(10.5, 6.0)];
+        [path lineToPoint:NSMakePoint(12.0, 6.0)];
+        [path lineToPoint:NSMakePoint(12.0, 9.0)];
+        [path lineToPoint:NSMakePoint(9.0, 9.0)];
+        [path closePath];
+        [path fill];
+        [[NSGraphicsContext currentContext] restoreGraphicsState];
+        [toolbarMoveToolImage unlockFocus];
+        [toolbarMoveToolImage setName:@"ToolbarMoveTool"];
+    }
     
     toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 19.0)];
     [toolbarMagnifyToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(14.0, 8.0)];
     [path lineToPoint:NSMakePoint(18.0, 4.0)];
@@ -1007,7 +1019,7 @@
     [toolbarSelectToolImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow1 set];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setStroke];
+    [fgColor setStroke];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(7.0, 14.0)];
     [path lineToPoint:NSMakePoint(7.0, 16.0)];
