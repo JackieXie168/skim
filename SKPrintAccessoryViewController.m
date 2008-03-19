@@ -42,7 +42,7 @@
 @implementation SKPrintAccessoryViewController
 
 - (id)initWithPrintInfo:(NSPrintInfo *)aPrintInfo {
-    if (aPrintInfo == nil || nil == [aPrintInfo valueForKeyPath:@"printInfo.dictionary.PDFPrintAutoRotate"]) {
+    if (aPrintInfo == nil || nil == [aPrintInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"]) {
         [self release];
         self = nil;
     } else if (self = [super init]) {
