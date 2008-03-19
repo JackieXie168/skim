@@ -1,0 +1,20 @@
+{
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = SKPrintAccessoryViewController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                autoRotateButton = NSButton;
+                printScalingModeMatrix = NSMatrix;
+                view = NSView;
+            };
+            SUPERCLASS = NSWindowController;
+        }
+    );
+    IBVersion = 1;
+}
