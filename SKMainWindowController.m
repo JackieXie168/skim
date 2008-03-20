@@ -3052,6 +3052,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSPrintPanel *printPanel = [printOperation printPanel];
     
     [printAccessoryViewController release];
+    printAccessoryViewController = nil;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
