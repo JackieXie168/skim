@@ -118,6 +118,7 @@
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE5F71560C8CDF9A008BE480 /* NSCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
+		CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */; };
 		CE6A5BB20D663771003B7CC3 /* ToolbarPrint.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */; };
@@ -577,6 +578,7 @@
 		CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCell_SKExtensions.m; sourceTree = "<group>"; };
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
+		CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFontsBlack.tiff; path = Images/ToolbarFontsBlack.tiff; sourceTree = "<group>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE68C62F0CEF891B00B082F1 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/InfoWindow.nib; sourceTree = "<group>"; };
@@ -1284,6 +1286,7 @@
 				CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */,
 				CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */,
 				CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */,
+				CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
 				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
@@ -1623,6 +1626,7 @@
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CEF2EE950D8C111600C04F4C /* ToolbarAddBadge.tiff in Resources */,
+				CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
