@@ -1574,7 +1574,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (id)copyNoteAnnotation {
-    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initWithBounds:[self bounds]];
+    NSRect bounds = [self bounds];
+    bounds.size = SKMakeSquareSize(16.0);
+    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[self border]];
