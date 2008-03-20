@@ -5179,6 +5179,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
     [item setImageNamed:@"ToolbarFonts"];
     [fontsButton makeCapsule];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        [fontsButton setImage:[NSImage imageNamed:@"ToolbarFontsBlack"] forSegment:0];
     [item setViewWithSizes:fontsButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarFontsItemIdentifier];
