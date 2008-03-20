@@ -83,8 +83,6 @@
 #import "SKSheetController.h"
 #import "OBUtilities.h"
 #import "SKApplicationController.h"
-#import "SKPrintAccessoryViewController.h"
-#import "PDFDocument_SKExtensions.h"
 
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
@@ -334,7 +332,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [passwordSheetController release];
     [bookmarkSheetController release];
     [secondaryPdfEdgeView release];
-    [printAccessoryViewController release];
     [super dealloc];
 }
 
@@ -3044,39 +3041,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
         [findPboard setString:[sender stringValue] forType:NSStringPboardType];
     }
-}
-
-#pragma mark Printing
-
-- (void)document:(PDFDocument *)document preparePrintOperation:(NSPrintOperation *)printOperation {
-    NSPrintPanel *printPanel = [printOperation printPanel];
-    
-    [printAccessoryViewController release];
-    printAccessoryViewController = nil;
-    
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
-        
-        Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
-        if (printAccessoryControllerClass == Nil) {
-            [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] load];
-            printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
-        }
-        printAccessoryViewController = [[printAccessoryControllerClass alloc] init];
-        if (printAccessoryViewController)
-            [printPanel addAccessoryController:printAccessoryViewController];
-    } 
-    
-    if (printAccessoryViewController == nil) {
-        printAccessoryViewController = [[SKPrintAccessoryViewController alloc] initWithPrintInfo:[printOperation printInfo]];
-        if (printAccessoryViewController)
-            [printPanel setAccessoryView:[printAccessoryViewController view]];
-    }
-}
-
-- (void)document:(PDFDocument *)document cleanupAfterPrintOperation:(NSPrintOperation *)printOperation {
-    [printAccessoryViewController release];
-    printAccessoryViewController = nil;
 }
 
 #pragma mark Tiger history fixes

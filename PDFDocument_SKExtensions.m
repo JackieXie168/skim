@@ -39,6 +39,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
+#import "SKPrintAccessoryViewController.h"
 
 
 @interface PDFDocument (SKPrivateDeclarations)
@@ -56,28 +57,37 @@
 @implementation PDFDocument (SKExtensions)
 
 static IMP originalGetPrintOperationForPrintInfo = NULL;
-static IMP originalCleanupAfterPrintOperation = NULL;
 
 + (void)load {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
         originalGetPrintOperationForPrintInfo = OBReplaceMethodImplementationWithSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:));
-    if ([self instancesRespondToSelector:@selector(cleanupAfterPrintOperation:)])
-        originalCleanupAfterPrintOperation = OBReplaceMethodImplementationWithSelector(self, @selector(cleanupAfterPrintOperation:), @selector(replacementCleanupAfterPrintOperation:));
     [pool release];
 }
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
-    if ([[self delegate] respondsToSelector:@selector(document:preparePrintOperation:)])
-        [[self delegate] document:self preparePrintOperation:printOperation];
+    NSPrintPanel *printPanel = [printOperation printPanel];
+    id printAccessoryViewController = nil;
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+        
+        Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
+        if (printAccessoryControllerClass == Nil) {
+            [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] load];
+            printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
+        }
+        printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
+        if (printAccessoryViewController)
+            [printPanel addAccessoryController:printAccessoryViewController];
+    } 
+    if (printAccessoryViewController == nil) {
+        printAccessoryViewController = [[[SKPrintAccessoryViewController alloc] initWithPrintInfo:[printOperation printInfo]] autorelease];
+        if (printAccessoryViewController)
+            [printPanel setAccessoryView:[printAccessoryViewController view]];
+    }
     return printOperation;
-}
-
-- (void)replacementCleanupAfterPrintOperation:(NSPrintOperation *)printOperation {
-    if ([[self delegate] respondsToSelector:@selector(document:cleanupAfterPrintOperation:)])
-        [[self delegate] document:self cleanupAfterPrintOperation:printOperation];
-    originalCleanupAfterPrintOperation(self, _cmd, printOperation);
 }
 
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {

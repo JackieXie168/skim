@@ -43,9 +43,3 @@
 @interface PDFDocument (SKExtensions)
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
 @end
-
-
-@interface PDFDocument (SKExtendedPDFDocumentDelegate)
-- (void)document:(PDFDocument *)document preparePrintOperation:(NSPrintOperation *)printOperation;
-- (void)document:(PDFDocument *)document cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
-@end
