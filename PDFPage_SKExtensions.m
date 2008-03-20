@@ -46,6 +46,7 @@
 #import "SKStringConstants.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKCFDictionaryCallBacks.h"
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
 
@@ -66,7 +67,7 @@ static IMP originalDealloc = NULL;
 
 + (void)load {
     originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
 }
 
 - (void)replacementDealloc {
@@ -77,8 +78,8 @@ static IMP originalDealloc = NULL;
 // mainly useful for drawing the box in a PDFView while debugging
 - (NSRect)foregroundBox {
     
-    NSValue *rectValue = nil;
-    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectValue)) {
+    NSRect *rectPtr = NULL;
+    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectPtr)) {
         float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
         float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
@@ -93,10 +94,10 @@ static IMP originalDealloc = NULL;
         }
         [imageRep release];
         r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
-        rectValue = [NSValue valueWithRect:r];
-        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectValue);
+        *rectPtr = r;
+        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectPtr);
     }
-    return [rectValue rectValue];
+    return *rectPtr;
 }
     
 - (NSImage *)image {
