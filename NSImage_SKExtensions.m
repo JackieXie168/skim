@@ -145,6 +145,9 @@
     static NSImage *toolbarNewFolderImage = nil;
     static NSImage *smallFolderImage = nil;
     
+    if (toolbarPageUpImage)
+        return;
+    
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:2.0];
     [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
@@ -1122,17 +1125,20 @@
     static NSImage *strikeOutNoteAdornImage = nil;
     static NSImage *lineNoteAdornImage = nil;
     
+    if (outlineViewAdornImage)
+        return;
+    
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:0.0];
     [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
     [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.1]];
     
-    NSSize size = NSMakeSize(25.0, 13.0);
+    NSSize size = NSMakeSize(25.0, 14.0);
     NSSize noteSize = NSMakeSize(15.0, 11.0);
     
-    // this looks nicer on Leopard
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-        size.height = 14.0;
+    // 14 looks nicer on Leopard, 13 looks better on Tiger
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        size.height = 13.0;
     
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:0.85];
     
