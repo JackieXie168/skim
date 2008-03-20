@@ -200,8 +200,6 @@ typedef struct _SKPDFViewState {
     SKPasswordSheetController   *passwordSheetController;
     SKBookmarkSheetController   *bookmarkSheetController;
     
-    id                          printAccessoryViewController;
-    
     SKProgressController        *progressController;
     
     NSButton                    *colorAccessoryView;
