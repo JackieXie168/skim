@@ -44,14 +44,27 @@ extern void SKNSObjectRelease(CFAllocatorRef allocator, const void *value);
 
 extern CFStringRef SKNSObjectCopyDescription(const void *value);
 
+
 extern const void *SKFloatRetain(CFAllocatorRef allocator, const void *value);
 
 extern void SKFloatRelease(CFAllocatorRef allocator, const void *value);
 
 extern CFStringRef SKFloatCopyDescription(const void *value);
 
-extern Boolean	SKFloatEqual(const void *value1, const void *value2);
+extern Boolean SKFloatEqual(const void *value1, const void *value2);
+
+
+extern const void *SKNSRectRetain(CFAllocatorRef allocator, const void *value);
+
+extern void SKNSRectRelease(CFAllocatorRef allocator, const void *value);
+
+extern CFStringRef SKNSRectCopyDescription(const void *value);
+
+extern Boolean SKNSRectEqual(const void *value1, const void *value2);
+
 
 extern const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks;
 
 extern const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks;
+
+extern const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks;

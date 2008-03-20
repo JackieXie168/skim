@@ -69,6 +69,24 @@ Boolean	SKFloatEqual(const void *value1, const void *value2) {
     return fabsf(*(float *)value1 - *(float *)value2) < 0.00000001;
 }
 
+const void *SKNSRectRetain(CFAllocatorRef allocator, const void *value) {
+    NSRect *rectPtr = (NSRect *)CFAllocatorAllocate(allocator, sizeof(NSRect), 0);
+    *rectPtr = *(NSRect *)value;
+    return rectPtr;
+}
+
+void SKNSRectRelease(CFAllocatorRef allocator, const void *value) {
+    CFAllocatorDeallocate(allocator, (NSRect *)value);
+}
+
+CFStringRef SKNSRectCopyDescription(const void *value) {
+    return (CFStringRef)[NSStringFromRect(*(NSRect *)value) retain];
+}
+
+Boolean	SKNSRectEqual(const void *value1, const void *value2) {
+    return NSEqualRects(*(NSRect *)value1, *(NSRect *)value2);
+}
+
 const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks = {
     0,   // version
     SKNSObjectRetain,
@@ -84,4 +102,12 @@ const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks = {
     SKFloatRelease,
     SKFloatCopyDescription,
     SKFloatEqual
+};
+
+const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks = {
+    0, // version
+    SKNSRectRetain,
+    SKNSRectRelease,
+    SKNSRectCopyDescription,
+    SKNSRectEqual
 };
