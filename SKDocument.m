@@ -837,7 +837,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
-        NSEnumerator *annEnum = [[page annotations] objectEnumerator];
+        NSEnumerator *annEnum = [[[[page annotations] copy] autorelease] objectEnumerator];
         PDFAnnotation *annotation;
         
         while (annotation = [annEnum nextObject]) {
@@ -858,7 +858,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         count = [pdfDoc pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDoc pageAtIndex:i];
-            NSEnumerator *annEnum = [[page annotations] objectEnumerator];
+            NSEnumerator *annEnum = [[[[page annotations] copy] autorelease] objectEnumerator];
             PDFAnnotation *annotation;
             
             while (annotation = [annEnum nextObject]) {
