@@ -39,12 +39,10 @@
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
-#import "SKPrintAccessoryViewController.h"
 
 
 @interface PDFDocument (SKPrivateDeclarations)
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
-- (void)cleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
 @end
 
 
@@ -67,10 +65,9 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
-    NSPrintPanel *printPanel = [printOperation printPanel];
-    id printAccessoryViewController = nil;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        NSPrintPanel *printPanel = [printOperation printPanel];
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
         
         Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
@@ -78,15 +75,10 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
             [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] load];
             printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
         }
-        printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
+        id printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
         if (printAccessoryViewController)
             [printPanel addAccessoryController:printAccessoryViewController];
     } 
-    if (printAccessoryViewController == nil) {
-        printAccessoryViewController = [[[SKPrintAccessoryViewController alloc] initWithPrintInfo:[printOperation printInfo]] autorelease];
-        if (printAccessoryViewController)
-            [printPanel setAccessoryView:[printAccessoryViewController view]];
-    }
     return printOperation;
 }
 
