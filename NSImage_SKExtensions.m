@@ -157,7 +157,9 @@
     
     NSColor *fgColor = [NSColor whiteColor];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+    BOOL isTiger = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4;
+    
+    if (isTiger) {
         [shadow1 setShadowBlurRadius:1.0];
         [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         fgColor = [NSColor blackColor];
@@ -552,6 +554,14 @@
     [toolbarCropBoxImage unlockFocus];
     [toolbarCropBoxImage setName:@"ToolbarCropBox"];
     
+    float outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
+    if (isTiger) {
+        outStartGray = 0.0;
+        outEndGray = 0.1;
+        inStartGray = 0.15;
+        inEndGray = 0.3;
+    }
+    
     toolbarLeftPaneImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
     [toolbarLeftPaneImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
@@ -560,10 +570,10 @@
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
     [path fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
     [[NSGraphicsContext currentContext] saveGraphicsState];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:outStartGray green:outStartGray blue:outStartGray alpha:1.0] endColor:[CIColor colorWithRed:outEndGray green:outEndGray blue:outEndGray alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(12.0, 5.0, 9.0, 9.0)];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.868 green:0.868 blue:0.868 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:inStartGray green:inStartGray blue:inStartGray alpha:1.0] endColor:[CIColor colorWithRed:inEndGray green:inEndGray blue:inEndGray alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(10.0, 4.0, 1.0, 11.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.431 green:0.478 blue:0.589 alpha:1.0] endColor:[CIColor colorWithRed:0.714 green:0.744 blue:0.867 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 5.0, 11.0)];
@@ -590,10 +600,10 @@
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 11.0)];
     [path fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.925 green:0.925 blue:0.925 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
     [[NSGraphicsContext currentContext] saveGraphicsState];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:outStartGray green:outStartGray blue:outStartGray alpha:1.0] endColor:[CIColor colorWithRed:outEndGray green:outEndGray blue:outEndGray alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 5.0, 9.0, 9.0)];
-    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.868 green:0.868 blue:0.868 alpha:1.0] endColor:[CIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:inStartGray green:inStartGray blue:inStartGray alpha:1.0] endColor:[CIColor colorWithRed:inEndGray green:inEndGray blue:inEndGray alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(16.0, 4.0, 1.0, 11.0)];
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.431 green:0.478 blue:0.589 alpha:1.0] endColor:[CIColor colorWithRed:0.714 green:0.744 blue:0.867 alpha:1.0]];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(17.0, 4.0, 5.0, 11.0)];
@@ -725,7 +735,7 @@
     [path closePath];
     [path appendBezierPathWithRect:NSMakeRect(12.0, 7.0, 2.0, 2.0)];
     [path setWindingRule:NSEvenOddWindingRule];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+    if (isTiger == NO)
         [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.988 green:0.988 blue:0.988 alpha:1.0] endColor:[CIColor colorWithRed:0.762 green:0.762 blue:0.762 alpha:1.0]];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarAnchoredNoteImage unlockFocus];
@@ -952,13 +962,13 @@
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [path setClip];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(6.0, 4.0, 13.0, 6.0)];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+    if (isTiger == NO)
         [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.0] endColor:[CIColor colorWithRed:0.798 green:0.798 blue:0.798 alpha:1.0]];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
     [toolbarTextToolImage setName:@"ToolbarTextTool"];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+    if (isTiger) {
         toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 17.0)];
         [toolbarMoveToolImage lockFocus];
         [[NSGraphicsContext currentContext] saveGraphicsState];
