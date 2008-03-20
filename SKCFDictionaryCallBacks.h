@@ -1,10 +1,10 @@
 //
-//  SKNoteOutlineView.h
+//  SKCFDictionaryCallBacks.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 3/20/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,37 +36,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKOutlineView.h";
+#import <Carbon/Carbon.h>
 
+extern const void *SKNSObjectRetain(CFAllocatorRef allocator, const void *value);
 
-@interface SKNoteOutlineView : SKOutlineView {    
-    IBOutlet NSWindow *noteTypeSheet;
-    IBOutlet NSMatrix *noteTypeMatrix;
-}
+extern void SKNSObjectRelease(CFAllocatorRef allocator, const void *value);
 
-- (NSArray *)noteTypes;
-- (void)setNoteTypes:(NSArray *)types;
-- (NSMenu *)noteTypeMenu;
+extern CFStringRef SKNSObjectCopyDescription(const void *value);
 
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
+extern const void *SKFloatRetain(CFAllocatorRef allocator, const void *value);
 
-@end
+extern void SKFloatRelease(CFAllocatorRef allocator, const void *value);
 
+extern CFStringRef SKFloatCopyDescription(const void *value);
 
-@interface NSObject (SKNoteOutlineViewDelegate)
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(float)newHeight byItem:(id)item;
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
-- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
-@end
+extern Boolean	SKFloatEqual(const void *value1, const void *value2);
 
+extern const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks;
 
-@interface SKAnnotationTypeImageCell : NSImageCell {
-    NSString *type;
-    BOOL active;
-}
-@end
+extern const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks;

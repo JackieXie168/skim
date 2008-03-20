@@ -1,10 +1,10 @@
 //
-//  SKNoteOutlineView.h
+//  SKCFDictionaryCallBacks.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 3/20/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,37 +36,52 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKOutlineView.h";
+#import "SKCFDictionaryCallBacks.h"
 
 
-@interface SKNoteOutlineView : SKOutlineView {    
-    IBOutlet NSWindow *noteTypeSheet;
-    IBOutlet NSMatrix *noteTypeMatrix;
+const void *SKNSObjectRetain(CFAllocatorRef allocator, const void *value) {
+    return [(id)value retain];
 }
 
-- (NSArray *)noteTypes;
-- (void)setNoteTypes:(NSArray *)types;
-- (NSMenu *)noteTypeMenu;
-
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
-
-@end
-
-
-@interface NSObject (SKNoteOutlineViewDelegate)
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(float)newHeight byItem:(id)item;
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
-- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
-@end
-
-
-@interface SKAnnotationTypeImageCell : NSImageCell {
-    NSString *type;
-    BOOL active;
+void SKNSObjectRelease(CFAllocatorRef allocator, const void *value) {
+    [(id)value release];
 }
-@end
+
+CFStringRef SKNSObjectCopyDescription(const void *value) {
+    return (CFStringRef)[[(id)value description] retain];
+}
+
+const void *SKFloatRetain(CFAllocatorRef allocator, const void *value) {
+    float *floatPtr = (float *)CFAllocatorAllocate(allocator, sizeof(float), 0);
+    *floatPtr = *(float *)value;
+    return floatPtr;
+}
+
+void SKFloatRelease(CFAllocatorRef allocator, const void *value) {
+    CFAllocatorDeallocate(allocator, (float *)value);
+}
+
+CFStringRef SKFloatCopyDescription(const void *value) {
+    return CFStringCreateWithFormat(NULL, NULL, CFSTR("%f"), *(float *)value);
+}
+
+Boolean	SKFloatEqual(const void *value1, const void *value2) {
+    return fabsf(*(float *)value1 - *(float *)value2) < 0.00000001;
+}
+
+const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks = {
+    0,   // version
+    SKNSObjectRetain,
+    SKNSObjectRelease,
+    SKNSObjectCopyDescription,
+    NULL, // equal
+    NULL // hash
+};
+
+const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks = {
+    0, // version
+    SKFloatRetain,
+    SKFloatRelease,
+    SKFloatCopyDescription,
+    SKFloatEqual
+};

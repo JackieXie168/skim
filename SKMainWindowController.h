@@ -142,6 +142,7 @@ typedef struct _SKPDFViewState {
     IBOutlet SKNoteOutlineView  *noteOutlineView;
     IBOutlet NSView             *noteView;
     NSMutableArray              *notes;
+    CFMutableDictionaryRef      rowHeights;
     BOOL                        updatingNoteSelection;
     
     IBOutlet NSArrayController  *snapshotArrayController;

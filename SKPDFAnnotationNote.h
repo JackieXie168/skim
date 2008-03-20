@@ -106,25 +106,19 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationCircle : PDFAnnotationCircle {
-    float rowHeight;
-}
+@interface SKPDFAnnotationCircle : PDFAnnotationCircle
 @end
 
 #pragma mark -
 
-@interface SKPDFAnnotationSquare : PDFAnnotationSquare {
-    float rowHeight;
-}
+@interface SKPDFAnnotationSquare : PDFAnnotationSquare
 @end
 
 #pragma mark -
 
-@interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
-{
+@interface SKPDFAnnotationMarkup : PDFAnnotationMarkup {
     NSRect *lineRects;
     unsigned numberOfLines;
-    float rowHeight;
 }
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
@@ -134,9 +128,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText {
-    float rowHeight;
-}
+@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
 
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(float)pointSize;
@@ -159,7 +151,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
     NSTextStorage *textStorage;
     NSAttributedString *text;
     NSArray *texts;
-    float rowHeight;
 }
 
 - (void)setImage:(NSImage *)newImage;
@@ -172,9 +163,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationLine : PDFAnnotationLine {
-    float rowHeight;
-}
+@interface SKPDFAnnotationLine : PDFAnnotationLine
+
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setAsStartLineStyle:(int)style;
@@ -191,7 +181,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 @interface SKNoteText : NSObject {
     PDFAnnotation *annotation;
-    float rowHeight;
 }
 
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
@@ -204,9 +193,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (PDFPage *)page;
 - (unsigned int)pageIndex;
 - (NSAttributedString *)string;
-
-- (float)rowHeight;
-- (void)setRowHeight:(float)newRowHeight;
 
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 

@@ -691,7 +691,6 @@ static IMP originalSetBorder = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKCircleNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineStyleKey]];
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -732,14 +731,6 @@ static IMP originalSetBorder = NULL;
     [super setInteriorColor:color];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"interiorColor", @"key", nil]];
-}
-
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
 }
 
 #pragma mark Scripting support
@@ -786,7 +777,6 @@ static IMP originalSetBorder = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSquareNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineStyleKey]];
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -827,14 +817,6 @@ static IMP originalSetBorder = NULL;
     [super setInteriorColor:color];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"interiorColor", @"key", nil]];
-}
-
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
 }
 
 #pragma mark Scripting support
@@ -943,8 +925,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
         [quadPoints release];
         numberOfLines = 0;
         lineRects = NULL;
-        
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -1159,14 +1139,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     }
 }
 
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
-}
-
 #pragma mark Scripting support
 
 - (NSDictionary *)scriptingProperties {
@@ -1221,7 +1193,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineStyleKey]];
         originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -1266,14 +1237,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [super setFont:font];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"font", @"key", nil]];
-}
-
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
 }
 
 #pragma mark Scripting support
@@ -1348,7 +1311,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -1509,14 +1471,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
 }
 
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
-}
-
 // override these Leopard methods to avoid showing the standard tool tips over our own
 - (NSString *)toolTip { return nil; }
 - (NSString *)toolTipNoLabel { return nil; }
@@ -1603,7 +1557,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]];
         originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
-        rowHeight = 0.0;
     }
     return self;
 }
@@ -1750,14 +1703,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     }
 }
 
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
-}
-
 #pragma mark Scripting support
 
 - (NSDictionary *)scriptingProperties {
@@ -1899,7 +1844,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation {
     if (self = [super init]) {
         annotation = anAnnotation;
-        rowHeight = 85.0;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                      name:SKAnnotationDidChangeNotification object:annotation];
     }
@@ -1924,14 +1868,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (unsigned int)pageIndex { return [annotation pageIndex]; }
 
 - (NSAttributedString *)string { return [annotation text]; }
-
-- (float)rowHeight {
-    return rowHeight;
-}
-
-- (void)setRowHeight:(float)newRowHeight {
-    rowHeight = newRowHeight;
-}
 
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     if ([[[notification userInfo] objectForKey:@"key"] isEqualToString:@"text"]) {
