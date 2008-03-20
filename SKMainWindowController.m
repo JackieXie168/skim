@@ -83,6 +83,7 @@
 #import "SKSheetController.h"
 #import "OBUtilities.h"
 #import "SKApplicationController.h"
+#import "SKCFDictionaryCallbacks.h"
 
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
@@ -284,6 +285,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         lastViewedPages = [[NSMutableArray alloc] init];
         // @@ remove or set to nil for Leopard?
         pdfOutlineItems = [[NSMutableArray alloc] init];
+        rowHeights = CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &SKFloatDictionaryValueCallbacks);
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         leftSidePaneState = SKThumbnailSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
@@ -314,6 +316,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 	[notes release];
 	[snapshots release];
     [pageLabels release];
+	CFRelease(rowHeights);
     [lastViewedPages release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -1217,6 +1220,10 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
             break;
         }
     }
+    
+    if ([[note texts] count])
+        CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
+    CFDictionaryRemoveValue(rowHeights, (const void *)note);
     
     [notes removeObjectAtIndex:theIndex];
 }
@@ -3831,9 +3838,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     float rowHeight = 0.0;
     if ([ov isEqual:noteOutlineView]) {
-        // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(rowHeight)])
-            rowHeight = [item rowHeight];
+        if (CFDictionaryContainsKey(rowHeights, (const void *)item))
+            rowHeight = *(float *)CFDictionaryGetValue(rowHeights, (const void *)item);
+        else if ([item type] == nil)
+            rowHeight = 85.0;
         return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
     }
     return rowHeight > 0.0 ? rowHeight : [ov rowHeight];
@@ -3841,16 +3849,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
     if ([ov isEqual:noteOutlineView]) {
-        if ([item respondsToSelector:@selector(setRowHeight:)] == NO)
-            return NO;
-        else
-            return YES;
+        return YES;
     }
     return NO;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
-    [item setRowHeight:newHeight];
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(float)newHeight byItem:(id)item {
+    CFDictionarySetValue(rowHeights, (const void *)item, &newHeight);
 }
 
 - (NSArray *)noteItems:(NSArray *)items {
@@ -3998,7 +4003,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [cell setObjectValue:[item string]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        [item setRowHeight:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)];
+        float height = fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0);
+        CFDictionarySetValue(rowHeights, (const void *)item, &height);
         row = [noteOutlineView rowForItem:item];
         if (row != -1)
             [rowIndexes addIndex:row];
