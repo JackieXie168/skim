@@ -53,7 +53,7 @@
     [image lockFocus];
     [self compositeToPoint:NSMakePoint(-2.0, 0.0) operation:NSCompositeCopy];
     [[NSGraphicsContext currentContext] saveGraphicsState];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] setFill];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] setFill];
     [arrowPath fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
     [image unlockFocus];
@@ -151,7 +151,7 @@
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:2.0];
     [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
     
     NSShadow *shadow2 = [[NSShadow alloc] init];
     [shadow2 setShadowBlurRadius:2.0];
@@ -161,7 +161,7 @@
     NSShadow *shadow3 = [[NSShadow alloc] init];
     [shadow3 setShadowBlurRadius:2.0];
     [shadow3 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
     
     NSColor *fgColor = [NSColor whiteColor];
     
@@ -923,13 +923,13 @@
     [shadow2 set];
     [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(6.0, 9.0)];
-    [path lineToPoint:NSMakePoint(18.0, 9.0)];
-    [path lineToPoint:NSMakePoint(18.0, 6.5)];
-    [path lineToPoint:NSMakePoint(21.5, 10.0)];
-    [path lineToPoint:NSMakePoint(18.0, 13.5)];
-    [path lineToPoint:NSMakePoint(18.0, 11.0)];
-    [path lineToPoint:NSMakePoint(6.0, 11.0)];
+    [path moveToPoint:NSMakePoint(6.0, 10.0)];
+    [path lineToPoint:NSMakePoint(18.0, 10.0)];
+    [path lineToPoint:NSMakePoint(18.0, 7.5)];
+    [path lineToPoint:NSMakePoint(21.5, 11.0)];
+    [path lineToPoint:NSMakePoint(18.0, 14.5)];
+    [path lineToPoint:NSMakePoint(18.0, 12.0)];
+    [path lineToPoint:NSMakePoint(6.0, 12.0)];
     [path closePath];
     [path fill];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
