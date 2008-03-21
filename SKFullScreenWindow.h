@@ -40,11 +40,15 @@
 #import "SKMainWindow.h"
 
 
-@interface SKFullScreenWindow : SKMainWindow
+@interface SKFullScreenWindow : SKMainWindow {
+    NSViewAnimation *animation;
+}
 
 - (id)initWithScreen:(NSScreen *)screen;
 
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)view;
+
+- (void)fadeOut;
 
 @end

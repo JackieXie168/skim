@@ -2488,34 +2488,15 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow makeKeyWindow];
     [mainWindow display];
-    
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:fullScreenWindow, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:NSAnimationBlocking];
-    [animation setDuration:0.5];
-    [animation startAnimation];
-    [animation release];
-    [fullScreenWindow orderOut:self];
-    [fullScreenWindow setAlphaValue:1.0];
-    [mainWindow makeKeyAndOrderFront:self];
+    [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     
     NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
-    NSWindow *window;
-    while (window = [blankScreenEnumerator nextObject]) {
-        fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:window, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObject:fadeOutDict]];
-        [fadeOutDict release];
-        [animation setAnimationBlockingMode:NSAnimationNonblockingThreaded];
-        [animation setDelegate:self];
-        [animation setDuration:0.5];
-        [animation startAnimation];
-        [animation release];        
-    }
+    SKFullScreenWindow *window;
+    while (window = [blankScreenEnumerator nextObject])
+        [window fadeOut];
 }
 
 - (void)saveNormalSetup {
