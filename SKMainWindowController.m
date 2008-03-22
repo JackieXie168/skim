@@ -3554,9 +3554,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [item setImage:image];
         [image release];
     }
-    
-    if (colorSwatchToolbarItem)
-        [[colorSwatchToolbarItem menuFormRepresentation] setSubmenu:[NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:menu]]];
 }
 
 #pragma mark KVO
@@ -5261,17 +5258,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)toolbarWillAddItem:(NSNotification *)notification {
-    NSToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
-    if ([[item itemIdentifier] isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
-        colorSwatchToolbarItem = item;
-    }
+    SKToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
+    [item setDelegate:self];
 }
 
 - (void)toolbarDidRemoveItem:(NSNotification *)notification {
-    NSToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
-    if ([[item itemIdentifier] isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
-        colorSwatchToolbarItem = nil;
-    }
+    SKToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
+    [item setDelegate:nil];
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
