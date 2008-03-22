@@ -39,12 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKToolbarItem : NSToolbarItem {
-    id delegate;
-}
-
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+@interface SKToolbarItem : NSToolbarItem
 
 - (void)setLabels:(NSString *)label;
 - (void)setViewWithSizes:(NSView *)view;
