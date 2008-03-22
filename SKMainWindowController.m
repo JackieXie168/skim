@@ -5257,16 +5257,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     return item;
 }
 
-- (void)toolbarWillAddItem:(NSNotification *)notification {
-    SKToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
-    [item setDelegate:self];
-}
-
-- (void)toolbarDidRemoveItem:(NSNotification *)notification {
-    SKToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
-    [item setDelegate:nil];
-}
-
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
     return [NSArray arrayWithObjects:
         SKDocumentToolbarPreviousNextItemIdentifier, 
@@ -5322,23 +5312,24 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
     NSString *identifier = [toolbarItem itemIdentifier];
-    if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
-        [(NSSegmentedControl *)[toolbarItem view] setEnabled:NSIsEmptyRect([pdfView currentSelectionRect]) == NO forSegment:0];
+    BOOL noPalette = NO == [[mainWindow toolbar] customizationPaletteIsRunning];
+    if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
+        return noPalette && fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
-        [(NSSegmentedControl *)[toolbarItem view] setEnabled:[pdfView autoScales] == NO forSegment:0];
+        return noPalette && [pdfView autoScales] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
+        return noPalette && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
-        BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
-        [(NSSegmentedControl *)[toolbarItem view] setEnabled:enabled forSegment:0];
+        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
-        [(NSSegmentedControl *)[toolbarItem view] setEnabled:enabled forSegment:0];
+        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier]) {
         BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
         [noteButton setEnabled:enabled forSegment:SKHighlightNote];
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
     }
-    return NO == [[mainWindow toolbar] customizationPaletteIsRunning];
+    return noPalette;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

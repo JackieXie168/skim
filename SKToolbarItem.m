@@ -41,21 +41,12 @@
 
 @implementation SKToolbarItem 
 
-- (id)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id)newDelegate {
-    delegate = newDelegate;
-}
-
 - (void)validate {
-    if ([self view] && [delegate respondsToSelector:@selector(validateToolbarItem:)]) {
-        BOOL enabled = [[self delegate] validateToolbarItem:self];
+    if ([self view] && [[[self toolbar] delegate] respondsToSelector:@selector(validateToolbarItem:)]) {
+        BOOL enabled = [[[self toolbar] delegate] validateToolbarItem:self];
         [self setEnabled:enabled];
-    } else {
-        [super validate];
     }
+    [super validate];
 }
 
 - (void)setLabels:(NSString *)label {
