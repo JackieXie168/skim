@@ -6,16 +6,21 @@
             SUPERCLASS = NSObject;
         },
                 {
-            ACTIONS =             {
+            CLASS = NSViewController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                view = NSView;
             };
-            CLASS = SKPrintAccessoryViewController;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = SKPrintAccessoryController;
             LANGUAGE = ObjC;
             OUTLETS =             {
                 autoRotateButton = NSButton;
                 printScalingModeMatrix = NSMatrix;
-                view = NSView;
             };
-            SUPERCLASS = NSWindowController;
+            SUPERCLASS = NSViewController;
         }
     );
     IBVersion = 1;
