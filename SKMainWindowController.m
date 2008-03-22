@@ -5338,7 +5338,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
     }
-    return YES;
+    return NO == [[mainWindow toolbar] customizationPaletteIsRunning];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
