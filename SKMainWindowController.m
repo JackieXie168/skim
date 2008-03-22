@@ -5241,16 +5241,23 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[self window] setToolbar:toolbar];
 }
 
-- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
 
     SKToolbarItem *item = [toolbarItems objectForKey:itemIdent];
-    SKToolbarItem *newItem = [[item copy] autorelease];
-    // the view should not be copied
-    if ([item view] && willBeInserted) {
-        [newItem setView:[item view]];
-        [newItem setDelegate:self];
+    
+    if (willBeInserted == NO) {
+        item = [[item copy] autorelease];
+        [item setEnabled:YES];
+        if ([[item view] respondsToSelector:@selector(setEnabled:)])
+            [(NSControl *)[item view] setEnabled:YES];
+        if ([[item view] respondsToSelector:@selector(setEnabled:forSegment:)]) {
+            unsigned i, count = [(NSSegmentedControl *)[item view] segmentCount];
+            for (i = 0; i < count; i++)
+                [(NSSegmentedControl *)[item view] setEnabled:YES forSegment:i];
+        }
     }
-    return newItem;
+    
+    return item;
 }
 
 - (void)toolbarWillAddItem:(NSNotification *)notification {
