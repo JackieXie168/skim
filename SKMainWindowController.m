@@ -182,6 +182,12 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     return [[self cell] tagForSegment:[self selectedSegment]];
 }
 
+- (void)setEnabledForAllSegments:(BOOL)enabled  {
+    unsigned i, count = [self segmentCount];
+    for (i = 0; i < count; i++)
+        [self setEnabled:enabled forSegment:i];
+}
+
 @end
 
 @interface NSResponder (SKExtensions)
@@ -5247,11 +5253,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [item setEnabled:YES];
         if ([[item view] respondsToSelector:@selector(setEnabled:)])
             [(NSControl *)[item view] setEnabled:YES];
-        if ([[item view] respondsToSelector:@selector(setEnabled:forSegment:)]) {
-            unsigned i, count = [(NSSegmentedControl *)[item view] segmentCount];
-            for (i = 0; i < count; i++)
-                [(NSSegmentedControl *)[item view] setEnabled:YES forSegment:i];
-        }
+        if ([[item view] respondsToSelector:@selector(setEnabledForAllSegments:)])
+            [(NSSegmentedControl *)[item view] setEnabledForAllSegments:YES];
     }
     
     return item;
@@ -5313,6 +5316,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
     NSString *identifier = [toolbarItem itemIdentifier];
     BOOL noPalette = NO == [[mainWindow toolbar] customizationPaletteIsRunning];
+    
     if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
         return noPalette && fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
@@ -5328,6 +5332,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteButton setEnabled:enabled forSegment:SKHighlightNote];
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
+        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     }
     return noPalette;
 }
