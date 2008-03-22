@@ -128,7 +128,6 @@
 		CE6C96A90CD924C70022D69F /* NotesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE6C96A70CD924C70022D69F /* NotesPanel.nib */; };
 		CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C96B00CD925550022D69F /* SKNotesPanelController.m */; };
 		CE6DC7770D687252003A072F /* PrintAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC7750D687252003A072F /* PrintAccessoryView.nib */; };
-		CE6DC77B0D687272003A072F /* SKPrintAccessoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6DC77A0D687272003A072F /* SKPrintAccessoryViewController.m */; };
 		CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */; };
 		CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */; };
 		CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC9930D699F21003A072F /* TransitionMask.jpg */; };
@@ -626,8 +625,6 @@
 		CE6C97100CD9294E0022D69F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesPanel.nib; sourceTree = "<group>"; };
 		CE6C97110CD929510022D69F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/NotesPanel.nib; sourceTree = "<group>"; };
 		CE6DC7760D687252003A072F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
-		CE6DC7790D687272003A072F /* SKPrintAccessoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryViewController.h; sourceTree = "<group>"; };
-		CE6DC77A0D687272003A072F /* SKPrintAccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryViewController.m; sourceTree = "<group>"; };
 		CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_SKExtensions.m; sourceTree = "<group>"; };
 		CE6DC8220D68B2F9003A072F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
@@ -1132,8 +1129,6 @@
 				4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
 				CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */,
-				CE6DC7790D687272003A072F /* SKPrintAccessoryViewController.h */,
-				CE6DC77A0D687272003A072F /* SKPrintAccessoryViewController.m */,
 				CE209FA70C9D38C6007C72F9 /* SKProgressController.h */,
 				CE209FA80C9D38C6007C72F9 /* SKProgressController.m */,
 				F97751610B37461000DF673B /* SKPSProgressController.h */,
@@ -1883,7 +1878,6 @@
 				CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */,
 				CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */,
 				CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */,
-				CE6DC77B0D687272003A072F /* SKPrintAccessoryViewController.m in Sources */,
 				CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */,
 				CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */,
 				CE64E8A30D92E670000AD050 /* SKCFDictionaryCallBacks.m in Sources */,
