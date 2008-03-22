@@ -1,10 +1,10 @@
 //
-//  SKNoteOutlineView.h
+//  SKAnnotationTypeImageCell.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 3/22/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,29 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKOutlineView.h";
 
 
-@interface SKNoteOutlineView : SKOutlineView {    
-    IBOutlet NSWindow *noteTypeSheet;
-    IBOutlet NSMatrix *noteTypeMatrix;
+@interface SKAnnotationTypeImageCell : NSImageCell {
+    NSString *type;
+    BOOL active;
 }
-
-- (NSArray *)noteTypes;
-- (void)setNoteTypes:(NSArray *)types;
-- (NSMenu *)noteTypeMenu;
-
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
-
-@end
-
-
-@interface NSObject (SKNoteOutlineViewDelegate)
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(float)newHeight byItem:(id)item;
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
-- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 @end
