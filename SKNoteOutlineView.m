@@ -37,7 +37,6 @@
  */
 
 #import "SKNoteOutlineView.h"
-#import <Quartz/Quartz.h>
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStringConstants.h"
@@ -316,99 +315,6 @@
 - (IBAction)dismissNoteTypeSheet:(id)sender {
     [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
     [noteTypeSheet orderOut:self];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKAnnotationTypeImageCell
-
-- (id)copyWithZone:(NSZone *)aZone {
-    SKAnnotationTypeImageCell *copy = [super copyWithZone:aZone];
-    copy->type = [type retain];
-    copy->active = active;
-    return copy;
-}
-
-- (void)dealloc {
-    [type release];
-    [super dealloc];
-}
-
-- (void)setObjectValue:(id)anObject {
-    if ([anObject respondsToSelector:@selector(objectForKey:)]) {
-        NSString *newType = [anObject objectForKey:@"type"];
-        if (type != newType) {
-            [type release];
-            type = [newType retain];
-        }
-        active = [[anObject objectForKey:@"active"] boolValue];
-    } else {
-        [super setObjectValue:anObject];
-    }
-}
-
-static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMutableDictionary *filteredImages, NSString *name, NSString *key, CIFilter *filter)
-{
-    NSImage *image = [NSImage imageNamed:name];
-    NSImage *filteredImage = [[NSImage alloc] initWithSize:[image size]];
-    CIImage *ciImage = [CIImage imageWithData:[image TIFFRepresentation]];
-    
-    [filter setValue:ciImage forKey:@"inputImage"];
-    ciImage = [filter valueForKey:@"outputImage"];
-    
-    CGRect cgRect = [ciImage extent];
-    NSRect nsRect = *(NSRect*)&cgRect;
-    
-    [filteredImage lockFocus];
-    [ciImage drawAtPoint:NSZeroPoint fromRect:nsRect operation:NSCompositeCopy fraction:1.0];
-    [filteredImage unlockFocus];
-    
-    [images setObject:image forKey:key];
-    [filteredImages setObject:filteredImage forKey:key];
-    [filteredImage release];
-}
-
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    static NSMutableDictionary *noteImages = nil;
-    static NSMutableDictionary *invertedNoteImages = nil;
-    
-    if (noteImages == nil) {
-        CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];
-        
-        noteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
-        invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
-        
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"TextNoteAdorn", SKFreeTextString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"AnchoredNoteAdorn", SKNoteString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"CircleNoteAdorn", SKCircleString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"SquareNoteAdorn", SKSquareString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"HighlightNoteAdorn", SKHighlightString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"UnderlineNoteAdorn", SKUnderlineString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"StrikeOutNoteAdorn", SKStrikeOutString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"LineNoteAdorn", SKLineString, filter);
-    }
-    
-    BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
-    NSImage *image = type ? [(isSelected ? invertedNoteImages : noteImages) objectForKey:type] : nil;
-    
-    if (active) {
-        [[NSGraphicsContext currentContext] saveGraphicsState];
-        if (isSelected)
-            [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
-        else
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
-        NSRect rect = cellFrame;
-        rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - NSWidth(cellFrame)));
-        rect.size.height = NSWidth(rect);
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
-        [[NSGraphicsContext currentContext] restoreGraphicsState];
-    }
-    
-    [super setObjectValue:image];
-    [super drawWithFrame:cellFrame inView:controlView];
 }
 
 @end
