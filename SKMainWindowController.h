@@ -194,7 +194,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *noteButton;
     IBOutlet SKColorSwatch      *colorSwatch;
     NSMutableDictionary         *toolbarItems;
-    NSToolbarItem               *colorSwatchToolbarItem;
     
     SKPageSheetController       *pageSheetController;
     SKScaleSheetController      *scaleSheetController;
