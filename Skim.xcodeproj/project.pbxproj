@@ -1660,16 +1660,16 @@
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** Indexing Help ***\"\ncd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor LOC_DIR in *.lproj; do\n\tif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\";\n\telif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\";\n\telif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\";\n\telif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\";\n\telif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\";\n\telif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\";\n\telse LANG=\"en\";\n\tfi;\n\t\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\" \\\n\t\t\"${LOC_DIR}/Skim Help\" \\\n\t\t-Tokenizer 1 \\\n\t\t-ShowProgress NO \\\n\t\t-LogStyle 2 \\\n\t\t-IndexAnchors YES \\\n\t\t-TigerIndexing YES \\\n\t\t-GenerateSummaries YES \\\n\t\t-Stopwords \"${LANG}\" \\\n\t\t-MinTermLength 3;\ndone;\n";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** Indexing Help ***\"\ncd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor LOC_DIR in *.lproj; do\n\tif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\";\n\telif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\";\n\telif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\";\n\telif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\";\n\telif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\";\n\telif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\";\n\telif [ \"${LOC_DIR}\" = \"Dutch.lproj\" ]; then LANG=\"${SOURCE_ROOT}/Skim Help/stopwords-nl.txt\";\n\telse LANG=\"en\";\n\tfi;\n\tif [ \"${LOC_DIR}\" = \"Japanese.lproj\" -o \"${LOC_DIR}\" = \"zh_CN.lproj\" -o \"${LOC_DIR}\" = \"zh_TW.lproj\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\" \\\n\t\t\"${LOC_DIR}/Skim Help\" \\\n\t\t-ShowProgress NO \\\n\t\t-LogStyle 2 \\\n\t\t-IndexAnchors YES \\\n\t\t-TigerIndexing YES \\\n\t\t-GenerateSummaries YES \\\n\t\t-Stopwords \"${LANG}\" \\\n\t\t-MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
 		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
