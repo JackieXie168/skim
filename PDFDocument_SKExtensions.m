@@ -65,7 +65,7 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
-    BOOL suppressPrintPanel = [[[printOperation printInfo] objectForKey:@"SKSuppressPrintPanel"] boolValue];
+    BOOL suppressPrintPanel = [[[[printOperation printInfo] dictionary] objectForKey:@"SKSuppressPrintPanel"] boolValue];
     
     if (suppressPrintPanel) {
         [[printOperation printInfo] setJobDisposition:NSPrintPreviewJob];
