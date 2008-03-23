@@ -63,19 +63,6 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
     }
 }
 
-IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
-{
-    Method thisMethod;
-    IMP oldImp = NULL;
-    
-    if ((thisMethod = class_getInstanceMethod(aClass, oldSelector))) {
-        oldImp = SK_method_getImplementation(thisMethod);
-        SK_class_addMethod(aClass, newSelector, oldImp, SK_method_getTypeEncoding(thisMethod));
-    }
-    
-    return oldImp;
-}
-
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 {
     Method localMethod, superMethod = NULL;
@@ -106,7 +93,5 @@ IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
 
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
 {
-    Method newMethod = class_getInstanceMethod(aClass, newSelector);
-    
-    return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(newMethod));
+    return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, newSelector)));
 }
