@@ -68,7 +68,6 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
     BOOL suppressPrintPanel = [[[[printOperation printInfo] dictionary] objectForKey:@"SKSuppressPrintPanel"] boolValue];
     
     if (suppressPrintPanel) {
-        [[printOperation printInfo] setJobDisposition:NSPrintPreviewJob];
         [printOperation setShowsPrintPanel:NO];
     }
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
