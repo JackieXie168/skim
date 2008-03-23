@@ -65,7 +65,12 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
+    BOOL suppressPrintPanel = [[[printOperation printInfo] objectForKey:@"SKSuppressPrintPanel"] boolValue];
     
+    if (suppressPrintPanel) {
+        [[printOperation printInfo] setJobDisposition:NSPrintPreviewJob];
+        [printOperation setShowsPrintPanel:NO];
+    }
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
         NSPrintPanel *printPanel = [printOperation printPanel];
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];

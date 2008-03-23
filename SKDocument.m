@@ -1792,9 +1792,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (id)handlePrintScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id settings = [args objectForKey:@"PrintSettings"];
-    // PDFView does not allow printing without showing the dialog, so we just ignore that setting
+    id showPanel = [args objectForKey:@"ShowPrintDialog"];
     
-    NSPrintInfo *printInfo = [self printInfo];
+    NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
     
     if ([settings isKindOfClass:[NSDictionary class]]) {
         settings = [[settings mutableCopy] autorelease];
@@ -1812,6 +1812,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
+    
+    if (showPanel && [showPanel boolValue] == NO)
+        [[printInfo dictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"SKSuppressPrintPanel"];
     
     [[self pdfView] printWithInfo:printInfo autoRotate:YES];
     
