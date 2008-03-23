@@ -17,7 +17,6 @@
 #import <objc/objc-class.h>
 #import <objc/objc-runtime.h>
 
-IMP OBRegisterInstanceMethodWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp);
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
 
