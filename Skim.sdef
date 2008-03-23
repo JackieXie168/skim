@@ -353,7 +353,7 @@
                 description="The print settings to use.">
                 <cocoa key="PrintSettings"/>
             </parameter>
-            <parameter name="print dialog" code="pdlg" type="boolean" optional="yes"
+            <parameter name="print dialog" code="pdlg" type="boolean" optional="yes" hidden="yes"
                 description="Should the application show the print dialog?">
                 <cocoa key="ShowPrintDialog"/>
             </parameter>
