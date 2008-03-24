@@ -1803,6 +1803,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
+        if (value = [settings objectForKey:NSSavePath]) {
+            if ([value respondsToSelector:@selector(path)])
+                [settings setObject:[value path] forKey:NSSavePath];
+            [[self printInfo] setJobDisposition:NSPrintSaveJob];
+        }
         if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
             [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
             if ([settings objectForKey:NSPrintFirstPage] == nil)
