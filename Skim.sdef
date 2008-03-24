@@ -303,6 +303,22 @@
                 description="print a detailed report of PostScript errors"/>
         </enumeration>
 
+        <enumeration name="print orientation" code="POri">
+            <enumerator name="portrait" code="Port"
+                description="portrait orientation"/>
+            <enumerator name="lanscape" code="Land"
+                description="landscape orientation"/>
+        </enumeration>
+
+        <enumeration name="print scaling mode" code="PScl">
+            <enumerator name="none" code="SNon"
+                description="no automatic scaling"/>
+            <enumerator name="scale each page" code="SEPg"
+                description="scale each page to fit"/>
+            <enumerator name="scale down only" code="SDwn"
+                description="only scale down large pages"/>
+        </enumeration>
+
         <record-type name="print settings" code="pset">
             <property name="copies" code="lwcp" type="integer"
                 description="the number of copies of a document to be printed">
@@ -339,6 +355,22 @@
             <property name="target printer" code="trpr" type="text"
                 description="for target printer">
                 <cocoa key="NSPrinterName"/>
+            </property>
+            <property name="scaling factor" code="Scal" type="real"
+                description="the scaling factor to apply">
+                <cocoa key="NSScalingFactor"/>
+            </property>
+            <property name="orientation" code="Orie" type="print orientation"
+                description="the orientation of the pages">
+                <cocoa key="NSOrientation"/>
+            </property>
+            <property name="auto rotate" code="ARot" type="boolean"
+                description="auto rotate pages to fit">
+                <cocoa key="PDFPrintAutoRotate"/>
+            </property>
+            <property name="scaling mode" code="SMod" type="print scaling mode"
+                description="automatically scale pages to fit">
+                <cocoa key="PDFPrintScalingMode"/>
             </property>
         </record-type>
 

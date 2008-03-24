@@ -1810,6 +1810,23 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if ([settings objectForKey:NSPrintLastPage] == nil)
                 [settings setObject:[NSNumber numberWithInt:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
         }
+        if (value = [settings objectForKey:NSPrintOrientation])
+            [settings setObject:[NSNumber numberWithInt:[value intValue] == 'Land' ? NSLandscapeOrientation : NSPortraitOrientation] forKey:NSPrintOrientation];
+        if (value = [settings objectForKey:@"PDFPrintScalingMode"]) {
+            switch ([value intValue]) {
+                case 'SDwn':
+                    value = [NSNumber numberWithInt:kPDFPrintPageScaleDownToFit];
+                    break;
+                case 'SEPg':
+                    value = [NSNumber numberWithInt:kPDFPrintPageScaleToFit];
+                    break;
+                case 'SNon':
+                default:
+                    value = [NSNumber numberWithInt:kPDFPrintPageScaleNone];
+                    break;
+            }
+            [settings setObject:value forKey:@"PDFPrintScalingMode"];
+        }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
     
