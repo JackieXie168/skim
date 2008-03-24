@@ -1803,9 +1803,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
-        if (value = [settings objectForKey:NSSavePath]) {
+        if (value = [settings objectForKey:NSPrintSavePath]) {
             if ([value respondsToSelector:@selector(path)])
-                [settings setObject:[value path] forKey:NSSavePath];
+                [settings setObject:[value path] forKey:NSPrintSavePath];
             [[self printInfo] setJobDisposition:NSPrintSaveJob];
         }
         if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
