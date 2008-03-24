@@ -1803,34 +1803,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
         if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
             [settings setObject:value forKey:NSPrintPrinter];
-        if (value = [settings objectForKey:NSPrintSavePath]) {
-            if ([value respondsToSelector:@selector(path)])
-                [settings setObject:[value path] forKey:NSPrintSavePath];
-            [[self printInfo] setJobDisposition:NSPrintSaveJob];
-        }
         if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
             [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
             if ([settings objectForKey:NSPrintFirstPage] == nil)
                 [settings setObject:[NSNumber numberWithInt:1] forKey:NSPrintLastPage];
             if ([settings objectForKey:NSPrintLastPage] == nil)
                 [settings setObject:[NSNumber numberWithInt:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
-        }
-        if (value = [settings objectForKey:NSPrintOrientation])
-            [settings setObject:[NSNumber numberWithInt:[value intValue] == 'Land' ? NSLandscapeOrientation : NSPortraitOrientation] forKey:NSPrintOrientation];
-        if (value = [settings objectForKey:@"PDFPrintScalingMode"]) {
-            switch ([value intValue]) {
-                case 'SDwn':
-                    value = [NSNumber numberWithInt:kPDFPrintPageScaleDownToFit];
-                    break;
-                case 'SEPg':
-                    value = [NSNumber numberWithInt:kPDFPrintPageScaleToFit];
-                    break;
-                case 'SNon':
-                default:
-                    value = [NSNumber numberWithInt:kPDFPrintPageScaleNone];
-                    break;
-            }
-            [settings setObject:value forKey:@"PDFPrintScalingMode"];
         }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
