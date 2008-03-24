@@ -356,6 +356,10 @@
                 description="for target printer">
                 <cocoa key="NSPrinterName"/>
             </property>
+            <property name="target file" code="SvFl" type="file"
+                description="for target file">
+                <cocoa key="NSSavePath"/>
+            </property>
             <property name="scaling factor" code="Scal" type="real"
                 description="the scaling factor to apply">
                 <cocoa key="NSScalingFactor"/>
