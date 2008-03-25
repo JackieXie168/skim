@@ -179,8 +179,6 @@
 		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
-		CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */; };
-		CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */; };
 		CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */; };
@@ -725,8 +723,6 @@
 		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLines.tiff; path = Images/ToolbarLines.tiff; sourceTree = "<group>"; };
 		CEB72B890C4A189D000350F9 /* SKTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionController.h; sourceTree = "<group>"; };
 		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
-		CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNewFolder.tiff; path = Images/ToolbarNewFolder.tiff; sourceTree = "<group>"; };
-		CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNewSeparator.tiff; path = Images/ToolbarNewSeparator.tiff; sourceTree = "<group>"; };
 		CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmark.h; sourceTree = "<group>"; };
 		CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmark.m; sourceTree = "<group>"; };
 		CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAffineTransform_SKExtensions.h; sourceTree = "<group>"; };
@@ -1297,8 +1293,6 @@
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
 				CEF2EE940D8C111600C04F4C /* ToolbarAddBadge.tiff */,
-				CEBD51D60C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff */,
-				CEBD51D50C9BF68100FBF6A4 /* ToolbarNewFolder.tiff */,
 				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
 				CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
@@ -1616,8 +1610,6 @@
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 				CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */,
-				CEBD51D70C9BF68100FBF6A4 /* ToolbarNewFolder.tiff in Resources */,
-				CEBD51D80C9BF68100FBF6A4 /* ToolbarNewSeparator.tiff in Resources */,
 				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
 				CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */,
 				CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */,
