@@ -47,8 +47,11 @@
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
 + (NSImage *)imageWithIconForToolboxCode:(OSType)code;
 
-+ (NSImage *)smallMissingFileImage;
++ (NSImage *)folderImage;
++ (NSImage *)smallFolderImage;
+
 + (NSImage *)missingFileImage;
++ (NSImage *)smallMissingFileImage;
 
 - (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
 - (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;

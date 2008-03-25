@@ -207,7 +207,7 @@ static NSString *SKBookmarkTypeSeparatorString = @"separator";
 
 - (NSImage *)icon {
     if ([self bookmarkType] == SKBookmarkTypeFolder)
-        return [NSImage imageNamed:@"SmallFolder"];
+        return [NSImage smallFolderImage];
     else if (bookmarkType == SKBookmarkTypeSeparator)
         return nil;
     else
