@@ -50,13 +50,7 @@ enum {
 @class BDAlias;
 
 @interface SKBookmark : NSObject <NSCopying> {
-    BDAlias *alias;
-    NSData *aliasData;
-    NSString *label;
-    unsigned int pageIndex;
-    NSMutableArray *children;
     SKBookmark *parent;
-    int bookmarkType;
 }
 
 - (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
@@ -71,21 +65,24 @@ enum {
 
 - (int)bookmarkType;
 
-- (NSString *)path;
-- (BDAlias *)alias;
-- (NSData *)aliasData;
-- (NSImage *)icon;
-- (unsigned int)pageIndex;
-- (NSNumber *)pageNumber;
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
 
-- (SKBookmark *)parent;
-- (void)setParent:(SKBookmark *)newParent;
+- (NSImage *)icon;
+
+- (NSString *)path;
+- (BDAlias *)alias;
+- (NSData *)aliasData;
+- (unsigned int)pageIndex;
+- (NSNumber *)pageNumber;
+
 - (NSArray *)children;
 - (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index;
 - (void)addChild:(SKBookmark *)child;
 - (void)removeChild:(SKBookmark *)child;
+
+- (SKBookmark *)parent;
+- (void)setParent:(SKBookmark *)newParent;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
