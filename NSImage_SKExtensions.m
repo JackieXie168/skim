@@ -143,7 +143,6 @@
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
     static NSImage *toolbarNewFolderImage = nil;
-    static NSImage *smallFolderImage = nil;
     
     if (toolbarPageUpImage)
         return;
@@ -1088,19 +1087,6 @@
         [toolbarNewFolderImage unlockFocus];
         [toolbarNewFolderImage setName:@"ToolbarNewFolder"];
         
-        smallFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [smallFolderImage lockFocus];
-        rect = CGRectMake(0.0, 0.0, 16.0, 16.0);
-        PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
-                             &rect,
-                             kAlignAbsoluteCenter, //kAlignNone,
-                             kTransformNone,
-                             NULL /*inLabelColor*/,
-                             kPlotIconRefNormalFlags,
-                             iconRef); 
-        [smallFolderImage unlockFocus];
-        [smallFolderImage setName:@"SmallFolder"];
-        
         err = ReleaseIconRef(iconRef);
     }
     
@@ -1501,6 +1487,20 @@
 
 + (NSImage *)imageWithIconForToolboxCode:(OSType) code {
     return [self iconWithSize:NSMakeSize(32,32) forToolboxCode:code];
+}
+
++ (NSImage *)folderImage {
+    static NSImage *image = nil;
+    if(image == nil)
+        image = [[self iconWithSize:NSMakeSize(32, 32) forToolboxCode:kGenericFolderIcon] retain];
+    return image;
+}
+
++ (NSImage *)smallFolderImage {
+    static NSImage *image = nil;
+    if(image == nil)
+        image = [[self iconWithSize:NSMakeSize(16, 16) forToolboxCode:kGenericFolderIcon] retain];
+    return image;
 }
 
 + (NSImage *)missingFileImage {
