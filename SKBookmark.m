@@ -89,6 +89,10 @@ static Class SKBookmarkClass = Nil;
     return SKBookmarkClass == self ? defaultPlaceholderBookmark : NSAllocateObject(self, 0, aZone);
 }
 
+- (id)init {
+    return self != defaultPlaceholderBookmark ? [super init] : nil;
+}
+
 - (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     if (self != defaultPlaceholderBookmark)
         [self release];
