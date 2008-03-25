@@ -143,6 +143,7 @@
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
     static NSImage *toolbarNewFolderImage = nil;
+    static NSImage *toolbarNewSeparatorImage = nil;
     
     if (toolbarPageUpImage)
         return;
@@ -1089,6 +1090,32 @@
         
         err = ReleaseIconRef(iconRef);
     }
+    
+    toolbarNewSeparatorImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+    [toolbarNewSeparatorImage lockFocus];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
+    [shadow2 set];
+    [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
+    [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
+    [[NSGraphicsContext currentContext] saveGraphicsState];
+    [[NSColor colorWithCalibratedWhite:0.65 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 15.0, 26.0, 2.0)];
+    [path fill];
+    [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 16.0, 24.0, 1.0)];
+    [path fill];
+    [[NSColor colorWithCalibratedWhite:0.45 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 17.0, 26.0, 1.0)];
+    [path fill];
+    [[NSGraphicsContext currentContext] restoreGraphicsState];
+    [[NSImage imageNamed:@"ToolbarAddBadge"] drawInRect:NSMakeRect(18.0, 14.0, 14.0, 16.0)
+                                               fromRect:NSMakeRect(0.0, 0.0, 14.0, 16.0)
+                                              operation:NSCompositeSourceOver
+                                               fraction:1.0];
+    [toolbarNewSeparatorImage unlockFocus];
+    [toolbarNewSeparatorImage setName:@"ToolbarNewSeparator"];
     
     [shadow1 release];
     [shadow2 release];
