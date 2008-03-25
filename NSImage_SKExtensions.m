@@ -1126,7 +1126,6 @@
     [NSGraphicsContext restoreGraphicsState];
     [toolbarNewSeparatorImage unlockFocus];
     [toolbarNewSeparatorImage setName:@"ToolbarNewSeparator"];
-    [[toolbarNewSeparatorImage TIFFRepresentation] writeToFile:@"/Users/hofman/Desktop/ToolbarNewSeparator.tiff" atomically:YES];
     
     [shadow1 release];
     [shadow2 release];
