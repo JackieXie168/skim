@@ -113,3 +113,7 @@ static inline NSRect SKRectFromCenterAndSize(NSPoint center, NSSize size) {
 extern NSPoint SKConstrainPointInRect(NSPoint point, NSRect boundary);
 extern NSRect SKConstrainRect(NSRect rect, NSRect boundary);
 extern NSRect SKIntersectionRect(NSRect rect, NSRect boundary);
+
+extern NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped);
+extern NSRect SKCenterRectVertically(NSRect rect, float height, BOOL flipped);
+extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
