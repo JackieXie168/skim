@@ -161,7 +161,7 @@
     NSShadow *shadow3 = [[NSShadow alloc] init];
     [shadow3 setShadowBlurRadius:2.0];
     [shadow3 setShadowOffset:NSMakeSize(0.0, 0.0)];
-    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
+    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
     NSColor *fgColor = [NSColor whiteColor];
     
@@ -634,7 +634,7 @@
     [toolbarTextNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow3 set];
-    [fgColor setFill];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 5.0)];
     [path lineToPoint:NSMakePoint(12.0, 6.0)];
