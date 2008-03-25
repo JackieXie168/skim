@@ -634,7 +634,7 @@
     [toolbarTextNoteImage lockFocus];
     [[NSGraphicsContext currentContext] saveGraphicsState];
     [shadow3 set];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] setFill];
+    [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.0, 5.0)];
     [path lineToPoint:NSMakePoint(12.0, 6.0)];
