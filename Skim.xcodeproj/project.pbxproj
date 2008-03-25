@@ -195,7 +195,6 @@
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
 		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
-		CEF2EE950D8C111600C04F4C /* ToolbarAddBadge.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF2EE940D8C111600C04F4C /* ToolbarAddBadge.tiff */; };
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
@@ -800,7 +799,6 @@
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE11EF50BCC262800BF2D3E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesDocument.nib; sourceTree = "<group>"; };
-		CEF2EE940D8C111600C04F4C /* ToolbarAddBadge.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarAddBadge.tiff; path = Images/ToolbarAddBadge.tiff; sourceTree = "<group>"; };
 		CEF3BF750B99CA2900E12E3D /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF3BF850B99CAD300E12E3D /* skimnotes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = skimnotes.m; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
@@ -1292,7 +1290,6 @@
 				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
-				CEF2EE940D8C111600C04F4C /* ToolbarAddBadge.tiff */,
 				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
 				CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
@@ -1622,7 +1619,6 @@
 				CE6DC7770D687252003A072F /* PrintAccessoryView.nib in Resources */,
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
-				CEF2EE950D8C111600C04F4C /* ToolbarAddBadge.tiff in Resources */,
 				CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
