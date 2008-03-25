@@ -38,6 +38,7 @@
 
 #import "BDSKHeaderPopUpButtonCell.h"
 #import "NSImage_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 @implementation BDSKHeaderPopUpButtonCell
 
@@ -125,15 +126,6 @@
     [headerCell setTitle:title];
 }
 
-NSRect BDSKCenterRect(NSRect rect, NSSize size, BOOL flipped)
-{
-    rect.origin.x += 0.5f * (NSWidth(rect) - size.width);
-    rect.origin.y += 0.5f * (NSHeight(rect) - size.height);
-    rect.origin.y = flipped ? ceilf(rect.origin.y)  : floorf(rect.origin.y);
-    rect.size = size;
-    return rect;
-}
-
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
 	// let the header cell do most of the drawing for usNSLog(@"%@ %@");
     if ([self usesItemFromMenu])
@@ -150,7 +142,7 @@ NSRect BDSKCenterRect(NSRect rect, NSSize size, BOOL flipped)
 		NSDivideRect(cellFrame, &indicatorRect, &cellFrame, indicatorSize.width, NSMaxXEdge);
 		NSDivideRect(cellFrame, &ignored, &cellFrame, 4.0, NSMaxXEdge);
 		
-        indicatorRect = BDSKCenterRect(indicatorRect, indicatorSize, [controlView isFlipped]);
+        indicatorRect = SKCenterRect(indicatorRect, indicatorSize, [controlView isFlipped]);
 		
         [indicatorImage drawFlipped:[controlView isFlipped] inRect:indicatorRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	}

@@ -1586,4 +1586,39 @@
         [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
+static NSComparisonResult compareImageRepWidths(NSBitmapImageRep *r1, NSBitmapImageRep *r2, void *ctxt)
+{
+    NSSize s1 = [r1 size];
+    NSSize s2 = [r2 size];
+    if (NSEqualSizes(s1, s2))
+        return NSOrderedSame;
+    return s1.width > s2.width ? NSOrderedDescending : NSOrderedAscending;
+}
+
+- (NSBitmapImageRep *)bestImageRepForSize:(NSSize)preferredSize device:(NSDictionary *)deviceDescription {
+    // We need to get the correct color space, or we can end up with a mask image in some cases
+    NSString *preferredColorSpaceName = [[self bestRepresentationForDevice:deviceDescription] colorSpaceName];
+
+    // sort the image reps by increasing width, so we can easily pick the next largest one
+    NSMutableArray *reps = [[self representations] mutableCopy];
+    [reps sortUsingFunction:compareImageRepWidths context:NULL];
+    unsigned i, iMax = [reps count];
+    NSBitmapImageRep *toReturn = nil;
+    
+    for (i = 0; i < iMax && nil == toReturn; i++) {
+        NSBitmapImageRep *rep = [reps objectAtIndex:i];
+        BOOL hasPreferredColorSpace = [[rep colorSpaceName] isEqualToString:preferredColorSpaceName];
+        NSSize size = [rep size];
+        
+        if (hasPreferredColorSpace) {
+            if (NSEqualSizes(size, preferredSize))
+                toReturn = rep;
+            else if (size.width > preferredSize.width)
+                toReturn = rep;
+        }
+    }
+    [reps release];
+    return toReturn;    
+}
+
 @end

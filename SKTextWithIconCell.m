@@ -38,6 +38,7 @@
 
 #import "SKTextWithIconCell.h"
 #import "NSImage_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 // Almost all of this code is copy-and-paste from OmniAppKit/OATextWithIconCell, with some simplifications for features we're not interested in
 
@@ -78,38 +79,108 @@ NSString *SKTextWithIconCellStringKey = @"string";
     return cellSize;
 }
 
-#define CALCULATE_DRAWING_RECTS_AND_SIZES \
-NSSize imageSize; \
-imageSize = NSMakeSize(NSHeight(aRect) - 1, NSHeight(aRect) - 1); \
-NSRect cellFrame = aRect, ignored; \
-\
-if (imageSize.width > 0) \
-NSDivideRect(cellFrame, &ignored, &cellFrame, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge); \
-\
-NSRect imageRect, textRect; \
-NSDivideRect(cellFrame, &imageRect, &textRect, imageSize.width, NSMinXEdge); \
-\
-if (imageSize.width > 0) \
-NSDivideRect(textRect, &ignored, &textRect, BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
-
-- (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
-    CALCULATE_DRAWING_RECTS_AND_SIZES;
+- (NSRect)textRectForBounds:(NSRect)aRect {
+    float imageWidth = NSHeight(aRect) - 1;
+    NSRect ignored, textRect = aRect;
     
-    // Draw the text
-    [super drawInteriorWithFrame:textRect inView:controlView];
+    NSDivideRect(aRect, &ignored, &textRect, BORDER_BETWEEN_EDGE_AND_IMAGE + imageWidth + BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
+    
+    return textRect;
+}
+
+- (NSRect)iconRectForBounds:(NSRect)aRect {
+    float imageWidth = NSHeight(aRect) - 1;
+    NSRect ignored, imageRect = aRect;
+    
+    NSDivideRect(aRect, &ignored, &imageRect, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge);
+    NSDivideRect(imageRect, &imageRect, &ignored, imageWidth, NSMinXEdge);
+    
+    return imageRect;
+}
+
+- (void)drawIconWithFrame:(NSRect)iconRect inView:(NSView *)controlView
+{
+    NSImage *img = [self icon];
+    
+    if (nil != img) {
+        
+        NSRect srcRect = NSZeroRect;
+        srcRect.size = [img size];
+        
+        NSRect drawFrame = iconRect;
+        
+        // NSImage will use the largest rep if it doesn't find an exact size match; we can improve on that by choosing the next larger one with respect to our drawing rect, and scaling it down.
+        NSBitmapImageRep *rep = [img bestImageRepForSize:drawFrame.size device:nil];
+        
+        // draw the image rep directly to avoid creating a new NSImage and adding the rep to it
+        if (0 && rep) {
+            
+            srcRect.size = [rep size];
+            float ratio = fminf(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
+            drawFrame.size.width = ratio * srcRect.size.width;
+            drawFrame.size.height = ratio * srcRect.size.height;
+            
+            drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
+            
+            CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+            CGContextSaveGState(context);
+            CGContextClipToRect(context, *(CGRect *)&drawFrame);
+            CGContextSetAllowsAntialiasing(context, true);
+            CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+            
+            // draw into a new layer so we preserve the background of the tableview
+            CGContextBeginTransparencyLayer(context, NULL);
+            
+            if ([controlView isFlipped]) {
+                CGContextTranslateCTM(context, 0, NSMaxY(drawFrame));
+                CGContextScaleCTM(context, 1, -1);
+                drawFrame.origin.y = 0;
+                [rep drawInRect:drawFrame];
+            } else {
+                [rep drawInRect:drawFrame];
+            }
+            
+            CGContextEndTransparencyLayer(context);
+            CGContextRestoreGState(context);
+            
+        } else {
+            
+            float ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
+            drawFrame.size.width = ratio * srcRect.size.width;
+            drawFrame.size.height = ratio * srcRect.size.height;
+            
+            drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
+            
+            NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
+            [ctxt saveGraphicsState];
+            
+            // this is the critical part that NSImageCell doesn't do
+            [ctxt setImageInterpolation:NSImageInterpolationHigh];
+            
+            [img drawFlipped:[controlView isFlipped] inRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+            
+            [ctxt restoreGraphicsState];
+        }
+    }
+}
+
+- (void)drawWithFrame:(NSRect)aRect inView:(NSView *)controlView {
+    // let super draw the text, but vertically center the text for tall cells, because NSTextFieldCell aligns at the top
+    NSRect textRect = [self textRectForBounds:aRect];
+    if (NSHeight(textRect) > [self cellSize].height + 2.0)
+        textRect = SKCenterRectVertically(textRect, [self cellSize].height + 2.0, [controlView isFlipped]);
+    [super drawWithFrame:textRect inView:controlView];
     
     // Draw the image
-    imageRect.origin.x += 0.5 * (NSWidth(imageRect) - imageSize.width);
-    imageRect.origin.y += 0.5 * (NSHeight(imageRect) - imageSize.height);
-    imageRect.origin.y = [controlView isFlipped] ? ceilf(NSMinY(imageRect))  : floorf(NSMinY(imageRect));
-    imageRect.size = imageSize;
-    [[self icon] drawFlipped:[controlView isFlipped] inRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    NSRect imageRect = [self iconRectForBounds:aRect];
+    float imageHeight = 0.0;
+    imageHeight = NSHeight(aRect) - 1;
+    imageRect = SKCenterRectVertically(imageRect, imageHeight, [controlView isFlipped]);
+    [self drawIconWithFrame:imageRect inView:controlView];
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(int)selStart length:(int)selLength {
-    CALCULATE_DRAWING_RECTS_AND_SIZES;
-    
-    [super selectWithFrame:textRect inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
+    [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
 - (void)setObjectValue:(id<NSCopying>)obj {

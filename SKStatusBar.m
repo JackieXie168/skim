@@ -38,6 +38,7 @@
 
 #import "SKStatusBar.h"
 #import "NSBezierPath_CoreImageExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
@@ -135,9 +136,7 @@
 		textRect.size.width = 0.0;
 	
     float height = fmaxf([leftCell cellSize].height, [rightCell cellSize].height);
-    textRect.origin.y += 0.5f * (NSHeight(textRect) - height);
-    textRect.origin.y = [self isFlipped] ? ceilf(NSMinY(textRect))  : floorf(NSMinY(textRect));
-    textRect.size.height = height;
+    textRect = SKCenterRectVertically(textRect, height, [self isFlipped]);
     
 	[leftCell drawWithFrame:textRect inView:self];
 	[rightCell drawWithFrame:textRect inView:self];
