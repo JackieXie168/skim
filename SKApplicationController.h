@@ -53,6 +53,9 @@ extern NSString *SKDocumentSetupFileNameKey;
 
 + (void)setupDefaults;
 
+- (IBAction)orderFrontLineInspector:(id)sender;
+- (IBAction)orderFrontNotesPanel:(id)sender;
+
 - (IBAction)visitWebSite:(id)sender;
 - (IBAction)visitWiki:(id)sender;
 - (IBAction)showPreferencePanel:(id)sender;

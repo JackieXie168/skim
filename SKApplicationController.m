@@ -236,6 +236,20 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 #pragma mark Actions
 
+- (IBAction)orderFrontLineInspector:(id)sender {
+    if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
+        [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
+    else
+        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
+}
+
+- (IBAction)orderFrontNotesPanel:(id)sender {
+    if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
+        [[[SKNotesPanelController sharedController] window] orderOut:sender];
+    else
+        [[[SKNotesPanelController sharedController] window] orderFront:sender];
+}
+
 - (IBAction)visitWebSite:(id)sender{
     if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:WEBSITE_URL]] == NO)
         NSBeep();
