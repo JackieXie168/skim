@@ -63,9 +63,6 @@
         status = SKDownloadStatusUndefined;
         delegate = aDelegate;
         
-        if (URL)
-            [self startDownload];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
     }

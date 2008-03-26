@@ -106,6 +106,7 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
         int row = [downloads count];
         [downloads addObject:download];
+        [download startDownload];
         [self reloadTableView];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
