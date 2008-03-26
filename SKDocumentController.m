@@ -198,7 +198,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
     NSMutableData *pdfData = nil;
     
-    if (CGImageSourceGetCount(imsrc)) {
+    if (imsrc && CGImageSourceGetCount(imsrc)) {
         CGImageRef cgImage = CGImageSourceCreateImageAtIndex(imsrc, 0, NULL);
 
         pdfData = [NSMutableData dataWithCapacity:[tiffData length]];
@@ -219,7 +219,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         CGImageRelease(cgImage);
     }
     
-    CFRelease(imsrc);
+    if (imsrc) CFRelease(imsrc);
 
     return pdfData;
 }
