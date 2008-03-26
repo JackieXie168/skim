@@ -64,10 +64,10 @@ enum {
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (NSURL *)URL;
-- (void)setURL:(NSURL *)newURL;
-
 - (int)status;
+
+- (NSURL *)URL;
+
 - (NSString *)filePath;
 - (NSString *)fileName;
 - (NSImage *)fileIcon;

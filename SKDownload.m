@@ -120,13 +120,6 @@
     return URL;
 }
 
-- (void)setURL:(NSURL *)newURL {
-    if (URL != newURL) {
-        [URL release];
-        URL = [newURL retain];
-    }
-}
-
 - (NSString *)filePath {
     return filePath;
 }
