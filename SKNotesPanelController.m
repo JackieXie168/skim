@@ -93,3 +93,15 @@ static SKNotesPanelController *sharedController = nil;
 }
 
 @end
+
+
+@implementation NSApplication (SKNotesPanelController)
+
+- (IBAction)orderFrontNotesPanel:(id)sender {
+    if ([SKNotesPanelController sharedControllerExists] && [[[SKNotesPanelController sharedController] window] isVisible])
+        [[[SKNotesPanelController sharedController] window] orderOut:sender];
+    else
+        [[[SKNotesPanelController sharedController] window] orderFront:sender];
+}
+
+@end

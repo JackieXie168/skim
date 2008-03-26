@@ -594,3 +594,15 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 @end
+
+
+@implementation NSApplication (SKLineInspector)
+
+- (IBAction)orderFrontLineInspector:(id)sender {
+    if ([SKLineInspector sharedLineInspectorExists] && [[[SKLineInspector sharedLineInspector] window] isVisible])
+        [[[SKLineInspector sharedLineInspector] window] orderOut:sender];
+    else
+        [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
+}
+
+@end
