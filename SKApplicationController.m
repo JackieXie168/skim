@@ -75,6 +75,9 @@
 #define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
 #define RESETTABLE_KEYS_KEY             @"ResettableKeys"
 
+#define FILE_MENU_INDEX 1
+#define VIEW_MENU_INDEX 4
+
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
@@ -110,7 +113,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 }
 
 - (void)awakeFromNib {
-    NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:4] submenu];
+    NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
     int i, count = [viewMenu numberOfItems];
     
     for (i = 0; i < count; i++) {
@@ -120,7 +123,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     }
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        NSMenu *fileMenu = [[[NSApp mainMenu] itemAtIndex:1] submenu];
+        NSMenu *fileMenu = [[[NSApp mainMenu] itemAtIndex:FILE_MENU_INDEX] submenu];
         unsigned int idx = [fileMenu indexOfItemWithTarget:nil andAction:@selector(runPageLayout:)];
         if (idx != NSNotFound)
             [fileMenu removeItemAtIndex:idx];
