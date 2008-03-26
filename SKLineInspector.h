@@ -94,11 +94,6 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 @end
 
 
-@interface NSApplication (SKLineInspector)
-- (IBAction)orderFrontLineInspector:(id)sender;
-@end
-
-
 @interface SKNumberArrayFormatter : NSFormatter {
     NSNumberFormatter *numberFormatter;
 }
