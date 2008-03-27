@@ -153,7 +153,6 @@
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
 		CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA1CCE60C9864470061A6D4 /* Security.framework */; };
 		CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */; };
-		CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKTocOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKTocOutlineView.m */; };
@@ -665,7 +664,6 @@
 		CEA1CCE60C9864470061A6D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		CEA1D6E70C9984400061A6D4 /* SKTextWithIconCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextWithIconCell.h; sourceTree = "<group>"; };
 		CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextWithIconCell.m; sourceTree = "<group>"; };
-		CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallFolder.tiff; path = Images/SmallFolder.tiff; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
 		CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnailTableView.h; sourceTree = "<group>"; };
@@ -1291,7 +1289,6 @@
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
 				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
-				CEA1D7800C99953B0061A6D4 /* SmallFolder.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
 				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
@@ -1606,7 +1603,6 @@
 				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
-				CEA1D7810C99953C0061A6D4 /* SmallFolder.tiff in Resources */,
 				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
 				CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */,
 				CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */,
