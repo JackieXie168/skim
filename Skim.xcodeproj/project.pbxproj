@@ -205,6 +205,8 @@
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
+		CEFA61300D9C76A10003F152 /* SKAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFA61260D9C73920003F152 /* SKAgentListener.m */; };
+		CEFA613A0D9C77740003F152 /* SKAgentListenerProtocol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
@@ -336,6 +338,7 @@
 				CE48BC330C08B58700A166C6 /* notesTemplate.txt in CopyFiles */,
 				CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */,
 				CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */,
+				CEFA613A0D9C77740003F152 /* SKAgentListenerProtocol.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -810,6 +813,9 @@
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
 		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallPreferences.tiff; path = Images/SmallPreferences.tiff; sourceTree = "<group>"; };
+		CEFA61250D9C73920003F152 /* SKAgentListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAgentListener.h; sourceTree = "<group>"; };
+		CEFA61260D9C73920003F152 /* SKAgentListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAgentListener.m; sourceTree = "<group>"; };
+		CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAgentListenerProtocol.h; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -1391,6 +1397,9 @@
 			isa = PBXGroup;
 			children = (
 				CEF3BF850B99CAD300E12E3D /* skimnotes.m */,
+				CEFA61250D9C73920003F152 /* SKAgentListener.h */,
+				CEFA61260D9C73920003F152 /* SKAgentListener.m */,
+				CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */,
 			);
 			name = Skimnotes;
 			sourceTree = "<group>";
@@ -1883,6 +1892,7 @@
 			files = (
 				CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */,
 				CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */,
+				CEFA61300D9C76A10003F152 /* SKAgentListener.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
