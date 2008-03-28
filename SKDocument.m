@@ -320,59 +320,29 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [absoluteURL path];
+        NSString *tmpPath = nil;
         BOOL isDir = NO;
+        NSEnumerator *fileEnum;
+        NSString *file;
         
-        if ([fm fileExistsAtPath:path isDirectory:&isDir] == NO || isDir == NO) {
-            success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
-        } else {
-            NSString *filename = [path lastPathComponent];
-            NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
-            NSString *tmpPath = [tmpDir stringByAppendingPathComponent:filename];
-            NSURL *tmpURL = [NSURL fileURLWithPath:tmpPath];
-            
-            if (success = [self writeToURL:tmpURL ofType:typeName error:&error]) {
-                
-                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-                NSSet *ourImportantExtensions = [NSSet setWithObjects:@"pdf", @"skim", nil];
-                NSEnumerator *fileEnum;
-                NSString *file;
-                NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
-                [attributes addEntriesFromDictionary:[self fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL]];
-                unsigned long permissions = [[attributes objectForKey:NSFilePosixPermissions] unsignedLongValue];
-               
-                [attributes setObject:[NSNumber numberWithUnsignedLong:permissions | 0200] forKey:NSFilePosixPermissions];
-                if ([attributes fileIsImmutable])
-                    [attributes setObject:[NSNumber numberWithBool:NO] forKey:NSFileImmutable];
-                [fm changeFileAttributes:attributes atPath:path];
-                [attributes release];
-                
-                fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
-                while (file = [fileEnum nextObject]) {
-                    if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]])
-                        [fm removeFileAtPath:[path stringByAppendingPathComponent:file] handler:nil];
-                }
-                
-                fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
-                while (success && (file = [fileEnum nextObject])) {
-                    NSString *filePath = [path stringByAppendingPathComponent:file];
-                    if ([fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:filePath handler:nil]) {
-                        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-                        NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:fileURL error:NULL];
-                        NSDictionary *fileAttributes = [self fileAttributesToWriteToURL:fileURL ofType:fileType forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL];
-                        [fm changeFileAttributes:fileAttributes atPath:filePath];
-                    } else if ([ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]]) {
-                        success = NO;
-                    }
-                }
-                
-                if (success)
-                    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/touch" arguments:[NSArray arrayWithObjects:@"-fm", path, nil]];
-                
-                if (saveOperation == NSSaveAsOperation)
-                    [self setFileURL:absoluteURL];
+        // we move everything that's not ours out of the way, so we can preserve version control info
+        if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
+            NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
+            tmpPath = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
+            fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
+            while (file = [fileEnum nextObject]) {
+                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO)
+                    [fm movePath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] handler:nil];
             }
-            
-            [fm removeFileAtPath:tmpDir handler:nil];
+        }
+        
+        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
+        
+        if (tmpPath) {
+            fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
+            while (file = [fileEnum nextObject])
+                [fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] handler:nil];
+            [fm removeFileAtPath:tmpPath handler:nil];
         }
         
         if (success)
