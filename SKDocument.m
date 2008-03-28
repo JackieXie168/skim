@@ -328,11 +328,13 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         // we move everything that's not ours out of the way, so we can preserve version control info
         if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
             NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-            tmpPath = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
             fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
             while (file = [fileEnum nextObject]) {
-                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO)
+                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
+                    if (tmpPath == nil)
+                        tmpPath = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
                     [fm movePath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] handler:nil];
+                }
             }
         }
         
