@@ -2218,7 +2218,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     } else if (action == @selector(selectAll:)) {
         return toolMode == SKTextToolMode;
     } else if (action == @selector(deselectAll:)) {
-        return [self currentSelection] && toolMode == SKTextToolMode;
+        return [self currentSelection];
     } else if (action == @selector(autoSelectContent:)) {
         return toolMode == SKSelectToolMode;
     } else {
