@@ -85,8 +85,8 @@
         if ([files containsObject:filename] == NO) {
             filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
             if ([files containsObject:filename] == NO) {
-                unsigned index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-                filename = index == NSNotFound ? nil : [files objectAtIndex:index];
+                unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+                filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
             }
         }
         if (filename)
