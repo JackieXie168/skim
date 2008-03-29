@@ -94,9 +94,10 @@ static IMP originalDealloc = NULL;
         }
         [imageRep release];
         r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
-        *rectPtr = r;
+        rectPtr = &r;
         CFDictionarySetValue(bboxCache, (void *)self, (void *)rectPtr);
     }
+    // dereferencing here should always be safe (if not in the dictionary, it was initialized)
     return *rectPtr;
 }
     
@@ -168,7 +169,7 @@ static IMP originalDealloc = NULL;
     }
     
     readingBarRect.origin = SKSubstractPoints(readingBarRect.origin, bounds.origin);
-    
+
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
@@ -195,6 +196,7 @@ static IMP originalDealloc = NULL;
         [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
         [transform concat];
     }
+
     [self drawWithBox:box]; 
     if (NSIsEmptyRect(readingBarRect) == NO) {
         [[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKReadingBarColorKey]] setFill];
