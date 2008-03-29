@@ -34,55 +34,57 @@
         
         NSMutableString *mutableVersionString = [[NSMutableString alloc] init];
         NSScanner *scanner = [[NSScanner alloc] initWithString:versionString];
+        NSString *sep = @"";
         
-        [scanner setCharactersToBeSkipped:nil];
+        [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
         
-        unichar c = [versionString length] ? [versionString characterAtIndex:0] : 0;
-        if (c == 'v' || c == 'V')
-            [scanner setScanLocation:1];
-
-        while ([scanner isAtEnd] == NO) {
+        // ignore a leading "version" or "v", possibly followed by "-"
+        if ([scanner scanString:@"version" intoString:NULL] || [scanner scanString:@"v" intoString:NULL])
+            [scanner scanString:@"-" intoString:NULL];
+        
+        while ([scanner isAtEnd] == NO && sep != nil) {
             int component;
             
-            if ([scanner scanInt:&component] == NO || component < 0)
-                // Failed to scan integer
-                break;
+            if ([scanner scanInt:&component] && component >= 0) {
             
-            [mutableVersionString appendFormat: @"%@%i", c == '.' ? @"." : @"", component];
-            
-            componentCount++;
-            components = realloc(components, sizeof(*components) * componentCount);
-            components[componentCount - 1] = component;
-            
-            if ([scanner isAtEnd])
-                break;
-            
-            c = [versionString characterAtIndex:[scanner scanLocation]];
-            if (c == '.') {
-            } else if (releaseType == SKReleaseVersionType) {
-                if (c == 'a' || c == 'A') {
-                    releaseType = SKAlphaVersionType;
-                    [mutableVersionString appendString:c == 'a' ? @"a" : @"A"];
-                } else if (c == 'b' || c == 'B') {
-                    releaseType = SKBetaVersionType;
-                    [mutableVersionString appendString:c == 'b' ? @"b" : @"B"];
-                } else if (c == 'r' || c == 'R') {
-                    [scanner setScanLocation:[scanner scanLocation] + 1];
-                    c = [versionString characterAtIndex:[scanner scanLocation]];
-                    if (c == 'c' || c == 'C') {
-                        releaseType = SKReleaseCandidateVersionType;
-                        [mutableVersionString appendString:c == 'c' ? @"rc" : @"RC"];
-                    } else
-                        break;
-                } else 
-                    break;
+                [mutableVersionString appendFormat:@"%@%i", sep, component];
                 
                 componentCount++;
                 components = realloc(components, sizeof(*components) * componentCount);
-                components[componentCount - 1] = -releaseType;
+                components[componentCount - 1] = component;
+            
+                if ([scanner isAtEnd] == NO) {
+                    sep = nil;
+                    if ([scanner scanString:@"." intoString:NULL] || [scanner scanString:@"-" intoString:NULL] || [scanner scanString:@"version" intoString:NULL] || [scanner scanString:@"v" intoString:NULL]) {
+                        sep = @".";
+                    }
+                    if (releaseType == SKReleaseVersionType) {
+                        if ([scanner scanString:@"alpha" intoString:NULL] || [scanner scanString:@"a" intoString:NULL]) {
+                            releaseType = SKAlphaVersionType;
+                            [mutableVersionString appendString:@"a"];
+                        } else if ([scanner scanString:@"beta" intoString:NULL] || [scanner scanString:@"b" intoString:NULL]) {
+                            releaseType = SKBetaVersionType;
+                            [mutableVersionString appendString:@"b"];
+                        } else if ([scanner scanString:@"release candidate" intoString:NULL] || [scanner scanString:@"rc" intoString:NULL]) {
+                            releaseType = SKReleaseCandidateVersionType;
+                            [mutableVersionString appendString:@"rc"];
+                        }
+                        
+                        if (releaseType != SKReleaseVersionType) {
+                            // we scanned an "a", "b", or "rc"
+                            componentCount++;
+                            components = realloc(components, sizeof(*components) * componentCount);
+                            components[componentCount - 1] = -releaseType;
+                            
+                            sep = @"";
+                            
+                            // ignore a "." or "-"
+                            [scanner scanString:@"." intoString:NULL] || [scanner scanString:@"-" intoString:NULL];
+                        }
+                    }
+                }
             } else
-                break;
-            [scanner setScanLocation:[scanner scanLocation] + 1];
+                sep = nil;
         }
         
         if ([mutableVersionString isEqualToString:originalVersionString])
