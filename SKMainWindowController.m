@@ -3876,29 +3876,49 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     if ([ov isEqual:noteOutlineView] && [items count]) {
-        NSEnumerator *itemEnum = [[self noteItems:items] objectEnumerator];
-        PDFAnnotation *item = nil;
-        id firstItem = [items objectAtIndex:0];
-        while (item = [itemEnum nextObject])
-            if ([item isMovable]) break;
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSMutableArray *types = [NSMutableArray array];
-        NSData *noteData = item ? [NSKeyedArchiver archivedDataWithRootObject:[item dictionaryValue]] : nil;
-        NSAttributedString *attrString = [firstItem type] ? nil : [(SKNoteText *)firstItem string];
-        NSString *string = [firstItem type] ? [firstItem string] : [attrString string];
+        NSData *noteData = nil;
+        NSMutableAttributedString *attrString = [[items valueForKey:@"type"] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
+        NSMutableString *string = [NSMutableString string];
+        NSEnumerator *itemEnum;
+        id item;
+        
+        itemEnum = [[self noteItems:items] objectEnumerator];
+        while (item = [itemEnum nextObject]) {
+            if ([item isMovable]) {
+                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item dictionaryValue]];
+                [types addObject:SKSkimNotePboardType];
+                break;
+            }
+        }
+        itemEnum = [items objectEnumerator];
+        while (item = [itemEnum nextObject]) {
+            if ([string length])
+                [string appendString:@"\n\n"];
+            if ([attrString length])
+                [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
+            if ([item type]) {
+                [string appendString:[item string]];
+                [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
+            } else {
+                [string appendString:[[(SKNoteText *)item string] string]];
+                [attrString appendAttributedString:[(SKNoteText *)item string]];
+            }
+        }
         if (noteData)
             [types addObject:SKSkimNotePboardType];
-        if (string)
+        if ([string length])
             [types addObject:NSStringPboardType];
-        if (attrString)
+        if ([attrString length])
             [types addObject:NSRTFPboardType];
         if ([types count])
             [pboard declareTypes:types owner:nil];
         if (noteData)
             [pboard setData:noteData forType:SKSkimNotePboardType];
-        if (string)
+        if ([string length])
             [pboard setString:string forType:NSStringPboardType];
-        if (attrString)
+        if ([attrString length])
             [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil] forType:NSRTFPboardType];
     }
 }
