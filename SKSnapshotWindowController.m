@@ -55,6 +55,7 @@
 #define SCALE_FACTOR_KEY            @"scaleFactor"
 #define AUTO_FITS_KEY               @"autoFits"
 #define HAS_WINDOW_KEY              @"hasWindow"
+#define WINDOW_FRAME_KEY            @"windowFrame"
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -238,7 +239,9 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
           goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue]
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
                 autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue]];
-           
+    
+    if ([setup objectForKey:WINDOW_FRAME_KEY])
+        [[self window] setFrame:NSRectFromString([setup objectForKey:WINDOW_FRAME_KEY]) display:NO];
     if ([[setup objectForKey:HAS_WINDOW_KEY] boolValue])
         [self performSelector:@selector(showWindow:) withObject:self afterDelay:0.0];
 }
@@ -307,7 +310,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(BDSKZoomablePDFView *)pdfView autoFits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALE_FACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTO_FITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HAS_WINDOW_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALE_FACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTO_FITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HAS_WINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOW_FRAME_KEY, nil];
 }
 
 #pragma mark Actions
