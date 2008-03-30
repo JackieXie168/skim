@@ -263,6 +263,14 @@
         [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:@"startLineStyle"];
     }
     
+    if (CGPDFDictionaryGetArray(annot, "L", &array)) {
+        NSPoint p1, p2;
+        if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &p1.x) && CGPDFArrayGetNumber(array, 1, &p1.y) && CGPDFArrayGetNumber(array, 2, &p2.x) && CGPDFArrayGetNumber(array, 3, &p2.y)) {
+            [dictionary setObject:NSStringFromPoint(p1) forKey:@"startPoint"];
+            [dictionary setObject:NSStringFromPoint(p2) forKey:@"endPoint"];
+        }
+    }
+    
     if (CGPDFDictionaryGetArray(annot, "QuadPoints", &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
         if (count % 8 == 0) {
