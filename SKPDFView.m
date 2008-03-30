@@ -725,8 +725,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
         page = [pdfDoc pageAtIndex:0];
-        [page setBounds:targetRect forBox:kPDFDisplayBoxMediaBox];
-        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+            [page setBounds:targetRect forBox:kPDFDisplayBoxMediaBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+        } else {
+            // setting the media box is buggy on Tiger, see bug # 1928384
+            [page setBounds:targetRect forBox:kPDFDisplayBoxCropBox];
+        }
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
