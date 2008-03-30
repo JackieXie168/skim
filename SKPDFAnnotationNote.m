@@ -1637,6 +1637,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
             break;
     }
     [fdfString appendString:@"]"];
+    NSPoint startPoint = SKAddPoints([self startPoint], [self bounds].origin);
+    NSPoint endPoint = SKAddPoints([self endPoint], [self bounds].origin);
+    [fdfString appendFormat:@"/L[%f %f %f %f]", startPoint.x, startPoint.y, endPoint.x, endPoint.y];
     return fdfString;
 }
 
