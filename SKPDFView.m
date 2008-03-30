@@ -906,15 +906,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
     
-    if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
-        (eventChar == NSRightArrowFunctionKey) &&  (modifiers == 0)) {
-        [self goToNextPage:self];
-    } else if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
-               (eventChar == NSLeftArrowFunctionKey) &&  (modifiers == 0)) {
-        [self goToPreviousPage:self];
-    } else if (hasNavigation && autohidesCursor) {
+    if (hasNavigation && autohidesCursor) {
         // Presentation mode
-        if ((eventChar == 'p') && (modifiers == 0)) {
+        if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
+            (eventChar == NSRightArrowFunctionKey) &&  (modifiers == 0)) {
+            [self goToNextPage:self];
+        } else if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
+                   (eventChar == NSLeftArrowFunctionKey) &&  (modifiers == 0)) {
+            [self goToPreviousPage:self];
+        } else if ((eventChar == 'p') && (modifiers == 0)) {
             [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
         } else if ((eventChar == 'a') && (modifiers == 0)) {
             [(SKMainWindowController *)[[self window] windowController] toggleAutoActualSize:self];
