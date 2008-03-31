@@ -173,7 +173,7 @@ NSString *SKGetDVIDocumentType(void) {
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
     
-    if (type == nil || SKIsNotesTextDocumentType(type)) {
+    if ([self documentClassForType:type] == NULL) {
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
