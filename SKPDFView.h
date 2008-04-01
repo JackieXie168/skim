@@ -106,7 +106,6 @@ typedef enum _SKNoteType {
     float magnification;
 	BOOL draggingAnnotation;
     BOOL didDrag;
-    BOOL didBeginUndoGrouping;
     BOOL mouseDownInAnnotation;
     BOOL extendSelection;
     BOOL rectSelection;
@@ -177,8 +176,6 @@ typedef enum _SKNoteType {
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 
-- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;

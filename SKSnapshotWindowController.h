@@ -90,10 +90,11 @@
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handleViewChangedNotification:(NSNotification *)notification;
-- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
+
+- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 
 @end
 

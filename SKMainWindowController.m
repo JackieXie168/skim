@@ -144,6 +144,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 static NSString *SKDocumentToolbarPrintItemIdentifier = @"SKDocumentToolbarPrintItemIdentifier";
 static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarCustomizeItemIdentifier";
 
+static NSString *SKPDFAnnotationPropertiesObservationContext = @"SKPDFAnnotationPropertiesObservationContext";
+
 static NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
@@ -251,12 +253,15 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
 - (void)handleReadingBarDidChangeNotification:(NSNotification *)notification;
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification;
 - (void)handleDocumentBeginWrite:(NSNotification *)notification;
 - (void)handleDocumentEndWrite:(NSNotification *)notification;
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification;
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
+
+- (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
+- (void)startObservingNotes:(NSArray *)newNotes;
+- (void)stopObservingNotes:(NSArray *)oldNotes;
 
 @end
 
@@ -310,6 +315,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)dealloc {
+    [self stopObservingNotes:[self notes]];
+    [undoGroupOldPropertiesPerNote release];
+    [undoGroupInsertedNotes release];
     [colorSwatch unbind:@"color"];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
@@ -609,8 +617,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
                              name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleReadingBarDidChangeNotification:) 
                              name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                             name:SKAnnotationDidChangeNotification object:nil];
+    [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
+                             name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];
 }
 
 - (void)registerForDocumentNotifications {
@@ -1045,6 +1053,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
             [annotation release];
         }
     }
+    // make sure we clear the undo handling
+    [self observeUndoManagerCheckpoint:nil];
     [noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
     [pdfView resetHoverRects];
@@ -1213,6 +1223,16 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
     [notes insertObject:obj atIndex:theIndex];
+
+    // Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
+    if ([[[self document] undoManager] isUndoRegistrationEnabled]) {
+        if (undoGroupInsertedNotes == nil)
+            undoGroupInsertedNotes = [[NSMutableSet alloc] init];
+        [undoGroupInsertedNotes addObject:obj];
+    }
+
+    // Start observing the just-inserted graphics so that, when they're changed, we can record undo operations.
+    [self startObservingNotes:[NSArray arrayWithObject:obj]];
 }
 
 - (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
@@ -1230,6 +1250,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     if ([[note texts] count])
         CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
     CFDictionaryRemoveValue(rowHeights, (const void *)note);
+    
+    [self stopObservingNotes:[NSArray arrayWithObject:note]];
     
     [notes removeObjectAtIndex:theIndex];
 }
@@ -3444,43 +3466,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self updateThumbnailAtPageIndex:[newPage pageIndex]];
 }
 
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
-        [self updateThumbnailAtPageIndex:[annotation pageIndex]];
-
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
-            if ([wc isPageVisible:[annotation page]])
-                [self snapshotNeedsUpdate:wc];
-        }
-        
-        [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
-        
-        [noteArrayController rearrangeObjects];
-        [noteOutlineView reloadData];
-    }
-    if ([[self window] isMainWindow] && [annotation isEqual:[pdfView activeAnnotation]]) {
-        NSString *key = [[notification userInfo] objectForKey:@"key"];
-        if (updatingColor == NO && ([key isEqualToString:@"color"] || [key isEqualToString:@"interiorColor"])) {
-            updatingColor = YES;
-            [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
-            updatingColor = NO;
-        }
-        if (updatingFont == NO && ([key isEqualToString:@"font"] || [key isEqualToString:@"fontName"] || [key isEqualToString:@"fontSize"])) {
-            updatingFont = YES;
-            [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-            updatingFont = NO;
-        }
-        if (updatingLine == NO && ([key isEqualToString:@"border"] || [key isEqualToString:@"lineWidth"] || [key isEqualToString:@"borderStyle"] || [key isEqualToString:@"dashPattern"] || [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"])) {
-            updatingLine = YES;
-            [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
-            updatingLine = NO;
-        }
-    }
-}
-
 - (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {
     NSDictionary *info = [notification userInfo];
     PDFPage *page = [info objectForKey:@"page"];
@@ -3562,12 +3547,60 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+#pragma mark Undo
+
+- (void)setNoteProperties:(NSDictionary *)propertiesPerNote {
+    // The passed-in dictionary is keyed by note...
+    NSEnumerator *noteEnum = [propertiesPerNote keyEnumerator];
+    PDFAnnotation *note;
+    while (note = [noteEnum nextObject]) {
+        // ...with values that are dictionaries of properties, keyed by key-value coding key.
+        NSDictionary *noteProperties = [propertiesPerNote objectForKey:note];
+        // Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTNote keysForValuesToObserveForUndo] someday becomes -[SKTNote keyPathsForValuesToObserveForUndo].
+        [note setValuesForKeysWithDictionary:noteProperties];
+    }
+}
+
+- (void)observeUndoManagerCheckpoint:(NSNotification *)notification {
+    // Start the coalescing of note property changes over.
+    [undoGroupOldPropertiesPerNote release];
+    undoGroupOldPropertiesPerNote = nil;
+    [undoGroupInsertedNotes release];
+    undoGroupInsertedNotes = nil;
+}
+
+- (void)startObservingNotes:(NSArray *)newNotes {
+    // Each note can have a different set of properties that need to be observed.
+    NSEnumerator *noteEnum = [newNotes objectEnumerator];
+    PDFAnnotation *note;
+    while (note = [noteEnum nextObject]) {
+        NSEnumerator *keyEnumerator = [[note keysForValuesToObserveForUndo] objectEnumerator];
+        NSString *key;
+        while (key = [keyEnumerator nextObject]) {
+            // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
+            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKPDFAnnotationPropertiesObservationContext];
+        }
+    }
+}
+
+- (void)stopObservingNotes:(NSArray *)oldNotes {
+    // Do the opposite of what's done in -startObservingNotes:.
+    NSEnumerator *noteEnum = [oldNotes objectEnumerator];
+    PDFAnnotation *note;
+    while (note = [noteEnum nextObject]) {
+        NSEnumerator *keyEnumerator = [[note keysForValuesToObserveForUndo] objectEnumerator];
+        NSString *key;
+        while (key = [keyEnumerator nextObject])
+            [note removeObserver:self forKeyPath:key];
+    }
+}
+
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
-        if (NO == [keyPath hasPrefix:@"values."])
-            return;
+    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+        
+        // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey]) {
             if ([self isFullScreen] == NO && [self isPresentation] == NO)
@@ -3620,7 +3653,105 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [findTableView setFont:font];
             [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
+        } else {
+            [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         }
+        
+    } else if (context == SKPDFAnnotationPropertiesObservationContext) {
+        
+        // The value of some note's property has changed. Don't waste memory by recording undo operations affecting notes that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new note and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation.
+        PDFAnnotation *note = (PDFAnnotation *)object;
+        if (NO == [undoGroupInsertedNotes containsObject:note]) {
+
+            // Ignore changes that aren't really changes.
+            // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingNotes:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
+            // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
+            id newValue = [change objectForKey:NSKeyValueChangeNewKey];
+            id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+            // We should be adding undo for nil values also. I'm not sure if KVO does this automatically. Note that -setValuesForKeysWithDictionary: converts NSNull back to nil.
+            if (newValue == nil) newValue = [NSNull null];
+            if (oldValue == nil) oldValue = [NSNull null];
+            // All values are suppsed to be true value objects that should be compared with isEqual:.
+            if ([newValue isEqual:oldValue] == NO) {
+
+                // Is this the first observed note change in the current undo group?
+                NSUndoManager *undoManager = [[self document] undoManager];
+                if (undoGroupOldPropertiesPerNote == nil) {
+                    // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
+                    undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+                    // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
+                    [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
+                }
+
+                // Find the dictionary in which we're recording the old values of properties for the changed note
+                NSMutableDictionary *oldNoteProperties = [undoGroupOldPropertiesPerNote objectForKey:note];
+                if (oldNoteProperties == nil) {
+                    // We have to create a dictionary to hold old values for the changed note
+                    oldNoteProperties = [[NSMutableDictionary alloc] init];
+                    CFDictionarySetValue((CFMutableDictionaryRef)undoGroupOldPropertiesPerNote, note, oldNoteProperties);
+                    [oldNoteProperties release];
+                }
+
+                // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
+                if ([oldNoteProperties objectForKey:keyPath] == nil)
+                    [oldNoteProperties setObject:oldValue forKey:keyPath];
+
+                // Don't set the undo action name during undoing and redoing
+                if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO)
+                    [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+                
+                // Update the UI
+                
+                PDFPage *page = [note page];
+                NSRect oldRect = NSZeroRect;
+                if ([keyPath isEqualToString:SKPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
+                    oldRect = [note displayRectForBounds:[oldValue rectValue]];
+                
+                [self updateThumbnailAtPageIndex:[note pageIndex]];
+                
+                NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+                SKSnapshotWindowController *wc;
+                while (wc = [snapshotEnum nextObject]) {
+                    if ([wc isPageVisible:[note page]]) {
+                        [self snapshotNeedsUpdate:wc];
+                        [wc setNeedsDisplayForAnnotation:note onPage:page];
+                        if (NSIsEmptyRect(oldRect) == NO)
+                            [wc setNeedsDisplayInRect:oldRect ofPage:page];
+                    }
+                }
+                
+                [pdfView setNeedsDisplayForAnnotation:note];
+                [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
+                if (NSIsEmptyRect(oldRect) == NO) {
+                    [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
+                    [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
+                }
+                if ([[note type] isEqualToString:SKNoteString] && [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
+                    [pdfView resetHoverRects];
+                
+                [noteArrayController rearrangeObjects];
+                [noteOutlineView reloadData];
+                if ([[self window] isMainWindow] && [note isEqual:[pdfView activeAnnotation]]) {
+                    if (updatingColor == NO && ([keyPath isEqualToString:SKPDFAnnotationColorKey] || [keyPath isEqualToString:SKPDFAnnotationInteriorColorKey])) {
+                        updatingColor = YES;
+                        [[NSColorPanel sharedColorPanel] setColor:[note color]];
+                        updatingColor = NO;
+                    }
+                    if (updatingFont == NO && ([keyPath isEqualToString:SKPDFAnnotationFontKey])) {
+                        updatingFont = YES;
+                        [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)note font] isMultiple:NO];
+                        updatingFont = NO;
+                    }
+                    if (updatingLine == NO && ([keyPath isEqualToString:SKPDFAnnotationBorderKey] || [keyPath isEqualToString:SKPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKPDFAnnotationEndLineStyleKey])) {
+                        updatingLine = YES;
+                        [[SKLineInspector sharedLineInspector] setAnnotationStyle:note];
+                        updatingLine = NO;
+                    }
+                }
+            }
+
+        }
+
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
