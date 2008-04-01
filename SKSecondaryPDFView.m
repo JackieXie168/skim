@@ -39,6 +39,7 @@
 #import "SKSecondaryPDFView.h"
 #import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
+#import "SKPDFAnnotationNote.h"
 
 
 @implementation SKSecondaryPDFView
@@ -96,16 +97,21 @@ static float SKPopUpMenuFontSize = 11.0;
                                                      name:PDFDocumentDidUnlockNotification object:document];
 }
 
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    NSRect rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
+- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
+    NSRect aRect = [self convertRect:rect fromPage:page];
     float scale = [self scaleFactor];
-    float maxX = ceilf(NSMaxX(rect) + scale);
-    float maxY = ceilf(NSMaxY(rect) + scale);
-    float minX = floorf(NSMinX(rect) - scale);
-    float minY = floorf(NSMinY(rect) - scale);
-    rect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
-    if (NSIsEmptyRect(rect) == NO)
-        [self setNeedsDisplayInRect:rect];
+	float maxX = ceilf(NSMaxX(aRect) + scale);
+	float maxY = ceilf(NSMaxY(aRect) + scale);
+	float minX = floorf(NSMinX(aRect) - scale);
+	float minY = floorf(NSMinY(aRect) - scale);
+	
+    aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
+    if (NSIsEmptyRect(aRect) == NO)
+        [self setNeedsDisplayInRect:aRect];
+}
+
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
+    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:page];
 }
 
 #pragma mark Popup buttons

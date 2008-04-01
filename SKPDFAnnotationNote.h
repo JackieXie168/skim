@@ -39,8 +39,34 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern NSString *SKAnnotationWillChangeNotification;
-extern NSString *SKAnnotationDidChangeNotification;
+extern NSString *SKPDFAnnotationTypeKey;
+extern NSString *SKPDFAnnotationBoundsKey;
+extern NSString *SKPDFAnnotationPageIndexKey;
+extern NSString *SKPDFAnnotationContentsKey;
+extern NSString *SKPDFAnnotationStringKey;
+extern NSString *SKPDFAnnotationColorKey;
+extern NSString *SKPDFAnnotationBorderKey;
+extern NSString *SKPDFAnnotationLineWidthKey;
+extern NSString *SKPDFAnnotationBorderStyleKey;
+extern NSString *SKPDFAnnotationDashPatternKey;
+
+extern NSString *SKPDFAnnotationInteriorColorKey;
+
+extern NSString *SKPDFAnnotationQuadrilateralPointsKey;
+
+extern NSString *SKPDFAnnotationFontKey;
+extern NSString *SKPDFAnnotationFontNameKey;
+extern NSString *SKPDFAnnotationFontSizeKey;
+extern NSString *SKPDFAnnotationRotationKey;
+
+extern NSString *SKPDFAnnotationIconTypeKey;
+extern NSString *SKPDFAnnotationTextKey;
+extern NSString *SKPDFAnnotationImageKey;
+
+extern NSString *SKPDFAnnotationStartLineStyleKey;
+extern NSString *SKPDFAnnotationEndLineStyleKey;
+extern NSString *SKPDFAnnotationStartPointKey;
+extern NSString *SKPDFAnnotationEndPointKey;
 
 extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
@@ -80,13 +106,15 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (BOOL)isConvertibleAnnotation;
 - (id)copyNoteAnnotation;
 
-- (NSUndoManager *)undoManager;
-
 - (BOOL)hitTest:(NSPoint)point;
 
+- (NSRect)displayRectForBounds:(NSRect)bounds;
+
+- (NSSet *)keysForValuesToObserveForUndo;
+
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (int)asNoteType;
-- (int)asIconType;
+- (int)scriptingNoteType;
+- (int)scriptingIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;
@@ -94,12 +122,12 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;
 - (float)fontSize;
-- (int)asBorderStyle;
-- (void)setAsBorderStyle:(int)style;
+- (int)scriptingBorderStyle;
+- (void)setScriptingBorderStyle:(int)style;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
-- (int)asStartLineStyle;
-- (int)asEndLineStyle;
+- (int)scriptingStartLineStyle;
+- (int)scriptingEndLineStyle;
 - (id)selectionSpecifier;
 
 @end
@@ -156,7 +184,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (void)setImage:(NSImage *)newImage;
 - (void)setText:(NSAttributedString *)newText;
 
-- (void)setIconType:(PDFTextAnnotationIconType)type;
 - (void)setRichText:(id)newText;
 
 @end
@@ -167,8 +194,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
-- (void)setAsStartLineStyle:(int)style;
-- (void)setAsEndLineStyle:(int)style;
+- (void)setScriptingStartLineStyle:(int)style;
+- (void)setScriptingEndLineStyle:(int)style;
 
 @end
 
@@ -193,8 +220,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (PDFPage *)page;
 - (unsigned int)pageIndex;
 - (NSAttributedString *)string;
-
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 
 @end
 

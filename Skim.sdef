@@ -646,7 +646,7 @@
             <cocoa class="PDFAnnotation"/>
             <property name="type" code="NTyp" type="note type" access="r"
                 description="The type of note.">
-                <cocoa key="asNoteType"/>
+                <cocoa key="scriptingNoteType"/>
             </property>
             <contents name="text" code="ctxt" type="rich text"
                 description="The text of the note. Attributes are ignored.">
@@ -678,7 +678,7 @@
             </property>
             <property name="icon" code="iimg" type="icon type"
                 description="The icon type of an anchored note.">
-                <cocoa key="asIconType"/>
+                <cocoa key="scriptingIconType"/>
             </property>
             <property name="interior color" code="IClr" type="RGBA color"
                 description="The fill color of a circle or box.">
@@ -690,7 +690,7 @@
             </property>
             <property name="line style" code="LnSt" type="note line style"
                 description="The line style of the note.">
-                <cocoa key="asBorderStyle"/>
+                <cocoa key="scriptingBorderStyle"/>
             </property>
             <property name="dash pattern" code="DshP"
                 description="The dash pattern of the border of the note or of the line, a list of numbers.">
@@ -707,11 +707,11 @@
             </property>
             <property name="start line style" code="SLSt" type="line ending style"
                 description="The start line style of a line.">
-                <cocoa key="asStartLineStyle"/>
+                <cocoa key="scriptingStartLineStyle"/>
             </property>
             <property name="end line style" code="ELSt" type="line ending style"
                 description="The end line style of a line.">
-                <cocoa key="asEndLineStyle"/>
+                <cocoa key="scriptingEndLineStyle"/>
             </property>
             <property name="selection" code="sele" access="r"
                 description="The selection for a highlight, underline, or strike out markup.">

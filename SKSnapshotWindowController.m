@@ -84,16 +84,30 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, 0x2014, [[pdfView currentPage] label]];
 }
 
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    NSRect rect = [pdfView convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
+- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
+    NSRect aRect = [pdfView convertRect:rect fromPage:page];
     float scale = [pdfView scaleFactor];
-    float maxX = ceilf(NSMaxX(rect) + scale);
-    float maxY = ceilf(NSMaxY(rect) + scale);
-    float minX = floorf(NSMinX(rect) - scale);
-    float minY = floorf(NSMinY(rect) - scale);
-    rect = NSIntersectionRect([pdfView bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
-    if (NSIsEmptyRect(rect) == NO)
-        [pdfView setNeedsDisplayInRect:rect];
+	float maxX = ceilf(NSMaxX(aRect) + scale);
+	float maxY = ceilf(NSMaxY(aRect) + scale);
+	float minX = floorf(NSMinX(aRect) - scale);
+	float minY = floorf(NSMinY(aRect) - scale);
+	
+    aRect = NSIntersectionRect([pdfView bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
+    if (NSIsEmptyRect(aRect) == NO)
+        [pdfView setNeedsDisplayInRect:aRect];
+}
+
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
+    NSRect bounds = [annotation bounds];
+    if ([[annotation type] isEqualToString:SKUnderlineString]) {
+        float delta = 0.03 * NSHeight(bounds);
+        bounds.origin.y -= delta;
+        bounds.size.height += delta;
+    } else if ([[annotation type] isEqualToString:SKLineString]) {
+        // need a large padding amount for large line width and cap changes
+        bounds = NSInsetRect(bounds, -20.0, -20.0);
+    }
+    [self setNeedsDisplayInRect:bounds ofPage:page];
 }
 
 - (void)redisplay {
@@ -126,18 +140,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self delegate] snapshotControllerViewDidChange:self];
 }
 
-- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[pdfView document]] && [self isPageVisible:[annotation page]] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
-        [self setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
-}
-
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[pdfView document]] && [self isPageVisible:[annotation page]])
-        [self setNeedsDisplayForAnnotation:annotation onPage:[annotation page]];
-}
-
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     PDFPage *page = [[notification userInfo] objectForKey:@"page"];
@@ -162,6 +164,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self delegate] snapshotControllerWindowWillClose:self];
 }
 
+
 - (void)goToDestination:(PDFDestination *)destination {
     [pdfView goToDestination:destination];
     
@@ -181,10 +184,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
                                                  name:NSViewBoundsDidChangeNotification object:clipView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
                                                  name:SKSnapshotViewChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
-                                                 name:SKAnnotationWillChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                                                 name:SKAnnotationDidChangeNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidAddRemoveAnnotationNotification:) 
                                                  name:SKPDFViewDidAddAnnotationNotification object:nil];    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidAddRemoveAnnotationNotification:) 

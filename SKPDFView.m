@@ -211,7 +211,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     magnification = 0.0;
     draggingAnnotation = NO;
     didDrag = NO;
-    didBeginUndoGrouping = NO;
     mouseDownInAnnotation = NO;
     extendSelection = NO;
     rectSelection = NO;
@@ -221,10 +220,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
-                                                 name:SKAnnotationWillChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                                                 name:SKAnnotationDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
@@ -446,18 +441,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
-    NSRect bounds = [annotation bounds];
-    if ([[annotation type] isEqualToString:SKUnderlineString]) {
-        float delta = 0.03 * NSHeight(bounds);
-        bounds.origin.y -= delta;
-        bounds.size.height += delta;
-    } else if ([[annotation type] isEqualToString:SKLineString]) {
-        // need a large padding amount for large line width and cap changes
-        bounds = NSInsetRect(bounds, -20.0, -20.0);
-    } else if ([annotation isResizable]) {
-        bounds = NSInsetRect(bounds, -4.0, -4.0);
-    }
-    [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
+    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:[annotation page]];
 }
 
 #pragma mark Accessors
@@ -1001,7 +985,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         return;
     }
     
-    didBeginUndoGrouping = NO;
     didDrag = NO;
     
     if (modifiers & NSCommandKeyMask) {
@@ -1069,46 +1052,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
-            if (mouseDownInAnnotation) {
-                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
-                    [self setNeedsDisplayInRect:selectionRect];
-                    selectionRect = NSZeroRect;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-                } else if ([[activeAnnotation type] isEqualToString:SKLinkString]) {
-                    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                    PDFPage *page = [self pageForPoint:p nearest:NO];
-                    if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds]))
-                        [self editActiveAnnotation:nil];
-                    else
-                        [self setActiveAnnotation:nil];
-                } else if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString]) {
-                    [self editActiveAnnotation:self];
-                }
-                if (dragMask)
-                    [self setNeedsDisplayForAnnotation:activeAnnotation];
-                mouseDownInAnnotation = NO;
-                [wasSelection release];
-                wasSelection = nil;
-                dragMask = 0;
-            }
-            if (draggingAnnotation && didDrag) {
-                if ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
-                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                    [activeAnnotation setString:selString];
-                }
-            } else if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+            if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationWithType:annotationMode];
                 [self setCurrentSelection:nil];
                 [super mouseUp:theEvent]; // this may be necssary to clean up a selection rect
             } else
                 [super mouseUp:theEvent];
-            if (didBeginUndoGrouping) {
-                [[self undoManager] endUndoGrouping];
-                // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
-                if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-                    [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
-            }
-            draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
             [super mouseUp:theEvent];
@@ -1118,7 +1067,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             // shouldn't reach this
             break;
     }
-    didBeginUndoGrouping = NO;
     didDrag = NO;
 }
 
@@ -1131,13 +1079,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
-            if (draggingAnnotation) {
-                if (didBeginUndoGrouping == NO) {
-                    [[self undoManager] beginUndoGrouping];
-                    didBeginUndoGrouping = YES;
-                }
-                [self dragAnnotationWithEvent:theEvent];
-            } else if (nil == activeAnnotation) {
+            if (nil == activeAnnotation) {
                 if (mouseDownInAnnotation)
                     // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
                     [self selectTextWithEvent:theEvent];
@@ -2130,21 +2072,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 #pragma mark Notification handling
 
-- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[self document]] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
-        [self setNeedsDisplayForAnnotation:annotation];
-}
-
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[self document]]) {
-        [self setNeedsDisplayForAnnotation:annotation];
-        if ([[annotation type] isEqualToString:SKNoteString] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
-            [self resetHoverRects];
-    }
-}
-
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self isEditing] && [self displayMode] != kPDFDisplaySinglePageContinuous && [self displayMode] != kPDFDisplayTwoUpContinuous)
         [self relayoutEditField];
@@ -2772,8 +2699,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
-            [[self undoManager] beginUndoGrouping];
-            didBeginUndoGrouping = YES;
             [self addAnnotation:newAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
@@ -2785,8 +2710,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
                 NSSize size = annotationMode == SKAnchoredNote ? ANCHORED_NOTE_SIZE : NSZeroSize;
                 NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
-                [[self undoManager] beginUndoGrouping];
-                didBeginUndoGrouping = YES;
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
                 newActiveAnnotation = activeAnnotation;
                 mouseDownInAnnotation = YES;
@@ -2872,6 +2795,30 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         }
         if (dragMask)
             [self setNeedsDisplayForAnnotation:activeAnnotation];
+        
+        if ([activeAnnotation isMovable]) {
+            didDrag = NO;
+            while (YES) {
+                theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+                if ([theEvent type] == NSLeftMouseUp)
+                    break;
+                [self dragAnnotationWithEvent:theEvent];
+                didDrag = YES;
+            }
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
+            mouseDownInAnnotation = NO;
+            [wasSelection release];
+            wasSelection = nil;
+            if (didDrag && 
+                [[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableUpdateContentsFromEnclosedText"] == NO &&
+                ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
+                NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                [activeAnnotation setString:selString];
+            }
+            dragMask = 0;
+            didDrag = NO;
+            draggingAnnotation = NO;
+        }
     }
     
     return newActiveAnnotation != nil;

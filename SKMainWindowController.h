@@ -231,6 +231,9 @@ typedef struct _SKPDFViewState {
     NSDrawer                    *leftSideDrawer;
     NSDrawer                    *rightSideDrawer;
     BOOL                        usesDrawers;
+    
+    NSMutableDictionary         *undoGroupOldPropertiesPerNote;
+    NSMutableSet                *undoGroupInsertedNotes;
 }
 
 - (IBAction)changeColor:(id)sender;

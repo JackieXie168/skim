@@ -55,6 +55,7 @@
 - (void)reloadPagePopUpButton;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
+- (void)setNeedsDisplayInRect:(NSRect)aRect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
 
 - (void)makePopUpButtons;
