@@ -46,7 +46,7 @@
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import "SKPDFAnnotationNote.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "SKStatusBar.h"

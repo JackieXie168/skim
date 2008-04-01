@@ -110,6 +110,8 @@ static inline NSRect SKRectFromCenterAndSize(NSPoint center, NSSize size) {
     return rect;
 }
 
+#pragma mark -
+
 extern NSPoint SKConstrainPointInRect(NSPoint point, NSRect boundary);
 extern NSRect SKConstrainRect(NSRect rect, NSRect boundary);
 extern NSRect SKIntersectionRect(NSRect rect, NSRect boundary);
@@ -117,3 +119,42 @@ extern NSRect SKIntersectionRect(NSRect rect, NSRect boundary);
 extern NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped);
 extern NSRect SKCenterRectVertically(NSRect rect, float height, BOOL flipped);
 extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
+
+#pragma mark -
+
+static inline
+Rect RectFromNSRect(NSRect rect) {
+    Rect qdRect;
+    qdRect.left = round(NSMinX(rect));
+    qdRect.bottom = round(NSMinY(rect));
+    qdRect.right = round(NSMaxX(rect));
+    qdRect.top = round(NSMaxY(rect));
+    return qdRect;
+}
+
+static inline
+NSRect NSRectFromRect(Rect qdRect) {
+    NSRect rect;
+    rect.origin.x = (float)qdRect.left;
+    rect.origin.y = (float)qdRect.bottom;
+    rect.size.width = (float)(qdRect.right - qdRect.left);
+    rect.size.height = (float)(qdRect.top - qdRect.bottom);
+    return rect;
+}
+
+
+static inline
+Point PointFromNSPoint(NSPoint point) {
+    Point qdPoint;
+    qdPoint.h = round(point.x);
+    qdPoint.v = round(point.y);
+    return qdPoint;
+}
+
+static inline
+NSPoint NSPointFromPoint(Point qdPoint) {
+    NSPoint point;
+    point.x = (float)qdPoint.h;
+    point.y = (float)qdPoint.v;
+    return point;
+}

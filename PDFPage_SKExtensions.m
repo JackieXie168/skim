@@ -37,7 +37,7 @@
  */
 
 #import "PDFPage_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
