@@ -1,10 +1,10 @@
 //
-//  SKPDFAnnotationNote.h
+//  SKPDFAnnotationFreeText.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/6/07.
+//  Created by Christiaan Hofman on 4/1/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,59 +40,9 @@
 #import <Quartz/Quartz.h>
 
 
-enum {
-    SKScriptingTextAnnotationIconComment = 'ICmt',
-    SKScriptingTextAnnotationIconKey = 'IKey',
-    SKScriptingTextAnnotationIconNote = 'INot',
-    SKScriptingTextAnnotationIconHelp = 'IHlp',
-    SKScriptingTextAnnotationIconNewParagraph = 'INPa',
-    SKScriptingTextAnnotationIconParagraph = 'IPar',
-    SKScriptingTextAnnotationIconInsert = 'IIns'
-};
+@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
 
-
-extern int SKScriptingIconTypeFromIconType(int iconType);
-extern int SKIconTypeFromScriptingIconType(int iconType);
-
-
-@interface PDFAnnotationText (SKLeopardDeprecated)
-// these are deprecated on 10.5, but we don't want to use the popup for 10.4 compatibility; we check for existence before using this anyway
-- (BOOL)windowIsOpen;
-- (void)setWindowIsOpen:(BOOL)isOpen;
-@end
-
-#pragma mark -
-
-@interface SKPDFAnnotationNote : PDFAnnotationText {
-    NSString *string;
-    NSImage *image;
-    NSTextStorage *textStorage;
-    NSAttributedString *text;
-    NSArray *texts;
-}
-
-- (void)setImage:(NSImage *)newImage;
-- (void)setText:(NSAttributedString *)newText;
-
-- (void)setRichText:(id)newText;
-
-@end
-
-#pragma mark -
-
-@interface SKNoteText : NSObject {
-    PDFAnnotation *annotation;
-}
-
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
-
-- (PDFAnnotation *)annotation;
-
-- (NSArray *)texts;
-
-- (NSString *)type;
-- (PDFPage *)page;
-- (unsigned int)pageIndex;
-- (NSAttributedString *)string;
+- (void)setFontName:(NSString *)fontName;
+- (void)setFontSize:(float)pointSize;
 
 @end

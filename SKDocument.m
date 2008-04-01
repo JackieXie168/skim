@@ -41,7 +41,7 @@
 #import <Carbon/Carbon.h>
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
-#import "SKPDFAnnotationNote.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKPSProgressController.h"
 #import "SKFindController.h"
 #import "BDAlias.h"
@@ -68,6 +68,7 @@
 #import <Security/Security.h>
 #import "SKBookmarkController.h"
 #import "PDFPage_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 

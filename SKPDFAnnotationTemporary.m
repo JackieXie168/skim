@@ -1,10 +1,10 @@
 //
-//  SKPDFAnnotationNote.h
+//  SKPDFAnnotationTemporary.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/6/07.
+//  Created by Christiaan Hofman on 4/1/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,63 +36,15 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
+#import "SKPDFAnnotationTemporary.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 
-enum {
-    SKScriptingTextAnnotationIconComment = 'ICmt',
-    SKScriptingTextAnnotationIconKey = 'IKey',
-    SKScriptingTextAnnotationIconNote = 'INot',
-    SKScriptingTextAnnotationIconHelp = 'IHlp',
-    SKScriptingTextAnnotationIconNewParagraph = 'INPa',
-    SKScriptingTextAnnotationIconParagraph = 'IPar',
-    SKScriptingTextAnnotationIconInsert = 'IIns'
-};
+// useful for highlighting things; isTemporaryAnnotation is so we know to remove it
+@implementation SKPDFAnnotationTemporary
 
+- (BOOL)isTemporaryAnnotation { return YES; }
 
-extern int SKScriptingIconTypeFromIconType(int iconType);
-extern int SKIconTypeFromScriptingIconType(int iconType);
-
-
-@interface PDFAnnotationText (SKLeopardDeprecated)
-// these are deprecated on 10.5, but we don't want to use the popup for 10.4 compatibility; we check for existence before using this anyway
-- (BOOL)windowIsOpen;
-- (void)setWindowIsOpen:(BOOL)isOpen;
-@end
-
-#pragma mark -
-
-@interface SKPDFAnnotationNote : PDFAnnotationText {
-    NSString *string;
-    NSImage *image;
-    NSTextStorage *textStorage;
-    NSAttributedString *text;
-    NSArray *texts;
-}
-
-- (void)setImage:(NSImage *)newImage;
-- (void)setText:(NSAttributedString *)newText;
-
-- (void)setRichText:(id)newText;
-
-@end
-
-#pragma mark -
-
-@interface SKNoteText : NSObject {
-    PDFAnnotation *annotation;
-}
-
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
-
-- (PDFAnnotation *)annotation;
-
-- (NSArray *)texts;
-
-- (NSString *)type;
-- (PDFPage *)page;
-- (unsigned int)pageIndex;
-- (NSAttributedString *)string;
+- (BOOL)shouldPrint { return NO; }
 
 @end

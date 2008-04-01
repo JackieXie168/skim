@@ -39,7 +39,7 @@
 #import "SKSecondaryPDFView.h"
 #import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 
 @implementation SKSecondaryPDFView
