@@ -44,7 +44,7 @@
 #import "NSGeometry_SKExtensions.h"
 
 
-int SKScriptingLineStyleFromLineStyle(int lineStyle) {
+unsigned long SKScriptingLineStyleFromLineStyle(int lineStyle) {
     switch (lineStyle) {
         case kPDFLineStyleNone: return SKScriptingLineStyleNone;
         case kPDFLineStyleSquare: return SKScriptingLineStyleSquare;
@@ -56,7 +56,7 @@ int SKScriptingLineStyleFromLineStyle(int lineStyle) {
     }
 }
 
-int SKLineStyleFromScriptingLineStyle(int lineStyle) {
+int SKLineStyleFromScriptingLineStyle(unsigned long lineStyle) {
     switch (lineStyle) {
         case kPDFLineStyleNone: return SKScriptingLineStyleNone;
         case kPDFLineStyleSquare: return SKScriptingLineStyleSquare;
@@ -321,19 +321,19 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 
-- (int)scriptingStartLineStyle {
+- (unsigned long)scriptingStartLineStyle {
     return SKScriptingLineStyleFromLineStyle([self startLineStyle]);
 }
 
-- (int)scriptingEndLineStyle {
+- (unsigned long)scriptingEndLineStyle {
     return SKScriptingLineStyleFromLineStyle([self endLineStyle]);
 }
 
-- (void)setScriptingStartLineStyle:(int)style {
+- (void)setScriptingStartLineStyle:(unsigned long)style {
     [self setStartLineStyle:SKLineStyleFromScriptingLineStyle(style)];
 }
 
-- (void)setScriptingEndLineStyle:(int)style {
+- (void)setScriptingEndLineStyle:(unsigned long)style {
     [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
 }
 

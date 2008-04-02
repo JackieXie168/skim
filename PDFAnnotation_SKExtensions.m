@@ -53,7 +53,7 @@
 #import "NSString_SKExtensions.h"
 
 
-int SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
+unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
     switch (borderStyle) {
         case kPDFBorderStyleSolid: return SKScriptingBorderStyleSolid;
         case kPDFBorderStyleDashed: return SKScriptingBorderStyleDashed;
@@ -64,7 +64,7 @@ int SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
     }
 }
 
-int SKBorderStyleFromScriptingBorderStyle(int borderStyle) {
+int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle) {
     switch (borderStyle) {
         case SKScriptingBorderStyleSolid: return kPDFBorderStyleSolid;
         case SKScriptingBorderStyleDashed: return kPDFBorderStyleDashed;
@@ -417,7 +417,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return properties;
 }
 
-- (int)scriptingNoteType {
+- (unsigned long)scriptingNoteType {
     if ([[self type] isEqualToString:SKFreeTextString])
         return SKScriptingTextNote;
     else if ([[self type] isEqualToString:SKNoteString])
@@ -437,7 +437,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return 0;
 }
 
-- (int)scriptingIconType {
+- (unsigned long)scriptingIconType {
     return SKScriptingTextAnnotationIconNote;
 }
 
@@ -489,7 +489,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return 0;
 }
 
-- (int)scriptingBorderStyle {
+- (unsigned long)scriptingBorderStyle {
     return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }
 
@@ -505,11 +505,11 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return (id)[NSNull null];
 }
 
-- (int)scriptingStartLineStyle {
+- (unsigned long)scriptingStartLineStyle {
     return SKScriptingLineStyleNone;
 }
 
-- (int)scriptingEndLineStyle {
+- (unsigned long)scriptingEndLineStyle {
     return SKScriptingLineStyleNone;
 }
 
