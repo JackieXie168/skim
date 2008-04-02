@@ -149,8 +149,8 @@ static NSColor *defaultColorForMarkupType(int markupType)
     return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
-    if (self = [super initWithDictionary:dict]) {
+- (id)initWithProperties:(NSDictionary *)dict{
+    if (self = [super initWithProperties:dict]) {
         Class stringClass = [NSString class];
         NSString *type = [dict objectForKey:SKPDFAnnotationTypeKey];
         if ([type isKindOfClass:stringClass]) {
@@ -275,8 +275,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [super dealloc];
 }
 
-- (NSDictionary *)dictionaryValue {
-    NSMutableDictionary *dict = [[[super dictionaryValue] mutableCopy] autorelease];
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
     [dict setValue:quadPoints forKey:SKPDFAnnotationQuadrilateralPointsKey];
     [quadPoints release];

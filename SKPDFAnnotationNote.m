@@ -106,8 +106,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     [self setContents:contents];
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
-    if (self = [super initWithDictionary:dict]) {
+- (id)initWithProperties:(NSDictionary *)dict{
+    if (self = [super initWithProperties:dict]) {
         Class attrStringClass = [NSAttributedString class];
         Class stringClass = [NSString class];
         Class imageClass = [NSImage class];
@@ -135,8 +135,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     [super dealloc];
 }
 
-- (NSDictionary *)dictionaryValue{
-    NSMutableDictionary *dict = [[[super dictionaryValue] mutableCopy] autorelease];
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKPDFAnnotationTypeKey];
     [dict setValue:[self text] forKey:SKPDFAnnotationTextKey];
     [dict setValue:[self image] forKey:SKPDFAnnotationImageKey];

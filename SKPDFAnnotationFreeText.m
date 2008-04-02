@@ -74,8 +74,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
-    if (self = [super initWithDictionary:dict]) {
+- (id)initWithProperties:(NSDictionary *)dict{
+    if (self = [super initWithProperties:dict]) {
         Class fontClass = [NSFont class];
         NSFont *font = [dict objectForKey:SKPDFAnnotationFontKey];
         NSNumber *rotation = [dict objectForKey:SKPDFAnnotationRotationKey];
@@ -87,8 +87,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return self;
 }
 
-- (NSDictionary *)dictionaryValue{
-    NSMutableDictionary *dict = [[[super dictionaryValue] mutableCopy] autorelease];
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     [dict setValue:[self font] forKey:SKPDFAnnotationFontKey];
     if ([self respondsToSelector:@selector(rotation)])
         [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKPDFAnnotationRotationKey];

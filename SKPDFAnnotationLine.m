@@ -99,8 +99,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
-    if (self = [super initWithDictionary:dict]) {
+- (id)initWithProperties:(NSDictionary *)dict{
+    if (self = [super initWithProperties:dict]) {
         Class stringClass = [NSString class];
         NSString *startPoint = [dict objectForKey:SKPDFAnnotationStartPointKey];
         NSString *endPoint = [dict objectForKey:SKPDFAnnotationEndPointKey];
@@ -118,8 +118,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return self;
 }
 
-- (NSDictionary *)dictionaryValue {
-    NSMutableDictionary *dict = [[[super dictionaryValue] mutableCopy] autorelease];
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:SKPDFAnnotationStartLineStyleKey];
     [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKPDFAnnotationEndLineStyleKey];
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKPDFAnnotationStartPointKey];
