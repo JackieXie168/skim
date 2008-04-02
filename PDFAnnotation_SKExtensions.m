@@ -97,7 +97,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return nil;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
+- (id)initWithProperties:(NSDictionary *)dict{
     Class stringClass = [NSString class];
     
     if ([self class] == [PDFAnnotation class]) {
@@ -121,7 +121,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
             annotationClass = [SKPDFAnnotationLine class];
         
         [[self initWithBounds:NSZeroRect] release];
-        self = [[annotationClass alloc] initWithDictionary:dict];
+        self = [[annotationClass alloc] initWithProperties:dict];
         
     } else {
         // called from the initialization of a subclass
@@ -159,7 +159,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     return self;
 }
 
-- (NSDictionary *)dictionaryValue{
+- (NSDictionary *)properties{
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:5];
     [dict setValue:[self type] forKey:SKPDFAnnotationTypeKey];
     [dict setValue:[self string] forKey:SKPDFAnnotationContentsKey];
@@ -388,7 +388,7 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 // to support the 'duplicate' command
 - (id)copyWithZone:(NSZone *)zone {
     if ([self isMovable]) // we don't want to duplicate markup
-        return [[PDFAnnotation allocWithZone:zone] initWithDictionary:[self dictionaryValue]];
+        return [[PDFAnnotation allocWithZone:zone] initWithProperties:[self properties]];
     else
         return nil;
 }

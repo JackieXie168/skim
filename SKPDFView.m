@@ -687,7 +687,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSData *tiffData = nil;
     
     if ([self hideNotes] == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
-        if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]])
+        if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation properties]])
             [types addObject:SKSkimNotePboardType];
     }
     
@@ -797,7 +797,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         NSRect bounds;
         
-        newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
+        newAnnotation = [[[PDFAnnotation alloc] initWithProperties:note] autorelease];
         bounds = [newAnnotation bounds];
         page = [self currentPage];
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
@@ -2705,7 +2705,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (hideNotes == NO) {
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
-            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
+            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithProperties:[newActiveAnnotation properties]];
             [self addAnnotation:newAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;

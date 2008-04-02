@@ -60,8 +60,8 @@
     return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *)dict{
-    if (self = [super initWithDictionary:dict]) {
+- (id)initWithProperties:(NSDictionary *)dict{
+    if (self = [super initWithProperties:dict]) {
         Class colorClass = [NSColor class];
         NSColor *interiorColor = [dict objectForKey:SKPDFAnnotationInteriorColorKey];
         if ([interiorColor isKindOfClass:colorClass])
@@ -70,8 +70,8 @@
     return self;
 }
 
-- (NSDictionary *)dictionaryValue{
-    NSMutableDictionary *dict = [[[super dictionaryValue] mutableCopy] autorelease];
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     [dict setValue:[self interiorColor] forKey:SKPDFAnnotationInteriorColorKey];
     return dict;
 }

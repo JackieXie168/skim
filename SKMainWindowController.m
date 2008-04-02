@@ -1040,7 +1040,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
-        if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
+        if (annotation = [[PDFAnnotation alloc] initWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
@@ -4023,7 +4023,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         itemEnum = [[self noteItems:items] objectEnumerator];
         while (item = [itemEnum nextObject]) {
             if ([item isMovable]) {
-                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item dictionaryValue]];
+                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item properties]];
                 [types addObject:SKSkimNotePboardType];
                 break;
             }

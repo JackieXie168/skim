@@ -81,9 +81,9 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 @interface PDFAnnotation (SKExtensions)
 
-- (id)initWithDictionary:(NSDictionary *)dict;
+- (id)initWithProperties:(NSDictionary *)dict;
 
-- (NSDictionary *)dictionaryValue;
+- (NSDictionary *)properties;
 
 - (NSString *)fdfString;
 

@@ -1374,7 +1374,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSData *)notesData {
-    NSArray *array = [[self notes] valueForKey:@"dictionaryValue"];
+    NSArray *array = [[self notes] valueForKey:@"properties"];
     return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
 }
 
