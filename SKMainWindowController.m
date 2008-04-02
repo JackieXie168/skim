@@ -3847,7 +3847,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         if ([tcID isEqualToString:@"note"]) {
-            return [item string];
+            return [item type] ? (id)[item text] : (id)[item string];
         } else if([tcID isEqualToString:@"type"]) {
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], @"active", [item type], @"type", nil];
         } else if([tcID isEqualToString:@"page"]) {
@@ -3860,7 +3860,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
         if ([[tableColumn identifier] isEqualToString:@"note"]) {
-            if ([object isEqualToString:[item string]] == NO)
+            if ([item type] && [object isEqualToString:[item string]] == NO)
                 [item setString:object];
         }
     }
@@ -3931,7 +3931,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
     if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:@"note"]) {
-        return [item type] ? [(PDFAnnotation *)item string] : [[(SKNoteText *)item string] string];
+        return [item string];
     }
     return nil;
 }
@@ -4034,13 +4034,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [string appendString:@"\n\n"];
             if ([attrString length])
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-            if ([item type]) {
-                [string appendString:[item string]];
+            [string appendString:[item string]];
+            if ([item type])
                 [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item string]];
-            } else {
-                [string appendString:[[(SKNoteText *)item string] string]];
-                [attrString appendAttributedString:[(SKNoteText *)item string]];
-            }
+            else
+                [attrString appendAttributedString:[(SKNoteText *)item text]];
         }
         if (noteData)
             [types addObject:SKSkimNotePboardType];
@@ -4140,7 +4138,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
-        [cell setObjectValue:[item string]];
+        [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         float height = fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0);
@@ -4428,7 +4426,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) {
             id item = [noteOutlineView itemAtRow:i];
-            NSString *string = [item type] ? [(PDFAnnotation *)item string] : [[(SKNoteText *)item string] string];
+            NSString *string = [item string];
             [texts addObject:string ? string : @""];
         }
         return texts;
