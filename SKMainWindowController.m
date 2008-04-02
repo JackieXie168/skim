@@ -3683,7 +3683,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 NSUndoManager *undoManager = [[self document] undoManager];
                 if (undoGroupOldPropertiesPerNote == nil) {
                     // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
-                    undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+                    undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
                     // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
                     [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
                 }
