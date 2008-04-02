@@ -635,23 +635,23 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 - (NSDictionary *)defaultLineStyles {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], @"textNote", 
-        [NSNumber numberWithInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], @"circleNote", 
-        [NSNumber numberWithInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], @"squareNote", 
-        [NSNumber numberWithInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], @"lineNote", nil];
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], @"textNote", 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], @"circleNote", 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], @"squareNote", 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], @"lineNote", nil];
 }
 
 - (void)setDefaultLineStyles:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
     if (number = [dict objectForKey:@"textNote"])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number intValue]) forKey:SKFreeTextNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKFreeTextNoteLineStyleKey];
     if (number = [dict objectForKey:@"circleNote"])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number intValue]) forKey:SKCircleNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKCircleNoteLineStyleKey];
     if (number = [dict objectForKey:@"squareNote"])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number intValue]) forKey:SKSquareNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKSquareNoteLineStyleKey];
     if (number = [dict objectForKey:@"lineNote"])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number intValue]) forKey:SKLineNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKLineNoteLineStyleKey];
 }
 
 - (NSDictionary *)defaultDashPatterns {
@@ -676,27 +676,27 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
 }
 
-- (int)defaultStartLineStyle {
+- (unsigned long)defaultStartLineStyle {
     return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]);
 }
 
-- (void)setDefaultStartLineStyle:(int)style {
+- (void)setDefaultStartLineStyle:(unsigned long)style {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteStartLineStyleKey];
 }
 
-- (int)defaultEndLineStyle {
+- (unsigned long)defaultEndLineStyle {
     return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]);
 }
 
-- (void)setDefaultEndLineStyle:(int)style {
+- (void)setDefaultEndLineStyle:(unsigned long)style {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
 }
 
-- (int)defaultIconType {
+- (unsigned long)defaultIconType {
     return SKScriptingIconTypeFromIconType([[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]);
 }
 
-- (void)setDefaultIconType:(int)type {
+- (void)setDefaultIconType:(unsigned long)type {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
 }
 
