@@ -38,10 +38,6 @@
 
 #import "SKPDFAnnotationMarkup.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationLine.h"
-#import "SKPDFAnnotationFreeText.h"
-#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
@@ -394,10 +390,18 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 #pragma mark Scripting support
 
-- (NSDictionary *)scriptingProperties {
-    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectsForKeys:[NSArray arrayWithObjects:SKPDFAnnotationRichTextKey, SKPDFAnnotationFontNameKey, SKPDFAnnotationFontSizeKey, SKPDFAnnotationScriptingIconTypeKey, SKPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKPDFAnnotationDashPatternKey, SKPDFAnnotationStartPointAsQDPointKey, SKPDFAnnotationEndPointAsQDPointKey, SKPDFAnnotationScriptingStartLineStyleKey, SKPDFAnnotationScriptingEndLineStyleKey, nil]];
-    return properties;
++ (NSSet *)customScriptingKeys {
+    static NSSet *customMarkupScriptingKeys = nil;
+    if (customMarkupScriptingKeys == nil) {
+        NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
+        [customKeys addObject:SKPDFAnnotationSelectionSpecifierKey];
+        [customKeys removeObject:SKPDFAnnotationLineWidthKey];
+        [customKeys removeObject:SKPDFAnnotationScriptingBorderStyleKey];
+        [customKeys removeObject:SKPDFAnnotationDashPatternKey];
+        customMarkupScriptingKeys = [customKeys copy];
+        [customKeys release];
+    }
+    return customMarkupScriptingKeys;
 }
 
 - (id)selectionSpecifier {

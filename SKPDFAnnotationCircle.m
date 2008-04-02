@@ -38,10 +38,6 @@
 
 #import "SKPDFAnnotationCircle.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationLine.h"
-#import "SKPDFAnnotationMarkup.h"
-#import "SKPDFAnnotationFreeText.h"
-#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -103,10 +99,15 @@ NSString *SKPDFAnnotationInteriorColorKey = @"color";
 
 #pragma mark Scripting support
 
-- (NSDictionary *)scriptingProperties {
-    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectsForKeys:[NSArray arrayWithObjects:SKPDFAnnotationRichTextKey, SKPDFAnnotationFontNameKey, SKPDFAnnotationFontSizeKey, SKPDFAnnotationScriptingIconTypeKey, SKPDFAnnotationStartPointAsQDPointKey, SKPDFAnnotationEndPointAsQDPointKey, SKPDFAnnotationScriptingStartLineStyleKey, SKPDFAnnotationScriptingEndLineStyleKey, SKPDFAnnotationSelectionSpecifierKey, nil]];
-    return properties;
++ (NSSet *)customScriptingKeys {
+    static NSSet *customCircleScriptingKeys = nil;
+    if (customCircleScriptingKeys == nil) {
+        NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
+        [customKeys addObject:SKPDFAnnotationInteriorColorKey];
+        customCircleScriptingKeys = [customKeys copy];
+        [customKeys release];
+    }
+    return customCircleScriptingKeys;
 }
 
 @end

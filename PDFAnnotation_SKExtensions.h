@@ -121,6 +121,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 - (NSSet *)keysForValuesToObserveForUndo;
 
++ (NSSet *)customScriptingKeys;
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (int)scriptingNoteType;
 - (int)scriptingIconType;
