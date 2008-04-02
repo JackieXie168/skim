@@ -1913,7 +1913,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings {
     NSMutableDictionary *setup = [[self mutableCopy] autorelease];
     
-    int displayMode = 0;
+    unsigned long displayMode = 0;
     switch ([[setup objectForKey:@"displayMode"] intValue]) {
         case kPDFDisplaySinglePage: displayMode = SKASDisplaySinglePage; break;
         case kPDFDisplaySinglePageContinuous: displayMode = SKASDisplaySinglePageContinuous; break;
@@ -1922,7 +1922,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     [setup setObject:[NSNumber numberWithInt:displayMode] forKey:@"displayMode"];
     
-    int displayBox = 0;
+    unsigned long displayBox = 0;
     switch ([[setup objectForKey:@"displayBox"] intValue]) {
         case kPDFDisplayBoxMediaBox: displayBox = SKASMediaBox; break;
         case kPDFDisplayBoxCropBox: displayBox = SKASCropBox; break;
@@ -1938,7 +1938,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     if (number = [setup objectForKey:@"displayMode"]) {
         int displayMode = 0;
-        switch ([number intValue]) {
+        switch ([number unsignedLongValue]) {
             case SKASDisplaySinglePage: displayMode = kPDFDisplaySinglePage; break;
             case SKASDisplaySinglePageContinuous: displayMode = kPDFDisplaySinglePageContinuous; break;
             case SKASDisplayTwoUp: displayMode = kPDFDisplayTwoUp; break;
@@ -1949,7 +1949,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     if (number = [setup objectForKey:@"displayBox"]) {
         int displayBox = 0;
-        switch ([number intValue]) {
+        switch ([number unsignedLongValue]) {
             case SKASMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
             case SKASCropBox: displayBox = kPDFDisplayBoxCropBox; break;
         }

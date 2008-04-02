@@ -534,8 +534,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         return;
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
-    [setup addEntriesFromDictionary:settings];
-    [[NSUserDefaults standardUserDefaults] setObject:[setup PDFViewSettingsFromAppleScriptPDFViewSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+    [setup addEntriesFromDictionary:[settings PDFViewSettingsFromAppleScriptPDFViewSettings]];
+    [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (NSDictionary *)defaultFullScreenPdfViewSettings {
@@ -549,9 +549,9 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     if ([settings count]) {
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]];
-        [setup addEntriesFromDictionary:settings];
+        [setup addEntriesFromDictionary:[settings PDFViewSettingsFromAppleScriptPDFViewSettings]];
     }
-    [[NSUserDefaults standardUserDefaults] setObject:[setup PDFViewSettingsFromAppleScriptPDFViewSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
 
 - (NSColor *)backgroundColor {
