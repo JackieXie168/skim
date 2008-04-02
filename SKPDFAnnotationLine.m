@@ -38,6 +38,10 @@
 
 #import "SKPDFAnnotationLine.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationCircle.h"
+#import "SKPDFAnnotationMarkup.h"
+#import "SKPDFAnnotationFreeText.h"
+#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -67,6 +71,17 @@ int SKLineStyleFromScriptingLineStyle(int lineStyle) {
         default: return SKScriptingLineStyleNone;
     }
 }
+
+
+NSString *SKPDFAnnotationStartLineStyleKey = @"startLineStyle";
+NSString *SKPDFAnnotationEndLineStyleKey = @"endLineStyle";
+NSString *SKPDFAnnotationStartPointKey = @"startPoint";
+NSString *SKPDFAnnotationEndPointKey = @"endPoint";
+
+NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
+NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
+NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
+NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 
 @implementation SKPDFAnnotationLine

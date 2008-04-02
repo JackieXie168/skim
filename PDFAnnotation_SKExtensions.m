@@ -87,33 +87,8 @@ NSString *SKPDFAnnotationLineWidthKey = @"lineWidth";
 NSString *SKPDFAnnotationBorderStyleKey = @"borderStyle";
 NSString *SKPDFAnnotationDashPatternKey = @"dashPattern";
 
-NSString *SKPDFAnnotationInteriorColorKey = @"color";
-
-NSString *SKPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
-
-NSString *SKPDFAnnotationFontKey = @"font";
-NSString *SKPDFAnnotationFontNameKey = @"fontName";
-NSString *SKPDFAnnotationFontSizeKey = @"fontSize";
-NSString *SKPDFAnnotationRotationKey = @"rotation";
-
-NSString *SKPDFAnnotationIconTypeKey = @"iconType";
-NSString *SKPDFAnnotationTextKey = @"text";
-NSString *SKPDFAnnotationImageKey = @"image";
-
-NSString *SKPDFAnnotationStartLineStyleKey = @"startLineStyle";
-NSString *SKPDFAnnotationEndLineStyleKey = @"endLineStyle";
-NSString *SKPDFAnnotationStartPointKey = @"startPoint";
-NSString *SKPDFAnnotationEndPointKey = @"endPoint";
-
 NSString *SKPDFAnnotationScriptingNoteTypeKey = @"scriptingNoteType";
-NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
-NSString *SKPDFAnnotationRichTextKey = @"richText";
-NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
-NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
-NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
-NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
-NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 @implementation PDFAnnotation (SKExtensions)
 

@@ -52,6 +52,18 @@ enum {
 extern int SKScriptingLineStyleFromLineStyle(int lineStyle);
 extern int SKLineStyleFromScriptingLineStyle(int lineStyle);
 
+
+extern NSString *SKPDFAnnotationStartLineStyleKey;
+extern NSString *SKPDFAnnotationEndLineStyleKey;
+extern NSString *SKPDFAnnotationStartPointKey;
+extern NSString *SKPDFAnnotationEndPointKey;
+
+extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
+extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
+extern NSString *SKPDFAnnotationScriptingStartLineStyleKey;
+extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
+
+
 @interface SKPDFAnnotationLine : PDFAnnotationLine
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;

@@ -38,6 +38,10 @@
 
 #import "SKPDFAnnotationNote.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationCircle.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationMarkup.h"
+#import "SKPDFAnnotationFreeText.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -70,6 +74,14 @@ int SKIconTypeFromScriptingIconType(int iconType) {
         default: return kPDFTextAnnotationIconNote;
     }
 }
+
+
+NSString *SKPDFAnnotationIconTypeKey = @"iconType";
+NSString *SKPDFAnnotationTextKey = @"text";
+NSString *SKPDFAnnotationImageKey = @"image";
+
+NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
+NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 
 @implementation SKPDFAnnotationNote
