@@ -42,3 +42,7 @@
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
 @end
+
+@interface PDFAnnotation (SKPDFAnnotationTemporary)
+- (BOOL)isTemporaryAnnotation;
+@end

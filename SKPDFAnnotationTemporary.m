@@ -37,14 +37,14 @@
  */
 
 #import "SKPDFAnnotationTemporary.h"
-#import "PDFAnnotation_SKExtensions.h"
 
 
 // useful for highlighting things; isTemporaryAnnotation is so we know to remove it
 @implementation SKPDFAnnotationTemporary
-
 - (BOOL)isTemporaryAnnotation { return YES; }
-
 - (BOOL)shouldPrint { return NO; }
+@end
 
+@implementation PDFAnnotation (SKPDFAnnotationTemporary)
+- (BOOL)isTemporaryAnnotation { return NO; }
 @end
