@@ -3693,6 +3693,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 if (oldNoteProperties == nil) {
                     // We have to create a dictionary to hold old values for the changed note
                     oldNoteProperties = [[NSMutableDictionary alloc] init];
+                    // -setValue:forKey: copies, even if the callback doesn't, so we need to use CF functions
                     CFDictionarySetValue((CFMutableDictionaryRef)undoGroupOldPropertiesPerNote, note, oldNoteProperties);
                     [oldNoteProperties release];
                 }
