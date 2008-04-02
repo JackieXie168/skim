@@ -59,9 +59,9 @@ enum {
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
 - (id)initSeparator;
-- (id)initWithDictionary:(NSDictionary *)dictionary;
+- (id)initWithProperties:(NSDictionary *)dictionary;
 
-- (NSDictionary *)dictionaryValue;
+- (NSDictionary *)properties;
 
 - (int)bookmarkType;
 

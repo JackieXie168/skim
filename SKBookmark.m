@@ -123,13 +123,13 @@ static Class SKBookmarkClass = Nil;
     return [[SKSeparatorBookmark alloc] init];
 }
 
-- (id)initWithDictionary:(NSDictionary *)dictionary {
+- (id)initWithProperties:(NSDictionary *)dictionary {
     if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeFolderString]) {
         NSEnumerator *dictEnum = [[dictionary objectForKey:CHILDREN_KEY] objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
         while (dict = [dictEnum nextObject])
-            [newChildren addObject:[[[[self class] alloc] initWithDictionary:dict] autorelease]];
+            [newChildren addObject:[[[[self class] alloc] initWithProperties:dict] autorelease]];
         return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
     } else if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeSeparatorString]) {
         return [self initSeparator];
@@ -148,7 +148,7 @@ static Class SKBookmarkClass = Nil;
         [super dealloc];
 }
 
-- (NSDictionary *)dictionaryValue { return nil; }
+- (NSDictionary *)properties { return nil; }
 
 - (int)bookmarkType { return SKBookmarkTypeSeparator; }
 
@@ -234,7 +234,7 @@ static Class SKBookmarkClass = Nil;
     return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, [self path], pageIndex];
 }
 
-- (NSDictionary *)dictionaryValue {
+- (NSDictionary *)properties {
     return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, TYPE_KEY, [self aliasData], ALIAS_DATA_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, label, LABEL_KEY, nil];
 }
 
@@ -336,8 +336,8 @@ static Class SKBookmarkClass = Nil;
     return [NSString stringWithFormat:@"<%@: label=%@, children=%@>", [self class], label, children];
 }
 
-- (NSDictionary *)dictionaryValue {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, TYPE_KEY, [children valueForKey:@"dictionaryValue"], CHILDREN_KEY, label, LABEL_KEY, nil];
+- (NSDictionary *)properties {
+    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, TYPE_KEY, [children valueForKey:@"properties"], CHILDREN_KEY, label, LABEL_KEY, nil];
 }
 
 - (int)bookmarkType {
@@ -401,7 +401,7 @@ static Class SKBookmarkClass = Nil;
     return [NSString stringWithFormat:@"<%@: separator>", [self class]];
 }
 
-- (NSDictionary *)dictionaryValue {
+- (NSDictionary *)properties {
     return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSeparatorString, TYPE_KEY, nil];
 }
 
