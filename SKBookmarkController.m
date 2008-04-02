@@ -114,7 +114,7 @@ static unsigned int maxRecentDocumentsCount = 0;
                 NSDictionary *dict;
                 
                 while (dict = [dictEnum nextObject]) {
-                    SKBookmark *bookmark = [[SKBookmark alloc] initWithDictionary:dict];
+                    SKBookmark *bookmark = [[SKBookmark alloc] initWithProperties:dict];
                     if (bookmark)
                         [bookmarks addObject:bookmark];
                     [bookmark release];
@@ -452,7 +452,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
     [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"dictionaryValue"], BOOKMARKS_KEY, recentDocuments, RECENT_DOCUMENTS_KEY, nil];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENT_DOCUMENTS_KEY, nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
