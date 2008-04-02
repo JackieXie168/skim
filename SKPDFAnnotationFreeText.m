@@ -39,8 +39,17 @@
 #import "SKPDFAnnotationFreeText.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
+#import "SKPDFAnnotationCircle.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationMarkup.h"
+#import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+
+NSString *SKPDFAnnotationFontKey = @"font";
+NSString *SKPDFAnnotationFontNameKey = @"fontName";
+NSString *SKPDFAnnotationFontSizeKey = @"fontSize";
+NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 
 @interface PDFAnnotationFreeText (SKPDFAnnotationFreeTextPrivateDeclarations)

@@ -75,33 +75,8 @@ extern NSString *SKPDFAnnotationLineWidthKey;
 extern NSString *SKPDFAnnotationBorderStyleKey;
 extern NSString *SKPDFAnnotationDashPatternKey;
 
-extern NSString *SKPDFAnnotationInteriorColorKey;
-
-extern NSString *SKPDFAnnotationQuadrilateralPointsKey;
-
-extern NSString *SKPDFAnnotationFontKey;
-extern NSString *SKPDFAnnotationFontNameKey;
-extern NSString *SKPDFAnnotationFontSizeKey;
-extern NSString *SKPDFAnnotationRotationKey;
-
-extern NSString *SKPDFAnnotationIconTypeKey;
-extern NSString *SKPDFAnnotationTextKey;
-extern NSString *SKPDFAnnotationImageKey;
-
-extern NSString *SKPDFAnnotationStartLineStyleKey;
-extern NSString *SKPDFAnnotationEndLineStyleKey;
-extern NSString *SKPDFAnnotationStartPointKey;
-extern NSString *SKPDFAnnotationEndPointKey;
-
 extern NSString *SKPDFAnnotationScriptingNoteTypeKey;
-extern NSString *SKPDFAnnotationScriptingIconTypeKey;
-extern NSString *SKPDFAnnotationRichTextKey;
-extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
-extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
-extern NSString *SKPDFAnnotationScriptingStartLineStyleKey;
-extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
 extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
-extern NSString *SKPDFAnnotationSelectionSpecifierKey;
 
 
 @interface PDFAnnotation (SKExtensions)

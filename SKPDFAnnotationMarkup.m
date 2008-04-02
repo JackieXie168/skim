@@ -38,11 +38,20 @@
 
 #import "SKPDFAnnotationMarkup.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationCircle.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationFreeText.h"
+#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+
+
+NSString *SKPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
+
+NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 
 void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {

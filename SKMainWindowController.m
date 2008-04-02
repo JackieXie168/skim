@@ -57,6 +57,8 @@
 #import "BDSKEdgeView.h"
 #import "BDSKGradientView.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationFreeText.h"
+#import "SKPDFAnnotationCircle.h"
 #import "SKPDFAnnotationLine.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKPDFAnnotationTemporary.h"

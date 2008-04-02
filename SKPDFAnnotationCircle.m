@@ -38,10 +38,15 @@
 
 #import "SKPDFAnnotationCircle.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationMarkup.h"
+#import "SKPDFAnnotationFreeText.h"
+#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
+NSString *SKPDFAnnotationInteriorColorKey = @"color";
 
 @implementation SKPDFAnnotationCircle
 

@@ -39,6 +39,11 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationFontKey;
+extern NSString *SKPDFAnnotationFontNameKey;
+extern NSString *SKPDFAnnotationFontSizeKey;
+extern NSString *SKPDFAnnotationRotationKey;
+
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
 

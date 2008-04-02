@@ -40,6 +40,11 @@
 #import <Quartz/Quartz.h>
 
 
+extern NSString *SKPDFAnnotationQuadrilateralPointsKey;
+
+extern NSString *SKPDFAnnotationSelectionSpecifierKey;
+
+
 extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 
