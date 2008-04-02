@@ -1,10 +1,10 @@
 //
-//  SKColorSwatch.h
+//  NSSegmentedControl_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/4/07.
+//  Created by Christiaan Hofman on 4/2/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,29 +36,39 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSSegmentedControl_SKExtensions.h"
 
-extern NSString *SKColorSwatchColorsChangedNotification;
 
-@interface SKColorSwatch : NSControl {
-    NSMutableArray *colors;
-    int highlightedIndex;
-    int focusedIndex;
-    int clickedIndex;
-    int draggedIndex;
-    
-    SEL action;
-    id target;
-    
-    NSMutableDictionary *bindingInfo;
+@implementation NSSegmentedControl (SKExtensions)
+
+- (void)makeCapsule {
+    NSRect frame = [self frame];
+    if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
+        [self setSegmentStyle:NSSegmentStyleCapsule];
+        frame.size.height = 23.0;
+    } else {
+        frame.size.height = 25.0;
+    }
+    [self setFrame:frame];
 }
 
-- (NSArray *)colors;
-- (void)setColors:(NSArray *)newColors;
+- (void)makeTexturedRounded {
+    NSRect frame = [self frame];
+    frame.size.height = 25.0;
+    [self setFrame:frame];
+    if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
+        [self setSegmentStyle:NSSegmentStyleTexturedRounded];
+    }
+}
 
-- (int)clickedColorIndex;
-- (NSColor *)color;
+- (NSInteger)selectedTag {
+    return [[self cell] tagForSegment:[self selectedSegment]];
+}
 
-- (int)colorIndexAtPoint:(NSPoint)point;
+- (void)setEnabledForAllSegments:(BOOL)enabled  {
+    unsigned i, count = [self segmentCount];
+    for (i = 0; i < count; i++)
+        [self setEnabled:enabled forSegment:i];
+}
 
 @end
