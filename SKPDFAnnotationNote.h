@@ -101,6 +101,7 @@ extern NSString *SKPDFAnnotationRichTextKey;
 - (NSString *)type;
 - (PDFPage *)page;
 - (unsigned int)pageIndex;
-- (NSAttributedString *)string;
+- (NSString *)string;
+- (NSAttributedString *)text;
 
 @end

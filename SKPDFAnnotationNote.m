@@ -235,11 +235,11 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 - (void)textStorageDidProcessEditing:(NSNotification *)notification;
 {
     [self willChangeValueForKey:SKPDFAnnotationTextKey];
-    [texts makeObjectsPerformSelector:@selector(willChangeValueForKey:) withObject:SKPDFAnnotationStringKey];
+    [texts makeObjectsPerformSelector:@selector(willChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
     [text release];
     text = [[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:textStorage];
     [self didChangeValueForKey:SKPDFAnnotationTextKey];
-    [texts makeObjectsPerformSelector:@selector(didChangeValueForKey:) withObject:SKPDFAnnotationStringKey];
+    [texts makeObjectsPerformSelector:@selector(didChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
     [self updateContents];
 }
 
@@ -350,8 +350,10 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (PDFPage *)page { return nil; }
 
+- (NSString *)string { return [[self text] string]; }
+
 - (unsigned int)pageIndex { return [annotation pageIndex]; }
 
-- (NSAttributedString *)string { return [annotation text]; }
+- (NSAttributedString *)text { return [annotation text]; }
 
 @end
