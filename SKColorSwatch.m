@@ -436,39 +436,3 @@ static NSString *SKColorsBindingName = @"colors";
 }
 
 @end
-
-#pragma mark -
-
-NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
-
-@implementation SKUnarchiveFromDataArrayTransformer
-
-+ (Class)transformedValueClass {
-    return [NSArray class];
-}
-
-+ (BOOL)allowsReverseTransformation {
-    return YES;
-}
-
-- (id)transformedValue:(id)array {
-    NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
-    NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
-    NSEnumerator *objEnum = [array objectEnumerator];
-    NSData *obj;
-    while (obj = [objEnum nextObject])
-        [transformedArray addObject:[unarchiveTransformer transformedValue:obj]];
-    return transformedArray;
-}
-
-- (id)reverseTransformedValue:(id)array {
-    NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
-    NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
-    NSEnumerator *objEnum = [array objectEnumerator];
-    NSData *obj;
-    while (obj = [objEnum nextObject])
-        [transformedArray addObject:[unarchiveTransformer reverseTransformedValue:obj]];
-    return transformedArray;
-}
-
-@end

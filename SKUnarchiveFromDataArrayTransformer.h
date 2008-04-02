@@ -1,10 +1,10 @@
 //
-//  SKColorSwatch.h
+//  SKUnarchiveFromDataArrayTransformer.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/4/07.
+//  Created by Christiaan Hofman on 4/2/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,27 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKColorSwatchColorsChangedNotification;
+extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@interface SKColorSwatch : NSControl {
-    NSMutableArray *colors;
-    int highlightedIndex;
-    int focusedIndex;
-    int clickedIndex;
-    int draggedIndex;
-    
-    SEL action;
-    id target;
-    
-    NSMutableDictionary *bindingInfo;
-}
-
-- (NSArray *)colors;
-- (void)setColors:(NSArray *)newColors;
-
-- (int)clickedColorIndex;
-- (NSColor *)color;
-
-- (int)colorIndexAtPoint:(NSPoint)point;
-
+@interface SKUnarchiveFromDataArrayTransformer : NSValueTransformer
 @end

@@ -1,10 +1,10 @@
 //
-//  SKColorSwatch.h
+//  SKUnarchiveFromDataArrayTransformer.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/4/07.
+//  Created by Christiaan Hofman on 4/2/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,29 +36,38 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKUnarchiveFromDataArrayTransformer.h"
 
-extern NSString *SKColorSwatchColorsChangedNotification;
+NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
-@interface SKColorSwatch : NSControl {
-    NSMutableArray *colors;
-    int highlightedIndex;
-    int focusedIndex;
-    int clickedIndex;
-    int draggedIndex;
-    
-    SEL action;
-    id target;
-    
-    NSMutableDictionary *bindingInfo;
+@implementation SKUnarchiveFromDataArrayTransformer
+
++ (Class)transformedValueClass {
+    return [NSArray class];
 }
 
-- (NSArray *)colors;
-- (void)setColors:(NSArray *)newColors;
++ (BOOL)allowsReverseTransformation {
+    return YES;
+}
 
-- (int)clickedColorIndex;
-- (NSColor *)color;
+- (id)transformedValue:(id)array {
+    NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
+    NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
+    NSEnumerator *objEnum = [array objectEnumerator];
+    NSData *obj;
+    while (obj = [objEnum nextObject])
+        [transformedArray addObject:[unarchiveTransformer transformedValue:obj]];
+    return transformedArray;
+}
 
-- (int)colorIndexAtPoint:(NSPoint)point;
+- (id)reverseTransformedValue:(id)array {
+    NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
+    NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
+    NSEnumerator *objEnum = [array objectEnumerator];
+    NSData *obj;
+    while (obj = [objEnum nextObject])
+        [transformedArray addObject:[unarchiveTransformer reverseTransformedValue:obj]];
+    return transformedArray;
+}
 
 @end
