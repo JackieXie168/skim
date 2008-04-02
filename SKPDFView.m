@@ -877,8 +877,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (IBAction)deselectAll:(id)sender {
-    if (toolMode == SKTextToolMode)
-        [self setCurrentSelection:nil];
+    [self setCurrentSelection:nil];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
