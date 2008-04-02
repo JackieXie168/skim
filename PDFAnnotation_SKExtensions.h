@@ -107,7 +107,6 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 - (BOOL)isNoteAnnotation;
 - (BOOL)isMarkupAnnotation;
-- (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
 - (BOOL)isMovable;
 - (BOOL)isEditable;

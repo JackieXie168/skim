@@ -47,6 +47,7 @@
 #import "SKPDFAnnotationMarkup.h"
 #import "SKPDFAnnotationFreeText.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKPDFAnnotationTemporary.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSCursor_SKExtensions.h"

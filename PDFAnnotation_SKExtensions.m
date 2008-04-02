@@ -291,8 +291,6 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 
 - (BOOL)isMarkupAnnotation { return NO; }
 
-- (BOOL)isTemporaryAnnotation { return NO; }
-
 - (BOOL)isResizable { return NO; }
 
 - (BOOL)isMovable { return NO; }
