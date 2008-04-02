@@ -39,10 +39,6 @@
 #import "SKPDFAnnotationFreeText.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationLine.h"
-#import "SKPDFAnnotationMarkup.h"
-#import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
@@ -121,10 +117,16 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 #pragma mark Scripting support
 
-- (NSDictionary *)scriptingProperties {
-    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectsForKeys:[NSArray arrayWithObjects:SKPDFAnnotationRichTextKey, SKPDFAnnotationScriptingIconTypeKey, SKPDFAnnotationStartPointAsQDPointKey, SKPDFAnnotationEndPointAsQDPointKey, SKPDFAnnotationScriptingStartLineStyleKey, SKPDFAnnotationScriptingEndLineStyleKey, SKPDFAnnotationSelectionSpecifierKey, nil]];
-    return properties;
++ (NSSet *)customScriptingKeys {
+    static NSSet *customFreeTextScriptingKeys = nil;
+    if (customFreeTextScriptingKeys == nil) {
+        NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
+        [customKeys addObject:SKPDFAnnotationFontNameKey];
+        [customKeys addObject:SKPDFAnnotationFontSizeKey];
+        customFreeTextScriptingKeys = [customKeys copy];
+        [customKeys release];
+    }
+    return customFreeTextScriptingKeys;
 }
 
 - (id)textContents {

@@ -395,6 +395,30 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
         return nil;
 }
 
+// overridden by subclasses to add or remove custom scripting keys relevant for the class, subclasses should call super first
++ (NSSet *)customScriptingKeys {
+    static NSSet *customScriptingKeys = nil;
+    if (customScriptingKeys == nil)
+        customScriptingKeys = [[NSSet alloc] initWithObjects:SKPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKPDFAnnotationDashPatternKey, nil];
+    return customScriptingKeys;
+}
+
+- (NSDictionary *)scriptingProperties {
+    // remove all custom properties that are not valid for this class
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    NSMutableSet *customKeys = [[NSMutableSet alloc] init];
+    [customKeys unionSet:[SKPDFAnnotationCircle customScriptingKeys]];
+    [customKeys unionSet:[SKPDFAnnotationSquare customScriptingKeys]];
+    [customKeys unionSet:[SKPDFAnnotationFreeText customScriptingKeys]];
+    [customKeys unionSet:[SKPDFAnnotationNote customScriptingKeys]];
+    [customKeys unionSet:[SKPDFAnnotationLine customScriptingKeys]];
+    [customKeys unionSet:[SKPDFAnnotationMarkup customScriptingKeys]];
+    [customKeys minusSet:[[self class] customScriptingKeys]];
+    [properties removeObjectsForKeys:[customKeys allObjects]];
+    [customKeys release];
+    return properties;
+}
+
 - (int)scriptingNoteType {
     if ([[self type] isEqualToString:SKFreeTextString])
         return SKScriptingTextNote;

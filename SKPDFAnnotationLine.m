@@ -38,10 +38,6 @@
 
 #import "SKPDFAnnotationLine.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationMarkup.h"
-#import "SKPDFAnnotationFreeText.h"
-#import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -235,10 +231,18 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 #pragma mark Scripting support
 
-- (NSDictionary *)scriptingProperties {
-    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    [properties removeObjectsForKeys:[NSArray arrayWithObjects:SKPDFAnnotationRichTextKey, SKPDFAnnotationFontNameKey, SKPDFAnnotationFontSizeKey, SKPDFAnnotationScriptingIconTypeKey, SKPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKPDFAnnotationDashPatternKey, SKPDFAnnotationSelectionSpecifierKey, nil]];
-    return properties;
++ (NSSet *)customScriptingKeys {
+    static NSSet *customLineScriptingKeys = nil;
+    if (customLineScriptingKeys == nil) {
+        NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
+        [customKeys addObject:SKPDFAnnotationStartPointAsQDPointKey];
+        [customKeys addObject:SKPDFAnnotationEndPointAsQDPointKey];
+        [customKeys addObject:SKPDFAnnotationScriptingStartLineStyleKey];
+        [customKeys addObject:SKPDFAnnotationScriptingEndLineStyleKey];
+        customLineScriptingKeys = [customKeys copy];
+        [customKeys release];
+    }
+    return customLineScriptingKeys;
 }
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
