@@ -87,6 +87,7 @@ static NSString *SKLargeMagnificationWidthKey = @"SKLargeMagnificationWidth";
 static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
 static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
 static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
+static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
@@ -2357,7 +2358,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
-        if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
+            ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setString:selString];
         }
@@ -2603,7 +2605,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
-            if ([[activeAnnotation type] isEqualToString:SKSquareString] || [[activeAnnotation type] isEqualToString:SKSquareString]) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
+                ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                 [activeAnnotation setString:selString];
             }
@@ -2817,7 +2820,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [wasSelection release];
             wasSelection = nil;
             if (didDrag && 
-                [[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableUpdateContentsFromEnclosedText"] == NO &&
+                [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                 ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                 [activeAnnotation setString:selString];
