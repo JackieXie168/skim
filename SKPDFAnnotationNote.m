@@ -79,6 +79,7 @@ NSString *SKPDFAnnotationImageKey = @"image";
 NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 NSString *SKPDFAnnotationRichTextKey = @"richText";
 
+NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 @implementation SKPDFAnnotationNote
 
@@ -318,7 +319,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (id)copyNoteAnnotation {
     NSRect bounds = [self bounds];
-    bounds.size = SKMakeSquareSize(16.0);
+    bounds.size = SKPDFAnnotationNoteSize;
     SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];

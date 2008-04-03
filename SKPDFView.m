@@ -92,8 +92,6 @@ static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateC
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
-#define ANCHORED_NOTE_SIZE SKMakeSquareSize(16.0)
-
 static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, BOOL lower);
 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
@@ -827,7 +825,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        NSSize defaultSize = isAlternate ? ANCHORED_NOTE_SIZE : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
+        NSSize defaultSize = isAlternate ? SKPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
         NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
         
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
@@ -1705,7 +1703,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (annotationType == SKCircleNote || annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         else if (annotationType == SKAnchoredNote)
-            bounds.size = ANCHORED_NOTE_SIZE;
+            bounds.size = SKPDFAnnotationNoteSize;
 	} else if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
         NSBeep();
         return;
@@ -1726,7 +1724,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        NSSize defaultSize = (annotationType == SKAnchoredNote) ? ANCHORED_NOTE_SIZE : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
+        NSSize defaultSize = (annotationType == SKAnchoredNote) ? SKPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
 		
 		// Convert to "page space".
 		center = SKIntegralPoint([self convertPoint: center toPage: page]);
@@ -2745,7 +2743,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
-                NSSize size = annotationMode == SKAnchoredNote ? ANCHORED_NOTE_SIZE : NSZeroSize;
+                NSSize size = annotationMode == SKAnchoredNote ? SKPDFAnnotationNoteSize : NSZeroSize;
                 NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
                 newActiveAnnotation = activeAnnotation;
