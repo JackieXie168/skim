@@ -60,7 +60,7 @@
     NSScrollView *scrollView = [self enclosingScrollView];
     NSView *documentView = [scrollView documentView];
     NSPoint point = [documentView visibleRect].origin;
-    point.y -= [scrollView verticalLineScroll];
+    point.y -= 4.0 * [scrollView verticalLineScroll];
     [documentView scrollPoint:point];
 }
 
@@ -68,7 +68,7 @@
     NSScrollView *scrollView = [self enclosingScrollView];
     NSView *documentView = [scrollView documentView];
     NSPoint point = [documentView visibleRect].origin;
-    point.y += [scrollView verticalLineScroll];
+    point.y += 4.0 * [scrollView verticalLineScroll];
     [documentView scrollPoint:point];
 }
 
@@ -76,7 +76,7 @@
     NSScrollView *scrollView = [self enclosingScrollView];
     NSView *documentView = [scrollView documentView];
     NSPoint point = [documentView visibleRect].origin;
-    point.x -= [scrollView horizontalLineScroll];
+    point.x -= 4.0 * [scrollView horizontalLineScroll];
     [documentView scrollPoint:point];
 }
 
@@ -84,7 +84,7 @@
     NSScrollView *scrollView = [self enclosingScrollView];
     NSView *documentView = [scrollView documentView];
     NSPoint point = [documentView visibleRect].origin;
-    point.x += [scrollView horizontalLineScroll];
+    point.x += 4.0 * [scrollView horizontalLineScroll];
     [documentView scrollPoint:point];
 }
 
