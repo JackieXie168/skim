@@ -45,7 +45,7 @@
 #import "NSString_SKExtensions.h"
 
 
-int SKScriptingIconTypeFromIconType(int iconType) {
+unsigned long SKScriptingIconTypeFromIconType(int iconType) {
     switch (iconType) {
         case kPDFTextAnnotationIconComment: return SKScriptingTextAnnotationIconComment;
         case kPDFTextAnnotationIconKey: return SKScriptingTextAnnotationIconKey;
@@ -58,7 +58,7 @@ int SKScriptingIconTypeFromIconType(int iconType) {
     }
 }
 
-int SKIconTypeFromScriptingIconType(int iconType) {
+int SKIconTypeFromScriptingIconType(unsigned long iconType) {
     switch (iconType) {
         case SKScriptingTextAnnotationIconComment: return kPDFTextAnnotationIconComment;
         case SKScriptingTextAnnotationIconKey: return kPDFTextAnnotationIconKey;
@@ -273,11 +273,11 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     return customNoteScriptingKeys;
 }
 
-- (int)scriptingIconType {
+- (unsigned long)scriptingIconType {
     return SKScriptingIconTypeFromIconType([self iconType]);
 }
 
-- (void)setScriptingIconType:(int)type {
+- (void)setScriptingIconType:(unsigned long)type {
     [self setIconType:SKIconTypeFromScriptingIconType(type)];
 }
 
