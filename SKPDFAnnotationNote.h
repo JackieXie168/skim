@@ -62,6 +62,8 @@ extern NSString *SKPDFAnnotationImageKey;
 extern NSString *SKPDFAnnotationScriptingIconTypeKey;
 extern NSString *SKPDFAnnotationRichTextKey;
 
+extern NSSize SKPDFAnnotationNoteSize;
+
 
 @interface PDFAnnotationText (SKLeopardDeprecated)
 // these are deprecated on 10.5, but we don't want to use the popup for 10.4 compatibility; we check for existence before using this anyway

@@ -90,12 +90,11 @@ NSString *SKPDFAnnotationDashPatternKey = @"dashPattern";
 NSString *SKPDFAnnotationScriptingNoteTypeKey = @"scriptingNoteType";
 NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 
-@implementation PDFAnnotation (SKExtensions)
+enum {
+    SKPDFAnnotationScriptingNoteClassCode = 'Note'
+};
 
-- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
-    [[self initWithBounds:NSZeroRect] release];
-    return nil;
-}
+@implementation PDFAnnotation (SKExtensions)
 
 - (id)initWithProperties:(NSDictionary *)dict{
     Class stringClass = [NSString class];
@@ -327,13 +326,14 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
         unsigned long classCode = [[(NSCreateCommand *)currentCommand createClassDescription] appleEventCode];
-        float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
-        float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+        NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
+        bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+        bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
        
-        if (classCode == 'Note') {
+        if (classCode == SKPDFAnnotationScriptingNoteClassCode) {
             
             NSDictionary *properties = [(NSCreateCommand *)currentCommand resolvedKeyDictionary];
-            int type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] intValue];
+            unsigned long type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
             
             if (type == 0) {
                 [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -360,15 +360,16 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
                     }
                 }
             } else if (type == SKScriptingTextNote) {
-                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
+                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
             } else if (type == SKScriptingAnchoredNote) {
-                self = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+                bounds.size = SKPDFAnnotationNoteSize;
+                self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
             } else if (type == SKScriptingCircleNote) {
-                self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
+                self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
             } else if (type == SKScriptingSquareNote) {
-                self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
+                self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
-                self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
+                self = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
             }
         }
     }
