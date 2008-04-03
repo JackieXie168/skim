@@ -1432,9 +1432,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         id document = nil;
         if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKDocument class]) {
             if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-                PDFPage *page = [[document pdfDocument] pageAtIndex:[action pageIndex]];
-                PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
-                [[document pdfView] goToDestination:dest];
+                unsigned int pageIndex = [action pageIndex];
+                if (pageIndex < [[document pdfDocument] pageCount]) {
+                    PDFPage *page = [[document pdfDocument] pageAtIndex:pageIndex];
+                    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
+                    [[document pdfView] goToDestination:dest];
+                }
             } else if (error) {
                 [NSApp presentError:error];
             }
