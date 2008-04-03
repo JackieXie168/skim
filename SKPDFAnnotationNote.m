@@ -83,7 +83,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 @implementation SKPDFAnnotationNote
 
-- (id)initWithBounds:(NSRect)bounds {log_method();
+- (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setShouldPrint:YES];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
