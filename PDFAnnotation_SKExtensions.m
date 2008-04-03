@@ -529,7 +529,8 @@ NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 @implementation PDFAnnotationLink (SKExtensions)
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
-- (NSString *)toolTip { return nil; }
-- (NSString *)toolTipNoLabel { return nil; }
+- (NSString *)toolTip {
+    return ([self URL] || [self destination]) ? nil : [super toolTip];
+}
 
 @end
