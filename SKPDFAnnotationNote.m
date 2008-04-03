@@ -83,7 +83,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 @implementation SKPDFAnnotationNote
 
-- (id)initWithBounds:(NSRect)bounds {
+- (id)initWithBounds:(NSRect)bounds {log_method();
     if (self = [super initWithBounds:bounds]) {
         [self setShouldPrint:YES];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
@@ -114,7 +114,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
         Class imageClass = [NSImage class];
         NSAttributedString *aText = [dict objectForKey:SKPDFAnnotationTextKey];
         NSImage *anImage = [dict objectForKey:SKPDFAnnotationImageKey];
-        NSNumber *iconType = [dict objectForKey:SKPDFAnnotationTypeKey];
+        NSNumber *iconType = [dict objectForKey:SKPDFAnnotationIconTypeKey];
         if ([anImage isKindOfClass:imageClass])
             image = [anImage retain];
         if ([aText isKindOfClass:attrStringClass])
@@ -122,7 +122,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
         else if ([aText isKindOfClass:stringClass])
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withString:(NSString *)aText];
         if ([iconType respondsToSelector:@selector(intValue)])
-            [super setIconType:[iconType intValue]];
+            [self setIconType:[iconType intValue]];
         [self updateContents];
     }
     return self;
@@ -138,7 +138,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (NSDictionary *)properties{
     NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKPDFAnnotationTypeKey];
+    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKPDFAnnotationIconTypeKey];
     [dict setValue:[self text] forKey:SKPDFAnnotationTextKey];
     [dict setValue:[self image] forKey:SKPDFAnnotationImageKey];
     return dict;
