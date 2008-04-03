@@ -1422,6 +1422,31 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
+// we cannot use PDFAction and subclasses, because those are Leopard only
+- (void)performAction:(id)action {
+    // PDFView does not handle the PDFActionRemoteGoTo, so we do it
+    if ([action isKindOfClass:NSClassFromString(@"PDFActionRemoteGoTo")]) {
+        NSURL *fileURL = [action URL];
+        NSError *error = nil;
+        NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
+        id document = nil;
+        if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKDocument class]) {
+            if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+                PDFPage *page = [[document pdfDocument] pageAtIndex:[action pageIndex]];
+                PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
+                [[document pdfView] goToDestination:dest];
+            } else if (error) {
+                [NSApp presentError:error];
+            }
+        } else if (fileURL) {
+            // fall back to just opening the file and ignore the destination
+            [[NSWorkspace sharedWorkspace] openURL:fileURL];
+        }
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+        [super performAction:action];
+    }
+}
+
 #pragma mark Tracking mousemoved fix
 
 - (void)resetBoundsTrackingRect {
