@@ -78,14 +78,12 @@ int main (int argc, const char * argv[]) {
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
         NSDate *distantFuture = [NSDate distantFuture];
-        NSAutoreleasePool *runpool = [NSAutoreleasePool new];
         
         do {
-            [runpool release];
-            runpool = [NSAutoreleasePool new];
+            [pool release];
+            pool = [NSAutoreleasePool new];
             didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:distantFuture];
         } while (listener && didRun);
-        [runpool release];
         
         [listener release];
         
