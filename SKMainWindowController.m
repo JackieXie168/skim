@@ -1427,8 +1427,13 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)goToSelectedOutlineItem {
+    PDFOutline *outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
+    PDFDestination *dest = [outlineItem destination];
     updatingOutlineSelection = YES;
-    [self goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+    if (dest)
+        [self goToDestination:dest];
+    else if ([outlineItem respondsToSelector:@selector(action)] && [outlineItem action])
+        [pdfView performAction:[outlineItem action]];
     updatingOutlineSelection = NO;
 }
 
@@ -3813,9 +3818,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
-        updatingOutlineSelection = YES;
-		[self goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
-        updatingOutlineSelection = NO;
+        [self goToSelectedOutlineItem];
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
     }
