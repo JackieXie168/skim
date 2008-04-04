@@ -214,7 +214,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
     magnification = 0.0;
-    didDrag = NO;
+    didSelect = NO;
     mouseDownInAnnotation = NO;
     
     trackingRect = 0;
@@ -409,7 +409,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         float color[4] = { 0.0, 0.0, 0.0, 1.0 };
         CGContextSetStrokeColor(context, color);
         CGContextStrokeRect(context, *(CGRect *)&rect);
-    } else if (toolMode == SKSelectToolMode && (didDrag || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
+    } else if (toolMode == SKSelectToolMode && (didSelect || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         float color[4] = { 0.0, 0.0, 0.0, 0.6 };
         float radius = 4.0 / [self scaleFactor];
@@ -986,8 +986,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         return;
     }
     
-    didDrag = NO;
-    
     if (modifiers & NSCommandKeyMask) {
         if (modifiers & NSShiftKeyMask)
             [self pdfsyncWithEvent:theEvent];
@@ -1085,7 +1083,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             // shouldn't reach this
             break;
     }
-    didDrag = NO;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
@@ -1109,7 +1106,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             // shouldn't reach this
             break;
     }
-    didDrag = YES;
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
@@ -2839,17 +2835,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setNeedsDisplayForAnnotation:activeAnnotation];
         
         if ([activeAnnotation isMovable]) {
-            didDrag = NO;
+            BOOL draggedAnnotation = NO;
             while (YES) {
                 theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
                 if ([theEvent type] == NSLeftMouseUp)
                     break;
                 [self dragAnnotationWithEvent:theEvent];
-                didDrag = YES;
+                draggedAnnotation = YES;
             }
             if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString])
                 [self editActiveAnnotation:self]; 	 
-            if (didDrag && 
+            if (draggedAnnotation && 
                 [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                 ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
@@ -2858,7 +2854,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setNeedsDisplayForAnnotation:activeAnnotation];
             mouseDownInAnnotation = NO;
             dragMask = 0;
-            didDrag = NO;
         }
     }
     
@@ -3097,10 +3092,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (NSIsEmptyRect(selectionRect) || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
         if (NSIsEmptyRect(selectionRect)) {
-            didDrag = NO;
+            didSelect = NO;
         } else {
             [self setNeedsDisplay:YES];
-            didDrag = YES;
+            didSelect = YES;
         }
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
@@ -3114,7 +3109,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             dragMask |= BDSKMinYEdgeMask;
         else if (initialPoint.y > NSMaxY(selectionRect) - margin)
             dragMask |= BDSKMaxYEdgeMask;
-        didDrag = YES;
+        didSelect = YES;
     }
     
 	NSRect initialRect = selectionRect;
@@ -3177,7 +3172,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         // don't use NSIntersectionRect, because we want to keep empty rects
         newRect = SKIntersectionRect(newRect, pageBounds);
-        if (didDrag) {
+        if (didSelect) {
             NSRect dirtyRect = NSUnionRect(NSInsetRect(selectionRect, -margin, -margin), NSInsetRect(newRect, -margin, -margin));
             NSRange r = [self visiblePageIndexRange];
             unsigned int i;
@@ -3185,13 +3180,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self setNeedsDisplayInRect:dirtyRect ofPage:[[self document] pageAtIndex:i]];
         } else {
             [self setNeedsDisplay:YES];
-            didDrag = YES;
+            didSelect = YES;
         }
         selectionRect = newRect;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
 	}
     
-    didDrag = NO;
+    didSelect = NO;
     
     if (NSIsEmptyRect(selectionRect)) {
         selectionRect = NSZeroRect;
