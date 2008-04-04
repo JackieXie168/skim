@@ -475,6 +475,7 @@
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CE37EDBD0DA6E36F00D1B29F /* cs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = cs; path = "cs.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
@@ -1745,7 +1746,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** Indexing Help ***\"\ncd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor LOC_DIR in *.lproj; do\n\tif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\";\n\telif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\";\n\telif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\";\n\telif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\";\n\telif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\";\n\telif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\";\n\telif [ \"${LOC_DIR}\" = \"Dutch.lproj\" ]; then LANG=\"${SOURCE_ROOT}/Skim Help/stopwords-nl.txt\";\n\telse LANG=\"en\";\n\tfi;\n\tif [ \"${LOC_DIR}\" = \"Japanese.lproj\" -o \"${LOC_DIR}\" = \"zh_CN.lproj\" -o \"${LOC_DIR}\" = \"zh_TW.lproj\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\" \\\n\t\t\"${LOC_DIR}/Skim Help\" \\\n\t\t-ShowProgress NO \\\n\t\t-LogStyle 2 \\\n\t\t-IndexAnchors YES \\\n\t\t-TigerIndexing YES \\\n\t\t-GenerateSummaries YES \\\n\t\t-Stopwords \"${LANG}\" \\\n\t\t-MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** Indexing Help ***\"\ncd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor LOC_DIR in *.lproj; do\n\techo \"*** Indexing Help for ${LOC_DIR} ***\"\n\tif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\";\n\telif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\";\n\telif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\";\n\telif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\";\n\telif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\";\n\telif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\";\n\telif [ \"${LOC_DIR}\" = \"Dutch.lproj\" ]; then LANG=\"${SOURCE_ROOT}/Skim Help/stopwords-nl.txt\";\n\telse LANG=\"en\";\n\tfi;\n\tif [ \"${LOC_DIR}\" = \"Japanese.lproj\" -o \"${LOC_DIR}\" = \"zh_CN.lproj\" -o \"${LOC_DIR}\" = \"zh_TW.lproj\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\" \\\n\t\t\"${LOC_DIR}/Skim Help\" \\\n\t\t-ShowProgress NO \\\n\t\t-LogStyle 2 \\\n\t\t-IndexAnchors YES \\\n\t\t-TigerIndexing YES \\\n\t\t-GenerateSummaries YES \\\n\t\t-Stopwords \"${LANG}\" \\\n\t\t-MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
 		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2159,6 +2160,7 @@
 				CEC4C3550CA90CEE00299397 /* Spanish */,
 				CE68C6E40CEF8AFF00B082F1 /* German */,
 				CE4F969D0CFB49A800DBEA14 /* ru */,
+				CE37EDBD0DA6E36F00D1B29F /* cs */,
 			);
 			name = "Skim Help";
 			sourceTree = "<group>";
