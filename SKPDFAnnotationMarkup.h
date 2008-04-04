@@ -49,8 +49,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 
 @interface SKPDFAnnotationMarkup : PDFAnnotationMarkup {
-    NSRect *lineRects;
-    unsigned numberOfLines;
+    CFMutableArrayRef lineRects;
 }
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;

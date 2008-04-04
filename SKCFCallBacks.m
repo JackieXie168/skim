@@ -111,3 +111,11 @@ const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks = {
     SKNSRectCopyDescription,
     SKNSRectEqual
 };
+
+const CFArrayCallBacks SKNSRectArrayCallbacks = {
+    0, // version
+    SKNSRectRetain,
+    SKNSRectRelease,
+    SKNSRectCopyDescription,
+    SKNSRectEqual
+};
