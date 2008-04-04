@@ -1,5 +1,5 @@
 //
-//  SKCFDictionaryCallBacks.m
+//  SKCFCallBacks.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 3/20/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKCFDictionaryCallBacks.h"
+#import "SKCFCallBacks.h"
 
 
 const void *SKNSObjectRetain(CFAllocatorRef allocator, const void *value) {

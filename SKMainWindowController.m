@@ -88,7 +88,7 @@
 #import "SKSheetController.h"
 #import "OBUtilities.h"
 #import "SKApplicationController.h"
-#import "SKCFDictionaryCallbacks.h"
+#import "SKCFCallbacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 
 #define WINDOW_X_DELTA              0.0
