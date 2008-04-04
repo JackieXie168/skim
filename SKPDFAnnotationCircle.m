@@ -42,7 +42,7 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
-NSString *SKPDFAnnotationInteriorColorKey = @"color";
+NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
 @implementation SKPDFAnnotationCircle
 
