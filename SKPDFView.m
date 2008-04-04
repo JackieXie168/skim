@@ -215,7 +215,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
     magnification = 0.0;
-    draggingAnnotation = NO;
     didDrag = NO;
     mouseDownInAnnotation = NO;
     extendSelection = NO;
@@ -2807,8 +2806,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
         }
         
-        draggingAnnotation = [activeAnnotation isMovable];
-        
         // Hit-test for resize box.
         dragMask = 0;
         if ([[activeAnnotation type] isEqualToString:SKLineString]) {
@@ -2867,12 +2864,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [activeAnnotation setString:selString];
             }
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-            [wasSelection release];
-            wasSelection = nil;
             mouseDownInAnnotation = NO;
             dragMask = 0;
             didDrag = NO;
-            draggingAnnotation = NO;
         }
     }
     
