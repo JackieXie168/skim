@@ -249,11 +249,16 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 - (NSString *)toolTipNoLabel { return nil; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    NSMutableSet *keys = [[[super keysForValuesToObserveForUndo] mutableCopy] autorelease];
-    [keys addObject:SKPDFAnnotationIconTypeKey];
-    [keys addObject:SKPDFAnnotationTextKey];
-    [keys addObject:SKPDFAnnotationImageKey];
-    return keys;
+    static NSSet *noteKeys = nil;
+    if (noteKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys addObject:SKPDFAnnotationIconTypeKey];
+        [mutableKeys addObject:SKPDFAnnotationTextKey];
+        [mutableKeys addObject:SKPDFAnnotationImageKey];
+        noteKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return noteKeys;
 }
 
 #pragma mark Scripting support

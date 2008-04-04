@@ -221,12 +221,17 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    NSMutableSet *keys = [[[super keysForValuesToObserveForUndo] mutableCopy] autorelease];
-    [keys addObject:SKPDFAnnotationStartLineStyleKey];
-    [keys addObject:SKPDFAnnotationEndLineStyleKey];
-    [keys addObject:SKPDFAnnotationStartPointKey];
-    [keys addObject:SKPDFAnnotationEndPointKey];
-    return keys;
+    static NSSet *lineKeys = nil;
+    if (lineKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys addObject:SKPDFAnnotationStartLineStyleKey];
+        [mutableKeys addObject:SKPDFAnnotationEndLineStyleKey];
+        [mutableKeys addObject:SKPDFAnnotationStartPointKey];
+        [mutableKeys addObject:SKPDFAnnotationEndPointKey];
+        lineKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return lineKeys;
 }
 
 #pragma mark Scripting support

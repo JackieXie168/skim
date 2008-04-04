@@ -314,7 +314,10 @@ enum {
 }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    return [NSSet setWithObjects:SKPDFAnnotationBoundsKey, SKPDFAnnotationStringKey, SKPDFAnnotationColorKey, SKPDFAnnotationBorderKey, nil];
+    static NSSet *keys = nil;
+    if (keys == nil)
+        keys = [[NSSet alloc] initWithObjects:SKPDFAnnotationBoundsKey, SKPDFAnnotationStringKey, SKPDFAnnotationColorKey, SKPDFAnnotationBorderKey, nil];
+    return keys;
 }
 
 #pragma mark Scripting support
