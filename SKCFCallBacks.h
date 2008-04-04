@@ -1,5 +1,5 @@
 //
-//  SKCFDictionaryCallBacks.h
+//  SKCFCallBacks.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 3/20/08.

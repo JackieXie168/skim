@@ -120,7 +120,7 @@
 		CE5F71560C8CDF9A008BE480 /* NSCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
 		CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */; };
-		CE64E8A30D92E670000AD050 /* SKCFDictionaryCallBacks.m in Sources */ = {isa = PBXBuildFile; fileRef = CE64E8A20D92E670000AD050 /* SKCFDictionaryCallBacks.m */; };
+		CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */ = {isa = PBXBuildFile; fileRef = CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */; };
 		CE6A5BB20D663771003B7CC3 /* ToolbarPrint.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */; };
@@ -592,8 +592,8 @@
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
 		CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFontsBlack.tiff; path = Images/ToolbarFontsBlack.tiff; sourceTree = "<group>"; };
-		CE64E8A10D92E670000AD050 /* SKCFDictionaryCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFDictionaryCallBacks.h; sourceTree = "<group>"; };
-		CE64E8A20D92E670000AD050 /* SKCFDictionaryCallBacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCFDictionaryCallBacks.m; sourceTree = "<group>"; };
+		CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFCallBacks.h; sourceTree = "<group>"; };
+		CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCFCallBacks.m; sourceTree = "<group>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE68C62F0CEF891B00B082F1 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/InfoWindow.nib; sourceTree = "<group>"; };
@@ -1073,8 +1073,6 @@
 		CE070EC10B89063400733CC8 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				CE64E8A10D92E670000AD050 /* SKCFDictionaryCallBacks.h */,
-				CE64E8A20D92E670000AD050 /* SKCFDictionaryCallBacks.m */,
 				CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */,
 				CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */,
 				CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */,
@@ -1329,6 +1327,8 @@
 		CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
+				CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */,
+				CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */,
 				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
 				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
 				CE0464A00B84E3E400C11E4A /* OBUtilities.h */,
@@ -1959,7 +1959,7 @@
 				CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */,
 				CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */,
 				CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */,
-				CE64E8A30D92E670000AD050 /* SKCFDictionaryCallBacks.m in Sources */,
+				CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */,
 				CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */,
 				CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */,
 				CEE54D930DA2E5E10037169F /* SKPDFAnnotationCircle.m in Sources */,
