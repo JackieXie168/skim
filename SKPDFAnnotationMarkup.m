@@ -232,6 +232,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     } else {
                         // start of a new line
                         if (NSIsEmptyRect(lineRect) == NO) {
+                            if (lineRects == NULL)
+                                lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
                             CFArrayAppendValue(lineRects, &lineRect);
                             newBounds = NSUnionRect(lineRect, newBounds);
                         }
@@ -241,6 +243,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 }
             }
             if (NSIsEmptyRect(lineRect) == NO) {
+                if (lineRects == NULL)
+                    lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
                 CFArrayAppendValue(lineRects, &lineRect);
                 newBounds = NSUnionRect(lineRect, newBounds);
             }
@@ -298,6 +302,11 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
 
     unsigned j, jMax = [quadPoints count] / 4;
+    
+    if (lineRects == NULL)
+        lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
+    else
+        CFArrayRemoveAllValues(lineRects);
     
     for (j = 0; j < jMax; j += 1) {
         
