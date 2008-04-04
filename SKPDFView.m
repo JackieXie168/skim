@@ -207,7 +207,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     readingBar = nil;
     
     activeAnnotation = nil;
-    wasSelection = nil;
     wasBounds = NSZeroRect;
     wasStartPoint = NSZeroPoint;
     wasEndPoint = NSZeroPoint;
@@ -217,8 +216,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     magnification = 0.0;
     didDrag = NO;
     mouseDownInAnnotation = NO;
-    extendSelection = NO;
-    rectSelection = NO;
     
     trackingRect = 0;
     hoverRects = CFArrayCreateMutable(NULL, 0, NULL);
@@ -1021,6 +1018,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                             [self dragWithEvent:theEvent];
                         } else if (nil == activeAnnotation && mouseDownInAnnotation) {
                             [self selectTextWithEvent:theEvent];
+                            mouseDownInAnnotation = NO; 	 
                         } else {
                             [super mouseDown:theEvent];
                             if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
@@ -1070,8 +1068,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                          [self setActiveAnnotation:nil]; 	 
                  } 	 
                  mouseDownInAnnotation = NO; 	 
-                 [wasSelection release]; 	 
-                 wasSelection = nil; 	 
                  dragMask = 0; 	 
             }
             if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
@@ -1101,13 +1097,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
-            if (nil == activeAnnotation) {
-                if (mouseDownInAnnotation)
-                    // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
-                    [self selectTextWithEvent:theEvent];
-                else
-                    [super mouseDragged:theEvent];
-            }
+            // is this check still necessary?
+            if (nil == activeAnnotation)
+                [super mouseDragged:theEvent];
             break;
         case SKMoveToolMode:
             [super mouseDragged:theEvent];
@@ -3216,44 +3208,44 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)selectTextWithEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown) {
+    // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
+    PDFSelection *wasSelection = nil;
+    unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    BOOL rectSelection = (modifiers & NSAlternateKeyMask) != 0;
+    BOOL extendSelection = NO;
+    
+    if (rectSelection) {
+        [self setCurrentSelection:nil];
+    } else if ([theEvent clickCount] > 1) {
+        extendSelection = YES;
+        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:p nearest:YES];
+        p = [self convertPoint:p toPage:page];
+        if ([theEvent clickCount] == 2)
+            wasSelection = [[page selectionForWordAtPoint:p] retain];
+        else if ([theEvent clickCount] == 3)
+            wasSelection = [[page selectionForLineAtPoint:p] retain];
+        else
+            wasSelection = nil;
+        [self setCurrentSelection:wasSelection];
+    } else if (modifiers & NSShiftKeyMask) {
+        extendSelection = YES;
+        wasSelection = [[self currentSelection] retain];
+        NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:p nearest:YES];
+        p = [self convertPoint:p toPage:page];
+        [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
+    } else {
+        [self setCurrentSelection:nil];
+    }
+    
+    while (YES) {
+		
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		if ([theEvent type] == NSLeftMouseUp)
+            break;
         
-        unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-        
-        if (modifiers & NSAlternateKeyMask) {
-            rectSelection = YES;
-            extendSelection = NO;
-            [self setCurrentSelection:nil];
-        } else if ([theEvent clickCount] > 1) {
-            rectSelection = NO;
-            extendSelection = YES;
-            NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-            PDFPage *page = [self pageForPoint:p nearest:YES];
-            p = [self convertPoint:p toPage:page];
-            if ([theEvent clickCount] == 2)
-                wasSelection = [[page selectionForWordAtPoint:p] retain];
-            else if ([theEvent clickCount] == 3)
-                wasSelection = [[page selectionForLineAtPoint:p] retain];
-            else
-                wasSelection = nil;
-            [self setCurrentSelection:wasSelection];
-        } else if (modifiers & NSShiftKeyMask) {
-            rectSelection = NO;
-            extendSelection = YES;
-            wasSelection = [[self currentSelection] retain];
-            NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-            PDFPage *page = [self pageForPoint:p nearest:YES];
-            p = [self convertPoint:p toPage:page];
-            [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
-        } else {
-            rectSelection = NO;
-            extendSelection = NO;
-            [self setCurrentSelection:nil];
-        }
-        
-    } else if ([theEvent type] == NSLeftMouseDragged) {
-        // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
-
+        // dragging
         // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
         NSPoint mouseDownLocInDoc = [[self documentView] convertPoint:mouseDownLoc fromView:nil];
         if ([[self documentView] autoscroll:theEvent])
@@ -3286,6 +3278,11 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
         [self setCurrentSelection:sel];
         
+    }
+    
+    if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+        [self addAnnotationWithType:annotationMode];
+        [self setCurrentSelection:nil];
     }
 }
 
