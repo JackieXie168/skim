@@ -296,6 +296,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)chooseScale:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
+- (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
 - (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)changeLeftSidePaneState:(id)sender;

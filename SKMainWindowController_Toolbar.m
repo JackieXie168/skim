@@ -43,6 +43,7 @@
 #import "SKPDFView.h"
 #import "SKColorSwatch.h"
 #import "SKUnarchiveFromDataArrayTransformer.h"
+#import "SKApplicationController.h"
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbar";
 
@@ -705,7 +706,6 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [item release];
     
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Lines", @"Menu item title") action:@selector(orderFrontLineInspector:) keyEquivalent:@""] autorelease];
-	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarLinesItemIdentifier];
     [item setLabels:NSLocalizedString(@"Lines", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Lines", @"Tool tip message")];
