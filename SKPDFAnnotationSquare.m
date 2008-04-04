@@ -92,9 +92,14 @@
 - (BOOL)isMovable { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    NSMutableSet *keys = [[[super keysForValuesToObserveForUndo] mutableCopy] autorelease];
-    [keys addObject:SKPDFAnnotationInteriorColorKey];
-    return keys;
+    static NSSet *squareKeys = nil;
+    if (squareKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys addObject:SKPDFAnnotationInteriorColorKey];
+        squareKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return squareKeys;
 }
 
 #pragma mark Scripting support

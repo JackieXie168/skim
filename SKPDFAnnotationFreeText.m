@@ -110,9 +110,14 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 - (BOOL)isEditable { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    NSMutableSet *keys = [[[super keysForValuesToObserveForUndo] mutableCopy] autorelease];
-    [keys addObject:SKPDFAnnotationFontKey];
-    return keys;
+    static NSSet *freeTextKeys = nil;
+    if (freeTextKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys addObject:SKPDFAnnotationFontKey];
+        freeTextKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return freeTextKeys;
 }
 
 #pragma mark Scripting support

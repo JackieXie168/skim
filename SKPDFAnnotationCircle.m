@@ -92,9 +92,14 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 - (BOOL)isMovable { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
-    NSMutableSet *keys = [[[super keysForValuesToObserveForUndo] mutableCopy] autorelease];
-    [keys addObject:SKPDFAnnotationInteriorColorKey];
-    return keys;
+    static NSSet *circleKeys = nil;
+    if (circleKeys == nil) {
+        NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
+        [mutableKeys addObject:SKPDFAnnotationInteriorColorKey];
+        circleKeys = [mutableKeys copy];
+        [mutableKeys release];
+    }
+    return circleKeys;
 }
 
 #pragma mark Scripting support
