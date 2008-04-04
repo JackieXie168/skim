@@ -41,17 +41,6 @@
 #import "BDSKEdgeView.h"
 
 
-@interface NSScrollView (SKPrivateExtensions) 
-
-- (BOOL)replacementHasHorizontalScroller;
-- (BOOL)replacementHasVerticalScroller;
-- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
-- (void)replacementSetHasVerticalScroller:(BOOL)flag;
-- (void)replacementDealloc;
-- (void)replacementTile;
-
-@end
-
 @implementation NSScrollView (SKExtensions)
 
 static IMP originalSetHasHorizontalScroller = NULL;
@@ -66,22 +55,6 @@ static CFMutableSetRef scrollViewsWithoutHorizontalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithVerticalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
 static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
-
-+ (void)load{
-    originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
-    originalSetHasVerticalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasVerticalScroller:), @selector(replacementSetHasVerticalScroller:));
-    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
-    originalHasVerticalScroller = (typeof(originalHasVerticalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasVerticalScroller), @selector(replacementHasVerticalScroller));
-    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    originalTile = OBReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
-    
-    // set doesn't retain, so no retain cycles; pointer equality used to compare views
-    scrollViewsWithHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-    scrollViewsWithoutHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-    scrollViewsWithVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-    scrollViewsWithoutVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-    scrollViewSubcontrols = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
-}
 
 - (void)replacementDealloc;
 {
@@ -209,6 +182,21 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
     }
 }
 
++ (void)load{
+    originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
+    originalSetHasVerticalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasVerticalScroller:), @selector(replacementSetHasVerticalScroller:));
+    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
+    originalHasVerticalScroller = (typeof(originalHasVerticalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasVerticalScroller), @selector(replacementHasVerticalScroller));
+    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    originalTile = OBReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
+    
+    // set doesn't retain, so no retain cycles; pointer equality used to compare views
+    scrollViewsWithHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
+    scrollViewsWithoutHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
+    scrollViewsWithVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
+    scrollViewsWithoutVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
+    scrollViewSubcontrols = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
+}
 
 - (NSArray *)subcontrols {
     return (NSArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);

@@ -151,16 +151,11 @@
 #pragma mark -
 
 @interface NSLevelIndicatorCell (SKExtensions)
-- (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
 @end
 
 @implementation NSLevelIndicatorCell (SKExtensions)
 
 static IMP originalDrawWithFrameInView = NULL;
-
-+ (void)load {
-    originalDrawWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
-}
 
 // Drawing does not restrict the clip, while in discrete style it heavily uses gaussian blur, leading to unacceptable slow drawing
 // see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
@@ -174,6 +169,10 @@ static IMP originalDrawWithFrameInView = NULL;
     [NSGraphicsContext restoreGraphicsState];
     if (drawDiscreteContinuous)
         [self setLevelIndicatorStyle:NSDiscreteCapacityLevelIndicatorStyle];
+}
+
++ (void)load {
+    originalDrawWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
 }
 
 @end

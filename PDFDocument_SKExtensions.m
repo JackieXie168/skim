@@ -46,22 +46,9 @@
 @end
 
 
-@interface PDFDocument (SKPrivateExtensions)
-- (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
-- (void)replacementCleanupAfterPrintOperation:(NSPrintOperation *)printOperation;
-@end
-
-
 @implementation PDFDocument (SKExtensions)
 
 static IMP originalGetPrintOperationForPrintInfo = NULL;
-
-+ (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        originalGetPrintOperationForPrintInfo = OBReplaceMethodImplementationWithSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:));
-    [pool release];
-}
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
@@ -84,6 +71,13 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
             [printPanel addAccessoryController:printAccessoryViewController];
     } 
     return printOperation;
+}
+
++ (void)load {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
+        originalGetPrintOperationForPrintInfo = OBReplaceMethodImplementationWithSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:));
+    [pool release];
 }
 
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {

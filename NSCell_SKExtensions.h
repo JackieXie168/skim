@@ -42,5 +42,4 @@
 
 
 @interface NSCell (SKExtensions)
-- (NSColor *)replacementHighlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
 @end
