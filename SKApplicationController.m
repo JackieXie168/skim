@@ -66,6 +66,8 @@
 #import "NSView_SKExtensions.h"
 #import "OBUtilities.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationNote.h"
 #import "SKRemoteStateWindow.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
