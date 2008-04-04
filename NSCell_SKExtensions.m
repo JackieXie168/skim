@@ -47,15 +47,15 @@
 
 static IMP originalHighlightColorWithFrameInView = NULL;
 
-+ (void)load {
-    originalHighlightColorWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:));
-}
-
 - (NSColor *)replacementHighlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     if ([controlView respondsToSelector:@selector(highlightColor)])
         return [(id)controlView highlightColor];
     else
         return originalHighlightColorWithFrameInView(self, _cmd, cellFrame, controlView);
+}
+
++ (void)load {
+    originalHighlightColorWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:));
 }
 
 @end

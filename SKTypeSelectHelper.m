@@ -48,10 +48,6 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range;
 @end
 
-@interface NSWindow (SKTypeAheadHelperExtensions)
-- (BOOL)replacementMakeFirstResponder:(NSResponder *)aResponder;
-@end
-
 #pragma mark -
 
 @interface SKTypeSelectHelper (SKPrivate)
@@ -416,13 +412,12 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 
 #pragma mark -
 
+@interface NSWindow (SKTypeAheadHelperExtensions)
+@end
+
 @implementation NSWindow (SKTypeAheadHelperExtensions)
 
 static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
-
-+ (void)load {
-    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))OBReplaceMethodImplementationWithSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:));
-}
 
 - (BOOL)replacementMakeFirstResponder:(NSResponder *)aResponder {
     id oldFirstResponder = [self firstResponder];
@@ -430,6 +425,10 @@ static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
     if (oldFirstResponder != [self firstResponder])
         [[NSNotificationCenter defaultCenter] postNotificationName:SKWindowDidChangeFirstResponderNotification object:self];
     return success;
+}
+
++ (void)load {
+    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))OBReplaceMethodImplementationWithSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:));
 }
 
 @end

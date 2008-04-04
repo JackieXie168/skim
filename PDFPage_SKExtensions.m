@@ -46,16 +46,12 @@
 #import "SKStringConstants.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKCFDictionaryCallBacks.h"
+#import "SKCFCallBacks.h"
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
 
 static NSString *SKAutoCropBoxMarginWidthKey = @"SKAutoCropBoxMarginWidth";
 static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
-
-@interface PDFPage (SKReplacementMethods)
-- (void)replacementDealloc;
-@end
 
 @implementation PDFPage (SKExtensions) 
 
@@ -65,14 +61,14 @@ static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
 static CFMutableDictionaryRef bboxCache = NULL;
 static IMP originalDealloc = NULL;
 
-+ (void)load {
-    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
-}
-
 - (void)replacementDealloc {
     CFDictionaryRemoveValue(bboxCache, self);
     originalDealloc(self, _cmd);
+}
+
++ (void)load {
+    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
 }
 
 // mainly useful for drawing the box in a PDFView while debugging

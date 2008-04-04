@@ -3894,23 +3894,22 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 @end
 
 @interface PDFDisplayView (SKExtensions)
-- (void)replacementPasswordEntered:(id)sender;
 @end
 
 @implementation PDFDisplayView (SKExtensions)
 
 static IMP originalPasswordEntered = NULL;
 
-+ (void)load {
-    if ([self instancesRespondToSelector:@selector(passwordEntered:)])
-        originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
-}
-
 - (void)replacementPasswordEntered:(id)sender {
     SKDocument *document = [[[self window] windowController] document];
     originalPasswordEntered(self, _cmd, sender);
     if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
         [document savePasswordInKeychain:[sender stringValue]];
+}
+
++ (void)load {
+    if ([self instancesRespondToSelector:@selector(passwordEntered:)])
+        originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
 }
 
 @end
