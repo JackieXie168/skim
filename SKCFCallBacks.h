@@ -68,3 +68,6 @@ extern const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks
 extern const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks;
 
 extern const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks;
+
+
+extern const CFArrayCallBacks SKNSRectArrayCallbacks;

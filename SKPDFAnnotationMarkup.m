@@ -43,6 +43,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKCFCallbacks.h"
 
 
 NSString *SKPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
@@ -138,8 +139,7 @@ static NSColor *defaultColorForMarkupType(int markupType)
         NSArray *quadPoints = pointStrings ? createPointsFromStrings(pointStrings) : createQuadPointsWithBounds(bounds, bounds.origin);
         [self setQuadrilateralPoints:quadPoints];
         [quadPoints release];
-        numberOfLines = 0;
-        lineRects = NULL;
+        lineRects = nil;
     }
     return self;
 }
@@ -177,16 +177,9 @@ static NSColor *defaultColorForMarkupType(int markupType)
             [quadPoints release];
         }
         
-        numberOfLines = 0;
-        lineRects = NULL;
+        lineRects = nil;
     }
     return self;
-}
-
-- (void)addLineRect:(NSRect)aRect {
-    numberOfLines++;
-    lineRects = NSZoneRealloc([self zone], lineRects, numberOfLines * sizeof(NSRect));
-    lineRects[numberOfLines - 1] = aRect;
 }
 
 static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
@@ -239,7 +232,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     } else {
                         // start of a new line
                         if (NSIsEmptyRect(lineRect) == NO) {
-                            [self addLineRect:lineRect];
+                            CFArrayAppendValue(lineRects, &lineRect);
                             newBounds = NSUnionRect(lineRect, newBounds);
                         }
                         // ignore whitespace at the beginning of the new line
@@ -248,7 +241,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 }
             }
             if (NSIsEmptyRect(lineRect) == NO) {
-                [self addLineRect:lineRect];
+                CFArrayAppendValue(lineRects, &lineRect);
                 newBounds = NSUnionRect(lineRect, newBounds);
             }
             if (NSIsEmptyRect(newBounds)) {
@@ -256,8 +249,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 self = nil;
             } else {
                 [self setBounds:newBounds];
-                for (i = 0; i < numberOfLines; i++) {
-                    NSArray *quadLine = createQuadPointsWithBounds(lineRects[i], [self bounds].origin);
+                iMax = CFArrayGetCount(lineRects);
+                for (i = 0; i < iMax; i++) {
+                    NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lineRects, i), [self bounds].origin);
                     [quadPoints addObjectsFromArray:quadLine];
                     [quadLine release];
                 }
@@ -271,7 +265,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (void)dealloc
 {
-    if (lineRects) NSZoneFree([self zone], lineRects);
+    if (lineRects) CFRelease(lineRects);
     [super dealloc];
 }
 
@@ -321,20 +315,20 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         lineRect.size.height = points[1].y - points[2].y;
         lineRect.size.width = points[1].x - points[2].x;
         lineRect.origin = SKAddPoints(points[2], [self bounds].origin);
-        [self addLineRect:lineRect];
+        CFArrayAppendValue(lineRects, &lineRect);
     }
 }
 
 - (PDFSelection *)selection {
-    if (0 == numberOfLines)
+    if (lineRects == nil)
         [self regenerateLineRects];
     
     PDFSelection *sel, *selection = nil;
-    unsigned i;
+    unsigned i, iMax = CFArrayGetCount(lineRects);
     
-    for (i = 0; i < numberOfLines; i++) {
+    for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
-        if (sel = [[self page] selectionForRect:NSInsetRect(lineRects[i], -1.0, -1.0)]) {
+        if (sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lineRects, i), -1.0, -1.0)]) {
             if (selection == nil)
                 selection = sel;
             else
@@ -350,14 +344,14 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         return NO;
     
     // archived annotations (or annotations we didn't create) won't have these
-    if (0 == numberOfLines)
+    if (lineRects == nil)
         [self regenerateLineRects];
     
-    unsigned i = numberOfLines;
+    unsigned i = CFArrayGetCount(lineRects);
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
-        isContained = NSPointInRect(point, lineRects[i]);
+        isContained = NSPointInRect(point, *(NSRect *)CFArrayGetValueAtIndex(lineRects, i));
     
     return isContained;
 }
