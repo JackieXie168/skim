@@ -1057,6 +1057,24 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
+            if (mouseDownInAnnotation) {
+                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) { 	 
+                     [self setNeedsDisplayInRect:selectionRect]; 	 
+                     selectionRect = NSZeroRect; 	 
+                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self]; 	 
+                 } else if ([[activeAnnotation type] isEqualToString:SKLinkString]) { 	 
+                     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil]; 	 
+                     PDFPage *page = [self pageForPoint:p nearest:NO]; 	 
+                     if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 	 
+                         [self editActiveAnnotation:nil]; 	 
+                     else 	 
+                         [self setActiveAnnotation:nil]; 	 
+                 } 	 
+                 mouseDownInAnnotation = NO; 	 
+                 [wasSelection release]; 	 
+                 wasSelection = nil; 	 
+                 dragMask = 0; 	 
+            }
             if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationWithType:annotationMode];
                 [self setCurrentSelection:nil];
@@ -2840,16 +2858,18 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self dragAnnotationWithEvent:theEvent];
                 didDrag = YES;
             }
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
-            mouseDownInAnnotation = NO;
-            [wasSelection release];
-            wasSelection = nil;
+            if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString])
+                [self editActiveAnnotation:self]; 	 
             if (didDrag && 
                 [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                 ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                 [activeAnnotation setString:selString];
             }
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
+            [wasSelection release];
+            wasSelection = nil;
+            mouseDownInAnnotation = NO;
             dragMask = 0;
             didDrag = NO;
             draggingAnnotation = NO;
