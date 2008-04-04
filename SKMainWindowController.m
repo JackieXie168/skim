@@ -3560,21 +3560,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
     } else if (context == SKPDFAnnotationPropertiesObservationContext) {
         
-        // The value of some note's property has changed. Don't waste memory by recording undo operations affecting notes that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new note and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation.
+        // The value of some note's property has changed
         PDFAnnotation *note = (PDFAnnotation *)object;
-        if (NO == [undoGroupInsertedNotes containsObject:note]) {
-
-            // Ignore changes that aren't really changes.
-            // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingNotes:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
-            // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
-            id newValue = [change objectForKey:NSKeyValueChangeNewKey];
-            id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
-            // We should be adding undo for nil values also. I'm not sure if KVO does this automatically. Note that -setValuesForKeysWithDictionary: converts NSNull back to nil.
-            if (newValue == nil) newValue = [NSNull null];
-            if (oldValue == nil) oldValue = [NSNull null];
-            // All values are suppsed to be true value objects that should be compared with isEqual:.
-            if ([newValue isEqual:oldValue] == NO) {
-
+        // Ignore changes that aren't really changes.
+        // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingNotes:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
+        // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
+        id newValue = [change objectForKey:NSKeyValueChangeNewKey];
+        id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+        // We should be adding undo for nil values also. I'm not sure if KVO does this automatically. Note that -setValuesForKeysWithDictionary: converts NSNull back to nil.
+        if (newValue == nil) newValue = [NSNull null];
+        if (oldValue == nil) oldValue = [NSNull null];
+        // All values are suppsed to be true value objects that should be compared with isEqual:
+        if ([newValue isEqual:oldValue] == NO) {
+            
+            // Don't waste memory by recording undo operations affecting notes that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new note and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation
+            if (NO == [undoGroupInsertedNotes containsObject:note]) {
                 // Is this the first observed note change in the current undo group?
                 NSUndoManager *undoManager = [[self document] undoManager];
                 if (undoGroupOldPropertiesPerNote == nil) {
@@ -3602,56 +3602,58 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO)
                     [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
                 
-                // Update the UI
-                
-                PDFPage *page = [note page];
-                NSRect oldRect = NSZeroRect;
-                if ([keyPath isEqualToString:SKPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
-                    oldRect = [note displayRectForBounds:[oldValue rectValue]];
-                
-                [self updateThumbnailAtPageIndex:[note pageIndex]];
-                
-                NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-                SKSnapshotWindowController *wc;
-                while (wc = [snapshotEnum nextObject]) {
-                    if ([wc isPageVisible:[note page]]) {
-                        [self snapshotNeedsUpdate:wc];
-                        [wc setNeedsDisplayForAnnotation:note onPage:page];
-                        if (NSIsEmptyRect(oldRect) == NO)
-                            [wc setNeedsDisplayInRect:oldRect ofPage:page];
-                    }
-                }
-                
-                [pdfView setNeedsDisplayForAnnotation:note];
-                [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
-                if (NSIsEmptyRect(oldRect) == NO) {
-                    [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
-                    [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
-                }
-                if ([[note type] isEqualToString:SKNoteString] && [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
-                    [pdfView resetHoverRects];
-                
-                [noteArrayController rearrangeObjects];
-                [noteOutlineView reloadData];
-                if ([[self window] isMainWindow] && [note isEqual:[pdfView activeAnnotation]]) {
-                    if (updatingColor == NO && ([keyPath isEqualToString:SKPDFAnnotationColorKey] || [keyPath isEqualToString:SKPDFAnnotationInteriorColorKey])) {
-                        updatingColor = YES;
-                        [[NSColorPanel sharedColorPanel] setColor:[note color]];
-                        updatingColor = NO;
-                    }
-                    if (updatingFont == NO && ([keyPath isEqualToString:SKPDFAnnotationFontKey])) {
-                        updatingFont = YES;
-                        [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)note font] isMultiple:NO];
-                        updatingFont = NO;
-                    }
-                    if (updatingLine == NO && ([keyPath isEqualToString:SKPDFAnnotationBorderKey] || [keyPath isEqualToString:SKPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKPDFAnnotationEndLineStyleKey])) {
-                        updatingLine = YES;
-                        [[SKLineInspector sharedLineInspector] setAnnotationStyle:note];
-                        updatingLine = NO;
-                    }
+            }
+            
+            // Update the UI, we should always do that unless the value did not really change
+            
+            PDFPage *page = [note page];
+            NSRect oldRect = NSZeroRect;
+            if ([keyPath isEqualToString:SKPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
+                oldRect = [note displayRectForBounds:[oldValue rectValue]];
+            
+            [self updateThumbnailAtPageIndex:[note pageIndex]];
+            
+            NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+            SKSnapshotWindowController *wc;
+            while (wc = [snapshotEnum nextObject]) {
+                if ([wc isPageVisible:[note page]]) {
+                    [self snapshotNeedsUpdate:wc];
+                    [wc setNeedsDisplayForAnnotation:note onPage:page];
+                    if (NSIsEmptyRect(oldRect) == NO)
+                        [wc setNeedsDisplayInRect:oldRect ofPage:page];
                 }
             }
-
+            
+            [pdfView setNeedsDisplayForAnnotation:note];
+            [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
+            if (NSIsEmptyRect(oldRect) == NO) {
+                [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
+                [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
+            }
+            if ([[note type] isEqualToString:SKNoteString] && [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
+                [pdfView resetHoverRects];
+            
+            [noteArrayController rearrangeObjects];
+            [noteOutlineView reloadData];
+            
+            // update the various panels if necessary
+            if ([[self window] isMainWindow] && [note isEqual:[pdfView activeAnnotation]]) {
+                if (updatingColor == NO && ([keyPath isEqualToString:SKPDFAnnotationColorKey] || [keyPath isEqualToString:SKPDFAnnotationInteriorColorKey])) {
+                    updatingColor = YES;
+                    [[NSColorPanel sharedColorPanel] setColor:[note color]];
+                    updatingColor = NO;
+                }
+                if (updatingFont == NO && ([keyPath isEqualToString:SKPDFAnnotationFontKey])) {
+                    updatingFont = YES;
+                    [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)note font] isMultiple:NO];
+                    updatingFont = NO;
+                }
+                if (updatingLine == NO && ([keyPath isEqualToString:SKPDFAnnotationBorderKey] || [keyPath isEqualToString:SKPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKPDFAnnotationEndLineStyleKey])) {
+                    updatingLine = YES;
+                    [[SKLineInspector sharedLineInspector] setAnnotationStyle:note];
+                    updatingLine = NO;
+                }
+            }
         }
 
     } else {
