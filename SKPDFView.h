@@ -103,7 +103,7 @@ typedef enum _SKNoteType {
 	NSPoint clickDelta;
     NSRect selectionRect;
     float magnification;
-    BOOL didDrag;
+    BOOL didSelect;
     BOOL mouseDownInAnnotation;
     int dragMask;
     
