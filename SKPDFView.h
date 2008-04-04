@@ -96,7 +96,6 @@ typedef enum _SKNoteType {
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
     NSTextField *editField;
-    PDFSelection *wasSelection;
 	NSRect wasBounds;
     NSPoint wasStartPoint;
     NSPoint wasEndPoint;
@@ -106,8 +105,6 @@ typedef enum _SKNoteType {
     float magnification;
     BOOL didDrag;
     BOOL mouseDownInAnnotation;
-    BOOL extendSelection;
-    BOOL rectSelection;
     int dragMask;
     
     int trackingRect;
