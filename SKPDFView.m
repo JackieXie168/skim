@@ -2774,35 +2774,27 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (activeAnnotation != newActiveAnnotation)
         [self setActiveAnnotation:newActiveAnnotation];
     
-    if (newActiveAnnotation == nil) {
-        //[super mouseDown:theEvent];
-    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKFreeTextString]) {
-        [self editActiveAnnotation:self];
-        // probably we should use the note window for Text annotations
+    if (newActiveAnnotation) {
         
-    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:SKNoteString]) {
-        
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
-        
-    } else { 
-        // Old (current) annotation location.
-        wasBounds = [activeAnnotation bounds];
-        
-        if ([[activeAnnotation type] isEqualToString:SKLineString]) {
-            wasStartPoint = [(SKPDFAnnotationLine *)activeAnnotation startPoint];
-            wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
-        }
-        
-        // Hit-test for resize box.
-        dragMask = 0;
-        if ([[activeAnnotation type] isEqualToString:SKLineString]) {
-            if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(SKPDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
-                dragMask = BDSKMaxXEdgeMask;
-            else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(SKPDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
-                dragMask = BDSKMinXEdgeMask;
-        }  else {
-            if ([activeAnnotation isResizable]) {
+        if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:SKFreeTextString] || [[activeAnnotation type] isEqualToString:SKNoteString])) {
+            [self editActiveAnnotation:self];
+        } else { 
+            // Old (current) annotation location.
+            wasBounds = [activeAnnotation bounds];
+            
+            if ([[activeAnnotation type] isEqualToString:SKLineString]) {
+                wasStartPoint = [(SKPDFAnnotationLine *)activeAnnotation startPoint];
+                wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
+            }
+            
+            // Hit-test for resize box.
+            dragMask = 0;
+            if ([[activeAnnotation type] isEqualToString:SKLineString]) {
+                if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(SKPDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
+                    dragMask = BDSKMaxXEdgeMask;
+                else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(SKPDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
+                    dragMask = BDSKMinXEdgeMask;
+            }  else if ([activeAnnotation isResizable]) {
                 if (NSWidth(wasBounds) < 2.0) {
                     dragMask |= BDSKMinXEdgeMask | BDSKMaxXEdgeMask;
                 } else if ([page rotation] < 180) {
@@ -2830,34 +2822,38 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                         dragMask |= BDSKMaxYEdgeMask;
                 }
             }
+            if (dragMask)
+                [self setNeedsDisplayForAnnotation:activeAnnotation];
+            
+            if ([activeAnnotation isMovable]) {
+                // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
+                BOOL draggedAnnotation = NO;
+                while (YES) {
+                    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+                    if ([theEvent type] == NSLeftMouseUp)
+                        break;
+                    [self dragAnnotationWithEvent:theEvent];
+                    draggedAnnotation = YES;
+                }
+                if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString])
+                    [self editActiveAnnotation:self]; 	 
+                if (draggedAnnotation && 
+                    [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
+                    ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
+                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                    [activeAnnotation setString:selString];
+                }
+                [self setNeedsDisplayForAnnotation:activeAnnotation];
+                mouseDownInAnnotation = NO;
+                dragMask = 0;
+            }
         }
-        if (dragMask)
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
         
-        if ([activeAnnotation isMovable]) {
-            BOOL draggedAnnotation = NO;
-            while (YES) {
-                theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-                if ([theEvent type] == NSLeftMouseUp)
-                    break;
-                [self dragAnnotationWithEvent:theEvent];
-                draggedAnnotation = YES;
-            }
-            if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString])
-                [self editActiveAnnotation:self]; 	 
-            if (draggedAnnotation && 
-                [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
-                ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
-                NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                [activeAnnotation setString:selString];
-            }
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
-            mouseDownInAnnotation = NO;
-            dragMask = 0;
-        }
+        return YES;
+    } else {
+        // no new active annotation
+        return NO;
     }
-    
-    return newActiveAnnotation != nil;
 }
 
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
