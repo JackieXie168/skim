@@ -69,38 +69,42 @@ static NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI fo
 static NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
 static NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
 
+static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NSString *docUTI) {
+    return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:docUTI]) || [docType isEqualToString:docTypeName];
+}
+
 BOOL SKIsPDFDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKPDFDocumentTypeName] || [docType isEqualToString:SKPDFDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI);
 }
 BOOL SKIsPDFBundleDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKPDFBundleDocumentTypeName] || [docType isEqualToString:SKPDFBundleDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKPDFBundleDocumentTypeName, SKPDFBundleDocumentUTI);
 }
 BOOL SKIsEmbeddedPDFDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKEmbeddedPDFDocumentTypeName] || [docType isEqualToString:SKEmbeddedPDFDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKEmbeddedPDFDocumentTypeName, SKEmbeddedPDFDocumentUTI);
 }
 BOOL SKIsBarePDFDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKBarePDFDocumentTypeName] || [docType isEqualToString:SKBarePDFDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKBarePDFDocumentTypeName, SKBarePDFDocumentUTI);
 }
 BOOL SKIsNotesDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKNotesDocumentTypeName] || [docType isEqualToString:SKNotesDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKNotesDocumentTypeName, SKNotesDocumentUTI);
 }
 BOOL SKIsNotesTextDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKNotesTextDocumentTypeName] || [docType isEqualToString:SKTextDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKNotesTextDocumentTypeName, SKTextDocumentUTI);
 }
 BOOL SKIsNotesRTFDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKNotesRTFDocumentTypeName] || [docType isEqualToString:SKRTFDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKNotesRTFDocumentTypeName, SKRTFDocumentUTI);
 }
 BOOL SKIsNotesRTFDDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKNotesRTFDDocumentTypeName] || [docType isEqualToString:SKRTFDDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKNotesRTFDDocumentTypeName, SKRTFDDocumentUTI);
 }
 BOOL SKIsNotesFDFDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKNotesFDFDocumentTypeName] || [docType isEqualToString:SKFDFDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKNotesFDFDocumentTypeName, SKFDFDocumentUTI);
 }
 BOOL SKIsPostScriptDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKPostScriptDocumentTypeName] || [docType isEqualToString:SKPostScriptDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKPostScriptDocumentTypeName, SKPostScriptDocumentUTI);
 }
 BOOL SKIsDVIDocumentType(NSString *docType) {
-    return [docType isEqualToString:SKDVIDocumentTypeName] || [docType isEqualToString:SKDVIDocumentUTI];
+    return SKIsEqualToDocumentType(docType, SKDVIDocumentTypeName, SKDVIDocumentUTI);
 }
 
 NSString *SKGetPDFDocumentType(void) {
