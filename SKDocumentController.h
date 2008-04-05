@@ -52,17 +52,17 @@ extern BOOL SKIsNotesFDFDocumentType(NSString *docType);
 extern BOOL SKIsPostScriptDocumentType(NSString *docType);
 extern BOOL SKIsDVIDocumentType(NSString *docType);
 
-extern NSString *SKGetPDFDocumentType();
-extern NSString *SKGetPDFBundleDocumentType();
-extern NSString *SKGetEmbeddedPDFDocumentType();
-extern NSString *SKGetBarePDFDocumentType();
-extern NSString *SKGetNotesDocumentType();
-extern NSString *SKGetNotesTextDocumentType();
-extern NSString *SKGetNotesRTFDocumentType();
-extern NSString *SKGetNotesRTFDDocumentType();
-extern NSString *SKGetNotesFDFDocumentType();
-extern NSString *SKGetPostScriptDocumentType();
-extern NSString *SKGetDVIDocumentType();
+extern NSString *SKPDFDocumentType;
+extern NSString *SKPDFBundleDocumentType;
+extern NSString *SKEmbeddedPDFDocumentType;
+extern NSString *SKBarePDFDocumentType;
+extern NSString *SKNotesDocumentType;
+extern NSString *SKNotesTextDocumentType;
+extern NSString *SKNotesRTFDocumentType;
+extern NSString *SKNotesRTFDDocumentType;
+extern NSString *SKNotesFDFDocumentType;
+extern NSString *SKPostScriptDocumentType;
+extern NSString *SKDVIDocumentType;
 
 enum {
     SKImagePboardTypesMask = 1,

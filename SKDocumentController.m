@@ -69,6 +69,18 @@ static NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI fo
 static NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
 static NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
 
+NSString *SKPDFDocumentType = nil;
+NSString *SKPDFBundleDocumentType = nil;
+NSString *SKEmbeddedPDFDocumentType = nil;
+NSString *SKBarePDFDocumentType = nil;
+NSString *SKNotesDocumentType = nil;
+NSString *SKNotesTextDocumentType = nil;
+NSString *SKNotesRTFDocumentType = nil;
+NSString *SKNotesRTFDDocumentType = nil;
+NSString *SKNotesFDFDocumentType = nil;
+NSString *SKPostScriptDocumentType = nil;
+NSString *SKDVIDocumentType = nil;
+
 static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NSString *docUTI) {
     return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:docUTI]) || [docType isEqualToString:docTypeName];
 }
@@ -107,47 +119,35 @@ BOOL SKIsDVIDocumentType(NSString *docType) {
     return SKIsEqualToDocumentType(docType, SKDVIDocumentTypeName, SKDVIDocumentUTI);
 }
 
-NSString *SKGetPDFDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFDocumentTypeName : SKPDFDocumentUTI;
-}
-NSString *SKGetPDFBundleDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPDFBundleDocumentTypeName : SKPDFBundleDocumentUTI;
-}
-NSString *SKGetEmbeddedPDFDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKEmbeddedPDFDocumentTypeName : SKEmbeddedPDFDocumentUTI;
-}
-NSString *SKGetBarePDFDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKBarePDFDocumentTypeName : SKBarePDFDocumentUTI;
-}
-NSString *SKGetNotesDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesDocumentTypeName : SKNotesDocumentUTI;
-}
-NSString *SKGetNotesTextDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesTextDocumentTypeName : SKTextDocumentUTI;
-}
-NSString *SKGetNotesRTFDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesRTFDocumentTypeName : SKRTFDocumentUTI;
-}
-NSString *SKGetNotesRTFDDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesRTFDDocumentTypeName : SKRTFDDocumentUTI;
-}
-NSString *SKGetNotesFDFDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKNotesFDFDocumentTypeName : SKFDFDocumentUTI;
-}
-NSString *SKGetPostScriptDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKPostScriptDocumentTypeName : SKPostScriptDocumentUTI;
-}
-NSString *SKGetDVIDocumentType(void) {
-    return floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SKDVIDocumentTypeName : SKDVIDocumentUTI;
-}
-
 @implementation SKDocumentController
 
 + (void)initialize {
     OBINITIALIZE;
     
-    if (nil == SKPDFDocumentTypeName)
-        SKPDFDocumentTypeName = [NSPDFPboardType copy];
+    SKPDFDocumentTypeName = [NSPDFPboardType copy];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        SKPDFBundleDocumentType = SKPDFDocumentTypeName;
+        SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentTypeName;
+        SKBarePDFDocumentType = SKBarePDFDocumentTypeName;
+        SKNotesDocumentType = SKNotesDocumentTypeName;
+        SKNotesTextDocumentType = SKNotesTextDocumentTypeName;
+        SKNotesRTFDocumentType = SKNotesRTFDocumentTypeName;
+        SKNotesRTFDDocumentType = SKNotesRTFDDocumentTypeName;
+        SKNotesFDFDocumentType = SKNotesFDFDocumentTypeName;
+        SKPostScriptDocumentType = SKPostScriptDocumentTypeName;
+        SKDVIDocumentType = SKDVIDocumentTypeName;
+    } else {
+        SKPDFBundleDocumentType = SKPDFDocumentUTI;
+        SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentUTI;
+        SKBarePDFDocumentType = SKBarePDFDocumentUTI;
+        SKNotesDocumentType = SKNotesDocumentUTI;
+        SKNotesTextDocumentType = SKTextDocumentUTI;
+        SKNotesRTFDocumentType = SKRTFDocumentUTI;
+        SKNotesRTFDDocumentType = SKRTFDDocumentUTI;
+        SKNotesFDFDocumentType = SKFDFDocumentUTI;
+        SKPostScriptDocumentType = SKPostScriptDocumentUTI;
+        SKDVIDocumentType = SKDVIDocumentUTI;
+    }
 }
 
 - (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
@@ -155,7 +155,7 @@ NSString *SKGetDVIDocumentType(void) {
     if (SKIsEmbeddedPDFDocumentType(type) || SKIsBarePDFDocumentType(type)) {
         // fix of bug when reading a PDF file on 10.4
         // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
-        type = SKGetPDFDocumentType();
+        type = SKPDFDocumentType;
     }
 	return type;
 }
@@ -183,9 +183,9 @@ NSString *SKGetDVIDocumentType(void) {
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
-                type = SKGetPostScriptDocumentType();
+                type = SKPostScriptDocumentType;
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
-                type = SKGetPostScriptDocumentType();
+                type = SKPostScriptDocumentType;
             }
         }
         if (type == nil && outError)
@@ -245,7 +245,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             pboardType = NSPDFPboardType;
         }
         
-        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKGetPostScriptDocumentType() : SKGetPDFDocumentType();
+        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
         NSError *error = nil;
         
         document = [self makeUntitledDocumentOfType:type error:&error];
