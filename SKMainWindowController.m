@@ -531,6 +531,10 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
                              name:SKPDFViewSelectionChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleMagnificationChangedNotification:) 
                              name:SKPDFViewMagnificationChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDisplayModeChangedNotification:) 
+                             name:SKPDFViewDisplayModeChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDisplayBoxChangedNotification:) 
+                             name:SKPDFViewDisplayBoxChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                              name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
@@ -623,10 +627,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [pdfView setDisplaysAsBook:[number boolValue]];
     if (number = [setup objectForKey:DISPLAY_MODE_KEY])
         [pdfView setDisplayMode:[number intValue]];
-    if (number = [setup objectForKey:DISPLAY_BOX_KEY]) {
+    if (number = [setup objectForKey:DISPLAY_BOX_KEY])
         [pdfView setDisplayBox:[number intValue]];
-        [self handleDisplayBoxChangedNotification:nil];
-    }
 }
 
 - (NSDictionary *)currentPDFSettings {
@@ -1524,8 +1526,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     else if ([sender respondsToSelector:@selector(selectedSegment)])
         displayBox = [sender selectedSegment];
     [pdfView setDisplayBox:displayBox];
-    [self handleDisplayBoxChangedNotification:nil];
-    [self resetThumbnails];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
@@ -2522,7 +2522,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
-    [self handleDisplayBoxChangedNotification:nil];
     [pdfView setDisplaysPageBreaks:YES];
     [scrollView setNeverHasHorizontalScroller:YES];
     [scrollView setNeverHasVerticalScroller:YES];
@@ -3289,6 +3288,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
     [displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
+    [self resetThumbnails];
 }
 
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
