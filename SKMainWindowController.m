@@ -4719,6 +4719,19 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
+    } else if (action == @selector(changeDisplaySinglePages:)) {
+        BOOL displaySinglePages1 = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
+        BOOL displaySinglePages2 = [menuItem tag] == kPDFDisplaySinglePage;
+        [menuItem setState:displaySinglePages1 == displaySinglePages2 ? NSOnState : NSOffState];
+        return [self isPresentation] == NO;
+    } else if (action == @selector(changeDisplayContinuous:)) {
+        BOOL displayContinuous1 = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        BOOL displayContinuous2 = [menuItem tag] == kPDFDisplaySinglePageContinuous;
+        [menuItem setState:displayContinuous1 == displayContinuous2 ? NSOnState : NSOffState];
+        return [self isPresentation] == NO;
+    } else if (action == @selector(changeDisplayMode:)) {
+        [menuItem setState:[pdfView displayMode] == [menuItem tag] ? NSOnState : NSOffState];
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleDisplayContinuous:)) {
         BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         [menuItem setState:displayContinuous ? NSOnState : NSOffState];

@@ -74,7 +74,7 @@ static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoIt
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarSingleTwoUpItemIdentifier = @"SKDocumentToolbarSingleTwoUpItemIdentifier";
 static NSString *SKDocumentToolbarContinuousItemIdentifier = @"SKDocumentToolbarContinuousItemIdentifier";
-static NSString *SKDocumentToolbarSingleTwoUpContinuousItemIdentifier = @"SKDocumentToolbarSingleTwoUpContinuousItemIdentifier";
+static NSString *SKDocumentToolbarDisplayModeItemIdentifier = @"SKDocumentToolbarDisplayModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarColorSwatchItemIdentifier = @"SKDocumentToolbarColorSwatchItemIdentifier";
 static NSString *SKDocumentToolbarColorsItemIdentifier = @"SKDocumentToolbarColorsItemIdentifier";
@@ -699,13 +699,13 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 	[menuItem setTag:kPDFDisplaySinglePageContinuous];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Display Mode", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
-    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarSingleTwoUpContinuousItemIdentifier];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarDisplayModeItemIdentifier];
     [item setLabels:NSLocalizedString(@"Display Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Display Mode", @"Tool tip message")];
     [displayModeButton makeCapsule];
     [item setViewWithSizes:displayModeButton];
     [item setMenuFormRepresentation:menuItem];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarSingleTwoUpContinuousItemIdentifier];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayModeItemIdentifier];
     [item release];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
@@ -875,22 +875,25 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
         SKDocumentToolbarZoomToFitItemIdentifier, 
         SKDocumentToolbarZoomToSelectionItemIdentifier, 
         SKDocumentToolbarScaleItemIdentifier, 
+        SKDocumentToolbarSingleTwoUpItemIdentifier, 
+        SKDocumentToolbarContinuousItemIdentifier, 
+        SKDocumentToolbarDisplayModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
+        SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
         SKDocumentToolbarRotateLeftRightItemIdentifier, 
         SKDocumentToolbarCropItemIdentifier, 
-        SKDocumentToolbarColorSwatchItemIdentifier, 
-        SKDocumentToolbarNewTextNoteItemIdentifier, 
-        SKDocumentToolbarNewCircleNoteItemIdentifier, 
-        SKDocumentToolbarNewMarkupItemIdentifier,
-        SKDocumentToolbarNewLineItemIdentifier,
-        SKDocumentToolbarNewNoteItemIdentifier, 
-        SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
         SKDocumentToolbarPresentationItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
+        SKDocumentToolbarColorSwatchItemIdentifier, 
+        SKDocumentToolbarNewNoteItemIdentifier, 
+        SKDocumentToolbarNewTextNoteItemIdentifier, 
+        SKDocumentToolbarNewCircleNoteItemIdentifier, 
+        SKDocumentToolbarNewMarkupItemIdentifier,
+        SKDocumentToolbarNewLineItemIdentifier,
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarColorsItemIdentifier, 
         SKDocumentToolbarFontsItemIdentifier, 
