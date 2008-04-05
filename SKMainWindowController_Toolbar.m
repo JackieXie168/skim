@@ -669,10 +669,10 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [item release];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Non Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:kPDFDisplaySinglePage];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Non Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:kPDFDisplaySinglePageContinuous];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Continuous", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
@@ -680,8 +680,8 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarContinuousItemIdentifier];
     [item setLabels:NSLocalizedString(@"Continuous", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message")];
-    [[continuousButton cell] setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:0];
-    [[continuousButton cell] setToolTip:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:1];
+    [[continuousButton cell] setToolTip:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:0];
+    [[continuousButton cell] setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:1];
     [continuousButton makeCapsule];
     [item setViewWithSizes:continuousButton];
     [item setMenuFormRepresentation:menuItem];
