@@ -183,6 +183,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *circleNoteButton;
     IBOutlet NSSegmentedControl *markupNoteButton;
     IBOutlet NSSegmentedControl *lineNoteButton;
+    IBOutlet NSSegmentedControl *singleTwoUpButton;
+    IBOutlet NSSegmentedControl *continuousButton;
+    IBOutlet NSSegmentedControl *displayModeButton;
     IBOutlet NSSegmentedControl *displayBoxButton;
     IBOutlet NSSegmentedControl *infoButton;
     IBOutlet NSSegmentedControl *colorsButton;
@@ -250,7 +253,10 @@ typedef struct _SKPDFViewState {
 - (IBAction)takeSnapshot:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
+- (IBAction)changeDisplaySinglePages:(id)sender;
 - (IBAction)toggleDisplayContinuous:(id)sender;
+- (IBAction)changeDisplayContinuous:(id)sender;
+- (IBAction)changeDisplayMode:(id)sender;
 - (IBAction)toggleDisplayAsBook:(id)sender;
 - (IBAction)toggleDisplayPageBreaks:(id)sender;
 - (IBAction)changeDisplayBox:(id)sender;

@@ -172,6 +172,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification;
+- (void)handleDisplayModeChangedNotification:(NSNotification *)notification;
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
 - (void)handleSelectionChangedNotification:(NSNotification *)notification;
 - (void)handleMagnificationChangedNotification:(NSNotification *)notification;
@@ -492,6 +493,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [self handleScaleChangedNotification:nil];
     [self handleToolModeChangedNotification:nil];
     [self handleDisplayBoxChangedNotification:nil];
+    [self handleDisplayModeChangedNotification:nil];
     [self handleAnnotationModeChangedNotification:nil];
     
     // Observe notifications and KVO
@@ -1457,6 +1459,21 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
 }
 
+- (IBAction)changeDisplaySinglePages:(id)sender {
+    PDFDisplayMode tag = [sender tag];
+    if ([sender respondsToSelector:@selector(selectedTag)])
+        tag = [sender selectedTag];
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplayTwoUp) 
+        [pdfView setDisplayMode:kPDFDisplayTwoUp];
+    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplayTwoUp)
+        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePage)
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
+        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+}
+
 - (IBAction)toggleDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     if (displayMode == kPDFDisplaySinglePage) 
@@ -1467,6 +1484,28 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         displayMode = kPDFDisplayTwoUpContinuous;
     else if (displayMode == kPDFDisplayTwoUpContinuous)
         displayMode = kPDFDisplayTwoUp;
+    [pdfView setDisplayMode:displayMode];
+}
+
+- (IBAction)changeDisplayContinuous:(id)sender {
+    PDFDisplayMode tag = [sender tag];
+    if ([sender respondsToSelector:@selector(selectedTag)])
+        tag = [sender selectedTag];
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    if (displayMode == kPDFDisplaySinglePage && tag == kPDFDisplaySinglePageContinuous)
+        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+    else if (displayMode == kPDFDisplaySinglePageContinuous && tag == kPDFDisplaySinglePage)
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+    else if (displayMode == kPDFDisplayTwoUp && tag == kPDFDisplaySinglePageContinuous)
+        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+    else if (displayMode == kPDFDisplayTwoUpContinuous && tag == kPDFDisplaySinglePage)
+        [pdfView setDisplayMode:kPDFDisplayTwoUp];
+}
+
+- (IBAction)changeDisplayMode:(id)sender {
+    PDFDisplayMode displayMode = [sender tag];
+    if ([sender respondsToSelector:@selector(selectedTag)])
+        displayMode = [sender selectedTag];
     [pdfView setDisplayMode:displayMode];
 }
 
@@ -3250,6 +3289,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
     [displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
+}
+
+- (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    [displayModeButton selectSegmentWithTag:displayMode];
+    [singleTwoUpButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplaySinglePageContinuous) ? kPDFDisplaySinglePage : kPDFDisplayTwoUp];
+    [continuousButton selectSegmentWithTag:(displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) ? kPDFDisplaySinglePage : kPDFDisplaySinglePageContinuous];
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
