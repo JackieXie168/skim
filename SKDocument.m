@@ -382,7 +382,14 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     NSError *error = nil;
-    if (SKIsPDFDocumentType(typeName)) {
+    if (SKIsEmbeddedPDFDocumentType(typeName)) {
+        // this must be checked before PDF, as we check for comformance to the UTI
+        [[self mainWindowController] removeTemporaryAnnotations];
+        didWrite = [[self pdfDocument] writeToURL:absoluteURL];
+    } else if (SKIsBarePDFDocumentType(typeName)) {
+        // this must be checked before PDF, as we check for comformance to the UTI
+        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
+    } else if (SKIsPDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
@@ -411,11 +418,6 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         }
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
-    } else if (SKIsEmbeddedPDFDocumentType(typeName)) {
-        [[self mainWindowController] removeTemporaryAnnotations];
-        didWrite = [[self pdfDocument] writeToURL:absoluteURL];
-    } else if (SKIsBarePDFDocumentType(typeName)) {
-        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsNotesDocumentType(typeName)) {
         NSData *data = [self notesData];
         if (data)
