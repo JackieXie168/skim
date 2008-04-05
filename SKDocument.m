@@ -220,7 +220,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             if ([[self pdfDocument] allowsPrinting] == NO) {
-                int idx = [formatPopup indexOfItemWithRepresentedObject:SKGetEmbeddedPDFDocumentType()];
+                int idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
                 if (idx != -1)
                     [formatPopup removeItemAtIndex:idx];
             }
@@ -287,7 +287,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                 
                 if (saveNotesOK) {
                     NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKGetNotesDocumentType() error:NULL]) {
+                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
                         if (fileExists)
                             saveNotesOK = [fm removeFileAtPath:notesPath handler:nil];
                         if ([[self notes] count]) {
