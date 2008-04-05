@@ -11,7 +11,7 @@
             OUTLETS =             {
                 view = NSView;
             };
-            SUPERCLASS = NSResponder;
+            SUPERCLASS = NSObject;
         },
                 {
             CLASS = SKPrintAccessoryController;
