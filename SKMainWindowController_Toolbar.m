@@ -700,7 +700,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 	[menuItem setTag:kPDFDisplayTwoUp];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Two Pages Continuous", @"Menu item title") action:@selector(changeDisplayMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
-	[menuItem setTag:kPDFDisplaySinglePageContinuous];
+	[menuItem setTag:kPDFDisplayTwoUpContinuous];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Display Mode", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarDisplayModeItemIdentifier];
@@ -709,7 +709,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [[displayModeButton cell] setToolTip:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:kPDFDisplaySinglePage];
     [[displayModeButton cell] setToolTip:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
     [[displayModeButton cell] setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
-    [[displayModeButton cell] setToolTip:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
+    [[displayModeButton cell] setToolTip:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
     [displayModeButton makeCapsule];
     [item setViewWithSizes:displayModeButton];
     [item setMenuFormRepresentation:menuItem];
