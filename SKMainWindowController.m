@@ -3746,7 +3746,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         if ([tcID isEqualToString:@"note"]) {
-            return [item type] ? (id)[item text] : (id)[item string];
+            return [item type] ? (id)[item string] : (id)[item text];
         } else if([tcID isEqualToString:@"type"]) {
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], @"active", [item type], @"type", nil];
         } else if([tcID isEqualToString:@"page"]) {
