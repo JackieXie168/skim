@@ -86,7 +86,9 @@ static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NS
 }
 
 BOOL SKIsPDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI);
+    return SKIsEqualToDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI) &&
+           NO == SKIsEmbeddedPDFDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI) &&
+           NO == SKIsBarePDFDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI);
 }
 BOOL SKIsPDFBundleDocumentType(NSString *docType) {
     return SKIsEqualToDocumentType(docType, SKPDFBundleDocumentTypeName, SKPDFBundleDocumentUTI);
@@ -110,7 +112,8 @@ BOOL SKIsNotesRTFDDocumentType(NSString *docType) {
     return SKIsEqualToDocumentType(docType, SKNotesRTFDDocumentTypeName, SKRTFDDocumentUTI);
 }
 BOOL SKIsNotesFDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesFDFDocumentTypeName, SKFDFDocumentUTI);
+    return SKIsEqualToDocumentType(docType, SKNotesFDFDocumentTypeName, SKFDFDocumentUTI) &&
+           NO == SKIsEqualToDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI);
 }
 BOOL SKIsPostScriptDocumentType(NSString *docType) {
     return SKIsEqualToDocumentType(docType, SKPostScriptDocumentTypeName, SKPostScriptDocumentUTI);
