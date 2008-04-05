@@ -253,7 +253,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 self = nil;
             } else {
                 [self setBounds:newBounds];
-                iMax = CFArrayGetCount(lineRects);
+                iMax = lineRects == NULL ? 0 : CFArrayGetCount(lineRects);
                 for (i = 0; i < iMax; i++) {
                     NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lineRects, i), [self bounds].origin);
                     [quadPoints addObjectsFromArray:quadLine];
