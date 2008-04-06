@@ -130,6 +130,22 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return;
 }
 
+- (void)removeDoubleSpearatorsFromWindowMenu {
+    int anIndex = [[self windowsMenu] numberOfItems];
+    BOOL wasSeparator = YES;
+    
+    while (anIndex--) {
+        if ([[[self windowsMenu] itemAtIndex:anIndex] isSeparatorItem]) {
+            if (wasSeparator)
+                [[self windowsMenu] removeItemAtIndex:anIndex];
+            else
+                wasSeparator = YES;
+        } else {
+            wasSeparator = NO;
+        }
+    }
+}
+
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
@@ -231,6 +247,9 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             }
         }
     }
+    
+    // shouldn't be necessary, but just be sure. There have been reports of extra separators being inserted after a "swipe" event
+    [self removeDoubleSpearatorsFromWindowMenu];
 }
 
 - (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
@@ -251,19 +270,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 - (void)removeWindowsItem:(NSWindow *)aWindow {
     [super removeWindowsItem:aWindow];
     
-    int anIndex = [[self windowsMenu] numberOfItems];
-    BOOL wasSeparator = YES;
-    
-    while (anIndex--) {
-        if ([[[self windowsMenu] itemAtIndex:anIndex] isSeparatorItem]) {
-            if (wasSeparator)
-                [[self windowsMenu] removeItemAtIndex:anIndex];
-            else
-                wasSeparator = YES;
-        } else {
-            wasSeparator = NO;
-        }
-    }
+    [self removeDoubleSpearatorsFromWindowMenu];
 }
 
 #pragma mark Scripting support
