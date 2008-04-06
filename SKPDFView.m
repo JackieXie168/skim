@@ -531,20 +531,26 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
-    [super setDisplayMode:mode];
-    [self relayoutEditField];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayModeChangedNotification object:self userInfo:nil];
+    if (mode != [self displayBox]) {
+        [super setDisplayMode:mode];
+        [self relayoutEditField];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayModeChangedNotification object:self userInfo:nil];
+    }
 }
 
 - (void)setDisplaysAsBook:(BOOL)asBook {
-    [super setDisplaysAsBook:asBook];
-    [self relayoutEditField];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self userInfo:nil];
+    if (asBook != [self displaysAsBook]) {
+        [super setDisplaysAsBook:asBook];
+        [self relayoutEditField];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self userInfo:nil];
+    }
 }
 
 - (void)setDisplayBox:(PDFDisplayBox)displayBox {
-    [super setDisplayBox:displayBox];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayBoxChangedNotification object:self userInfo:nil];
+    if (displayBox != [self displayBox]) {
+        [super setDisplayBox:displayBox];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayBoxChangedNotification object:self userInfo:nil];
+    }
 }
 
 - (NSRect)currentSelectionRect {
