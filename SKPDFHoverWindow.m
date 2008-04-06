@@ -259,19 +259,37 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         
     } else {
         
-        text = [[annotation text] retain];
+        text = [annotation text];
+        string = [text string];
+        unsigned int i = 0, l = [string length];
+        NSRange r = NSMakeRange(0, l);
+        
+        while (i != NSNotFound) {
+            r = NSMakeRange(i, l - i);
+            i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location;
+        }
+        i = l;
+        while (i != NSNotFound) {
+            r.length = i - r.location;
+            i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location;
+        }
+        if (r.length < l)
+            text = [text attributedSubstringFromRange:r];
+        
+        string = nil;
         
         if ([text length] == 0) {
-            [text release];
             text = nil;
             if ([[annotation string] length])
                 string = [annotation string];
         }
-        
+        // we release text later
+        [text retain];
     }
     
     if (string) {
         NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
+        string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         text = [[NSAttributedString alloc] initWithString:string attributes:attrs];
         [attrs release];
     }
