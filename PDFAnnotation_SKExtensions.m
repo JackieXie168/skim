@@ -51,6 +51,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "OBUtilities.h"
 
 
 unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
@@ -538,8 +539,23 @@ enum {
 @implementation PDFAnnotationLink (SKExtensions)
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
-- (NSString *)toolTip {
-    return ([self URL] || [self destination]) ? nil : [super toolTip];
+
+static IMP originalToolTip = NULL;
+static IMP originalToolTipNoLabel = NULL;
+
+- (NSString *)replacementToolTip {
+    return ([self URL] || [self destination]) ? nil : originalToolTip(self, _cmd);
+}
+
+- (NSString *)replacementToolTipNoLabel {
+    return ([self URL] || [self destination]) ? nil : originalToolTipNoLabel(self, _cmd);
+}
+
++ (void)load {
+    if ([self instancesRespondToSelector:@selector(toolTip)])
+        originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
+    if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
+        originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTipNoLabel), @selector(replacementToolTipNoLabel));
 }
 
 @end
