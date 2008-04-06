@@ -544,11 +544,11 @@ static IMP originalToolTip = NULL;
 static IMP originalToolTipNoLabel = NULL;
 
 - (NSString *)replacementToolTip {
-    return ([self URL] || [self destination]) ? nil : originalToolTip(self, _cmd);
+    return ([self URL] || [self destination] || originalToolTip == NULL) ? nil : originalToolTip(self, _cmd);
 }
 
 - (NSString *)replacementToolTipNoLabel {
-    return ([self URL] || [self destination]) ? nil : originalToolTipNoLabel(self, _cmd);
+    return ([self URL] || [self destination] || originalToolTipNoLabel == NULL) ? nil : originalToolTipNoLabel(self, _cmd);
 }
 
 + (void)load {
