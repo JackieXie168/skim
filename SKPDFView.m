@@ -2401,7 +2401,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
             ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            [activeAnnotation setString:selString];
+            if ([selString length])
+                [activeAnnotation setString:selString];
         }
     }
 }
@@ -2648,7 +2649,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                 ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                 NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                [activeAnnotation setString:selString];
+                if ([selString length])
+                    [activeAnnotation setString:selString];
             }
         }
     }
@@ -2851,7 +2853,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                     ([[activeAnnotation type] isEqualToString:SKCircleString] || [[activeAnnotation type] isEqualToString:SKSquareString])) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-                    [activeAnnotation setString:selString];
+                    if ([selString length])
+                        [activeAnnotation setString:selString];
                 }
                 [self setNeedsDisplayForAnnotation:activeAnnotation];
                 mouseDownInAnnotation = NO;
