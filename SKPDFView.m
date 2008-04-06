@@ -1350,12 +1350,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 
-- (void)magnifyWithEvent:(NSEvent *)theEvent {
-    float dz = [theEvent deltaZ];
-    dz = dz > 0 ? fminf(0.2, dz) : fmaxf(-0.2, dz);
-    [self setScaleFactor:[self scaleFactor] + 0.5 * dz];
-}
-
 - (void)mouseEntered:(NSEvent *)theEvent {
     NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
     [super mouseEntered:theEvent];
