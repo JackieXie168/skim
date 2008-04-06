@@ -3288,7 +3288,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
     [displayBoxButton selectSegmentWithTag:[pdfView displayBox]];
-    [self resetThumbnails];
+    if (notification) // no need to do this when loading the document
+        [self resetThumbnails];
 }
 
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
