@@ -1350,22 +1350,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 
-- (void)rotateWithEvent:(NSEvent *)theEvent {
-	float rotation = [theEvent rotation];
-    SKMainWindowController *controller = (SKMainWindowController *)[[self window] windowController];
-    if (rotation > 0) {
-        if ([theEvent modifierFlags] & NSAlternateKeyMask)
-            [controller rotateLeft:self];
-        else
-            [controller rotateAllLeft:self];
-    } else if (rotation < 0) {
-        if ([theEvent modifierFlags] & NSAlternateKeyMask)
-            [controller rotateRight:self];
-        else
-            [controller rotateAllRight:self];
-    }
-}
-
 - (void)mouseEntered:(NSEvent *)theEvent {
     NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
     [super mouseEntered:theEvent];
