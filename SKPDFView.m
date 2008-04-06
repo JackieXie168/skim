@@ -129,7 +129,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)magnifyingGlassWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)selectWithEvent:(NSEvent *)theEvent;
 - (void)selectTextWithEvent:(NSEvent *)theEvent;
@@ -1046,7 +1046,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     [self selectWithEvent:theEvent];
                     break;
                 case SKMagnifyToolMode:
-                    [self magnifyWithEvent:theEvent];
+                    [self magnifyingGlassWithEvent:theEvent];
                     break;
             }
         }
@@ -3519,7 +3519,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
 }
 
-- (void)magnifyWithEvent:(NSEvent *)theEvent {
+- (void)magnifyingGlassWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
     NSScrollView *scrollView = [[self documentView] enclosingScrollView];
     NSView *documentView = [scrollView documentView];
