@@ -819,7 +819,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [toolbarItems setObject:item forKey:SKDocumentToolbarNotesPaneItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Print", @"Menu item title") action:@selector(runToolbarCustomizationPalette:) keyEquivalent:@""] autorelease];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Print", @"Menu item title") action:@selector(printDocument:) keyEquivalent:@""] autorelease];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPrintItemIdentifier];
     [item setLabels:NSLocalizedString(@"Print", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Print Document", @"Tool tip message")];
