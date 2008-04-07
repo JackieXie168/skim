@@ -91,7 +91,6 @@ static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
 static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
 static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
 static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
-static NSString *SKSelectTextBehindNotesOnCapsLockKey = @"SKSelectTextBehindNotesOnCapsLock";
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
@@ -2709,7 +2708,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     int i;
     NSPoint pagePoint;
     PDFPage *page;
-    BOOL canSelectNotes = [[NSUserDefaults standardUserDefaults] boolForKey:SKSelectTextBehindNotesOnCapsLockKey] == NO || ([theEvent modifierFlags] & NSAlphaShiftKeyMask) == 0;
     
     // Mouse in display view coordinates.
     mouseDownLoc = [theEvent locationInWindow];
@@ -2732,7 +2730,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         // Hit test annotation.
         if ([annotation isNoteAnnotation]) {
-            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation) && canSelectNotes) {
+            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
                 mouseDownInAnnotation = YES;
                 newActiveAnnotation = annotation;
                 // Remember click point relative to annotation origin.
@@ -2776,6 +2774,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 clickDelta.x = pagePoint.x - NSMinX(bounds);
                 clickDelta.y = pagePoint.y - NSMinY(bounds);
             }
+        } else if ([newActiveAnnotation isMarkupAnnotation] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+            newActiveAnnotation = nil;
+            mouseDownInAnnotation = YES;
         } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
             int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
             PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
