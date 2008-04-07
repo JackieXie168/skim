@@ -121,23 +121,23 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
-- (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
-- (void)resizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
-- (void)moveReadingBarForKey:(unichar)eventChar;
-- (void)resizeReadingBarForKey:(unichar)eventChar;
+- (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
+- (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
+- (void)doMoveReadingBarForKey:(unichar)eventChar;
+- (void)doResizeReadingBarForKey:(unichar)eventChar;
 
-- (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
-- (void)magnifyingGlassWithEvent:(NSEvent *)theEvent;
-- (void)dragWithEvent:(NSEvent *)theEvent;
-- (void)selectWithEvent:(NSEvent *)theEvent;
-- (void)selectTextWithEvent:(NSEvent *)theEvent;
-- (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
-- (void)resizeReadingBarWithEvent:(NSEvent *)theEvent;
-- (void)pdfsyncWithEvent:(NSEvent *)theEvent;
-- (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
-- (void)updateCursor;
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
+- (void)doMagnifyWithEvent:(NSEvent *)theEvent;
+- (void)doDragWithEvent:(NSEvent *)theEvent;
+- (void)doSelectWithEvent:(NSEvent *)theEvent;
+- (void)doSelectTextWithEvent:(NSEvent *)theEvent;
+- (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
+- (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent;
+- (void)doPdfsyncWithEvent:(NSEvent *)theEvent;
+- (NSCursor *)getCursorForEvent:(NSEvent *)theEvent;
+- (void)doUpdateCursor;
 
 - (void)relayoutEditField;
 
@@ -480,7 +480,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         toolMode = newToolMode;
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
-        [self updateCursor];
+        [self doUpdateCursor];
     }
 }
 
@@ -944,17 +944,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     ((eventChar == NSTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))))) {
             [self selectPreviousActiveAnnotation:self];
         } else if ([self hasReadingBar] && isArrow && (modifiers == moveReadingBarModifiers)) {
-            [self moveReadingBarForKey:eventChar];
+            [self doMoveReadingBarForKey:eventChar];
         } else if ([self hasReadingBar] && isUpDownArrow && (modifiers == resizeReadingBarModifiers)) {
-            [self resizeReadingBarForKey:eventChar];
+            [self doResizeReadingBarForKey:eventChar];
         } else if (isLeftRightArrow && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
             [self setToolMode:(toolMode + (eventChar == NSRightArrowFunctionKey ? 1 : 4)) % 5];
         } else if (isUpDownArrow && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
             [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : 7)) % 8];
         } else if ([activeAnnotation isMovable] && isArrow && ((modifiers & ~NSShiftKeyMask) == 0)) {
-            [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+            [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && ((modifiers & ~NSShiftKeyMask) == NSControlKeyMask)) {
-            [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+            [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'n') && (modifiers == 0)) {
@@ -1004,9 +1004,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (modifiers & NSCommandKeyMask) {
         if (modifiers & NSShiftKeyMask)
-            [self pdfsyncWithEvent:theEvent];
+            [self doPdfsyncWithEvent:theEvent];
         else
-            [self selectSnapshotWithEvent:theEvent];
+            [self doSelectSnapshotWithEvent:theEvent];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
         NSPoint p = mouseDownLoc;
@@ -1016,22 +1016,22 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
             if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
-                [self resizeReadingBarWithEvent:theEvent];
+                [self doResizeReadingBarWithEvent:theEvent];
             else
-                [self dragReadingBarWithEvent:theEvent];
+                [self doDragReadingBarWithEvent:theEvent];
         } else if (area == kPDFNoArea) {
-            [self dragWithEvent:theEvent];
+            [self doDragWithEvent:theEvent];
         } else {
             
             switch (toolMode) {
                 case SKTextToolMode:
                 case SKNoteToolMode:
-                    if ([self selectAnnotationWithEvent:theEvent] == NO &&
+                    if ([self doSelectAnnotationWithEvent:theEvent] == NO &&
                         (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                         if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil) {
-                            [self dragWithEvent:theEvent];
+                            [self doDragWithEvent:theEvent];
                         } else if (nil == activeAnnotation && mouseDownInAnnotation) {
-                            [self selectTextWithEvent:theEvent];
+                            [self doSelectTextWithEvent:theEvent];
                             mouseDownInAnnotation = NO; 	 
                         } else {
                             [super mouseDown:theEvent];
@@ -1046,13 +1046,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     if (area & kPDFLinkArea)
                         [super mouseDown:theEvent];
                     else
-                        [self dragWithEvent:theEvent];	
+                        [self doDragWithEvent:theEvent];	
                     break;
                 case SKSelectToolMode:
-                    [self selectWithEvent:theEvent];
+                    [self doSelectWithEvent:theEvent];
                     break;
                 case SKMagnifyToolMode:
-                    [self magnifyingGlassWithEvent:theEvent];
+                    [self doMagnifyWithEvent:theEvent];
                     break;
             }
         }
@@ -1125,7 +1125,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    NSCursor *cursor = [self cursorForEvent:theEvent];
+    NSCursor *cursor = [self getCursorForEvent:theEvent];
     if (cursor)
         [cursor set];
     else
@@ -1148,7 +1148,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    [self updateCursor];
+    [self doUpdateCursor];
 }
 
 - (void)lookUpCurrentSelectionInDictionary:(id)sender;
@@ -2325,7 +2325,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     return dest;
 }
 
-- (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
+- (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
     NSRect bounds = [activeAnnotation bounds];
     NSRect newBounds = bounds;
     PDFPage *page = [activeAnnotation page];
@@ -2413,7 +2413,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)resizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
+- (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
     NSRect bounds = [activeAnnotation bounds];
     NSRect newBounds = bounds;
     PDFPage *page = [activeAnnotation page];
@@ -2662,7 +2662,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)moveReadingBarForKey:(unichar)eventChar {
+- (void)doMoveReadingBarForKey:(unichar)eventChar {
     BOOL moved = NO;
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
     if (eventChar == NSDownArrowFunctionKey)
@@ -2687,7 +2687,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)resizeReadingBarForKey:(unichar)eventChar {
+- (void)doResizeReadingBarForKey:(unichar)eventChar {
     int numberOfLines = [readingBar numberOfLines];
     if (eventChar == NSDownArrowFunctionKey)
         numberOfLines++;
@@ -2702,7 +2702,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent {
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = NULL;
     NSArray *annotations;
     int i;
@@ -2853,7 +2853,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
                     if ([theEvent type] == NSLeftMouseUp)
                         break;
-                    [self dragAnnotationWithEvent:theEvent];
+                    [self doDragAnnotationWithEvent:theEvent];
                     draggedAnnotation = YES;
                 }
                 if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKFreeTextString])
@@ -2878,7 +2878,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
+- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
@@ -3062,7 +3062,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [activeAnnotation setBounds:newBounds];
 }
 
-- (void)dragWithEvent:(NSEvent *)theEvent {
+- (void)doDragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
 	
@@ -3088,10 +3088,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)selectWithEvent:(NSEvent *)theEvent {
+- (void)doSelectWithEvent:(NSEvent *)theEvent {
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
@@ -3217,10 +3217,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)selectTextWithEvent:(NSEvent *)theEvent {
+- (void)doSelectTextWithEvent:(NSEvent *)theEvent {
     // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
     PDFSelection *wasSelection = nil;
     unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
@@ -3299,7 +3299,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)dragReadingBarWithEvent:(NSEvent *)theEvent {
+- (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     NSArray *lineBounds = [page lineBounds];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", nil];
@@ -3373,10 +3373,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)resizeReadingBarWithEvent:(NSEvent *)theEvent {
+- (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     int firstLine = [readingBar currentLine];
     NSArray *lineBounds = [page lineBounds];
@@ -3409,10 +3409,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)selectSnapshotWithEvent:(NSEvent *)theEvent {
+- (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent {
     NSPoint mouseLoc = [theEvent locationInWindow];
 	NSPoint startPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
 	NSPoint	currentPoint;
@@ -3468,7 +3468,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
     
     [[self window] discardCachedImage];
-	[[self cursorForEvent:theEvent] set];
+	[[self getCursorForEvent:theEvent] set];
     
     NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
@@ -3531,7 +3531,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
 }
 
-- (void)magnifyingGlassWithEvent:(NSEvent *)theEvent {
+- (void)doMagnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
     NSScrollView *scrollView = [[self documentView] enclosingScrollView];
     NSView *documentView = [scrollView documentView];
@@ -3574,7 +3574,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 magnification = 1.0 / magnification;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-            [[self cursorForEvent:theEvent] set];
+            [[self getCursorForEvent:theEvent] set];
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
@@ -3660,10 +3660,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
-- (void)pdfsyncWithEvent:(NSEvent *)theEvent {
+- (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
     SKDocument *document = (SKDocument *)[[[self window] windowController] document];
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
@@ -3679,7 +3679,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (NSCursor *)cursorForEvent:(NSEvent *)theEvent {
+- (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSCursor *cursor = nil;
     
@@ -3778,7 +3778,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     return cursor;
 }
 
-- (void)updateCursor {
+- (void)doUpdateCursor {
     unsigned int flags = 0;
     UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
     if (currentKeyModifiers & cmdKey)
@@ -3798,7 +3798,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                                      eventNumber:0
                                       clickCount:1
                                         pressure:0.0];
-    [[self cursorForEvent:event] set];
+    [[self getCursorForEvent:event] set];
 }
 
 - (void)relayoutEditField {
