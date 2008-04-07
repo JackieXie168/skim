@@ -32,19 +32,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKAnnotationTypeImageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSImageCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -121,11 +121,19 @@
 				<string>id</string>
 				<key>autoSelectContent</key>
 				<string>id</string>
+				<key>changeAnnotationMode</key>
+				<string>id</string>
 				<key>changeColor</key>
 				<string>id</string>
 				<key>changeColorFill</key>
 				<string>id</string>
 				<key>changeDisplayBox</key>
+				<string>id</string>
+				<key>changeDisplayContinuous</key>
+				<string>id</string>
+				<key>changeDisplayMode</key>
+				<string>id</string>
+				<key>changeDisplaySinglePages</key>
 				<string>id</string>
 				<key>changeFindPaneState</key>
 				<string>id</string>
@@ -276,6 +284,8 @@
 				<string>SKColorSwatch</string>
 				<key>colorsButton</key>
 				<string>NSSegmentedControl</string>
+				<key>continuousButton</key>
+				<string>NSSegmentedControl</string>
 				<key>cropButton</key>
 				<string>NSSegmentedControl</string>
 				<key>currentLeftSideView</key>
@@ -285,6 +295,8 @@
 				<key>customizeButton</key>
 				<string>NSSegmentedControl</string>
 				<key>displayBoxButton</key>
+				<string>NSSegmentedControl</string>
+				<key>displayModeButton</key>
 				<string>NSSegmentedControl</string>
 				<key>findArrayController</key>
 				<string>NSArrayController</string>
@@ -384,6 +396,8 @@
 				<string>NSTextField</string>
 				<key>searchField</key>
 				<string>NSSearchField</string>
+				<key>singleTwoUpButton</key>
+				<string>NSSegmentedControl</string>
 				<key>snapshotArrayController</key>
 				<string>NSArrayController</string>
 				<key>snapshotTableView</key>
