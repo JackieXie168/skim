@@ -294,7 +294,7 @@ enum {
 
 - (BOOL)isNoteAnnotation { return NO; }
 
-- (BOOL)isMarkupAnnotation { return NO; }
+- (BOOL)isMarkup { return NO; }
 
 - (BOOL)isResizable { return NO; }
 

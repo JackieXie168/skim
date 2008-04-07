@@ -377,7 +377,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (BOOL)isNoteAnnotation { return YES; }
 
-- (BOOL)isMarkupAnnotation { return YES; }
+- (BOOL)isMarkup { return YES; }
 
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
