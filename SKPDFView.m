@@ -3280,7 +3280,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if (NSIsEmptyRect(selectionRect) == NO)
                 [self setNeedsDisplayInRect:selectionRect];
             selectionRect = NSIntegralRect([self convertRect:selRect fromPage:page1]);
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
             [self setNeedsDisplayInRect:selectionRect];
             [[self window] flushWindow];
         } else if (extendSelection) {
