@@ -1138,11 +1138,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     return notes;
 }
 
-- (void)setNotes:(NSArray *)newNotes {
-    [notes setArray:notes];
-    [noteOutlineView reloadData];
-}
-
 - (unsigned)countOfNotes {
     return [notes count];
 }
@@ -1223,10 +1218,6 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (NSArray *)snapshots {
     return snapshots;
-}
-
-- (void)setSnapshots:(NSArray *)newSnapshots {
-    [snapshots setArray:snapshots];
 }
 
 - (unsigned)countOfSnapshots {
