@@ -412,6 +412,12 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return sel ? [sel objectSpecifier] : [NSArray array];
 }
 
+- (void)setSelectionSpecifier:(id)specifier {
+    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
+    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
+        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
+}
+
 @end
 
 #pragma mark -

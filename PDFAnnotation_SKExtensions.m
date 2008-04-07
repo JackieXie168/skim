@@ -447,6 +447,12 @@ enum {
     return 0;
 }
 
+- (void)setScriptingNoteType:(unsigned long)type {
+    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
+    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
+        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
+}
+
 - (unsigned long)scriptingIconType {
     return SKScriptingTextAnnotationIconNote;
 }
@@ -527,8 +533,6 @@ enum {
     return [NSNull null];
 }
 
-- (void)setSelectionSpecifier:(id)specifier {}
-
 @end
 
 #pragma mark -
@@ -541,21 +545,14 @@ enum {
 // override these Leopard methods to avoid showing the standard tool tips over our own
 
 static IMP originalToolTip = NULL;
-static IMP originalToolTipNoLabel = NULL;
 
 - (NSString *)replacementToolTip {
     return ([self URL] || [self destination] || originalToolTip == NULL) ? nil : originalToolTip(self, _cmd);
 }
 
-- (NSString *)replacementToolTipNoLabel {
-    return ([self URL] || [self destination] || originalToolTipNoLabel == NULL) ? nil : originalToolTipNoLabel(self, _cmd);
-}
-
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
         originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
-    if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
-        originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTipNoLabel), @selector(replacementToolTipNoLabel));
 }
 
 @end
