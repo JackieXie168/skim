@@ -2774,10 +2774,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 clickDelta.x = pagePoint.x - NSMinX(bounds);
                 clickDelta.y = pagePoint.y - NSMinY(bounds);
             }
-        } else if ([newActiveAnnotation isMarkupAnnotation] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
-        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
+        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkup]) {
             int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
             PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
             [sel addSelection:[(SKPDFAnnotationMarkup *)newActiveAnnotation selection]];
