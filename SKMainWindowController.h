@@ -333,7 +333,6 @@ typedef struct _SKPDFViewState {
 - (void)setPdfDocument:(PDFDocument *)document;
 
 - (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
 - (unsigned)countOfNotes;
 - (id)objectInNotesAtIndex:(unsigned)index;
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
@@ -345,7 +344,6 @@ typedef struct _SKPDFViewState {
 - (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex;
 
 - (NSArray *)snapshots;
-- (void)setSnapshots:(NSArray *)newSnapshots;
 - (unsigned)countOfSnapshots;
 - (id)objectInSnapshotsAtIndex:(unsigned)theIndex;
 - (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
