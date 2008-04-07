@@ -3293,6 +3293,16 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
     }
     
+    if (rectSelection)  {
+        if (NSIsEmptyRect(selectionRect) == NO) {
+            [self setNeedsDisplayInRect:selectionRect];
+            selectionRect = NSZeroRect;
+            [[self window] flushWindow];
+        } else {
+            selectionRect = NSZeroRect;
+        }
+    }
+    
     if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
         [self addAnnotationWithType:annotationMode];
         [self setCurrentSelection:nil];
