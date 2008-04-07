@@ -91,6 +91,7 @@ static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
 static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
 static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
 static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
+static NSString *SKSelectTextBehindNotesOnCapsLockKey = @"SKSelectTextBehindNotesOnCapsLock";
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
@@ -2708,6 +2709,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     int i;
     NSPoint pagePoint;
     PDFPage *page;
+    BOOL canSelectNotes = [[NSUserDefaults standardUserDefaults] boolForKey:SKSelectTextBehindNotesOnCapsLockKey] == NO || ([theEvent modifierFlags] & NSAlphaShiftKeyMask) == 0;
     
     // Mouse in display view coordinates.
     mouseDownLoc = [theEvent locationInWindow];
@@ -2730,7 +2732,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         // Hit test annotation.
         if ([annotation isNoteAnnotation]) {
-            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
+            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation) && canSelectNotes) {
                 mouseDownInAnnotation = YES;
                 newActiveAnnotation = annotation;
                 // Remember click point relative to annotation origin.
