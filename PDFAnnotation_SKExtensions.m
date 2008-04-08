@@ -187,7 +187,7 @@ enum {
     PDFBorder *border = [self border];
     NSString *contents = [self contents];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
-    [fdfString appendFormat:@"/%s/%s/%s/", SKFDFAnnotationTypeKey, SKFDFAnnotation, SKFDFAnnotationSubtypeKey];
+    [fdfString appendFormat:@"/%s/%s/%s/", SKFDFTypeKey, SKFDFAnnotation, SKFDFAnnotationTypeKey];
     [fdfString appendString:[[self type] isEqualToString:SKNoteString] ? SKTextString : [self type]];
     [fdfString appendFormat:@"/%s[%f %f %f %f]", SKFDFAnnotationRectKey, NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [fdfString appendFormat:@"/%s %i", SKFDFAnnotationPageKey, [self pageIndex]];

@@ -38,11 +38,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern const char *SKFDFAnnotationCatalogKey;
-extern const char *SKFDFAnnotationAnnotsKey;
-extern const char *SKFDFAnnotationTypeKey;
+extern const char *SKFDFCatalogKey;
+extern const char *SKFDFAnnotationsKey;
+extern const char *SKFDFFileKey;
+extern const char *SKFDFFileIDKey;
+extern const char *SKFDFRootKey;
+
+extern const char *SKFDFTypeKey;
+
 extern const char *SKFDFAnnotationFlagsKey;
-extern const char *SKFDFAnnotationSubtypeKey;
+extern const char *SKFDFAnnotationTypeKey;
 extern const char *SKFDFAnnotationRectKey;
 extern const char *SKFDFAnnotationContentsKey;
 extern const char *SKFDFAnnotationBoundsKey;
