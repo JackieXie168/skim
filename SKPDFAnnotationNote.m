@@ -40,6 +40,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
@@ -146,25 +147,25 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendString:@"/Name"];
+    [fdfString appendFormat:@"/%s", SKFDFAnnotationIconTypeKey];
     switch ([self iconType]) {
         case kPDFTextAnnotationIconComment:
-            [fdfString appendString:@"/Comment"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconComment];
             break;
         case kPDFTextAnnotationIconKey:
-            [fdfString appendString:@"/Key"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconKey];
             break;
         case kPDFTextAnnotationIconNote:
-            [fdfString appendString:@"/Note"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconNote];
             break;
         case kPDFTextAnnotationIconNewParagraph:
-            [fdfString appendString:@"/NewParagraph"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconNewParagraph];
             break;
         case kPDFTextAnnotationIconParagraph:
-            [fdfString appendString:@"/Paragraph"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconParagraph];
             break;
         case kPDFTextAnnotationIconInsert:
-            [fdfString appendString:@"/Insert"];
+            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconInsert];
             break;
     }
     return fdfString;

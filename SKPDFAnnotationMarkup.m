@@ -40,6 +40,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
@@ -287,7 +288,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSValue *value;
     NSPoint point;
     NSRect bounds = [self bounds];
-    [fdfString appendString:@"/QuadPoints["];
+    [fdfString appendFormat:@"/%s[", SKFDFAnnotationQuadPointsKey];
     while (value = [pointEnum nextObject]) {
         point = [value pointValue];
         [fdfString appendFormat:@"%f %f ", point.x + NSMinX(bounds), point.y + NSMinY(bounds)];

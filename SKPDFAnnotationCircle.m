@@ -40,6 +40,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
 NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
@@ -81,7 +82,7 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     float r, g, b, a = 0.0;
     [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
     if (a > 0.0)
-        [fdfString appendFormat:@"/IC[%f %f %f]", r, g, b];
+        [fdfString appendFormat:@"/%s[%f %f %f]", SKFDFAnnotationInteriorColorKey, r, g, b];
     return fdfString;
 }
 

@@ -45,6 +45,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
@@ -186,40 +187,37 @@ enum {
     PDFBorder *border = [self border];
     NSString *contents = [self contents];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
-    [fdfString appendString:@"/Type/Annot/Subtype/"];
+    [fdfString appendFormat:@"/%s/%s/%s/", SKFDFAnnotationTypeKey, SKFDFAnnotation, SKFDFAnnotationSubtypeKey];
     [fdfString appendString:[[self type] isEqualToString:SKNoteString] ? SKTextString : [self type]];
-    [fdfString appendFormat:@"/Rect[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
-    [fdfString appendFormat:@"/Page %i", [self pageIndex]];
-    [fdfString appendString:@"/F 4"];
+    [fdfString appendFormat:@"/%s[%f %f %f %f]", SKFDFAnnotationRectKey, NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
+    [fdfString appendFormat:@"/%s %i", SKFDFAnnotationPageKey, [self pageIndex]];
+    [fdfString appendFormat:@"/%s 4", SKFDFAnnotationFlagsKey];
     if (a > 0.0)
-        [fdfString appendFormat:@"/C[%f %f %f]", r, g, b];
+        [fdfString appendFormat:@"/%s[%f %f %f]", SKFDFAnnotationColorKey, r, g, b];
     if (border) {
-        [fdfString appendFormat:@"/BS<</W %f/S", [border lineWidth]];
+        [fdfString appendFormat:@"/%s<</%s %f/%s", SKFDFAnnotationBorderStylesKey, SKFDFAnnotationLineWidthKey, [border lineWidth], SKFDFAnnotationBorderStyleKey];
         switch ([border style]) {
             case kPDFBorderStyleSolid:
-                [fdfString appendString:@"/S"];
+                [fdfString appendFormat:@"/%s", SKFDFBorderStyleSolid];
                 break;
             case kPDFBorderStyleDashed:
-                [fdfString appendString:@"/D"];
+                [fdfString appendFormat:@"/%s", SKFDFBorderStyleDashed];
                 break;
             case kPDFBorderStyleBeveled:
-                [fdfString appendString:@"/B"];
+                [fdfString appendFormat:@"/%s", SKFDFBorderStyleBeveled];
                 break;
             case kPDFBorderStyleInset:
-                [fdfString appendString:@"/I"];
+                [fdfString appendFormat:@"/%s", SKFDFBorderStyleInset];
                 break;
             case kPDFBorderStyleUnderline:
-                [fdfString appendString:@"/U"];
+                [fdfString appendFormat:@"/%s", SKFDFBorderStyleUnderline];
                 break;
         }
-        [fdfString appendFormat:@"/D[%@]", [[[border dashPattern] valueForKey:@"stringValue"] componentsJoinedByString:@" "]];
-        [fdfString appendString:@">>"];
+        [fdfString appendFormat:@"/%s[%@]>>", SKFDFAnnotationDashPatternKey, [[[border dashPattern] valueForKey:@"stringValue"] componentsJoinedByString:@" "]];
     } else {
-        [fdfString appendString:@"/BS<</W 0.0>>"];
+        [fdfString appendFormat:@"/%s<</%s 0.0>>", SKFDFAnnotationBorderStylesKey, SKFDFAnnotationLineWidthKey];
     }
-    [fdfString appendString:@"/Contents("];
-    [fdfString appendString:contents ? [contents stringByEscapingParenthesis] : @""];
-    [fdfString appendString:@")"];
+    [fdfString appendFormat:@"/%s(%@)", SKFDFAnnotationContentsKey, (contents ? [contents stringByEscapingParenthesis] : @"")];
     return fdfString;
 }
 
