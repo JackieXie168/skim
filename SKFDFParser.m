@@ -38,10 +38,18 @@
 
 #import "SKFDFParser.h"
 #import <Quartz/Quartz.h>
+#import <ApplicationServices/ApplicationServices.h>
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationCircle.h"
+#import "SKPDFAnnotationSquare.h"
+#import "SKPDFAnnotationLine.h"
+#import "SKPDFAnnotationMarkup.h"
+#import "SKPDFAnnotationFreeText.h"
+#import "SKPDFAnnotationNote.h"
 
 
 @interface SKFDFParser (SKPrivate)
@@ -115,7 +123,7 @@
     }
     
     if (CGPDFDictionaryGetName(annot, "Subtype", &name)) {
-        [dictionary setObject:[NSString stringWithFormat:@"%s", name] forKey:@"type"];
+        [dictionary setObject:[NSString stringWithFormat:@"%s", name] forKey:SKPDFAnnotationTypeKey];
     } else {
         success = NO;
     }
@@ -124,14 +132,14 @@
         CGPDFReal l, b, r, t;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &l) && CGPDFArrayGetNumber(array, 1, &b) && CGPDFArrayGetNumber(array, 2, &r) && CGPDFArrayGetNumber(array, 3, &t)) {
             bounds = NSMakeRect(l, b, r - l, t - b);
-            [dictionary setObject:NSStringFromRect(bounds) forKey:@"bounds"];
+            [dictionary setObject:NSStringFromRect(bounds) forKey:SKPDFAnnotationBoundsKey];
         }
     } else {
         success = NO;
     }
     
     if (CGPDFDictionaryGetInteger(annot, "Page", &integer)) {
-        [dictionary setObject:[NSNumber numberWithInt:integer] forKey:@"pageIndex"];
+        [dictionary setObject:[NSNumber numberWithInt:integer] forKey:SKPDFAnnotationPageIndexKey];
     } else {
         success = NO;
     }
@@ -139,28 +147,28 @@
     if (CGPDFDictionaryGetString(annot, "Contents", &string)) {
         NSString *contents = (NSString *)CGPDFStringCopyTextString(string);
         if (contents)
-            [dictionary setObject:contents forKey:@"contents"];
+            [dictionary setObject:contents forKey:SKPDFAnnotationContentsKey];
         [contents release];
     }
     
     if (CGPDFDictionaryGetArray(annot, "C", &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:@"color"];
+            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationColorKey];
         }
     }
     
     if (CGPDFDictionaryGetArray(annot, "IC", &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:@"interiorColor"];
+            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationInteriorColorKey];
         }
     }
     
     if (CGPDFDictionaryGetDictionary(annot, "BS", &dict)) {
         if (CGPDFDictionaryGetNumber(dict, "W", &real)) {
             if (real > 0.0) {
-                [dictionary setObject:[NSNumber numberWithFloat:real] forKey:@"lineWidth"];
+                [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKPDFAnnotationLineWidthKey];
                 if (CGPDFDictionaryGetName(dict, "S", &name)) {
                     int style = kPDFBorderStyleSolid;
                     if (strcmp(name, "S") == 0)
@@ -173,7 +181,7 @@
                         style = kPDFBorderStyleInset;
                     else if (strcmp(name, "U") == 0)
                         style = kPDFBorderStyleUnderline;
-                    [dictionary setObject:[NSNumber numberWithInt:style] forKey:@"borderStyle"];
+                    [dictionary setObject:[NSNumber numberWithInt:style] forKey:SKPDFAnnotationBorderStyleKey];
                 }
                 if (CGPDFDictionaryGetArray(annot, "D", &array)) {
                     size_t i, count = CGPDFArrayGetCount(array);
@@ -182,14 +190,14 @@
                         if (CGPDFArrayGetNumber(array, i, &real))
                             [dp addObject:[NSNumber numberWithFloat:real]];
                     }
-                    [dictionary setObject:dp forKey:@"dashPattern"];
+                    [dictionary setObject:dp forKey:SKPDFAnnotationDashPatternKey];
                 }
             }
         }
     } else if (CGPDFDictionaryGetArray(annot, "Border", &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
         if (count > 2 && CGPDFArrayGetNumber(array, 2, &real) && real > 0.0) {
-            [dictionary setObject:[NSNumber numberWithFloat:real] forKey:@"lineWidth"];
+            [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKPDFAnnotationLineWidthKey];
             CGPDFArrayRef dp;
             if (count > 3 && CGPDFArrayGetArray(array, 3, &dp)) {
                 count = CGPDFArrayGetCount(dp);
@@ -198,15 +206,15 @@
                     if (CGPDFArrayGetNumber(dp, i, &real))
                         [dashPattern addObject:[NSNumber numberWithFloat:real]];
                 }
-                [dictionary setObject:dashPattern forKey:@"dashPattern"];
-                [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleDashed] forKey:@"borderStyle"];
+                [dictionary setObject:dashPattern forKey:SKPDFAnnotationDashPatternKey];
+                [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleDashed] forKey:SKPDFAnnotationBorderStyleKey];
             } else {
-                 [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:@"borderStyle"];
+                 [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKPDFAnnotationBorderStyleKey];
             }
         }
     } else {
-        [dictionary setObject:[NSNumber numberWithFloat:1.0] forKey:@"lineWidth"];
-        [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:@"borderStyle"];
+        [dictionary setObject:[NSNumber numberWithFloat:1.0] forKey:SKPDFAnnotationLineWidthKey];
+        [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKPDFAnnotationBorderStyleKey];
     }
     
     if (CGPDFDictionaryGetName(annot, "Name", &name)) {
@@ -223,7 +231,7 @@
             icon = kPDFTextAnnotationIconParagraph;
         else if (strcmp(name, "Insert") == 0)
             icon = kPDFTextAnnotationIconInsert;
-        [dictionary setObject:[NSNumber numberWithInt:icon] forKey:@"iconType"];
+        [dictionary setObject:[NSNumber numberWithInt:icon] forKey:SKPDFAnnotationIconTypeKey];
     }
     
     if (CGPDFDictionaryGetArray(annot, "LE", &array)) {
@@ -259,15 +267,15 @@
                     endStyle = kPDFLineStyleClosedArrow;
             }
         }
-        [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:@"endLineStyle"];
-        [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:@"startLineStyle"];
+        [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:SKPDFAnnotationEndLineStyleKey];
+        [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:SKPDFAnnotationStartLineStyleKey];
     }
     
     if (CGPDFDictionaryGetArray(annot, "L", &array)) {
         NSPoint p1, p2;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &p1.x) && CGPDFArrayGetNumber(array, 1, &p1.y) && CGPDFArrayGetNumber(array, 2, &p2.x) && CGPDFArrayGetNumber(array, 3, &p2.y)) {
-            [dictionary setObject:NSStringFromPoint(p1) forKey:@"startPoint"];
-            [dictionary setObject:NSStringFromPoint(p2) forKey:@"endPoint"];
+            [dictionary setObject:NSStringFromPoint(p1) forKey:SKPDFAnnotationStartPointKey];
+            [dictionary setObject:NSStringFromPoint(p2) forKey:SKPDFAnnotationEndPointKey];
         }
     }
     
@@ -280,7 +288,7 @@
                 if (CGPDFArrayGetNumber(array, i, &point.x) && CGPDFArrayGetNumber(array, ++i, &point.y))
                     [quadPoints addObject:NSStringFromPoint(SKSubstractPoints(point, bounds.origin))];
             }
-            [dictionary setObject:quadPoints forKey:@"quadrilateralPoints"];
+            [dictionary setObject:quadPoints forKey:SKPDFAnnotationQuadrilateralPointsKey];
         }
     }
     
@@ -305,7 +313,7 @@
                             font = [NSFont fontWithName:fontName size:fontSize];
                         }
                         if (font)
-                            [dictionary setObject:font forKey:@"font"];
+                            [dictionary setObject:font forKey:SKPDFAnnotationFontKey];
                    }
                }
            }
@@ -314,19 +322,19 @@
     }
     
     NSSet *validTypes = [NSSet setWithObjects:SKFreeTextString, SKNoteString, SKCircleString, SKSquareString, SKHighlightString, SKUnderlineString, SKStrikeOutString, SKLineString, nil];
-    NSString *type = [dictionary objectForKey:@"type"];
+    NSString *type = [dictionary objectForKey:SKPDFAnnotationTypeKey];
     NSString *contents;
     if ([type isEqualToString:SKTextString]) {
-        [dictionary setObject:SKNoteString forKey:@"type"];
-        if (contents = [dictionary objectForKey:@"contents"]) {
+        [dictionary setObject:SKNoteString forKey:SKPDFAnnotationTypeKey];
+        if (contents = [dictionary objectForKey:SKPDFAnnotationContentsKey]) {
             NSRange r = [contents rangeOfString:@"  "];
             if (NSMaxRange(r) < [contents length]) {
                 NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
                                                size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
                 NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
                                                     attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
-                [dictionary setObject:attrString forKey:@"text"];
-                [dictionary setObject:[contents substringToIndex:r.location] forKey:@"contents"];
+                [dictionary setObject:attrString forKey:SKPDFAnnotationTextKey];
+                [dictionary setObject:[contents substringToIndex:r.location] forKey:SKPDFAnnotationContentsKey];
             }
         }
     } else if ([validTypes containsObject:type] == NO) {
