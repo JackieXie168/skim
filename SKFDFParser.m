@@ -51,6 +51,51 @@
 #import "SKPDFAnnotationFreeText.h"
 #import "SKPDFAnnotationNote.h"
 
+const char *SKFDFCatalogKey = "FDF";
+const char *SKFDFAnnotsKey = "Annots";
+
+const char *SKFDFAnnotationTypeKey = "Type";
+const char *SKFDFAnnotationFlagsKey = "F";
+const char *SKFDFAnnotationSubtypeKey = "Subtype";
+const char *SKFDFAnnotationRectKey = "Rect";
+const char *SKFDFAnnotationContentsKey = "Contents";
+const char *SKFDFAnnotationBoundsKey = "Bounds";
+const char *SKFDFAnnotationPageKey = "Page";
+const char *SKFDFAnnotationColorKey = "C";
+const char *SKFDFAnnotationInteriorColorKey = "IC";
+const char *SKFDFAnnotationBorderStylesKey = "BS";
+const char *SKFDFAnnotationLineWidthKey = "W";
+const char *SKFDFAnnotationDashPatternKey = "D";
+const char *SKFDFAnnotationBorderStyleKey = "S";
+const char *SKFDFAnnotationBorderKey = "Border";
+const char *SKFDFAnnotationIconTypeKey = "Name";
+const char *SKFDFAnnotationLineStylesKey = "LE";
+const char *SKFDFAnnotationLinePointsKey = "L";
+const char *SKFDFAnnotationQuadPointsKey = "QuadPoints";
+const char *SKFDFDefaultAppearanceKey = "DA";
+const char *SKFDFDefaultStyleKey = "DS";
+
+const char *SKFDFAnnotation = "Annot";
+
+const char *SKFDFBorderStyleSolid = "S";
+const char *SKFDFBorderStyleDashed = "D";
+const char *SKFDFBorderStyleBeveled = "B";
+const char *SKFDFBorderStyleInset = "I";
+const char *SKFDFBorderStyleUnderline = "U";
+
+const char *SKFDFTextAnnotationIconComment = "Comment";
+const char *SKFDFTextAnnotationIconKey = "";
+const char *SKFDFTextAnnotationIconNote = "Note";
+const char *SKFDFTextAnnotationIconNewParagraph = "NewParagraph";
+const char *SKFDFTextAnnotationIconParagraph = "Paragraph";
+const char *SKFDFTextAnnotationIconInsert = "Insert";
+
+const char *SKFDFLineStyleNone = "None";
+const char *SKFDFLineStyleSquare = "Square";
+const char *SKFDFLineStyleCircle = "Circle";
+const char *SKFDFLineStyleDiamond = "Diamond";
+const char *SKFDFLineStyleOpenArrow = "OpenArrow";
+const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
 
 @interface SKFDFParser (SKPrivate)
 + (NSDictionary *)noteDictionaryFromPDFDictionary:(CGPDFDictionaryRef)annot;
@@ -80,8 +125,8 @@
         CGPDFArrayRef annots;
         
         if (catalog &&
-            CGPDFDictionaryGetDictionary(catalog, "FDF", &fdfDict) &&
-            CGPDFDictionaryGetArray(fdfDict, "Annots", &annots)) {
+            CGPDFDictionaryGetDictionary(catalog, SKFDFCatalogKey, &fdfDict) &&
+            CGPDFDictionaryGetArray(fdfDict, SKFDFAnnotsKey, &annots)) {
             
             size_t i, count = CGPDFArrayGetCount(annots);
             notes = [NSMutableArray arrayWithCapacity:count];
@@ -118,17 +163,17 @@
     BOOL success = YES;
     NSRect bounds = NSZeroRect;
     
-    if (CGPDFDictionaryGetName(annot, "Type", &name) == NO || strcmp(name, "Annot") != 0) {
+    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationTypeKey, &name) == NO || strcmp(name, SKFDFAnnotation) != 0) {
         success = NO;
     }
     
-    if (CGPDFDictionaryGetName(annot, "Subtype", &name)) {
+    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationSubtypeKey, &name)) {
         [dictionary setObject:[NSString stringWithFormat:@"%s", name] forKey:SKPDFAnnotationTypeKey];
     } else {
         success = NO;
     }
     
-    if (CGPDFDictionaryGetArray(annot, "Rect", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationRectKey, &array)) {
         CGPDFReal l, b, r, t;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &l) && CGPDFArrayGetNumber(array, 1, &b) && CGPDFArrayGetNumber(array, 2, &r) && CGPDFArrayGetNumber(array, 3, &t)) {
             bounds = NSMakeRect(l, b, r - l, t - b);
@@ -138,52 +183,52 @@
         success = NO;
     }
     
-    if (CGPDFDictionaryGetInteger(annot, "Page", &integer)) {
+    if (CGPDFDictionaryGetInteger(annot, SKFDFAnnotationPageKey, &integer)) {
         [dictionary setObject:[NSNumber numberWithInt:integer] forKey:SKPDFAnnotationPageIndexKey];
     } else {
         success = NO;
     }
     
-    if (CGPDFDictionaryGetString(annot, "Contents", &string)) {
+    if (CGPDFDictionaryGetString(annot, SKFDFAnnotationContentsKey, &string)) {
         NSString *contents = (NSString *)CGPDFStringCopyTextString(string);
         if (contents)
             [dictionary setObject:contents forKey:SKPDFAnnotationContentsKey];
         [contents release];
     }
     
-    if (CGPDFDictionaryGetArray(annot, "C", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationColorKey, &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
             [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationColorKey];
         }
     }
     
-    if (CGPDFDictionaryGetArray(annot, "IC", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationInteriorColorKey, &array)) {
         CGPDFReal r, g, b;
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
             [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationInteriorColorKey];
         }
     }
     
-    if (CGPDFDictionaryGetDictionary(annot, "BS", &dict)) {
-        if (CGPDFDictionaryGetNumber(dict, "W", &real)) {
+    if (CGPDFDictionaryGetDictionary(annot, SKFDFAnnotationBorderStylesKey, &dict)) {
+        if (CGPDFDictionaryGetNumber(dict, SKFDFAnnotationLineWidthKey, &real)) {
             if (real > 0.0) {
                 [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKPDFAnnotationLineWidthKey];
-                if (CGPDFDictionaryGetName(dict, "S", &name)) {
+                if (CGPDFDictionaryGetName(dict, SKFDFAnnotationBorderStyleKey, &name)) {
                     int style = kPDFBorderStyleSolid;
-                    if (strcmp(name, "S") == 0)
+                    if (strcmp(name, SKFDFBorderStyleSolid) == 0)
                         style = kPDFBorderStyleSolid;
-                    else if (strcmp(name, "D") == 0)
+                    else if (strcmp(name, SKFDFBorderStyleDashed) == 0)
                         style = kPDFBorderStyleDashed;
-                    else if (strcmp(name, "B") == 0)
+                    else if (strcmp(name, SKFDFBorderStyleBeveled) == 0)
                         style = kPDFBorderStyleBeveled;
-                    else if (strcmp(name, "I") == 0)
+                    else if (strcmp(name, SKFDFBorderStyleInset) == 0)
                         style = kPDFBorderStyleInset;
-                    else if (strcmp(name, "U") == 0)
+                    else if (strcmp(name, SKFDFBorderStyleUnderline) == 0)
                         style = kPDFBorderStyleUnderline;
                     [dictionary setObject:[NSNumber numberWithInt:style] forKey:SKPDFAnnotationBorderStyleKey];
                 }
-                if (CGPDFDictionaryGetArray(annot, "D", &array)) {
+                if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationDashPatternKey, &array)) {
                     size_t i, count = CGPDFArrayGetCount(array);
                     NSMutableArray *dp = [NSMutableArray array];
                     for (i = 0; i < count; i++) {
@@ -194,7 +239,7 @@
                 }
             }
         }
-    } else if (CGPDFDictionaryGetArray(annot, "Border", &array)) {
+    } else if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationBorderKey, &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
         if (count > 2 && CGPDFArrayGetNumber(array, 2, &real) && real > 0.0) {
             [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKPDFAnnotationLineWidthKey];
@@ -217,53 +262,53 @@
         [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKPDFAnnotationBorderStyleKey];
     }
     
-    if (CGPDFDictionaryGetName(annot, "Name", &name)) {
+    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {
         int icon = kPDFTextAnnotationIconNote;
-        if (strcmp(name, "Comment") == 0)
+        if (strcmp(name, SKFDFTextAnnotationIconComment) == 0)
             icon = kPDFTextAnnotationIconComment;
-        else if (strcmp(name, "Key") == 0)
+        else if (strcmp(name, SKFDFTextAnnotationIconKey) == 0)
             icon = kPDFTextAnnotationIconKey;
-        else if (strcmp(name, "Note") == 0)
+        else if (strcmp(name, SKFDFTextAnnotationIconNote) == 0)
             icon = kPDFTextAnnotationIconNote;
-        else if (strcmp(name, "NewParagraph") == 0)
+        else if (strcmp(name, SKFDFTextAnnotationIconNewParagraph) == 0)
             icon = kPDFTextAnnotationIconNewParagraph;
-        else if (strcmp(name, "Paragraph") == 0)
+        else if (strcmp(name, SKFDFTextAnnotationIconParagraph) == 0)
             icon = kPDFTextAnnotationIconParagraph;
-        else if (strcmp(name, "Insert") == 0)
+        else if (strcmp(name, SKFDFTextAnnotationIconInsert) == 0)
             icon = kPDFTextAnnotationIconInsert;
         [dictionary setObject:[NSNumber numberWithInt:icon] forKey:SKPDFAnnotationIconTypeKey];
     }
     
-    if (CGPDFDictionaryGetArray(annot, "LE", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationLineStylesKey, &array)) {
         int startStyle = kPDFLineStyleNone;
         int endStyle = kPDFLineStyleNone;
         if (CGPDFArrayGetCount(array) == 2) {
             if (CGPDFArrayGetName(array, 0, &name)) {
-                if (strcmp(name, "None") == 0)
+                if (strcmp(name, SKFDFLineStyleNone) == 0)
                     startStyle = kPDFLineStyleNone;
-                else if (strcmp(name, "Square") == 0)
+                else if (strcmp(name, SKFDFLineStyleSquare) == 0)
                     startStyle = kPDFLineStyleSquare;
-                else if (strcmp(name, "Circle") == 0)
+                else if (strcmp(name, SKFDFLineStyleCircle) == 0)
                     startStyle = kPDFLineStyleCircle;
-                else if (strcmp(name, "Diamond") == 0)
+                else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
                     startStyle = kPDFLineStyleDiamond;
-                else if (strcmp(name, "OpenArrow") == 0)
+                else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
                     startStyle = kPDFLineStyleOpenArrow;
-                else if (strcmp(name, "ClosedArrow") == 0)
+                else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
                     startStyle = kPDFLineStyleClosedArrow;
             }
             if (CGPDFArrayGetName(array, 1, &name)) {
-                if (strcmp(name, "None") == 0)
+                if (strcmp(name, SKFDFLineStyleNone) == 0)
                     startStyle = kPDFLineStyleNone;
-                else if (strcmp(name, "Square") == 0)
+                else if (strcmp(name, SKFDFLineStyleSquare) == 0)
                     endStyle = kPDFLineStyleSquare;
-                else if (strcmp(name, "Circle") == 0)
+                else if (strcmp(name, SKFDFLineStyleCircle) == 0)
                     endStyle = kPDFLineStyleCircle;
-                else if (strcmp(name, "Diamond") == 0)
+                else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
                     endStyle = kPDFLineStyleDiamond;
-                else if (strcmp(name, "OpenArrow") == 0)
+                else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
                     endStyle = kPDFLineStyleOpenArrow;
-                else if (strcmp(name, "ClosedArrow") == 0)
+                else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
                     endStyle = kPDFLineStyleClosedArrow;
             }
         }
@@ -271,7 +316,7 @@
         [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:SKPDFAnnotationStartLineStyleKey];
     }
     
-    if (CGPDFDictionaryGetArray(annot, "L", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationLinePointsKey, &array)) {
         NSPoint p1, p2;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &p1.x) && CGPDFArrayGetNumber(array, 1, &p1.y) && CGPDFArrayGetNumber(array, 2, &p2.x) && CGPDFArrayGetNumber(array, 3, &p2.y)) {
             [dictionary setObject:NSStringFromPoint(p1) forKey:SKPDFAnnotationStartPointKey];
@@ -279,7 +324,7 @@
         }
     }
     
-    if (CGPDFDictionaryGetArray(annot, "QuadPoints", &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationQuadPointsKey, &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
         if (count % 8 == 0) {
             NSMutableArray *quadPoints = [NSMutableArray arrayWithCapacity:count / 2];
@@ -292,7 +337,7 @@
         }
     }
     
-    if (CGPDFDictionaryGetString(annot, "DA", &string)) {
+    if (CGPDFDictionaryGetString(annot, SKFDFDefaultAppearanceKey, &string)) {
         NSString *da = (NSString *)CGPDFStringCopyTextString(string);
         if (da) {
             NSScanner *scanner = [NSScanner scannerWithString:da];

@@ -40,6 +40,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKFDFParser.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
 NSString *SKPDFAnnotationFontKey = @"font";
@@ -97,7 +98,7 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendFormat:@"/DA(/%@ %f Tf)/DS(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize], [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFormat:@"/%s(/%@ %f Tf)/%s(font: %@ %fpt)", SKFDFDefaultAppearanceKey, [[self font] fontName], [[self font] pointSize], SKFDFDefaultStyleKey, [[self font] fontName], [[self font] pointSize]];
     return fdfString;
 }
 

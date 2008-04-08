@@ -38,6 +38,50 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern const char *SKFDFAnnotationCatalogKey;
+extern const char *SKFDFAnnotationAnnotsKey;
+extern const char *SKFDFAnnotationTypeKey;
+extern const char *SKFDFAnnotationFlagsKey;
+extern const char *SKFDFAnnotationSubtypeKey;
+extern const char *SKFDFAnnotationRectKey;
+extern const char *SKFDFAnnotationContentsKey;
+extern const char *SKFDFAnnotationBoundsKey;
+extern const char *SKFDFAnnotationPageKey;
+extern const char *SKFDFAnnotationColorKey;
+extern const char *SKFDFAnnotationInteriorColorKey;
+extern const char *SKFDFAnnotationBorderStylesKey;
+extern const char *SKFDFAnnotationLineWidthKey;
+extern const char *SKFDFAnnotationDashPatternKey;
+extern const char *SKFDFAnnotationBorderStyleKey;
+extern const char *SKFDFAnnotationBorderKey;
+extern const char *SKFDFAnnotationIconTypeKey;
+extern const char *SKFDFAnnotationLineStylesKey;
+extern const char *SKFDFAnnotationLinePointsKey;
+extern const char *SKFDFAnnotationQuadPointsKey;
+extern const char *SKFDFDefaultAppearanceKey;
+extern const char *SKFDFDefaultStyleKey;
+
+extern const char *SKFDFAnnotation;
+
+extern const char *SKFDFBorderStyleSolid;
+extern const char *SKFDFBorderStyleDashed;
+extern const char *SKFDFBorderStyleBeveled;
+extern const char *SKFDFBorderStyleInset;
+extern const char *SKFDFBorderStyleUnderline;
+
+extern const char *SKFDFTextAnnotationIconComment;
+extern const char *SKFDFTextAnnotationIconKey;
+extern const char *SKFDFTextAnnotationIconNote;
+extern const char *SKFDFTextAnnotationIconNewParagraph;
+extern const char *SKFDFTextAnnotationIconParagraph;
+extern const char *SKFDFTextAnnotationIconInsert;
+
+extern const char *SKFDFLineStyleNone;
+extern const char *SKFDFLineStyleSquare;
+extern const char *SKFDFLineStyleCircle;
+extern const char *SKFDFLineStyleDiamond;
+extern const char *SKFDFLineStyleOpenArrow;
+extern const char *SKFDFLineStyleClosedArrow;
 
 @interface SKFDFParser : NSObject
 + (NSArray *)noteDictionariesFromFDFData:(NSData *)data;
