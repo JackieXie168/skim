@@ -54,6 +54,7 @@
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;
 
 - (NSString *)lossyASCIIString;
+- (NSString *)lossyISOLatin1String;
 
 - (NSString *)stringByEscapingParenthesis;
 
