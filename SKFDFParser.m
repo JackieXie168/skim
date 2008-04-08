@@ -52,11 +52,15 @@
 #import "SKPDFAnnotationNote.h"
 
 const char *SKFDFCatalogKey = "FDF";
-const char *SKFDFAnnotsKey = "Annots";
+const char *SKFDFAnnotationsKey = "Annots";
+const char *SKFDFFileKey = "F";
+const char *SKFDFFileIDKey = "ID";
+const char *SKFDFRootKey = "Root";
 
-const char *SKFDFAnnotationTypeKey = "Type";
+const char *SKFDFTypeKey = "Type";
+
 const char *SKFDFAnnotationFlagsKey = "F";
-const char *SKFDFAnnotationSubtypeKey = "Subtype";
+const char *SKFDFAnnotationTypeKey = "Subtype";
 const char *SKFDFAnnotationRectKey = "Rect";
 const char *SKFDFAnnotationContentsKey = "Contents";
 const char *SKFDFAnnotationBoundsKey = "Bounds";
@@ -126,7 +130,7 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
         
         if (catalog &&
             CGPDFDictionaryGetDictionary(catalog, SKFDFCatalogKey, &fdfDict) &&
-            CGPDFDictionaryGetArray(fdfDict, SKFDFAnnotsKey, &annots)) {
+            CGPDFDictionaryGetArray(fdfDict, SKFDFAnnotationsKey, &annots)) {
             
             size_t i, count = CGPDFArrayGetCount(annots);
             notes = [NSMutableArray arrayWithCapacity:count];
@@ -163,11 +167,11 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
     BOOL success = YES;
     NSRect bounds = NSZeroRect;
     
-    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationTypeKey, &name) == NO || strcmp(name, SKFDFAnnotation) != 0) {
+    if (CGPDFDictionaryGetName(annot, SKFDFTypeKey, &name) == NO || strcmp(name, SKFDFAnnotation) != 0) {
         success = NO;
     }
     
-    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationSubtypeKey, &name)) {
+    if (CGPDFDictionaryGetName(annot, SKFDFAnnotationTypeKey, &name)) {
         [dictionary setObject:[NSString stringWithFormat:@"%s", name] forKey:SKPDFAnnotationTypeKey];
     } else {
         success = NO;
