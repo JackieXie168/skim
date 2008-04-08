@@ -64,12 +64,9 @@ extern NSString *SKNotesFDFDocumentType;
 extern NSString *SKPostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 
-enum {
-    SKImagePboardTypesMask = 1,
-    SKURLPboardTypesMask = 2
-};
-
 @interface SKDocumentController : NSDocumentController
 - (void)newDocumentFromClipboard:(id)sender;
-- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard typesMask:(int)mask error:(NSError **)outError;
+- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 @end

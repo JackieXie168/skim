@@ -225,7 +225,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
     NSError *outError;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfPasteboard:pboard typesMask:SKURLPboardTypesMask error:&outError];
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard error:&outError];
     
     if (document == nil && outError && error)
         *error = [outError localizedDescription];
@@ -233,7 +233,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 
 - (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
     NSError *outError;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfPasteboard:pboard typesMask:SKImagePboardTypesMask error:&outError];
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard error:&outError];
     
     if (document == nil && outError && error)
         *error = [outError localizedDescription];
