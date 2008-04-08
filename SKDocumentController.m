@@ -231,14 +231,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return pdfData;
 }
 
-- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard typesMask:(int)mask error:(NSError **)outError {
+- (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
     // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
     pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
-    NSString *pboardType;
-    NSURL *theURL = nil;
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]];
     id document = nil;
     
-    if ((mask & SKImagePboardTypesMask) && (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]])) {
+    if (pboardType) {
         
         NSData *data = [pboard dataForType:pboardType];
         
@@ -263,18 +262,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 *outError = error;
         }
         
-    } else if ((mask & SKURLPboardTypesMask) && (theURL = [NSURL URLFromPasteboardAnyType:pboard])) {
-        
-        if ([theURL isFileURL]) {
-            document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
-        } else {
-            [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
-                [[SKDownloadController sharedDownloadController] showWindow:self];
-            if (outError)
-                *outError = nil;
-        }
-        
     } else if (outError) {
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
@@ -282,9 +269,35 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return document;
 }
 
+- (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
+    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
+    id document = nil;
+    
+    if ([theURL isFileURL]) {
+        document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
+    } else if (theURL) {
+        [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
+            [[SKDownloadController sharedDownloadController] showWindow:self];
+        if (outError)
+            *outError = nil;
+    } else if (outError) {
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    }
+    
+    return document;
+}
+
+- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
+    id document = [self openDocumentWithImageFromPasteboard:pboard error:outError];
+    if (document == nil)
+        document = [self openDocumentWithURLFromPasteboard:pboard error:outError];
+    return document;
+}
+
 - (void)newDocumentFromClipboard:(id)sender {
     NSError *error = nil;
-    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] typesMask:SKImagePboardTypesMask | SKURLPboardTypesMask error:&error];
+    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
     
     if (document == nil && error)
         [NSApp presentError:error];
