@@ -1155,31 +1155,34 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [undoGroupInsertedNotes unionSet:added];
     }
     
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] && [removed containsObject:[(SKNoteWindowController *)wc note]])
-            [[wc window] orderOut:self];
+    if ([removed count]) {
+        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+        NSWindowController *wc = [wcEnum nextObject];
+        
+        while (wc = [wcEnum nextObject]) {
+            if ([wc isKindOfClass:[SKNoteWindowController class]] && [removed containsObject:[(SKNoteWindowController *)wc note]])
+                [[wc window] orderOut:self];
+        }
+        
+        NSEnumerator *noteEnum = [removed objectEnumerator];
+        PDFAnnotation *note;
+        
+        while (note = [noteEnum nextObject]) {
+            if ([[note texts] count])
+                CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
+            CFDictionaryRemoveValue(rowHeights, (const void *)note);
+        }
+        
+        // Stop observing the removed notes so that
+        [self stopObservingNotes:[removed allObjects]];
     }
-    
-    NSEnumerator *noteEnum = [removed objectEnumerator];
-    PDFAnnotation *note;
-    
-    while (note = [noteEnum nextObject]) {
-        if ([[note texts] count])
-            CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
-        CFDictionaryRemoveValue(rowHeights, (const void *)note);
-    }
-    
-    // Stop observing the removed notes so that
-    [self stopObservingNotes:[removed allObjects]];
     [removed release];
     
     [notes setArray:notes];
     
     // Start observing the added notes so that, when they're changed, we can record undo operations.
-    [self startObservingNotes:[added allObjects]];
+    if ([added count])
+        [self startObservingNotes:[added allObjects]];
     [added release];
     
     [noteOutlineView reloadData];
@@ -1274,7 +1277,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [removed minusSet:new];
     [new release];
     
-    [dirtySnapshots removeObjectsInArray:[removed allObjects]];
+    if ([removed count])
+        [dirtySnapshots removeObjectsInArray:[removed allObjects]];
     [removed release];
     
     [snapshots setArray:snapshots];
