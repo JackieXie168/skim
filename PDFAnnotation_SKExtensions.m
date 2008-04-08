@@ -217,7 +217,7 @@ enum {
     } else {
         [fdfString appendFormat:@"/%s<</%s 0.0>>", SKFDFAnnotationBorderStylesKey, SKFDFAnnotationLineWidthKey];
     }
-    [fdfString appendFormat:@"/%s(%@)", SKFDFAnnotationContentsKey, (contents ? [contents stringByEscapingParenthesis] : @"")];
+    [fdfString appendFormat:@"/%s(%@)", SKFDFAnnotationContentsKey, (contents ? [[contents lossyISOLatin1String] stringByEscapingParenthesis] : @"")];
     return fdfString;
 }
 

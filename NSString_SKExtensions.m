@@ -235,6 +235,10 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
 }
 
+- (NSString *)lossyISOLatin1String {
+    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSISOLatin1StringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
+}
+
 - (NSString *)stringByEscapingParenthesis {
     static NSCharacterSet *parenAndBackslashCharSet = nil;
     

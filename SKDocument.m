@@ -1502,7 +1502,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 1, [[[self notes] objectAtIndex:i] fdfString]];
         [annots appendFormat:@"%i 0 R ", i + 1];
     }
-    [string appendFormat:@"%i 0 obj<</%s<</%s[%@]/%s(%@)", i + 1, SKFDFCatalogKey, SKFDFAnnotationsKey, annots, SKFDFFileKey, filename ? [filename stringByEscapingParenthesis] : @""];
+    [string appendFormat:@"%i 0 obj<</%s<</%s[%@]/%s(%@)", i + 1, SKFDFCatalogKey, SKFDFAnnotationsKey, annots, SKFDFFileKey, filename ? [[filename lossyISOLatin1String] stringByEscapingParenthesis] : @""];
     if ([fileIDStrings count] == 2)
         [string appendFormat:@"/%s[<%@><%@>]", SKFDFFileIDKey, [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
     [string appendFormat:@">>>>\nendobj\ntrailer\n<</%s %i 0 R>>\n%%EOF\n", SKFDFRootKey, i + 1];
