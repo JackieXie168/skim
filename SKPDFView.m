@@ -531,7 +531,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
-    if (mode != [self displayBox]) {
+    if (mode != [self displayMode]) {
         [super setDisplayMode:mode];
         [self relayoutEditField];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayModeChangedNotification object:self userInfo:nil];
