@@ -1138,6 +1138,53 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     return notes;
 }
 
+- (void)setNotes:(NSArray *)newNotes {
+    NSSet *old = [[NSSet alloc] initWithArray:notes];
+    NSSet *new = [[NSSet alloc] initWithArray:newNotes];
+    NSMutableSet *removed = [old mutableCopy];
+    NSMutableSet *added = [new mutableCopy];
+    [removed minusSet:new];
+    [added minusSet:old];
+    [old release];
+    [new release];
+    
+    // Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
+    if ([[[self document] undoManager] isUndoRegistrationEnabled] && [added count]) {
+        if (undoGroupInsertedNotes == nil)
+            undoGroupInsertedNotes = [[NSMutableSet alloc] init];
+        [undoGroupInsertedNotes unionSet:added];
+    }
+    
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isKindOfClass:[SKNoteWindowController class]] && [removed containsObject:[(SKNoteWindowController *)wc note]])
+            [[wc window] orderOut:self];
+    }
+    
+    NSEnumerator *noteEnum = [removed objectEnumerator];
+    PDFAnnotation *note;
+    
+    while (note = [noteEnum nextObject]) {
+        if ([[note texts] count])
+            CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
+        CFDictionaryRemoveValue(rowHeights, (const void *)note);
+    }
+    
+    // Stop observing the removed notes so that
+    [self stopObservingNotes:[removed allObjects]];
+    [removed release];
+    
+    [notes setArray:notes];
+    
+    // Start observing the added notes so that, when they're changed, we can record undo operations.
+    [self startObservingNotes:[added allObjects]];
+    [added release];
+    
+    [noteOutlineView reloadData];
+}
+	 
 - (unsigned)countOfNotes {
     return [notes count];
 }
@@ -1149,14 +1196,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
     [notes insertObject:obj atIndex:theIndex];
 
-    // Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
+    // Record the inserted notes so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
     if ([[[self document] undoManager] isUndoRegistrationEnabled]) {
         if (undoGroupInsertedNotes == nil)
             undoGroupInsertedNotes = [[NSMutableSet alloc] init];
         [undoGroupInsertedNotes addObject:obj];
     }
 
-    // Start observing the just-inserted graphics so that, when they're changed, we can record undo operations.
+    // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
     [self startObservingNotes:[NSArray arrayWithObject:obj]];
 }
 
@@ -1176,6 +1223,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
     CFDictionaryRemoveValue(rowHeights, (const void *)note);
     
+    // Stop observing the removed notes
     [self stopObservingNotes:[NSArray arrayWithObject:note]];
     
     [notes removeObjectAtIndex:theIndex];
@@ -1218,6 +1266,18 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (NSArray *)snapshots {
     return snapshots;
+}
+
+- (void)setSnapshots:(NSArray *)newSnapshots {
+    NSMutableSet *removed = [[NSMutableSet alloc] initWithArray:snapshots];
+    NSSet *new = [[NSSet alloc] initWithArray:newSnapshots];
+    [removed minusSet:new];
+    [new release];
+    
+    [dirtySnapshots removeObjectsInArray:[removed allObjects]];
+    [removed release];
+    
+    [snapshots setArray:snapshots];
 }
 
 - (unsigned)countOfSnapshots {
