@@ -141,7 +141,7 @@
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
-		CE816B0E0D719700008D807D /* Skim-Leopard.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */; };
+		CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
@@ -314,16 +314,6 @@
 			dstSubfolderSpec = 1;
 			files = (
 				CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CE816B080D7196F2008D807D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,7 +1502,6 @@
 				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CEFD68720C01D3FE0027B933 /* CopyFiles */,
 				CE816A0A0D70F9B6008D807D /* CopyFiles */,
-				CE816B080D7196F2008D807D /* CopyFiles */,
 				CEE22EA50BFB8691002B746B /* ShellScript */,
 				CE4B67590BF4DC3000A73E42 /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
@@ -1709,6 +1698,7 @@
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */,
+				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
