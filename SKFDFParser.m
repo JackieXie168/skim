@@ -61,10 +61,9 @@ const char *SKFDFTypeKey = "Type";
 
 const char *SKFDFAnnotationFlagsKey = "F";
 const char *SKFDFAnnotationTypeKey = "Subtype";
-const char *SKFDFAnnotationRectKey = "Rect";
+const char *SKFDFAnnotationBoundsKey = "Rect";
+const char *SKFDFAnnotationPageIndexKey = "Page";
 const char *SKFDFAnnotationContentsKey = "Contents";
-const char *SKFDFAnnotationBoundsKey = "Bounds";
-const char *SKFDFAnnotationPageKey = "Page";
 const char *SKFDFAnnotationColorKey = "C";
 const char *SKFDFAnnotationInteriorColorKey = "IC";
 const char *SKFDFAnnotationBorderStylesKey = "BS";
@@ -88,7 +87,7 @@ const char *SKFDFBorderStyleInset = "I";
 const char *SKFDFBorderStyleUnderline = "U";
 
 const char *SKFDFTextAnnotationIconComment = "Comment";
-const char *SKFDFTextAnnotationIconKey = "";
+const char *SKFDFTextAnnotationIconKey = "Key";
 const char *SKFDFTextAnnotationIconNote = "Note";
 const char *SKFDFTextAnnotationIconNewParagraph = "NewParagraph";
 const char *SKFDFTextAnnotationIconParagraph = "Paragraph";
@@ -177,7 +176,7 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
         success = NO;
     }
     
-    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationRectKey, &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationBoundsKey, &array)) {
         CGPDFReal l, b, r, t;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &l) && CGPDFArrayGetNumber(array, 1, &b) && CGPDFArrayGetNumber(array, 2, &r) && CGPDFArrayGetNumber(array, 3, &t)) {
             bounds = NSMakeRect(l, b, r - l, t - b);
@@ -187,7 +186,7 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
         success = NO;
     }
     
-    if (CGPDFDictionaryGetInteger(annot, SKFDFAnnotationPageKey, &integer)) {
+    if (CGPDFDictionaryGetInteger(annot, SKFDFAnnotationPageIndexKey, &integer)) {
         [dictionary setObject:[NSNumber numberWithInt:integer] forKey:SKPDFAnnotationPageIndexKey];
     } else {
         success = NO;

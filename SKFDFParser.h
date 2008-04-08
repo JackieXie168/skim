@@ -48,10 +48,9 @@ extern const char *SKFDFTypeKey;
 
 extern const char *SKFDFAnnotationFlagsKey;
 extern const char *SKFDFAnnotationTypeKey;
-extern const char *SKFDFAnnotationRectKey;
-extern const char *SKFDFAnnotationContentsKey;
 extern const char *SKFDFAnnotationBoundsKey;
-extern const char *SKFDFAnnotationPageKey;
+extern const char *SKFDFAnnotationPageIndexKey;
+extern const char *SKFDFAnnotationContentsKey;
 extern const char *SKFDFAnnotationColorKey;
 extern const char *SKFDFAnnotationInteriorColorKey;
 extern const char *SKFDFAnnotationBorderStylesKey;

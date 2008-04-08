@@ -189,8 +189,8 @@ enum {
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
     [fdfString appendFormat:@"/%s/%s/%s/", SKFDFTypeKey, SKFDFAnnotation, SKFDFAnnotationTypeKey];
     [fdfString appendString:[[self type] isEqualToString:SKNoteString] ? SKTextString : [self type]];
-    [fdfString appendFormat:@"/%s[%f %f %f %f]", SKFDFAnnotationRectKey, NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
-    [fdfString appendFormat:@"/%s %i", SKFDFAnnotationPageKey, [self pageIndex]];
+    [fdfString appendFormat:@"/%s[%f %f %f %f]", SKFDFAnnotationBoundsKey, NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
+    [fdfString appendFormat:@"/%s %i", SKFDFAnnotationPageIndexKey, [self pageIndex]];
     [fdfString appendFormat:@"/%s 4", SKFDFAnnotationFlagsKey];
     if (a > 0.0)
         [fdfString appendFormat:@"/%s[%f %f %f]", SKFDFAnnotationColorKey, r, g, b];
