@@ -338,7 +338,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSMutableArray *files = [NSMutableArray array];
     NSString *pdfsyncString = [NSString stringWithContentsOfFile:theFileName encoding:NSUTF8StringEncoding error:NULL];
     NSString *file;
-    int recordIndex, line;
+    int recordIndex, line, pageIndex;
     float x, y;
     NSMutableDictionary *record;
     NSMutableArray *array;
@@ -397,10 +397,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
             }
         } else if (ch == 's') {
             // start of a new page, the scanned integer should always equal [pages count]+1
-            [scanner scanInt:NULL];
-            array = [[NSMutableArray alloc] init];
-            [pages addObject:array];
-            [array release];
+            if ([scanner scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
+            while (pageIndex > (int)[pages count]) {
+                array = [[NSMutableArray alloc] init];
+                [pages addObject:array];
+                [array release];
+            }
         } else if (ch == '(') {
             // start of a new source file
             if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
