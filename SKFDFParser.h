@@ -61,7 +61,7 @@ extern const char *SKFDFAnnotationBorderKey;
 extern const char *SKFDFAnnotationIconTypeKey;
 extern const char *SKFDFAnnotationLineStylesKey;
 extern const char *SKFDFAnnotationLinePointsKey;
-extern const char *SKFDFAnnotationQuadPointsKey;
+extern const char *SKFDFAnnotationQuadrilateralPointsKey;
 extern const char *SKFDFDefaultAppearanceKey;
 extern const char *SKFDFDefaultStyleKey;
 
