@@ -119,3 +119,12 @@ const CFArrayCallBacks SKNSRectArrayCallbacks = {
     SKNSRectCopyDescription,
     SKNSRectEqual
 };
+
+const CFSetCallBacks SKPointerEqualObjectSetCallbacks = {
+    0,   // version
+    SKNSObjectRetain,
+    SKNSObjectRelease,
+    SKNSObjectCopyDescription,
+    NULL, // equal
+    NULL // hash
+};

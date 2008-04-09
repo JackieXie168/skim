@@ -1139,11 +1139,16 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)setNotes:(NSArray *)newNotes {
-    NSSet *old = [[NSSet alloc] initWithArray:notes];
-    NSSet *new = [[NSSet alloc] initWithArray:newNotes];
-    NSMutableSet *removed = [old mutableCopy];
-    NSMutableSet *added = [new mutableCopy];
+    NSMutableSet *old = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)old);
+    NSMutableSet *added = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)new);
+    
+    [old addObjectsFromArray:notes];
+    [new addObjectsFromArray:newNotes];
+    removed = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)old);
     [removed minusSet:new];
+    added = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)new);
     [added minusSet:old];
     [old release];
     [new release];
@@ -1272,8 +1277,11 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)setSnapshots:(NSArray *)newSnapshots {
-    NSMutableSet *removed = [[NSMutableSet alloc] initWithArray:snapshots];
-    NSSet *new = [[NSSet alloc] initWithArray:newSnapshots];
+    NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    
+    [new addObjectsFromArray:newSnapshots];
+    [removed addObjectsFromArray:snapshots];
     [removed minusSet:new];
     [new release];
     
