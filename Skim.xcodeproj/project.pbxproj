@@ -987,6 +987,7 @@
 				CE2DE4CF0B85D89B00D0DA12 /* Controllers */,
 				CE2DE4D00B85D8C400D0DA12 /* Windows */,
 				CE2DE4D10B85D92F00D0DA12 /* Views */,
+				CE32DC1D0DAD282E0099414B /* Parsers */,
 				CE070EC10B89063400733CC8 /* Categories */,
 				CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */,
 			);
@@ -1324,18 +1325,25 @@
 				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
 				CE0464A00B84E3E400C11E4A /* OBUtilities.h */,
 				CE0464A10B84E3E400C11E4A /* OBUtilities.m */,
-				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
-				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
-				CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */,
-				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
 				CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */,
 				CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */,
-				CE5FA1650C909886008BE480 /* SKFDFParser.h */,
-				CE5FA1660C909886008BE480 /* SKFDFParser.m */,
 				CEE54F8E0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.h */,
 				CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */,
 			);
 			name = Miscellaneous;
+			sourceTree = "<group>";
+		};
+		CE32DC1D0DAD282E0099414B /* Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				CE5FA1650C909886008BE480 /* SKFDFParser.h */,
+				CE5FA1660C909886008BE480 /* SKFDFParser.m */,
+				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
+				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
+				CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */,
+				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
+			);
+			name = Parsers;
 			sourceTree = "<group>";
 		};
 		CE4DA8CF0B9E157E0039E89C /* Help Sources */ = {
