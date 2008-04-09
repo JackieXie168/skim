@@ -1503,7 +1503,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [annots appendFormat:@"%i 0 R ", i + 1];
     }
     [string appendFormat:@"%i 0 obj<<", i + 1];
-    [string appendFDFName:SKFDFCatalogKey];
+    [string appendFDFName:SKFDFFDFKey];
     [string appendString:@"<<"];
     [string appendFDFName:SKFDFAnnotationsKey];
     [string appendFormat:@"[%@]", annots];
