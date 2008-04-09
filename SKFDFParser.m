@@ -74,7 +74,7 @@ const char *SKFDFAnnotationBorderKey = "Border";
 const char *SKFDFAnnotationIconTypeKey = "Name";
 const char *SKFDFAnnotationLineStylesKey = "LE";
 const char *SKFDFAnnotationLinePointsKey = "L";
-const char *SKFDFAnnotationQuadPointsKey = "QuadPoints";
+const char *SKFDFAnnotationQuadrilateralPointsKey = "QuadPoints";
 const char *SKFDFDefaultAppearanceKey = "DA";
 const char *SKFDFDefaultStyleKey = "DS";
 
@@ -366,7 +366,7 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
         }
     }
     
-    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationQuadPointsKey, &array)) {
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationQuadrilateralPointsKey, &array)) {
         size_t i, count = CGPDFArrayGetCount(array);
         if (count % 8 == 0) {
             NSMutableArray *quadPoints = [NSMutableArray arrayWithCapacity:count / 2];
