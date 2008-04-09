@@ -130,57 +130,15 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendFormat:@"/%s[", SKFDFAnnotationLineStylesKey];
-    switch ([self startLineStyle]) {
-        case kPDFLineStyleNone:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleNone];
-            break;
-        case kPDFLineStyleSquare:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleSquare];
-            break;
-        case kPDFLineStyleCircle:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleCircle];
-            break;
-        case kPDFLineStyleDiamond:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleDiamond];
-            break;
-        case kPDFLineStyleOpenArrow:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleOpenArrow];
-            break;
-        case kPDFLineStyleClosedArrow:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleClosedArrow];
-            break;
-        default:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleNone];
-            break;
-    }
-    switch ([self endLineStyle]) {
-        case kPDFLineStyleNone:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleNone];
-            break;
-        case kPDFLineStyleSquare:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleSquare];
-            break;
-        case kPDFLineStyleCircle:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleCircle];
-            break;
-        case kPDFLineStyleDiamond:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleDiamond];
-            break;
-        case kPDFLineStyleOpenArrow:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleOpenArrow];
-            break;
-        case kPDFLineStyleClosedArrow:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleClosedArrow];
-            break;
-        default:
-            [fdfString appendFormat:@"/%s", SKFDFLineStyleNone];
-            break;
-    }
+    [fdfString appendFDFName:SKFDFAnnotationLineStylesKey];
+    [fdfString appendString:@"["];
+    [fdfString appendFDFName:SKFDFLineStyleFromPDFLineStyle([self startLineStyle])];
+    [fdfString appendFDFName:SKFDFLineStyleFromPDFLineStyle([self endLineStyle])];
     [fdfString appendString:@"]"];
     NSPoint startPoint = SKAddPoints([self startPoint], [self bounds].origin);
     NSPoint endPoint = SKAddPoints([self endPoint], [self bounds].origin);
-    [fdfString appendFormat:@"/%s[%f %f %f %f]", SKFDFAnnotationLinePointsKey, startPoint.x, startPoint.y, endPoint.x, endPoint.y];
+    [fdfString appendFDFName:SKFDFAnnotationLinePointsKey];
+    [fdfString appendFormat:@"[%f %f %f %f]", startPoint.x, startPoint.y, endPoint.x, endPoint.y];
     return fdfString;
 }
 

@@ -1502,10 +1502,27 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 1, [[[self notes] objectAtIndex:i] fdfString]];
         [annots appendFormat:@"%i 0 R ", i + 1];
     }
-    [string appendFormat:@"%i 0 obj<</%s<</%s[%@]/%s(%@)", i + 1, SKFDFCatalogKey, SKFDFAnnotationsKey, annots, SKFDFFileKey, filename ? [[filename lossyISOLatin1String] stringByEscapingParenthesis] : @""];
-    if ([fileIDStrings count] == 2)
-        [string appendFormat:@"/%s[<%@><%@>]", SKFDFFileIDKey, [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
-    [string appendFormat:@">>>>\nendobj\ntrailer\n<</%s %i 0 R>>\n%%EOF\n", SKFDFRootKey, i + 1];
+    [string appendFormat:@"%i 0 obj<<", i + 1];
+    [string appendFDFName:SKFDFCatalogKey];
+    [string appendString:@"<<"];
+    [string appendFDFName:SKFDFAnnotationsKey];
+    [string appendFormat:@"[%@]", annots];
+    [string appendFDFName:SKFDFFileKey];
+    [string appendString:@"("];
+    if (filename)
+        [string appendString:[[filename lossyISOLatin1String] stringByEscapingParenthesis]];
+    [string appendString:@")"];
+    if ([fileIDStrings count] == 2) {
+        [string appendFDFName:SKFDFFileIDKey];
+        [string appendFormat:@"[<%@><%@>]", [fileIDStrings objectAtIndex:0], [fileIDStrings objectAtIndex:1]];
+    }
+    [string appendString:@">>"];
+    [string appendString:@">>\nendobj\n"];
+    [string appendString:@"trailer\n<<"];
+    [string appendFDFName:SKFDFRootKey];
+    [string appendFormat:@" %i 0 R", i + 1];
+    [string appendString:@">>\n"];
+    [string appendString:@"%%EOF\n"];
     return string;
 }
 

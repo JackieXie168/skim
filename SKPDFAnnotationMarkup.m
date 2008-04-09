@@ -288,7 +288,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSValue *value;
     NSPoint point;
     NSRect bounds = [self bounds];
-    [fdfString appendFormat:@"/%s[", SKFDFAnnotationQuadPointsKey];
+    [fdfString appendFDFName:SKFDFAnnotationQuadPointsKey];
+    [fdfString appendString:@"["];
     while (value = [pointEnum nextObject]) {
         point = [value pointValue];
         [fdfString appendFormat:@"%f %f ", point.x + NSMinX(bounds), point.y + NSMinY(bounds)];

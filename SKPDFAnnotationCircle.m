@@ -81,8 +81,10 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     float r, g, b, a = 0.0;
     [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
-    if (a > 0.0)
-        [fdfString appendFormat:@"/%s[%f %f %f]", SKFDFAnnotationInteriorColorKey, r, g, b];
+    if (a > 0.0) {
+        [fdfString appendFDFName:SKFDFAnnotationInteriorColorKey];
+        [fdfString appendFormat:@"[%f %f %f]", r, g, b];
+    }
     return fdfString;
 }
 

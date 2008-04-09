@@ -87,6 +87,21 @@ extern const char *SKFDFLineStyleDiamond;
 extern const char *SKFDFLineStyleOpenArrow;
 extern const char *SKFDFLineStyleClosedArrow;
 
+extern int SKPDFBorderStyleFromFDFBorderStyle(const char *name);
+extern const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle);
+
+extern int SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(const char *name);
+const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType);
+
+extern int SKPDFLineStyleFromFDLineStyleF(const char *name);
+extern const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle);
+
+
 @interface SKFDFParser : NSObject
 + (NSArray *)noteDictionariesFromFDFData:(NSData *)data;
+@end
+
+
+@interface NSMutableString (SKFDFExtensions)
+- (void)appendFDFName:(const char *)name;
 @end
