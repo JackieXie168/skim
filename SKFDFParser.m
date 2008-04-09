@@ -100,6 +100,91 @@ const char *SKFDFLineStyleDiamond = "Diamond";
 const char *SKFDFLineStyleOpenArrow = "OpenArrow";
 const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
 
+int SKPDFBorderStyleFromFDFBorderStyle(const char *name) {
+    if (strcmp(name, SKFDFBorderStyleSolid) == 0)
+        return kPDFBorderStyleSolid;
+    else if (strcmp(name, SKFDFBorderStyleDashed) == 0)
+        return kPDFBorderStyleDashed;
+    else if (strcmp(name, SKFDFBorderStyleBeveled) == 0)
+        return kPDFBorderStyleBeveled;
+    else if (strcmp(name, SKFDFBorderStyleInset) == 0)
+        return kPDFBorderStyleInset;
+    else if (strcmp(name, SKFDFBorderStyleUnderline) == 0)
+        return kPDFBorderStyleUnderline;
+    else
+        return kPDFBorderStyleSolid;
+}
+
+const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle) {
+    switch (borderStyle) {
+        case kPDFBorderStyleSolid: return SKFDFBorderStyleSolid;
+        case kPDFBorderStyleDashed: return SKFDFBorderStyleDashed;
+        case kPDFBorderStyleBeveled: return SKFDFBorderStyleBeveled;
+        case kPDFBorderStyleInset: return SKFDFBorderStyleInset;
+        case kPDFBorderStyleUnderline: return SKFDFBorderStyleUnderline;
+        default: return SKFDFBorderStyleSolid;
+    }
+}
+
+int SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(const char *name) {
+    if (strcmp(name, SKFDFTextAnnotationIconComment) == 0)
+        return kPDFTextAnnotationIconComment;
+    else if (strcmp(name, SKFDFTextAnnotationIconKey) == 0)
+        return kPDFTextAnnotationIconKey;
+    else if (strcmp(name, SKFDFTextAnnotationIconNote) == 0)
+        return kPDFTextAnnotationIconNote;
+    else if (strcmp(name, SKFDFTextAnnotationIconNewParagraph) == 0)
+        return kPDFTextAnnotationIconNewParagraph;
+    else if (strcmp(name, SKFDFTextAnnotationIconParagraph) == 0)
+        return kPDFTextAnnotationIconParagraph;
+    else if (strcmp(name, SKFDFTextAnnotationIconInsert) == 0)
+        return kPDFTextAnnotationIconInsert;
+    else
+        return kPDFTextAnnotationIconNote;
+}
+
+const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType) {
+    switch (iconType) {
+        case kPDFTextAnnotationIconComment: return SKFDFTextAnnotationIconComment;
+        case kPDFTextAnnotationIconKey: return SKFDFTextAnnotationIconKey;
+        case kPDFTextAnnotationIconNote: return SKFDFTextAnnotationIconNote;
+        case kPDFTextAnnotationIconNewParagraph: return SKFDFTextAnnotationIconNewParagraph;
+        case kPDFTextAnnotationIconParagraph: return SKFDFTextAnnotationIconParagraph;
+        case kPDFTextAnnotationIconInsert: return SKFDFTextAnnotationIconInsert;
+        default: return SKFDFTextAnnotationIconNote;
+    }
+}
+
+int SKPDFLineStyleFromFDLineStyleF(const char *name) {
+    if (strcmp(name, SKFDFLineStyleNone) == 0)
+        return kPDFLineStyleNone;
+    else if (strcmp(name, SKFDFLineStyleSquare) == 0)
+        return kPDFLineStyleSquare;
+    else if (strcmp(name, SKFDFLineStyleCircle) == 0)
+        return kPDFLineStyleCircle;
+    else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
+        return kPDFLineStyleDiamond;
+    else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
+        return kPDFLineStyleOpenArrow;
+    else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
+        return kPDFLineStyleClosedArrow;
+    else
+        return kPDFLineStyleNone;
+}
+
+const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
+    switch (lineStyle) {
+        case kPDFLineStyleNone: return SKFDFLineStyleNone;
+        case kPDFLineStyleSquare: return SKFDFLineStyleSquare;
+        case kPDFLineStyleCircle: return SKFDFLineStyleCircle;
+        case kPDFLineStyleDiamond: return SKFDFLineStyleDiamond;
+        case kPDFLineStyleOpenArrow: return SKFDFLineStyleOpenArrow;
+        case kPDFLineStyleClosedArrow: return SKFDFLineStyleClosedArrow;
+        default: return SKFDFLineStyleNone;
+    }
+}
+
+
 @interface SKFDFParser (SKPrivate)
 + (NSDictionary *)noteDictionaryFromPDFDictionary:(CGPDFDictionaryRef)annot;
 @end
@@ -218,18 +303,7 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
             if (real > 0.0) {
                 [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKPDFAnnotationLineWidthKey];
                 if (CGPDFDictionaryGetName(dict, SKFDFAnnotationBorderStyleKey, &name)) {
-                    int style = kPDFBorderStyleSolid;
-                    if (strcmp(name, SKFDFBorderStyleSolid) == 0)
-                        style = kPDFBorderStyleSolid;
-                    else if (strcmp(name, SKFDFBorderStyleDashed) == 0)
-                        style = kPDFBorderStyleDashed;
-                    else if (strcmp(name, SKFDFBorderStyleBeveled) == 0)
-                        style = kPDFBorderStyleBeveled;
-                    else if (strcmp(name, SKFDFBorderStyleInset) == 0)
-                        style = kPDFBorderStyleInset;
-                    else if (strcmp(name, SKFDFBorderStyleUnderline) == 0)
-                        style = kPDFBorderStyleUnderline;
-                    [dictionary setObject:[NSNumber numberWithInt:style] forKey:SKPDFAnnotationBorderStyleKey];
+                    [dictionary setObject:[NSNumber numberWithInt:SKPDFBorderStyleFromFDFBorderStyle(name)] forKey:SKPDFAnnotationBorderStyleKey];
                 }
                 if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationDashPatternKey, &array)) {
                     size_t i, count = CGPDFArrayGetCount(array);
@@ -266,20 +340,7 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
     }
     
     if (CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {
-        int icon = kPDFTextAnnotationIconNote;
-        if (strcmp(name, SKFDFTextAnnotationIconComment) == 0)
-            icon = kPDFTextAnnotationIconComment;
-        else if (strcmp(name, SKFDFTextAnnotationIconKey) == 0)
-            icon = kPDFTextAnnotationIconKey;
-        else if (strcmp(name, SKFDFTextAnnotationIconNote) == 0)
-            icon = kPDFTextAnnotationIconNote;
-        else if (strcmp(name, SKFDFTextAnnotationIconNewParagraph) == 0)
-            icon = kPDFTextAnnotationIconNewParagraph;
-        else if (strcmp(name, SKFDFTextAnnotationIconParagraph) == 0)
-            icon = kPDFTextAnnotationIconParagraph;
-        else if (strcmp(name, SKFDFTextAnnotationIconInsert) == 0)
-            icon = kPDFTextAnnotationIconInsert;
-        [dictionary setObject:[NSNumber numberWithInt:icon] forKey:SKPDFAnnotationIconTypeKey];
+        [dictionary setObject:[NSNumber numberWithInt:SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(name)] forKey:SKPDFAnnotationIconTypeKey];
     }
     
     if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationLineStylesKey, &array)) {
@@ -287,32 +348,10 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
         int endStyle = kPDFLineStyleNone;
         if (CGPDFArrayGetCount(array) == 2) {
             if (CGPDFArrayGetName(array, 0, &name)) {
-                if (strcmp(name, SKFDFLineStyleNone) == 0)
-                    startStyle = kPDFLineStyleNone;
-                else if (strcmp(name, SKFDFLineStyleSquare) == 0)
-                    startStyle = kPDFLineStyleSquare;
-                else if (strcmp(name, SKFDFLineStyleCircle) == 0)
-                    startStyle = kPDFLineStyleCircle;
-                else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
-                    startStyle = kPDFLineStyleDiamond;
-                else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
-                    startStyle = kPDFLineStyleOpenArrow;
-                else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
-                    startStyle = kPDFLineStyleClosedArrow;
+                startStyle = SKPDFLineStyleFromFDLineStyleF(name);
             }
             if (CGPDFArrayGetName(array, 1, &name)) {
-                if (strcmp(name, SKFDFLineStyleNone) == 0)
-                    startStyle = kPDFLineStyleNone;
-                else if (strcmp(name, SKFDFLineStyleSquare) == 0)
-                    endStyle = kPDFLineStyleSquare;
-                else if (strcmp(name, SKFDFLineStyleCircle) == 0)
-                    endStyle = kPDFLineStyleCircle;
-                else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
-                    endStyle = kPDFLineStyleDiamond;
-                else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
-                    endStyle = kPDFLineStyleOpenArrow;
-                else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
-                    endStyle = kPDFLineStyleClosedArrow;
+                endStyle = SKPDFLineStyleFromFDLineStyleF(name);
             }
         }
         [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:SKPDFAnnotationEndLineStyleKey];
@@ -392,4 +431,11 @@ const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
     return success ? dictionary : nil;
 }
 
+@end
+
+
+@implementation NSMutableString (SKFDFExtensions)
+- (void)appendFDFName:(const char *)name {
+    [self appendFormat:@"/%s", name];
+}
 @end

@@ -98,7 +98,10 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendFormat:@"/%s(/%@ %f Tf)/%s(font: %@ %fpt)", SKFDFDefaultAppearanceKey, [[self font] fontName], [[self font] pointSize], SKFDFDefaultStyleKey, [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
+    [fdfString appendFormat:@"(/%@ %f Tf)", [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFDFName:SKFDFDefaultStyleKey];
+    [fdfString appendFormat:@"(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize]];
     return fdfString;
 }
 

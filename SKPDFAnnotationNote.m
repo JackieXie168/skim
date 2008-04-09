@@ -147,27 +147,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendFormat:@"/%s", SKFDFAnnotationIconTypeKey];
-    switch ([self iconType]) {
-        case kPDFTextAnnotationIconComment:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconComment];
-            break;
-        case kPDFTextAnnotationIconKey:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconKey];
-            break;
-        case kPDFTextAnnotationIconNote:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconNote];
-            break;
-        case kPDFTextAnnotationIconNewParagraph:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconNewParagraph];
-            break;
-        case kPDFTextAnnotationIconParagraph:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconParagraph];
-            break;
-        case kPDFTextAnnotationIconInsert:
-            [fdfString appendFormat:@"%s", SKFDFTextAnnotationIconInsert];
-            break;
-    }
+    [fdfString appendFDFName:SKFDFAnnotationIconTypeKey];
+    [fdfString appendFDFName:SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType([self iconType])];
     return fdfString;
 }
 
