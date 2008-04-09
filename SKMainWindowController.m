@@ -91,22 +91,19 @@
 #import "SKCFCallbacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 
-#define WINDOW_X_DELTA              0.0
-#define WINDOW_Y_DELTA              70.0
-
-#define WINDOW_FRAME_KEY            @"windowFrame"
-#define LEFT_SIDE_PANE_WIDTH_KEY    @"leftSidePaneWidth"
-#define RIGHT_SIDE_PANE_WIDTH_KEY   @"rightSidePaneWidth"
-#define SCALE_FACTOR_KEY            @"scaleFactor"
-#define AUTO_SCALES_KEY             @"autoScales"
-#define DISPLAYS_PAGE_BREAKS_KEY    @"displaysPageBreaks"
-#define DISPLAYS_AS_BOOK_KEY        @"displaysAsBook"    
-#define DISPLAY_MODE_KEY            @"displayMode" 
-#define DISPLAY_BOX_KEY             @"displayBox"  
-#define HAS_HORIZONTAL_SCROLLER_KEY @"hasHorizontalScroller"
-#define HAS_VERTICAL_SCROLLER_KEY   @"hasVerticalScroller"
-#define AUTO_HIDES_SCROLLERS_KEY    @"autoHidesScrollers"
-#define PAGE_INDEX_KEY              @"pageIndex"
+static NSString *SKMainWindowFrameKey = @"windowFrame";
+static NSString *SKMainWindowLeftSidePaneWidthKey = @"leftSidePaneWidth";
+static NSString *SKMainWindowRightSidePaneWidthKey = @"rightSidePaneWidth";
+static NSString *SKMainWindowScaleFactorKey = @"scaleFactor";
+static NSString *SKMainWindowAutoScalesKey = @"autoScales";
+static NSString *SKMainWindowDisplayPageBreaksKey = @"displaysPageBreaks";
+static NSString *SKMainWindowDisplayAsBookKey = @"displaysAsBook"; 
+static NSString *SKMainWindowDisplayModeKey = @"displayMode";
+static NSString *SKMainWindowDisplayBoxKey = @"displayBox" ;
+static NSString *SKMainWindowHasHorizontalScrollerKey = @"hasHorizontalScroller";
+static NSString *SKMainWindowHasVerticalScrollerKey = @"hasVerticalScroller";
+static NSString *SKMainWindowAutoHidesScrollersKey = @"autoHidesScrollers";
+static NSString *SKMainWindowPageIndexKey = @"pageIndex";
 
 static float segmentedControlHeight = 23.0;
 static float segmentedControlOffset = 1.0;
@@ -361,7 +358,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     
     int windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
     if (hasWindowSetup) {
-        NSString *rectString = [savedNormalSetup objectForKey:WINDOW_FRAME_KEY];
+        NSString *rectString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
         if (rectString)
             [[self window] setFrame:NSRectFromString(rectString) display:NO];
     } else if (windowSizeOption == SKMaximizeWindowOption) {
@@ -375,8 +372,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
     
-    NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFT_SIDE_PANE_WIDTH_KEY];
-    NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHT_SIDE_PANE_WIDTH_KEY];
+    NSNumber *leftWidth = [savedNormalSetup objectForKey:SKMainWindowLeftSidePaneWidthKey];
+    NSNumber *rightWidth = [savedNormalSetup objectForKey:SKMainWindowRightSidePaneWidthKey];
     if (leftWidth == nil)
         leftWidth = [sud objectForKey:SKLeftSidePaneWidthKey];
     if (rightWidth == nil)
@@ -454,7 +451,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     // Go to page?
     unsigned int pageIndex = NSNotFound;
     if (hasWindowSetup)
-        pageIndex = [[savedNormalSetup objectForKey:PAGE_INDEX_KEY] unsignedIntValue];
+        pageIndex = [[savedNormalSetup objectForKey:SKMainWindowPageIndexKey] unsignedIntValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
@@ -601,13 +598,13 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:WINDOW_FRAME_KEY];
-    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFT_SIDE_PANE_WIDTH_KEY];
-    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHT_SIDE_PANE_WIDTH_KEY];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:PAGE_INDEX_KEY];
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:SKMainWindowFrameKey];
+    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:SKMainWindowLeftSidePaneWidthKey];
+    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:SKMainWindowRightSidePaneWidthKey];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:SKMainWindowPageIndexKey];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HAS_HORIZONTAL_SCROLLER_KEY, HAS_VERTICAL_SCROLLER_KEY, AUTO_HIDES_SCROLLERS_KEY, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
     } else {
         [setup addEntriesFromDictionary:[self currentPDFSettings]];
     }
@@ -617,17 +614,17 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
-    if (number = [setup objectForKey:SCALE_FACTOR_KEY])
+    if (number = [setup objectForKey:SKMainWindowScaleFactorKey])
         [pdfView setScaleFactor:[number floatValue]];
-    if (number = [setup objectForKey:AUTO_SCALES_KEY])
+    if (number = [setup objectForKey:SKMainWindowAutoScalesKey])
         [pdfView setAutoScales:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAYS_PAGE_BREAKS_KEY])
+    if (number = [setup objectForKey:SKMainWindowDisplayPageBreaksKey])
         [pdfView setDisplaysPageBreaks:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAYS_AS_BOOK_KEY])
+    if (number = [setup objectForKey:SKMainWindowDisplayAsBookKey])
         [pdfView setDisplaysAsBook:[number boolValue]];
-    if (number = [setup objectForKey:DISPLAY_MODE_KEY])
+    if (number = [setup objectForKey:SKMainWindowDisplayModeKey])
         [pdfView setDisplayMode:[number intValue]];
-    if (number = [setup objectForKey:DISPLAY_BOX_KEY])
+    if (number = [setup objectForKey:SKMainWindowDisplayBoxKey])
         [pdfView setDisplayBox:[number intValue]];
 }
 
@@ -636,14 +633,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     
     if ([self isPresentation]) {
         [setup setDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HAS_HORIZONTAL_SCROLLER_KEY, HAS_VERTICAL_SCROLLER_KEY, AUTO_HIDES_SCROLLERS_KEY, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
     } else {
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYS_PAGE_BREAKS_KEY];
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYS_AS_BOOK_KEY];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:DISPLAY_BOX_KEY];
-        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SCALE_FACTOR_KEY];
-        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTO_SCALES_KEY];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:DISPLAY_MODE_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:SKMainWindowDisplayPageBreaksKey];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:SKMainWindowDisplayAsBookKey];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:SKMainWindowDisplayBoxKey];
+        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SKMainWindowScaleFactorKey];
+        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:SKMainWindowAutoScalesKey];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:SKMainWindowDisplayModeKey];
     }
     
     return setup;
@@ -2564,9 +2561,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     if ([self isPresentation] == NO && [self isFullScreen] == NO) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HAS_HORIZONTAL_SCROLLER_KEY];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HAS_VERTICAL_SCROLLER_KEY];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTO_HIDES_SCROLLERS_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:SKMainWindowHasHorizontalScrollerKey];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:SKMainWindowHasVerticalScrollerKey];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:SKMainWindowAutoHidesScrollersKey];
     }
     
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
@@ -2613,10 +2610,10 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
     [scrollView setNeverHasHorizontalScroller:NO];
-    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HAS_HORIZONTAL_SCROLLER_KEY] boolValue]];
+    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasHorizontalScrollerKey] boolValue]];
     [scrollView setNeverHasVerticalScroller:NO];
-    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HAS_VERTICAL_SCROLLER_KEY] boolValue]];
-    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTO_HIDES_SCROLLERS_KEY] boolValue]];
+    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasVerticalScrollerKey] boolValue]];
+    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:SKMainWindowAutoHidesScrollersKey] boolValue]];
     
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     [pdfView setBackgroundColor:backgroundColor];
