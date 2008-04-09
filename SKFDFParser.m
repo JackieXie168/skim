@@ -51,7 +51,7 @@
 #import "SKPDFAnnotationFreeText.h"
 #import "SKPDFAnnotationNote.h"
 
-const char *SKFDFCatalogKey = "FDF";
+const char *SKFDFFDFKey = "FDF";
 const char *SKFDFAnnotationsKey = "Annots";
 const char *SKFDFFileKey = "F";
 const char *SKFDFFileIDKey = "ID";
@@ -185,57 +185,7 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
 }
 
 
-@interface SKFDFParser (SKPrivate)
-+ (NSDictionary *)noteDictionaryFromPDFDictionary:(CGPDFDictionaryRef)annot;
-@end
-
-
 @implementation SKFDFParser
-
-+ (NSArray *)noteDictionariesFromFDFData:(NSData *)data {
-    const char *pdfHeader = "%PDF";
-    unsigned pdfHeaderLength = strlen(pdfHeader);
-    
-    if ([data length] < pdfHeaderLength)
-        return NO;
-    
-    NSMutableData *pdfData = [data mutableCopy];
-    
-    [pdfData replaceBytesInRange:NSMakeRange(0, pdfHeaderLength) withBytes:pdfHeader length:pdfHeaderLength];
-
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
-    CGPDFDocumentRef document = CGPDFDocumentCreateWithProvider(provider);
-    NSMutableArray *notes = nil;
-    
-    if (document) {
-        CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(document);
-        CGPDFDictionaryRef fdfDict;
-        CGPDFArrayRef annots;
-        
-        if (catalog &&
-            CGPDFDictionaryGetDictionary(catalog, SKFDFCatalogKey, &fdfDict) &&
-            CGPDFDictionaryGetArray(fdfDict, SKFDFAnnotationsKey, &annots)) {
-            
-            size_t i, count = CGPDFArrayGetCount(annots);
-            notes = [NSMutableArray arrayWithCapacity:count];
-            for (i = 0; i < count; i++) {
-                CGPDFDictionaryRef annot;
-                NSDictionary *note;
-                if (CGPDFArrayGetDictionary(annots, i, &annot) && 
-                    (note = [self noteDictionaryFromPDFDictionary:annot])) {
-                    [notes addObject:note];
-                }
-            }
-        }
-        
-        CGPDFDocumentRelease(document);
-    }
-    
-    CGDataProviderRelease(provider);
-    [pdfData release];
-    
-    return notes;
-}
 
 + (NSDictionary *)noteDictionaryFromPDFDictionary:(CGPDFDictionaryRef)annot {
     if (annot == NULL)
@@ -284,20 +234,6 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
         [contents release];
     }
     
-    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationColorKey, &array)) {
-        CGPDFReal r, g, b;
-        if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationColorKey];
-        }
-    }
-    
-    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationInteriorColorKey, &array)) {
-        CGPDFReal r, g, b;
-        if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
-            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationInteriorColorKey];
-        }
-    }
-    
     if (CGPDFDictionaryGetDictionary(annot, SKFDFAnnotationBorderStylesKey, &dict)) {
         if (CGPDFDictionaryGetNumber(dict, SKFDFAnnotationLineWidthKey, &real)) {
             if (real > 0.0) {
@@ -337,6 +273,20 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
     } else {
         [dictionary setObject:[NSNumber numberWithFloat:1.0] forKey:SKPDFAnnotationLineWidthKey];
         [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKPDFAnnotationBorderStyleKey];
+    }
+    
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationColorKey, &array)) {
+        CGPDFReal r, g, b;
+        if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
+            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationColorKey];
+        }
+    }
+    
+    if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationInteriorColorKey, &array)) {
+        CGPDFReal r, g, b;
+        if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
+            [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKPDFAnnotationInteriorColorKey];
+        }
     }
     
     if (CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {
@@ -429,6 +379,51 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
     }
     
     return success ? dictionary : nil;
+}
+
++ (NSArray *)noteDictionariesFromFDFData:(NSData *)data {
+    const char *pdfHeader = "%PDF";
+    unsigned pdfHeaderLength = strlen(pdfHeader);
+    NSMutableArray *notes = nil;
+    
+    if ([data length] > pdfHeaderLength) {
+        
+        NSMutableData *pdfData = [data mutableCopy];
+        
+        [pdfData replaceBytesInRange:NSMakeRange(0, pdfHeaderLength) withBytes:pdfHeader length:pdfHeaderLength];
+
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)pdfData);
+        CGPDFDocumentRef document = CGPDFDocumentCreateWithProvider(provider);
+        
+        if (document) {
+            CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(document);
+            CGPDFDictionaryRef fdfDict;
+            CGPDFArrayRef annots;
+            
+            if (catalog &&
+                CGPDFDictionaryGetDictionary(catalog, SKFDFFDFKey, &fdfDict) &&
+                CGPDFDictionaryGetArray(fdfDict, SKFDFAnnotationsKey, &annots)) {
+                
+                size_t i, count = CGPDFArrayGetCount(annots);
+                notes = [NSMutableArray arrayWithCapacity:count];
+                for (i = 0; i < count; i++) {
+                    CGPDFDictionaryRef annot;
+                    NSDictionary *note;
+                    if (CGPDFArrayGetDictionary(annots, i, &annot) && 
+                        (note = [self noteDictionaryFromPDFDictionary:annot])) {
+                        [notes addObject:note];
+                    }
+                }
+            }
+            
+            CGPDFDocumentRelease(document);
+        }
+        
+        CGDataProviderRelease(provider);
+        [pdfData release];
+    }
+    
+    return notes;
 }
 
 @end

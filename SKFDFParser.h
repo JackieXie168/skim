@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern const char *SKFDFCatalogKey;
+extern const char *SKFDFFDFKey;
 extern const char *SKFDFAnnotationsKey;
 extern const char *SKFDFFileKey;
 extern const char *SKFDFFileIDKey;
