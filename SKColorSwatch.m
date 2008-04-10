@@ -57,6 +57,13 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     [self exposeBinding:SKColorSwatchColorsKey];
 }
 
+- (Class)valueClassForBinding:(NSString *)binding {
+    if ([binding isEqualToString:SKColorSwatchColorsKey])
+        return [NSArray class];
+    else
+        return [super valueClassForBinding:binding];
+}
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
