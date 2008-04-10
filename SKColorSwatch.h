@@ -43,6 +43,7 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 @interface SKColorSwatch : NSControl {
     NSMutableArray *colors;
     int highlightedIndex;
+    int insertionIndex;
     int focusedIndex;
     int clickedIndex;
     int draggedIndex;
