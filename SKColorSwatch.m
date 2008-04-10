@@ -63,6 +63,7 @@ static NSString *SKColorsBindingName = @"colors";
         focusedIndex = 0;
         clickedIndex = -1;
         draggedIndex = -1;
+        autoResizes = YES;
         
         bindingInfo = [[NSMutableDictionary alloc] init];
         [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
@@ -302,7 +303,18 @@ static NSString *SKColorsBindingName = @"colors";
 }
 
 - (void)setColors:(NSArray *)newColors {
+    BOOL shouldResize = autoResizes && [newColors count] != [colors count];
     [colors setArray:newColors];
+    if (shouldResize)
+        [self sizeToFit];
+}
+
+- (BOOL)autoResizes {
+    return autoResizes;
+}
+
+- (void)setAutoResizes:(BOOL)flag {
+    autoResizes = flag;
 }
 
 - (int)clickedColorIndex {
@@ -398,8 +410,11 @@ static NSString *SKColorsBindingName = @"colors";
 - (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
     if ((operation & NSDragOperationDelete) != 0) {
         if (draggedIndex != -1 && [self isEnabled]) {
+            [self willChangeValueForKey:@"colors"];
             [colors removeObjectAtIndex:draggedIndex];
-            [self sizeToFit];
+            if (autoResizes)
+                [self sizeToFit];
+            [self didChangeValueForKey:@"colors"];
             
             NSDictionary *info = [self infoForBinding:@"colors"];
             id observedObject = [info objectForKey:NSObservedObjectKey];
@@ -478,12 +493,15 @@ static NSString *SKColorsBindingName = @"colors";
     int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     
     if (i != -1 && color) {
+        [self willChangeValueForKey:@"colors"];
         if (isCopy) {
             [colors insertObject:color atIndex:i];
-            [self sizeToFit];
+            if (autoResizes)
+                [self sizeToFit];
         } else {
             [colors replaceObjectAtIndex:i withObject:color];
         }
+        [self didChangeValueForKey:@"colors"];
         
         NSDictionary *info = [self infoForBinding:@"colors"];
         id observedObject = [info objectForKey:NSObservedObjectKey];
