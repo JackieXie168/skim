@@ -64,15 +64,15 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
         
-        [note addObserver:self forKeyPath:@"page" options:0 context:NULL];
-        [note addObserver:self forKeyPath:@"bounds" options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc {
-    [note removeObserver:self forKeyPath:@"page"];
-    [note removeObserver:self forKeyPath:@"bounds"];
+    [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
+    [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [note release];
@@ -130,12 +130,12 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
 - (void)setNote:(PDFAnnotation *)newNote {
     if (note != newNote) {
-        [note removeObserver:self forKeyPath:@"page"];
-        [note removeObserver:self forKeyPath:@"bounds"];
+        [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
+        [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
         [note release];
         note = [newNote retain];
-        [note addObserver:self forKeyPath:@"page" options:0 context:NULL];
-        [note addObserver:self forKeyPath:@"bounds" options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:NULL];
     }
 }
 
@@ -254,7 +254,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
                 [textView setFont:font];
         }
     } else if (object == note) {
-        if ([keyPath isEqualToString:@"page"] || [keyPath isEqualToString:@"bounds"])
+        if ([keyPath isEqualToString:SKPDFAnnotationPageKey] || [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
             [self updateStatusMessage];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

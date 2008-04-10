@@ -66,6 +66,7 @@ extern int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle);
 
 extern NSString *SKPDFAnnotationTypeKey;
 extern NSString *SKPDFAnnotationBoundsKey;
+extern NSString *SKPDFAnnotationPageKey;
 extern NSString *SKPDFAnnotationPageIndexKey;
 extern NSString *SKPDFAnnotationContentsKey;
 extern NSString *SKPDFAnnotationStringKey;
