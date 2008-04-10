@@ -38,6 +38,7 @@
 
 #import "SKColorSwatch.h"
 #import "OBUtilities.h"
+#import <Carbon/Carbon.h>
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -58,6 +59,7 @@ static NSString *SKColorsBindingName = @"colors";
     if (self) {
         colors = [[NSMutableArray alloc] initWithObjects:[NSColor whiteColor], nil];
         highlightedIndex = -1;
+        insertionIndex = -1;
         focusedIndex = 0;
         clickedIndex = -1;
         draggedIndex = -1;
@@ -120,7 +122,7 @@ static NSString *SKColorsBindingName = @"colors";
 - (void)sizeToFit {
     NSRect frame = [self frame];
     int count = [colors count];
-    frame.size.width = fminf(NSWidth(frame), count * (NSHeight(frame) - 3.0) + 3.0);
+    frame.size.width = count * (NSHeight(frame) - 3.0) + 3.0;
     [self setFrame:frame];
 }
 
@@ -149,6 +151,11 @@ static NSString *SKColorsBindingName = @"colors";
         [[NSBezierPath bezierPathWithRect:NSInsetRect(r, 1.5, 1.5)] stroke];
         [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 2.0, 2.0)];
         r.origin.x += NSHeight(r) - 1.0;
+    }
+    
+    if (insertionIndex != -1) {
+        [[NSColor selectedControlColor] setFill];
+        NSRectFill(NSMakeRect(insertionIndex * (NSHeight(rect) - 1.0), 1.0, 3.0, NSHeight(rect)));
     }
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
@@ -274,6 +281,20 @@ static NSString *SKColorsBindingName = @"colors";
     return -1;
 }
 
+- (int)insertionIndexAtPoint:(NSPoint)point {
+    NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
+    float w = NSHeight(rect) + 1.0;
+    float x = NSMinX(rect) + w / 2.0;
+    int i, count = [colors count];
+    
+    for (i = 0; i < count; i++) {
+        if (point.x < x)
+            return i;
+        x += w;
+    }
+    return count;
+}
+
 #pragma mark Accessors
 
 - (NSArray *)colors {
@@ -368,21 +389,62 @@ static NSString *SKColorsBindingName = @"colors";
 	return info;
 }
 
+#pragma mark NSDraggingSource protocol 
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
+    return isLocal ? NSDragOperationGeneric : NSDragOperationGeneric | NSDragOperationDelete;
+}
+
+- (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    if ((operation & NSDragOperationDelete) != 0) {
+        if (draggedIndex != -1 && [self isEnabled]) {
+            [colors removeObjectAtIndex:draggedIndex];
+            [self sizeToFit];
+            
+            NSDictionary *info = [self infoForBinding:@"colors"];
+            id observedObject = [info objectForKey:NSObservedObjectKey];
+            NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
+            if (observedObject && observedKeyPath) {
+                id value = [[colors copy] autorelease];
+                NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+                if (transformerName) {
+                    NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
+                    value = [valueTransformer reverseTransformedValue:value]; 
+                }
+                [observedObject setValue:value forKeyPath:observedKeyPath];
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
+            
+            [self setNeedsDisplay:YES];
+        }
+    }
+}
+
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
-    int i = [self colorIndexAtPoint:mouseLoc];
+    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
+    int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
+    NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
     
-    if ([sender draggingSource] == self && draggedIndex == i)
+    if ([sender draggingSource] == self && draggedIndex == i && isCopy == NO)
         i = -1;
-    highlightedIndex = i;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
-    if ([self isEnabled] && i != -1)
-        return NSDragOperationEvery;
-    else
-        return NSDragOperationNone;
+    if ([self isEnabled] == NO || i == -1) {
+        highlightedIndex = -1;
+        insertionIndex = -1;
+        dragOp = NSDragOperationNone;
+    } else if (isCopy) {
+        highlightedIndex = -1;
+        insertionIndex = i;
+    } else {
+        highlightedIndex = i;
+        insertionIndex = -1;
+    }
+    return dragOp;
 }
 
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
@@ -391,6 +453,7 @@ static NSString *SKColorsBindingName = @"colors";
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     highlightedIndex = -1;
+    insertionIndex = -1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
@@ -398,7 +461,10 @@ static NSString *SKColorsBindingName = @"colors";
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
     int i = [self colorIndexAtPoint:mouseLoc];
-    if ([self isEnabled] && i != -1 && ([sender draggingSource] != self || draggedIndex != i))
+    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
+    if ([self isEnabled] == NO || i == -1)
+        return NO;
+    else if (isCopy || [sender draggingSource] != self || draggedIndex != i)
         return YES;
     else
         return NO;
@@ -408,10 +474,16 @@ static NSString *SKColorsBindingName = @"colors";
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
-    int i = [self colorIndexAtPoint:mouseLoc];
+    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
+    int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     
     if (i != -1 && color) {
-        [colors replaceObjectAtIndex:i withObject:color];
+        if (isCopy) {
+            [colors insertObject:color atIndex:i];
+            [self sizeToFit];
+        } else {
+            [colors replaceObjectAtIndex:i withObject:color];
+        }
         
         NSDictionary *info = [self infoForBinding:@"colors"];
         id observedObject = [info objectForKey:NSObservedObjectKey];
@@ -430,6 +502,7 @@ static NSString *SKColorsBindingName = @"colors";
     }
     
     highlightedIndex = -1;
+    insertionIndex = -1;
     [self setNeedsDisplay:YES];
     
 	return YES;

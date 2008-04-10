@@ -94,7 +94,8 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
-    NSMenu *menu = [[[toolbarItems objectForKey:SKDocumentToolbarColorSwatchItemIdentifier] menuFormRepresentation] submenu];
+    NSToolbarItem *toolbarItem = [toolbarItems objectForKey:SKDocumentToolbarColorSwatchItemIdentifier];
+    NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
     
     int i = [menu numberOfItems];
     while (i--)
@@ -121,6 +122,10 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
         [item setImage:image];
         [image release];
     }
+    
+    NSSize size = [colorSwatch bounds].size;
+    [toolbarItem setMinSize:size];
+    [toolbarItem setMaxSize:size];
 }
 
 - (void)setupToolbar {
