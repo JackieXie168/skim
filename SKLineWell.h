@@ -41,6 +41,12 @@
 
 extern NSString *SKLineStylePboardType;
 
+extern NSString *SKLineWellLineWidthKey;
+extern NSString *SKLineWellStyleKey;
+extern NSString *SKLineWellDashPatternKey;
+extern NSString *SKLineWellStartLineStyleKey;
+extern NSString *SKLineWellEndLineStyleKey;
+
 typedef enum _SKLineWellDisplayStyle {
     SKLineWellDisplayStyleLine,
     SKLineWellDisplayStyleRectangle,

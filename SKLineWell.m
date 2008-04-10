@@ -42,28 +42,41 @@
 
 NSString *SKLineStylePboardType = @"SKLineStylePboardType";
 
+NSString *SKLineWellLineWidthKey = @"lineWidth";
+NSString *SKLineWellStyleKey = @"style";
+NSString *SKLineWellDashPatternKey = @"dashPattern";
+NSString *SKLineWellStartLineStyleKey = @"startLineStyle";
+NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
+
+static NSString *SKLineWellDisplayStyleKey = @"displayStyle";
+static NSString *SKLineWellActiveKey = @"active";
+static NSString *SKLineWellActionKey = @"action";
+static NSString *SKLineWellTargetKey = @"target";
+
+
 static NSDictionary *observationContexts = nil;
 
 static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecomeActiveNotification";
+static NSString *SKLineWellExclusiveKey = @"exclusive";
 
 @implementation SKLineWell
 
 + (void)initialize {
     OBINITIALIZE;
     
-    id keys[5] = {@"lineWidth", @"style", @"dashPattern", @"startLineStyle", @"endLineStyle"};
+    id keys[5] = {SKLineWellLineWidthKey, SKLineWellStyleKey, SKLineWellDashPatternKey, SKLineWellStartLineStyleKey, SKLineWellEndLineStyleKey};
     int values[5] = {2091, 2092, 2093, 2094, 2095};
     observationContexts = (NSDictionary *)CFDictionaryCreate(NULL, (const void **)keys, (const void **)values, 5, &kCFCopyStringDictionaryKeyCallBacks, NULL);
     
-    [self exposeBinding:@"lineWidth"];
-    [self exposeBinding:@"style"];
-    [self exposeBinding:@"dashPattern"];
-    [self exposeBinding:@"startLineStyle"];
-    [self exposeBinding:@"endLineStyle"];
+    [self exposeBinding:SKLineWellLineWidthKey];
+    [self exposeBinding:SKLineWellStyleKey];
+    [self exposeBinding:SKLineWellDashPatternKey];
+    [self exposeBinding:SKLineWellStartLineStyleKey];
+    [self exposeBinding:SKLineWellEndLineStyleKey];
 }
 
 - (Class)valueClassForBinding:(NSString *)binding {
-    if ([binding isEqualToString:@"dashPattern"])
+    if ([binding isEqualToString:SKLineWellDashPatternKey])
         return [NSArray class];
     else
         return [NSNumber class];
@@ -98,15 +111,15 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         if ([decoder allowsKeyedCoding]) {
-            lineWidth = [decoder decodeFloatForKey:@"lineWidth"];
-            style = [decoder decodeIntForKey:@"style"];
-            dashPattern = [[decoder decodeObjectForKey:@"dashPattern"] retain];
-            startLineStyle = [decoder decodeIntForKey:@"startLineStyle"];
-            endLineStyle = [decoder decodeIntForKey:@"endLineStyle"];
-            displayStyle = [decoder decodeIntForKey:@"displayStyle"];
-            active = [decoder decodeBoolForKey:@"active"];
-            action = NSSelectorFromString([decoder decodeObjectForKey:@"action"]);
-            target = [decoder decodeObjectForKey:@"target"];
+            lineWidth = [decoder decodeFloatForKey:SKLineWellLineWidthKey];
+            style = [decoder decodeIntForKey:SKLineWellStyleKey];
+            dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
+            startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
+            endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
+            displayStyle = [decoder decodeIntForKey:SKLineWellDisplayStyleKey];
+            active = [decoder decodeBoolForKey:SKLineWellActiveKey];
+            action = NSSelectorFromString([decoder decodeObjectForKey:SKLineWellActionKey]);
+            target = [decoder decodeObjectForKey:SKLineWellTargetKey];
         } else {
             [decoder decodeValueOfObjCType:@encode(float) at:&lineWidth];
             [decoder decodeValueOfObjCType:@encode(int) at:&style];
@@ -134,15 +147,15 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeFloat:lineWidth forKey:@"lineWidth"];
-        [coder encodeInt:style forKey:@"style"];
-        [coder encodeObject:dashPattern forKey:@"dashPattern"];
-        [coder encodeInt:startLineStyle forKey:@"startLineStyle"];
-        [coder encodeInt:endLineStyle forKey:@"endLineStyle"];
-        [coder encodeInt:displayStyle forKey:@"displayStyle"];
-        [coder encodeBool:active forKey:@"active"];
-        [coder encodeObject:NSStringFromSelector(action) forKey:@"action"];
-        [coder encodeConditionalObject:target forKey:@"target"];
+        [coder encodeFloat:lineWidth forKey:SKLineWellLineWidthKey];
+        [coder encodeInt:style forKey:SKLineWellStyleKey];
+        [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
+        [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
+        [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
+        [coder encodeInt:displayStyle forKey:SKLineWellDisplayStyleKey];
+        [coder encodeBool:active forKey:SKLineWellActiveKey];
+        [coder encodeObject:NSStringFromSelector(action) forKey:SKLineWellActionKey];
+        [coder encodeConditionalObject:target forKey:SKLineWellTargetKey];
     } else {
         [coder encodeValueOfObjCType:@encode(float) at:&lineWidth];
         [coder encodeValueOfObjCType:@encode(int) at:&style];
@@ -157,11 +170,11 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)dealloc {
-    [self unbind:@"lineWidth"];
-    [self unbind:@"style"];
-    [self unbind:@"dashPattern"];
-    [self unbind:@"startLineStyle"];
-    [self unbind:@"endLineStyle"];
+    [self unbind:SKLineWellLineWidthKey];
+    [self unbind:SKLineWellStyleKey];
+    [self unbind:SKLineWellDashPatternKey];
+    [self unbind:SKLineWellStartLineStyleKey];
+    [self unbind:SKLineWellEndLineStyleKey];
     [bindingInfo release];
     if (active)
         [self deactivate];
@@ -358,10 +371,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
                     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
                     [pboard declareTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil] owner:nil];
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:lineWidth], @"lineWidth", [NSNumber numberWithInt:style], @"style", dashPattern, @"dashPattern", nil];
+                        [NSNumber numberWithFloat:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInt:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
                     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                        [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:@"startLineStyle"];
-                        [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:@"endLineStyle"];
+                        [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:SKLineWellStartLineStyleKey];
+                        [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:SKLineWellEndLineStyleKey];
                     }
                     [pboard setPropertyList:dict forType:SKLineStylePboardType];
                     
@@ -404,7 +417,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)lineWellWillBecomeActive:(NSNotification *)notification {
     id sender = [notification object];
     if (sender != self && [self isActive]) {
-        if ([[[notification userInfo] valueForKey:@"exclusive"] boolValue])
+        if ([[[notification userInfo] valueForKey:SKLineWellExclusiveKey] boolValue])
             [self deactivate];
         else
             [sender existsActiveLineWell];
@@ -423,7 +436,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         existsActiveLineWell = NO;
         
         [nc postNotificationName:SKLineWellWillBecomeActiveNotification object:self
-                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], @"exclusive", nil]];
+                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], SKLineWellExclusiveKey, nil]];
         
         if (existsActiveLineWell) {
             updatingFromLineInspector = YES;
@@ -568,7 +581,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)setLineWidth:(float)width {
     if (fabsf(lineWidth - width) > 0.00001) {
         lineWidth = width;
-        [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:@"lineWidth"];
+        [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:SKLineWellLineWidthKey];
     }
 }
 
@@ -579,7 +592,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
-        [self updateValue:[NSNumber numberWithInt:newStyle] forKey:@"style"];
+        [self updateValue:[NSNumber numberWithInt:newStyle] forKey:SKLineWellStyleKey];
     }
 }
 
@@ -591,7 +604,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
-        [self updateValue:dashPattern forKey:@"dashPattern"];
+        [self updateValue:dashPattern forKey:SKLineWellDashPatternKey];
     }
 }
 
@@ -602,7 +615,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
-        [self updateValue:[NSNumber numberWithInt:startLineStyle] forKey:@"startLineStyle"];
+        [self updateValue:[NSNumber numberWithInt:startLineStyle] forKey:SKLineWellStartLineStyleKey];
     }
 }
 
@@ -613,13 +626,13 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != endLineStyle) {
         endLineStyle = newStyle;
-        [self updateValue:[NSNumber numberWithInt:endLineStyle] forKey:@"endLineStyle"];
+        [self updateValue:[NSNumber numberWithInt:endLineStyle] forKey:SKLineWellEndLineStyleKey];
     }
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"lineWidth"] || [key isEqualToString:@"style"] || 
-        [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"]) {
+    if ([key isEqualToString:SKLineWellLineWidthKey] || [key isEqualToString:SKLineWellStyleKey] || 
+        [key isEqualToString:SKLineWellStartLineStyleKey] || [key isEqualToString:SKLineWellEndLineStyleKey]) {
         [self setValue:[NSNumber numberWithInt:0] forKey:key];
     } else {
         [super setNilValueForKey:key];
@@ -671,8 +684,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 #pragma mark Binding support
 
 - (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if ([bindingName isEqualToString:@"lineWidth"] || [bindingName isEqualToString:@"style"] || [bindingName isEqualToString:@"dashPattern"] || 
-        [bindingName isEqualToString:@"startLineStyle"] || [bindingName isEqualToString:@"endLineStyle"]) {
+    if ([bindingName isEqualToString:SKLineWellLineWidthKey] || [bindingName isEqualToString:SKLineWellStyleKey] || [bindingName isEqualToString:SKLineWellDashPatternKey] || 
+        [bindingName isEqualToString:SKLineWellStartLineStyleKey] || [bindingName isEqualToString:SKLineWellEndLineStyleKey]) {
         
         if ([bindingInfo objectForKey:bindingName])
             [self unbind:bindingName];
@@ -690,8 +703,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)unbind:(NSString *)bindingName {
-    if ([bindingName isEqualToString:@"lineWidth"] || [bindingName isEqualToString:@"style"] || [bindingName isEqualToString:@"dashPattern"] || 
-        [bindingName isEqualToString:@"startLineStyle"] || [bindingName isEqualToString:@"endLineStyle"]) {
+    if ([bindingName isEqualToString:SKLineWellLineWidthKey] || [bindingName isEqualToString:SKLineWellStyleKey] || [bindingName isEqualToString:SKLineWellDashPatternKey] || 
+        [bindingName isEqualToString:SKLineWellStartLineStyleKey] || [bindingName isEqualToString:SKLineWellEndLineStyleKey]) {
         
         NSDictionary *info = [self infoForBinding:bindingName];
         [[info objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
@@ -705,16 +718,16 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
     
-    if (context == [observationContexts objectForKey:@"lineWidth"])
-        key = @"lineWidth";
-    else if (context == [observationContexts objectForKey:@"style"])
-        key = @"style";
-    else if (context == [observationContexts objectForKey:@"dashPattern"])
-        key = @"dashPattern";
-    else if (context == [observationContexts objectForKey:@"startLineStyle"])
-        key = @"startLineStyle";
-    else if (context == [observationContexts objectForKey:@"endLineStyle"])
-        key = @"endLineStyle";
+    if (context == [observationContexts objectForKey:SKLineWellLineWidthKey])
+        key = SKLineWellLineWidthKey;
+    else if (context == [observationContexts objectForKey:SKLineWellStyleKey])
+        key = SKLineWellStyleKey;
+    else if (context == [observationContexts objectForKey:SKLineWellDashPatternKey])
+        key = SKLineWellDashPatternKey;
+    else if (context == [observationContexts objectForKey:SKLineWellStartLineStyleKey])
+        key = SKLineWellStartLineStyleKey;
+    else if (context == [observationContexts objectForKey:SKLineWellEndLineStyleKey])
+        key = SKLineWellEndLineStyleKey;
     
     if (key) {
         NSDictionary *info = [self infoForBinding:key];
@@ -765,15 +778,15 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
     NSNumber *number;
     
-    if (number = [dict objectForKey:@"lineWidth"])
+    if (number = [dict objectForKey:SKLineWellLineWidthKey])
         [self setLineWidth:[number floatValue]];
-    if (number = [dict objectForKey:@"style"])
+    if (number = [dict objectForKey:SKLineWellStyleKey])
         [self setStyle:[number intValue]];
-    [self setDashPattern:[dict objectForKey:@"dashPattern"]];
+    [self setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-        if (number = [dict objectForKey:@"startLineStyle"])
+        if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
             [self setStartLineStyle:[number intValue]];
-        if (number = [dict objectForKey:@"endLineStyle"])
+        if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
             [self setEndLineStyle:[number intValue]];
     }
     [self sendAction:[self action] to:[self target]];

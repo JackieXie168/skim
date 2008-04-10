@@ -46,6 +46,12 @@ extern NSString *SKLineInspectorDashPatternDidChangeNotification;
 extern NSString *SKLineInspectorStartLineStyleDidChangeNotification;
 extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 
+extern NSString *SKLineInspectorLineWidthKey;
+extern NSString *SKLineInspectorStyleKey;
+extern NSString *SKLineInspectorDashPatternKey;
+extern NSString *SKLineInspectorStartLineStyleKey;
+extern NSString *SKLineInspectorEndLineStyleKey;
+
 @class SKLineWell;
 
 @interface SKLineInspector : NSWindowController {
