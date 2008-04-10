@@ -51,6 +51,8 @@ extern NSString *SKColorSwatchColorsChangedNotification;
     SEL action;
     id target;
     
+    BOOL autoResizes;
+    
     NSMutableDictionary *bindingInfo;
 }
 
@@ -59,6 +61,9 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 
 - (int)clickedColorIndex;
 - (NSColor *)color;
+
+- (BOOL)autoResizes;
+- (void)setAutoResizes:(BOOL)flag;
 
 - (int)colorIndexAtPoint:(NSPoint)point;
 
