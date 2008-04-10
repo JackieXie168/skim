@@ -39,35 +39,36 @@
 #import "NSArray_SKExtensions.h"
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 @implementation NSArray (SKExtensions)
 
 - (NSArray *)arraySortedByPageIndex {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByPageIndexAndBounds {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease], nil]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease], nil]];
 }
 
 - (NSArray *)arraySortedByType {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByContents {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByTypeAndContents {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease], nil]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease], nil]];
 }
 
 - (NSArray *)arraySortedByTypeAndPageIndex {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease], nil]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease], nil]];
 }
 
 @end

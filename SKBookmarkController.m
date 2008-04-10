@@ -63,14 +63,13 @@ static NSString *SKBookmarksWindowFrameAutosaveName = @"SKBookmarksWindow";
 
 static NSString *SKMaximumDocumentPageHistoryCountKey = @"SKMaximumDocumentPageHistoryCount";
 
-#define BOOKMARKS_KEY           @"bookmarks"
-#define RECENT_DOCUMENTS_KEY    @"recentDocuments"
+static NSString *SKBookmarkControllerBookmarksKey = @"bookmarks";
+static NSString *SKBookmarkControllerRecentDocumentsKey = @"recentDocuments";
 
-#define PAGE_INDEX_KEY          @"pageIndex"
-#define PATH_KEY                @"path"
-#define ALIAS_KEY               @"alias"
-#define ALIAS_DATA_KEY          @"_BDAlias"
-#define SNAPSHOTS_KEY           @"snapshots"
+static NSString *SKRecentDocumentPageIndexKey = @"pageIndex";
+static NSString *SKRecentDocumentAliasKey = @"alias";
+static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
+static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 
 @implementation SKBookmarkController
 
@@ -109,8 +108,8 @@ static unsigned int maxRecentDocumentsCount = 0;
                 NSLog(@"Error deserializing: %@", error);
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                [recentDocuments addObjectsFromArray:[plist objectForKey:RECENT_DOCUMENTS_KEY]];
-                NSEnumerator *dictEnum = [[plist objectForKey:BOOKMARKS_KEY] objectEnumerator];
+                [recentDocuments addObjectsFromArray:[plist objectForKey:SKBookmarkControllerRecentDocumentsKey]];
+                NSEnumerator *dictEnum = [[plist objectForKey:SKBookmarkControllerBookmarksKey] objectEnumerator];
                 NSDictionary *dict;
                 
                 while (dict = [dictEnum nextObject]) {
@@ -282,10 +281,10 @@ static unsigned int maxRecentDocumentsCount = 0;
     unsigned int idx = NSNotFound, i, iMax = [recentDocuments count];
     for (i = 0; i < iMax; i++) {
         NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
-        BDAlias *alias = [info valueForKey:ALIAS_KEY];
+        BDAlias *alias = [info valueForKey:SKRecentDocumentAliasKey];
         if (alias == nil) {
-            alias = [BDAlias aliasWithData:[info valueForKey:ALIAS_DATA_KEY]];
-            [info setValue:alias forKey:ALIAS_KEY];
+            alias = [BDAlias aliasWithData:[info valueForKey:SKRecentDocumentAliasDataKey]];
+            [info setValue:alias forKey:SKRecentDocumentAliasKey];
         }
         if ([[alias fullPathNoUI] isEqualToString:path]) {
             idx = i;
@@ -304,7 +303,7 @@ static unsigned int maxRecentDocumentsCount = 0;
         [recentDocuments removeObjectAtIndex:idx];
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, [alias aliasData], ALIAS_DATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], SKRecentDocumentPageIndexKey, [alias aliasData], SKRecentDocumentAliasDataKey, alias, SKRecentDocumentAliasKey, [setups count] ? setups : nil, SKRecentDocumentSnapshotsKey, nil];
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
@@ -314,14 +313,14 @@ static unsigned int maxRecentDocumentsCount = 0;
     if (path == nil)
         return NSNotFound;
     unsigned int idx = [self indexOfRecentDocumentAtPath:path];
-    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGE_INDEX_KEY] unsignedIntValue];
+    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:SKRecentDocumentPageIndexKey] unsignedIntValue];
 }
 
 - (NSArray *)snapshotsAtPath:(NSString *)path {
     if (path == nil)
         return nil;
     unsigned int idx = [self indexOfRecentDocumentAtPath:path];
-    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SNAPSHOTS_KEY];
+    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SKRecentDocumentSnapshotsKey];
     return [setups count] ? setups : nil;
 }
 
@@ -451,8 +450,8 @@ static unsigned int maxRecentDocumentsCount = 0;
 #pragma mark Notification handlers
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
-    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENT_DOCUMENTS_KEY, nil];
+    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:SKRecentDocumentAliasKey];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"properties"], SKBookmarkControllerBookmarksKey, recentDocuments, SKBookmarkControllerRecentDocumentsKey, nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
