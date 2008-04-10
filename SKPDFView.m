@@ -60,7 +60,6 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLineWell.h"
-#import "SKLineInspector.h"
 #import <Carbon/Carbon.h>
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
@@ -1588,15 +1587,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             } else if ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
-                if (number = [dict objectForKey:SKLineInspectorLineWidthKey])
+                if (number = [dict objectForKey:SKLineWellLineWidthKey])
                     [highlightAnnotation setLineWidth:[number floatValue]];
-                [highlightAnnotation setDashPattern:[dict objectForKey:SKLineInspectorDashPatternKey]];
-                if (number = [dict objectForKey:SKLineInspectorStyleKey])
+                [highlightAnnotation setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
+                if (number = [dict objectForKey:SKLineWellStyleKey])
                     [highlightAnnotation setBorderStyle:[number intValue]];
                 if ([type isEqualToString:SKLineString]) {
-                    if (number = [dict objectForKey:SKLineInspectorStartLineStyleKey])
+                    if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
                         [(SKPDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
-                    if (number = [dict objectForKey:SKLineInspectorEndLineStyleKey])
+                    if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
                         [(SKPDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number intValue]];
                 }
                 performedDrag = YES;
