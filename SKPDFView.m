@@ -60,6 +60,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLineWell.h"
+#import "SKLineInspector.h"
 #import <Carbon/Carbon.h>
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
@@ -1579,20 +1580,23 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
             if ([pboardType isEqualToString:NSColorPboardType]) {
-                [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
+                if ((GetCurrentKeyModifiers() & optionKey) && [[highlightAnnotation type] respondsToSelector:@selector(setInteriorColor)])
+                    [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
+                else
+                    [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
             } else if ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
-                if (number = [dict objectForKey:@"lineWidth"])
+                if (number = [dict objectForKey:SKLineInspectorLineWidthKey])
                     [highlightAnnotation setLineWidth:[number floatValue]];
-                [highlightAnnotation setDashPattern:[dict objectForKey:@"dashPattern"]];
-                if (number = [dict objectForKey:@"style"])
+                [highlightAnnotation setDashPattern:[dict objectForKey:SKLineInspectorDashPatternKey]];
+                if (number = [dict objectForKey:SKLineInspectorStyleKey])
                     [highlightAnnotation setBorderStyle:[number intValue]];
                 if ([type isEqualToString:SKLineString]) {
-                    if (number = [dict objectForKey:@"startLineStyle"])
+                    if (number = [dict objectForKey:SKLineInspectorStartLineStyleKey])
                         [(SKPDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
-                    if (number = [dict objectForKey:@"endLineStyle"])
+                    if (number = [dict objectForKey:SKLineInspectorEndLineStyleKey])
                         [(SKPDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number intValue]];
                 }
                 performedDrag = YES;
