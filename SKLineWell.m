@@ -371,10 +371,10 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
                     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
                     [pboard declareTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil] owner:nil];
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInt:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
+                        [NSNumber numberWithFloat:lineWidth], SKLineInspectorLineWidthKey, [NSNumber numberWithInt:style], SKLineInspectorStyleKey, dashPattern, SKLineInspectorDashPatternKey, nil];
                     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                        [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:SKLineWellStartLineStyleKey];
-                        [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:SKLineWellEndLineStyleKey];
+                        [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:SKLineInspectorStartLineStyleKey];
+                        [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:SKLineInspectorEndLineStyleKey];
                     }
                     [pboard setPropertyList:dict forType:SKLineStylePboardType];
                     
@@ -749,6 +749,12 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 	return info;
 }
 
+#pragma mark NSDraggingSource protocol 
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
+    return NSDragOperationGeneric;
+}
+
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
@@ -778,15 +784,15 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
     NSNumber *number;
     
-    if (number = [dict objectForKey:SKLineWellLineWidthKey])
+    if (number = [dict objectForKey:SKLineInspectorLineWidthKey])
         [self setLineWidth:[number floatValue]];
-    if (number = [dict objectForKey:SKLineWellStyleKey])
+    if (number = [dict objectForKey:SKLineInspectorStyleKey])
         [self setStyle:[number intValue]];
-    [self setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
+    [self setDashPattern:[dict objectForKey:SKLineInspectorDashPatternKey]];
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-        if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
+        if (number = [dict objectForKey:SKLineInspectorStartLineStyleKey])
             [self setStartLineStyle:[number intValue]];
-        if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
+        if (number = [dict objectForKey:SKLineInspectorEndLineStyleKey])
             [self setEndLineStyle:[number intValue]];
     }
     [self sendAction:[self action] to:[self target]];
