@@ -46,6 +46,12 @@ NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDas
 NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
 NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
 
+NSString *SKLineInspectorLineWidthKey = @"lineWidth";
+NSString *SKLineInspectorStyleKey = @"style";
+NSString *SKLineInspectorDashPatternKey = @"dashPattern";
+NSString *SKLineInspectorStartLineStyleKey = @"startLineStyle";
+NSString *SKLineInspectorEndLineStyleKey = @"endLineStyle";
+
 static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 
 @implementation SKLineInspector
@@ -98,11 +104,11 @@ static SKLineInspector *sharedLineInspector = nil;
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
     [lineWell setCanActivate:NO];
-    [lineWell bind:@"lineWidth" toObject:self withKeyPath:@"lineWidth" options:nil];
-    [lineWell bind:@"style" toObject:self withKeyPath:@"style" options:nil];
-    [lineWell bind:@"dashPattern" toObject:self withKeyPath:@"dashPattern" options:nil];
-    [lineWell bind:@"startLineStyle" toObject:self withKeyPath:@"startLineStyle" options:nil];
-    [lineWell bind:@"endLineStyle" toObject:self withKeyPath:@"endLineStyle" options:nil];
+    [lineWell bind:SKLineInspectorLineWidthKey toObject:self withKeyPath:SKLineInspectorLineWidthKey options:nil];
+    [lineWell bind:SKLineInspectorStyleKey toObject:self withKeyPath:SKLineInspectorStyleKey options:nil];
+    [lineWell bind:SKLineInspectorDashPatternKey toObject:self withKeyPath:SKLineInspectorDashPatternKey options:nil];
+    [lineWell bind:SKLineInspectorStartLineStyleKey toObject:self withKeyPath:SKLineInspectorStartLineStyleKey options:nil];
+    [lineWell bind:SKLineInspectorEndLineStyleKey toObject:self withKeyPath:SKLineInspectorEndLineStyleKey options:nil];
     
     SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
     [dashPatternField setFormatter:formatter];
@@ -499,9 +505,9 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"lineWidth"]) {
+    if ([key isEqualToString:SKLineInspectorLineWidthKey]) {
         [self setValue:[NSNumber numberWithFloat:0.0] forKey:key];
-    } else if ([key isEqualToString:@"style"] || [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"]) {
+    } else if ([key isEqualToString:SKLineInspectorStyleKey] || [key isEqualToString:SKLineInspectorStartLineStyleKey] || [key isEqualToString:SKLineInspectorEndLineStyleKey]) {
         [self setValue:[NSNumber numberWithInt:0] forKey:key];
     } else {
         [super setNilValueForKey:key];
