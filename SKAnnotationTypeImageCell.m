@@ -40,6 +40,8 @@
 #import <Quartz/Quartz.h>
 #import "SKStringConstants.h"
 
+NSString *SKAnnotationTypeImageCellTypeKey = @"type";
+NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 
 @implementation SKAnnotationTypeImageCell
 
@@ -57,12 +59,12 @@
 
 - (void)setObjectValue:(id)anObject {
     if ([anObject respondsToSelector:@selector(objectForKey:)]) {
-        NSString *newType = [anObject objectForKey:@"type"];
+        NSString *newType = [anObject objectForKey:SKAnnotationTypeImageCellTypeKey];
         if (type != newType) {
             [type release];
             type = [newType retain];
         }
-        active = [[anObject objectForKey:@"active"] boolValue];
+        active = [[anObject objectForKey:SKAnnotationTypeImageCellActiveKey] boolValue];
     } else {
         [super setObjectValue:anObject];
     }

@@ -57,6 +57,8 @@
 #define HAS_WINDOW_KEY              @"hasWindow"
 #define WINDOW_FRAME_KEY            @"windowFrame"
 
+NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
+
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 

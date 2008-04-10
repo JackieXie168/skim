@@ -49,11 +49,11 @@ static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
 static NSString *SKBookmarkTypeFolderString = @"folder";
 static NSString *SKBookmarkTypeSeparatorString = @"separator";
 
-#define CHILDREN_KEY    @"children"
-#define LABEL_KEY       @"label"
-#define PAGE_INDEX_KEY  @"pageIndex"
-#define ALIAS_DATA_KEY  @"_BDAlias"
-#define TYPE_KEY        @"type"
+static NSString *SKBookmarkChildrenKey = @"children";
+static NSString *SKBookmarkLabelKey = @"label";
+static NSString *SKBookmarkPageIndexKey = @"pageIndex";
+static NSString *SKBookmarkAliasDataKey = @"_BDAlias";
+static NSString *SKBookmarkTypeKey = @"type";
 
 @interface SKFileBookmark : SKBookmark {
     BDAlias *alias;
@@ -124,17 +124,17 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithProperties:(NSDictionary *)dictionary {
-    if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeFolderString]) {
-        NSEnumerator *dictEnum = [[dictionary objectForKey:CHILDREN_KEY] objectEnumerator];
+    if ([[dictionary objectForKey:SKBookmarkTypeKey] isEqualToString:SKBookmarkTypeFolderString]) {
+        NSEnumerator *dictEnum = [[dictionary objectForKey:SKBookmarkChildrenKey] objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
         while (dict = [dictEnum nextObject])
             [newChildren addObject:[[[[self class] alloc] initWithProperties:dict] autorelease]];
-        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
-    } else if ([[dictionary objectForKey:TYPE_KEY] isEqualToString:SKBookmarkTypeSeparatorString]) {
+        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:SKBookmarkLabelKey]];
+    } else if ([[dictionary objectForKey:SKBookmarkTypeKey] isEqualToString:SKBookmarkTypeSeparatorString]) {
         return [self initSeparator];
     } else {
-        return [self initWithAliasData:[dictionary objectForKey:ALIAS_DATA_KEY] pageIndex:[[dictionary objectForKey:PAGE_INDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
+        return [self initWithAliasData:[dictionary objectForKey:SKBookmarkAliasDataKey] pageIndex:[[dictionary objectForKey:SKBookmarkPageIndexKey] unsignedIntValue] label:[dictionary objectForKey:SKBookmarkLabelKey]];
     }
 }
 
@@ -235,7 +235,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSDictionary *)properties {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, TYPE_KEY, [self aliasData], ALIAS_DATA_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGE_INDEX_KEY, label, LABEL_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, SKBookmarkTypeKey, [self aliasData], SKBookmarkAliasDataKey, [NSNumber numberWithUnsignedInt:pageIndex], SKBookmarkPageIndexKey, label, SKBookmarkLabelKey, nil];
 }
 
 - (int)bookmarkType {
@@ -337,7 +337,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSDictionary *)properties {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, TYPE_KEY, [children valueForKey:@"properties"], CHILDREN_KEY, label, LABEL_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, SKBookmarkTypeKey, [children valueForKey:@"properties"], SKBookmarkChildrenKey, label, SKBookmarkLabelKey, nil];
 }
 
 - (int)bookmarkType {
@@ -402,7 +402,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSDictionary *)properties {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSeparatorString, TYPE_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSeparatorString, SKBookmarkTypeKey, nil];
 }
 
 - (int)bookmarkType {

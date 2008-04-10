@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKSnapshotCurrentSetupKey;
 
 @class BDSKZoomablePDFView, PDFDocument, PDFPage;
 

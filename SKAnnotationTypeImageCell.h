@@ -38,6 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKAnnotationTypeImageCellTypeKey;
+extern NSString *SKAnnotationTypeImageCellActiveKey;
 
 @interface SKAnnotationTypeImageCell : NSImageCell {
     NSString *type;

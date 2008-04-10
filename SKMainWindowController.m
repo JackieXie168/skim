@@ -71,6 +71,7 @@
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
+#import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKPDFHoverWindow.h"
 #import "PDFSelection_SKExtensions.h"
@@ -86,6 +87,7 @@
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
 #import "SKSheetController.h"
+#import "SKColorSwatch.h"
 #import "OBUtilities.h"
 #import "SKApplicationController.h"
 #import "SKCFCallbacks.h"
@@ -104,6 +106,27 @@ static NSString *SKMainWindowHasHorizontalScrollerKey = @"hasHorizontalScroller"
 static NSString *SKMainWindowHasVerticalScrollerKey = @"hasVerticalScroller";
 static NSString *SKMainWindowAutoHidesScrollersKey = @"autoHidesScrollers";
 static NSString *SKMainWindowPageIndexKey = @"pageIndex";
+
+static NSString *SKMainWindowPageLabelKey = @"pageLabel";
+static NSString *SKMainWindowPageLabelsKey = @"pageLabels";
+static NSString *SKMainWindowPageNumberKey = @"pageNumber";
+static NSString *SKMainWindowSearchResultsKey = @"searchResults";
+static NSString *SKMainWindowGroupedSearchResultsKey = @"groupedSearchResults";
+static NSString *SKMainWindowNotesKey = @"notes";
+static NSString *SKMainWindowThumbnailsKey = @"thumbnails";
+static NSString *SKMainWindowSnapshotsKey = @"snapshots";
+
+static NSString *SKMainWindowPageColumnIdentifer = @"page";
+static NSString *SKMainWindowLabelColumnIdentifer = @"label";
+static NSString *SKMainWindowNoteColumnIdentifer = @"note";
+static NSString *SKMainWindowTypeColumnIdentifer = @"type";
+static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
+static NSString *SKMainWindowResultsColumnIdentifer = @"results";
+
+static NSString *SKSearchResultCountKey = @"count";
+static NSString *SKSearchResultPageKey = @"page";
+static NSString *SKSearchResultResultsKey = @"results";
+static NSString *SKSearchResultMaxCountKey = @"maxCount";
 
 static float segmentedControlHeight = 23.0;
 static float segmentedControlOffset = 1.0;
@@ -242,7 +265,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [self stopObservingNotes:[self notes]];
     [undoGroupOldPropertiesPerNote release];
     [undoGroupInsertedNotes release];
-    [colorSwatch unbind:@"color"];
+    [colorSwatch unbind:SKColorSwatchColorsKey];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [(id)temporaryAnnotations release];
@@ -420,15 +443,15 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [self resetSnapshotSizeIfNeeded];
     
     // this needs to be done before loading the PDFDocument
-    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
+    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease];
     [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
     
-    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"count" ascending:NO] autorelease];
+    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKSearchResultCountKey ascending:NO] autorelease];
     [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
-    [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] dataCell] setEnabled:NO];
+    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] dataCell] setEnabled:NO];
         
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
@@ -802,7 +825,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 }
 
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
-    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:@"page"];
+    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer];
     id cell = [tableColumn dataCell];
     float labelWidth = 0.0;
     NSEnumerator *labelEnum = [pageLabels objectEnumerator];
@@ -823,8 +846,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     int i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
-    [self willChangeValueForKey:@"pageLabel"];
-    [self willChangeValueForKey:@"pageLabels"];
+    [self willChangeValueForKey:SKMainWindowPageLabelKey];
+    [self willChangeValueForKey:SKMainWindowPageLabelsKey];
     [pageLabels removeAllObjects];
     for (i = 0; i < count; i++) {
         NSString *label = [[pdfDoc pageAtIndex:i] label];
@@ -832,8 +855,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
             label = [NSString stringWithFormat:@"%i", i+1];
         [pageLabels addObject:label];
     }
-    [self didChangeValueForKey:@"pageLabels"];
-    [self didChangeValueForKey:@"pageLabel"];
+    [self didChangeValueForKey:SKMainWindowPageLabelsKey];
+    [self didChangeValueForKey:SKMainWindowPageLabelKey];
     
     [self updatePageColumnWidthForTableView:thumbnailTableView];
     [self updatePageColumnWidthForTableView:snapshotTableView];
@@ -904,14 +927,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
             [pdfView setActiveAnnotation:nil];
             
             // these will be invalid. If needed, the document will restore them
-            [[self mutableArrayValueForKey:@"searchResults"] removeAllObjects];
-            [[self mutableArrayValueForKey:@"groupedSearchResults"] removeAllObjects];
-            [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-            [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
+            [[self mutableArrayValueForKey:SKMainWindowSearchResultsKey] removeAllObjects];
+            [[self mutableArrayValueForKey:SKMainWindowGroupedSearchResultsKey] removeAllObjects];
+            [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeAllObjects];
+            [[self mutableArrayValueForKey:SKMainWindowThumbnailsKey] removeAllObjects];
             
-            snapshotDicts = [snapshots valueForKey:@"currentSetup"];
+            snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
-            [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
+            [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeAllObjects];
             
             [pdfOutline release];
             pdfOutline = nil;
@@ -957,11 +980,11 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     PDFAnnotation *annotation;
     NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
-    NSMutableArray *observedNotes = [self mutableArrayValueForKey:@"notes"];
+    NSMutableArray *observedNotes = [self mutableArrayValueForKey:SKMainWindowNotesKey];
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
+        unsigned pageIndex = [[dict objectForKey:SKPDFAnnotationPageIndexKey] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
@@ -1005,7 +1028,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     }
     
     if (undoable == NO)
-        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeAllObjects];
     
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
@@ -2822,9 +2845,9 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     if (findPanelFind == NO) {
         NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
         [findArrayController removeObjects:searchResults];
-        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:message];
+        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] headerCell] setStringValue:message];
+        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
         [[groupedFindTableView headerView] setNeedsDisplay:YES];
         [groupedFindArrayController removeObjects:groupedSearchResults];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
@@ -2837,13 +2860,13 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
-        [self willChangeValueForKey:@"searchResults"];
-        [self didChangeValueForKey:@"searchResults"];
-        [self willChangeValueForKey:@"groupedSearchResults"];
-        [self didChangeValueForKey:@"groupedSearchResults"];
-        [[[findTableView tableColumnWithIdentifier:@"results"] headerCell] setStringValue:message];
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:@"relevance"] headerCell] setStringValue:message];
+        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
         [[groupedFindTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
@@ -2854,10 +2877,10 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
     [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
     if ([pageIndex unsignedIntValue] % 50 == 0) {
-        [self willChangeValueForKey:@"searchResults"];
-        [self didChangeValueForKey:@"searchResults"];
-        [self willChangeValueForKey:@"groupedSearchResults"];
-        [self didChangeValueForKey:@"groupedSearchResults"];
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
     }
 }
 
@@ -2867,20 +2890,20 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
         NSMutableDictionary *dict = [groupedSearchResults lastObject];
-        NSNumber *maxCount = [dict valueForKey:@"maxCount"];
-        if ([[dict valueForKey:@"page"] isEqual:page] == NO) {
-            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"page", [NSMutableArray array], @"results", maxCount, @"maxCount", nil];
+        NSNumber *maxCount = [dict valueForKey:SKSearchResultMaxCountKey];
+        if ([[dict valueForKey:SKSearchResultPageKey] isEqual:page] == NO) {
+            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKSearchResultPageKey, [NSMutableArray array], SKSearchResultResultsKey, maxCount, SKSearchResultMaxCountKey, nil];
             [groupedSearchResults addObject:dict];
         }
-        NSMutableArray *results = [dict valueForKey:@"results"];
+        NSMutableArray *results = [dict valueForKey:SKSearchResultResultsKey];
         [results addObject:instance];
-        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:@"count"];
+        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:SKSearchResultCountKey];
         
         if ([results count] > [maxCount unsignedIntValue]) {
             NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
             maxCount = [NSNumber numberWithUnsignedInt:[results count]];
             while (dict = [dictEnum nextObject])
-                [dict setValue:maxCount forKey:@"maxCount"];
+                [dict setValue:maxCount forKey:SKSearchResultMaxCountKey];
         }
     }
 }
@@ -3174,11 +3197,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
     
     [controller setThumbnail:image];
-    [[self mutableArrayValueForKey:@"snapshots"] addObject:controller];
+    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] addObject:controller];
 }
 
 - (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller {
-    [[self mutableArrayValueForKey:@"snapshots"] removeObject:controller];
+    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObject:controller];
 }
 
 - (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller {
@@ -3304,10 +3327,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [thumbnailTableView setNeedsDisplay:YES];
     [outlineView setNeedsDisplay:YES];
     
-    [self willChangeValueForKey:@"pageNumber"];
-    [self willChangeValueForKey:@"pageLabel"];
-    [self didChangeValueForKey:@"pageLabel"];
-    [self didChangeValueForKey:@"pageNumber"];
+    [self willChangeValueForKey:SKMainWindowPageNumberKey];
+    [self willChangeValueForKey:SKMainWindowPageLabelKey];
+    [self didChangeValueForKey:SKMainWindowPageLabelKey];
+    [self didChangeValueForKey:SKMainWindowPageNumberKey];
     
     [previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
     [previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];
@@ -3416,7 +3439,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (annotation) {
         updatingNoteSelection = YES;
-        [[self mutableArrayValueForKey:@"notes"] addObject:annotation];
+        [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:annotation];
         [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
         updatingNoteSelection = NO;
     }
@@ -3450,7 +3473,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 break;
             }
         }
-        [[self mutableArrayValueForKey:@"notes"] removeObject:annotation];
+        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:annotation];
         [noteArrayController rearrangeObjects];
     }
     if (page) {
@@ -3842,9 +3865,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
-        if([tcID isEqualToString:@"label"]){
+        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer]){
             return [(PDFOutline *)item label];
-        }else if([tcID isEqualToString:@"page"]){
+        }else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]){
             return [[[(PDFOutline *)item destination] page] label];
         }else{
             [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
@@ -3852,11 +3875,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        if ([tcID isEqualToString:@"note"]) {
+        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer]) {
             return [item type] ? (id)[item string] : (id)[item text];
-        } else if([tcID isEqualToString:@"type"]) {
-            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], @"active", [item type], @"type", nil];
-        } else if([tcID isEqualToString:@"page"]) {
+        } else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
+            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
+        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
             return [[item page] label];
         }
     }
@@ -3865,7 +3888,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:@"note"]) {
+        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifer]) {
             if ([item type] && [object isEqualToString:[item string]] == NO)
                 [item setString:object];
         }
@@ -3874,7 +3897,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:@"note"]) {
+        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifer]) {
             if ([item type] == nil) {
                 if ([pdfView hideNotes] == NO) {
                     PDFAnnotation *annotation = [(SKNoteText *)item annotation];
@@ -3901,14 +3924,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             ascending = [[sortDescriptors lastObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
-            NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
-            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+            NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:ascending] autorelease];
+            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:@"type"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"string" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:@"page"]) {
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
             }
