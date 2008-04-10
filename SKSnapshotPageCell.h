@@ -1,10 +1,10 @@
 //
-//  SKThumbnailTableView.h
+//  SKSnapshotPageCell.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 4/10/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,26 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKTableView.h"
+
+extern NSString *SKSnapshotPageCellLabelKey;
+extern NSString *SKSnapshotPageCellHasWindowKey;
 
 
-@class SKTypeSelectHelper;
-
-@interface SKThumbnailTableView : SKTableView
-{
-    BOOL isScrolling;
+@interface SKSnapshotPageCell : NSTextFieldCell {
+    BOOL hasWindow;
 }
-
-- (BOOL)isScrolling;
-
-@end
-
-
-@interface SKSnapshotTableView : SKThumbnailTableView
-@end
-
-
-@interface NSObject (SKThumbnailTableViewDelegate)
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
-- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(int)rowIndex;
 @end

@@ -49,15 +49,19 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
-
-#define PAGE_KEY                    @"page"
-#define RECT_KEY                    @"rect"
-#define SCALE_FACTOR_KEY            @"scaleFactor"
-#define AUTO_FITS_KEY               @"autoFits"
-#define HAS_WINDOW_KEY              @"hasWindow"
-#define WINDOW_FRAME_KEY            @"windowFrame"
+#import "SKSnapshotPageCell.h"
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
+
+static NSString *SKSnapshotPageKey = @"page";
+static NSString *SKSnapshotRectKey = @"rect";
+static NSString *SKSnapshotScaleFactorKey = @"scaleFactor";
+static NSString *SKSnapshotAutoFitsKey = @"autoFits";
+static NSString *SKSnapshotHasWindowKey = @"hasWindow";
+static NSString *SKSnapshotWindowFrameKey = @"windowFrame";
+
+static NSString *SKSnapshotWindowPageIndexKey = @"pageIndex";
+static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -118,16 +122,16 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    [self willChangeValueForKey:@"pageIndex"];
-    [self didChangeValueForKey:@"pageIndex"];
-    [self willChangeValueForKey:@"pageAndWindow"];
-    [self didChangeValueForKey:@"pageAndWindow"];
+    [self willChangeValueForKey:SKSnapshotWindowPageIndexKey];
+    [self didChangeValueForKey:SKSnapshotWindowPageIndexKey];
+    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    [self willChangeValueForKey:@"pageAndWindow"];
-    [self didChangeValueForKey:@"pageAndWindow"];
+    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
@@ -236,14 +240,14 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
     [self setPdfDocument:pdfDocument
-             scaleFactor:[[setup objectForKey:SCALE_FACTOR_KEY] floatValue]
-          goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue]
-                    rect:NSRectFromString([setup objectForKey:RECT_KEY])
-                autoFits:[[setup objectForKey:AUTO_FITS_KEY] boolValue]];
+             scaleFactor:[[setup objectForKey:SKSnapshotScaleFactorKey] floatValue]
+          goToPageNumber:[[setup objectForKey:SKSnapshotPageKey] unsignedIntValue]
+                    rect:NSRectFromString([setup objectForKey:SKSnapshotRectKey])
+                autoFits:[[setup objectForKey:SKSnapshotAutoFitsKey] boolValue]];
     
-    if ([setup objectForKey:WINDOW_FRAME_KEY])
-        [[self window] setFrame:NSRectFromString([setup objectForKey:WINDOW_FRAME_KEY]) display:NO];
-    if ([[setup objectForKey:HAS_WINDOW_KEY] boolValue])
+    if ([setup objectForKey:SKSnapshotWindowFrameKey])
+        [[self window] setFrame:NSRectFromString([setup objectForKey:SKSnapshotWindowFrameKey]) display:NO];
+    if ([[setup objectForKey:SKSnapshotHasWindowKey] boolValue])
         [self performSelector:@selector(showWindow:) withObject:self afterDelay:0.0];
 }
 
@@ -293,7 +297,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (NSDictionary *)pageAndWindow {
     NSString *label = [[pdfView currentPage] label];
     NSNumber *hasWindow = [NSNumber numberWithBool:[[self window] isVisible]];
-    return [NSDictionary dictionaryWithObjectsAndKeys:label ? label : @"", @"label", hasWindow, @"hasWindow", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:label ? label : @"", SKSnapshotPageCellLabelKey, hasWindow, SKSnapshotPageCellHasWindowKey, nil];
 }
 
 - (BOOL)forceOnTop {
@@ -311,7 +315,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(BDSKZoomablePDFView *)pdfView autoFits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALE_FACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTO_FITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HAS_WINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOW_FRAME_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], SKSnapshotPageKey, NSStringFromRect(rect), SKSnapshotRectKey, [NSNumber numberWithFloat:[pdfView scaleFactor]], SKSnapshotScaleFactorKey, [NSNumber numberWithBool:autoFits], SKSnapshotAutoFitsKey, [NSNumber numberWithBool:[[self window] isVisible]], SKSnapshotHasWindowKey, NSStringFromRect([[self window] frame]), SKSnapshotWindowFrameKey, nil];
 }
 
 #pragma mark Actions
@@ -499,8 +503,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self window] orderOut:self];
     }
     miniaturizing = NO;
-    [self willChangeValueForKey:@"pageAndWindow"];
-    [self didChangeValueForKey:@"pageAndWindow"];
+    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
 }
 
 - (void)deminiaturize {
@@ -520,8 +524,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     } else {
         [self showWindow:self];
     }
-    [self willChangeValueForKey:@"pageAndWindow"];
-    [self didChangeValueForKey:@"pageAndWindow"];
+    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
 }
 
 #pragma mark KVO
