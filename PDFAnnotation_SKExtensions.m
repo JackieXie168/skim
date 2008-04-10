@@ -80,6 +80,7 @@ int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle) {
 
 NSString *SKPDFAnnotationTypeKey = @"type";
 NSString *SKPDFAnnotationBoundsKey = @"bounds";
+NSString *SKPDFAnnotationPageKey = @"page";
 NSString *SKPDFAnnotationPageIndexKey = @"pageIndex";
 NSString *SKPDFAnnotationContentsKey = @"contents";
 NSString *SKPDFAnnotationStringKey = @"string";

@@ -43,6 +43,20 @@
 
 static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 
+static NSString *SKInfoVersionKey = @"Version";
+static NSString *SKInfoPageCountKey = @"PageCount";
+static NSString *SKInfoPageSizeKey = @"PageSize";
+static NSString *SKInfoPageWidthKey = @"PageWidth";
+static NSString *SKInfoPageHeightKey = @"PageHeight";
+static NSString *SKInfoKeywordsStringKey = @"KeywordsString";
+static NSString *SKInfoEncryptedKey = @"Encrypted";
+static NSString *SKInfoAllowsPrintingKey = @"AllowsPrinting";
+static NSString *SKInfoAllowsCopyingKey = @"AllowsCopying";
+static NSString *SKInfoFileNameKey = @"FileName";
+static NSString *SKInfoFileSizeKey = @"FileSize";
+static NSString *SKInfoPhysicalSizeKey = @"PhysicalSize";
+static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
+
 @implementation SKInfoWindowController
 
 + (void)initialize {
@@ -190,24 +204,24 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     
     if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKDocument *)doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
-        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
+        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:SKInfoVersionKey];
+        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];
         if ([pdfDoc pageCount]) {
             NSSize cropSize = [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size;
             NSSize mediaSize = [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size;
-            [dictionary setValue:SKSizeString(cropSize, mediaSize) forKey:@"PageSize"];
-            [dictionary setValue:[NSNumber numberWithFloat:cropSize.width] forKey:@"PageWidth"];
-            [dictionary setValue:[NSNumber numberWithFloat:cropSize.height] forKey:@"PageHeight"];
+            [dictionary setValue:SKSizeString(cropSize, mediaSize) forKey:SKInfoPageSizeKey];
+            [dictionary setValue:[NSNumber numberWithFloat:cropSize.width] forKey:SKInfoPageWidthKey];
+            [dictionary setValue:[NSNumber numberWithFloat:cropSize.height] forKey:SKInfoPageHeightKey];
         }
-        [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:@"KeywordsString"];
-        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
-        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:@"AllowsPrinting"];
-        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:@"AllowsCopying"];
+        [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:SKInfoKeywordsStringKey];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:SKInfoAllowsPrintingKey];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:SKInfoAllowsCopyingKey];
     }
-    [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
-    [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
-    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
-    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
+    [dictionary setValue:[[doc fileName] lastPathComponent] forKey:SKInfoFileNameKey];
+    [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];
+    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:SKInfoPhysicalSizeKey];
+    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:SKInfoLogicalSizeKey];
     
     return dictionary;
 }

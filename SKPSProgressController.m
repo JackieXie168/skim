@@ -41,6 +41,12 @@
 #import "NSTask_SKExtensions.h"
 #import "Files_SKExtensions.h"
 
+static NSString *SKPSProgressProviderKey = @"provider";
+static NSString *SKPSProgressConsumerKey = @"consumer";
+static NSString *SKPSProgressDviFileKey = @"dviFile";
+static NSString *SKPSProgressPdfDataKey = @"pdfData";
+static NSString *SKPSProgressDviToolPathKey = @"dviToolPath";
+
 static NSString *SKDviConversionCommandKey = @"SKDviConversionCommand";
 
 enum {
@@ -222,7 +228,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     CFMutableDataRef pdfData = CFDataCreateMutable(CFGetAllocator((CFDataRef)psData), 0);
     CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKPSProgressProviderKey, (id)consumer, SKPSProgressConsumerKey, nil];
     
     int rv = [self runModalConversionWithInfo:dictionary];
     
@@ -246,8 +252,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    CGDataProviderRef provider = (void *)[info objectForKey:@"provider"];
-    CGDataConsumerRef consumer = (void *)[info objectForKey:@"consumer"];
+    CGDataProviderRef provider = (void *)[info objectForKey:SKPSProgressProviderKey];
+    CGDataConsumerRef consumer = (void *)[info objectForKey:SKPSProgressConsumerKey];
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
     
     [self stopModalOnMainThread:success];
@@ -323,7 +329,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     if (dviToolPath) {
         pdfData = [[NSMutableData alloc] init];
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", dviToolPath, @"dviToolPath", nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, SKPSProgressDviFileKey, pdfData, SKPSProgressPdfDataKey, dviToolPath, SKPSProgressDviToolPathKey, nil];
         
         int rv = [self runModalConversionWithInfo:dictionary];
         
@@ -346,8 +352,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *dviFile = [info objectForKey:@"dviFile"];
-    NSString *commandPath = [info objectForKey:@"dviToolPath"];
+    NSString *dviFile = [info objectForKey:SKPSProgressDviFileKey];
+    NSString *commandPath = [info objectForKey:SKPSProgressDviToolPathKey];
     NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
@@ -379,7 +385,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     task = nil;
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
-    NSMutableData *pdfData = [info objectForKey:@"pdfData"];
+    NSMutableData *pdfData = [info objectForKey:SKPSProgressPdfDataKey];
     
     if (outputPS && success) {
         NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
@@ -391,7 +397,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)outData);
         CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKPSProgressProviderKey, (id)consumer, SKPSProgressConsumerKey, nil];
         
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&convertingPS);
         

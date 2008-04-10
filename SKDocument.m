@@ -69,6 +69,7 @@
 #import "SKBookmarkController.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKSnapshotWindowController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -192,7 +193,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     unsigned int pageIndex = [[[self pdfView] currentPage] pageIndex];
     NSString *path = [[self fileURL] path];
     if (pageIndex != NSNotFound && path)
-        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:@"currentSetup"]];
+        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
 - (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
@@ -254,7 +255,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         [self stopCheckingFileUpdates];
         isSaving = YES;
     } else if (exportUsingPanel) {
-        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:@"SKLastExportedType"];
+        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
     BOOL success = NO;

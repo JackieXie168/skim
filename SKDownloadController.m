@@ -47,6 +47,13 @@
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
+static NSString *SKDownloadsWindowProgressColumnIdentifier = @"progress";
+static NSString *SKDownloadsWindowIconColumnIdentifier = @"icon";
+static NSString *SKDownloadsWindowCancelColumnIdentifier = @"cancel";
+static NSString *SKDownloadsWindowResumeColumnIdentifier = @"resume";
+
+static NSString *SKDownloadFileNameKey = @"fileName";
+
 @implementation SKDownloadController
 
 + (id)sharedDownloadController {
@@ -278,9 +285,9 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
     NSString *identifier = [tableColumn identifier];
     SKDownload *download = [downloads objectAtIndex:row];
     
-    if ([identifier isEqualToString:@"progress"]) {
+    if ([identifier isEqualToString:SKDownloadsWindowProgressColumnIdentifier]) {
         return [download fileName];
-    } else if ([identifier isEqualToString:@"icon"]) {
+    } else if ([identifier isEqualToString:SKDownloadsWindowIconColumnIdentifier]) {
         return [download fileIcon];
     }
     return nil;
@@ -317,12 +324,12 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
     NSString *identifier = [tableColumn identifier];
     SKDownload *download = [downloads objectAtIndex:row];
     
-    if ([identifier isEqualToString:@"progress"]) {
+    if ([identifier isEqualToString:SKDownloadsWindowProgressColumnIdentifier]) {
         if ([cell respondsToSelector:@selector(setProgressIndicator:)])
             [(SKProgressCell *)cell setProgressIndicator:[download progressIndicator]];
         if ([cell respondsToSelector:@selector(setStatus:)])
             [(SKProgressCell *)cell setStatus:[download status]];
-    } else if ([identifier isEqualToString:@"cancel"]) {
+    } else if ([identifier isEqualToString:SKDownloadsWindowCancelColumnIdentifier]) {
         if ([download canCancel]) {
             [cell setImage:[NSImage imageNamed:@"Cancel"]];
             [cell setAction:@selector(cancelDownload:)];
@@ -332,7 +339,7 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
             [cell setAction:@selector(removeDownload:)];
             [cell setTarget:self];
         }
-    } else if ([identifier isEqualToString:@"resume"]) {
+    } else if ([identifier isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
         if ([download canResume]) {
             [cell setImage:[NSImage imageNamed:@"Resume"]];
             [cell setAction:@selector(resumeDownload:)];
@@ -347,12 +354,12 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation {
     NSString *toolTip = nil;
-    if ([[tableColumn identifier] isEqualToString:@"cancel"]) {
+    if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowCancelColumnIdentifier]) {
         if ([[downloads objectAtIndex:row] canCancel])
             toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");
         else
             toolTip = NSLocalizedString(@"Remove download", @"Tool tip message");
-    } else if ([[tableColumn identifier] isEqualToString:@"resume"]) {
+    } else if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
         if ([[downloads objectAtIndex:row] canResume])
             toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
     }
@@ -418,7 +425,7 @@ static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    return [downloads valueForKey:@"fileName"];
+    return [downloads valueForKey:SKDownloadFileNameKey];
 }
 
 - (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {

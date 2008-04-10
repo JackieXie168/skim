@@ -58,6 +58,12 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 static NSString *SKNotesDocumentRowHeightKey = @"rowHeight";
 static NSString *SKNotesDocumentChildKey = @"child";
 
+static NSString *SKNotesDocumentNotesKey = @"notes";
+
+static NSString *SKNotesDocumentNoteColumnIdentifier = @"note";
+static NSString *SKNotesDocumentTypeColumnIdentifier = @"type";
+static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
+
 @implementation SKNotesDocument
 
 - (id)init {
@@ -155,7 +161,7 @@ static NSString *SKNotesDocumentChildKey = @"child";
             [newNotes addObject:note];
             [note release];
         }
-        [[self mutableArrayValueForKey:@"notes"] setArray:newNotes];
+        [[self mutableArrayValueForKey:SKNotesDocumentNotesKey] setArray:newNotes];
         [outlineView reloadData];
         didRead = YES;
     }
@@ -240,7 +246,7 @@ static NSString *SKNotesDocumentChildKey = @"child";
 
 - (void)autoSizeNoteRows:(id)sender {
     float rowHeight = [outlineView rowHeight];
-    NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"note"];
+    NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:SKNotesDocumentNoteColumnIdentifier];
     id cell = [tableColumn dataCell];
     float indentation = [outlineView indentationPerLevel];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
@@ -324,11 +330,11 @@ static NSString *SKNotesDocumentChildKey = @"child";
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:@"note"]) {
+    if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
         return [item valueForKey:SKPDFAnnotationTypeKey] ? [item valueForKey:SKPDFAnnotationStringKey] : [item valueForKey:SKPDFAnnotationTextKey];
-    } else if([tcID isEqualToString:@"type"]) {
+    } else if([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:SKPDFAnnotationTypeKey], SKPDFAnnotationTypeKey, nil];
-    } else if ([tcID isEqualToString:@"page"]) {
+    } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
         NSNumber *pageNumber = [item valueForKey:SKPDFAnnotationPageIndexKey];
         return pageNumber ? [NSString stringWithFormat:@"%i", [pageNumber intValue] + 1] : nil;
     }
@@ -347,11 +353,11 @@ static NSString *SKNotesDocumentChildKey = @"child";
         NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:ascending] autorelease];
         NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
         NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
-        if ([tcID isEqualToString:@"type"]) {
+        if ([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
-        } else if ([tcID isEqualToString:@"note"]) {
+        } else if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-        } else if ([tcID isEqualToString:@"page"]) {
+        } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
             if (oldTableColumn == nil)
                 ascending = NO;
         }

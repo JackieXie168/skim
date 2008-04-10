@@ -44,13 +44,16 @@
 #import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
-#define INITIAL_USER_DEFAULTS_FILENAME  @"InitialUserDefaults"
-#define RESETTABLE_KEYS_KEY             @"ResettableKeys"
+static NSString *SKPreferenceInitialUserDefaultsFileName = @"InitialUserDefaults";
+static NSString *SKPreferenceResettableKeysKey = @"ResettableKeys";
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
+
+static NSString *SKPreferenceFontNameKey = @"fontName";
+static NSString *SKPreferenceDisplayNameKey = @"displayName";
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
@@ -65,8 +68,8 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
 - (id)init {
     if (self = [super init]) {
-        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIAL_USER_DEFAULTS_FILENAME ofType:@"plist"];
-        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLE_KEYS_KEY] retain];
+        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
+        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
         
         NSMutableArray *tmpFonts = [NSMutableArray array];
         NSMutableArray *fontNames = [[[[NSFontManager sharedFontManager] availableFontFamilies] mutableCopy] autorelease];
@@ -77,7 +80,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
         fontEnum = [fontNames objectEnumerator];
         while (fontName = [fontEnum nextObject]) {
             NSFont *font = [NSFont fontWithName:fontName size:0.0];
-            [tmpFonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], @"fontName", [font displayName], @"displayName", nil]];
+            [tmpFonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], SKPreferenceFontNameKey, [font displayName], SKPreferenceDisplayNameKey, nil]];
         }
         fonts = [tmpFonts copy];
         
@@ -131,26 +134,26 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     
     [self updateRevertButtons];
     
-    [textLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
-    [textLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
-    [textLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
+    [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
+    [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
+    [textLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
     [textLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
-    [circleLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
-    [circleLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
-    [circleLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
+    [circleLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
+    [circleLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
+    [circleLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
     [circleLineWell setDisplayStyle:SKLineWellDisplayStyleOval];
     
-    [boxLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
-    [boxLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
-    [boxLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
+    [boxLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
+    [boxLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
+    [boxLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
     [boxLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
-    [lineLineWell bind:@"lineWidth" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
-    [lineLineWell bind:@"style" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];
-    [lineLineWell bind:@"dashPattern" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
-    [lineLineWell bind:@"startLineStyle" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
-    [lineLineWell bind:@"endLineStyle" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
+    [lineLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
+    [lineLineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
