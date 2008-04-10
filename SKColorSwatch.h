@@ -40,6 +40,8 @@
 
 extern NSString *SKColorSwatchColorsChangedNotification;
 
+extern NSString *SKColorSwatchColorsKey;
+
 @interface SKColorSwatch : NSControl {
     NSMutableArray *colors;
     int highlightedIndex;
