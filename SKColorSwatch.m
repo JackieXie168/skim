@@ -94,6 +94,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         }
         
         highlightedIndex = -1;
+        insertionIndex = -1;
         focusedIndex = 0;
         clickedIndex = -1;
         draggedIndex = -1;
