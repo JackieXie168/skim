@@ -48,7 +48,12 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallBacks.h"
 
-NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
+NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
+
+NSString *SKPDFPagePageKey = @"page";
+NSString *SKPDFPageActionKey = @"action";
+NSString *SKPDFPageActionCrop = @"crop";
+NSString *SKPDFPageActionRotate = @"rotate";
 
 static NSString *SKAutoCropBoxMarginWidthKey = @"SKAutoCropBoxMarginWidth";
 static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
@@ -358,7 +363,7 @@ static IMP originalDealloc = NULL;
         
         [self setRotation:angle];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
                 object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", self, @"page", nil]];
     }
 }
@@ -384,7 +389,7 @@ static IMP originalDealloc = NULL;
             newBounds.size.height = 0.0;
         [self setBounds:newBounds forBox:kPDFDisplayBoxCropBox];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
                 object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
     }
 }
@@ -410,7 +415,7 @@ static IMP originalDealloc = NULL;
             newBounds.size.height = 0.0;
         [self setBounds:newBounds forBox:kPDFDisplayBoxMediaBox];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
                 object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
     }
 }

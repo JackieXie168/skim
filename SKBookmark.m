@@ -49,6 +49,8 @@ static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
 static NSString *SKBookmarkTypeFolderString = @"folder";
 static NSString *SKBookmarkTypeSeparatorString = @"separator";
 
+static NSString *SKBookmarkPropertiesKey = @"properties";
+
 static NSString *SKBookmarkChildrenKey = @"children";
 static NSString *SKBookmarkLabelKey = @"label";
 static NSString *SKBookmarkPageIndexKey = @"pageIndex";
@@ -337,7 +339,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSDictionary *)properties {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, SKBookmarkTypeKey, [children valueForKey:@"properties"], SKBookmarkChildrenKey, label, SKBookmarkLabelKey, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeFolderString, SKBookmarkTypeKey, [children valueForKey:SKBookmarkPropertiesKey], SKBookmarkChildrenKey, label, SKBookmarkLabelKey, nil];
 }
 
 - (int)bookmarkType {
