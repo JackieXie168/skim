@@ -1584,7 +1584,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
             if ([pboardType isEqualToString:NSColorPboardType]) {
-                if ((GetCurrentKeyModifiers() & optionKey) && [[highlightAnnotation type] respondsToSelector:@selector(setInteriorColor:)])
+                if ((GetCurrentKeyModifiers() & optionKey) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
                     [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
                 else
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
