@@ -1548,7 +1548,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                         highlightAnnotation = annotation;
                         [self setNeedsDisplayForAnnotation:highlightAnnotation];
                     }
-                    dragOp = NSDragOperationEvery;
+                    dragOp = NSDragOperationGeneric;
                     break;
                 }
             }

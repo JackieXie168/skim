@@ -422,7 +422,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 }
 
 - (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    if (operation == NSDragOperationDelete) {
+    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
         if (draggedIndex != -1 && [self isEnabled]) {
             [self willChangeValueForKey:SKColorSwatchColorsKey];
             [colors removeObjectAtIndex:draggedIndex];
