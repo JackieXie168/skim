@@ -120,6 +120,7 @@ static NSString *SKMainWindowPageColumnIdentifer = @"page";
 static NSString *SKMainWindowLabelColumnIdentifer = @"label";
 static NSString *SKMainWindowNoteColumnIdentifer = @"note";
 static NSString *SKMainWindowTypeColumnIdentifer = @"type";
+static NSString *SKMainWindowImageColumnIdentifer = @"image";
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
 
@@ -4042,7 +4043,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSMutableArray *types = [NSMutableArray array];
         NSData *noteData = nil;
-        NSMutableAttributedString *attrString = [[items valueForKey:@"type"] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
+        NSMutableAttributedString *attrString = [[items valueForKey:SKPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
         NSMutableString *string = [NSMutableString string];
         NSEnumerator *itemEnum;
         id item;
@@ -4293,7 +4294,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:@"image"] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
@@ -4303,7 +4304,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             return fmaxf(1.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:@"image"] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
                                      fminf(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
@@ -4319,7 +4320,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([tv isEqual:snapshotTableView]) {
         NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
         [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
-        [[self mutableArrayValueForKey:@"snapshots"] removeObjectsInArray:controllers];
+        [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObjectsInArray:controllers];
     }
 }
 
@@ -4373,7 +4374,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
         [self showHoverWindowForDestination:dest];
     } else if ([tv isEqual:groupedFindTableView]) {
-        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:@"results"] objectAtIndex:0] destination];
+        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:SKSearchResultResultsKey] objectAtIndex:0] destination];
         [self showHoverWindowForDestination:dest];
     }
 }
@@ -4399,7 +4400,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)deleteSnapshot:(id)sender {
     SKSnapshotWindowController *controller = [sender representedObject];
     [[controller window] orderOut:self];
-    [[self mutableArrayValueForKey:@"snapshots"] removeObject:controller];
+    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObject:controller];
 }
 
 - (void)showSnapshot:(id)sender {
@@ -4578,7 +4579,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)resetThumbnails {
     unsigned i, count = [pageLabels count];
-    [self willChangeValueForKey:@"thumbnails"];
+    [self willChangeValueForKey:SKMainWindowThumbnailsKey];
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
@@ -4600,7 +4601,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [thumbnail release];
         }
     }
-    [self didChangeValueForKey:@"thumbnails"];
+    [self didChangeValueForKey:SKMainWindowThumbnailsKey];
     [self allThumbnailsNeedUpdate];
 }
 
