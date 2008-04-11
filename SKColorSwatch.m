@@ -203,6 +203,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
                 {
                     if ([self isEnabled]) {
                         highlightedIndex = -1;
+                        insertionIndex = -1;
                         [self setNeedsDisplay:YES];
                     }
                     
@@ -233,6 +234,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
                 case NSLeftMouseUp:
                     if ([self isEnabled]) {
                         highlightedIndex = -1;
+                        insertionIndex = -1;
                         clickedIndex = i;
                         [self setNeedsDisplay:YES];
                         [self sendAction:[self action] to:[self target]];
@@ -249,6 +251,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 
 - (void)unhighlight {
     highlightedIndex = -1;
+    insertionIndex = -1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
