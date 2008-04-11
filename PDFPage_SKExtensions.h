@@ -40,7 +40,12 @@
 #import <Quartz/Quartz.h>
 #import "NSValue_SKExtensions.h"
 
-extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
+extern NSString *SKPDFPageBoundsDidChangeNotification;
+
+extern NSString *SKPDFPagePageKey;
+extern NSString *SKPDFPageActionKey;
+extern NSString *SKPDFPageActionCrop;
+extern NSString *SKPDFPageActionRotate;
 
 @class SKDocument;
 

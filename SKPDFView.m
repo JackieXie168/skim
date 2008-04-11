@@ -82,6 +82,11 @@ NSString *SKPDFViewDisplayModeChangedNotification = @"SKPDFViewDisplayModeChange
 NSString *SKPDFViewDisplayAsBookChangedNotification = @"SKPDFViewDisplayAsBookChangedNotification";
 NSString *SKPDFViewDisplayBoxChangedNotification = @"SKPDFViewDisplayBoxChangedNotification";
 
+NSString *SKPDFViewAnnotationKey = @"annotation";
+NSString *SKPDFViewPageKey = @"page";
+NSString *SKPDFViewOldPageKey = @"oldPage";
+NSString *SKPDFViewNewPageKey = @"newPage";
+
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 static NSString *SKSmallMagnificationWidthKey = @"SKSmallMagnificationWidth";
@@ -612,7 +617,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)toggleReadingBar {
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
     if (readingBar) {
         [readingBar release];
         readingBar = nil;
@@ -623,7 +628,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [readingBar goToNextLine];
         [self setNeedsDisplay:YES];
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
-        [userInfo setValue:[readingBar page] forKey:@"newPage"];
+        [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
 }
@@ -1820,7 +1825,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [newAnnotation release];
         if (annotationType == SKAnchoredNote)
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
     } else NSBeep();
 }
 
@@ -1831,7 +1836,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [self resetHoverRects];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
 }
 
 - (void)removeActiveAnnotation:(id)sender{
@@ -1867,7 +1872,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (wasNote)
         [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
     [wasAnnotation release];
 }
 
@@ -1883,7 +1888,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setNeedsDisplayForAnnotation:annotation];
     if ([[annotation type] isEqualToString:SKNoteString])
         [self resetHoverRects];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, @"oldPage", page, @"newPage", annotation, @"annotation", nil]];                
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
 }
 
 - (void)editThisAnnotation:(id)sender {
@@ -1921,7 +1926,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
         
     } else if ([type isEqualToString:SKFreeTextString]) {
         
@@ -2224,7 +2229,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if (readingBar) {
                 [self setNeedsDisplay:YES];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
-                    object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", [readingBar page], @"newPage", nil]];
+                    object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
             }
         }
     } else {
@@ -2667,7 +2672,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {
     BOOL moved = NO;
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
     if (eventChar == NSDownArrowFunctionKey)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
@@ -2685,7 +2690,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         }
         [self scrollRect:rect inPageToVisible:[readingBar page]];
         [self setNeedsDisplay:YES];
-        [userInfo setObject:[readingBar page] forKey:@"newPage"];
+        [userInfo setObject:[readingBar page] forKey:SKPDFViewNewPageKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
 }
@@ -2701,7 +2706,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [readingBar setNumberOfLines:numberOfLines];
         [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", [readingBar page], @"newPage", nil]];
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
     }
 }
 
@@ -3314,7 +3319,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     NSArray *lineBounds = [page lineBounds];
-	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", nil];
+	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     
     NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
@@ -3372,12 +3377,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         currentLine = MAX(0, currentLine);
         
         if ([page isEqual:[readingBar page]] == NO || currentLine != [readingBar currentLine]) {
-            [userInfo setObject:[readingBar page] forKey:@"oldPage"];
+            [userInfo setObject:[readingBar page] forKey:SKPDFViewOldPageKey];
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [readingBar setPage:currentPage];
             [readingBar setCurrentLine:currentLine];
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
-            [userInfo setObject:[readingBar page] forKey:@"newPage"];
+            [userInfo setObject:[readingBar page] forKey:SKPDFViewNewPageKey];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             lastMouseLoc = mouseLocInDocument;
         }
@@ -3392,7 +3397,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     PDFPage *page = [readingBar page];
     int firstLine = [readingBar currentLine];
     NSArray *lineBounds = [page lineBounds];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", page, @"newPage", nil];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil];
     
     [[NSCursor resizeUpDownCursor] push];
     

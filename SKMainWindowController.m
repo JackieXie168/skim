@@ -583,7 +583,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
                              name:@"PDFDidEndPageWrite" object:[pdfView document]];
     [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
-                             name:SKPDFDocumentPageBoundsDidChangeNotification object:[pdfView document]];
+                             name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)unregisterForDocumentNotifications {
@@ -591,7 +591,7 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
     [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
     [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
-    [nc removeObserver:self name:SKPDFDocumentPageBoundsDidChangeNotification object:[pdfView document]];
+    [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)registerAsObserver {
@@ -1823,8 +1823,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     PDFPage *page = [[pdfView document] pageAtIndex:idx];
     [page setRotation:[page rotation] + rotation];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", page, @"page", nil]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, page, SKPDFPagePageKey, nil]];
 }
 
 - (IBAction)rotateRight:(id)sender {
@@ -1846,8 +1846,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", nil]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
 }
 
 - (IBAction)rotateAllLeftRight:(id)sender {
@@ -1868,8 +1868,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", nil]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
 }
 
 - (void)cropPageAtIndex:(unsigned int)anIndex toRect:(NSRect)rect {
@@ -1883,8 +1883,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
     [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", page, @"page", nil]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, page, SKPDFPagePageKey, nil]];
     
     // make sure we show the crop box
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
@@ -1916,8 +1916,8 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     [undoManager setActionName:NSLocalizedString(@"Crop", @"Undo action name")];
     [[self document] undoableActionDoesntDirtyDocument];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", nil]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionCrop, SKPDFPageActionKey, nil]];
     
     // make sure we show the crop box
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
@@ -3435,8 +3435,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    PDFPage *page = [[notification userInfo] objectForKey:@"page"];
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
+    PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
     if (annotation) {
         updatingNoteSelection = YES;
@@ -3458,8 +3458,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    PDFPage *page = [[notification userInfo] objectForKey:@"page"];
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
+    PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
     if ([[self selectedNotes] containsObject:annotation])
         [noteOutlineView deselectAll:self];
@@ -3491,8 +3491,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification {
-    PDFPage *oldPage = [[notification userInfo] objectForKey:@"oldPage"];
-    PDFPage *newPage = [[notification userInfo] objectForKey:@"newPage"];
+    PDFPage *oldPage = [[notification userInfo] objectForKey:SKPDFViewOldPageKey];
+    PDFPage *newPage = [[notification userInfo] objectForKey:SKPDFViewNewPageKey];
     
     if (oldPage || newPage) {
         if (oldPage)
@@ -3513,15 +3513,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     
     [self showNote:annotation];
 }
 
 - (void)handleReadingBarDidChangeNotification:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
-    PDFPage *oldPage = [userInfo objectForKey:@"oldPage"];
-    PDFPage *newPage = [userInfo objectForKey:@"newPage"];
+    PDFPage *oldPage = [userInfo objectForKey:SKPDFViewOldPageKey];
+    PDFPage *newPage = [userInfo objectForKey:SKPDFViewNewPageKey];
     if (oldPage)
         [self updateThumbnailAtPageIndex:[oldPage pageIndex]];
     if (newPage && [newPage isEqual:oldPage] == NO)
@@ -3530,8 +3530,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {
     NSDictionary *info = [notification userInfo];
-    PDFPage *page = [info objectForKey:@"page"];
-    BOOL displayChanged = [[info objectForKey:@"action"] isEqualToString:@"rotate"] || [pdfView displayBox] == kPDFDisplayBoxCropBox;
+    PDFPage *page = [info objectForKey:SKPDFPagePageKey];
+    BOOL displayChanged = [[info objectForKey:SKPDFPageActionKey] isEqualToString:SKPDFPageActionRotate] || [pdfView displayBox] == kPDFDisplayBoxCropBox;
     
     if (displayChanged)
         [pdfView layoutDocumentView];

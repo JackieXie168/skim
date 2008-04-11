@@ -55,6 +55,11 @@ extern NSString *SKPDFViewDisplayModeChangedNotification;
 extern NSString *SKPDFViewDisplayAsBookChangedNotification;
 extern NSString *SKPDFViewDisplayBoxChangedNotification;
 
+extern NSString *SKPDFViewAnnotationKey;
+extern NSString *SKPDFViewPageKey;
+extern NSString *SKPDFViewOldPageKey;
+extern NSString *SKPDFViewNewPageKey;
+
 extern NSString *SKSkimNotePboardType;
 
 typedef enum _SKToolMode {
