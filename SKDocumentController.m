@@ -129,7 +129,8 @@ BOOL SKIsDVIDocumentType(NSString *docType) {
     
     SKPDFDocumentTypeName = [NSPDFPboardType copy];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        SKPDFBundleDocumentType = SKPDFDocumentTypeName;
+        SKPDFDocumentType = SKPDFDocumentTypeName;
+        SKPDFBundleDocumentType = SKPDFBundleDocumentTypeName;
         SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentTypeName;
         SKBarePDFDocumentType = SKBarePDFDocumentTypeName;
         SKNotesDocumentType = SKNotesDocumentTypeName;
@@ -140,7 +141,8 @@ BOOL SKIsDVIDocumentType(NSString *docType) {
         SKPostScriptDocumentType = SKPostScriptDocumentTypeName;
         SKDVIDocumentType = SKDVIDocumentTypeName;
     } else {
-        SKPDFBundleDocumentType = SKPDFDocumentUTI;
+        SKPDFDocumentType = SKPDFDocumentUTI;
+        SKPDFBundleDocumentType = SKPDFBundleDocumentUTI;
         SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentUTI;
         SKBarePDFDocumentType = SKBarePDFDocumentUTI;
         SKNotesDocumentType = SKNotesDocumentUTI;
