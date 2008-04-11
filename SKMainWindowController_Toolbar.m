@@ -157,8 +157,8 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPreviousNextItemIdentifier];
     [item setLabels:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Previous/Next", @"Tool tip message")];
-    [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
-    [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
+    [[previousNextPageButton cell] setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
+    [[previousNextPageButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
     [previousNextPageButton makeCapsule];
     [item setViewWithSizes:previousNextPageButton];
     [item setMenuFormRepresentation:menuItem];
@@ -218,8 +218,8 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [item setToolTip:NSLocalizedString(@"Go To First, Previous, Next or Last Page", @"Tool tip message")];
     [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
     [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
-    [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
-    [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
+    [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:2];
+    [[previousNextFirstLastPageButton cell] setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:3];
     [previousNextFirstLastPageButton makeCapsule];
     [item setViewWithSizes:previousNextFirstLastPageButton];
     [item setMenuFormRepresentation:menuItem];
