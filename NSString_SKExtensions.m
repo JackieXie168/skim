@@ -40,6 +40,7 @@
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import <Carbon/Carbon.h>
 
@@ -458,21 +459,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     
     NSString *imageName = nil;
     if ([self isEqualToString:SKFreeTextString])
-        imageName = @"TextNoteAdorn";
+        imageName = SKImageNameTextNoteAdorn;
     else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
-        imageName = @"AnchoredNoteAdorn";
+        imageName = SKImageNameAnchoredNoteAdorn;
     else if ([self isEqualToString:SKCircleString])
-        imageName = @"CircleNoteAdorn";
+        imageName = SKImageNameCircleNoteAdorn;
     else if ([self isEqualToString:SKSquareString])
-        imageName = @"SquareNoteAdorn";
+        imageName = SKImageNameSquareNoteAdorn;
     else if ([self isEqualToString:SKHighlightString] || [self isEqualToString:SKMarkUpString])
-        imageName = @"HighlightNoteAdorn";
+        imageName = SKImageNameHighlightNoteAdorn;
     else if ([self isEqualToString:SKUnderlineString])
-        imageName = @"UnderlineNoteAdorn";
+        imageName = SKImageNameUnderlineNoteAdorn;
     else if ([self isEqualToString:SKStrikeOutString])
-        imageName = @"StrikeOutNoteAdorn";
+        imageName = SKImageNameStrikeOutNoteAdorn;
     else if ([self isEqualToString:SKLineString])
-        imageName = @"LineNoteAdorn";
+        imageName = SKImageNameLineNoteAdorn;
     
     if (imageName) {
         NSImage *image = [NSImage imageNamed:imageName];
