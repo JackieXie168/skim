@@ -42,6 +42,84 @@
 
 @implementation NSImage (SKExtensions)
 
+NSString *SKImageNameToolbarPageUp = @"ToolbarPageUp";
+NSString *SKImageNameToolbarPageDown = @"ToolbarPageDown";
+NSString *SKImageNameToolbarFirstPage = @"ToolbarFirstPage";
+NSString *SKImageNameToolbarLastPage = @"ToolbarLastPage";
+NSString *SKImageNameToolbarBack = @"ToolbarBack";
+NSString *SKImageNameToolbarForward = @"ToolbarForward";
+NSString *SKImageNameToolbarZoomIn = @"ToolbarZoomIn";
+NSString *SKImageNameToolbarZoomOut = @"ToolbarZoomOut";
+NSString *SKImageNameToolbarZoomActual = @"ToolbarZoomActual";
+NSString *SKImageNameToolbarZoomToFit = @"ToolbarZoomToFit";
+NSString *SKImageNameToolbarZoomToSelection = @"ToolbarZoomToSelection";
+NSString *SKImageNameToolbarRotateRight = @"ToolbarRotateRight";
+NSString *SKImageNameToolbarRotateLeft = @"ToolbarRotateLeft";
+NSString *SKImageNameToolbarCrop = @"ToolbarCrop";
+NSString *SKImageNameToolbarFullScreen = @"ToolbarFullScreen";
+NSString *SKImageNameToolbarPresentation = @"ToolbarPresentation";
+NSString *SKImageNameToolbarSinglePage = @"ToolbarSinglePage";
+NSString *SKImageNameToolbarTwoUp = @"ToolbarTwoUp";
+NSString *SKImageNameToolbarSinglePageContinuous = @"ToolbarSinglePageContinuous";
+NSString *SKImageNameToolbarTwoUpContinuous = @"ToolbarTwoUpContinuous";
+NSString *SKImageNameToolbarMediaBox = @"ToolbarMediaBox";
+NSString *SKImageNameToolbarCropBox = @"ToolbarCropBox";
+NSString *SKImageNameToolbarLeftPane = @"ToolbarLeftPane";
+NSString *SKImageNameToolbarRightPane = @"ToolbarRightPane";
+NSString *SKImageNameToolbarTextNote = @"ToolbarTextNote";
+NSString *SKImageNameToolbarAnchoredNote = @"ToolbarAnchoredNote";
+NSString *SKImageNameToolbarCircleNote = @"ToolbarCircleNote";
+NSString *SKImageNameToolbarSquareNote = @"ToolbarSquareNote";
+NSString *SKImageNameToolbarHighlightNote = @"ToolbarHighlightNote";
+NSString *SKImageNameToolbarUnderlineNote = @"ToolbarUnderlineNote";
+NSString *SKImageNameToolbarStrikeOutNote = @"ToolbarStrikeOutNote";
+NSString *SKImageNameToolbarLineNote = @"ToolbarLineNote";
+NSString *SKImageNameToolbarTextNoteMenu = @"ToolbarTextNoteMenu";
+NSString *SKImageNameToolbarAnchoredNoteMenu = @"ToolbarAnchoredNoteMenu";
+NSString *SKImageNameToolbarCircleNoteMenu = @"ToolbarCircleNoteMenu";
+NSString *SKImageNameToolbarSquareNoteMenu = @"ToolbarSquareNoteMenu";
+NSString *SKImageNameToolbarHighlightNoteMenu = @"ToolbarHighlightNoteMenu";
+NSString *SKImageNameToolbarUnderlineNoteMenu = @"ToolbarUnderlineNoteMenu";
+NSString *SKImageNameToolbarStrikeOutNoteMenu = @"ToolbarStrikeOutNoteMenu";
+NSString *SKImageNameToolbarLineNoteMenu = @"ToolbarLineNoteMenu";
+NSString *SKImageNameToolbarAddTextNote = @"ToolbarAddTextNote";
+NSString *SKImageNameToolbarAddAnchoredNote = @"ToolbarAddAnchoredNote";
+NSString *SKImageNameToolbarAddCircleNote = @"ToolbarAddCircleNote";
+NSString *SKImageNameToolbarAddSquareNote = @"ToolbarAddSquareNote";
+NSString *SKImageNameToolbarAddHighlightNote = @"ToolbarAddHighlightNote";
+NSString *SKImageNameToolbarAddUnderlineNote = @"ToolbarAddUnderlineNote";
+NSString *SKImageNameToolbarAddStrikeOutNote = @"ToolbarAddStrikeOutNote";
+NSString *SKImageNameToolbarAddLineNote = @"ToolbarAddLineNote";
+NSString *SKImageNameToolbarAddTextNoteMenu = @"ToolbarAddTextNoteMenu";
+NSString *SKImageNameToolbarAddAnchoredNoteMenu = @"ToolbarAddAnchoredNoteMenu";
+NSString *SKImageNameToolbarAddCircleNoteMenu = @"ToolbarAddCircleNoteMenu";
+NSString *SKImageNameToolbarAddSquareNoteMenu = @"ToolbarAddSquareNoteMenu";
+NSString *SKImageNameToolbarAddHighlightNoteMenu = @"ToolbarAddHighlightNoteMenu";
+NSString *SKImageNameToolbarAddUnderlineNoteMenu = @"ToolbarAddUnderlineNoteMenu";
+NSString *SKImageNameToolbarAddStrikeOutNoteMenu = @"ToolbarAddStrikeOutNoteMenu";
+NSString *SKImageNameToolbarAddLineNoteMenu = @"ToolbarAddLineNoteMenu";
+NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
+NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
+NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
+NSString *SKImageNameToolbarSelectTool = @"ToolbarSelectTool";
+NSString *SKImageNameToolbarNewFolder = @"ToolbarNewFolder";
+NSString *SKImageNameToolbarNewSeparator = @"ToolbarNewSeparator";
+
+NSString *SKImageNameOutlineViewAdorn = @"OutlineViewAdorn";
+NSString *SKImageNameThumbnailViewAdorn = @"ThumbnailViewAdorn";
+NSString *SKImageNameNoteViewAdorn = @"NoteViewAdorn";
+NSString *SKImageNameSnapshotViewAdorn = @"SnapshotViewAdorn";
+NSString *SKImageNameFindViewAdorn = @"FindViewAdorn";
+NSString *SKImageNameGroupedFindViewAdorn = @"groupedFindViewAdorn";
+NSString *SKImageNameTextNoteAdorn = @"TextNoteAdorn";
+NSString *SKImageNameAnchoredNoteAdorn = @"AnchoredNoteAdorn";
+NSString *SKImageNameCircleNoteAdorn = @"CircleNoteAdorn";
+NSString *SKImageNameSquareNoteAdorn = @"SquareNoteAdorn";
+NSString *SKImageNameHighlightNoteAdorn = @"HighlightNoteAdorn";
+NSString *SKImageNameUnderlineNoteAdorn = @"UnderlineNoteAdorn";
+NSString *SKImageNameStrikeOutNoteAdorn = @"StrikeOutNoteAdorn";
+NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
+
 - (NSImage *)copyWithMenuBadge {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
     [arrowPath moveToPoint:NSMakePoint(23.5, 7.0)];
@@ -240,7 +318,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarPageUpImage unlockFocus];
-    [toolbarPageUpImage setName:@"ToolbarPageUp"];
+    [toolbarPageUpImage setName:SKImageNameToolbarPageUp];
     
     toolbarPageDownImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarPageDownImage lockFocus];
@@ -261,7 +339,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarPageUpImage unlockFocus];
-    [toolbarPageDownImage setName:@"ToolbarPageDown"];
+    [toolbarPageDownImage setName:SKImageNameToolbarPageDown];
     
     toolbarFirstPageImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarFirstPageImage lockFocus];
@@ -287,7 +365,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarFirstPageImage unlockFocus];
-    [toolbarFirstPageImage setName:@"ToolbarFirstPage"];
+    [toolbarFirstPageImage setName:SKImageNameToolbarFirstPage];
     
     toolbarLastPageImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarLastPageImage lockFocus];
@@ -313,7 +391,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarLastPageImage unlockFocus];
-    [toolbarLastPageImage setName:@"ToolbarLastPage"];
+    [toolbarLastPageImage setName:SKImageNameToolbarLastPage];
     
     toolbarBackImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
     [toolbarBackImage lockFocus];
@@ -330,7 +408,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarBackImage unlockFocus];
-    [toolbarBackImage setName:@"ToolbarBack"];
+    [toolbarBackImage setName:SKImageNameToolbarBack];
     
     toolbarForwardImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
     [toolbarForwardImage lockFocus];
@@ -347,7 +425,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarForwardImage unlockFocus];
-    [toolbarForwardImage setName:@"ToolbarForward"];
+    [toolbarForwardImage setName:SKImageNameToolbarForward];
     
     toolbarZoomInImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarZoomInImage lockFocus];
@@ -362,7 +440,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarZoomInImage unlockFocus];
-    [toolbarZoomInImage setName:@"ToolbarZoomIn"];
+    [toolbarZoomInImage setName:SKImageNameToolbarZoomIn];
     
     toolbarZoomOutImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 9.0)];
     [toolbarZoomOutImage lockFocus];
@@ -376,7 +454,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarZoomOutImage unlockFocus];
-    [toolbarZoomOutImage setName:@"ToolbarZoomOut"];
+    [toolbarZoomOutImage setName:SKImageNameToolbarZoomOut];
     
     toolbarZoomActualImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 14.0)];
     [toolbarZoomActualImage lockFocus];
@@ -391,7 +469,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarZoomActualImage unlockFocus];
-    [toolbarZoomActualImage setName:@"ToolbarZoomActual"];
+    [toolbarZoomActualImage setName:SKImageNameToolbarZoomActual];
     
     toolbarZoomToFitImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarZoomToFitImage lockFocus];
@@ -423,7 +501,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarZoomToFitImage unlockFocus];
-    [toolbarZoomToFitImage setName:@"ToolbarZoomToFit"];
+    [toolbarZoomToFitImage setName:SKImageNameToolbarZoomToFit];
     
     toolbarZoomToSelectionImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarZoomToSelectionImage lockFocus];
@@ -475,7 +553,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarZoomToSelectionImage unlockFocus];
-    [toolbarZoomToSelectionImage setName:@"ToolbarZoomToSelection"];
+    [toolbarZoomToSelectionImage setName:SKImageNameToolbarZoomToSelection];
     
     toolbarRotateLeftImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarRotateLeftImage lockFocus];
@@ -494,7 +572,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarRotateLeftImage unlockFocus];
-    [toolbarRotateLeftImage setName:@"ToolbarRotateLeft"];
+    [toolbarRotateLeftImage setName:SKImageNameToolbarRotateLeft];
     
     toolbarRotateRightImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarRotateRightImage lockFocus];
@@ -513,7 +591,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarRotateRightImage unlockFocus];
-    [toolbarRotateRightImage setName:@"ToolbarRotateRight"];
+    [toolbarRotateRightImage setName:SKImageNameToolbarRotateRight];
     
     toolbarCropImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarCropImage lockFocus];
@@ -541,7 +619,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarCropImage unlockFocus];
-    [toolbarCropImage setName:@"ToolbarCrop"];
+    [toolbarCropImage setName:SKImageNameToolbarCrop];
     
     toolbarFullScreenImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarFullScreenImage lockFocus];
@@ -572,7 +650,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarFullScreenImage unlockFocus];
-    [toolbarFullScreenImage setName:@"ToolbarFullScreen"];
+    [toolbarFullScreenImage setName:SKImageNameToolbarFullScreen];
     
     toolbarPresentationImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarPresentationImage lockFocus];
@@ -591,7 +669,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarPresentationImage unlockFocus];
-    [toolbarPresentationImage setName:@"ToolbarPresentation"];
+    [toolbarPresentationImage setName:SKImageNameToolbarPresentation];
     
     toolbarSinglePageImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarSinglePageImage lockFocus];
@@ -610,7 +688,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSinglePageImage unlockFocus];
-    [toolbarSinglePageImage setName:@"ToolbarSinglePage"];
+    [toolbarSinglePageImage setName:SKImageNameToolbarSinglePage];
     
     toolbarTwoUpImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTwoUpImage lockFocus];
@@ -632,7 +710,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTwoUpImage unlockFocus];
-    [toolbarTwoUpImage setName:@"ToolbarTwoUp"];
+    [toolbarTwoUpImage setName:SKImageNameToolbarTwoUp];
     
     toolbarSinglePageContinuousImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarSinglePageContinuousImage lockFocus];
@@ -658,7 +736,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSinglePageContinuousImage unlockFocus];
-    [toolbarSinglePageContinuousImage setName:@"ToolbarSinglePageContinuous"];
+    [toolbarSinglePageContinuousImage setName:SKImageNameToolbarSinglePageContinuous];
     
     toolbarTwoUpContinuousImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTwoUpContinuousImage lockFocus];
@@ -690,7 +768,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTwoUpContinuousImage unlockFocus];
-    [toolbarTwoUpContinuousImage setName:@"ToolbarTwoUpContinuous"];
+    [toolbarTwoUpContinuousImage setName:SKImageNameToolbarTwoUpContinuous];
     
     toolbarMediaBoxImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarMediaBoxImage lockFocus];
@@ -711,7 +789,7 @@
     [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.0 green:0.431 blue:0.891 alpha:1.0] endColor:[CIColor colorWithRed:0.0 green:0.636 blue:0.944 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarMediaBoxImage unlockFocus];
-    [toolbarMediaBoxImage setName:@"ToolbarMediaBox"];
+    [toolbarMediaBoxImage setName:SKImageNameToolbarMediaBox];
     
     toolbarCropBoxImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 21.0)];
     [toolbarCropBoxImage lockFocus];
@@ -739,7 +817,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarCropBoxImage unlockFocus];
-    [toolbarCropBoxImage setName:@"ToolbarCropBox"];
+    [toolbarCropBoxImage setName:SKImageNameToolbarCropBox];
     
     float outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
     if (isTiger) {
@@ -779,7 +857,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarLeftPaneImage unlockFocus];
-    [toolbarLeftPaneImage setName:@"ToolbarLeftPane"];
+    [toolbarLeftPaneImage setName:SKImageNameToolbarLeftPane];
     
     toolbarRightPaneImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
     [toolbarRightPaneImage lockFocus];
@@ -811,7 +889,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarRightPaneImage unlockFocus];
-    [toolbarRightPaneImage setName:@"ToolbarRightPane"];
+    [toolbarRightPaneImage setName:SKImageNameToolbarRightPane];
     
     toolbarTextNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTextNoteImage lockFocus];
@@ -889,16 +967,16 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTextNoteImage unlockFocus];
-    [toolbarTextNoteImage setName:@"ToolbarTextNote"];
+    [toolbarTextNoteImage setName:SKImageNameToolbarTextNote];
     
     toolbarTextNoteMenuImage = [toolbarTextNoteImage copyWithMenuBadge];
-    [toolbarTextNoteMenuImage setName:@"ToolbarTextNoteMenu"];
+    [toolbarTextNoteMenuImage setName:SKImageNameToolbarTextNoteMenu];
     
     toolbarAddTextNoteImage = [toolbarTextNoteImage copyWithAddBadge];
-    [toolbarAddTextNoteImage setName:@"ToolbarAddTextNote"];
+    [toolbarAddTextNoteImage setName:SKImageNameToolbarAddTextNote];
     
     toolbarAddTextNoteMenuImage = [toolbarAddTextNoteImage copyWithMenuBadge];
-    [toolbarAddTextNoteMenuImage setName:@"ToolbarAddTextNoteMenu"];
+    [toolbarAddTextNoteMenuImage setName:SKImageNameToolbarAddTextNoteMenu];
     
     toolbarAnchoredNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarAnchoredNoteImage lockFocus];
@@ -934,16 +1012,16 @@
         [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.988 green:0.988 blue:0.988 alpha:1.0] endColor:[CIColor colorWithRed:0.762 green:0.762 blue:0.762 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarAnchoredNoteImage unlockFocus];
-    [toolbarAnchoredNoteImage setName:@"ToolbarAnchoredNote"];
+    [toolbarAnchoredNoteImage setName:SKImageNameToolbarAnchoredNote];
     
     toolbarAnchoredNoteMenuImage = [toolbarAnchoredNoteImage copyWithMenuBadge];
-    [toolbarAnchoredNoteMenuImage setName:@"ToolbarAnchoredNoteMenu"];
+    [toolbarAnchoredNoteMenuImage setName:SKImageNameToolbarAnchoredNoteMenu];
     
     toolbarAddAnchoredNoteImage = [toolbarAnchoredNoteImage copyWithAddBadge];
-    [toolbarAddAnchoredNoteImage setName:@"ToolbarAddAnchoredNote"];
+    [toolbarAddAnchoredNoteImage setName:SKImageNameToolbarAddAnchoredNote];
     
     toolbarAddAnchoredNoteMenuImage = [toolbarAddAnchoredNoteImage copyWithMenuBadge];
-    [toolbarAddAnchoredNoteMenuImage setName:@"ToolbarAddAnchoredNoteMenu"];
+    [toolbarAddAnchoredNoteMenuImage setName:SKImageNameToolbarAddAnchoredNoteMenu];
 
     toolbarCircleNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarCircleNoteImage lockFocus];
@@ -958,16 +1036,16 @@
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarCircleNoteImage unlockFocus];
-    [toolbarCircleNoteImage setName:@"ToolbarCircleNote"];
+    [toolbarCircleNoteImage setName:SKImageNameToolbarCircleNote];
     
     toolbarCircleNoteMenuImage = [toolbarCircleNoteImage copyWithMenuBadge];
-    [toolbarCircleNoteMenuImage setName:@"ToolbarCircleNoteMenu"];
+    [toolbarCircleNoteMenuImage setName:SKImageNameToolbarCircleNoteMenu];
     
     toolbarAddCircleNoteImage = [toolbarCircleNoteImage copyWithAddBadge];
-    [toolbarAddCircleNoteImage setName:@"ToolbarAddCircleNote"];
+    [toolbarAddCircleNoteImage setName:SKImageNameToolbarAddCircleNote];
     
     toolbarAddCircleNoteMenuImage = [toolbarAddCircleNoteImage copyWithMenuBadge];
-    [toolbarAddCircleNoteMenuImage setName:@"ToolbarAddCircleNoteMenu"];
+    [toolbarAddCircleNoteMenuImage setName:SKImageNameToolbarAddCircleNoteMenu];
 
     toolbarSquareNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarSquareNoteImage lockFocus];
@@ -982,16 +1060,16 @@
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSquareNoteImage unlockFocus];
-    [toolbarSquareNoteImage setName:@"ToolbarSquareNote"];
+    [toolbarSquareNoteImage setName:SKImageNameToolbarSquareNote];
     
     toolbarSquareNoteMenuImage = [toolbarSquareNoteImage copyWithMenuBadge];
-    [toolbarSquareNoteMenuImage setName:@"ToolbarSquareNoteMenu"];
+    [toolbarSquareNoteMenuImage setName:SKImageNameToolbarSquareNoteMenu];
     
     toolbarAddSquareNoteImage = [toolbarSquareNoteImage copyWithAddBadge];
-    [toolbarAddSquareNoteImage setName:@"ToolbarAddSquareNote"];
+    [toolbarAddSquareNoteImage setName:SKImageNameToolbarAddSquareNote];
     
     toolbarAddSquareNoteMenuImage = [toolbarAddSquareNoteImage copyWithMenuBadge];
-    [toolbarAddSquareNoteMenuImage setName:@"ToolbarAddSquareNoteMenu"];
+    [toolbarAddSquareNoteMenuImage setName:SKImageNameToolbarAddSquareNoteMenu];
     
     toolbarHighlightNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarHighlightNoteImage lockFocus];
@@ -1023,16 +1101,16 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarHighlightNoteImage unlockFocus];
-    [toolbarHighlightNoteImage setName:@"ToolbarHighlightNote"];
+    [toolbarHighlightNoteImage setName:SKImageNameToolbarHighlightNote];
     
     toolbarHighlightNoteMenuImage = [toolbarHighlightNoteImage copyWithMenuBadge];
-    [toolbarHighlightNoteMenuImage setName:@"ToolbarHighlightNoteMenu"];
+    [toolbarHighlightNoteMenuImage setName:SKImageNameToolbarHighlightNoteMenu];
     
     toolbarAddHighlightNoteImage = [toolbarHighlightNoteImage copyWithAddBadge];
-    [toolbarAddHighlightNoteImage setName:@"ToolbarAddHighlightNote"];
+    [toolbarAddHighlightNoteImage setName:SKImageNameToolbarAddHighlightNote];
     
     toolbarAddHighlightNoteMenuImage = [toolbarAddHighlightNoteImage copyWithMenuBadge];
-    [toolbarAddHighlightNoteMenuImage setName:@"ToolbarAddHighlightNoteMenu"];
+    [toolbarAddHighlightNoteMenuImage setName:SKImageNameToolbarAddHighlightNoteMenu];
 
     toolbarUnderlineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarUnderlineNoteImage lockFocus];
@@ -1063,16 +1141,16 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarUnderlineNoteImage unlockFocus];
-    [toolbarUnderlineNoteImage setName:@"ToolbarUnderlineNote"];
+    [toolbarUnderlineNoteImage setName:SKImageNameToolbarUnderlineNote];
     
     toolbarUnderlineNoteMenuImage = [toolbarUnderlineNoteImage copyWithMenuBadge];
-    [toolbarUnderlineNoteMenuImage setName:@"ToolbarUnderlineNoteMenu"];
+    [toolbarUnderlineNoteMenuImage setName:SKImageNameToolbarUnderlineNoteMenu];
     
     toolbarAddUnderlineNoteImage = [toolbarUnderlineNoteImage copyWithAddBadge];
-    [toolbarAddUnderlineNoteImage setName:@"ToolbarAddUnderlineNote"];
+    [toolbarAddUnderlineNoteImage setName:SKImageNameToolbarAddUnderlineNote];
     
     toolbarAddUnderlineNoteMenuImage = [toolbarAddUnderlineNoteImage copyWithMenuBadge];
-    [toolbarAddUnderlineNoteMenuImage setName:@"ToolbarAddUnderlineNoteMenu"];
+    [toolbarAddUnderlineNoteMenuImage setName:SKImageNameToolbarAddUnderlineNoteMenu];
 
     toolbarStrikeOutNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarStrikeOutNoteImage lockFocus];
@@ -1103,16 +1181,16 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarStrikeOutNoteImage unlockFocus];
-    [toolbarStrikeOutNoteImage setName:@"ToolbarStrikeOutNote"];
+    [toolbarStrikeOutNoteImage setName:SKImageNameToolbarStrikeOutNote];
     
     toolbarStrikeOutNoteMenuImage = [toolbarStrikeOutNoteImage copyWithMenuBadge];
-    [toolbarStrikeOutNoteMenuImage setName:@"ToolbarStrikeOutNoteMenu"];
+    [toolbarStrikeOutNoteMenuImage setName:SKImageNameToolbarStrikeOutNoteMenu];
     
     toolbarAddStrikeOutNoteImage = [toolbarStrikeOutNoteImage copyWithAddBadge];
-    [toolbarAddStrikeOutNoteImage setName:@"ToolbarAddStrikeOutNote"];
+    [toolbarAddStrikeOutNoteImage setName:SKImageNameToolbarAddStrikeOutNote];
     
     toolbarAddStrikeOutNoteMenuImage = [toolbarAddStrikeOutNoteImage copyWithMenuBadge];
-    [toolbarAddStrikeOutNoteMenuImage setName:@"ToolbarAddStrikeOutNoteMenu"];
+    [toolbarAddStrikeOutNoteMenuImage setName:SKImageNameToolbarAddStrikeOutNoteMenu];
 
     toolbarLineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarLineNoteImage lockFocus];
@@ -1133,16 +1211,16 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarLineNoteImage unlockFocus];
-    [toolbarLineNoteImage setName:@"ToolbarLineNote"];
+    [toolbarLineNoteImage setName:SKImageNameToolbarLineNote];
     
     toolbarLineNoteMenuImage = [toolbarLineNoteImage copyWithMenuBadge];
-    [toolbarLineNoteMenuImage setName:@"ToolbarLineNoteMenu"];
+    [toolbarLineNoteMenuImage setName:SKImageNameToolbarLineNoteMenu];
     
     toolbarAddLineNoteImage = [toolbarLineNoteImage copyWithAddBadge];
-    [toolbarAddLineNoteImage setName:@"ToolbarAddLineNote"];
+    [toolbarAddLineNoteImage setName:SKImageNameToolbarAddLineNote];
     
     toolbarAddLineNoteMenuImage = [toolbarAddLineNoteImage copyWithMenuBadge];
-    [toolbarAddLineNoteMenuImage setName:@"ToolbarAddLineNoteMenu"];
+    [toolbarAddLineNoteMenuImage setName:SKImageNameToolbarAddLineNoteMenu];
     
     toolbarTextToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTextToolImage lockFocus];
@@ -1175,7 +1253,7 @@
         [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.0] endColor:[CIColor colorWithRed:0.798 green:0.798 blue:0.798 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
-    [toolbarTextToolImage setName:@"ToolbarTextTool"];
+    [toolbarTextToolImage setName:SKImageNameToolbarTextTool];
     
     if (isTiger) {
         toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
@@ -1214,7 +1292,7 @@
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [toolbarMoveToolImage unlockFocus];
-        [toolbarMoveToolImage setName:@"ToolbarMoveTool"];
+        [toolbarMoveToolImage setName:SKImageNameToolbarMoveTool];
     }
     
     toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
@@ -1236,7 +1314,7 @@
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarMagnifyToolImage unlockFocus];
-    [toolbarMagnifyToolImage setName:@"ToolbarMagnifyTool"];
+    [toolbarMagnifyToolImage setName:SKImageNameToolbarMagnifyTool];
     
     toolbarSelectToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarSelectToolImage lockFocus];
@@ -1271,13 +1349,13 @@
     [path setLineWidth:1.0];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarSelectToolImage unlockFocus];
-    [toolbarSelectToolImage setName:@"ToolbarSelectTool"];
+    [toolbarSelectToolImage setName:SKImageNameToolbarSelectTool];
     
     toolbarNewFolderImage = [[self folderImage] copy];
     [toolbarNewFolderImage lockFocus];
     [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 18.0)];
     [toolbarNewFolderImage unlockFocus];
-    [toolbarNewFolderImage setName:@"ToolbarNewFolder"];
+    [toolbarNewFolderImage setName:SKImageNameToolbarNewFolder];
     
     toolbarNewSeparatorImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
     [toolbarNewSeparatorImage lockFocus];
@@ -1302,7 +1380,7 @@
     [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 14.0)];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarNewSeparatorImage unlockFocus];
-    [toolbarNewSeparatorImage setName:@"ToolbarNewSeparator"];
+    [toolbarNewSeparatorImage setName:SKImageNameToolbarNewSeparator];
     
     [shadow1 release];
     [shadow2 release];
@@ -1367,7 +1445,7 @@
     [outlineViewAdornImage unlockFocus];
     if ([outlineViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [outlineViewAdornImage setTemplate:YES];
-    [outlineViewAdornImage setName:@"OutlineViewAdorn"];
+    [outlineViewAdornImage setName:SKImageNameOutlineViewAdorn];
     
     thumbnailViewAdornImage = [[NSImage alloc] initWithSize:size];
     [thumbnailViewAdornImage lockFocus];
@@ -1388,7 +1466,7 @@
     [thumbnailViewAdornImage unlockFocus];
     if ([thumbnailViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [thumbnailViewAdornImage setTemplate:YES];
-    [thumbnailViewAdornImage setName:@"ThumbnailViewAdorn"];
+    [thumbnailViewAdornImage setName:SKImageNameThumbnailViewAdorn];
     
     noteViewAdornImage = [[NSImage alloc] initWithSize:size];
     [noteViewAdornImage lockFocus];
@@ -1425,7 +1503,7 @@
     [noteViewAdornImage unlockFocus];
     if ([noteViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [noteViewAdornImage setTemplate:YES];
-    [noteViewAdornImage setName:@"NoteViewAdorn"];
+    [noteViewAdornImage setName:SKImageNameNoteViewAdorn];
     
     snapshotViewAdornImage = [[NSImage alloc] initWithSize:size];
     [snapshotViewAdornImage lockFocus];
@@ -1442,7 +1520,7 @@
     [snapshotViewAdornImage unlockFocus];
     if ([snapshotViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [snapshotViewAdornImage setTemplate:YES];
-    [snapshotViewAdornImage setName:@"SnapshotViewAdorn"];
+    [snapshotViewAdornImage setName:SKImageNameSnapshotViewAdorn];
     
     findViewAdornImage = [[NSImage alloc] initWithSize:size];
     [findViewAdornImage lockFocus];
@@ -1465,7 +1543,7 @@
     [findViewAdornImage unlockFocus];
     if ([findViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [findViewAdornImage setTemplate:YES];
-    [findViewAdornImage setName:@"FindViewAdorn"];
+    [findViewAdornImage setName:SKImageNameFindViewAdorn];
     
     groupedFindViewAdornImage = [[NSImage alloc] initWithSize:size];
     [groupedFindViewAdornImage lockFocus];
@@ -1487,7 +1565,7 @@
     [groupedFindViewAdornImage unlockFocus];
     if ([groupedFindViewAdornImage respondsToSelector:@selector(setTemplate:)])
         [groupedFindViewAdornImage setTemplate:YES];
-    [groupedFindViewAdornImage setName:@"GroupedFindViewAdorn"];
+    [groupedFindViewAdornImage setName:SKImageNameGroupedFindViewAdorn];
     
     textNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [textNoteAdornImage lockFocus];
@@ -1554,7 +1632,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [textNoteAdornImage unlockFocus];
-    [textNoteAdornImage setName:@"TextNoteAdorn"];
+    [textNoteAdornImage setName:SKImageNameTextNoteAdorn];
     
     anchoredNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [anchoredNoteAdornImage lockFocus];
@@ -1582,7 +1660,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [anchoredNoteAdornImage unlockFocus];
-    [anchoredNoteAdornImage setName:@"AnchoredNoteAdorn"];
+    [anchoredNoteAdornImage setName:SKImageNameAnchoredNoteAdorn];
     
     circleNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [circleNoteAdornImage lockFocus];
@@ -1608,7 +1686,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [circleNoteAdornImage unlockFocus];
-    [circleNoteAdornImage setName:@"CircleNoteAdorn"];
+    [circleNoteAdornImage setName:SKImageNameCircleNoteAdorn];
 
     squareNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [squareNoteAdornImage lockFocus];
@@ -1626,7 +1704,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [squareNoteAdornImage unlockFocus];
-    [squareNoteAdornImage setName:@"SquareNoteAdorn"];
+    [squareNoteAdornImage setName:SKImageNameSquareNoteAdorn];
 
     
     highlightNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -1649,7 +1727,7 @@
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [highlightNoteAdornImage unlockFocus];
-    [highlightNoteAdornImage setName:@"HighlightNoteAdorn"];
+    [highlightNoteAdornImage setName:SKImageNameHighlightNoteAdorn];
     
     underlineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [underlineNoteAdornImage lockFocus];
@@ -1666,7 +1744,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [underlineNoteAdornImage unlockFocus];
-    [underlineNoteAdornImage setName:@"UnderlineNoteAdorn"];
+    [underlineNoteAdornImage setName:SKImageNameUnderlineNoteAdorn];
     
     strikeOutNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [strikeOutNoteAdornImage lockFocus];
@@ -1683,7 +1761,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [strikeOutNoteAdornImage unlockFocus];
-    [strikeOutNoteAdornImage setName:@"StrikeOutNoteAdorn"];
+    [strikeOutNoteAdornImage setName:SKImageNameStrikeOutNoteAdorn];
     
     lineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
     [lineNoteAdornImage lockFocus];
@@ -1702,7 +1780,7 @@
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [lineNoteAdornImage unlockFocus];
-    [lineNoteAdornImage setName:@"LineNoteAdorn"];
+    [lineNoteAdornImage setName:SKImageNameLineNoteAdorn];
     
     [shadow1 release];
 }
