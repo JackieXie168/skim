@@ -1155,6 +1155,14 @@ static NSString *noteToolAdornImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarA
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
+- (NSWindow *)leftSideWindow {
+    return leftSideWindow;
+}
+
+- (NSWindow *)rightSideWindow {
+    return rightSideWindow;
+}
+
 - (NSArray *)notes {
     return notes;
 }

@@ -373,6 +373,9 @@ typedef struct _SKPDFViewState {
 - (BOOL)leftSidePaneIsOpen;
 - (BOOL)rightSidePaneIsOpen;
 
+- (NSWindow *)leftSideWindow;
+- (NSWindow *)rightSideWindow;
+
 - (void)displayOutlineView;
 - (void)fadeInOutlineView;
 - (void)displayThumbnailView;
