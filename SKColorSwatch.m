@@ -98,6 +98,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         focusedIndex = 0;
         clickedIndex = -1;
         draggedIndex = -1;
+        autoResizes = YES;
         
         bindingInfo = [[NSMutableDictionary alloc] init];
         [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
