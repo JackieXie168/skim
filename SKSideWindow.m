@@ -182,7 +182,12 @@
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
     if (ch == 0x1B && modifierFlags == 0) {
-        [controller exitFullScreen:self];
+        if (self == [controller leftSideWindow] && [controller leftSidePaneIsOpen])
+            [controller toggleLeftSidePane:self];
+        else if (self == [controller rightSideWindow] && [controller rightSidePaneIsOpen])
+            [controller toggleRightSidePane:self];
+        else
+            [controller exitFullScreen:self];
     } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
         [controller toggleLeftSidePane:self];
     } else {
