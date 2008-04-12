@@ -418,7 +418,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 #pragma mark NSDraggingSource protocol 
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
-    return isLocal ? NSDragOperationGeneric : NSDragOperationGeneric | NSDragOperationDelete;
+    return isLocal ? NSDragOperationGeneric : NSDragOperationDelete;
 }
 
 - (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
@@ -453,6 +453,10 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    return [self draggingUpdated:sender];
+}
+
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
     BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
     int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
@@ -476,10 +480,6 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     return dragOp;
 }
 
-- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
-    return [self draggingEntered:sender];
-}
-
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     highlightedIndex = -1;
     insertionIndex = -1;
@@ -487,24 +487,11 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     [self setNeedsDisplay:YES];
 }
 
-- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
-    NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
-    int i = [self colorIndexAtPoint:mouseLoc];
-    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
-    if ([self isEnabled] == NO || i == -1)
-        return NO;
-    else if (isCopy || [sender draggingSource] != self || draggedIndex != i)
-        return YES;
-    else
-        return NO;
-} 
-
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
-    NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
-    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
-    int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
+    BOOL isCopy = insertionIndex != -1;
+    int i = isCopy ? insertionIndex : highlightedIndex;
     
     if (i != -1 && color) {
         [self willChangeValueForKey:SKColorSwatchColorsKey];
