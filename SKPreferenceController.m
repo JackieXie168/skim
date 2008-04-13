@@ -48,6 +48,7 @@
 static NSString *SKPreferenceInitialUserDefaultsFileName = @"InitialUserDefaults";
 static NSString *SKPreferenceResettableKeysKey = @"ResettableKeys";
 
+static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
@@ -158,6 +159,14 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     // make sure edits are committed
     if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
         [[self window] endEditingFor:nil];
+}
+
+- (unsigned)countOfSizes {
+    return sizeof(SKDefaultFontSizes) / sizeof(float);
+}
+
+- (id)objectInSizesAtIndex:(unsigned)anIndex {
+    return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
 }
 
 - (BOOL)isCustomTeXEditor {
