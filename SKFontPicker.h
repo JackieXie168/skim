@@ -1,10 +1,10 @@
 //
-//  NSView_SKExtensions.h
+//  SKFontPicker.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/17/07.
+//  Created by Christiaan Hofman on 4/13/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,16 +38,37 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKFontPickerFontNameKey;
+extern NSString *SKFontPickerFontSizeKey;
 
-@interface NSView (SKExtensions)
+extern NSString *SKFontPickerFontKey;
+extern NSString *SKFontPickerActionKey;
+extern NSString *SKFontPickerTargetKey;
 
-- (id)subviewOfClass:(Class)aClass;
+@interface SKFontPicker : NSButton {
+    NSFont *font;
+    
+    id target;
+    SEL action;
+    
+    NSMutableDictionary *bindingInfo;
+    
+    BOOL updatingFromFontPanel;
+    BOOL updatingFromBinding;
+}
 
-- (void)scrollLineUp;
-- (void)scrollLineDown;
-- (void)scrollLineRight;
-- (void)scrollLineLeft;
+- (void)activate;
+- (void)deactivate;
 
-- (void)deactivateSubcontrols;
+- (BOOL)isActive;
+
+- (NSFont *)font;
+- (void)setFont:(NSFont *)newFont;
+
+- (NSString *)fontName;
+- (void)setFontName:(NSString *)fontName;
+
+- (float)fontSize;
+- (void)setFontSize:(float)pointSize;
 
 @end

@@ -38,6 +38,7 @@
 
 #import "NSView_SKExtensions.h"
 #import "SKLineWell.h"
+#import "SKFontPicker.h"
 
 
 @implementation NSView (SKExtensions)
@@ -88,30 +89,41 @@
     [documentView scrollPoint:point];
 }
 
-- (void)deactivateColorAndLineWells {
+- (void)deactivateSubcontrols {
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
 @end
 
 
-@interface NSColorWell (SKPreferenceControllerExtensions)
+@interface NSColorWell (SKNSViewExtensions)
 @end
 
-@implementation NSColorWell (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells {
+@implementation NSColorWell (SKNSViewExtensions)
+- (void)deactivateSubcontrols {
     [self deactivate];
-    [super deactivateColorAndLineWells];
+    [super deactivateSubcontrols];
 }
 @end
 
 
-@interface SKLineWell (SKPreferenceControllerExtensions)
+@interface SKLineWell (SKNSViewExtensions)
 @end
 
-@implementation SKLineWell (SKPreferenceControllerExtensions)
-- (void)deactivateColorAndLineWells {
+@implementation SKLineWell (SKNSViewExtensions)
+- (void)deactivateSubcontrols {
     [self deactivate];
-    [super deactivateColorAndLineWells];
+    [super deactivateSubcontrols];
+}
+@end
+
+
+@interface SKFontPicker (SKNSViewExtensions)
+@end
+
+@implementation SKFontPicker (SKNSViewExtensions)
+- (void)deactivateSubcontrols {
+    [self deactivate];
+    [super deactivateSubcontrols];
 }
 @end
