@@ -61,6 +61,9 @@
 
 + (id)sharedPrefenceController;
 
+- (unsigned)countOfSizes;
+- (id)objectInSizesAtIndex:(unsigned)anIndex;
+
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
 
