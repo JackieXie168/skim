@@ -41,19 +41,16 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "SKLineWell.h"
+#import "SKFontPicker.h"
 #import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
 static NSString *SKPreferenceInitialUserDefaultsFileName = @"InitialUserDefaults";
 static NSString *SKPreferenceResettableKeysKey = @"ResettableKeys";
 
-static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
-
-static NSString *SKPreferenceFontNameKey = @"fontName";
-static NSString *SKPreferenceDisplayNameKey = @"displayName";
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
@@ -71,19 +68,6 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
         
-        NSMutableArray *tmpFonts = [NSMutableArray array];
-        NSMutableArray *fontNames = [[[[NSFontManager sharedFontManager] availableFontFamilies] mutableCopy] autorelease];
-        NSEnumerator *fontEnum;
-        NSString *fontName;
-        
-        [fontNames sortUsingSelector:@selector(caseInsensitiveCompare:)];
-        fontEnum = [fontNames objectEnumerator];
-        while (fontName = [fontEnum nextObject]) {
-            NSFont *font = [NSFont fontWithName:fontName size:0.0];
-            [tmpFonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], SKPreferenceFontNameKey, [font displayName], SKPreferenceDisplayNameKey, nil]];
-        }
-        fonts = [tmpFonts copy];
-        
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
         [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
@@ -96,7 +80,6 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     [sudc removeObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
     [sudc removeObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [resettableKeys release];
-    [fonts release];
     [super dealloc];
 }
 
@@ -134,6 +117,11 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     
     [self updateRevertButtons];
     
+    [textNoteFontPicker bind:SKFontPickerFontNameKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKTextNoteFontNameKey) options:nil];
+    [textNoteFontPicker bind:SKFontPickerFontSizeKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKTextNoteFontSizeKey) options:nil];
+    [anchoredNoteFontPicker bind:SKFontPickerFontNameKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKAnchoredNoteFontNameKey) options:nil];
+    [anchoredNoteFontPicker bind:SKFontPickerFontSizeKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKAnchoredNoteFontSizeKey) options:nil];
+    
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
     [textLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
@@ -157,7 +145,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
-    [[[self window] contentView] deactivateColorAndLineWells];
+    [[[self window] contentView] deactivateSubcontrols];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -170,18 +158,6 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     // make sure edits are committed
     if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
         [[self window] endEditingFor:nil];
-}
-
-- (NSArray *)fonts {
-    return fonts;
-}
-
-- (unsigned)countOfSizes {
-    return sizeof(SKDefaultFontSizes) / sizeof(float);
-}
-
-- (id)objectInSizesAtIndex:(unsigned)anIndex {
-    return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
 }
 
 - (BOOL)isCustomTeXEditor {
