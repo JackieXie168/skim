@@ -148,22 +148,22 @@ static NSDictionary *observationContexts = nil;
     [NSGraphicsContext saveGraphicsState];
     
     NSRect bounds = [self bounds];
-    NSRectEdge sides[8] = {NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge, NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge};
-    float grays[8];
+    NSRectEdge sides[7] = {NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge, NSMinYEdge, NSMaxXEdge, NSMinXEdge};
+    float grays[7];
     
     if ([[self cell] isHighlighted] || [self isActive]) {
         grays[0] = 0.3;
         grays[1] = grays[2] = grays[3] = 0.4;
-        grays[4] = 0.6;
-        grays[5] = grays[6] = grays[7] = 0.7;
+        grays[4] = 0.65;
+        grays[5] = grays[6] = 0.75;
     } else {
         grays[0] = 0.5;
         grays[1] = grays[2] = grays[3] = 0.6;
-        grays[4] = 0.8;
-        grays[5] = grays[6] = grays[7] = 0.9;
+        grays[4] = 0.85;
+        grays[5] = grays[6] = 0.95;
     }
     
-    rect = NSDrawTiledRects(bounds, rect, sides, grays, 8);
+    rect = NSDrawTiledRects(bounds, rect, sides, grays, 7);
     
     if ([self isActive])
         [[NSColor selectedControlColor] setFill];
