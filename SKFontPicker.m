@@ -172,8 +172,13 @@ static NSDictionary *observationContexts = nil;
     NSRectFill(rect);
 
     [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    
+    [[NSBezierPath bezierPathWithRect:rect] addClip];
     
     [[self cell] drawInteriorWithFrame:bounds inView:self];
+    
+    [NSGraphicsContext restoreGraphicsState];
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
         [NSGraphicsContext saveGraphicsState];
