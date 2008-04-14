@@ -39,6 +39,10 @@
 #import "SKFontPicker.h"
 #import "OBUtilities.h"
 
+static NSString *SKNSFontPanelDescriptorsPboardType = @"NSFontPanelDescriptorsPboardType";
+static NSString *SKNSFontPanelFamiliesPboardType = @"NSFontPanelFamiliesPboardType";
+static NSString *SKNSFontCollectionFontDescriptors = @"NSFontCollectionFontDescriptors";
+
 static NSString *SKFontPickerWillBecomeActiveNotification = @"SKFontPickerWillBecomeActiveNotification";
 
 NSString *SKFontPickerFontNameKey = @"fontName";
@@ -91,6 +95,7 @@ static NSDictionary *observationContexts = nil;
         updatingFromFontPanel = NO;
         updatingFromBinding = NO;
         bindingInfo = [[NSMutableDictionary alloc] init];
+        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
     }
     return self;
 }
@@ -117,6 +122,7 @@ static NSDictionary *observationContexts = nil;
         updatingFromFontPanel = NO;
         updatingFromBinding = NO;
         bindingInfo = [[NSMutableDictionary alloc] init];
+        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
     }
     return self;
 }
@@ -393,6 +399,68 @@ static NSDictionary *observationContexts = nil;
 	if (info == nil)
 		info = [super infoForBinding:bindingName];
 	return info;
+}
+
+#pragma mark NSDraggingDestination protocol 
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]]) {
+        [[self cell] setHighlighted:YES];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
+        return NSDragOperationEvery;
+    } else
+        return NSDragOperationNone;
+}
+
+- (void)draggingExited:(id <NSDraggingInfo>)sender {
+    if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]]) {
+        [[self cell] setHighlighted:NO];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender {
+    return [self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+} 
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+    NSFont *droppedFont = nil;
+    
+    @try {
+        if ([type isEqualToString:SKNSFontPanelDescriptorsPboardType]) {
+            NSData *data = [pboard dataForType:type];
+            NSDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSArray *fontDescriptors = [dict objectForKey:SKNSFontCollectionFontDescriptors];
+            NSFontDescriptor *fontDescriptor = [fontDescriptors count] ? [fontDescriptors objectAtIndex:0] : nil;
+            NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute];
+            if (size == nil)
+                size = [dict objectForKey:NSFontSizeAttribute];
+            float fontSize = size ? [size floatValue] : [self fontSize];
+            droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
+        } else if ([type isEqualToString:SKNSFontPanelFamiliesPboardType]) {
+            NSArray *families = [pboard propertyListForType:type];
+            NSString *family = [families count] ? [families objectAtIndex:0] : nil;
+            droppedFont = [[NSFontManager sharedFontManager] convertFont:[self font] toFamily:family];
+        }
+    }
+    @catch (id exception) {
+        NSLog(@"Ignroing exception %@ when dropping on SKFontPicker failed", exception);
+    }
+    
+    if (droppedFont) {
+        [self setFont:droppedFont];
+        [self sendAction:[self action] to:[self target]];
+    }
+    
+    [[self cell] setHighlighted:NO];
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    [self setNeedsDisplay:YES];
+    
+	return droppedFont != nil;
 }
 
 @end
