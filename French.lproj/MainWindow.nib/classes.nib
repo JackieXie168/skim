@@ -97,9 +97,13 @@
                 alternateZoomToFit = id;
                 autoCropAll = id;
                 autoSelectContent = id;
+                changeAnnotationMode = id;
                 changeColor = id;
                 changeColorFill = id;
                 changeDisplayBox = id;
+                changeDisplayContinuous = id;
+                changeDisplayMode = id;
+                changeDisplaySinglePages = id;
                 changeFindPaneState = id;
                 changeFont = id;
                 changeLeftSidePaneState = id;
@@ -175,11 +179,13 @@
                 circleNoteButton = NSSegmentedControl;
                 colorSwatch = SKColorSwatch;
                 colorsButton = NSSegmentedControl;
+                continuousButton = NSSegmentedControl;
                 cropButton = NSSegmentedControl;
                 currentLeftSideView = NSView;
                 currentRightSideView = NSView;
                 customizeButton = NSSegmentedControl;
                 displayBoxButton = NSSegmentedControl;
+                displayModeButton = NSSegmentedControl;
                 findArrayController = NSArrayController;
                 findButton = NSSegmentedControl;
                 findTableView = NSTableView;
@@ -229,6 +235,7 @@
                 rotateRightButton = NSSegmentedControl;
                 scaleField = NSTextField;
                 searchField = NSSearchField;
+                singleTwoUpButton = NSSegmentedControl;
                 snapshotArrayController = NSArrayController;
                 snapshotTableView = SKSnapshotTableView;
                 snapshotView = NSView;
