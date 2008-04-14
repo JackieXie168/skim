@@ -408,7 +408,7 @@ static NSDictionary *observationContexts = nil;
         [[self cell] setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
-        return NSDragOperationEvery;
+        return NSDragOperationGeneric;
     } else
         return NSDragOperationNone;
 }
