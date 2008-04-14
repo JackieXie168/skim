@@ -1,19 +1,31 @@
 {
-    IBClasses = (
-        {
-            ACTIONS = {scalePopUpAction = id; }; 
-            CLASS = BDSKZoomablePDFView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = PDFView; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = SKSnapshotWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
-        {
-            CLASS = SKSnapshotWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {pdfView = PDFView; }; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                scalePopUpAction = id;
+            };
+            CLASS = BDSKZoomablePDFView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = PDFView;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = SKSnapshotWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSWindow;
+        },
+                {
+            CLASS = SKSnapshotWindowController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                pdfView = PDFView;
+            };
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
