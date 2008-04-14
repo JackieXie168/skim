@@ -433,18 +433,23 @@ static NSDictionary *observationContexts = nil;
     @try {
         if ([type isEqualToString:SKNSFontPanelDescriptorsPboardType]) {
             NSData *data = [pboard dataForType:type];
-            NSDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-            NSArray *fontDescriptors = [dict objectForKey:SKNSFontCollectionFontDescriptors];
-            NSFontDescriptor *fontDescriptor = [fontDescriptors count] ? [fontDescriptors objectAtIndex:0] : nil;
-            NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute];
-            if (size == nil)
-                size = [dict objectForKey:NSFontSizeAttribute];
-            float fontSize = size ? [size floatValue] : [self fontSize];
-            droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
+            NSDictionary *dict = [data isKindOfClass:[NSData class]] ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : nil;
+            if ([dict isKindOfClass:[NSDictionary class]]) {
+                NSArray *fontDescriptors = [dict objectForKey:SKNSFontCollectionFontDescriptors];
+                NSFontDescriptor *fontDescriptor = ([fontDescriptors isKindOfClass:[NSArray class]] && [fontDescriptors count]) ? [fontDescriptors objectAtIndex:0] : nil;
+                if ([fontDescriptor isKindOfClass:[NSFontDescriptor class]]) {
+                    NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute];
+                    if (size == nil)
+                        size = [dict objectForKey:NSFontSizeAttribute];
+                    float fontSize = [size respondsToSelector:@selector(floatValue)] ? [size floatValue] : [self fontSize];
+                    droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
+                }
+            }
         } else if ([type isEqualToString:SKNSFontPanelFamiliesPboardType]) {
             NSArray *families = [pboard propertyListForType:type];
-            NSString *family = [families count] ? [families objectAtIndex:0] : nil;
-            droppedFont = [[NSFontManager sharedFontManager] convertFont:[self font] toFamily:family];
+            NSString *family = ([families isKindOfClass:[NSArray class]] && [families count]) ? [families objectAtIndex:0] : nil;
+            if ([family isKindOfClass:[NSString class]])
+                droppedFont = [[NSFontManager sharedFontManager] convertFont:[self font] toFamily:family];
         }
     }
     @catch (id exception) {
