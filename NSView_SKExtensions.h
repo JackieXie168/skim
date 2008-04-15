@@ -50,4 +50,6 @@
 
 - (void)deactivateSubcontrols;
 
+- (id)activeFontPickerSubview;
+
 @end

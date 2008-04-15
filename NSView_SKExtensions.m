@@ -93,6 +93,17 @@
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
+- (id)activeFontPickerSubview {
+	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
+	NSView *view, *subview;
+	
+	while (subview = [viewEnum nextObject]) {
+		if (view = [subview activeFontPickerSubview])
+			return view;
+	}
+	return nil;
+}
+
 @end
 
 
@@ -100,10 +111,12 @@
 @end
 
 @implementation NSColorWell (SKNSViewExtensions)
+
 - (void)deactivateSubcontrols {
     [self deactivate];
     [super deactivateSubcontrols];
 }
+
 @end
 
 
@@ -111,10 +124,12 @@
 @end
 
 @implementation SKLineWell (SKNSViewExtensions)
+
 - (void)deactivateSubcontrols {
     [self deactivate];
     [super deactivateSubcontrols];
 }
+
 @end
 
 
@@ -122,8 +137,14 @@
 @end
 
 @implementation SKFontPicker (SKNSViewExtensions)
+
 - (void)deactivateSubcontrols {
     [self deactivate];
     [super deactivateSubcontrols];
 }
+
+- (id)activeFontPickerSubview {
+    return [self isActive] ? self : [super activeFontPickerSubview];
+}
+
 @end

@@ -239,7 +239,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 }
 
 - (IBAction)changeFont:(id)sender {
-    [[SKFontPicker activeFontPicker] changeFontFromFontManager];
+    [[[[self window] contentView] activeFontPickerSubview] changeFontFromFontManager];
 }
 
 - (IBAction)resetAll:(id)sender {
