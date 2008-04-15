@@ -57,8 +57,6 @@ extern NSString *SKFontPickerTargetKey;
     BOOL updatingFromBinding;
 }
 
-+ (SKFontPicker *)activeFontPicker;
-
 - (void)activate;
 - (void)deactivate;
 
