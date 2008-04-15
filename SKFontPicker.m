@@ -63,6 +63,8 @@ static NSDictionary *observationContexts = nil;
 
 @implementation SKFontPicker
 
+static SKFontPicker *activeFontPicker = nil;
+
 + (void)initialize {
     OBINITIALIZE;
     
@@ -75,6 +77,10 @@ static NSDictionary *observationContexts = nil;
     
     [self setKeys:[NSArray arrayWithObjects:SKFontPickerFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontPickerFontNameKey];
     [self setKeys:[NSArray arrayWithObjects:SKFontPickerFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontPickerFontSizeKey];
+}
+
++ (SKFontPicker *)activeFontPicker {
+    return activeFontPicker;
 }
 
 - (Class)valueClassForBinding:(NSString *)binding {
@@ -219,7 +225,7 @@ static NSDictionary *observationContexts = nil;
     }
 }
 
-- (void)changeFont:(id)sender {
+- (void)changeFontFromFontManager {
     if ([self isActive]) {
         NSFontManager *fm = [NSFontManager sharedFontManager];
         BOOL savedUpdatingFromFontPanel = updatingFromFontPanel;
@@ -239,7 +245,7 @@ static NSDictionary *observationContexts = nil;
     [fm setSelectedFont:[self font] isMultiple:NO];
     [fm orderFrontFontPanel:self];
     
-    [fm setTarget:self];
+    activeFontPicker = self;
     [nc addObserver:self selector:@selector(fontPickerWillBecomeActive:)
                name:SKFontPickerWillBecomeActiveNotification object:nil];
     [nc addObserver:self selector:@selector(fontPanelWillClose:)
@@ -251,8 +257,7 @@ static NSDictionary *observationContexts = nil;
 }
 
 - (void)deactivate {
-    NSFontManager *fm = [NSFontManager sharedFontManager];
-    if ([fm target] == self) [fm setTarget:nil];
+    if (activeFontPicker == self) activeFontPicker = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setState:NSOffState];
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];

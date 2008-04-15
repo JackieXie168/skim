@@ -238,6 +238,10 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     }
 }
 
+- (IBAction)changeFont:(id)sender {
+    [[SKFontPicker activeFontPicker] changeFontFromFontManager];
+}
+
 - (IBAction)resetAll:(id)sender {
     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Reset all preferences to their original values?", @"Message in alert dialog when pressing Reset All button") 
                                      defaultButton:NSLocalizedString(@"Reset", @"Button title")

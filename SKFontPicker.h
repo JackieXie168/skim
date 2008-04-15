@@ -57,6 +57,8 @@ extern NSString *SKFontPickerTargetKey;
     BOOL updatingFromBinding;
 }
 
++ (SKFontPicker *)activeFontPicker;
+
 - (void)activate;
 - (void)deactivate;
 
@@ -70,5 +72,7 @@ extern NSString *SKFontPickerTargetKey;
 
 - (float)fontSize;
 - (void)setFontSize:(float)pointSize;
+
+- (void)changeFontFromFontManager;
 
 @end
