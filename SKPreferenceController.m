@@ -118,11 +118,6 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
     
     [self updateRevertButtons];
     
-    [textNoteFontPicker bind:SKFontPickerFontNameKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKTextNoteFontNameKey) options:nil];
-    [textNoteFontPicker bind:SKFontPickerFontSizeKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKTextNoteFontSizeKey) options:nil];
-    [anchoredNoteFontPicker bind:SKFontPickerFontNameKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKAnchoredNoteFontNameKey) options:nil];
-    [anchoredNoteFontPicker bind:SKFontPickerFontSizeKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKAnchoredNoteFontSizeKey) options:nil];
-    
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
     [textLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
