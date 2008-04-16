@@ -46,8 +46,6 @@ extern NSString *SKFontPickerActionKey;
 extern NSString *SKFontPickerTargetKey;
 
 @interface SKFontPicker : NSButton {
-    NSFont *font;
-    
     id target;
     SEL action;
     
@@ -62,9 +60,6 @@ extern NSString *SKFontPickerTargetKey;
 
 - (BOOL)isActive;
 
-- (NSFont *)font;
-- (void)setFont:(NSFont *)newFont;
-
 - (NSString *)fontName;
 - (void)setFontName:(NSString *)fontName;
 
@@ -73,4 +68,8 @@ extern NSString *SKFontPickerTargetKey;
 
 - (void)changeFontFromFontManager;
 
+@end
+
+
+@interface SKFontPickerCell : NSButtonCell
 @end
