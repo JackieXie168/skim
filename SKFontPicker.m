@@ -77,6 +77,10 @@ static NSDictionary *observationContexts = nil;
     [self setKeys:[NSArray arrayWithObjects:SKFontPickerFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontPickerFontSizeKey];
 }
 
++ (Class)cellClass {
+    return [SKFontPickerCell class];
+}
+
 - (Class)valueClassForBinding:(NSString *)binding {
     if ([binding isEqualToString:SKFontPickerFontNameKey])
         return [NSString class];
@@ -86,43 +90,47 @@ static NSDictionary *observationContexts = nil;
         return [super valueClassForBinding:binding];
 }
 
+- (void)commonInit {
+    if ([self font] == nil)
+        [self setFont:[NSFont systemFontOfSize:0.0]];
+    else
+        [self updateTitle];
+    [super setAction:@selector(changeActive:)];
+    [super setTarget:self];
+    updatingFromFontPanel = NO;
+    updatingFromBinding = NO;
+    bindingInfo = [[NSMutableDictionary alloc] init];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+}
+
 - (id)initWithFrame:(NSRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setFont:[NSFont systemFontOfSize:0.0]];
-        [super setAction:@selector(changeActive:)];
-        [super setTarget:self];
-        [self setButtonType:NSPushOnPushOffButton];
-        updatingFromFontPanel = NO;
-        updatingFromBinding = NO;
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
+		NSButtonCell *oldCell = [self cell];
+		if (NO == [oldCell isKindOfClass:[[self class] cellClass]]) {
+			SKFontPickerCell *newCell = [[SKFontPickerCell alloc] init];
+			[newCell setBezelStyle:[oldCell bezelStyle]];
+			[newCell setAlignment:[oldCell alignment]];
+			[newCell setEditable:[oldCell isEditable]];
+			[newCell setTarget:[oldCell target]];
+			[newCell setAction:[oldCell action]];
+			[self setCell:newCell];
+			[newCell release];
+		}
         if ([decoder allowsKeyedCoding]) {
-            font = [[decoder decodeObjectForKey:SKFontPickerFontKey] retain];
             action = NSSelectorFromString([decoder decodeObjectForKey:SKFontPickerActionKey]);
             target = [decoder decodeObjectForKey:SKFontPickerTargetKey];
         } else {
-            font = [[decoder decodeObject] retain];
             [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
             target = [decoder decodeObject];
         }
-        if (font == nil)
-            [self setFont:[NSFont systemFontOfSize:0.0]];
-        else
-            [self updateTitle];
-        [super setAction:@selector(changeActive:)];
-        [super setTarget:self];
-        [self setButtonType:NSPushOnPushOffButton];
-        [self setState:NSOffState];
-        updatingFromFontPanel = NO;
-        updatingFromBinding = NO;
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
@@ -130,11 +138,9 @@ static NSDictionary *observationContexts = nil;
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:font forKey:SKFontPickerFontKey];
         [coder encodeObject:NSStringFromSelector(action) forKey:SKFontPickerActionKey];
         [coder encodeConditionalObject:target forKey:SKFontPickerTargetKey];
     } else {
-        [coder encodeObject:font];
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
         [coder encodeConditionalObject:target];
     }
@@ -146,52 +152,7 @@ static NSDictionary *observationContexts = nil;
     [bindingInfo release];
     if ([self isActive])
         [self deactivate];
-    [font release];
     [super dealloc];
-}
-
-- (void)drawRect:(NSRect)rect {
-    [NSGraphicsContext saveGraphicsState];
-    
-    NSRect bounds = [self bounds];
-    NSRectEdge sides[7] = {NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge, NSMinYEdge, NSMaxXEdge, NSMinXEdge};
-    float grays[7];
-    
-    if ([[self cell] isHighlighted] || [self isActive]) {
-        grays[0] = 0.3;
-        grays[1] = grays[2] = grays[3] = 0.4;
-        grays[4] = 0.65;
-        grays[5] = grays[6] = 0.75;
-    } else {
-        grays[0] = 0.5;
-        grays[1] = grays[2] = grays[3] = 0.6;
-        grays[4] = 0.85;
-        grays[5] = grays[6] = 0.95;
-    }
-    
-    rect = NSDrawTiledRects(bounds, rect, sides, grays, 7);
-    
-    if ([self isActive])
-        [[NSColor selectedControlColor] setFill];
-    else
-        [[NSColor controlBackgroundColor] setFill];
-    NSRectFill(rect);
-
-    [NSGraphicsContext restoreGraphicsState];
-    [NSGraphicsContext saveGraphicsState];
-    
-    [[NSBezierPath bezierPathWithRect:rect] addClip];
-    
-    [[self cell] drawInteriorWithFrame:bounds inView:self];
-    
-    [NSGraphicsContext restoreGraphicsState];
-    
-    if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
-        [NSGraphicsContext saveGraphicsState];
-        NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill(bounds);
-        [NSGraphicsContext restoreGraphicsState];
-    }
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
@@ -257,10 +218,7 @@ static NSDictionary *observationContexts = nil;
 }
 
 - (void)updateTitle {
-    [self setTitle:[[font displayName] stringByAppendingFormat:@" %i", (int)[font pointSize]]];
-    NSMutableAttributedString *attrTitle = [[[self attributedTitle] mutableCopy] autorelease];
-    [attrTitle addAttribute:NSFontAttributeName value:[self font] range:NSMakeRange(0, [attrTitle length])];
-    [self setAttributedTitle:attrTitle];
+    [self setTitle:[[[self font] displayName] stringByAppendingFormat:@" %i", (int)[[self font] pointSize]]];
 }
 
 - (void)updateFont {
@@ -301,14 +259,10 @@ static NSDictionary *observationContexts = nil;
     return [self state] == NSOnState;
 }
 
-- (NSFont *)font {
-    return font;
-}
-
 - (void)setFont:(NSFont *)newFont {
-    if (font != newFont) {
-        [font release];
-        font = [newFont retain];
+    BOOL didChange = [[self font] isEqual:newFont] == NO;
+    [super setFont:newFont];
+    if (didChange) {
         [self updateTitle];
         [self updateFont];
     }
@@ -463,6 +417,67 @@ static NSDictionary *observationContexts = nil;
     [self setNeedsDisplay:YES];
     
 	return droppedFont != nil;
+}
+
+@end
+
+
+@implementation SKFontPickerCell
+
+- (void)commonInit {
+    [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
+    [self setButtonType:NSPushOnPushOffButton];
+    [self setState:NSOffState];
+}
+ 
+- (id)initTextCell:(NSString *)aString {
+	if (self = [super initTextCell:aString]) {
+		[self commonInit];
+	}
+	return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder {
+	if (self = [super initWithCoder:coder]) {
+		[self commonInit];
+	}
+	return self;
+}
+
+- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
+    [NSGraphicsContext saveGraphicsState];
+    
+    NSRectEdge sides[7] = {NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge, NSMinYEdge, NSMaxXEdge, NSMinXEdge};
+    float grays[7];
+    
+    if ([self isHighlighted] || [self state] == NSOnState) {
+        grays[0] = 0.3;
+        grays[1] = grays[2] = grays[3] = 0.4;
+        grays[4] = 0.65;
+        grays[5] = grays[6] = 0.75;
+    } else {
+        grays[0] = 0.5;
+        grays[1] = grays[2] = grays[3] = 0.6;
+        grays[4] = 0.85;
+        grays[5] = grays[6] = 0.95;
+    }
+    
+    NSRect rect = NSDrawTiledRects(frame, frame, sides, grays, 7);
+    
+    if ([self state] == NSOnState)
+        [[NSColor selectedControlColor] setFill];
+    else
+        [[NSColor controlBackgroundColor] setFill];
+    NSRectFill(rect);
+
+    [NSGraphicsContext restoreGraphicsState];
+    
+    if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView) {
+        [NSGraphicsContext saveGraphicsState];
+        NSSetFocusRingStyle(NSFocusRingOnly);
+        NSRectFill(frame);
+        [NSGraphicsContext restoreGraphicsState];
+    }
 }
 
 @end
