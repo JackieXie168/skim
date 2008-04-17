@@ -71,4 +71,10 @@
         [self setEnabled:enabled forSegment:i];
 }
 
+- (void)setToolTip:(NSString *)toolTip forSegment:(int)segment {
+    [[self cell] setToolTip:toolTip forSegment:segment];
+    NSArray *accessibilitySegments = [NSAccessibilityUnignoredDescendant(self) accessibilityAttributeValue:NSAccessibilityChildrenAttribute];
+    [[accessibilitySegments objectAtIndex:segment] accessibilitySetOverrideValue:toolTip forAttribute:NSAccessibilityDescriptionAttribute];
+}
+
 @end
