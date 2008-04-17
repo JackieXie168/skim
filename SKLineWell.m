@@ -289,30 +289,27 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     [NSGraphicsContext saveGraphicsState];
     
     NSRect bounds = [self bounds];
-    NSRectEdge sides[8] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge, NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-    float grays[8];
+    NSColor *bgColor = [self isActive] ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
+    NSColor *edgeColor = [NSColor colorWithCalibratedWhite:0 alpha:[self isHighlighted] ? 0.33 : .11];
     
-    if ([self isHighlighted] || [self isActive]) {
-        grays[0] = 0.3;
-        grays[1] = grays[2] = grays[3] = 0.4;
-        grays[4] = 0.6;
-        grays[5] = grays[6] = grays[7] = 0.7;
-    } else {
-        grays[0] = 0.5;
-        grays[1] = grays[2] = grays[3] = 0.6;
-        grays[4] = 0.8;
-        grays[5] = grays[6] = grays[7] = 0.9;
-    }
+    [bgColor setFill];
+    NSRectFill(bounds);
     
-    rect = NSDrawTiledRects(bounds, rect, sides, grays, 8);
+    [edgeColor setStroke];
+    [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 0.5, 0.5)] stroke];
     
-    if ([self isActive])
-        [[NSColor selectedControlColor] setFill];
-    else
-        [[NSColor controlBackgroundColor] setFill];
-    NSRectFill(rect);
-
-    [[NSBezierPath bezierPathWithRect:rect] addClip];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:bounds];
+    [path appendBezierPathWithRect:NSInsetRect(bounds, -2.0, -2.0)];
+    [path setWindingRule:NSEvenOddWindingRule];
+    NSShadow *shadow1 = [[NSShadow new] autorelease];
+    [shadow1 setShadowBlurRadius:2.0];
+    [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.7]];
+    [shadow1 set];
+    [[NSColor blackColor] setFill];
+    [path fill];
+    
+    [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];
     
     [[NSColor blackColor] setStroke];
     if (lineWidth > 0.0)
