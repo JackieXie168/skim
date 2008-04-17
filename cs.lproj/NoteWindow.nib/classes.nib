@@ -1,96 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>IBClasses</key>
-	<array>
-		<dict>
-			<key>CLASS</key>
-			<string>BDSKGradientView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>copy</key>
-				<string>id</string>
-				<key>delete</key>
-				<string>id</string>
-				<key>paste</key>
-				<string>id</string>
-				<key>show</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>BDSKDragImageView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>delegate</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSImageView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSObject</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>startAnimation</key>
-				<string>id</string>
-				<key>stopAnimation</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKStatusBar</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>leftCell</key>
-				<string>id</string>
-				<key>rightCell</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>SKNoteWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>imageView</key>
-				<string>BDSKDragImageView</string>
-				<key>statusBar</key>
-				<string>SKStatusBar</string>
-				<key>textView</key>
-				<string>NSTextView</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
-		</dict>
-	</array>
-	<key>IBVersion</key>
-	<string>1</string>
-</dict>
-</plist>
+{
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                paste = id;
+                show = id;
+            };
+            CLASS = BDSKDragImageView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                delegate = id;
+            };
+            SUPERCLASS = NSImageView;
+        },
+                {
+            CLASS = BDSKGradientView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            CLASS = SKNoteWindowController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                imageView = BDSKDragImageView;
+                statusBar = SKStatusBar;
+                textView = NSTextView;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            ACTIONS =             {
+                startAnimation = id;
+                stopAnimation = id;
+            };
+            CLASS = SKStatusBar;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                leftCell = id;
+                rightCell = id;
+            };
+            SUPERCLASS = NSControl;
+        }
+    );
+    IBVersion = 1;
+}
