@@ -72,6 +72,8 @@ typedef enum _SKLineWellDisplayStyle {
     
     BOOL updatingFromLineInspector;
     BOOL updatingFromBinding;
+    
+    id titleUIElement;
 }
 
 - (void)activate:(BOOL)exclusive;
