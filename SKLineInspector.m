@@ -39,6 +39,7 @@
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
 #import "SKStringConstants.h"
+#import "NSSegmentedControl_SKExtensions.h"
 
 NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";
 NSString *SKLineInspectorLineStyleDidChangeNotification = @"SKLineInspectorLineStyleDidChangeNotification";
@@ -114,25 +115,25 @@ static SKLineInspector *sharedLineInspector = nil;
     [dashPatternField setFormatter:formatter];
     [formatter release];
     
-    [[styleButton cell] setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
-    [[styleButton cell] setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
-    [[styleButton cell] setToolTip:NSLocalizedString(@"Beveled line style", @"Tool tip message") forSegment:kPDFBorderStyleBeveled];
-    [[styleButton cell] setToolTip:NSLocalizedString(@"Inset line style", @"Tool tip message") forSegment:kPDFBorderStyleInset];
-    [[styleButton cell] setToolTip:NSLocalizedString(@"Underline line style", @"Tool tip message") forSegment:kPDFBorderStyleUnderline];
+    [styleButton setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
+    [styleButton setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
+    [styleButton setToolTip:NSLocalizedString(@"Beveled line style", @"Tool tip message") forSegment:kPDFBorderStyleBeveled];
+    [styleButton setToolTip:NSLocalizedString(@"Inset line style", @"Tool tip message") forSegment:kPDFBorderStyleInset];
+    [styleButton setToolTip:NSLocalizedString(@"Underline line style", @"Tool tip message") forSegment:kPDFBorderStyleUnderline];
     
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"No start line style", @"Tool tip message") forSegment:kPDFLineStyleNone];
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"Square start line style", @"Tool tip message") forSegment:kPDFLineStyleSquare];
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"Circle start line style", @"Tool tip message") forSegment:kPDFLineStyleCircle];
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"Diamond start line style", @"Tool tip message") forSegment:kPDFLineStyleDiamond];
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"Open arrow start line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
-    [[startLineStyleButton cell] setToolTip:NSLocalizedString(@"Closed arrow start line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"No start line style", @"Tool tip message") forSegment:kPDFLineStyleNone];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"Square start line style", @"Tool tip message") forSegment:kPDFLineStyleSquare];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"Circle start line style", @"Tool tip message") forSegment:kPDFLineStyleCircle];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"Diamond start line style", @"Tool tip message") forSegment:kPDFLineStyleDiamond];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"Open arrow start line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
+    [startLineStyleButton setToolTip:NSLocalizedString(@"Closed arrow start line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
     
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"No end line style", @"Tool tip message") forSegment:kPDFLineStyleNone];
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"Square end line style", @"Tool tip message") forSegment:kPDFLineStyleSquare];
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"Circle end line style", @"Tool tip message") forSegment:kPDFLineStyleCircle];
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"Diamond end line style", @"Tool tip message") forSegment:kPDFLineStyleDiamond];
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"Open arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
-    [[endLineStyleButton cell] setToolTip:NSLocalizedString(@"Closed arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"No end line style", @"Tool tip message") forSegment:kPDFLineStyleNone];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"Square end line style", @"Tool tip message") forSegment:kPDFLineStyleSquare];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"Circle end line style", @"Tool tip message") forSegment:kPDFLineStyleCircle];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"Diamond end line style", @"Tool tip message") forSegment:kPDFLineStyleDiamond];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"Open arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
+    [endLineStyleButton setToolTip:NSLocalizedString(@"Closed arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
 
     NSImage *image = nil;
 	NSSize size;
