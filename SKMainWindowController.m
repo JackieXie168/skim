@@ -3937,9 +3937,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:ascending] autorelease];
             NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
-            if ([tcID isEqualToString:@"type"]) {
+            if ([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:@"note"]) {
+            } else if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
                 if (oldTableColumn == nil)
