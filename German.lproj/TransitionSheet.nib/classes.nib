@@ -1,22 +1,36 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {dismissTransitionSheet = id; }; 
-            CLASS = SKTransitionController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                transitionDurationField = NSTextField; 
-                transitionDurationSlider = NSSlider; 
-                transitionExtentMatrix = NSMatrix; 
-                transitionStylePopUpButton = NSPopUpButton; 
-                transitionView = SKTransitionView; 
-                transitionWindow = SKTransitionWindow; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = SKTransitionView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }, 
-        {CLASS = SKTransitionWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }
-    ); 
-    IBVersion = 1; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                dismissTransitionSheet = id;
+            };
+            CLASS = SKTransitionController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                transitionDurationField = NSTextField;
+                transitionDurationSlider = NSSlider;
+                transitionExtentMatrix = NSMatrix;
+                transitionStylePopUpButton = NSPopUpButton;
+                transitionView = SKTransitionView;
+                transitionWindow = SKTransitionWindow;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = SKTransitionView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSOpenGLView;
+        },
+                {
+            CLASS = SKTransitionWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSWindow;
+        }
+    );
+    IBVersion = 1;
 }
