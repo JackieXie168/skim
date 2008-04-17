@@ -447,29 +447,26 @@ static NSDictionary *observationContexts = nil;
 - (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     
-    NSRectEdge sides[7] = {NSMinYEdge, NSMaxXEdge, NSMinXEdge, NSMaxYEdge, NSMinYEdge, NSMaxXEdge, NSMinXEdge};
-    float grays[7];
+    NSColor *bgColor = [self state] == NSOnState ? [NSColor selectedControlColor] : [NSColor controlBackgroundColor];
+    NSColor *edgeColor = [NSColor colorWithCalibratedWhite:0 alpha:[self isHighlighted] ? 0.33 : .11];
     
-    if ([self isHighlighted] || [self state] == NSOnState) {
-        grays[0] = 0.3;
-        grays[1] = grays[2] = grays[3] = 0.4;
-        grays[4] = 0.65;
-        grays[5] = grays[6] = 0.75;
-    } else {
-        grays[0] = 0.5;
-        grays[1] = grays[2] = grays[3] = 0.6;
-        grays[4] = 0.85;
-        grays[5] = grays[6] = 0.95;
-    }
+    [bgColor setFill];
+    NSRectFill(frame);
     
-    NSRect rect = NSDrawTiledRects(frame, frame, sides, grays, 7);
+    [edgeColor setStroke];
+    [[NSBezierPath bezierPathWithRect:NSInsetRect(frame, 0.5, 0.5)] stroke];
     
-    if ([self state] == NSOnState)
-        [[NSColor selectedControlColor] setFill];
-    else
-        [[NSColor controlBackgroundColor] setFill];
-    NSRectFill(rect);
-
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:frame];
+    [path appendBezierPathWithRect:NSInsetRect(frame, -2.0, -2.0)];
+    [path setWindingRule:NSEvenOddWindingRule];
+    NSShadow *shadow1 = [[NSShadow new] autorelease];
+    [shadow1 setShadowBlurRadius:2.0];
+    [shadow1 setShadowOffset:NSMakeSize(0.0, -1.0)];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.7]];
+    [shadow1 set];
+    [[NSColor blackColor] setFill];
+    [path fill];
+    
     [NSGraphicsContext restoreGraphicsState];
     
     if ([self refusesFirstResponder] == NO && [NSApp isActive] && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView) {
