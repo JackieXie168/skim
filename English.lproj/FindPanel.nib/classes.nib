@@ -1,18 +1,25 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {
-                findNext = id; 
-                findNextAndOrderOutFindPanel = id; 
-                findPrevious = id; 
-                performFindPanelAction = id; 
-            }; 
-            CLASS = SKFindController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {findField = NSTextField; ignoreCaseCheckbox = NSButton; }; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                findNext = id;
+                findNextAndOrderOutFindPanel = id;
+                findPrevious = id;
+                performFindPanelAction = id;
+            };
+            CLASS = SKFindController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                findField = NSTextField;
+                ignoreCaseCheckbox = NSButton;
+            };
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
