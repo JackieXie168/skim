@@ -309,6 +309,9 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     [[NSColor blackColor] setFill];
     [path fill];
     
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    
     [[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 2.0, 2.0)] addClip];
     
     [[NSColor blackColor] setStroke];
