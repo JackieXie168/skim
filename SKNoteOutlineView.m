@@ -114,10 +114,16 @@
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
     
-    [super keyDown:theEvent];
-    if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
-        [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
-        [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
+    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifiers == 0) {
+        if ([[self delegate] respondsToSelector:@selector(outlineViewInsertNewline:)])
+            [[self delegate] outlineViewInsertNewline:self];
+        else NSBeep();
+    } else {
+        [super keyDown:theEvent];
+        if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
+            [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
+            [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
+        }
     }
 }
 

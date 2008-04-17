@@ -4101,6 +4101,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     return NO;
 }
 
+- (void)outlineViewInsertNewline:(NSOutlineView *)ov {
+    if ([ov isEqual:noteOutlineView]) {
+        NSArray *selectedNotes = [self selectedNotes];
+        if ([selectedNotes count])
+            [pdfView scrollAnnotationToVisible:[selectedNotes objectAtIndex:0]];
+        else NSBeep();
+    }
+}
+
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
     if ([ov isEqual:outlineView]) {
         NSMutableArray *array = [NSMutableArray array];

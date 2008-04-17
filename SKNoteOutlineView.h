@@ -62,4 +62,5 @@
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(float)newHeight byItem:(id)item;
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
+- (void)outlineViewInsertNewline:(NSOutlineView *)anOutlineView;
 @end
