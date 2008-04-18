@@ -14,6 +14,14 @@
             SUPERCLASS = NSObject;
         },
                 {
+            CLASS = SKSnapshotContentView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                pdfView = BDSKZoomablePDFView;
+            };
+            SUPERCLASS = NSView;
+        },
+                {
             CLASS = SKSnapshotWindow;
             LANGUAGE = ObjC;
             SUPERCLASS = NSWindow;

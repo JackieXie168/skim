@@ -58,5 +58,6 @@
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)resetAutoFitRectIfNeeded;
 - (void)makeScalePopUpButton;
+- (NSPopUpButton *)scalePopUpButton;
 
 @end
