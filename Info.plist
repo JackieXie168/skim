@@ -33,7 +33,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
@@ -83,7 +83,7 @@
 			<key>LSTypeIsPackage</key>
 			<true/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
@@ -175,7 +175,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
@@ -227,7 +227,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
@@ -281,7 +281,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
@@ -311,7 +311,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
@@ -335,7 +335,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
@@ -363,7 +363,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>
@@ -391,7 +391,7 @@
 			<key>LSTypeIsPackage</key>
 			<true/>
 			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
+			<string>SKPDFDocument</string>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
 		</dict>

@@ -781,7 +781,6 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         if (readNotesAccessoryView == nil) {
             if (NO == [NSBundle loadNibNamed:@"ReadNotesAccessoryView" owner:self])
                 NSLog(@"Failed to load ReadNotesAccessoryView.nib");
-            [readNotesAccessoryView retain];
         }
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];
