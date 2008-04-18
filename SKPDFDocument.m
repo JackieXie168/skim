@@ -1,5 +1,5 @@
 //
-//  SKDocument.m
+//  SKPDFDocument.m
 //  Skim
 //
 //  Created by Michael McCracken on 12/5/06.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
 #import <Carbon/Carbon.h>
 #import "SKMainWindowController.h"
@@ -75,7 +75,7 @@
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
-NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
+NSString *SKPDFDocumentWillSaveNotification = @"SKPDFDocumentWillSaveNotification";
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
@@ -83,13 +83,13 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
-@interface NSFileManager (SKDocumentExtensions)
+@interface NSFileManager (SKPDFDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
 @end
 
 #pragma mark -
 
-@interface SKDocument (SKPrivate)
+@interface SKPDFDocument (SKPrivate)
 
 - (void)setPDFData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
@@ -112,7 +112,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
 #pragma mark -
 
-@implementation SKDocument
+@implementation SKPDFDocument
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -380,7 +380,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     NSError *error = nil;
     if (SKIsEmbeddedPDFDocumentType(typeName)) {
@@ -1987,7 +1987,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 @end
 
 
-@implementation NSFileManager (SKDocumentExtensions)
+@implementation NSFileManager (SKPDFDocumentExtensions)
 
 - (NSString *)subfileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path {
     NSArray *subfiles = [self subpathsAtPath:path];

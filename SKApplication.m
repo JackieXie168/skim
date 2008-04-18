@@ -37,7 +37,7 @@
  */
 
 #import "SKApplication.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
 #import "NSString_SKExtensions.h"
@@ -111,7 +111,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]]) {
             
             NSError *error = nil;
-            SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:&error];
+            SKPDFDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:&error];
             if (document == nil)
                 [self presentError:error];
             
@@ -280,7 +280,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     int i = [orderedDocuments count];
     
     while (i--)
-        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKDocument class]] == NO)
+        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKPDFDocument class]] == NO)
             [orderedDocuments removeObjectAtIndex:i];
     
     return orderedDocuments;

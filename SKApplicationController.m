@@ -42,7 +42,7 @@
 #import "SKPreferenceController.h"
 #import "SKReleaseNotesController.h"
 #import "SKStringConstants.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKMainWindowController.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
@@ -143,7 +143,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
         NSURL *fileURL = nil;
-        SKDocument *document;
+        SKPDFDocument *document;
         NSError *error;
         
         while (dict = [fileEnum nextObject]){ 

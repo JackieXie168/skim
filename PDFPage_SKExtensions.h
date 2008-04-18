@@ -47,7 +47,7 @@ extern NSString *SKPDFPageActionKey;
 extern NSString *SKPDFPageActionCrop;
 extern NSString *SKPDFPageActionRotate;
 
-@class SKDocument;
+@class SKPDFDocument;
 
 @interface PDFPage (SKExtensions)
 
@@ -71,7 +71,7 @@ extern NSString *SKPDFPageActionRotate;
 - (unsigned int)pageIndex;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (SKDocument *)containingDocument;
+- (SKPDFDocument *)containingDocument;
 - (unsigned int)index;
 - (int)rotationAngle;
 - (void)setRotationAngle:(int)angle;

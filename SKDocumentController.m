@@ -37,7 +37,7 @@
  */
 
 #import "SKDocumentController.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKDownloadController.h"
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"

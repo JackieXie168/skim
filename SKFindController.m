@@ -38,7 +38,7 @@
 
 #import "SKFindController.h"
 #import "BDSKFindFieldEditor.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
 
 static NSString *SKFindPanelFrameAutosaveName = @"SKFindPanel";

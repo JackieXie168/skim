@@ -42,7 +42,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKStringConstants.h"
 
 
@@ -387,7 +387,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     PDFDisplayBox box = [boxNumber intValue] == SKASMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
     NSRect bounds = NSZeroRect;
     
-    if ([dPO isKindOfClass:[SKDocument class]]) {
+    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         if ([page isKindOfClass:[PDFPage class]] == NO) {
             NSArray *pages = [dPO valueForKey:@"pages"];
             page = [pages count] ? [pages objectAtIndex:0] : nil;
@@ -431,7 +431,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     NSTextStorage *textStorage = nil;
     NSAttributedString *attrString = nil;
     
-    if ([dPO isKindOfClass:[SKDocument class]]) {
+    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         attrString = page ? [page attributedString] : [[[dPO pdfDocument] selectionForEntireDocument] attributedString];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
@@ -463,7 +463,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     BOOL last = [[args objectForKey:@"Last"] boolValue];
     unsigned int idx = NSNotFound;
     
-    if ([dPO isKindOfClass:[SKDocument class]]) {
+    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         idx = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         idx = [dPO pageIndex];
@@ -498,7 +498,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
     
-    if ([dPO isKindOfClass:[SKDocument class]]) {
+    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         return [dPO valueForKey:@"pages"];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         return [NSArray arrayWithObjects:dPO, nil];

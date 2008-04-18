@@ -1,5 +1,5 @@
 //
-//  SKDocument.h
+//  SKPDFDocument.h
 //  Skim
 //
 //  Created by Michael McCracken on 12/5/06.
@@ -40,7 +40,7 @@
 
 extern NSString *SKDocumentErrorDomain;
 
-extern NSString *SKDocumentWillSaveNotification;
+extern NSString *SKPDFDocumentWillSaveNotification;
 extern NSString *SKSkimFileDidSaveNotification;
 
 enum {
@@ -58,7 +58,7 @@ enum {
 
 @class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController;
 
-@interface SKDocument : NSDocument
+@interface SKPDFDocument : NSDocument
 {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;

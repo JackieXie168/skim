@@ -51,7 +51,7 @@
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
 #import "PDFPage_SKExtensions.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKThumbnail.h"
 #import "SKPDFView.h"
 #import "BDSKCollapsibleView.h"
@@ -539,7 +539,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:NSApplicationWillBecomeActiveNotification object:NSApp];
     // Document
     [nc addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
-                             name:SKDocumentWillSaveNotification object:[self document]];
+                             name:SKPDFDocumentWillSaveNotification object:[self document]];
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
