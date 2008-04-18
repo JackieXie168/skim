@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "SKStringConstants.h"
 #import "NSImage_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 NSString *SKAnnotationTypeImageCellTypeKey = @"type";
 NSString *SKAnnotationTypeImageCellActiveKey = @"active";
@@ -131,6 +132,18 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
     
     [super setObjectValue:image];
     [super drawWithFrame:cellFrame inView:controlView];
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityTextFieldRole;
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
+        return NSAccessibilityRoleDescription(NSAccessibilityTextFieldRole, nil);
+    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+        return [type typeName];
+    } else {
+        return [super accessibilityAttributeValue:attribute];
+    }
 }
 
 @end

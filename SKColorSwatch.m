@@ -697,7 +697,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityButtonRole;
+        return NSAccessibilityColorWellRole;
     } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescriptionForUIElement(self);
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
