@@ -217,8 +217,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (void)textStorageDidProcessEditing:(NSNotification *)notification;
 {
-    [self willChangeValueForKey:SKPDFAnnotationTextKey];
     [texts makeObjectsPerformSelector:@selector(willChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
+    [self willChangeValueForKey:SKPDFAnnotationTextKey];
     [text release];
     text = [[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:textStorage];
     [self didChangeValueForKey:SKPDFAnnotationTextKey];

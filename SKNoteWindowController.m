@@ -76,6 +76,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [note release];
+    [textViewUndoManager release];
     [super dealloc];
 }
 
