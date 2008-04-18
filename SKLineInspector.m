@@ -47,11 +47,11 @@ NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDas
 NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
 NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
 
-NSString *SKLineInspectorLineWidthKey = @"lineWidth";
-NSString *SKLineInspectorStyleKey = @"style";
-NSString *SKLineInspectorDashPatternKey = @"dashPattern";
-NSString *SKLineInspectorStartLineStyleKey = @"startLineStyle";
-NSString *SKLineInspectorEndLineStyleKey = @"endLineStyle";
+static NSString *SKLineInspectorLineWidthKey = @"lineWidth";
+static NSString *SKLineInspectorStyleKey = @"style";
+static NSString *SKLineInspectorDashPatternKey = @"dashPattern";
+static NSString *SKLineInspectorStartLineStyleKey = @"startLineStyle";
+static NSString *SKLineInspectorEndLineStyleKey = @"endLineStyle";
 
 static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 
@@ -105,11 +105,11 @@ static SKLineInspector *sharedLineInspector = nil;
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
     [lineWell setCanActivate:NO];
-    [lineWell bind:SKLineInspectorLineWidthKey toObject:self withKeyPath:SKLineInspectorLineWidthKey options:nil];
-    [lineWell bind:SKLineInspectorStyleKey toObject:self withKeyPath:SKLineInspectorStyleKey options:nil];
-    [lineWell bind:SKLineInspectorDashPatternKey toObject:self withKeyPath:SKLineInspectorDashPatternKey options:nil];
-    [lineWell bind:SKLineInspectorStartLineStyleKey toObject:self withKeyPath:SKLineInspectorStartLineStyleKey options:nil];
-    [lineWell bind:SKLineInspectorEndLineStyleKey toObject:self withKeyPath:SKLineInspectorEndLineStyleKey options:nil];
+    [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:SKLineInspectorLineWidthKey options:nil];
+    [lineWell bind:SKLineWellStyleKey toObject:self withKeyPath:SKLineInspectorStyleKey options:nil];
+    [lineWell bind:SKLineWellDashPatternKey toObject:self withKeyPath:SKLineInspectorDashPatternKey options:nil];
+    [lineWell bind:SKLineWellStartLineStyleKey toObject:self withKeyPath:SKLineInspectorStartLineStyleKey options:nil];
+    [lineWell bind:SKLineWellEndLineStyleKey toObject:self withKeyPath:SKLineInspectorEndLineStyleKey options:nil];
     
     SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
     [dashPatternField setFormatter:formatter];
