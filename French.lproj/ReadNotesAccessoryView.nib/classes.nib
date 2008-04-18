@@ -10,7 +10,7 @@
                 readNotes = id;
                 saveArchive = id;
             };
-            CLASS = SKDocument;
+            CLASS = SKPDFDocument;
             LANGUAGE = ObjC;
             OUTLETS =             {
                 readNotesAccessoryView = NSView;
