@@ -9,7 +9,7 @@
             SUPERCLASS = NSObject;
         },
                 {
-            CLASS = SKFontPicker;
+            CLASS = SKFontWell;
             LANGUAGE = ObjC;
             OUTLETS =             {
                 target = id;
@@ -37,7 +37,7 @@
             CLASS = SKPreferenceController;
             LANGUAGE = ObjC;
             OUTLETS =             {
-                anchoredNoteFontPicker = SKFontPicker;
+                anchoredNoteFontWell = SKFontWell;
                 boxLineWell = SKLineWell;
                 circleLineWell = SKLineWell;
                 lineLineWell = SKLineWell;
@@ -47,7 +47,7 @@
                 tabView = NSTabView;
                 texEditorPopUpButton = NSPopUpButton;
                 textLineWell = SKLineWell;
-                textNoteFontPicker = SKFontPicker;
+                textNoteFontWell = SKFontWell;
                 thumbnailSizeSlider = NSSlider;
             };
             SUPERCLASS = NSWindowController;

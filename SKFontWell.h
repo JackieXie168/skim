@@ -1,5 +1,5 @@
 //
-//  SKFontPicker.h
+//  SKFontWell.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/13/08.
@@ -38,14 +38,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKFontPickerFontNameKey;
-extern NSString *SKFontPickerFontSizeKey;
+extern NSString *SKFontWellFontNameKey;
+extern NSString *SKFontWellFontSizeKey;
 
-extern NSString *SKFontPickerFontKey;
-extern NSString *SKFontPickerActionKey;
-extern NSString *SKFontPickerTargetKey;
+extern NSString *SKFontWellFontKey;
+extern NSString *SKFontWellActionKey;
+extern NSString *SKFontWellTargetKey;
 
-@interface SKFontPicker : NSButton {
+@interface SKFontWell : NSButton {
     id target;
     SEL action;
     
@@ -71,5 +71,5 @@ extern NSString *SKFontPickerTargetKey;
 @end
 
 
-@interface SKFontPickerCell : NSButtonCell
+@interface SKFontWellCell : NSButtonCell
 @end
