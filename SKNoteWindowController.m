@@ -75,6 +75,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
     [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
+    [textViewUndoManager release];
     [note release];
     [super dealloc];
 }
@@ -186,6 +187,13 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
     [self commitEditing];
+}
+
+- (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {
+    NSUndoManager *textViewUndoManager = nil;
+    if (textViewUndoManager == nil)
+        textViewUndoManager = [[NSUndoManager alloc] init];
+    return textViewUndoManager;
 }
 
 #pragma mark BDSKDragImageView delegate protocol
