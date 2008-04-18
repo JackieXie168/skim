@@ -51,6 +51,8 @@
     BOOL keepOnTop;
     BOOL forceOnTop;
     
+    NSUndoManager *textViewUndoManager;
+    
     CFArrayRef editors;
 }
 
