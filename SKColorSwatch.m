@@ -49,6 +49,17 @@ static NSString *SKColorSwatchActionKey = @"action";
 
 static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsObservationContext";
 
+
+@interface SKAccessibilityColorWellElement : NSObject {
+    int index;
+    SKColorSwatch *colorSwatch;
+}
+- (id)initWithIndex:(int)anIndex colorSwatch:(SKColorSwatch *)aColorSwatch;
+- (int)index;
+- (SKColorSwatch *)colorSwatch;
+@end
+
+
 @implementation SKColorSwatch
 
 + (void)initialize {
@@ -526,6 +537,194 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     [self setNeedsDisplay:YES];
     
 	return YES;
+}
+
+#pragma mark Accessibility
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+	attributes = [[NSArray alloc] initWithObjects:
+	    NSAccessibilityRoleAttribute,
+	    NSAccessibilityRoleDescriptionAttribute,
+        NSAccessibilityChildrenAttribute,
+	    NSAccessibilityParentAttribute,
+	    NSAccessibilityWindowAttribute,
+	    NSAccessibilityTopLevelUIElementAttribute,
+	    nil];
+    }
+    return attributes;
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityGroupRole;
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
+        return NSAccessibilityRoleDescriptionForUIElement(self);
+    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
+        NSMutableArray *children = [NSMutableArray array];
+        int i, count = [colors count];
+        for (i = 0; i < count; i++)
+            [children addObject:[[[SKAccessibilityColorWellElement alloc] initWithIndex:i colorSwatch:self] autorelease]];
+        return NSAccessibilityUnignoredChildren(children);
+    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+        id parent = [self superview];
+        if (parent == nil)
+            parent = [self window];
+        return NSAccessibilityUnignoredAncestor(parent);
+    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
+        id parent = [self superview];
+        if (parent == nil)
+            parent = [self window];
+        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
+        id parent = [self superview];
+        if (parent == nil)
+            parent = [self window];
+        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
+    } else {
+        return [super accessibilityAttributeValue:attribute];
+    }
+}
+
+- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
+    return NO;
+}
+
+- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
+}
+
+- (BOOL)accessibilityIsIgnored {
+    return NO;
+}
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
+    int i = [self colorIndexAtPoint:localPoint];
+    if (i != -1) {
+        SKAccessibilityColorWellElement *color = [[[SKAccessibilityColorWellElement alloc] initWithIndex:i colorSwatch:self] autorelease];
+        return [color accessibilityHitTest:point];
+    } else {
+        return [super accessibilityHitTest:point];
+    }
+}
+
+- (id)accessibilityFocusedUIElement {
+    if (focusedIndex != -1 && focusedIndex < (int)[colors count])
+        return NSAccessibilityUnignoredAncestor([[[SKAccessibilityColorWellElement alloc] initWithIndex:focusedIndex colorSwatch:self] autorelease]);
+    else
+        return NSAccessibilityUnignoredAncestor(self);
+}
+
+- (BOOL)isElementFocused:(SKAccessibilityColorWellElement *)element {
+    return focusedIndex == [element index];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAccessibilityColorWellElement
+
+- (id)initWithIndex:(int)anIndex colorSwatch:(SKColorSwatch *)aColorSwatch {
+    if (self = [super init]) {
+        index = anIndex;
+        colorSwatch = aColorSwatch;
+    }
+    return self;
+}
+
+- (BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[SKAccessibilityColorWellElement class]]) {
+        SKAccessibilityColorWellElement *other = object;
+        return index == [other index] && [colorSwatch isEqual:[other colorSwatch]];
+    } else {
+        return NO;
+    }
+}
+
+- (unsigned)hash {
+    // Equal objects must hash the same.
+    return index + [colorSwatch hash];
+}
+
+- (int)index {
+    return index;
+}
+
+- (SKColorSwatch *)colorSwatch {
+    return colorSwatch;
+}
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+	attributes = [[NSArray alloc] initWithObjects:
+	    NSAccessibilityRoleAttribute,
+	    NSAccessibilityRoleDescriptionAttribute,
+        NSAccessibilityValueAttribute,
+	    NSAccessibilityParentAttribute,
+	    NSAccessibilityWindowAttribute,
+	    NSAccessibilityTopLevelUIElementAttribute,
+	    NSAccessibilityFocusedAttribute,
+        NSAccessibilityPositionAttribute,
+        NSAccessibilitySizeAttribute,
+	    nil];
+    }
+    return attributes;
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityButtonRole;
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
+        return NSAccessibilityRoleDescriptionForUIElement(self);
+    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+        return [[colorSwatch colors] objectAtIndex:index];
+    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+        return NSAccessibilityUnignoredAncestor(colorSwatch);
+    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
+        // We're in the same window as our parent.
+        return [NSAccessibilityUnignoredAncestor(colorSwatch) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
+        // We're in the same top level element as our parent.
+        return [NSAccessibilityUnignoredAncestor(colorSwatch) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
+        return [NSNumber numberWithBool:[colorSwatch isElementFocused:self]];
+    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
+        NSRect rect = NSInsetRect([colorSwatch bounds], 1.0, 1.0);
+        rect.size.width = NSHeight(rect);
+        rect.origin.x += index * (NSWidth(rect) - 1.0);
+        rect.origin = [colorSwatch convertPoint:rect.origin toView:nil];
+        return [NSValue valueWithPoint:rect.origin];
+    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
+        NSRect rect = NSInsetRect([colorSwatch bounds], 1.0, 1.0);
+        rect.size.width = NSHeight(rect);
+        rect.origin.x += index * (NSWidth(rect) - 1.0);
+        rect.size = [colorSwatch convertSize:rect.size toView:nil];
+        return [NSValue valueWithSize:rect.size];
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
+    return NO;
+}
+
+- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
+}
+
+- (BOOL)accessibilityIsIgnored {
+    return NO;
+}
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    return NSAccessibilityUnignoredAncestor(self);
+}
+
+- (id)accessibilityFocusedUIElement {
+    return NSAccessibilityUnignoredAncestor(self);
 }
 
 @end
