@@ -44,11 +44,16 @@
 #import "SKStatusBar.h"
 #import "SKDocument.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
 static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
+
+static NSString *SKNoteWindowPageObservationContext = @"SKNoteWindowPageObservationContext";
+static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObservationContext";
+
 
 @implementation SKNoteWindowController
 
@@ -64,8 +69,9 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
         
-        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:NULL];
-        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
+        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     }
     return self;
 }
@@ -73,6 +79,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 - (void)dealloc {
     [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
     [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [textViewUndoManager release];
@@ -260,9 +267,8 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
             if (font)
                 [textView setFont:font];
         }
-    } else if (object == note) {
-        if ([keyPath isEqualToString:SKPDFAnnotationPageKey] || [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
-            [self updateStatusMessage];
+    } else if (context == SKNoteWindowBoundsObservationContext || context == SKNoteWindowPageObservationContext) {
+        [self updateStatusMessage];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
