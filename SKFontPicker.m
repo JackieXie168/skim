@@ -52,7 +52,8 @@ NSString *SKFontPickerFontKey = @"font";
 NSString *SKFontPickerActionKey = @"action";
 NSString *SKFontPickerTargetKey = @"target";
 
-static NSDictionary *observationContexts = nil;
+static NSString *SKFontPickerFontNameObservationContext = @"SKFontPickerFontNameObservationContext";
+static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSizeObservationContext";
 
 
 @interface SKFontPicker (SKPrivate)
@@ -65,10 +66,6 @@ static NSDictionary *observationContexts = nil;
 
 + (void)initialize {
     OBINITIALIZE;
-    
-    id keys[2] = {SKFontPickerFontNameKey, SKFontPickerFontSizeKey};
-    int values[2] = {3091, 3092};
-    observationContexts = (NSDictionary *)CFDictionaryCreate(NULL, (const void **)keys, (const void **)values, 2, &kCFCopyStringDictionaryKeyCallBacks, NULL);
     
     [self exposeBinding:SKFontPickerFontNameKey];
     [self exposeBinding:SKFontPickerFontSizeKey];
@@ -303,7 +300,12 @@ static NSDictionary *observationContexts = nil;
         NSDictionary *bindingsData = [NSDictionary dictionaryWithObjectsAndKeys:observableController, NSObservedObjectKey, [[keyPath copy] autorelease], NSObservedKeyPathKey, [[options copy] autorelease], NSOptionsKey, nil];
 		[bindingInfo setObject:bindingsData forKey:bindingName];
         
-        void *context = (void *)[observationContexts objectForKey:bindingName];
+        void *context = NULL;
+        if ([bindingName isEqualToString:SKFontPickerFontNameKey])
+            context = SKFontPickerFontNameObservationContext;
+        else if ([bindingName isEqualToString:SKFontPickerFontSizeKey])
+            context = SKFontPickerFontSizeObservationContext;
+        
         [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
     } else {
@@ -326,10 +328,9 @@ static NSDictionary *observationContexts = nil;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
-    
-    if (context == [observationContexts objectForKey:SKFontPickerFontNameKey])
+    if (context == SKFontPickerFontNameObservationContext)
         key = SKFontPickerFontNameKey;
-    else if (context == [observationContexts objectForKey:SKFontPickerFontSizeKey])
+    else if (context == SKFontPickerFontSizeObservationContext)
         key = SKFontPickerFontSizeKey;
     
     if (key) {
