@@ -50,7 +50,7 @@ static NSString *SKColorSwatchActionKey = @"action";
 static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsObservationContext";
 
 
-@interface SKAccessibilityColorWellElement : NSObject {
+@interface SKAccessibilityColorSwatchElement : NSObject {
     int index;
     SKColorSwatch *colorSwatch;
 }
@@ -284,12 +284,14 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     if (++focusedIndex >= (int)[colors count])
         focusedIndex = [colors count] - 1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
 - (void)moveLeft:(NSEvent *)theEvent {
     if (--focusedIndex < 0)
         focusedIndex = 0;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+    NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
 - (int)colorIndexAtPoint:(NSPoint)point {
@@ -565,7 +567,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         NSMutableArray *children = [NSMutableArray array];
         int i, count = [colors count];
         for (i = 0; i < count; i++)
-            [children addObject:[[[SKAccessibilityColorWellElement alloc] initWithIndex:i colorSwatch:self] autorelease]];
+            [children addObject:[[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i colorSwatch:self] autorelease]];
         return NSAccessibilityUnignoredChildren(children);
     } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
         id parent = [self superview];
@@ -602,7 +604,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
     int i = [self colorIndexAtPoint:localPoint];
     if (i != -1) {
-        SKAccessibilityColorWellElement *color = [[[SKAccessibilityColorWellElement alloc] initWithIndex:i colorSwatch:self] autorelease];
+        SKAccessibilityColorSwatchElement *color = [[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i colorSwatch:self] autorelease];
         return [color accessibilityHitTest:point];
     } else {
         return [super accessibilityHitTest:point];
@@ -611,20 +613,33 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 
 - (id)accessibilityFocusedUIElement {
     if (focusedIndex != -1 && focusedIndex < (int)[colors count])
-        return NSAccessibilityUnignoredAncestor([[[SKAccessibilityColorWellElement alloc] initWithIndex:focusedIndex colorSwatch:self] autorelease]);
+        return NSAccessibilityUnignoredAncestor([[[SKAccessibilityColorSwatchElement alloc] initWithIndex:focusedIndex colorSwatch:self] autorelease]);
     else
         return NSAccessibilityUnignoredAncestor(self);
 }
 
-- (BOOL)isElementFocused:(SKAccessibilityColorWellElement *)element {
+- (BOOL)isElementFocused:(SKAccessibilityColorSwatchElement *)element {
     return focusedIndex == [element index];
+}
+
+- (void)clickElement:(SKAccessibilityColorSwatchElement *)element {
+    int i = [element index];
+    if ([self isEnabled] && i != -1) {
+        clickedIndex = i;
+        [self sendAction:[self action] to:[self target]];
+        clickedIndex = -1;
+        highlightedIndex = focusedIndex;
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
+        [self setNeedsDisplay:YES];
+        [self performSelector:@selector(unhighlight) withObject:nil afterDelay:0.2];
+    }
 }
 
 @end
 
 #pragma mark -
 
-@implementation SKAccessibilityColorWellElement
+@implementation SKAccessibilityColorSwatchElement
 
 - (id)initWithIndex:(int)anIndex colorSwatch:(SKColorSwatch *)aColorSwatch {
     if (self = [super init]) {
@@ -635,8 +650,8 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 }
 
 - (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[SKAccessibilityColorWellElement class]]) {
-        SKAccessibilityColorWellElement *other = object;
+    if ([object isKindOfClass:[SKAccessibilityColorSwatchElement class]]) {
+        SKAccessibilityColorSwatchElement *other = object;
         return index == [other index] && [colorSwatch isEqual:[other colorSwatch]];
     } else {
         return NO;
@@ -725,6 +740,19 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 
 - (id)accessibilityFocusedUIElement {
     return NSAccessibilityUnignoredAncestor(self);
+}
+
+- (NSArray *)accessibilityActionNames {
+    return [NSArray arrayWithObject:NSAccessibilityPressAction];
+}
+
+- (NSString *)accessibilityActionDescription:(NSString *)anAction {
+    return NSAccessibilityActionDescription(anAction);
+}
+
+- (void)accessibilityPerformAction:(NSString *)anAction {
+    if ([anAction isEqualToString:NSAccessibilityPressAction])
+        [colorSwatch clickElement:self];
 }
 
 @end
