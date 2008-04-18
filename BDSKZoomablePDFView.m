@@ -157,6 +157,10 @@ static float BDSKScaleMenuFontSize = 11.0;
     }
 }
 
+- (NSPopUpButton *)scalePopUpButton {
+    return scalePopUpButton;
+}
+
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([self autoFits]) {
         NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
