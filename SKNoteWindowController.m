@@ -190,7 +190,6 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 }
 
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {
-    NSUndoManager *textViewUndoManager = nil;
     if (textViewUndoManager == nil)
         textViewUndoManager = [[NSUndoManager alloc] init];
     return textViewUndoManager;
