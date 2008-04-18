@@ -188,7 +188,7 @@ BOOL SKIsDVIDocumentType(NSString *docType) {
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
-                type = SKPostScriptDocumentType;
+                type = SKPDFDocumentType;
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
                 type = SKPostScriptDocumentType;
             }
