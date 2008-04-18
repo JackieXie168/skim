@@ -38,7 +38,7 @@
 
 #import "PDFPage_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
@@ -322,7 +322,7 @@ static IMP originalDealloc = NULL;
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    SKDocument *document = [self containingDocument];
+    SKPDFDocument *document = [self containingDocument];
 	unsigned idx = [self pageIndex];
     
     if (document && idx != NSNotFound) {
@@ -333,9 +333,9 @@ static IMP originalDealloc = NULL;
     }
 }
 
-- (SKDocument *)containingDocument {
+- (SKPDFDocument *)containingDocument {
     NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
-    SKDocument *document;
+    SKPDFDocument *document;
     
     while (document = [docEnum nextObject]) {
         if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])

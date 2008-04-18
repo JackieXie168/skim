@@ -37,7 +37,7 @@
  */
 
 #import "SKNotesDocument.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKNoteOutlineView.h"
 #import "BDAlias.h"
 #import "SKDocumentController.h"

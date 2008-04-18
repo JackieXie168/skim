@@ -37,7 +37,7 @@
  */
 
 #import "SKInfoWindowController.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
 #import "OBUtilities.h"
 
@@ -202,7 +202,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     PDFDocument *pdfDoc;
     unsigned long long logicalSize = 0, physicalSize = 0;
     
-    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKDocument *)doc pdfDocument])) {
+    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKPDFDocument *)doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
         [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:SKInfoVersionKey];
         [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];

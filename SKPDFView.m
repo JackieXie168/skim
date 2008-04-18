@@ -55,7 +55,7 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKReadingBar.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
@@ -1454,7 +1454,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSError *error = nil;
         NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
         id document = nil;
-        if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKDocument class]) {
+        if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKPDFDocument class]) {
             if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
                 unsigned int pageIndex = [action pageIndex];
                 if (pageIndex < [[document pdfDocument] pageCount]) {
@@ -3681,7 +3681,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
-    SKDocument *document = (SKDocument *)[[[self window] windowController] document];
+    SKPDFDocument *document = (SKPDFDocument *)[[[self window] windowController] document];
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
         
@@ -3942,7 +3942,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 static IMP originalPasswordEntered = NULL;
 
 - (void)replacementPasswordEntered:(id)sender {
-    SKDocument *document = [[[self window] windowController] document];
+    SKPDFDocument *document = [[[self window] windowController] document];
     originalPasswordEntered(self, _cmd, sender);
     if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
         [document savePasswordInKeychain:[sender stringValue]];

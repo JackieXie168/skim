@@ -42,7 +42,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKStatusBar.h"
-#import "SKDocument.h"
+#import "SKPDFDocument.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -113,7 +113,7 @@ static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObse
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
-                                                 name:SKDocumentWillSaveNotification object:[self document]];
+                                                 name:SKPDFDocumentWillSaveNotification object:[self document]];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
