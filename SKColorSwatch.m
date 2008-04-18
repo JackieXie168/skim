@@ -639,6 +639,12 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 
 #pragma mark -
 
+@interface NSColor (SKPrivateDeclarations)
+- (id)_accessibilityValue;
+@end
+
+#pragma mark -
+
 @implementation SKAccessibilityColorSwatchElement
 
 - (id)initWithIndex:(int)anIndex colorSwatch:(SKColorSwatch *)aColorSwatch {
@@ -695,7 +701,8 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescriptionForUIElement(self);
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [[colorSwatch colors] objectAtIndex:index];
+        NSColor *color = [[colorSwatch colors] objectAtIndex:index];
+        return [color respondsToSelector:@selector(_accessibilityValue)] ? [color _accessibilityValue] : color;
     } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
         return NSAccessibilityUnignoredAncestor(colorSwatch);
     } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
