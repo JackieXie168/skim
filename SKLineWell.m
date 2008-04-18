@@ -819,6 +819,8 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 	    NSAccessibilityWindowAttribute,
 	    NSAccessibilityTopLevelUIElementAttribute,
         NSAccessibilityTitleUIElementAttribute,
+	    NSAccessibilityPositionAttribute,
+	    NSAccessibilitySizeAttribute,
 	    nil];
     }
     return attributes;
@@ -847,6 +849,10 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityTitleUIElementAttribute]) {
         return titleUIElement;
+    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
+        return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:[self bounds].origin toView:nil]]];
+    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
+        return [NSValue valueWithSize:[self convertSize:[self bounds].size toView:nil]];
     } else {
         return nil;
     }

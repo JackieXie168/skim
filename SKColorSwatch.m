@@ -553,6 +553,8 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 	    NSAccessibilityParentAttribute,
 	    NSAccessibilityWindowAttribute,
 	    NSAccessibilityTopLevelUIElementAttribute,
+	    NSAccessibilityPositionAttribute,
+	    NSAccessibilitySizeAttribute,
 	    nil];
     }
     return attributes;
@@ -584,6 +586,10 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         if (parent == nil)
             parent = [self window];
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
+        return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:[self bounds].origin toView:nil]]];
+    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
+        return [NSValue valueWithSize:[self convertSize:[self bounds].size toView:nil]];
     } else {
         return [super accessibilityAttributeValue:attribute];
     }
@@ -717,14 +723,12 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         NSRect rect = NSInsetRect([colorSwatch bounds], 1.0, 1.0);
         rect.size.width = NSHeight(rect);
         rect.origin.x += index * (NSWidth(rect) - 1.0);
-        rect.origin = [colorSwatch convertPoint:rect.origin toView:nil];
-        return [NSValue valueWithPoint:rect.origin];
+        return [NSValue valueWithPoint:[[colorSwatch window] convertBaseToScreen:[colorSwatch convertPoint:rect.origin toView:nil]]];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
         NSRect rect = NSInsetRect([colorSwatch bounds], 1.0, 1.0);
         rect.size.width = NSHeight(rect);
         rect.origin.x += index * (NSWidth(rect) - 1.0);
-        rect.size = [colorSwatch convertSize:rect.size toView:nil];
-        return [NSValue valueWithSize:rect.size];
+        return [NSValue valueWithSize:[colorSwatch convertSize:rect.size toView:nil]];
     } else {
         return nil;
     }
