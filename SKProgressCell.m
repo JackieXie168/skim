@@ -124,4 +124,27 @@
     }
 }
 
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityValueAttribute] && progressIndicator == nil) {
+        NSString *string = nil;
+        switch (status) {
+            case SKDownloadStatusStarting:
+                string = [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
+                break;
+            case SKDownloadStatusFinished:
+                string = NSLocalizedString(@"Finished", @"Download status message");
+                break;
+            case SKDownloadStatusFailed:
+                string = NSLocalizedString(@"Failed", @"Download status message");
+                break;
+            case SKDownloadStatusCanceled:
+                string = NSLocalizedString(@"Canceled", @"Download status message");
+                break;
+        }
+        return [[super accessibilityAttributeValue:attribute] stringByAppendingFormat:@"\n%@", string];
+    } else {
+        return [super accessibilityAttributeValue:attribute];
+    }
+}
+
 @end
