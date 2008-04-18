@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKLineWell, SKFontPicker;
+@class SKLineWell, SKFontWell;
 
 @interface SKPreferenceController : NSWindowController {
     IBOutlet NSTabView *tabView;
@@ -51,8 +51,8 @@
     IBOutlet SKLineWell *lineLineWell;
     IBOutlet SKLineWell *circleLineWell;
     IBOutlet SKLineWell *boxLineWell;
-    IBOutlet SKFontPicker *textNoteFontPicker;
-    IBOutlet SKFontPicker *anchoredNoteFontPicker;
+    IBOutlet SKFontWell *textNoteFontWell;
+    IBOutlet SKFontWell *anchoredNoteFontWell;
     NSDictionary *resettableKeys;
     BOOL isCustomTeXEditor;
     NSUserDefaults *sud;

@@ -38,7 +38,7 @@
 
 #import "NSView_SKExtensions.h"
 #import "SKLineWell.h"
-#import "SKFontPicker.h"
+#import "SKFontWell.h"
 
 
 @implementation NSView (SKExtensions)
@@ -89,16 +89,16 @@
     [documentView scrollPoint:point];
 }
 
-- (void)deactivateSubcontrols {
+- (void)deactivateWellSubcontrols {
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
-- (id)activeFontPickerSubview {
+- (id)activeFontWellSubview {
 	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
 	NSView *view, *subview;
 	
 	while (subview = [viewEnum nextObject]) {
-		if (view = [subview activeFontPickerSubview])
+		if (view = [subview activeFontWellSubview])
 			return view;
 	}
 	return nil;
@@ -112,9 +112,9 @@
 
 @implementation NSColorWell (SKNSViewExtensions)
 
-- (void)deactivateSubcontrols {
+- (void)deactivateWellSubcontrols {
     [self deactivate];
-    [super deactivateSubcontrols];
+    [super deactivateWellSubcontrols];
 }
 
 @end
@@ -125,26 +125,26 @@
 
 @implementation SKLineWell (SKNSViewExtensions)
 
-- (void)deactivateSubcontrols {
+- (void)deactivateWellSubcontrols {
     [self deactivate];
-    [super deactivateSubcontrols];
+    [super deactivateWellSubcontrols];
 }
 
 @end
 
 
-@interface SKFontPicker (SKNSViewExtensions)
+@interface SKFontWell (SKNSViewExtensions)
 @end
 
-@implementation SKFontPicker (SKNSViewExtensions)
+@implementation SKFontWell (SKNSViewExtensions)
 
-- (void)deactivateSubcontrols {
+- (void)deactivateWellSubcontrols {
     [self deactivate];
-    [super deactivateSubcontrols];
+    [super deactivateWellSubcontrols];
 }
 
-- (id)activeFontPickerSubview {
-    return [self isActive] ? self : [super activeFontPickerSubview];
+- (id)activeFontWellSubview {
+    return [self isActive] ? self : [super activeFontWellSubview];
 }
 
 @end

@@ -48,8 +48,8 @@
 - (void)scrollLineRight;
 - (void)scrollLineLeft;
 
-- (void)deactivateSubcontrols;
+- (void)deactivateWellSubcontrols;
 
-- (id)activeFontPickerSubview;
+- (id)activeFontWellSubview;
 
 @end

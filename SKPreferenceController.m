@@ -41,7 +41,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "SKLineWell.h"
-#import "SKFontPicker.h"
+#import "SKFontWell.h"
 #import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
@@ -141,7 +141,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
-    [[[self window] contentView] deactivateSubcontrols];
+    [[[self window] contentView] deactivateWellSubcontrols];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -234,7 +234,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 }
 
 - (IBAction)changeFont:(id)sender {
-    [[[[self window] contentView] activeFontPickerSubview] changeFontFromFontManager];
+    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager];
 }
 
 - (IBAction)resetAll:(id)sender {

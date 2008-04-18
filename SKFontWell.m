@@ -1,5 +1,5 @@
 //
-//  SKFontPicker.m
+//  SKFontWell.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/13/08.
@@ -36,52 +36,52 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKFontPicker.h"
+#import "SKFontWell.h"
 #import "OBUtilities.h"
 
 static NSString *SKNSFontPanelDescriptorsPboardType = @"NSFontPanelDescriptorsPboardType";
 static NSString *SKNSFontPanelFamiliesPboardType = @"NSFontPanelFamiliesPboardType";
 static NSString *SKNSFontCollectionFontDescriptors = @"NSFontCollectionFontDescriptors";
 
-static NSString *SKFontPickerWillBecomeActiveNotification = @"SKFontPickerWillBecomeActiveNotification";
+static NSString *SKFontWellWillBecomeActiveNotification = @"SKFontWellWillBecomeActiveNotification";
 
-NSString *SKFontPickerFontNameKey = @"fontName";
-NSString *SKFontPickerFontSizeKey = @"fontSize";
+NSString *SKFontWellFontNameKey = @"fontName";
+NSString *SKFontWellFontSizeKey = @"fontSize";
 
-NSString *SKFontPickerFontKey = @"font";
-NSString *SKFontPickerActionKey = @"action";
-NSString *SKFontPickerTargetKey = @"target";
+NSString *SKFontWellFontKey = @"font";
+NSString *SKFontWellActionKey = @"action";
+NSString *SKFontWellTargetKey = @"target";
 
-static NSString *SKFontPickerFontNameObservationContext = @"SKFontPickerFontNameObservationContext";
-static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSizeObservationContext";
+static NSString *SKFontWellFontNameObservationContext = @"SKFontWellFontNameObservationContext";
+static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObservationContext";
 
 
-@interface SKFontPicker (SKPrivate)
+@interface SKFontWell (SKPrivate)
 - (void)changeActive:(id)sender;
 - (void)updateTitle;
 @end
 
 
-@implementation SKFontPicker
+@implementation SKFontWell
 
 + (void)initialize {
     OBINITIALIZE;
     
-    [self exposeBinding:SKFontPickerFontNameKey];
-    [self exposeBinding:SKFontPickerFontSizeKey];
+    [self exposeBinding:SKFontWellFontNameKey];
+    [self exposeBinding:SKFontWellFontSizeKey];
     
-    [self setKeys:[NSArray arrayWithObjects:SKFontPickerFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontPickerFontNameKey];
-    [self setKeys:[NSArray arrayWithObjects:SKFontPickerFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontPickerFontSizeKey];
+    [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontNameKey];
+    [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontSizeKey];
 }
 
 + (Class)cellClass {
-    return [SKFontPickerCell class];
+    return [SKFontWellCell class];
 }
 
 - (Class)valueClassForBinding:(NSString *)binding {
-    if ([binding isEqualToString:SKFontPickerFontNameKey])
+    if ([binding isEqualToString:SKFontWellFontNameKey])
         return [NSString class];
-    else if ([binding isEqualToString:SKFontPickerFontNameKey])
+    else if ([binding isEqualToString:SKFontWellFontNameKey])
         return [NSNumber class];
     else
         return [super valueClassForBinding:binding];
@@ -111,7 +111,7 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
     if (self = [super initWithCoder:decoder]) {
 		NSButtonCell *oldCell = [self cell];
 		if (NO == [oldCell isKindOfClass:[[self class] cellClass]]) {
-			SKFontPickerCell *newCell = [[SKFontPickerCell alloc] init];
+			SKFontWellCell *newCell = [[SKFontWellCell alloc] init];
 			[newCell setBezelStyle:[oldCell bezelStyle]];
 			[newCell setAlignment:[oldCell alignment]];
 			[newCell setEditable:[oldCell isEditable]];
@@ -121,8 +121,8 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 			[newCell release];
 		}
         if ([decoder allowsKeyedCoding]) {
-            action = NSSelectorFromString([decoder decodeObjectForKey:SKFontPickerActionKey]);
-            target = [decoder decodeObjectForKey:SKFontPickerTargetKey];
+            action = NSSelectorFromString([decoder decodeObjectForKey:SKFontWellActionKey]);
+            target = [decoder decodeObjectForKey:SKFontWellTargetKey];
         } else {
             [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
             target = [decoder decodeObject];
@@ -135,8 +135,8 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:NSStringFromSelector(action) forKey:SKFontPickerActionKey];
-        [coder encodeConditionalObject:target forKey:SKFontPickerTargetKey];
+        [coder encodeObject:NSStringFromSelector(action) forKey:SKFontWellActionKey];
+        [coder encodeConditionalObject:target forKey:SKFontWellTargetKey];
     } else {
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
         [coder encodeConditionalObject:target];
@@ -144,8 +144,8 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 }
 
 - (void)dealloc {
-    [self unbind:SKFontPickerFontNameKey];
-    [self unbind:SKFontPickerFontSizeKey];
+    [self unbind:SKFontWellFontNameKey];
+    [self unbind:SKFontWellFontSizeKey];
     [bindingInfo release];
     if ([self isActive])
         [self deactivate];
@@ -192,13 +192,13 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     NSFontManager *fm = [NSFontManager sharedFontManager];
     
-    [nc postNotificationName:SKFontPickerWillBecomeActiveNotification object:self];
+    [nc postNotificationName:SKFontWellWillBecomeActiveNotification object:self];
     
     [fm setSelectedFont:[self font] isMultiple:NO];
     [fm orderFrontFontPanel:self];
     
     [nc addObserver:self selector:@selector(fontPickerWillBecomeActive:)
-               name:SKFontPickerWillBecomeActiveNotification object:nil];
+               name:SKFontWellWillBecomeActiveNotification object:nil];
     [nc addObserver:self selector:@selector(fontPanelWillClose:)
                name:NSWindowWillCloseNotification object:[fm fontPanel:YES]];
     
@@ -220,9 +220,9 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 
 - (void)updateFont {
     if (updatingFromBinding == NO) {
-        NSDictionary *info = [self infoForBinding:SKFontPickerFontNameKey];
+        NSDictionary *info = [self infoForBinding:SKFontWellFontNameKey];
 		[[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		info = [self infoForBinding:SKFontPickerFontSizeKey];
+		info = [self infoForBinding:SKFontWellFontSizeKey];
         [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
     }
     if ([self isActive] && updatingFromFontPanel == NO)
@@ -292,7 +292,7 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 #pragma mark Binding support
 
 - (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if ([bindingName isEqualToString:SKFontPickerFontNameKey] || [bindingName isEqualToString:SKFontPickerFontSizeKey]) {
+    if ([bindingName isEqualToString:SKFontWellFontNameKey] || [bindingName isEqualToString:SKFontWellFontSizeKey]) {
         
         if ([bindingInfo objectForKey:bindingName])
             [self unbind:bindingName];
@@ -301,10 +301,10 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 		[bindingInfo setObject:bindingsData forKey:bindingName];
         
         void *context = NULL;
-        if ([bindingName isEqualToString:SKFontPickerFontNameKey])
-            context = SKFontPickerFontNameObservationContext;
-        else if ([bindingName isEqualToString:SKFontPickerFontSizeKey])
-            context = SKFontPickerFontSizeObservationContext;
+        if ([bindingName isEqualToString:SKFontWellFontNameKey])
+            context = SKFontWellFontNameObservationContext;
+        else if ([bindingName isEqualToString:SKFontWellFontSizeKey])
+            context = SKFontWellFontSizeObservationContext;
         
         [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
@@ -315,7 +315,7 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 }
 
 - (void)unbind:(NSString *)bindingName {
-    if ([bindingName isEqualToString:SKFontPickerFontNameKey] || [bindingName isEqualToString:SKFontPickerFontSizeKey]) {
+    if ([bindingName isEqualToString:SKFontWellFontNameKey] || [bindingName isEqualToString:SKFontWellFontSizeKey]) {
         
         NSDictionary *info = [self infoForBinding:bindingName];
         [[info objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
@@ -328,10 +328,10 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
-    if (context == SKFontPickerFontNameObservationContext)
-        key = SKFontPickerFontNameKey;
-    else if (context == SKFontPickerFontSizeObservationContext)
-        key = SKFontPickerFontSizeKey;
+    if (context == SKFontWellFontNameObservationContext)
+        key = SKFontWellFontNameKey;
+    else if (context == SKFontWellFontSizeObservationContext)
+        key = SKFontWellFontSizeKey;
     
     if (key) {
         NSDictionary *info = [self infoForBinding:key];
@@ -405,7 +405,7 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
         }
     }
     @catch (id exception) {
-        NSLog(@"Ignroing exception %@ when dropping on SKFontPicker failed", exception);
+        NSLog(@"Ignroing exception %@ when dropping on SKFontWell failed", exception);
     }
     
     if (droppedFont) {
@@ -423,7 +423,7 @@ static NSString *SKFontPickerFontSizeObservationContext = @"SKFontPickerFontSize
 @end
 
 
-@implementation SKFontPickerCell
+@implementation SKFontWellCell
 
 - (void)commonInit {
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
