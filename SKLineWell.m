@@ -53,8 +53,11 @@ static NSString *SKLineWellActiveKey = @"active";
 static NSString *SKLineWellActionKey = @"action";
 static NSString *SKLineWellTargetKey = @"target";
 
-
-static NSDictionary *observationContexts = nil;
+static NSString *SKLineWellLineWidthObservationContext = @"SKLineWellLineWidthObservationContext";
+static NSString *SKLineWellStyleObservationContext = @"SKLineWellStyleObservationContexty";
+static NSString *SKLineWellDashPatternObservationContext = @"SKLineWellDashPatternObservationContext";
+static NSString *SKLineWellStartLineStyleObservationContext = @"SKLineWellStartLineStyleObservationContext";
+static NSString *SKLineWellEndLineStyleObservationContext = @"SKLineWellEndLineStyleObservationContext";
 
 static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecomeActiveNotification";
 static NSString *SKLineWellExclusiveKey = @"exclusive";
@@ -63,10 +66,6 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 
 + (void)initialize {
     OBINITIALIZE;
-    
-    id keys[5] = {SKLineWellLineWidthKey, SKLineWellStyleKey, SKLineWellDashPatternKey, SKLineWellStartLineStyleKey, SKLineWellEndLineStyleKey};
-    int values[5] = {2091, 2092, 2093, 2094, 2095};
-    observationContexts = (NSDictionary *)CFDictionaryCreate(NULL, (const void **)keys, (const void **)values, 5, &kCFCopyStringDictionaryKeyCallBacks, NULL);
     
     [self exposeBinding:SKLineWellLineWidthKey];
     [self exposeBinding:SKLineWellStyleKey];
@@ -692,8 +691,19 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 		
         NSDictionary *bindingsData = [NSDictionary dictionaryWithObjectsAndKeys:observableController, NSObservedObjectKey, [[keyPath copy] autorelease], NSObservedKeyPathKey, [[options copy] autorelease], NSOptionsKey, nil];
 		[bindingInfo setObject:bindingsData forKey:bindingName];
+       
+        void *context = NULL;
+        if ([bindingName isEqualToString:SKLineWellLineWidthKey])
+            context = SKLineWellLineWidthObservationContext;
+        else if ([bindingName isEqualToString:SKLineWellStyleKey])
+            context = SKLineWellStyleObservationContext;
+        else if ([bindingName isEqualToString:SKLineWellDashPatternKey])
+            context = SKLineWellDashPatternObservationContext;
+        else if ([bindingName isEqualToString:SKLineWellStartLineStyleKey])
+            context = SKLineWellStartLineStyleObservationContext;
+        else if ([bindingName isEqualToString:SKLineWellEndLineStyleKey])
+            context = SKLineWellEndLineStyleObservationContext;
         
-        void *context = (void *)[observationContexts objectForKey:bindingName];
         [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
     } else {
@@ -717,16 +727,15 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
-    
-    if (context == [observationContexts objectForKey:SKLineWellLineWidthKey])
+    if (context == SKLineWellLineWidthObservationContext)
         key = SKLineWellLineWidthKey;
-    else if (context == [observationContexts objectForKey:SKLineWellStyleKey])
+    else if (context == SKLineWellStyleObservationContext)
         key = SKLineWellStyleKey;
-    else if (context == [observationContexts objectForKey:SKLineWellDashPatternKey])
+    else if (context == SKLineWellDashPatternObservationContext)
         key = SKLineWellDashPatternKey;
-    else if (context == [observationContexts objectForKey:SKLineWellStartLineStyleKey])
+    else if (context == SKLineWellStartLineStyleObservationContext)
         key = SKLineWellStartLineStyleKey;
-    else if (context == [observationContexts objectForKey:SKLineWellEndLineStyleKey])
+    else if (context == SKLineWellEndLineStyleObservationContext)
         key = SKLineWellEndLineStyleKey;
     
     if (key) {
