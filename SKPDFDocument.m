@@ -1753,9 +1753,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
             [command setScriptErrorString:@"The file is not a file or alias."];
         } else {
-            NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:fileType ? fileType : NSPDFPboardType];
+            NSArray *fileExtensions = nil;
             NSString *extension = [[fileURL path] pathExtension];
-            if (extension == nil) {
+            if (NSAppKitVersionNumber > NSAppKitVersionNumber10_4)
+                fileExtensions = [NSArray arrayWithObjects:[self fileNameExtensionForType:SKNormalizedDocumentType(fileType) saveOperation:fileType ? NSSaveToOperation : NSSaveAsOperation], nil];
+            else
+                fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:SKNormalizedDocumentType(fileType)];
+            
+            if (extension == nil && [fileExtensions count]) {
                 extension = [fileExtensions objectAtIndex:0];
                 fileURL = [NSURL fileURLWithPath:[[fileURL path] stringByAppendingPathExtension:extension]];
             }
@@ -1763,7 +1768,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [command setScriptErrorNumber:NSArgumentsWrongScriptError];
                 [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."]];
             } else if (fileType) {
-                if ([self saveToURL:fileURL ofType:fileType forSaveOperation:NSSaveToOperation error:NULL] == NO) {
+                if ([self saveToURL:fileURL ofType:SKNormalizedDocumentType(fileType) forSaveOperation:NSSaveToOperation error:NULL] == NO) {
                     [command setScriptErrorNumber:NSInternalScriptError];
                     [command setScriptErrorString:@"Unable to export."];
                 }
