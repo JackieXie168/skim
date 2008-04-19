@@ -134,12 +134,12 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
     [super drawWithFrame:cellFrame inView:controlView];
 }
 
+- (NSArray *)accessibilityAttributeNames {
+    return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityTitleAttribute];
+}
+
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityTextFieldRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescription(NSAccessibilityTextFieldRole, nil);
-    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+   if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
         return [type typeName];
     } else {
         return [super accessibilityAttributeValue:attribute];
