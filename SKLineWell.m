@@ -822,6 +822,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 	    NSAccessibilityRoleAttribute,
 	    NSAccessibilityRoleDescriptionAttribute,
         NSAccessibilityValueAttribute,
+        NSAccessibilityTitleAttribute,
         NSAccessibilityHelpAttribute,
 	    NSAccessibilityFocusedAttribute,
 	    NSAccessibilityParentAttribute,
@@ -841,7 +842,9 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescription(NSAccessibilityCheckBoxRole, nil);
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [NSNumber numberWithBool:[self isActive]];
+        return [NSNumber numberWithInt:[self isActive]];
+    } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
+        return [NSString stringWithFormat:@"%@ %i", NSLocalizedString(@"line width", @"Accessibility description"), (int)[self lineWidth]];
     } else if ([attribute isEqualToString:NSAccessibilityHelpAttribute]) {
         return [self toolTip];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
