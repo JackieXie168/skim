@@ -52,6 +52,8 @@ extern BOOL SKIsNotesFDFDocumentType(NSString *docType);
 extern BOOL SKIsPostScriptDocumentType(NSString *docType);
 extern BOOL SKIsDVIDocumentType(NSString *docType);
 
+extern NSString *SKNormalizedDocumentType(NSString *docType);
+
 extern NSString *SKPDFDocumentType;
 extern NSString *SKPDFBundleDocumentType;
 extern NSString *SKEmbeddedPDFDocumentType;

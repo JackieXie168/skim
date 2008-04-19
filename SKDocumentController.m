@@ -122,6 +122,33 @@ BOOL SKIsDVIDocumentType(NSString *docType) {
     return SKIsEqualToDocumentType(docType, SKDVIDocumentTypeName, SKDVIDocumentUTI);
 }
 
+NSString *SKNormalizedDocumentType(NSString *docType) {
+    if (SKIsPDFDocumentType(docType))
+        return SKPDFDocumentType;
+    else if (SKIsPDFBundleDocumentType(docType))
+        return SKPDFBundleDocumentType;
+    else if (SKIsEmbeddedPDFDocumentType(docType))
+        return SKEmbeddedPDFDocumentType;
+    else if (SKIsBarePDFDocumentType(docType))
+        return SKBarePDFDocumentType;
+    else if (SKIsNotesDocumentType(docType))
+        return SKNotesDocumentType;
+    else if (SKIsNotesTextDocumentType(docType))
+        return SKNotesTextDocumentType;
+    else if (SKIsNotesRTFDocumentType(docType))
+        return SKNotesRTFDocumentType;
+    else if (SKIsNotesRTFDDocumentType(docType))
+        return SKNotesRTFDDocumentType;
+    else if (SKIsNotesFDFDocumentType(docType))
+        return SKNotesFDFDocumentType;
+    else if (SKIsPostScriptDocumentType(docType))
+        return SKPostScriptDocumentType;
+    else if (SKIsDVIDocumentType(docType))
+        return SKDVIDocumentType;
+    else
+        return SKPDFDocumentType;
+}
+
 @implementation SKDocumentController
 
 + (void)initialize {
