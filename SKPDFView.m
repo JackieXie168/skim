@@ -958,7 +958,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : 7)) % 8];
         } else if ([activeAnnotation isMovable] && isArrow && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([activeAnnotation isResizable] && isArrow && ((modifiers & ~NSShiftKeyMask) == NSControlKeyMask)) {
+        } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
