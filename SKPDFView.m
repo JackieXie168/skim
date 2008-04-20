@@ -2027,20 +2027,23 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)selectPreviousActiveAnnotation:(id)sender {
     PDFDocument *pdfDoc = [self document];
     int numberOfPages = [pdfDoc pageCount];
-    int i = numberOfPages;
+    int i = -1;
     int pageIndex, startPageIndex = -1;
     PDFAnnotation *annotation = nil;
+    NSArray *annotations = nil;
     
     if (activeAnnotation) {
         if ([self isEditing])
             [self endAnnotationEdit:self];
         pageIndex = [[activeAnnotation page] pageIndex];
-        i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
+        annotations = [[activeAnnotation page] annotations];
+        i = [annotations indexOfObject:activeAnnotation];
     } else {
         pageIndex = [[self currentPage] pageIndex];
+        annotations = [[self currentPage] annotations];
+        i = [annotations count];
     }
     while (annotation == nil) {
-        NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
         while (--i >= 0 && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
             if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [[annotation type] isEqualToString:SKLinkString] == NO)
@@ -2050,9 +2053,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             startPageIndex = pageIndex;
         else if (pageIndex == startPageIndex)
             break;
-        if (++pageIndex == numberOfPages)
+        if (--pageIndex == -1)
             pageIndex = numberOfPages - 1;
-        i = [[[pdfDoc pageAtIndex:pageIndex] annotations] count];
+        annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
+        i = [annotations count];
     }
     if (annotation) {
         [self scrollAnnotationToVisible:annotation];
