@@ -206,7 +206,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
         if (newText)
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];
         else
-            [textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])]
+            [textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
     }
 }
 
