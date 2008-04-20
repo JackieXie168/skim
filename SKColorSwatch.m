@@ -550,6 +550,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 	    NSAccessibilityRoleAttribute,
 	    NSAccessibilityRoleDescriptionAttribute,
         NSAccessibilityChildrenAttribute,
+        NSAccessibilityContentsAttribute,
 	    NSAccessibilityParentAttribute,
 	    NSAccessibilityWindowAttribute,
 	    NSAccessibilityTopLevelUIElementAttribute,
@@ -565,7 +566,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         return NSAccessibilityGroupRole;
     } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescriptionForUIElement(self);
-    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
+    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute] || [attribute isEqualToString:NSAccessibilityContentsAttribute]) {
         NSMutableArray *children = [NSMutableArray array];
         int i, count = [colors count];
         for (i = 0; i < count; i++)
