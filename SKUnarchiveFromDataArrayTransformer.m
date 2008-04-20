@@ -50,24 +50,22 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     return YES;
 }
 
-- (id)transformedValue:(id)array {
+- (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector {
     NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
     NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
     NSEnumerator *objEnum = [array objectEnumerator];
     NSData *obj;
     while (obj = [objEnum nextObject])
-        [transformedArray addObject:[unarchiveTransformer transformedValue:obj]];
+        [transformedArray addObject:[unarchiveTransformer performSelector:selector withObject:obj]];
     return transformedArray;
 }
 
+- (id)transformedValue:(id)array {
+    return [self transformedArray:array usingSelector:_cmd];
+}
+
 - (id)reverseTransformedValue:(id)array {
-    NSValueTransformer *unarchiveTransformer = [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
-    NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
-    NSEnumerator *objEnum = [array objectEnumerator];
-    NSData *obj;
-    while (obj = [objEnum nextObject])
-        [transformedArray addObject:[unarchiveTransformer reverseTransformedValue:obj]];
-    return transformedArray;
+    return [self transformedArray:array usingSelector:_cmd];
 }
 
 @end
