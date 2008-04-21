@@ -534,6 +534,40 @@ enum {
     return [NSNull null];
 }
 
+#pragma mark Accessibility
+
+- (id)accessibilityRoleAttribute {
+    return NSAccessibilityStaticTextRole;
+}
+
+- (id)accessibilityRoleDescriptionAttribute {
+    return NSAccessibilityRoleDescription([self accessibilityRoleAttribute], nil);
+}
+
+- (id)accessibilityTitleAttribute {
+    return [[self type] typeName];
+}
+
+- (id)accessibilityValueAttribute {
+    return [self contents];
+}
+
+- (id)accessibilitySelectedTextAttribute {
+    return @"";
+}
+
+- (id)accessibilitySelectedTextRangeAttribute {
+    return [NSValue valueWithRange:NSMakeRange(0, 0)];
+}
+
+- (id)accessibilityNumberOfCharactersAttribute {
+    return [NSNumber numberWithUnsignedInt:[[self accessibilityValueAttribute] length]];
+}
+
+- (id)accessibilityVisibleCharacterRangeAttribute {
+    return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
+}
+
 @end
 
 #pragma mark -
@@ -554,6 +588,42 @@ static IMP originalToolTip = NULL;
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
         originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
+}
+
+- (id)accessibilityRoleAttribute {
+    return NSAccessibilityLinkRole;
+}
+
+- (id)accessibilityRoleDescriptionAttribute {
+    return NSAccessibilityRoleDescription([self accessibilityRoleAttribute], nil);
+}
+
+- (id)accessibilityTitleAttribute {
+    NSString *title = nil;
+    if (originalToolTip != NULL)
+        title = originalToolTip(self, _cmd);
+    if (title == nil)
+        title = [self contents];
+    return title;
+}
+
+- (id)accessibilityValueAttribute {
+    return [[[self page] selectionForRect:NSInsetRect([self bounds], -3.0, -3.0)] string];
+}
+- (id)accessibilitySelectedTextAttribute {
+    return nil;
+}
+
+- (id)accessibilitySelectedTextRangeAttribute {
+    return nil;
+}
+
+- (id)accessibilityNumberOfCharactersAttribute {
+    return nil;
+}
+
+- (id)accessibilityVisibleCharacterRangeAttribute {
+    return nil;
 }
 
 @end
