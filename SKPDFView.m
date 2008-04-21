@@ -116,9 +116,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 @interface SKPDFView (Private)
 
-- (NSRange)visiblePageIndexRange;
-- (NSRect)visibleContentRect;
-
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
 
 - (void)autohideTimerFired:(NSTimer *)aTimer;
@@ -527,8 +524,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 		activeAnnotation = nil;
 	}
 	
-	if (changed)
+	if (changed) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
+        NSAccessibilityPostNotification(NSAccessibilityUnignoredAncestor([self documentView]), NSAccessibilityFocusedUIElementChangedNotification);
+    }
 }
 
 - (BOOL)isEditing {
@@ -943,6 +942,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
                    (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
             [self selectNextActiveAnnotation:self];
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
+                   (eventChar == 0x1B) && (modifiers == NSAlternateKeyMask)) {
+            [self setActiveAnnotation:nil];
         // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
                    (((eventChar == NSBackTabCharacter) && ((modifiers & ~NSShiftKeyMask) == NSAlternateKeyMask)) || 
@@ -2240,12 +2242,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKPDFView (Private)
 
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page {
     NSRect boxRect = [page boundsForBox:[self displayBox]];
@@ -3931,30 +3927,3 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMaxYEdgeMask));
     SKCGContextDrawGrabHandle(context, CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect)), radius, mask == (BDSKMaxXEdgeMask | BDSKMinYEdgeMask));
 }
-
-#pragma mark -
-
-@interface PDFDisplayView : NSView
-- (void)passwordEntered:(id)sender;
-@end
-
-@interface PDFDisplayView (SKExtensions)
-@end
-
-@implementation PDFDisplayView (SKExtensions)
-
-static IMP originalPasswordEntered = NULL;
-
-- (void)replacementPasswordEntered:(id)sender {
-    SKPDFDocument *document = [[[self window] windowController] document];
-    originalPasswordEntered(self, _cmd, sender);
-    if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
-        [document savePasswordInKeychain:[sender stringValue]];
-}
-
-+ (void)load {
-    if ([self instancesRespondToSelector:@selector(passwordEntered:)])
-        originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
-}
-
-@end

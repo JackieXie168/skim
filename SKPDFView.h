@@ -187,6 +187,9 @@ typedef enum _SKNoteType {
 - (void)resetHoverRects;
 - (void)removeHoverRects;
 
+- (NSRange)visiblePageIndexRange;
+- (NSRect)visibleContentRect;
+
 - (NSUndoManager *)undoManager;
 
 @end

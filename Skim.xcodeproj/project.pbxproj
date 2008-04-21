@@ -194,6 +194,7 @@
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
+		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
 		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
@@ -811,6 +812,8 @@
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE11EF50BCC262800BF2D3E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesDocument.nib; sourceTree = "<group>"; };
+		CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDisplayView_SKExtensions.h; sourceTree = "<group>"; };
+		CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDisplayView_SKExtensions.m; sourceTree = "<group>"; };
 		CEE54D170DA2AA050037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CEE54D190DA2AA100037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CEE54D1A0DA2AA1F0037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1130,6 +1133,8 @@
 				CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */,
 				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
 				CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */,
+				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
+				CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */,
 				CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */,
 				CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */,
 				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
@@ -2013,6 +2018,7 @@
 				CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */,
 				CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */,
 				CE80666F0DB910610078D118 /* SKSnapshotContentView.m in Sources */,
+				CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
