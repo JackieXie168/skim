@@ -339,6 +339,8 @@ static IMP originalPasswordEntered = NULL;
         return [annotation accessibilityNumberOfCharactersAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityVisibleCharacterRangeAttribute]) {
         return [annotation accessibilityVisibleCharacterRangeAttribute];
+    } else if ([attribute isEqualToString:NSAccessibilityURLAttribute]) {
+        return [annotation accessibilityURLAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
         return NSAccessibilityUnignoredAncestor(parent);
     } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
