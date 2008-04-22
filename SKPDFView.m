@@ -2132,48 +2132,55 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (NSArray *)accessibilityChildren {
-    if (accessibilityChildren == nil) {
-        NSMutableArray *children = [[NSMutableArray alloc] init];
-        
-        [children addObject:[[[SKAccessibilityPDFDisplayViewElement alloc] initWithParent:[self documentView]] autorelease]];
-        
-        PDFDocument *pdfDoc = [self document];
-        unsigned int i, iMax = [pdfDoc pageCount];
-        for (i = 0; i < iMax; i++) {
-            PDFPage *page = [pdfDoc pageAtIndex:i];
-            NSEnumerator *annotationEnum = [[page annotations] objectEnumerator];
-            PDFAnnotation *annotation;
-            while (annotation = [annotationEnum nextObject]) {
-                if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
-                    [children addObject:[[[SKAccessibilityPDFAnnotationElement alloc] initWithAnnotation:annotation pdfView:self parent:[self documentView]] autorelease]];
-            }
-        }
-        accessibilityChildren = children;
-    }
-    return accessibilityChildren;
-}
-
-- (NSArray *)accessibilityVisibleChildren {
+- (NSArray *)accessibilityChildrenForPageRange:(NSRange)range visible:(BOOL)onlyVisible {
     NSMutableArray *children = [NSMutableArray array];
     
     [children addObject:[[[SKAccessibilityPDFDisplayViewElement alloc] initWithParent:[self documentView]] autorelease]];
     
     PDFDocument *pdfDoc = [self document];
-    NSRect visibleRect = [self visibleContentRect];
-    NSRange range = [self visiblePageIndexRange];
     unsigned int i;
+    NSRect visibleRect = onlyVisible ? [self visibleContentRect] : NSZeroRect;
     for (i = range.location; i < NSMaxRange(range); i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
         NSEnumerator *annotationEnum = [[page annotations] objectEnumerator];
         PDFAnnotation *annotation;
         while (annotation = [annotationEnum nextObject]) {
-            if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation] && 
-                NSIntersectsRect([self convertRect:[annotation bounds] fromPage:[annotation page]], visibleRect))
+            if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation] &&
+                (onlyVisible == NO || NSIntersectsRect([self convertRect:[annotation bounds] fromPage:[annotation page]], visibleRect)))
                 [children addObject:[[[SKAccessibilityPDFAnnotationElement alloc] initWithAnnotation:annotation pdfView:self parent:[self documentView]] autorelease]];
         }
     }
     return children;
+}
+
+- (NSArray *)accessibilityChildren {
+    if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
+        unsigned pageCount = [[self document] pageCount];
+        NSRange range = pageCount ? NSMakeRange([[self currentPage] pageIndex], 1) : NSMakeRange(NSNotFound, 0);
+        if (pageCount && [self displayMode] == kPDFDisplayTwoUp) {
+            range.length = 2;
+            if ((unsigned)[self displaysAsBook] != (range.location % 2)) {
+                if (range.location == 0)
+                    range.length = 1;
+                else
+                    range.location -= 1;
+            }
+            if (NSMaxRange(range) == pageCount)
+                range.length = 1;
+        }
+        return [self accessibilityChildrenForPageRange:range visible:NO];
+    } else {
+        if (accessibilityChildren == nil) {
+            NSRange range = NSMakeRange(0, [[self document] pageCount]);
+            accessibilityChildren = [[self accessibilityChildrenForPageRange:range visible:NO] copy];
+        }
+        return accessibilityChildren;
+    }
+}
+
+- (NSArray *)accessibilityVisibleChildren {
+    NSRange range = [self visiblePageIndexRange];
+    return [self accessibilityChildrenForPageRange:range visible:YES];
 }
 
 #pragma mark Snapshots
