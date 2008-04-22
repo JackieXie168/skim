@@ -562,6 +562,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (mode != [self displayMode]) {
         [super setDisplayMode:mode];
         [self relayoutEditField];
+        [accessibilityChildren release];
+        accessibilityChildren = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayModeChangedNotification object:self userInfo:nil];
     }
 }
@@ -2154,28 +2156,27 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (NSArray *)accessibilityChildren {
-    if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
+    if (accessibilityChildren == nil) {
         unsigned pageCount = [[self document] pageCount];
-        NSRange range = pageCount ? NSMakeRange([[self currentPage] pageIndex], 1) : NSMakeRange(NSNotFound, 0);
-        if (pageCount && [self displayMode] == kPDFDisplayTwoUp) {
-            range.length = 2;
-            if ((unsigned)[self displaysAsBook] != (range.location % 2)) {
-                if (range.location == 0)
+        NSRange range = NSMakeRange(0, pageCount);
+        if (pageCount && ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp)) {
+            NSRange range = NSMakeRange([[self currentPage] pageIndex], 1);
+            if ([self displayMode] == kPDFDisplayTwoUp) {
+                range.length = 2;
+                if ((unsigned)[self displaysAsBook] != (range.location % 2)) {
+                    if (range.location == 0)
+                        range.length = 1;
+                    else
+                        range.location -= 1;
+                }
+                if (NSMaxRange(range) == pageCount)
                     range.length = 1;
-                else
-                    range.location -= 1;
             }
-            if (NSMaxRange(range) == pageCount)
-                range.length = 1;
+            return [self accessibilityChildrenForPageRange:range visible:NO];
         }
-        return [self accessibilityChildrenForPageRange:range visible:NO];
-    } else {
-        if (accessibilityChildren == nil) {
-            NSRange range = NSMakeRange(0, [[self document] pageCount]);
-            accessibilityChildren = [[self accessibilityChildrenForPageRange:range visible:NO] mutableCopy];
-        }
-        return accessibilityChildren;
+        accessibilityChildren = [[self accessibilityChildrenForPageRange:range visible:NO] mutableCopy];
     }
+    return accessibilityChildren;
 }
 
 - (NSArray *)accessibilityVisibleChildren {
@@ -2226,8 +2227,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark Notification handling
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    if ([self isEditing] && [self displayMode] != kPDFDisplaySinglePageContinuous && [self displayMode] != kPDFDisplayTwoUpContinuous)
-        [self relayoutEditField];
+    if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
+        if ([self isEditing])
+            [self relayoutEditField];
+        [accessibilityChildren release];
+        accessibilityChildren = nil;
+    }
     if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
         [self setNeedsDisplay:YES];
 }
