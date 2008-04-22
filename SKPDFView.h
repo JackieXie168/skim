@@ -106,6 +106,8 @@ typedef enum _SKInteractionMode {
     
     SKTypeSelectHelper *typeSelectHelper;
     
+    NSMutableArray *accessibilityChildren;
+    
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
     NSTextField *editField;
@@ -192,8 +194,8 @@ typedef enum _SKInteractionMode {
 - (void)resetHoverRects;
 - (void)removeHoverRects;
 
-- (NSRange)visiblePageIndexRange;
-- (NSRect)visibleContentRect;
+- (NSArray *)accessibilityChildren;
+- (NSArray *)accessibilityVisibleChildren;
 
 - (NSUndoManager *)undoManager;
 

@@ -1,5 +1,5 @@
 //
-//  PDFDisplayView_SKExtensions.h
+//  SKAccessibilityPDFAnnotationElement.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -37,18 +37,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 
+@class PDFAnnotation, SKPDFView;
 
-@interface PDFDisplayView : NSView
-- (void)passwordEntered:(id)sender;
-@end
-
-@interface PDFDisplayView (SKExtensions)
-@end
-
-@interface SKAccessibilityPDFDisplayViewElement : NSObject {
+@interface SKAccessibilityPDFAnnotationElement : NSObject {
+    PDFAnnotation *annotation;
+    SKPDFView *pdfView;
     id parent;
 }
-- (id)initWithParent:(id)aParent;
+- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent;
 @end
