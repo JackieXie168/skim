@@ -81,16 +81,21 @@ typedef enum _SKNoteType {
     SKLineNote
 } SKNoteType;
 
+typedef enum _SKInteractionMode {
+    SKNormalMode,
+    SKFullScreenMode,
+    SKPresentationMode
+} SKInteractionMode;
+
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper;
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
     SKNoteType annotationMode;
+    SKInteractionMode interactionMode;
     
     BOOL hideNotes;
     
-    BOOL autohidesCursor;
-    BOOL hasNavigation;
     BOOL activateNavigationAtBottom;
     NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
@@ -127,6 +132,9 @@ typedef enum _SKNoteType {
 
 - (SKNoteType)annotationMode;
 - (void)setAnnotationMode:(SKNoteType)newAnnotationMode;
+
+- (SKInteractionMode)interactionMode;
+- (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen;
 
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
@@ -173,9 +181,6 @@ typedef enum _SKNoteType {
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(unsigned int)pageIndex;
 
 - (void)takeSnapshot:(id)sender;
-
-- (void)enableNavigationActivatedAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen;
-- (void)disableNavigation;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
