@@ -102,7 +102,7 @@ static IMP originalPasswordEntered = NULL;
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[pdfView convertPoint:localPoint toPage:page]];
             if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation]) {
-                return [[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:pdfView parent:self] accessibilityHitTest:point];
+                return [[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:self] accessibilityHitTest:point];
             }
         }
         return [[SKAccessibilityPDFDisplayViewElement elementWithParent:self] accessibilityHitTest:point];
@@ -116,7 +116,7 @@ static IMP originalPasswordEntered = NULL;
     if (pdfView) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         if (annotation) {
-            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:pdfView parent:self]);
+            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:self]);
         } else {
             return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:self]);
         }
@@ -154,9 +154,14 @@ static IMP originalPasswordEntered = NULL;
 
 - (id)initWithParent:(id)aParent {
     if (self = [super init]) {
-        parent = aParent;
+        parent = [aParent retain];
     }
     return self;
+}
+
+- (void)dealloc {
+    [parent release];
+    [super dealloc];
 }
 
 - (BOOL)isEqual:(id)object {

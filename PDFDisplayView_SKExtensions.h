@@ -39,12 +39,14 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+@class SKPDFView;
 
 @interface PDFDisplayView : NSView
 - (void)passwordEntered:(id)sender;
 @end
 
 @interface PDFDisplayView (SKExtensions)
+- (SKPDFView *)skpdfView;
 @end
 
 @interface SKAccessibilityPDFDisplayViewElement : NSObject {

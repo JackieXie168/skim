@@ -38,13 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class PDFAnnotation, SKPDFView;
+@class PDFAnnotation;
 
 @interface SKAccessibilityPDFAnnotationElement : NSObject {
     PDFAnnotation *annotation;
-    SKPDFView *pdfView;
     id parent;
 }
-+ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent;
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent;
++ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
+- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
 @end
