@@ -202,6 +202,10 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return view;
 }
 
+- (BOOL)accessibilityIsIgnored {
+    return YES;
+}
+
 @end
 
 @implementation SKNavigationToolTipView

@@ -64,6 +64,8 @@
 
 - (BOOL)canBecomeMainWindow { return NO; }
 
+- (BOOL)accessibilityIsIgnored { return YES; }
+
 - (void)willClose {}
 
 - (float)defaultAlphaValue { return 1.0; }
