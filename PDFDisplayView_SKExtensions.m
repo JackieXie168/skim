@@ -104,10 +104,10 @@ static IMP originalPasswordEntered = NULL;
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[pdfView convertPoint:localPoint toPage:page]];
             if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation]) {
-                return [[[[SKAccessibilityPDFAnnotationElement alloc] initWithAnnotation:annotation pdfView:pdfView parent:self] autorelease] accessibilityHitTest:point];
+                return [[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:pdfView parent:self] accessibilityHitTest:point];
             }
         }
-        return [[[[SKAccessibilityPDFDisplayViewElement alloc] initWithParent:self] autorelease] accessibilityHitTest:point];
+        return [[SKAccessibilityPDFDisplayViewElement elementWithParent:self] accessibilityHitTest:point];
     } else {
         return originalAccessibilityHitTest(self, _cmd, point);
     }
@@ -118,9 +118,9 @@ static IMP originalPasswordEntered = NULL;
     if (pdfView) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         if (annotation) {
-            return NSAccessibilityUnignoredAncestor([[[SKAccessibilityPDFAnnotationElement alloc] initWithAnnotation:annotation pdfView:pdfView parent:self] autorelease]);
+            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:pdfView parent:self]);
         } else {
-            return NSAccessibilityUnignoredAncestor([[[SKAccessibilityPDFDisplayViewElement alloc] initWithParent:self] autorelease]);
+            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:self]);
         }
     } else {
         return originalAccessibilityFocusedUIElement(self, _cmd);
@@ -149,6 +149,10 @@ static IMP originalPasswordEntered = NULL;
 #pragma mark -
 
 @implementation SKAccessibilityPDFDisplayViewElement
+
++ (id)elementWithParent:(id)aParent {
+    return [[[self alloc] initWithParent:aParent] autorelease];
+}
 
 - (id)initWithParent:(id)aParent {
     if (self = [super init]) {
