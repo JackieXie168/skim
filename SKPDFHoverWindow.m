@@ -405,8 +405,4 @@ static inline float SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect)
     return screen;
 }
 
-- (BOOL)accessibilitIsIgnored {
-    return YES;
-}
-
 @end
