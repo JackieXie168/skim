@@ -253,6 +253,8 @@ static IMP originalPasswordEntered = NULL;
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([parent respondsToSelector:_cmd])
         [parent accessibilitySetValue:value forAttribute:attribute];
+    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute] && [value boolValue] && [[parent skpdfView] activeAnnotation])
+        [[parent skpdfView] setActiveAnnotation:nil];
 }
 
 - (NSArray *)accessibilityParameterizedAttributeNames {
