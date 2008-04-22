@@ -45,6 +45,10 @@
 
 @implementation SKAccessibilityPDFAnnotationElement
 
++ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent {
+    return [[[self alloc] elementWithAnnotation:anAnnotation pdfView:aPdfView parent:aParent] autorelease];
+}
+
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent {
     if (self = [super init]) {
         annotation = anAnnotation;

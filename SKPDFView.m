@@ -1901,8 +1901,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
-    [accessibilityChildren release];
-    accessibilityChildren = nil;
+    if (accessibilityChildren)
+        [accessibilityChildren removeObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:wasAnnotation pdfView:self parent:[self documentView]]];
     if (wasNote)
         [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
@@ -2147,7 +2147,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         while (annotation = [annotationEnum nextObject]) {
             if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation] &&
                 (onlyVisible == NO || NSIntersectsRect([self convertRect:[annotation bounds] fromPage:[annotation page]], visibleRect)))
-                [children addObject:[[[SKAccessibilityPDFAnnotationElement alloc] initWithAnnotation:annotation pdfView:self parent:[self documentView]] autorelease]];
+                [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:self parent:[self documentView]]];
         }
     }
     return children;
@@ -2172,7 +2172,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     } else {
         if (accessibilityChildren == nil) {
             NSRange range = NSMakeRange(0, [[self document] pageCount]);
-            accessibilityChildren = [[self accessibilityChildrenForPageRange:range visible:NO] copy];
+            accessibilityChildren = [[self accessibilityChildrenForPageRange:range visible:NO] mutableCopy];
         }
         return accessibilityChildren;
     }

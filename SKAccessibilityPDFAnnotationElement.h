@@ -45,5 +45,6 @@
     SKPDFView *pdfView;
     id parent;
 }
++ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent;
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent;
 @end

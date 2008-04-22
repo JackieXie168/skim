@@ -50,5 +50,6 @@
 @interface SKAccessibilityPDFDisplayViewElement : NSObject {
     id parent;
 }
++ (id)elementWithParent:(id)aParent;
 - (id)initWithParent:(id)aParent;
 @end
