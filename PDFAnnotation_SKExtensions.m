@@ -576,6 +576,10 @@ enum {
     return [self contents];
 }
 
+- (id)accessibilityURLAttribute {
+    return nil;
+}
+
 - (id)accessibilitySelectedTextAttribute {
     return @"";
 }
@@ -622,6 +626,7 @@ static IMP originalToolTip = NULL;
             NSAccessibilityRoleDescriptionAttribute,
             NSAccessibilityTitleAttribute,
             NSAccessibilityValueAttribute,
+            NSAccessibilityURLAttribute,
             NSAccessibilityParentAttribute,
             NSAccessibilityWindowAttribute,
             NSAccessibilityTopLevelUIElementAttribute,
@@ -651,9 +656,14 @@ static IMP originalToolTip = NULL;
     return title;
 }
 
+- (id)accessibilityURLAttribute {
+    return [self URL];
+}
+
 - (id)accessibilityValueAttribute {
     return [[[self page] selectionForRect:NSInsetRect([self bounds], -3.0, -3.0)] string];
 }
+
 - (id)accessibilitySelectedTextAttribute {
     return nil;
 }
