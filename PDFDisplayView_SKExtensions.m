@@ -171,21 +171,29 @@ static IMP originalPasswordEntered = NULL;
 }
 
 - (NSArray *)accessibilityAttributeNames {
-    return originalAccessibilityAttributeNames(parent, _cmd);
+    if (originalAccessibilityAttributeNames != NULL)
+        return originalAccessibilityAttributeNames(parent, _cmd);
+    else if ([parent respondsToSelector:_cmd])
+        return [parent accessibilityAttributeNames];
+    else
+        return [NSArray array];
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+    if ([attribute isEqualToString:NSAccessibilityParentAttribute])
         return NSAccessibilityUnignoredAncestor(parent);
-    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
+    else if ([attribute isEqualToString:NSAccessibilityWindowAttribute])
         // We're in the same window as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
+    else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute])
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
-    } else {
+    else if (originalAccessibilityAttributeValue != NULL)
         return originalAccessibilityAttributeValue(parent, _cmd, attribute);
-    }
+    else if ([parent respondsToSelector:_cmd])
+        return [parent accessibilityAttributeValue:attribute];
+    else
+        return nil;
 }
 
 - (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
