@@ -2325,8 +2325,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
         first = [page pageIndex];
+        page = [self pageForPoint:SKTopRightPoint(visibleRect) nearest:YES];
+        first = MIN(first, [page pageIndex]);
         page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
         last = [page pageIndex];
+        page = [self pageForPoint:SKBottomLeftPoint(visibleRect) nearest:YES];
+        last = MAX(last, [page pageIndex]);
         range = NSMakeRange(first, last - first + 1);
     } else {
         range = NSMakeRange(NSNotFound, 0);
