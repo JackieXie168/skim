@@ -2679,7 +2679,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
     
-    [pdfView enableNavigationActivatedAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO screen:screen];
+    [pdfView setInteractionMode:SKFullScreenMode screen:screen];
     [self showSideWindowsOnScreen:screen];
 }
 
@@ -2702,7 +2702,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     else
         [self goFullScreen];
     
-    [pdfView enableNavigationActivatedAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES screen:screen];
+    [pdfView setInteractionMode:SKPresentationMode screen:screen];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -2714,7 +2714,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
-    [pdfView disableNavigation];
+    [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     

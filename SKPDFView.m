@@ -118,6 +118,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
 
+- (void)enableNavigationForScreen:(NSScreen *)screen;
+- (void)disableNavigation;
+
 - (void)autohideTimerFired:(NSTimer *)aTimer;
 - (void)doAutohide:(BOOL)flag;
 
@@ -195,6 +198,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)commonInitialization {
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
+    interactionMode = SKNormalMode;
     
     transitionController = nil;
     
@@ -204,8 +208,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     hideNotes = NO;
     
-    autohidesCursor = NO;
-    hasNavigation = NO;
     autohideTimer = nil;
     navWindow = nil;
     
@@ -500,6 +502,20 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
+- (SKInteractionMode)interactionMode {
+    return interactionMode;
+}
+
+- (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen {
+    if (interactionMode != newInteractionMode) {
+        interactionMode = newInteractionMode;
+        if (interactionMode == SKNormalMode)
+            [self disableNavigation];
+        else
+            [self enableNavigationForScreen:screen];
+    }
+}
+
 - (PDFAnnotation *)activeAnnotation {
 	return activeAnnotation;
 }
@@ -653,14 +669,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)goToNextPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
+    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (void)goToPreviousPage:(id)sender {
-    if (hasNavigation && autohidesCursor && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
@@ -911,7 +927,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
     
-    if (hasNavigation && autohidesCursor) {
+    if (interactionMode == SKPresentationMode) {
         // Presentation mode
         if ([[[self documentView] enclosingScrollView] hasHorizontalScroller] == NO && 
             (eventChar == NSRightArrowFunctionKey) &&  (modifiers == 0)) {
@@ -995,7 +1011,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
         return;
-    } else if (hasNavigation && autohidesCursor) {
+    } else if (interactionMode == SKPresentationMode) {
         if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
             [super mouseDown:theEvent];
         } else {
@@ -1144,7 +1160,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = hasNavigation && (activateNavigationAtBottom == NO || [theEvent locationInWindow].y < 5.0);
+    BOOL shouldShowNavWindow = (interactionMode != SKNormalMode) && (activateNavigationAtBottom == NO || [theEvent locationInWindow].y < 5.0);
     if (activateNavigationAtBottom || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
             [navWindow orderFront:self];
@@ -1173,10 +1189,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSMenuItem *item;
     
     // On Leopard the selection is automatically set. In some cases we never want a selection though.
-    if ((hasNavigation && autohidesCursor) || (toolMode != SKTextToolMode && [self currentSelection]))
+    if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [self currentSelection]))
         [self setCurrentSelection:nil];
     
-    if (hasNavigation && autohidesCursor)
+    if (interactionMode == SKPresentationMode)
         return menu;
     
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -2158,38 +2174,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-#pragma mark FullScreen navigation and autohide
-
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    [navWindow orderOut:self];
-}
-
-- (void)enableNavigationActivatedAtBottom:(BOOL)activateAtBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
-    hasNavigation = YES;
-    autohidesCursor = hideCursor;
-    activateNavigationAtBottom = activateAtBottom;
-    
-    // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
-    if (navWindow != nil)
-        [navWindow release];
-    else
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
-                                                     name: NSWindowWillCloseNotification object: [self window]];
-    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
-    [navWindow moveToScreen:screen];
-    [navWindow setLevel:[[self window] level] + 1];
-    
-    [self doAutohide:YES];
-}
-
-- (void)disableNavigation {
-    hasNavigation = NO;
-    autohidesCursor = NO;
-    activateNavigationAtBottom = NO;
-    
-    [navWindow orderOut:self];
-}
-
 #pragma mark Menu validation
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
@@ -2265,16 +2249,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)doAutohide:(BOOL)flag {
-    if (autohideTimer) {
-        [autohideTimer invalidate];
-        [autohideTimer release];
-        autohideTimer = nil;
-    }
-    if (flag)
-        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
-}
-
 - (NSRect)visibleContentRect {
     NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
     return [clipView convertRect:[clipView visibleRect] toView:self];
@@ -2298,15 +2272,51 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     return range;
 }
 
-#pragma mark Autohide timer
+#pragma mark FullScreen navigation and autohide
+
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    [navWindow orderOut:self];
+}
+
+- (void)enableNavigationForScreen:(NSScreen *)screen {
+    activateNavigationAtBottom = [[NSUserDefaults standardUserDefaults] boolForKey:interactionMode == SKPresentationMode ? SKActivatePresentationNavigationAtBottomKey : SKActivateFullScreenNavigationAtBottomKey];
+    
+    // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
+    if (navWindow != nil)
+        [navWindow release];
+    else
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
+                                                     name: NSWindowWillCloseNotification object: [self window]];
+    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+    [navWindow moveToScreen:screen];
+    [navWindow setLevel:[[self window] level] + 1];
+    
+    [self doAutohide:YES];
+}
+
+- (void)disableNavigation {
+    activateNavigationAtBottom = NO;
+    
+    [navWindow orderOut:self];
+}
 
 - (void)autohideTimerFired:(NSTimer *)aTimer {
     if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
-    if (autohidesCursor)
+    if (interactionMode == SKPresentationMode)
         [NSCursor setHiddenUntilMouseMoves:YES];
-    if (hasNavigation)
+    if (interactionMode != SKNormalMode)
         [navWindow fadeOut];
+}
+
+- (void)doAutohide:(BOOL)flag {
+    if (autohideTimer) {
+        [autohideTimer invalidate];
+        [autohideTimer release];
+        autohideTimer = nil;
+    }
+    if (flag)
+        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
 }
 
 #pragma mark Event handling
@@ -3701,7 +3711,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSCursor *cursor = nil;
     
     if ([[self document] isLocked]) {
-    } else if (hasNavigation && autohidesCursor) {
+    } else if (interactionMode == SKPresentationMode) {
         if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
             cursor = [NSCursor pointingHandCursor];
         else
