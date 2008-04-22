@@ -195,7 +195,6 @@ typedef enum _SKInteractionMode {
 - (void)removeHoverRects;
 
 - (NSArray *)accessibilityChildren;
-- (NSArray *)accessibilityVisibleChildren;
 
 - (NSUndoManager *)undoManager;
 

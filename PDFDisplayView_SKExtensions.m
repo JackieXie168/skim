@@ -71,7 +71,7 @@ static IMP originalPasswordEntered = NULL;
 
 - (NSArray *)replacementAccessibilityAttributeNames {
     if ([self skpdfView])
-        return [originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityChildrenAttribute, NSAccessibilityVisibleChildrenAttribute, nil]];
+        return [originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute];
     else
         return originalAccessibilityAttributeNames(self, _cmd);
 }
@@ -86,8 +86,6 @@ static IMP originalPasswordEntered = NULL;
         return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
     } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
         return NSAccessibilityUnignoredChildren([pdfView accessibilityChildren]);
-    } else if ([attribute isEqualToString:NSAccessibilityVisibleChildrenAttribute]) {
-        return NSAccessibilityUnignoredChildren([pdfView accessibilityVisibleChildren]);
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
         NSNumber *focused = originalAccessibilityAttributeValue(self, _cmd, attribute);
         return [NSNumber numberWithBool:[pdfView activeAnnotation] == nil && [focused boolValue]];
