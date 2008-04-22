@@ -317,23 +317,7 @@ static IMP originalPasswordEntered = NULL;
 }
 
 - (NSArray *)accessibilityAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil) {
-	attributes = [[NSArray alloc] initWithObjects:
-	    NSAccessibilityRoleAttribute,
-	    NSAccessibilityRoleDescriptionAttribute,
-        NSAccessibilityTitleAttribute,
-        NSAccessibilityValueAttribute,
-	    NSAccessibilityParentAttribute,
-	    NSAccessibilityWindowAttribute,
-	    NSAccessibilityTopLevelUIElementAttribute,
-	    NSAccessibilityFocusedAttribute,
-	    NSAccessibilityEnabledAttribute,
-        NSAccessibilityPositionAttribute,
-        NSAccessibilitySizeAttribute,
-	    nil];
-    }
-    return attributes;
+    return [annotation accessibilityAttributeNames];
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
