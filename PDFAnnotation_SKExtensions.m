@@ -536,6 +536,30 @@ enum {
 
 #pragma mark Accessibility
 
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+        attributes = [[NSArray alloc] initWithObjects:
+            NSAccessibilityRoleAttribute,
+            NSAccessibilityRoleDescriptionAttribute,
+            NSAccessibilityTitleAttribute,
+            NSAccessibilityValueAttribute,
+            NSAccessibilityParentAttribute,
+            NSAccessibilityWindowAttribute,
+            NSAccessibilityTopLevelUIElementAttribute,
+            NSAccessibilityFocusedAttribute,
+            NSAccessibilityEnabledAttribute,
+            NSAccessibilityPositionAttribute,
+            NSAccessibilitySizeAttribute,
+            NSAccessibilitySelectedTextAttribute,
+            NSAccessibilitySelectedTextRangeAttribute,
+            NSAccessibilityNumberOfCharactersAttribute,
+            NSAccessibilityVisibleCharacterRangeAttribute,
+            nil];
+    }
+    return attributes;
+}
+
 - (id)accessibilityRoleAttribute {
     return NSAccessibilityStaticTextRole;
 }
@@ -588,6 +612,26 @@ static IMP originalToolTip = NULL;
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
         originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
+}
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+        attributes = [[NSArray alloc] initWithObjects:
+            NSAccessibilityRoleAttribute,
+            NSAccessibilityRoleDescriptionAttribute,
+            NSAccessibilityTitleAttribute,
+            NSAccessibilityValueAttribute,
+            NSAccessibilityParentAttribute,
+            NSAccessibilityWindowAttribute,
+            NSAccessibilityTopLevelUIElementAttribute,
+            NSAccessibilityFocusedAttribute,
+            NSAccessibilityEnabledAttribute,
+            NSAccessibilityPositionAttribute,
+            NSAccessibilitySizeAttribute,
+            nil];
+    }
+    return attributes;
 }
 
 - (id)accessibilityRoleAttribute {

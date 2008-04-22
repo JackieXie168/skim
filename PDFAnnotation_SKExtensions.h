@@ -140,6 +140,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (unsigned long)scriptingEndLineStyle;
 - (id)selectionSpecifier;
 
+- (NSArray *)accessibilityAttributeNames;
 - (id)accessibilityRoleAttribute;
 - (id)accessibilityRoleDescriptionAttribute;
 - (id)accessibilityTitleAttribute;
