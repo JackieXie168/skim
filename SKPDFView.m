@@ -1904,7 +1904,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
     if (accessibilityChildren)
-        [accessibilityChildren removeObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:wasAnnotation pdfView:self parent:[self documentView]]];
+        [accessibilityChildren removeObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:wasAnnotation parent:[self documentView]]];
     if (wasNote)
         [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
@@ -2165,7 +2165,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             PDFAnnotation *annotation;
             while (annotation = [annotationEnum nextObject]) {
                 if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
-                    [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation pdfView:self parent:[self documentView]]];
+                    [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]];
             }
         }
         return children;

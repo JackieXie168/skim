@@ -40,35 +40,41 @@
 #import <Quartz/Quartz.h>
 #import "SKPDFView.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFDisplayView_SKExtensions.h"
 #import "SKStringConstants.h"
 
 
 @implementation SKAccessibilityPDFAnnotationElement
 
-+ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent {
-    return [[[self alloc] elementWithAnnotation:anAnnotation pdfView:aPdfView parent:aParent] autorelease];
++ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
+    return [[[self alloc] elementWithAnnotation:anAnnotation parent:aParent] autorelease];
 }
 
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation pdfView:(SKPDFView *)aPdfView parent:(id)aParent {
+- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
     if (self = [super init]) {
-        annotation = anAnnotation;
-        pdfView = aPdfView;
-        parent = aParent;
+        annotation = [anAnnotation retain];
+        parent = [aParent retain];
     }
     return self;
+}
+
+- (void)dealloc {
+    [annotation release];
+    [parent release];
+    [super dealloc];
 }
 
 - (BOOL)isEqual:(id)object {
     if ([object isKindOfClass:[SKAccessibilityPDFAnnotationElement class]]) {
         SKAccessibilityPDFAnnotationElement *other = (SKAccessibilityPDFAnnotationElement *)object;
-        return annotation == other->annotation && pdfView == other->pdfView;
+        return annotation == other->annotation && parent == other->parent;
     } else {
         return NO;
     }
 }
 
 - (unsigned int)hash {
-    return [annotation hash] + [pdfView hash];
+    return [annotation hash] + [parent hash];
 }
 
 - (NSArray *)accessibilityAttributeNames {
@@ -103,13 +109,15 @@
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[pdfView activeAnnotation] == annotation];
+        return [NSNumber numberWithBool:[[parent skpdfView] activeAnnotation] == annotation];
     } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
         return [NSNumber numberWithBool:NO];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
+        SKPDFView *pdfView = [parent skpdfView];
         NSRect rect = [pdfView convertRect:[annotation bounds] fromPage:[annotation page]];
         return [NSValue valueWithPoint:[[pdfView window] convertBaseToScreen:[pdfView convertPoint:rect.origin toView:nil]]];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
+        SKPDFView *pdfView = [parent skpdfView];
         NSRect rect = [pdfView convertRect:[annotation bounds] fromPage:[annotation page]];
         return [NSValue valueWithSize:[pdfView convertSize:rect.size toView:nil]];
     } else {
@@ -124,9 +132,9 @@
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
         if ([value boolValue])
-            [pdfView setActiveAnnotation:annotation];
-        else if ([pdfView activeAnnotation] == annotation)
-            [pdfView setActiveAnnotation:nil];
+            [[parent skpdfView] setActiveAnnotation:annotation];
+        else if ([[parent skpdfView] activeAnnotation] == annotation)
+            [[parent skpdfView] setActiveAnnotation:nil];
     }
 }
 
@@ -155,6 +163,7 @@
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction]) {
+        SKPDFView *pdfView = [parent skpdfView];
         if ([pdfView activeAnnotation] != annotation)
             [pdfView setActiveAnnotation:annotation];
         [pdfView editActiveAnnotation:self];
