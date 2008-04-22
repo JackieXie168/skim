@@ -1000,7 +1000,9 @@
 				CE2DE4D00B85D8C400D0DA12 /* Windows */,
 				CE2DE4D10B85D92F00D0DA12 /* Views */,
 				CE32DC1D0DAD282E0099414B /* Parsers */,
-				CE070EC10B89063400733CC8 /* Categories */,
+				CE070EC10B89063400733CC8 /* Foundation Categories */,
+				CEE1776D0DBDF54000E6C317 /* AppKit Categories */,
+				CEE177700DBDF60500E6C317 /* PDFKit Categories */,
 				CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */,
 			);
 			name = Classes;
@@ -1074,29 +1076,15 @@
 			name = "Third Party Sources";
 			sourceTree = "<group>";
 		};
-		CE070EC10B89063400733CC8 /* Categories */ = {
+		CE070EC10B89063400733CC8 /* Foundation Categories */ = {
 			isa = PBXGroup;
 			children = (
-				CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */,
-				CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */,
 				CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */,
 				CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */,
 				CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */,
 				CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */,
-				CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */,
-				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
-				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
-				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
-				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
-				F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */,
-				CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */,
-				CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */,
 				CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */,
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
-				CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */,
-				CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */,
-				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
-				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */,
 				CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
@@ -1105,16 +1093,10 @@
 				CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */,
 				CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */,
 				CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */,
-				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
-				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
 				CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */,
-				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
-				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
-				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
-				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
 				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
 				CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */,
@@ -1125,24 +1107,8 @@
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
-				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
-				CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */,
-				CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */,
-				CE4A8BA10BB15980004AD07D /* NSWindowController_SKExtensions.m */,
-				CEE54D860DA2E37B0037169F /* PDFAnnotation_SKExtensions.h */,
-				CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */,
-				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
-				CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */,
-				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
-				CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */,
-				CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */,
-				CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */,
-				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
-				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
-				CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */,
-				CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */,
 			);
-			name = Categories;
+			name = "Foundation Categories";
 			sourceTree = "<group>";
 		};
 		CE2BD8160BD4123D00A5F4DB /* Subprojects */ = {
@@ -1480,6 +1446,56 @@
 				CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */,
 			);
 			name = Configurations;
+			sourceTree = "<group>";
+		};
+		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
+			isa = PBXGroup;
+			children = (
+				CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */,
+				CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */,
+				CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */,
+				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
+				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
+				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
+				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
+				F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */,
+				CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */,
+				CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */,
+				CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */,
+				CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */,
+				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
+				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
+				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
+				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
+				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
+				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
+				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
+				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
+				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
+				CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */,
+				CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */,
+				CE4A8BA10BB15980004AD07D /* NSWindowController_SKExtensions.m */,
+			);
+			name = "AppKit Categories";
+			sourceTree = "<group>";
+		};
+		CEE177700DBDF60500E6C317 /* PDFKit Categories */ = {
+			isa = PBXGroup;
+			children = (
+				CEE54D860DA2E37B0037169F /* PDFAnnotation_SKExtensions.h */,
+				CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */,
+				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
+				CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */,
+				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
+				CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */,
+				CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */,
+				CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */,
+				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
+				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
+				CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */,
+				CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */,
+			);
+			name = "PDFKit Categories";
 			sourceTree = "<group>";
 		};
 		CEE22EA20BFB8631002B746B /* Shared Support */ = {
