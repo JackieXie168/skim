@@ -42,7 +42,6 @@
 #import "SKPDFDocument.h"
 #import "SKStringConstants.h"
 #import "OBUtilities.h"
-#import "SKAccessibilityPDFAnnotationElement.h"
 
 static IMP originalAccessibilityAttributeNames = NULL;
 static IMP originalAccessibilityAttributeValue = NULL;
@@ -95,53 +94,37 @@ static IMP originalPasswordEntered = NULL;
 
 - (id)replacementAccessibilityHitTest:(NSPoint)point {
     SKPDFView *pdfView = [self skpdfView];
-    if (pdfView) {
-        NSPoint localPoint = [pdfView convertPoint:[[pdfView window] convertScreenToBase:point] fromView:nil];
-        PDFPage *page = [pdfView pageForPoint:localPoint nearest:NO];
-        if (page) {
-            PDFAnnotation *annotation = [page annotationAtPoint:[pdfView convertPoint:localPoint toPage:page]];
-            if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
-                return [[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:self] accessibilityHitTest:point];
-        }
-        return [[SKAccessibilityPDFDisplayViewElement elementWithParent:self] accessibilityHitTest:point];
-    } else {
+    if (pdfView)
+        return [pdfView accessibilityChildAtPoint:point];
+    else
         return originalAccessibilityHitTest(self, _cmd, point);
-    }
 }
 
 - (id)replacementAccessibilityFocusedUIElement {
     SKPDFView *pdfView = [self skpdfView];
-    if (pdfView) {
-        PDFAnnotation *annotation = [pdfView activeAnnotation];
-        if (annotation) {
-            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:self]);
-        } else {
-            return NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:self]);
-        }
-    } else {
+    if (pdfView)
+        return [pdfView accessibilityFocusedChild];
+    else
         return originalAccessibilityFocusedUIElement(self, _cmd);
-    }
 }
 
-- (NSRect)screenRectForAnnotationElement:(id)element {
+- (NSRect)screenRectForAnnotation:(PDFAnnotation *)annotation {
     NSRect rect = NSZeroRect;
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
-        PDFAnnotation *annotation = [element annotation];
         rect = [pdfView convertRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] toView:nil];
         rect.origin = [[pdfView window] convertBaseToScreen:rect.origin];
     }
     return rect;
 }
 
-- (BOOL)isAnnotationElementFocused:(id)element {
-    return [[self skpdfView] activeAnnotation] == [element annotation];
+- (BOOL)isAnnotationFocused:(PDFAnnotation *)annotation {
+    return [[self skpdfView] activeAnnotation] == annotation;
 }
 
-- (void)setFocused:(BOOL)focused forAnnotationElement:(id)element {
+- (void)setFocused:(BOOL)focused forAnnotation:(PDFAnnotation *)annotation {
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
-        PDFAnnotation *annotation = [element annotation];
         if (focused)
             [pdfView setActiveAnnotation:annotation];
         else if ([pdfView activeAnnotation] == annotation)
@@ -149,10 +132,9 @@ static IMP originalPasswordEntered = NULL;
     }
 }
 
-- (void)pressAnnotationElement:(id)element {
+- (void)pressAnnotation:(PDFAnnotation *)annotation {
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
-        PDFAnnotation *annotation = [element annotation];
         if ([pdfView activeAnnotation] != annotation)
             [pdfView setActiveAnnotation:annotation];
         [pdfView editActiveAnnotation:self];

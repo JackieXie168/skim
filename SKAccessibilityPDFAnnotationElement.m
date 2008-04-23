@@ -76,10 +76,6 @@
     return [annotation hash] + [parent hash];
 }
 
-- (PDFAnnotation *)annotation {
-    return annotation;
-}
-
 - (NSArray *)accessibilityAttributeNames {
     return [annotation accessibilityAttributeNames];
 }
@@ -112,13 +108,13 @@
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent isAnnotationElementFocused:self]];
+        return [NSNumber numberWithBool:[parent isAnnotationFocused:annotation]];
     } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
         return [NSNumber numberWithBool:NO];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent screenRectForAnnotationElement:self].origin];
+        return [NSValue valueWithPoint:[parent screenRectForAnnotation:annotation].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent screenRectForAnnotationElement:self].size];
+        return [NSValue valueWithSize:[parent screenRectForAnnotation:annotation].size];
     } else {
         return nil;
     }
@@ -130,7 +126,7 @@
 
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent setFocused:[value boolValue] forAnnotationElement:self];
+        [parent setFocused:[value boolValue] forAnnotation:annotation];
 }
 
 - (BOOL)accessibilityIsIgnored {
@@ -158,7 +154,7 @@
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent pressAnnotationElement:self];
+        [parent pressAnnotation:annotation];
 }
 
 @end
