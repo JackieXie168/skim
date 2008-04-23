@@ -643,10 +643,6 @@ static IMP originalToolTip = NULL;
     return NSAccessibilityLinkRole;
 }
 
-- (id)accessibilityRoleDescriptionAttribute {
-    return NSAccessibilityRoleDescription([self accessibilityRoleAttribute], nil);
-}
-
 - (id)accessibilityTitleAttribute {
     NSString *title = nil;
     if (originalToolTip != NULL)
@@ -662,22 +658,6 @@ static IMP originalToolTip = NULL;
 
 - (id)accessibilityValueAttribute {
     return [[[self page] selectionForRect:NSInsetRect([self bounds], -3.0, -3.0)] string];
-}
-
-- (id)accessibilitySelectedTextAttribute {
-    return nil;
-}
-
-- (id)accessibilitySelectedTextRangeAttribute {
-    return nil;
-}
-
-- (id)accessibilityNumberOfCharactersAttribute {
-    return nil;
-}
-
-- (id)accessibilityVisibleCharacterRangeAttribute {
-    return nil;
 }
 
 @end
