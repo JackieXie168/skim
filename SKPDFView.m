@@ -2140,7 +2140,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         unsigned pageCount = [pdfDoc pageCount];
         NSRange range = NSMakeRange(0, pageCount);
         if (pageCount && ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp)) {
-            NSRange range = NSMakeRange([[self currentPage] pageIndex], 1);
+            range = NSMakeRange([[self currentPage] pageIndex], 1);
             if ([self displayMode] == kPDFDisplayTwoUp) {
                 range.length = 2;
                 if ((unsigned)[self displaysAsBook] != (range.location % 2)) {
@@ -2156,7 +2156,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         NSMutableArray *children = [NSMutableArray array];
         
-        [children addObject:[[[SKAccessibilityPDFDisplayViewElement alloc] initWithParent:[self documentView]] autorelease]];
+        [children addObject:[SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]];
         
         unsigned int i;
         for (i = range.location; i < NSMaxRange(range); i++) {
