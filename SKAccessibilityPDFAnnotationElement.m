@@ -46,7 +46,7 @@
 @implementation SKAccessibilityPDFAnnotationElement
 
 + (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
-    return [[[self alloc] elementWithAnnotation:anAnnotation parent:aParent] autorelease];
+    return [[[self alloc] initWithAnnotation:anAnnotation parent:aParent] autorelease];
 }
 
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
