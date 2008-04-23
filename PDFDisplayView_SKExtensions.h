@@ -39,17 +39,17 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-@class SKPDFView;
+@class SKPDFView, PDFAnnotation;
 
 @interface PDFDisplayView : NSView
 - (void)passwordEntered:(id)sender;
 @end
 
 @interface PDFDisplayView (SKExtensions)
-- (NSRect)screenRectForAnnotationElement:(id)element;
-- (BOOL)isAnnotationElementFocused:(id)element;
-- (void)setFocused:(BOOL)focused forAnnotationElement:(id)element;
-- (void)pressAnnotationElement:(id)element;
+- (NSRect)screenRectForAnnotation:(PDFAnnotation *)annotation;
+- (BOOL)isAnnotationFocused:(PDFAnnotation *)annotation;
+- (void)setFocused:(BOOL)focused forAnnotation:(PDFAnnotation *)annotation;
+- (void)pressAnnotation:(PDFAnnotation *)annotation;
 @end
 
 @interface SKAccessibilityPDFDisplayViewElement : NSObject {

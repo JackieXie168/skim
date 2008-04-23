@@ -2168,10 +2168,41 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]];
             }
         }
-        return children;
         accessibilityChildren = [children mutableCopy];
     }
-    return accessibilityChildren;
+    if ([self isEditing])
+        return [accessibilityChildren arrayByAddingObject:editField];
+    else
+        return accessibilityChildren;
+}
+
+- (id)accessibilityChildAtPoint:(NSPoint)point {
+    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
+    id child = nil;
+    if ([self isEditing] && NSPointInRect([self convertPoint:localPoint toView:[self documentView]], [editField frame])) {
+        child = NSAccessibilityUnignoredDescendant(editField);
+    } else {
+        PDFPage *page = [self pageForPoint:localPoint nearest:NO];
+        if (page) {
+            PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
+            if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
+                child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]);
+        }
+    }
+    if (child == nil)
+        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    return [child accessibilityHitTest:point];
+}
+
+- (id)accessibilityFocusedChild {
+    id child = nil;
+    if ([self isEditing])
+        child = NSAccessibilityUnignoredDescendant(editField);
+    else if (activeAnnotation)
+        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:activeAnnotation parent:[self documentView]]);
+    else
+        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    return [child accessibilityFocusedUIElement];
 }
 
 #pragma mark Snapshots
