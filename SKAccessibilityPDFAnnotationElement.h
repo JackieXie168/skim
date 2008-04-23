@@ -46,4 +46,5 @@
 }
 + (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
+- (PDFAnnotation *)annotation;
 @end
