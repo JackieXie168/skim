@@ -295,6 +295,44 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     else
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
 }
+#pragma mark Accessibility
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+        attributes = [[NSArray alloc] initWithObjects:
+            NSAccessibilityRoleAttribute,
+            NSAccessibilityRoleDescriptionAttribute,
+            NSAccessibilityTitleAttribute,
+            NSAccessibilityValueAttribute,
+            NSAccessibilityDescriptionAttribute,
+            NSAccessibilityParentAttribute,
+            NSAccessibilityWindowAttribute,
+            NSAccessibilityTopLevelUIElementAttribute,
+            NSAccessibilityFocusedAttribute,
+            NSAccessibilityEnabledAttribute,
+            NSAccessibilityPositionAttribute,
+            NSAccessibilitySizeAttribute,
+            nil];
+    }
+    return attributes;
+}
+
+- (id)accessibilityRoleAttribute {
+    return NSAccessibilityButtonRole;
+}
+
+- (id)accessibilityTitleAttribute {
+    return [self string];
+}
+
+- (id)accessibilityValueAttribute {
+    return [self contents];
+}
+
+- (id)accessibilityDescriptionAttribute {
+    return [[self type] typeName];
+}
 
 @end
 

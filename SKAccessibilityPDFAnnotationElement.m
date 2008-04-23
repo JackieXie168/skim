@@ -42,6 +42,13 @@
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKStringConstants.h"
 
+static NSString *SKAttributeWithoutAXPrefix(NSString *attribute) {
+	return [attribute hasPrefix:@"AX"] ? [attribute substringFromIndex:2] : attribute;
+}
+
+static SEL SKAttributeGetter(NSString *attribute) {
+	return NSSelectorFromString([NSString stringWithFormat:@"accessibility%@Attribute", SKAttributeWithoutAXPrefix(attribute)]);
+}
 
 @implementation SKAccessibilityPDFAnnotationElement
 
@@ -81,25 +88,7 @@
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return [annotation accessibilityRoleAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return [annotation accessibilityRoleDescriptionAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [annotation accessibilityValueAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-        return [annotation accessibilityTitleAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilitySelectedTextAttribute]) {
-        return [annotation accessibilitySelectedTextAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilitySelectedTextRangeAttribute]) {
-        return [annotation accessibilitySelectedTextRangeAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityNumberOfCharactersAttribute]) {
-        return [annotation accessibilityNumberOfCharactersAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityVisibleCharacterRangeAttribute]) {
-        return [annotation accessibilityVisibleCharacterRangeAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityURLAttribute]) {
-        return [annotation accessibilityURLAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+    if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
         return NSAccessibilityUnignoredAncestor(parent);
     } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
         // We're in the same window as our parent.
@@ -115,6 +104,9 @@
         return [NSValue valueWithPoint:[parent screenRectForAnnotation:annotation].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
         return [NSValue valueWithSize:[parent screenRectForAnnotation:annotation].size];
+    } else if ([[annotation accessibilityAttributeNames] containsObject:attribute]) {
+		SEL getter = SKAttributeGetter(attribute);
+        return [annotation respondsToSelector:getter] ? [annotation performSelector:getter] : nil;
     } else {
         return nil;
     }
