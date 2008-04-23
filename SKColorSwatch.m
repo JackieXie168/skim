@@ -546,17 +546,17 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-	attributes = [[NSArray alloc] initWithObjects:
-	    NSAccessibilityRoleAttribute,
-	    NSAccessibilityRoleDescriptionAttribute,
-        NSAccessibilityChildrenAttribute,
-        NSAccessibilityContentsAttribute,
-	    NSAccessibilityParentAttribute,
-	    NSAccessibilityWindowAttribute,
-	    NSAccessibilityTopLevelUIElementAttribute,
-	    NSAccessibilityPositionAttribute,
-	    NSAccessibilitySizeAttribute,
-	    nil];
+        attributes = [[NSArray alloc] initWithObjects:
+            NSAccessibilityRoleAttribute,
+            NSAccessibilityRoleDescriptionAttribute,
+            NSAccessibilityChildrenAttribute,
+            NSAccessibilityContentsAttribute,
+            NSAccessibilityParentAttribute,
+            NSAccessibilityWindowAttribute,
+            NSAccessibilityTopLevelUIElementAttribute,
+            NSAccessibilityPositionAttribute,
+            NSAccessibilitySizeAttribute,
+            nil];
     }
     return attributes;
 }
@@ -572,25 +572,6 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         for (i = 0; i < count; i++)
             [children addObject:[[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i colorSwatch:self] autorelease]];
         return NSAccessibilityUnignoredChildren(children);
-    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
-        id parent = [self superview];
-        if (parent == nil)
-            parent = [self window];
-        return NSAccessibilityUnignoredAncestor(parent);
-    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
-        id parent = [self superview];
-        if (parent == nil)
-            parent = [self window];
-        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
-        id parent = [self superview];
-        if (parent == nil)
-            parent = [self window];
-        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:[self bounds].origin toView:nil]]];
-    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[self convertSize:[self bounds].size toView:nil]];
     } else {
         return [super accessibilityAttributeValue:attribute];
     }
