@@ -1,37 +1,54 @@
 {
-    IBClasses = (
-        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSObject; LANGUAGE = ObjC; }, 
-        {
-            ACTIONS = {
-                cancelDownload = id; 
-                clearDownloads = id; 
-                dismissDownloadsPreferences = id; 
-                removeDownload = id; 
-                showDownloadPreferences = id; 
-            }; 
-            CLASS = SKDownloadController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                clearButton = NSButton; 
-                preferencesSheet = NSWindow; 
-                tableView = SKTableView; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = SKProgressCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
-        {
-            ACTIONS = {delete = id; scrollToBeginningOfDocument = id; scrollToEndOfDocument = id; }; 
-            CLASS = SKTableView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSTableView; 
+    IBClasses =     (
+                {
+            CLASS = BDSKGradientView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            ACTIONS =             {
+                "" = id;
+            };
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            ACTIONS =             {
+                cancelDownload = id;
+                clearDownloads = id;
+                dismissDownloadsPreferences = id;
+                removeDownload = id;
+                showDownloadPreferences = id;
+            };
+            CLASS = SKDownloadController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                clearButton = NSButton;
+                preferencesSheet = NSWindow;
+                tableView = SKTableView;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = SKProgressCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSTextFieldCell;
+        },
+                {
+            ACTIONS =             {
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
+            CLASS = SKTableView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSTableView;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
