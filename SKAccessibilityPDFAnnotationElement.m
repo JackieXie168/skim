@@ -139,7 +139,7 @@
 }
 
 - (BOOL)accessibilityIsIgnored {
-    return NO;
+    return [[annotation type] isEqualtoString:SKLinkString] || [[parent skpdfView] hideNotes] == NO;
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
