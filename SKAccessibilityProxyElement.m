@@ -37,7 +37,6 @@
  */
 
 #import "SKAccessibilityProxyElement.h"
-#import "PDFDisplayView_SKExtensions.h"
 
 static NSString *SKAttributeWithoutAXPrefix(NSString *attribute) {
 	return [attribute hasPrefix:@"AX"] ? [attribute substringFromIndex:2] : attribute;
