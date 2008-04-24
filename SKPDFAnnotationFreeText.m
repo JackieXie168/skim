@@ -204,6 +204,10 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return [NSNumber numberWithBool:YES];
 }
 
+- (NSArray *)accessibilityActionNames {
+    return [NSArray arrayWithObject:NSAccessibilityPressAction];
+}
+
 @end
 
 #pragma mark -

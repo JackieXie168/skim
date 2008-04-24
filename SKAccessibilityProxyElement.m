@@ -1,5 +1,5 @@
 //
-//  SKAccessibilityPDFAnnotationElement.m
+//  SKAccessibilityProxyElement.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -36,11 +36,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKAccessibilityPDFAnnotationElement.h"
-#import <Quartz/Quartz.h>
-#import "PDFAnnotation_SKExtensions.h"
+#import "SKAccessibilityProxyElement.h"
 #import "PDFDisplayView_SKExtensions.h"
-#import "SKStringConstants.h"
 
 static NSString *SKAttributeWithoutAXPrefix(NSString *attribute) {
 	return [attribute hasPrefix:@"AX"] ? [attribute substringFromIndex:2] : attribute;
@@ -50,41 +47,41 @@ static SEL SKAttributeGetter(NSString *attribute) {
 	return NSSelectorFromString([NSString stringWithFormat:@"accessibility%@Attribute", SKAttributeWithoutAXPrefix(attribute)]);
 }
 
-@implementation SKAccessibilityPDFAnnotationElement
+@implementation SKAccessibilityProxyElement
 
-+ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
-    return [[[self alloc] initWithAnnotation:anAnnotation parent:aParent] autorelease];
++ (id)elementWithObject:(id)anObject parent:(id)aParent {
+    return [[[self alloc] initWithObject:anObject parent:aParent] autorelease];
 }
 
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent {
+- (id)initWithObject:(id)anObject parent:(id)aParent {
     if (self = [super init]) {
-        annotation = [anAnnotation retain];
+        object = [anObject retain];
         parent = [aParent retain];
     }
     return self;
 }
 
 - (void)dealloc {
-    [annotation release];
+    [object release];
     [parent release];
     [super dealloc];
 }
 
-- (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[SKAccessibilityPDFAnnotationElement class]]) {
-        SKAccessibilityPDFAnnotationElement *other = (SKAccessibilityPDFAnnotationElement *)object;
-        return annotation == other->annotation && parent == other->parent;
+- (BOOL)isEqual:(id)other {
+    if ([object isKindOfClass:[SKAccessibilityProxyElement class]]) {
+        SKAccessibilityProxyElement *element = (SKAccessibilityProxyElement *)other;
+        return object == element->object && parent == element->parent;
     } else {
         return NO;
     }
 }
 
 - (unsigned int)hash {
-    return [annotation hash] + [parent hash];
+    return [object hash] + [parent hash];
 }
 
 - (NSArray *)accessibilityAttributeNames {
-    return [annotation accessibilityAttributeNames];
+    return [object respondsToSelector:_cmd] ? [object performSelector:_cmd] : [NSArray array];
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
@@ -97,14 +94,14 @@ static SEL SKAttributeGetter(NSString *attribute) {
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent isAnnotationFocused:annotation]];
+        return [NSNumber numberWithBool:[parent isRepresentedObjectFocused:object]];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent screenRectForAnnotation:annotation].origin];
+        return [NSValue valueWithPoint:[parent screenRectForRepresentedObject:object].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent screenRectForAnnotation:annotation].size];
-    } else if ([[annotation accessibilityAttributeNames] containsObject:attribute]) {
+        return [NSValue valueWithSize:[parent screenRectForRepresentedObject:object].size];
+    } else if ([[self accessibilityAttributeNames] containsObject:attribute]) {
 		SEL getter = SKAttributeGetter(attribute);
-        return [annotation respondsToSelector:getter] ? [annotation performSelector:getter] : nil;
+        return [object respondsToSelector:getter] ? [object performSelector:getter] : nil;
     } else {
         return nil;
     }
@@ -116,11 +113,11 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent setFocused:[value boolValue] forAnnotation:annotation];
+        [parent setFocused:[value boolValue] forRepresentedObject:object];
 }
 
 - (BOOL)accessibilityIsIgnored {
-    return [annotation shouldDisplay] == NO;
+    return [object respondsToSelector:_cmd] ? [object accessibilityIsIgnored] : NO;
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
@@ -132,10 +129,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSArray *)accessibilityActionNames {
-    if ([annotation isLink] || [annotation isEditable])
-        return [NSArray arrayWithObject:NSAccessibilityPressAction];
-    else
-        return [NSArray array];
+    return [object respondsToSelector:_cmd] ? [object performSelector:_cmd] : [NSArray array];
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction {
@@ -144,7 +138,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent pressAnnotation:annotation];
+        [parent pressRepresentedObject:object];
 }
 
 @end
