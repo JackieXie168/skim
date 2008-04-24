@@ -155,7 +155,7 @@ const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconTyp
     }
 }
 
-int SKPDFLineStyleFromFDLineStyleF(const char *name) {
+int SKPDFLineStyleFromFDFLineStyle(const char *name) {
     if (strcmp(name, SKFDFLineStyleNone) == 0)
         return kPDFLineStyleNone;
     else if (strcmp(name, SKFDFLineStyleSquare) == 0)
@@ -322,10 +322,10 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
         int endStyle = kPDFLineStyleNone;
         if (CGPDFArrayGetCount(array) == 2) {
             if (CGPDFArrayGetName(array, 0, &name)) {
-                startStyle = SKPDFLineStyleFromFDLineStyleF(name);
+                startStyle = SKPDFLineStyleFromFDFLineStyle(name);
             }
             if (CGPDFArrayGetName(array, 1, &name)) {
-                endStyle = SKPDFLineStyleFromFDLineStyleF(name);
+                endStyle = SKPDFLineStyleFromFDFLineStyle(name);
             }
         }
         [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:SKPDFAnnotationEndLineStyleKey];
