@@ -574,6 +574,10 @@ enum {
     return [self contents];
 }
 
+- (id)accessibilityEnabledAttribute {
+    return [NSNumber numberWithBool:NO];
+}
+
 @end
 
 #pragma mark -
@@ -625,6 +629,10 @@ static IMP originalToolTip = NULL;
 
 - (id)accessibilityValueAttribute {
     return [[[self page] selectionForRect:NSInsetRect([self bounds], -3.0, -3.0)] string];
+}
+
+- (id)accessibilityEnabledAttribute {
+    return [NSNumber numberWithBool:YES];
 }
 
 @end
