@@ -14,21 +14,6 @@
             SUPERCLASS = SKSheetController;
         },
                 {
-            CLASS = SKPageSheetController;
-            LANGUAGE = ObjC;
-            SUPERCLASS = SKSheetController;
-        },
-                {
-            CLASS = SKPasswordSheetController;
-            LANGUAGE = ObjC;
-            SUPERCLASS = SKSheetController;
-        },
-                {
-            CLASS = SKScaleSheetController;
-            LANGUAGE = ObjC;
-            SUPERCLASS = SKSheetController;
-        },
-                {
             ACTIONS =             {
                 dismiss = id;
             };
