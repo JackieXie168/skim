@@ -297,6 +297,8 @@ enum {
 
 - (BOOL)isMarkup { return NO; }
 
+- (BOOL)isLink { return NO; }
+
 - (BOOL)isResizable { return NO; }
 
 - (BOOL)isMovable { return NO; }
@@ -551,17 +553,13 @@ enum {
             NSAccessibilityEnabledAttribute,
             NSAccessibilityPositionAttribute,
             NSAccessibilitySizeAttribute,
-            NSAccessibilitySelectedTextAttribute,
-            NSAccessibilitySelectedTextRangeAttribute,
-            NSAccessibilityNumberOfCharactersAttribute,
-            NSAccessibilityVisibleCharacterRangeAttribute,
             nil];
     }
     return attributes;
 }
 
 - (id)accessibilityRoleAttribute {
-    return NSAccessibilityStaticTextRole;
+    return NSAccessibilityUnknownRole;
 }
 
 - (id)accessibilityRoleDescriptionAttribute {
@@ -574,26 +572,6 @@ enum {
 
 - (id)accessibilityValueAttribute {
     return [self contents];
-}
-
-- (id)accessibilityURLAttribute {
-    return nil;
-}
-
-- (id)accessibilitySelectedTextAttribute {
-    return @"";
-}
-
-- (id)accessibilitySelectedTextRangeAttribute {
-    return [NSValue valueWithRange:NSMakeRange(0, 0)];
-}
-
-- (id)accessibilityNumberOfCharactersAttribute {
-    return [NSNumber numberWithUnsignedInt:[[self accessibilityValueAttribute] length]];
-}
-
-- (id)accessibilityVisibleCharacterRangeAttribute {
-    return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
 }
 
 @end
@@ -618,23 +596,12 @@ static IMP originalToolTip = NULL;
         originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
 }
 
+- (BOOL)isLink { return YES; }
+
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-        attributes = [[NSArray alloc] initWithObjects:
-            NSAccessibilityRoleAttribute,
-            NSAccessibilityRoleDescriptionAttribute,
-            NSAccessibilityTitleAttribute,
-            NSAccessibilityValueAttribute,
-            NSAccessibilityURLAttribute,
-            NSAccessibilityParentAttribute,
-            NSAccessibilityWindowAttribute,
-            NSAccessibilityTopLevelUIElementAttribute,
-            NSAccessibilityFocusedAttribute,
-            NSAccessibilityEnabledAttribute,
-            NSAccessibilityPositionAttribute,
-            NSAccessibilitySizeAttribute,
-            nil];
+        attributes = [[[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityURLAttribute] retain];
     }
     return attributes;
 }

@@ -177,7 +177,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     
     [self cancelDelayedAnimations];
     
-    if ([[annotation type] isEqualToString:SKLinkString]) {
+    if ([annotation isLink]) {
         
         PDFDestination *dest = [annotation destination];
         PDFPage *page = [dest page];
