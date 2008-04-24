@@ -70,6 +70,9 @@
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityPDFAnnotationElement.h"
 
+#define ANNOTATION_MODE_COUNT 8
+#define TOOL_MODE_COUNT 5
+
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -981,9 +984,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         } else if ([self hasReadingBar] && isUpDownArrow && (modifiers == resizeReadingBarModifiers)) {
             [self doResizeReadingBarForKey:eventChar];
         } else if (isLeftRightArrow && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-            [self setToolMode:(toolMode + (eventChar == NSRightArrowFunctionKey ? 1 : 4)) % 5];
+            [self setToolMode:(toolMode + (eventChar == NSRightArrowFunctionKey ? 1 : TOOL_MODE_COUNT - 1)) % TOOL_MODE_COUNT];
         } else if (isUpDownArrow && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-            [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : 7)) % 8];
+            [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : ANNOTATION_MODE_COUNT - 1)) % ANNOTATION_MODE_COUNT];
         } else if ([activeAnnotation isMovable] && isArrow && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
@@ -1268,18 +1271,11 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
     [item setTarget:self];
     
-    if ([self toolMode] == SKTextToolMode) {
+    if ([self toolMode] == SKTextToolMode && [[self currentSelection] string] && NSAppKitVersionNumber <= NSAppKitVersionNumber10_4) {
         
-        long version;
-        OSStatus err = Gestalt(gestaltSystemVersion, &version);
-        
-        if ([[self currentSelection] string] && noErr == err && version < 0x00001050) {
+        [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
             
-            [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
-            
-            item = [menu insertItemWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@"" atIndex:0];
-        }
-    
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@"" atIndex:0];
     }
     
     if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
