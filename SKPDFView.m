@@ -348,13 +348,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         for (i = 0; i < count; i++) {
             PDFAnnotation *annotation = [allAnnotations objectAtIndex: i];
-            if ([[annotation type] isEqualToString:SKLinkString]) 	 
+            if ([annotation isLink]) 	 
                 [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
         }
         
         // activeAnnotation may be a leftover, and we don't want to outline it on the wrong page
         if (activeAnnotation && [[activeAnnotation page] isEqual:pdfPage]) {
-            BOOL isLink = [[activeAnnotation type] isEqualToString:SKLinkString];
+            BOOL isLink = [activeAnnotation isLink];
             float lineWidth = isLink ? 2.0 : 1.0;
             NSRect bounds = [activeAnnotation bounds];
             NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
@@ -1015,7 +1015,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-    if ([[activeAnnotation type] isEqualToString:SKLinkString])
+    if ([activeAnnotation isLink])
         [self setActiveAnnotation:nil];
     
     mouseDownLoc = [theEvent locationInWindow];
@@ -1109,7 +1109,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                      [self setNeedsDisplayInRect:selectionRect]; 	 
                      selectionRect = NSZeroRect; 	 
                      [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self]; 	 
-                 } else if ([[activeAnnotation type] isEqualToString:SKLinkString]) { 	 
+                 } else if ([activeAnnotation isLink]) { 	 
                      NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil]; 	 
                      PDFPage *page = [self pageForPoint:p nearest:NO]; 	 
                      if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds])) 	 
@@ -1167,7 +1167,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     else
         [super mouseMoved:theEvent];
     
-    if ([[activeAnnotation type] isEqualToString:SKLinkString]) {
+    if ([activeAnnotation isLink]) {
         [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
         [self setActiveAnnotation:nil];
     }
@@ -2032,7 +2032,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
         while (++i < (int)[annotations count] && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [[annotation type] isEqualToString:SKLinkString] == NO)
+            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [annotation isLink] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -2046,7 +2046,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (annotation) {
         [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
-        if ([[annotation type] isEqualToString:SKLinkString] || [annotation text]) {
+        if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
@@ -2080,7 +2080,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     while (annotation == nil) {
         while (--i >= 0 && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [[annotation type] isEqualToString:SKLinkString] == NO)
+            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [annotation isLink] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -2095,7 +2095,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (annotation) {
         [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
-        if ([[annotation type] isEqualToString:SKLinkString] || [annotation text]) {
+        if ([annotation isLink] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
@@ -2160,7 +2160,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             NSEnumerator *annotationEnum = [[page annotations] objectEnumerator];
             PDFAnnotation *annotation;
             while (annotation = [annotationEnum nextObject]) {
-                if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
+                if ([annotation isLink] || [annotation isNoteAnnotation])
                     [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]];
             }
         }
@@ -2181,7 +2181,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         PDFPage *page = [self pageForPoint:localPoint nearest:NO];
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
-            if ([[annotation type] isEqualToString:SKLinkString] || [annotation isNoteAnnotation])
+            if ([annotation isLink] || [annotation isNoteAnnotation])
                 child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]);
         }
     }
@@ -2858,7 +2858,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([annotation isTemporaryAnnotation]) {
                 // register this, so we can do our own selection later
                 mouseDownInAnnotation = YES;
-            } else if ([[annotation type] isEqualToString:SKLinkString]) {
+            } else if ([annotation isLink]) {
                 if (mouseDownInAnnotation && (toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote))
                     newActiveAnnotation = annotation;
                 break;

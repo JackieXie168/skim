@@ -108,6 +108,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 - (BOOL)isNoteAnnotation;
 - (BOOL)isMarkup;
+- (BOOL)isLink;
 - (BOOL)isResizable;
 - (BOOL)isMovable;
 - (BOOL)isEditable;
@@ -145,10 +146,5 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (id)accessibilityRoleDescriptionAttribute;
 - (id)accessibilityTitleAttribute;
 - (id)accessibilityValueAttribute;
-- (id)accessibilityURLAttribute;
-- (id)accessibilitySelectedTextAttribute;
-- (id)accessibilitySelectedTextRangeAttribute;
-- (id)accessibilityNumberOfCharactersAttribute;
-- (id)accessibilityVisibleCharacterRangeAttribute;
 
 @end

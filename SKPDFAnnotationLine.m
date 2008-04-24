@@ -301,6 +301,41 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     [self setEndLineStyle:SKLineStyleFromScriptingLineStyle(style)];
 }
 
+#pragma mark Accessibility
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil) {
+        attributes = [[[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+            NSAccessibilitySelectedTextAttribute,
+            NSAccessibilitySelectedTextRangeAttribute,
+            NSAccessibilityNumberOfCharactersAttribute,
+            NSAccessibilityVisibleCharacterRangeAttribute,
+            nil]] retain];
+    }
+    return attributes;
+}
+
+- (id)accessibilityRoleAttribute {
+    return NSAccessibilityStaticTextRole;
+}
+
+- (id)accessibilitySelectedTextAttribute {
+    return @"";
+}
+
+- (id)accessibilitySelectedTextRangeAttribute {
+    return [NSValue valueWithRange:NSMakeRange(0, 0)];
+}
+
+- (id)accessibilityNumberOfCharactersAttribute {
+    return [NSNumber numberWithUnsignedInt:[[self accessibilityValueAttribute] length]];
+}
+
+- (id)accessibilityVisibleCharacterRangeAttribute {
+    return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
+}
+
 @end
 
 #pragma mark -
