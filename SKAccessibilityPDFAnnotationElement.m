@@ -98,8 +98,6 @@ static SEL SKAttributeGetter(NSString *attribute) {
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
         return [NSNumber numberWithBool:[parent isAnnotationFocused:annotation]];
-    } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
-        return [NSNumber numberWithBool:[annotation isEditable] || [annotation isLink]];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
         return [NSValue valueWithPoint:[parent screenRectForAnnotation:annotation].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {

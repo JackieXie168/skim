@@ -322,6 +322,10 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     return [[self type] typeName];
 }
 
+- (id)accessibilityEnabledAttribute {
+    return [NSNumber numberWithBool:YES];
+}
+
 @end
 
 #pragma mark -
