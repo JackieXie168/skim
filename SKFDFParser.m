@@ -211,6 +211,35 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
         success = NO;
     }
     
+    if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationContentsKey, &string)) {
+        NSString *contents = (NSString *)CGPDFStringCopyTextString(string);
+        if (contents)
+            [dictionary setObject:contents forKey:SKPDFAnnotationContentsKey];
+        [contents release];
+    }
+    
+    if (success) {
+        NSSet *validTypes = [NSSet setWithObjects:SKFreeTextString, SKNoteString, SKCircleString, SKSquareString, SKHighlightString, SKUnderlineString, SKStrikeOutString, SKLineString, nil];
+        NSString *type = [dictionary objectForKey:SKPDFAnnotationTypeKey];
+        NSString *contents;
+        if ([type isEqualToString:SKTextString]) {
+            [dictionary setObject:SKNoteString forKey:SKPDFAnnotationTypeKey];
+            if (contents = [dictionary objectForKey:SKPDFAnnotationContentsKey]) {
+                NSRange r = [contents rangeOfString:@"  "];
+                if (NSMaxRange(r) < [contents length]) {
+                    NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
+                                                   size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+                    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
+                                                        attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
+                    [dictionary setObject:attrString forKey:SKPDFAnnotationTextKey];
+                    [dictionary setObject:[contents substringToIndex:r.location] forKey:SKPDFAnnotationContentsKey];
+                }
+            }
+        } else if ([validTypes containsObject:type] == NO) {
+            success = NO;
+        }
+    }
+    
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationBoundsKey, &array)) {
         CGPDFReal l, b, r, t;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &l) && CGPDFArrayGetNumber(array, 1, &b) && CGPDFArrayGetNumber(array, 2, &r) && CGPDFArrayGetNumber(array, 3, &t)) {
@@ -225,13 +254,6 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
         [dictionary setObject:[NSNumber numberWithInt:integer] forKey:SKPDFAnnotationPageIndexKey];
     } else {
         success = NO;
-    }
-    
-    if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationContentsKey, &string)) {
-        NSString *contents = (NSString *)CGPDFStringCopyTextString(string);
-        if (contents)
-            [dictionary setObject:contents forKey:SKPDFAnnotationContentsKey];
-        [contents release];
     }
     
     if (success) {
@@ -358,28 +380,6 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
            }
            [da release];
        }
-    }
-    
-    if (success) {
-        NSSet *validTypes = [NSSet setWithObjects:SKFreeTextString, SKNoteString, SKCircleString, SKSquareString, SKHighlightString, SKUnderlineString, SKStrikeOutString, SKLineString, nil];
-        NSString *type = [dictionary objectForKey:SKPDFAnnotationTypeKey];
-        NSString *contents;
-        if ([type isEqualToString:SKTextString]) {
-            [dictionary setObject:SKNoteString forKey:SKPDFAnnotationTypeKey];
-            if (contents = [dictionary objectForKey:SKPDFAnnotationContentsKey]) {
-                NSRange r = [contents rangeOfString:@"  "];
-                if (NSMaxRange(r) < [contents length]) {
-                    NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
-                                                   size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
-                    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
-                                                        attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
-                    [dictionary setObject:attrString forKey:SKPDFAnnotationTextKey];
-                    [dictionary setObject:[contents substringToIndex:r.location] forKey:SKPDFAnnotationContentsKey];
-                }
-            }
-        } else if ([validTypes containsObject:type] == NO) {
-            success = NO;
-        }
     }
     
     return success ? dictionary : nil;
