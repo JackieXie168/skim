@@ -326,6 +326,10 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     return [NSNumber numberWithBool:YES];
 }
 
+- (NSArray *)accessibilityActionNames {
+    return [NSArray arrayWithObject:NSAccessibilityPressAction];
+}
+
 @end
 
 #pragma mark -

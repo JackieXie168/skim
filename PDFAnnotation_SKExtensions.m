@@ -578,6 +578,10 @@ enum {
     return [NSNumber numberWithBool:NO];
 }
 
+- (BOOL)accessibilityIsIgnored {
+    return [self shouldDisplay] == NO;
+}
+
 @end
 
 #pragma mark -
@@ -633,6 +637,10 @@ static IMP originalToolTip = NULL;
 
 - (id)accessibilityEnabledAttribute {
     return [NSNumber numberWithBool:YES];
+}
+
+- (NSArray *)accessibilityActionNames {
+    return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
 
 @end

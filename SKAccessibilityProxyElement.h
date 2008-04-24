@@ -1,5 +1,5 @@
 //
-//  SKAccessibilityPDFAnnotationElement.h
+//  SKAccessibilityProxyElement.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -40,10 +40,19 @@
 
 @class PDFAnnotation;
 
-@interface SKAccessibilityPDFAnnotationElement : NSObject {
-    PDFAnnotation *annotation;
+@interface SKAccessibilityProxyElement : NSObject {
+    id object;
     id parent;
 }
-+ (id)elementWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation parent:(id)aParent;
++ (id)elementWithObject:(id)anObject parent:(id)aParent;
+- (id)initWithObject:(id)anObject parent:(id)aParent;
+@end
+
+
+// parent should implement these methods
+@interface NSObject (SKAccessibilityProxyElementParent)
+- (NSRect)screenRectForRepresentedObject:(id)object;
+- (BOOL)isRepresentedObjectFocused:(id)object;
+- (void)setFocused:(BOOL)focused forRepresentedObject:(id)object;
+- (void)pressRepresentedObject:(id)object;
 @end

@@ -108,7 +108,7 @@ static IMP originalPasswordEntered = NULL;
         return originalAccessibilityFocusedUIElement(self, _cmd);
 }
 
-- (NSRect)screenRectForAnnotation:(PDFAnnotation *)annotation {
+- (NSRect)screenRectForRepresentedObject:(id)annotation {
     NSRect rect = NSZeroRect;
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
@@ -118,11 +118,11 @@ static IMP originalPasswordEntered = NULL;
     return rect;
 }
 
-- (BOOL)isAnnotationFocused:(PDFAnnotation *)annotation {
+- (BOOL)isRepresentedObjectFocused:(id)annotation {
     return [[self skpdfView] activeAnnotation] == annotation;
 }
 
-- (void)setFocused:(BOOL)focused forAnnotation:(PDFAnnotation *)annotation {
+- (void)setFocused:(BOOL)focused forRepresentedObject:(id)annotation {
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
         if (focused)
@@ -132,7 +132,7 @@ static IMP originalPasswordEntered = NULL;
     }
 }
 
-- (void)pressAnnotation:(PDFAnnotation *)annotation {
+- (void)pressRepresentedObject:(id)annotation {
     SKPDFView *pdfView = [self skpdfView];
     if (pdfView) {
         if ([pdfView activeAnnotation] != annotation)

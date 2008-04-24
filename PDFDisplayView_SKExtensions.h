@@ -46,10 +46,6 @@
 @end
 
 @interface PDFDisplayView (SKExtensions)
-- (NSRect)screenRectForAnnotation:(PDFAnnotation *)annotation;
-- (BOOL)isAnnotationFocused:(PDFAnnotation *)annotation;
-- (void)setFocused:(BOOL)focused forAnnotation:(PDFAnnotation *)annotation;
-- (void)pressAnnotation:(PDFAnnotation *)annotation;
 @end
 
 @interface SKAccessibilityPDFDisplayViewElement : NSObject {

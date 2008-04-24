@@ -68,7 +68,7 @@
 #import "BDSKEdgeView.h"
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
-#import "SKAccessibilityPDFAnnotationElement.h"
+#import "SKAccessibilityProxyElement.h"
 
 #define ANNOTATION_MODE_COUNT 8
 #define TOOL_MODE_COUNT 5
@@ -1900,7 +1900,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
     if (accessibilityChildren)
-        [accessibilityChildren removeObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:wasAnnotation parent:[self documentView]]];
+        [accessibilityChildren removeObject:[SKAccessibilityProxyElement elementWithObject:wasAnnotation parent:[self documentView]]];
     if (wasNote)
         [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
@@ -2161,7 +2161,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             PDFAnnotation *annotation;
             while (annotation = [annotationEnum nextObject]) {
                 if ([annotation isLink] || [annotation isNoteAnnotation])
-                    [children addObject:[SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]];
+                    [children addObject:[SKAccessibilityProxyElement elementWithObject:annotation parent:[self documentView]]];
             }
         }
         accessibilityChildren = [children mutableCopy];
@@ -2182,7 +2182,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
             if ([annotation isLink] || [annotation isNoteAnnotation])
-                child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:annotation parent:[self documentView]]);
+                child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyElement elementWithObject:annotation parent:[self documentView]]);
         }
     }
     if (child == nil)
@@ -2195,7 +2195,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if ([self isEditing])
         child = NSAccessibilityUnignoredDescendant(editField);
     else if (activeAnnotation)
-        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFAnnotationElement elementWithAnnotation:activeAnnotation parent:[self documentView]]);
+        child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyElement elementWithObject:activeAnnotation parent:[self documentView]]);
     else
         child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityFocusedUIElement];
