@@ -87,7 +87,7 @@ static NSCharacterSet *invertedKeyCharacterSet = nil;
     OBINITIALIZE;
     
     NSMutableCharacterSet *tmpSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
-    [tmpSet addCharactersInString:@".-:;@#"];
+    [tmpSet addCharactersInString:@".-_@#"];
     keyCharacterSet = [tmpSet copy];
     [tmpSet release];
     
