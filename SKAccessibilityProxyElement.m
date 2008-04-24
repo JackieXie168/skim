@@ -67,9 +67,9 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (BOOL)isEqual:(id)other {
-    if ([object isKindOfClass:[SKAccessibilityProxyElement class]]) {
-        SKAccessibilityProxyElement *element = (SKAccessibilityProxyElement *)other;
-        return object == element->object && parent == element->parent;
+    if ([other isKindOfClass:[SKAccessibilityProxyElement class]]) {
+        SKAccessibilityProxyElement *otherElement = (SKAccessibilityProxyElement *)other;
+        return object == otherElement->object && parent == otherElement->parent;
     } else {
         return NO;
     }
