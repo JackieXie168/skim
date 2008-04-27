@@ -570,4 +570,19 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [[self windowController] miniaturize];
 }
 
+- (void)awakeFromNib {
+	// Overrides the parent attribute of the placard so that it belongs to the window.
+	NSView *popup = [pdfView scalePopUpButton];
+	[NSAccessibilityUnignoredDescendant(popup) accessibilitySetOverrideValue:NSAccessibilityUnignoredAncestor(self) forAttribute:NSAccessibilityParentAttribute];
+	[NSAccessibilityUnignoredDescendant(popup) accessibilitySetOverrideValue:NSLocalizedString(@"Zoom", @"Zoom pop-up menu description") forAttribute:NSAccessibilityDescriptionAttribute];
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+	// Overrides the children attribute to add the placard to the children of the window.
+	if([attribute isEqualToString:NSAccessibilityChildrenAttribute])
+		return [[super accessibilityAttributeValue:attribute] arrayByAddingObject:NSAccessibilityUnignoredDescendant([pdfView scalePopUpButton])];
+	else
+		return [super accessibilityAttributeValue:attribute];
+}
+
 @end
