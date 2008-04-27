@@ -100,7 +100,9 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @end
 
 
-@interface SKSnapshotWindow : NSWindow
+@interface SKSnapshotWindow : NSWindow {
+	IBOutlet BDSKZoomablePDFView *pdfView;
+}
 @end
 
 
