@@ -1390,7 +1390,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super mouseEntered:theEvent];
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if (-1 != CFArrayGetFirstIndexOfValue(hoverRects, CFRangeMake(0, CFArrayGetCount(hoverRects)), (void *)trackingNumber)) {
+    } else if ([NSApp isActive] && -1 != CFArrayGetFirstIndexOfValue(hoverRects, CFRangeMake(0, CFArrayGetCount(hoverRects)), (void *)trackingNumber)) {
         [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
         hoverRect = trackingNumber;
     }

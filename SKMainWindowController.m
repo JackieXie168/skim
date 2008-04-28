@@ -3275,6 +3275,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest {
+    if ([NSApp isActive]) { 
         PDFAnnotationLink *annotation = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
         NSPoint point = [dest point];
         switch ([[dest page] rotation]) {
@@ -3297,6 +3298,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
         [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
         [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
+    }
 }
 
 #pragma mark Bookmarks
