@@ -44,15 +44,15 @@ extern NSString *SKPDFDocumentWillSaveNotification;
 extern NSString *SKSkimFileDidSaveNotification;
 
 enum {
-    SKASDisplaySinglePage = '1Pg ',
-    SKASDisplaySinglePageContinuous = '1PgC',
-    SKASDisplayTwoUp = '2Up ',
-    SKASDisplayTwoUpContinuous = '2UpC'
+    SKScriptingDisplaySinglePage = '1Pg ',
+    SKScriptingDisplaySinglePageContinuous = '1PgC',
+    SKScriptingDisplayTwoUp = '2Up ',
+    SKScriptingDisplayTwoUpContinuous = '2UpC'
 };
 
 enum {
-    SKASMediaBox = 'Mdia',
-    SKASCropBox = 'Crop'
+    SKScriptingMediaBox = 'Mdia',
+    SKScriptingCropBox = 'Crop'
 };
 
 

@@ -384,7 +384,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
     NSNumber *boxNumber = [args objectForKey:@"Box"];
-    PDFDisplayBox box = [boxNumber intValue] == SKASMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
+    PDFDisplayBox box = [boxNumber intValue] == SKScriptingMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
     NSRect bounds = NSZeroRect;
     
     if ([dPO isKindOfClass:[SKPDFDocument class]]) {
