@@ -1,0 +1,57 @@
+{
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                "" = id;
+            };
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = SKFontWell;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                target = id;
+            };
+            SUPERCLASS = NSButton;
+        },
+                {
+            CLASS = SKLineWell;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                target = id;
+            };
+            SUPERCLASS = NSControl;
+        },
+                {
+            ACTIONS =             {
+                changeDiscreteThumbnailSizes = id;
+                changeTeXEditorPreset = id;
+                changeUpdateInterval = id;
+                resetAll = id;
+                resetCurrent = id;
+                revertFullScreenPDFViewSettings = id;
+                revertPDFViewSettings = id;
+            };
+            CLASS = SKPreferenceController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                anchoredNoteFontWell = SKFontWell;
+                boxLineWell = SKLineWell;
+                circleLineWell = SKLineWell;
+                lineLineWell = SKLineWell;
+                revertFullScreenPDFSettingsButton = NSButton;
+                revertPDFSettingsButton = NSButton;
+                snapshotSizeSlider = NSSlider;
+                tabView = NSTabView;
+                texEditorPopUpButton = NSPopUpButton;
+                textLineWell = SKLineWell;
+                textNoteFontWell = SKFontWell;
+                thumbnailSizeSlider = NSSlider;
+            };
+            SUPERCLASS = NSWindowController;
+        }
+    );
+    IBVersion = 1;
+}

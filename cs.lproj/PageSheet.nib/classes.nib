@@ -1,0 +1,27 @@
+{
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = SKPageSheetController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKSheetController;
+        },
+                {
+            ACTIONS =             {
+                dismiss = id;
+            };
+            CLASS = SKSheetController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                textField = NSTextField;
+                theModalDelegate = id;
+            };
+            SUPERCLASS = NSWindowController;
+        }
+    );
+    IBVersion = 1;
+}
