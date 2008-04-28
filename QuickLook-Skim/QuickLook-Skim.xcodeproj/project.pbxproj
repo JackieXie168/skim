@@ -23,9 +23,6 @@
 		CEC7BCE70CF763A0008CCD63 /* Circle.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCDF0CF7639E008CCD63 /* Circle.png */; };
 		CEC7BCE80CF763A0008CCD63 /* Underline.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCE00CF7639E008CCD63 /* Underline.png */; };
 		CEC7BCE90CF763A0008CCD63 /* Highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = CEC7BCE10CF7639E008CCD63 /* Highlight.png */; };
-		CED8D45D0D744F910028E3E2 /* Skim-Common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CED8D45A0D744F910028E3E2 /* Skim-Common.xcconfig */; };
-		CED8D45E0D744F910028E3E2 /* Skim-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CED8D45B0D744F910028E3E2 /* Skim-Debug.xcconfig */; };
-		CED8D45F0D744F910028E3E2 /* Skim-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CED8D45C0D744F910028E3E2 /* Skim-Release.xcconfig */; };
 		CEF9B7BD0CF8CF50001F40F5 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEF9B7BC0CF8CF50001F40F5 /* Skim.icns */; };
 		F28CFBFD0A3EC0AF000ABFF5 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */; };
 		F28CFC030A3EC0C6000ABFF5 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */; };
@@ -52,6 +49,12 @@
 		CEC7BCDF0CF7639E008CCD63 /* Circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Circle.png; sourceTree = "<group>"; };
 		CEC7BCE00CF7639E008CCD63 /* Underline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Underline.png; sourceTree = "<group>"; };
 		CEC7BCE10CF7639E008CCD63 /* Highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Highlight.png; sourceTree = "<group>"; };
+		CECB02690DC5EB2D0000B16B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB026A0DC5EB320000B16B /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB026B0DC5EB370000B16B /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB026C0DC5EB3B0000B16B /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB026D0DC5EB3E0000B16B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB027F0DC5EB5D0000B16B /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CED8D45A0D744F910028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "../Configurations/Skim-Common.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D45B0D744F910028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "../Configurations/Skim-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D45C0D744F910028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "../Configurations/Skim-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
@@ -201,6 +204,10 @@
 				French,
 				German,
 				cs,
+				Dutch,
+				Italian,
+				ru,
+				Spanish,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* QuickLookSkim */;
 			projectDirPath = "";
@@ -226,9 +233,6 @@
 				CEC7BCE80CF763A0008CCD63 /* Underline.png in Resources */,
 				CEC7BCE90CF763A0008CCD63 /* Highlight.png in Resources */,
 				CEF9B7BD0CF8CF50001F40F5 /* Skim.icns in Resources */,
-				CED8D45D0D744F910028E3E2 /* Skim-Common.xcconfig in Resources */,
-				CED8D45E0D744F910028E3E2 /* Skim-Debug.xcconfig in Resources */,
-				CED8D45F0D744F910028E3E2 /* Skim-Release.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +268,12 @@
 			children = (
 				089C167EFE841241C02AAC07 /* English */,
 				CEE54D3D0DA2AB280037169F /* cs */,
+				CECB02690DC5EB2D0000B16B /* Dutch */,
+				CECB026A0DC5EB320000B16B /* Italian */,
+				CECB026B0DC5EB370000B16B /* French */,
+				CECB026C0DC5EB3B0000B16B /* German */,
+				CECB026D0DC5EB3E0000B16B /* ru */,
+				CECB027F0DC5EB5D0000B16B /* Spanish */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
