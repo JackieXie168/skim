@@ -192,10 +192,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     // compare horizontal position
     // rect1 before rect2
     if (NSMinX(rect1) < NSMinX(rect2))
-        return NSMinX(rect2) - NSMaxX(rect1) < 0.4 * w;
+        return NSMinX(rect2) - NSMaxX(rect1) < 1.2 * w;
     // rect1 after rect2
     if (NSMaxX(rect1) > NSMaxX(rect2))
-        return NSMinX(rect1) - NSMaxX(rect2) < 0.4 * w;
+        return NSMinX(rect1) - NSMaxX(rect2) < 1.2 * w;
     // rect1 on top of rect2
     return YES;
 }
