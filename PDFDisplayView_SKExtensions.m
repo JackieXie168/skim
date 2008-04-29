@@ -59,14 +59,19 @@ static IMP originalPasswordEntered = NULL;
         [document savePasswordInKeychain:[sender stringValue]];
 }
 
-#pragma mark Accessibility
-
 - (SKPDFView *)skpdfView {
     id pdfView = nil;
     @try { pdfView = [self valueForKey:@"pdfView"]; }
     @catch (id exception) {}
     return [pdfView isKindOfClass:[SKPDFView class]] ? pdfView : nil;
 }
+
+- (void)resetCursorRects {
+	[super resetCursorRects];
+    [[self skpdfView] resetCursorRects];
+}
+
+#pragma mark Accessibility
 
 - (NSArray *)replacementAccessibilityAttributeNames {
     if ([self skpdfView]) {
