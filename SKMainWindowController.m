@@ -125,10 +125,10 @@ static NSString *SKMainWindowImageColumnIdentifer = @"image";
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
 
-static NSString *SKSearchResultCountKey = @"count";
-static NSString *SKSearchResultPageKey = @"page";
-static NSString *SKSearchResultResultsKey = @"results";
-static NSString *SKSearchResultMaxCountKey = @"maxCount";
+static NSString *SKMainWindowSearchCountKey = @"count";
+static NSString *SKMainWindowSearchPageKey = @"page";
+static NSString *SKMainWindowSearchResultsKey = @"results";
+static NSString *SKMainWindowSearchMaxCountKey = @"maxCount";
 
 static float segmentedControlHeight = 23.0;
 static float segmentedControlOffset = 1.0;
@@ -451,7 +451,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
     
-    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKSearchResultCountKey ascending:NO] autorelease];
+    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKMainWindowSearchCountKey ascending:NO] autorelease];
     [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
     [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] dataCell] setEnabled:NO];
         
@@ -2900,20 +2900,20 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
         NSMutableDictionary *dict = [groupedSearchResults lastObject];
-        NSNumber *maxCount = [dict valueForKey:SKSearchResultMaxCountKey];
-        if ([[dict valueForKey:SKSearchResultPageKey] isEqual:page] == NO) {
-            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKSearchResultPageKey, [NSMutableArray array], SKSearchResultResultsKey, maxCount, SKSearchResultMaxCountKey, nil];
+        NSNumber *maxCount = [dict valueForKey:SKMainWindowSearchMaxCountKey];
+        if ([[dict valueForKey:SKMainWindowSearchPageKey] isEqual:page] == NO) {
+            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKMainWindowSearchPageKey, [NSMutableArray array], SKMainWindowSearchResultsKey, maxCount, SKMainWindowSearchMaxCountKey, nil];
             [groupedSearchResults addObject:dict];
         }
-        NSMutableArray *results = [dict valueForKey:SKSearchResultResultsKey];
+        NSMutableArray *results = [dict valueForKey:SKMainWindowSearchResultsKey];
         [results addObject:instance];
-        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:SKSearchResultCountKey];
+        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:SKMainWindowSearchCountKey];
         
         if ([results count] > [maxCount unsignedIntValue]) {
             NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
             maxCount = [NSNumber numberWithUnsignedInt:[results count]];
             while (dict = [dictEnum nextObject])
-                [dict setValue:maxCount forKey:SKSearchResultMaxCountKey];
+                [dict setValue:maxCount forKey:SKMainWindowSearchMaxCountKey];
         }
     }
 }
@@ -4394,7 +4394,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
         [self showHoverWindowForDestination:dest];
     } else if ([tv isEqual:groupedFindTableView]) {
-        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:SKSearchResultResultsKey] objectAtIndex:0] destination];
+        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:SKMainWindowSearchResultsKey] objectAtIndex:0] destination];
         [self showHoverWindowForDestination:dest];
     }
 }
