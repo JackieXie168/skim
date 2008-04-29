@@ -190,7 +190,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return [translationFilter valueForKey:@"outputImage"];
 }
 
-- (CIFilter *)transitionFilterForRect:(NSRect)rect initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+- (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
     
@@ -203,8 +203,11 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         if([key isEqualToString:@"inputExtent"]) {
             NSRect extent = shouldRestrict ? rect : bounds;
             [transitionFilter setValue:[CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)] forKey:key];
-        } else if([key isEqualToString:@"inputAngle"] && [filterName isEqualToString:@"CIPageCurlTransition"]) {
-            [transitionFilter setValue:[NSNumber numberWithFloat:-M_PI_4] forKey:@"inputAngle"];
+        } else if([key isEqualToString:@"inputAngle"]) {
+            float angle = forward ? 0.0 : M_PI;
+            if ([filterName isEqualToString:@"CIPageCurlTransition"])
+                angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
+            [transitionFilter setValue:[NSNumber numberWithFloat:angle] forKey:@"inputAngle"];
         } else if([key isEqualToString:@"inputCenter"]) {
             [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:key];
         } else {
@@ -369,7 +372,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         
         CIImage *finalImage = [self createCurrentImage];
         
-        CIFilter *transitionFilter = [self transitionFilterForRect:imageRect initialCIImage:initialImage finalCIImage:finalImage];
+        CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
         
         [finalImage release];
         [initialImage release];
