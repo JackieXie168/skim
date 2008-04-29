@@ -187,6 +187,7 @@
 		CEC7B3A00CF5F2D2008CCD63 /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */; };
 		CEC7B3A20CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */; };
 		CEC7B3A40CF5F2D2008CCD63 /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */; };
+		CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */; };
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
@@ -774,6 +775,8 @@
 		CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RemoteControlContainer.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.h; sourceTree = "<group>"; };
 		CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RemoteControlContainer.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.m; sourceTree = "<group>"; };
 		CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "QuickLook-Skim.xcodeproj"; path = "QuickLook-Skim/QuickLook-Skim.xcodeproj"; sourceTree = "<group>"; };
+		CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKGroupedSearchResult.h; sourceTree = "<group>"; };
+		CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKGroupedSearchResult.m; sourceTree = "<group>"; };
 		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -1274,6 +1277,8 @@
 				CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */,
 				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
 				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
+				CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */,
+				CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */,
 				CEAF2E570C45414100C3ECBB /* SKLine.h */,
 				CEAF2E580C45414100C3ECBB /* SKLine.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
@@ -2035,6 +2040,7 @@
 				CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */,
 				CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */,
 				CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */,
+				CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

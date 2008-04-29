@@ -93,6 +93,7 @@
 #import "SKCFCallbacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "SKGroupedSearchResult.h"
 
 static NSString *SKMainWindowFrameKey = @"windowFrame";
 static NSString *SKMainWindowLeftSidePaneWidthKey = @"leftSidePaneWidth";
@@ -125,11 +126,6 @@ static NSString *SKMainWindowImageColumnIdentifer = @"image";
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
 
-static NSString *SKMainWindowSearchCountKey = @"count";
-static NSString *SKMainWindowSearchPageKey = @"page";
-static NSString *SKMainWindowSearchResultsKey = @"results";
-static NSString *SKMainWindowSearchMaxCountKey = @"maxCount";
-
 static float segmentedControlHeight = 23.0;
 static float segmentedControlOffset = 1.0;
 
@@ -150,6 +146,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 @implementation NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView { return NO; }
 @end
+
 
 @interface SKMainWindowController (Private)
 
@@ -451,7 +448,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
     
-    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKMainWindowSearchCountKey ascending:NO] autorelease];
+    NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
     [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
     [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] dataCell] setEnabled:NO];
         
@@ -2899,21 +2896,19 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [searchResults addObject:instance];
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
-        NSMutableDictionary *dict = [groupedSearchResults lastObject];
-        NSNumber *maxCount = [dict valueForKey:SKMainWindowSearchMaxCountKey];
-        if ([[dict valueForKey:SKMainWindowSearchPageKey] isEqual:page] == NO) {
-            dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKMainWindowSearchPageKey, [NSMutableArray array], SKMainWindowSearchResultsKey, maxCount, SKMainWindowSearchMaxCountKey, nil];
-            [groupedSearchResults addObject:dict];
+        SKGroupedSearchResult *result = [groupedSearchResults lastObject];
+        unsigned int maxCount = [result maxCount];
+        if ([[result page] isEqual:page] == NO) {
+            result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
+            [groupedSearchResults addObject:result];
         }
-        NSMutableArray *results = [dict valueForKey:SKMainWindowSearchResultsKey];
-        [results addObject:instance];
-        [dict setValue:[NSNumber numberWithUnsignedInt:[results count]] forKey:SKMainWindowSearchCountKey];
+        [result addMatch:instance];
         
-        if ([results count] > [maxCount unsignedIntValue]) {
-            NSEnumerator *dictEnum = [groupedSearchResults objectEnumerator];
-            maxCount = [NSNumber numberWithUnsignedInt:[results count]];
-            while (dict = [dictEnum nextObject])
-                [dict setValue:maxCount forKey:SKMainWindowSearchMaxCountKey];
+        if ([result count] > maxCount) {
+            NSEnumerator *resultEnum = [groupedSearchResults objectEnumerator];
+            maxCount = [result count];
+            while (result = [resultEnum nextObject])
+                [result setMaxCount:maxCount];
         }
     }
 }
@@ -3106,7 +3101,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (findPaneState == SKSingularFindPaneState && [findView window])
         findResults = [findArrayController selectedObjects];
     else if (findPaneState == SKGroupedFindPaneState && [groupedFindView window])
-        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.results"];
+        findResults = [[groupedFindArrayController selectedObjects] valueForKeyPath:@"@unionOfArrays.matches"];
     [self goToFindResults:findResults scrollToVisible:scroll];
 }
 
@@ -4394,7 +4389,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
         [self showHoverWindowForDestination:dest];
     } else if ([tv isEqual:groupedFindTableView]) {
-        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] valueForKey:SKMainWindowSearchResultsKey] objectAtIndex:0] destination];
+        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
         [self showHoverWindowForDestination:dest];
     }
 }
