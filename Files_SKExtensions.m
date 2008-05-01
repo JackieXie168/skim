@@ -120,6 +120,46 @@ NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
     return success ? [basePath stringByAppendingPathComponent:tmpDirName] : nil;
 }
 
+NSString *SKChewableItemsDirectory() {
+    // chewable items are automatically cleaned up at restart, and it's hidden from the user
+    static NSString *chewableItemsDirectory = nil;
+    if (chewableItemsDirectory == nil) {
+        FSRef chewableRef;
+        OSErr err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
+        
+        CFAllocatorRef alloc = CFAllocatorGetDefault();
+        CFURLRef chewableURL = NULL;
+        if (noErr == err) {
+            chewableURL = CFURLCreateFromFSRef(alloc, &chewableRef);
+            
+            CFStringRef baseName = CFStringCreateWithFileSystemRepresentation(alloc, "Skim");
+            CFURLRef newURL = CFURLCreateCopyAppendingPathComponent(alloc, chewableURL, baseName, TRUE);
+            FSRef newRef;
+            
+            if (chewableURL) CFRelease(chewableURL);
+            
+            assert(NULL != newURL);
+            
+            if (CFURLGetFSRef(newURL, &newRef) == false) {
+                int nameLength = CFStringGetLength(baseName);
+                UniChar *nameBuf = CFAllocatorAllocate(alloc, nameLength * sizeof(UniChar), 0);
+                CFStringGetCharacters(baseName, CFRangeMake(0, nameLength), nameBuf);
+                err = FSCreateDirectoryUnicode(&chewableRef, nameLength, nameBuf, kFSCatInfoNone, NULL, NULL, NULL, NULL);
+                CFAllocatorDeallocate(alloc, nameBuf);
+            }
+            
+            if (noErr == err)
+                chewableItemsDirectory = (NSString *)CFURLCopyFileSystemPath(newURL, kCFURLPOSIXPathStyle);
+            
+            if (newURL) CFRelease(newURL);
+            if (baseName) CFRelease(baseName);
+            
+            assert(nil != chewableItemsDirectory);
+        }
+    }
+    return chewableItemsDirectory;
+}
+
 // These are taken from MoreFilesX
 
 struct FSDeleteContainerGlobals

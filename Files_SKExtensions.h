@@ -48,6 +48,7 @@ extern BOOL SKFileIsInTrash(NSURL *fileURL);
 extern BOOL SKFileExistsAtPath(NSString *path);
 extern NSDate *SKFileModificationDateAtPath(NSString *path);
 extern NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create);
+extern NSString *SKChewableItemsDirectory();
 
 extern OSErr FSDeleteContainerContents(const FSRef *container);
 extern OSErr FSDeleteContainer(const FSRef *container);

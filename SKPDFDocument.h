@@ -94,6 +94,8 @@ enum {
 - (IBAction)convertNotes:(id)sender;
 - (IBAction)saveArchive:(id)sender;
 - (IBAction)saveDiskImage:(id)sender;
+- (IBAction)emailArchive:(id)sender;
+- (IBAction)emailDiskImage:(id)sender;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
