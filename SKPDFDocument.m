@@ -860,14 +860,15 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
+- (void)saveArchiveToFile:(NSString *)fileName {
+    [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
+                        arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[[self fileURL] path] lastPathComponent], nil]
+             currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
+}
+
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
-    
-    if (NSOKButton == returnCode && [self fileURL]) {
-                            
-        [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                            arguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]
-                 currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
-    }
+    if (NSOKButton == returnCode && [self fileURL])
+        [self saveArchiveToFile:[sheet filename]];
 }
 
 - (IBAction)saveArchive:(id)sender {
@@ -882,6 +883,70 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                      modalDelegate:self
                     didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];
+    } else {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
+}
+
+- (void)emailAttachmentFile:(NSString *)fileName {
+    NSMutableString *scriptString = nil;
+    
+    NSString *mailAppName = nil;
+    CFURLRef mailAppURL = NULL;
+    OSStatus status = LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto:"], kLSRolesAll, NULL, &mailAppURL);
+    if (status == noErr)
+        mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
+    
+    if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
+        scriptString = [NSMutableString stringWithString:@"tell application \"Microsoft Entourage\"\n"];
+        [scriptString appendString:@"activate\n"];
+        [scriptString appendString:@"set m to make new draft window\n"];
+        [scriptString appendString:@"tell m\n"];
+        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
+        [scriptString appendFormat:@"make new attachment at end of attchements with properties {file: POSIX file \"%@\"}\n", fileName];
+        [scriptString appendString:@"end tell\n"];
+        [scriptString appendString:@"end tell\n"];
+    } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
+        scriptString = [NSMutableString stringWithString:@"tell application \"Mailsmith\"\n"];
+        [scriptString appendString:@"activate\n"];
+        [scriptString appendString:@"set m to make new message window\n"];
+        [scriptString appendString:@"tell m\n"];
+        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
+        [scriptString appendFormat:@"make new enclosure at end of enclosures with properties {file: POSIX file \"%@\"}\n", fileName];
+        [scriptString appendString:@"end tell\n"];
+        [scriptString appendString:@"end tell\n"];
+    } else {
+        scriptString = [NSMutableString stringWithString:@"tell application \"Mail\"\n"];
+        [scriptString appendString:@"activate\n"];
+        [scriptString appendString:@"set m to make new outgoing message at beginning of outgoing messages\n"];
+        [scriptString appendString:@"tell m\n"];
+        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
+        [scriptString appendString:@"tell content\n"];
+        [scriptString appendFormat:@"make new attachment with properties {file name: \"%@\"} at after last character\n", fileName];
+        [scriptString appendString:@"end tell\n"];
+        [scriptString appendString:@"set visible to true\n"];
+        [scriptString appendString:@"end tell\n"];
+        [scriptString appendString:@"end tell\n"];
+    }
+    
+    if (scriptString) {
+        NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
+        NSDictionary *errorDict = nil;
+        if ([script compileAndReturnError:&errorDict] == NO)
+            NSLog(@"Error compiling mail to script: %@", errorDict);
+        else if ([script executeAndReturnError:&errorDict] == NO)
+            NSLog(@"Error running mail to script: %@", errorDict);
+    }
+}
+
+- (IBAction)emailArchive:(id)sender {
+    NSString *path = [[self fileURL] path];
+    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+        NSString *tmpDir = SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"tgz"]];
+        [self saveArchiveToFile:tmpFile];
+        [self emailAttachmentFile:tmpFile];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
@@ -910,22 +975,24 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     
     [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
     
+    if ([[info objectForKey:@"email"] boolValue])
+        [self performSelectorOnMainThread:@selector(emailAttachmentFile:) withObject:targetPath waitUntilDone:NO];
+    
     [pool release];
 }
 
-- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+- (void)saveDiskImageToFile:(NSString *)fileName email:(BOOL)email {
+    [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
+    [[self progressController] setIndeterminate:YES];
+    [[self progressController] show];
     
-    if (NSOKButton == returnCode && [self fileURL]) {
-        
-        [[self progressController] setMessage:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [[self progressController] setIndeterminate:YES];
-        
-        [sheet orderOut:self];
-        [[self progressController] show];
-        
-        NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], @"sourcePath", [sheet filename], @"targetPath", nil];
-        [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
-    }
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], @"sourcePath", fileName, @"targetPath", [NSNumber numberWithBool:email], @"email", nil];
+    [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
+}
+
+- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+    if (NSOKButton == returnCode && [self fileURL])
+        [self saveDiskImageToFile:[sheet filename] email:NO];
 }
 
 - (IBAction)saveDiskImage:(id)sender {
@@ -940,6 +1007,18 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
                      modalDelegate:self
                     didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];
+    } else {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
+}
+
+- (IBAction)emailDiskImage:(id)sender {
+    NSString *path = [[self fileURL] path];
+    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+        NSString *tmpDir = SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+        NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"dmg"]];
+        [self saveDiskImageToFile:tmpFile email:YES];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
@@ -990,6 +1069,9 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
         return [[self pdfDocument] isLocked] == NO;
+    } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
+        NSString *path = [[self fileURL] path];
+        return path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO;
     }
     return [super validateUserInterfaceItem:anItem];
 }
