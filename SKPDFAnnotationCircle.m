@@ -47,8 +47,8 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
 @implementation SKPDFAnnotationCircle
 
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
@@ -88,7 +88,7 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     return fdfString;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isResizable { return YES; }
 
@@ -165,7 +165,7 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (id)copyNoteAnnotation {
-    SKPDFAnnotationCircle *annotation = [[SKPDFAnnotationCircle alloc] initWithBounds:[self bounds]];
+    SKPDFAnnotationCircle *annotation = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:[self bounds]];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[[[self border] copy] autorelease]];

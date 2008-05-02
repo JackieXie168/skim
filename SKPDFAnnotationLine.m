@@ -83,8 +83,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 @implementation SKPDFAnnotationLine
 
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]];
         [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
         [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
@@ -142,7 +142,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return fdfString;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isResizable { return YES; }
 
@@ -348,7 +348,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (id)copyNoteAnnotation {
-    SKPDFAnnotationLine *annotation = [[SKPDFAnnotationLine alloc] initWithBounds:[self bounds]];
+    SKPDFAnnotationLine *annotation = [[SKPDFAnnotationLine alloc] initNoteWithBounds:[self bounds]];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[[[self border] copy] autorelease]];

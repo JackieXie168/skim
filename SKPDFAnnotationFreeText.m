@@ -57,8 +57,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 @implementation SKPDFAnnotationFreeText
 
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
@@ -105,7 +105,7 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return fdfString;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isResizable { return YES; }
 
@@ -220,7 +220,7 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (id)copyNoteAnnotation {
-    SKPDFAnnotationFreeText *annotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:[self bounds]];
+    SKPDFAnnotationFreeText *annotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:[self bounds]];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[[[self border] copy] autorelease]];

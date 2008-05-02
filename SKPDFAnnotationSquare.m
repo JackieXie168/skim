@@ -47,8 +47,8 @@
 
 @implementation SKPDFAnnotationSquare
 
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
@@ -88,7 +88,7 @@
     return fdfString;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isResizable { return YES; }
 
@@ -165,7 +165,7 @@
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (id)copyNoteAnnotation {
-    SKPDFAnnotationSquare *annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:[self bounds]];
+    SKPDFAnnotationSquare *annotation = [[SKPDFAnnotationSquare alloc] initNoteWithBounds:[self bounds]];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[[[self border] copy] autorelease]];

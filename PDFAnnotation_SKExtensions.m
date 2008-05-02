@@ -104,6 +104,11 @@ enum {
 
 @implementation PDFAnnotation (SKExtensions)
 
+- (id)initNoteWithBounds:(NSRect)bounds {
+    return [self initWithBounds:bounds];
+
+}
+
 - (id)initWithProperties:(NSDictionary *)dict{
     Class stringClass = [NSString class];
     
@@ -134,7 +139,7 @@ enum {
         // called from the initialization of a subclass
         NSString *boundsString = [dict objectForKey:SKPDFAnnotationBoundsKey];
         NSRect bounds = [boundsString isKindOfClass:stringClass] ? NSRectFromString(boundsString) : NSZeroRect;
-        if (self = [self initWithBounds:bounds]) {
+        if (self = [self initNoteWithBounds:bounds]) {
             Class colorClass = [NSColor class];
             Class arrayClass = [NSArray class];
             NSString *contents = [dict objectForKey:SKPDFAnnotationContentsKey];
@@ -293,7 +298,7 @@ enum {
 
 - (NSColor *)interiorColor { return nil; }
 
-- (BOOL)isNoteAnnotation { return NO; }
+- (BOOL)isNote { return NO; }
 
 - (BOOL)isMarkup { return NO; }
 
@@ -372,16 +377,16 @@ enum {
                     }
                 }
             } else if (type == SKScriptingTextNote) {
-                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+                self = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingAnchoredNote) {
                 bounds.size = SKPDFAnnotationNoteSize;
-                self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+                self = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingCircleNote) {
-                self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
+                self = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingSquareNote) {
-                self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
+                self = [[SKPDFAnnotationSquare alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
-                self = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
+                self = [[SKPDFAnnotationLine alloc] initNoteWithBounds:bounds];
             }
         }
     }

@@ -84,8 +84,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 @implementation SKPDFAnnotationNote
 
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
@@ -152,7 +152,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     return fdfString;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isMovable { return YES; }
 
@@ -344,7 +344,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 - (id)copyNoteAnnotation {
     NSRect bounds = [self bounds];
     bounds.size = SKPDFAnnotationNoteSize;
-    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
     [annotation setBorder:[[[self border] copy] autorelease]];
