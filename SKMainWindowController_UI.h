@@ -41,7 +41,15 @@
 
 
 @interface SKMainWindowController (UI)
+
 - (void)registerForNotifications;
-- (void)registerForDocumentNotifications;
-- (void)unregisterForDocumentNotifications;
+
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleToolModeChangedNotification:(NSNotification *)notification;
+- (void)handleDisplayBoxChangedNotification:(NSNotification *)notification;
+- (void)handleDisplayModeChangedNotification:(NSNotification *)notification;
+- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
+- (void)handleChangedHistoryNotification:(NSNotification *)notification;
+
 @end

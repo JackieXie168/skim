@@ -78,7 +78,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)updateNoteFilterPredicate;
 
 - (void)updateFindResultHighlights:(BOOL)scroll;
-- (void)updatePageLabelsAndOutline;
 
 - (void)hideLeftSideWindow;
 - (void)hideRightSideWindow;
@@ -88,8 +87,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)goToSelectedOutlineItem;
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest;
-
-- (SKProgressController *)progressController;
 
 @end
 
@@ -1447,57 +1444,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [self updateThumbnailAtPageIndex:[newPage pageIndex]];
 }
 
-- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {
-    NSDictionary *info = [notification userInfo];
-    PDFPage *page = [info objectForKey:SKPDFPagePageKey];
-    BOOL displayChanged = [[info objectForKey:SKPDFPageActionKey] isEqualToString:SKPDFPageActionRotate] || [pdfView displayBox] == kPDFDisplayBoxCropBox;
-    
-    if (displayChanged)
-        [pdfView layoutDocumentView];
-    if (page) {
-        unsigned int idx = [page pageIndex];
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
-            if ([wc isPageVisible:page]) {
-                [self snapshotNeedsUpdate:wc];
-                [wc redisplay];
-            }
-        }
-        if (displayChanged)
-            [self updateThumbnailAtPageIndex:idx];
-    } else {
-        [snapshots makeObjectsPerformSelector:@selector(redisplay)];
-        [self allSnapshotsNeedUpdate];
-        if (displayChanged)
-            [self allThumbnailsNeedUpdate];
-    }
-    
-    [secondaryPdfView setNeedsDisplay:YES];
-}
-
-- (void)handleDocumentBeginWrite:(NSNotification *)notification {
-	// Establish maximum and current value for progress bar.
-	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
-	[[self progressController] setDoubleValue:0.0];
-	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
-	
-	// Bring up the save panel as a sheet.
-	[[self progressController] beginSheetModalForWindow:[self window]];
-}
-
-- (void)handleDocumentEndWrite:(NSNotification *)notification {
-	[[self progressController] endSheet];
-}
-
-- (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
-}
-
-- (void)documentDidUnlock:(NSNotification *)notification {
-    [self updatePageLabelsAndOutline];
-}
-
 #pragma mark Observer registration
 
 - (void)registerForNotifications {
@@ -1545,26 +1491,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
                              name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];
-}
-
-- (void)registerForDocumentNotifications {
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(handleDocumentBeginWrite:) 
-                             name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-    [nc addObserver:self selector:@selector(handleDocumentEndWrite:) 
-                             name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-    [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
-                             name:@"PDFDidEndPageWrite" object:[pdfView document]];
-    [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
-                             name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
-}
-
-- (void)unregisterForDocumentNotifications {
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-    [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-    [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
-    [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 @end
