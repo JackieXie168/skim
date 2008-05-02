@@ -102,6 +102,9 @@ static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
 static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
 static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
 
+static NSString *SKDefaultFreeTextNoteContentsKey = @"SKDefaultFreeTextNoteContents";
+static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteContents";
+
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
@@ -201,6 +204,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         moveReadingBarModifiers = [moveReadingBarModifiersNumber intValue];
     if (resizeReadingBarModifiersNumber)
         resizeReadingBarModifiers = [resizeReadingBarModifiersNumber intValue];
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Double-click to edit.", @"Default text for new text note"), SKDefaultFreeTextNoteContentsKey, NSLocalizedString(@"New note", @"Default text for new anchored note"), SKDefaultAnchoredNoteContentsKey, nil]];
 }
 
 - (void)commonInitialization {
@@ -1797,12 +1802,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         case SKFreeTextNote:
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
             if (text == nil)
-                text = NSLocalizedString(@"Double-click to edit.", @"Default text for new text note");
+                text = [[NSUserDefaults standardUserDefaults] stringForKey:SKDefaultFreeTextNoteContentsKey];
             break;
         case SKAnchoredNote:
             newAnnotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
             if (text == nil)
-                text = NSLocalizedString(@"New note", @"Default text for new anchored note");
+                text = [[NSUserDefaults standardUserDefaults] stringForKey:SKDefaultAnchoredNoteContentsKey];
             break;
         case SKCircleNote:
             newAnnotation = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:bounds];
