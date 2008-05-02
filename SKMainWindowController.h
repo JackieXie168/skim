@@ -68,6 +68,20 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
+extern NSString *SKMainWindowPageLabelKey;
+extern NSString *SKMainWindowPageLabelsKey;
+extern NSString *SKMainWindowPageNumberKey;
+extern NSString *SKMainWindowSearchResultsKey;
+extern NSString *SKMainWindowGroupedSearchResultsKey;
+extern NSString *SKMainWindowNotesKey;
+extern NSString *SKMainWindowThumbnailsKey;
+extern NSString *SKMainWindowSnapshotsKey;
+
+extern NSString *SKLeftSidePaneWidthKey;
+extern NSString *SKRightSidePaneWidthKey;
+
+extern NSString *SKMainWindowPageColumnIdentifer;
+
 @class PDFOutline, SKThumbnail;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
@@ -410,12 +424,6 @@ typedef struct _SKPDFViewState {
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (IBAction)addBookmark:(id)sender;
-
-- (void)registerForNotifications;
-- (void)registerForDocumentNotifications;
-- (void)unregisterForDocumentNotifications;
-- (void)registerAsObserver;
-- (void)unregisterAsObserver;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
