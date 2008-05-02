@@ -50,14 +50,8 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 
 @implementation PDFDisplayView (SKExtensions)
 
+static IMP originalResetCursorRects = NULL;
 static IMP originalPasswordEntered = NULL;
-
-- (void)replacementPasswordEntered:(id)sender {
-    SKPDFDocument *document = [[[self window] windowController] document];
-    originalPasswordEntered(self, _cmd, sender);
-    if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
-        [document savePasswordInKeychain:[sender stringValue]];
-}
 
 - (SKPDFView *)skpdfView {
     id pdfView = nil;
@@ -66,9 +60,16 @@ static IMP originalPasswordEntered = NULL;
     return [pdfView isKindOfClass:[SKPDFView class]] ? pdfView : nil;
 }
 
-- (void)resetCursorRects {
-	[super resetCursorRects];
-    [[self skpdfView] resetCursorRects];
+- (void)replacementResetCursorRects {
+	originalResetCursorRects(self, _cmd);
+    [[self skpdfView] resetHoverRects];
+}
+
+- (void)replacementPasswordEntered:(id)sender {
+    SKPDFDocument *document = [[[self window] windowController] document];
+    originalPasswordEntered(self, _cmd, sender);
+    if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
+        [document savePasswordInKeychain:[sender stringValue]];
 }
 
 #pragma mark Accessibility
@@ -147,6 +148,7 @@ static IMP originalPasswordEntered = NULL;
 }
 
 + (void)load {
+    originalResetCursorRects = OBReplaceMethodImplementationWithSelector(self, @selector(resetCursorRects), @selector(replacementResetCursorRects));
     if ([self instancesRespondToSelector:@selector(passwordEntered:)])
         originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeNames)])
