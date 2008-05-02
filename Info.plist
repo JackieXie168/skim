@@ -445,7 +445,7 @@
 	<key>CFBundleSignature</key>
 	<string>SKim</string>
 	<key>CFBundleVersion</key>
-	<string>v26</string>
+	<string>26</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
