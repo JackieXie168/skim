@@ -436,7 +436,7 @@ static IMP originalDealloc = NULL;
     NSMutableArray *notes = [NSMutableArray array];
     
     while (annotation = [annEnum nextObject]) {
-        if ([annotation isNoteAnnotation])
+        if ([annotation isNote])
             [notes addObject:annotation];
     }
     return notes;

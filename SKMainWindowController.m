@@ -570,7 +570,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(font)]) {
+        if ([annotation isNote] && [annotation respondsToSelector:@selector(font)]) {
             updatingFont = YES;
             [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
             updatingFont = NO;
@@ -584,7 +584,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     NSView *accessoryView = nil;
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNoteAnnotation]) {
+        if ([annotation isNote]) {
             if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
                 if (colorAccessoryView == nil) {
                     colorAccessoryView = [[NSButton alloc] init];
@@ -621,7 +621,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     NSString *type = [annotation type];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
+        if ([annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
             updatingLine = YES;
             [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
             updatingLine = NO;
@@ -1190,7 +1190,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingColor == NO && [annotation isNoteAnnotation]) {
+    if (updatingColor == NO && [annotation isNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
         NSColor *color = isFill ? [(id)annotation interiorColor] : [annotation color];
         if (color == nil)
@@ -1212,7 +1212,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 - (IBAction)selectColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNoteAnnotation]) {
+    if ([annotation isNote]) {
         NSColor *color = [annotation color];
         NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO)
@@ -1222,7 +1222,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingFont == NO && [annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+    if (updatingFont == NO && [annotation isNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
         updatingFont = YES;
         [(PDFAnnotationFreeText *)annotation setFont:font];
@@ -1233,7 +1233,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)changeLineWidth:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
         [annotation setLineWidth:[sender lineWidth]];
     }
 }
@@ -1241,7 +1241,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)changeLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
         [annotation setBorderStyle:[sender style]];
     }
 }
@@ -1249,7 +1249,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)changeDashPattern:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
         [annotation setDashPattern:[sender dashPattern]];
     }
 }
@@ -1257,7 +1257,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)changeStartLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:SKLineString]) {
+    if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
         [(SKPDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
         updatingLine = NO;
@@ -1267,7 +1267,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)changeEndLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:SKLineString]) {
+    if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
         [(SKPDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
         updatingLine = NO;

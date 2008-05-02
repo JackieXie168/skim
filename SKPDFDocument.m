@@ -815,7 +815,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
         PDFAnnotation *annotation;
         
         while (annotation = [annEnum nextObject]) {
-            if ([annotation isNoteAnnotation] == NO && [annotation isConvertibleAnnotation]) {
+            if ([annotation isNote] == NO && [annotation isConvertibleAnnotation]) {
                 PDFAnnotation *newAnnotation = [annotation copyNoteAnnotation];
                 [[self pdfView] removeAnnotation:annotation];
                 [[self pdfView] addAnnotation:newAnnotation toPage:page];
@@ -836,7 +836,7 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
             PDFAnnotation *annotation;
             
             while (annotation = [annEnum nextObject]) {
-                if ([annotation isNoteAnnotation] == NO && [annotation isConvertibleAnnotation])
+                if ([annotation isNote] == NO && [annotation isConvertibleAnnotation])
                     [page removeAnnotation:annotation];
             }
         }
@@ -1781,11 +1781,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (id)activeNote {
     id note = [[self pdfView] activeAnnotation];
-    return [note isNoteAnnotation] ? note : [NSNull null];
+    return [note isNote] ? note : [NSNull null];
 }
 
 - (void)setActiveNote:(id)note {
-    if ([note isEqual:[NSNull null]] == NO && [note isNoteAnnotation])
+    if ([note isEqual:[NSNull null]] == NO && [note isNote])
         [[self pdfView] setActiveAnnotation:note];
 }
 

@@ -705,7 +705,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)delete:(id)sender
 {
-	if ([activeAnnotation isNoteAnnotation])
+	if ([activeAnnotation isNote])
         [self removeActiveAnnotation:self];
     else
         NSBeep();
@@ -730,7 +730,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSData *pdfData = nil;
     NSData *tiffData = nil;
     
-    if ([self hideNotes] == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
+    if ([self hideNotes] == NO && [activeAnnotation isNote] && [activeAnnotation isMovable]) {
         if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation properties]])
             [types addObject:SKSkimNotePboardType];
     }
@@ -876,9 +876,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
         
         if (isAlternate)
-            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
         else
-            newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
         [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
     }
     
@@ -898,7 +898,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)cut:(id)sender
 {
-	if ([self hideNotes] == NO && [activeAnnotation isNoteAnnotation]) {
+	if ([self hideNotes] == NO && [activeAnnotation isNote]) {
         [self copy:sender];
         [self delete:sender];
     } else
@@ -1330,7 +1330,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         if (page) {
             annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
-            if ([annotation isNoteAnnotation] == NO)
+            if ([annotation isNote] == NO)
                 annotation = nil;
         }
         
@@ -1344,7 +1344,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             item = [menu insertItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@"" atIndex:0];
             [item setRepresentedObject:annotation];
             [item setTarget:self];
-        } else if ([activeAnnotation isNoteAnnotation]) {
+        } else if ([activeAnnotation isNote]) {
             if ([self isEditing] == NO && [activeAnnotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setTarget:self];
@@ -1359,8 +1359,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@"" atIndex:0];
         }
         
-        if ([self currentSelection] || ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])) {
-            if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
+        if ([self currentSelection] || ([activeAnnotation isNote] && [activeAnnotation isMovable])) {
+            if ([activeAnnotation isNote] && [activeAnnotation isMovable])
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
             item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
         }
@@ -1564,7 +1564,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             while (i-- > 0) {
                 annotation = [annotations objectAtIndex:i];
                 NSString *type = [annotation type];
-                if ([annotation isNoteAnnotation] && [annotation hitTest:location] && 
+                if ([annotation isNote] && [annotation hitTest:location] && 
                     ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation)
@@ -1795,20 +1795,20 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 	// Create annotation and add to page.
     switch (annotationType) {
         case SKFreeTextNote:
-            newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
             if (text == nil)
                 text = NSLocalizedString(@"Double-click to edit.", @"Default text for new text note");
             break;
         case SKAnchoredNote:
-            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
             if (text == nil)
                 text = NSLocalizedString(@"New note", @"Default text for new anchored note");
             break;
         case SKCircleNote:
-            newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:bounds];
             break;
         case SKSquareNote:
-            newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationSquare alloc] initNoteWithBounds:bounds];
             break;
         case SKHighlightNote:
             if ([[activeAnnotation type] isEqualToString:SKHighlightString] && [[activeAnnotation page] isEqual:page]) {
@@ -1832,7 +1832,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKLineNote:
-            newAnnotation = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationLine alloc] initNoteWithBounds:bounds];
             break;
 	}
     if (newAnnotation) {
@@ -1866,7 +1866,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)removeActiveAnnotation:(id)sender{
-    if ([activeAnnotation isNoteAnnotation]) {
+    if ([activeAnnotation isNote]) {
         [self removeAnnotation:activeAnnotation];
         [accessibilityChildren release];
         accessibilityChildren = nil;
@@ -2032,7 +2032,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
         while (++i < (int)[annotations count] && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [annotation isLink] == NO)
+            if (([self hideNotes] || [annotation isNote] == NO) && [annotation isLink] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -2080,7 +2080,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     while (annotation == nil) {
         while (--i >= 0 && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [annotation isLink] == NO)
+            if (([self hideNotes] || [annotation isNote] == NO) && [annotation isLink] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -2160,7 +2160,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             NSEnumerator *annotationEnum = [[page annotations] objectEnumerator];
             PDFAnnotation *annotation;
             while (annotation = [annotationEnum nextObject]) {
-                if ([annotation isLink] || [annotation isNoteAnnotation])
+                if ([annotation isLink] || [annotation isNote])
                     [children addObject:[SKAccessibilityProxyElement elementWithObject:annotation parent:[self documentView]]];
             }
         }
@@ -2181,7 +2181,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         PDFPage *page = [self pageForPoint:localPoint nearest:NO];
         if (page) {
             PDFAnnotation *annotation = [page annotationAtPoint:[self convertPoint:localPoint toPage:page]];
-            if ([annotation isLink] || [annotation isNoteAnnotation])
+            if ([annotation isLink] || [annotation isNote])
                 child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyElement elementWithObject:annotation parent:[self documentView]]);
         }
     }
@@ -2281,13 +2281,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     } else if (action == @selector(copy:)) {
         if ([self currentSelection])
             return YES;
-        if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
+        if ([activeAnnotation isNote] && [activeAnnotation isMovable])
             return YES;
         if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
             return YES;
         return NO;
     } else if (action == @selector(delete:)) {
-        return [activeAnnotation isNoteAnnotation];
+        return [activeAnnotation isNote];
     } else if (action == @selector(printDocument:)) {
         return [[self document] allowsPrinting];
     } else if (action == @selector(selectAll:)) {
@@ -2842,7 +2842,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect bounds = [annotation bounds];
         
         // Hit test annotation.
-        if ([annotation isNoteAnnotation]) {
+        if ([annotation isNote]) {
             if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
                 mouseDownInAnnotation = YES;
                 newActiveAnnotation = annotation;

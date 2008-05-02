@@ -128,8 +128,8 @@ static NSColor *defaultColorForMarkupType(int markupType)
     return nil;
 }
 
-- (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
-    if (self = [super initWithBounds:bounds]) {
+- (id)initNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
+    if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
         [self setMarkupType:type];
         
@@ -145,8 +145,8 @@ static NSColor *defaultColorForMarkupType(int markupType)
     return self;
 }
 
-- (id)initWithBounds:(NSRect)bounds {
-    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
+- (id)initNoteWithBounds:(NSRect)bounds {
+    self = [self initNoteWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
     return self;
 }
 
@@ -205,7 +205,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
-    } else if (self = [self initWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
+    } else if (self = [self initNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         PDFPage *page = [[selection pages] objectAtIndex:0];
         NSString *string = [page string];
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
@@ -377,7 +377,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return bounds;
 }
 
-- (BOOL)isNoteAnnotation { return YES; }
+- (BOOL)isNote { return YES; }
 
 - (BOOL)isMarkup { return YES; }
 
@@ -468,7 +468,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)copyNoteAnnotation {
     NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
-    SKPDFAnnotationMarkup *annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:[self bounds] markupType:[self markupType] quadrilateralPointsAsStrings:quadPoints];
+    SKPDFAnnotationMarkup *annotation = [[SKPDFAnnotationMarkup alloc] initNoteWithBounds:[self bounds] markupType:[self markupType] quadrilateralPointsAsStrings:quadPoints];
     [quadPoints release];
     [annotation setString:[self string]];
     [annotation setColor:[self color]];
