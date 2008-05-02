@@ -88,6 +88,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)showHoverWindowForDestination:(PDFDestination *)dest;
 
+- (void)selectSelectedNote;
+
 @end
 
 #pragma mark -
@@ -664,10 +666,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineViewInsertNewline:(NSOutlineView *)ov {
     if ([ov isEqual:noteOutlineView]) {
-        NSArray *selectedNotes = [self selectedNotes];
-        if ([selectedNotes count])
-            [pdfView scrollAnnotationToVisible:[selectedNotes objectAtIndex:0]];
-        else NSBeep();
+        [self selectSelectedNote];
     }
 }
 
