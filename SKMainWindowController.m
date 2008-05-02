@@ -144,7 +144,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 @end
 
 
-@interface SKMainWindowController (Private)
+@interface SKMainWindowController (SKPrivate)
 
 - (void)setupToolbar;
 
@@ -180,13 +180,8 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)goToDestination:(PDFDestination *)destination;
 - (void)goToPage:(PDFPage *)page;
 
-- (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleToolModeChangedNotification:(NSNotification *)notification;
-- (void)handleDisplayBoxChangedNotification:(NSNotification *)notification;
-- (void)handleDisplayModeChangedNotification:(NSNotification *)notification;
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
-- (void)handleChangedHistoryNotification:(NSNotification *)notification;
+- (void)registerForDocumentNotifications;
+- (void)unregisterForDocumentNotifications;
 
 - (void)registerAsObserver;
 - (void)unregisterAsObserver;
@@ -197,6 +192,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
 @end
+
 
 @implementation SKMainWindowController
 
@@ -2686,49 +2682,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 #pragma mark Searching
 
-- (void)documentDidBeginDocumentFind:(NSNotification *)note {
-    if (findPanelFind == NO) {
-        NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
-        [findArrayController removeObjects:searchResults];
-        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
-        [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
-        [[groupedFindTableView headerView] setNeedsDisplay:YES];
-        [groupedFindArrayController removeObjects:groupedSearchResults];
-        [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
-        [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
-        [[statusBar progressIndicator] setDoubleValue:0.0];
-        [statusBar startAnimation:self];
-    }
-}
-
-- (void)documentDidEndDocumentFind:(NSNotification *)note {
-    if (findPanelFind == NO) {
-        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
-        [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
-        [[groupedFindTableView headerView] setNeedsDisplay:YES];
-        [statusBar stopAnimation:self];
-        [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
-    }
-}
-
-- (void)documentDidEndPageFind:(NSNotification *)note {
-    NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
-    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
-    if ([pageIndex unsignedIntValue] % 50 == 0) {
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-    }
-}
-
 - (void)didMatchString:(PDFSelection *)instance {
     if (findPanelFind == NO) {
         [searchResults addObject:instance];
@@ -2952,6 +2905,124 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
         [findPboard setString:[sender stringValue] forType:NSStringPboardType];
     }
+}
+
+#pragma mark PDFDocument delegate
+
+- (void)documentDidBeginDocumentFind:(NSNotification *)note {
+    if (findPanelFind == NO) {
+        NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
+        [findArrayController removeObjects:searchResults];
+        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
+        [[findTableView headerView] setNeedsDisplay:YES];
+        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
+        [[groupedFindTableView headerView] setNeedsDisplay:YES];
+        [groupedFindArrayController removeObjects:groupedSearchResults];
+        [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
+        [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
+        [[statusBar progressIndicator] setDoubleValue:0.0];
+        [statusBar startAnimation:self];
+    }
+}
+
+- (void)documentDidEndDocumentFind:(NSNotification *)note {
+    if (findPanelFind == NO) {
+        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
+        [[findTableView headerView] setNeedsDisplay:YES];
+        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
+        [[groupedFindTableView headerView] setNeedsDisplay:YES];
+        [statusBar stopAnimation:self];
+        [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
+    }
+}
+
+- (void)documentDidEndPageFind:(NSNotification *)note {
+    NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
+    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
+    if ([pageIndex unsignedIntValue] % 50 == 0) {
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+    }
+}
+
+- (void)documentDidUnlock:(NSNotification *)notification {
+    [self updatePageLabelsAndOutline];
+}
+
+#pragma mark PDFDocument notifications
+
+- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {
+    NSDictionary *info = [notification userInfo];
+    PDFPage *page = [info objectForKey:SKPDFPagePageKey];
+    BOOL displayChanged = [[info objectForKey:SKPDFPageActionKey] isEqualToString:SKPDFPageActionRotate] || [pdfView displayBox] == kPDFDisplayBoxCropBox;
+    
+    if (displayChanged)
+        [pdfView layoutDocumentView];
+    if (page) {
+        unsigned int idx = [page pageIndex];
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([wc isPageVisible:page]) {
+                [self snapshotNeedsUpdate:wc];
+                [wc redisplay];
+            }
+        }
+        if (displayChanged)
+            [self updateThumbnailAtPageIndex:idx];
+    } else {
+        [snapshots makeObjectsPerformSelector:@selector(redisplay)];
+        [self allSnapshotsNeedUpdate];
+        if (displayChanged)
+            [self allThumbnailsNeedUpdate];
+    }
+    
+    [secondaryPdfView setNeedsDisplay:YES];
+}
+
+- (void)handleDocumentBeginWrite:(NSNotification *)notification {
+	// Establish maximum and current value for progress bar.
+	[[self progressController] setMaxValue:(double)[[pdfView document] pageCount]];
+	[[self progressController] setDoubleValue:0.0];
+	[[self progressController] setMessage:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
+	
+	// Bring up the save panel as a sheet.
+	[[self progressController] beginSheetModalForWindow:[self window]];
+}
+
+- (void)handleDocumentEndWrite:(NSNotification *)notification {
+	[[self progressController] endSheet];
+}
+
+- (void)handleDocumentEndPageWrite:(NSNotification *)notification {
+	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
+}
+
+- (void)registerForDocumentNotifications {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handleDocumentBeginWrite:) 
+                             name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handleDocumentEndWrite:) 
+                             name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
+                             name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
+                             name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
+}
+
+- (void)unregisterForDocumentNotifications {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 #pragma mark Tiger history fixes
