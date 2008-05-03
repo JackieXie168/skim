@@ -64,7 +64,7 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        leftCell = [[NSCell alloc] initTextCell:@""];
+        leftCell = [[NSTextFieldCell alloc] initTextCell:@""];
 		[leftCell setFont:[NSFont labelFontOfSize:0]];
         [leftCell setAlignment:NSLeftTextAlignment];
         [leftCell setControlView:self];
@@ -324,6 +324,53 @@
 
 - (void)stopAnimation:(id)sender {
 	[progressIndicator stopAnimation:sender];
+}
+
+#pragma mark Accessibility
+
+- (NSArray *)accessibilityAttributeNames {
+    return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityChildrenAttribute];
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute])
+        return NSAccessibilityGroupRole;
+    else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute])
+        return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
+    else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute])
+        return NSAccessibilityUnignoredChildren([NSArray arrayWithObjects:leftCell, rightCell, progressIndicator, nil]);
+    return [super accessibilityAttributeValue:attribute];
+}
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
+    NSRect rect, childRect, ignored;
+    NSDivideRect([self bounds], &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
+    if (progressIndicator) {
+        NSDivideRect(rect, &childRect, &rect, NSWidth([progressIndicator frame]), NSMaxXEdge);
+        if (NSPointInRect(localPoint, childRect))
+            return NSAccessibilityUnignoredAncestor(progressIndicator);
+        NSDivideRect(rect, &ignored, &rect, SEPARATION, NSMaxXEdge);
+	}
+    NSDivideRect(rect, &childRect, &rect, MIN(NSWidth(rect), [rightCell cellSize].width), NSMaxXEdge);
+    if (NSPointInRect(localPoint, childRect))
+        return NSAccessibilityUnignoredAncestor(rightCell);
+    else
+        return NSAccessibilityUnignoredAncestor(leftCell);
+}
+
+- (id)accessibilityFocusedUIElement {
+    if ([NSApp accessibilityFocusedUIElement] == rightCell)
+        return NSAccessibilityUnignoredAncestor(rightCell);
+    else if (progressIndicator && [NSApp accessibilityFocusedUIElement] == progressIndicator)
+        return NSAccessibilityUnignoredAncestor(progressIndicator);
+    else
+        return NSAccessibilityUnignoredAncestor(leftCell);
+}
+
+- (BOOL)accessibilityIsIgnored {
+    return NO;
 }
 
 @end
