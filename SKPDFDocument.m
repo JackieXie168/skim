@@ -1220,7 +1220,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             unsigned trailerIndex;
             
             if (isDVI) {
-                pattern = [[NSString stringWithFormat:@"%C%C%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
+                pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
                 patternLength = strlen(pattern);
                 range = NSMakeRange(patternLength, [trailerData length] - patternLength);
             }
