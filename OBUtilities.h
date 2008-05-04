@@ -19,6 +19,7 @@
 
 IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp);
 IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
+void OBAddMethodImplementationWithSelector(Class aClass, SEL newSelector, SEL oldSelector);
 
 #define OBINITIALIZE \
     do { \

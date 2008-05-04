@@ -61,7 +61,6 @@ static IMP originalPasswordEntered = NULL;
 static IMP originalAccessibilityAttributeNames = NULL;
 static IMP originalAccessibilityParameterizedAttributeNames = NULL;
 static IMP originalAccessibilityAttributeValue = NULL;
-static IMP originalAccessibilityAttributeValueForParameter = NULL;
 static IMP originalAccessibilityHitTest = NULL;
 static IMP originalAccessibilityFocusedUIElement = NULL;
 
@@ -96,10 +95,14 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 }
 
 - (NSArray *)replacementAccessibilityParameterizedAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil)
-        attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
-    return attributes;
+    if ([[self skPdfView] respondsToSelector:@selector(accessibilityChildren)]) {
+        static NSArray *attributes = nil;
+        if (attributes == nil)
+            attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
+        return attributes;
+    } else {
+        return originalAccessibilityAttributeNames(self, _cmd);
+    }
 }
 
 - (id)replacementAccessibilityAttributeValue:(NSString *)attribute {
@@ -113,37 +116,38 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
     }
 }
 
-- (id)replacementAccessibilityAttributeValue:(NSString *)attribute forParameter:(id)parameter {
-    id value = originalAccessibilityAttributeValueForParameter(self, _cmd, attribute, parameter);
-    if (value == nil) {
-        if ([attribute isEqualToString:NSAccessibilityRangeForPositionParameterizedAttribute] && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
-            id pdfView = [self skPdfView];
-            if (pdfView) {
-                NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
-                PDFPage *page = [pdfView pageForPoint:point nearest:NO];
-                if (page) {
-                    int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
-                    if (i != -1) {
-                        @try {
-                            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                                [self generateAccessibilityTable];
-                        }
-                        @catch (id exception) {}
-                        value = [NSValue valueWithRange:[self accessibilityRangeForSelection:[page selectionForRange:NSMakeRange(i, 1)]]];
-                    }
+- (id)replacementAccessibilityRangeForPositionAttributeForParameter:(id)parameter {
+    id pdfView = [self skPdfView];
+    if (pdfView && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
+        NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
+        PDFPage *page = [pdfView pageForPoint:point nearest:NO];
+        if (page) {
+            int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
+            if (i != -1) {
+                @try {
+                    if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                        [self generateAccessibilityTable];
                 }
+                @catch (id exception) {}
+                return [NSValue valueWithRange:[self accessibilityRangeForSelection:[page selectionForRange:NSMakeRange(i, 1)]]];
             }
-        } else if ([attribute isEqualToString:NSAccessibilityRTFForRangeParameterizedAttribute] && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
-            @try {
-                if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                    [self generateAccessibilityTable];
-            }
-            @catch (id exception) {}
-            NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
-            value = [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
         }
     }
-    return value;
+    return nil;
+}
+
+- (id)replacementAccessibilityRTFForRangeAttributeForParameter:(id)parameter {
+    id pdfView = [self skPdfView];
+    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
+        @try {
+            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                [self generateAccessibilityTable];
+        }
+        @catch (id exception) {}
+        NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
+        return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
+    }
+    return nil;
 }
 
 - (id)replacementAccessibilityHitTest:(NSPoint)point {
@@ -205,12 +209,14 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
         originalAccessibilityParameterizedAttributeNames = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityParameterizedAttributeNames), @selector(replacementAccessibilityParameterizedAttributeNames));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
         originalAccessibilityAttributeValue = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:), @selector(replacementAccessibilityAttributeValue:));
-    if ([self instancesRespondToSelector:@selector(accessibilityAttributeValue:forParameter:)])
-        originalAccessibilityAttributeValueForParameter = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:forParameter:), @selector(replacementAccessibilityAttributeValue:forParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityHitTest:)])
         originalAccessibilityHitTest = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityHitTest:), @selector(replacementAccessibilityHitTest:));
     if ([self instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
         originalAccessibilityFocusedUIElement = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityFocusedUIElement), @selector(replacementAccessibilityFocusedUIElement));
+    if ([self instancesRespondToSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)] == NO)
+        OBAddMethodImplementationWithSelector(self, @selector(accessibilityRangeForPositionAttributeForParameter:), @selector(replacementAccessibilityRangeForPositionAttributeForParameter:));
+    if ([self instancesRespondToSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)] == NO)
+        OBAddMethodImplementationWithSelector(self, @selector(accessibilityRTFForRangeAttributeForParameter:), @selector(replacementAccessibilityRTFForRangeAttributeForParameter:));
 }
 
 @end
