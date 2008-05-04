@@ -95,3 +95,9 @@ IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL
 {
     return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, newSelector)));
 }
+
+void OBAddMethodImplementationWithSelector(Class aClass, SEL newSelector, SEL oldSelector)
+{
+    Method method = class_getInstanceMethod(aClass, oldSelector);
+    SK_class_addMethod(aClass, newSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method));
+}
