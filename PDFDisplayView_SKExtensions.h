@@ -38,19 +38,3 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-
-@class SKPDFView, PDFAnnotation;
-
-@interface PDFDisplayView : NSView
-- (void)passwordEntered:(id)sender;
-@end
-
-@interface PDFDisplayView (SKExtensions)
-@end
-
-@interface SKAccessibilityPDFDisplayViewElement : NSObject {
-    id parent;
-}
-+ (id)elementWithParent:(id)aParent;
-- (id)initWithParent:(id)aParent;
-@end
