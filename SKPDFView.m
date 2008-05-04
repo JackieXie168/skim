@@ -2157,7 +2157,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         NSMutableArray *children = [NSMutableArray array];
         
-        [children addObject:[SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]];
+        //[children addObject:[SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]];
         
         unsigned int i;
         for (i = range.location; i < NSMaxRange(range); i++) {
@@ -2190,8 +2190,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyElement elementWithObject:annotation parent:[self documentView]]);
         }
     }
-    if (child == nil)
-        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    //if (child == nil)
+    //    child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityHitTest:point];
 }
 
@@ -2201,8 +2201,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         child = NSAccessibilityUnignoredDescendant(editField);
     else if (activeAnnotation)
         child = NSAccessibilityUnignoredAncestor([SKAccessibilityProxyElement elementWithObject:activeAnnotation parent:[self documentView]]);
-    else
-        child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
+    //else
+    //    child = NSAccessibilityUnignoredAncestor([SKAccessibilityPDFDisplayViewElement elementWithParent:[self documentView]]);
     return [child accessibilityFocusedUIElement];
 }
 

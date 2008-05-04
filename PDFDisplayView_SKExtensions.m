@@ -43,26 +43,40 @@
 #import "SKStringConstants.h"
 #import "OBUtilities.h"
 
-static IMP originalAccessibilityAttributeNames = NULL;
-static IMP originalAccessibilityAttributeValue = NULL;
-static IMP originalAccessibilityHitTest = NULL;
-static IMP originalAccessibilityFocusedUIElement = NULL;
+@interface PDFDisplayView : NSView
+- (void)passwordEntered:(id)sender;
+- (NSRange)accessibilityRangeForSelection:(id)selection;
+- (id)selectionForAccessibilityRange:(NSRange)range;
+- (void)generateAccessibilityTable;
+@end
+
+@interface PDFDisplayView (SKExtensions)
+@end
 
 @implementation PDFDisplayView (SKExtensions)
 
 static IMP originalResetCursorRects = NULL;
 static IMP originalPasswordEntered = NULL;
 
-- (SKPDFView *)skpdfView {
+static IMP originalAccessibilityAttributeNames = NULL;
+static IMP originalAccessibilityParameterizedAttributeNames = NULL;
+static IMP originalAccessibilityAttributeValue = NULL;
+static IMP originalAccessibilityAttributeValueForParameter = NULL;
+static IMP originalAccessibilityHitTest = NULL;
+static IMP originalAccessibilityFocusedUIElement = NULL;
+
+- (id)skPdfView {
     id pdfView = nil;
     @try { pdfView = [self valueForKey:@"pdfView"]; }
     @catch (id exception) {}
-    return [pdfView isKindOfClass:[SKPDFView class]] ? pdfView : nil;
+    return pdfView;
 }
 
 - (void)replacementResetCursorRects {
 	originalResetCursorRects(self, _cmd);
-    [[self skpdfView] resetHoverRects];
+    id pdfView = [self skPdfView];
+    if ([pdfView respondsToSelector:@selector(resetHoverRects)])
+        [pdfView resetHoverRects];
 }
 
 - (void)replacementPasswordEntered:(id)sender {
@@ -75,48 +89,82 @@ static IMP originalPasswordEntered = NULL;
 #pragma mark Accessibility
 
 - (NSArray *)replacementAccessibilityAttributeNames {
-    if ([self skpdfView]) {
-        static NSArray *attributes = nil;
-        if (attributes == nil)
-            attributes = [[originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
-        return attributes;
-    } else {
-        return originalAccessibilityAttributeNames(self, _cmd);
-    }
+    static NSArray *attributes = nil;
+    if (attributes == nil)
+        attributes = [[originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
+    return attributes;
+}
+
+- (NSArray *)replacementAccessibilityParameterizedAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil)
+        attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
+    return attributes;
 }
 
 - (id)replacementAccessibilityAttributeValue:(NSString *)attribute {
-    SKPDFView *pdfView = [self skpdfView];
-    if (pdfView) {
-        if ([attribute isEqualToString:NSAccessibilityRoleAttribute])
-            return NSAccessibilityGroupRole;
-        else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute])
-            return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
-        else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute])
-            return NSAccessibilityUnignoredChildren([pdfView accessibilityChildren]);
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
+        return NSAccessibilityTextAreaRole;
+    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
+        id pdfView = [self skPdfView];
+        return [pdfView respondsToSelector:@selector(accessibilityChildren)] ? NSAccessibilityUnignoredChildren([pdfView accessibilityChildren]) : originalAccessibilityAttributeValue(self, _cmd, attribute);
+    } else {
+        return originalAccessibilityAttributeValue(self, _cmd, attribute);
     }
-    return originalAccessibilityAttributeValue(self, _cmd, attribute);
+}
+
+- (id)replacementAccessibilityAttributeValue:(NSString *)attribute forParameter:(id)parameter {
+    id value = originalAccessibilityAttributeValueForParameter(self, _cmd, attribute, parameter);
+    if (value == nil) {
+        if ([attribute isEqualToString:NSAccessibilityRangeForPositionParameterizedAttribute] && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
+            id pdfView = [self skPdfView];
+            if (pdfView) {
+                NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
+                PDFPage *page = [pdfView pageForPoint:point nearest:NO];
+                if (page) {
+                    int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
+                    if (i != -1) {
+                        @try {
+                            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                                [self generateAccessibilityTable];
+                        }
+                        @catch (id exception) {}
+                        value = [NSValue valueWithRange:[self accessibilityRangeForSelection:[page selectionForRange:NSMakeRange(i, 1)]]];
+                    }
+                }
+            }
+        } else if ([attribute isEqualToString:NSAccessibilityRTFForRangeParameterizedAttribute] && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
+            @try {
+                if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                    [self generateAccessibilityTable];
+            }
+            @catch (id exception) {}
+            NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
+            value = [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
+        }
+    }
+    return value;
 }
 
 - (id)replacementAccessibilityHitTest:(NSPoint)point {
-    SKPDFView *pdfView = [self skpdfView];
-    if (pdfView)
-        return [pdfView accessibilityChildAtPoint:point];
-    else
-        return originalAccessibilityHitTest(self, _cmd, point);
+    id pdfView = [self skPdfView];
+    id element = nil;
+    if ([pdfView respondsToSelector:@selector(accessibilityChildAtPoint:)])
+        element = [pdfView accessibilityChildAtPoint:point];
+    return element ? element : originalAccessibilityHitTest(self, _cmd, point);
 }
 
 - (id)replacementAccessibilityFocusedUIElement {
-    SKPDFView *pdfView = [self skpdfView];
-    if (pdfView)
-        return [pdfView accessibilityFocusedChild];
-    else
-        return originalAccessibilityFocusedUIElement(self, _cmd);
+    id pdfView = [self skPdfView];
+    id element = nil;
+    if ([pdfView respondsToSelector:@selector(accessibilityFocusedChild)])
+        element = [pdfView accessibilityFocusedChild];
+    return element ? element : originalAccessibilityFocusedUIElement(self, _cmd);
 }
 
 - (NSRect)screenRectForRepresentedObject:(id)annotation {
     NSRect rect = NSZeroRect;
-    SKPDFView *pdfView = [self skpdfView];
+    SKPDFView *pdfView = [self skPdfView];
     if (pdfView) {
         rect = [pdfView convertRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] toView:nil];
         rect.origin = [[pdfView window] convertBaseToScreen:rect.origin];
@@ -125,11 +173,11 @@ static IMP originalPasswordEntered = NULL;
 }
 
 - (BOOL)isRepresentedObjectFocused:(id)annotation {
-    return [[self skpdfView] activeAnnotation] == annotation;
+    return [[self skPdfView] activeAnnotation] == annotation;
 }
 
 - (void)setFocused:(BOOL)focused forRepresentedObject:(id)annotation {
-    SKPDFView *pdfView = [self skpdfView];
+    SKPDFView *pdfView = [self skPdfView];
     if (pdfView) {
         if (focused)
             [pdfView setActiveAnnotation:annotation];
@@ -139,7 +187,7 @@ static IMP originalPasswordEntered = NULL;
 }
 
 - (void)pressRepresentedObject:(id)annotation {
-    SKPDFView *pdfView = [self skpdfView];
+    SKPDFView *pdfView = [self skPdfView];
     if (pdfView) {
         if ([pdfView activeAnnotation] != annotation)
             [pdfView setActiveAnnotation:annotation];
@@ -153,111 +201,16 @@ static IMP originalPasswordEntered = NULL;
         originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeNames)])
         originalAccessibilityAttributeNames = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeNames), @selector(replacementAccessibilityAttributeNames));
+    if ([self instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
+        originalAccessibilityParameterizedAttributeNames = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityParameterizedAttributeNames), @selector(replacementAccessibilityParameterizedAttributeNames));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
         originalAccessibilityAttributeValue = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:), @selector(replacementAccessibilityAttributeValue:));
+    if ([self instancesRespondToSelector:@selector(accessibilityAttributeValue:forParameter:)])
+        originalAccessibilityAttributeValueForParameter = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:forParameter:), @selector(replacementAccessibilityAttributeValue:forParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityHitTest:)])
         originalAccessibilityHitTest = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityHitTest:), @selector(replacementAccessibilityHitTest:));
     if ([self instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
         originalAccessibilityFocusedUIElement = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityFocusedUIElement), @selector(replacementAccessibilityFocusedUIElement));
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKAccessibilityPDFDisplayViewElement
-
-+ (id)elementWithParent:(id)aParent {
-    return [[[self alloc] initWithParent:aParent] autorelease];
-}
-
-- (id)initWithParent:(id)aParent {
-    if (self = [super init]) {
-        parent = [aParent retain];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [parent release];
-    [super dealloc];
-}
-
-- (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[SKAccessibilityPDFDisplayViewElement class]]) {
-        SKAccessibilityPDFDisplayViewElement *other = (SKAccessibilityPDFDisplayViewElement *)object;
-        return parent == other->parent;
-    } else {
-        return NO;
-    }
-}
-
-- (unsigned int)hash {
-    return [parent hash];
-}
-
-- (NSArray *)accessibilityAttributeNames {
-    if (originalAccessibilityAttributeNames != NULL)
-        return originalAccessibilityAttributeNames(parent, _cmd);
-    else if ([parent respondsToSelector:_cmd])
-        return [parent accessibilityAttributeNames];
-    else
-        return [NSArray array];
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityParentAttribute])
-        return NSAccessibilityUnignoredAncestor(parent);
-    else if (originalAccessibilityAttributeValue != NULL)
-        return originalAccessibilityAttributeValue(parent, _cmd, attribute);
-    else if ([parent respondsToSelector:_cmd])
-        return [parent accessibilityAttributeValue:attribute];
-    else
-        return nil;
-}
-
-- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
-    return [parent respondsToSelector:_cmd] && [parent accessibilityIsAttributeSettable:attribute]; 
-}
-
-- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
-    if ([parent respondsToSelector:_cmd])
-        [parent accessibilitySetValue:value forAttribute:attribute];
-    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute] && [value boolValue] && [[parent skpdfView] activeAnnotation])
-        [[parent skpdfView] setActiveAnnotation:nil];
-}
-
-- (NSArray *)accessibilityParameterizedAttributeNames {
-    return [parent respondsToSelector:_cmd] ? [parent accessibilityParameterizedAttributeNames] : [NSArray array];
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute forParameter:(id)parameter {
-    return [parent respondsToSelector:_cmd] ? [parent accessibilityAttributeValue:attribute forParameter:parameter] : nil;
-}
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
-}
-
-- (id)accessibilityHitTest:(NSPoint)point {
-    return NSAccessibilityUnignoredAncestor(self);
-}
-
-- (id)accessibilityFocusedUIElement {
-    return NSAccessibilityUnignoredAncestor(self);
-}
-
-- (NSArray *)accessibilityActionNames {
-    return [parent respondsToSelector:_cmd] ? [parent accessibilityActionNames] : [NSArray array];
-}
-
-- (NSString *)accessibilityActionDescription:(NSString *)anAction {
-    return [parent respondsToSelector:_cmd] ? [parent accessibilityActionDescription:anAction] : NSAccessibilityActionDescription(anAction);
-}
-
-- (void)accessibilityPerformAction:(NSString *)anAction {
-    if ([parent respondsToSelector:_cmd])
-        [parent accessibilityPerformAction:anAction];
 }
 
 @end
