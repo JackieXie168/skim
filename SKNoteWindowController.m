@@ -53,7 +53,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
 static NSString *SKNoteWindowPageObservationContext = @"SKNoteWindowPageObservationContext";
 static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObservationContext";
-
+static NSString *SKNoteWindowDefaultsObservationContext = @"SKNoteWindowDefaultsObservationContext";
 
 @implementation SKNoteWindowController
 
@@ -71,7 +71,7 @@ static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObse
         
         [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
         [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
@@ -79,7 +79,7 @@ static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObse
 - (void)dealloc {
     [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
     [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [textViewUndoManager release];
@@ -257,7 +257,7 @@ static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObse
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+    if (context == SKNoteWindowDefaultsObservationContext) {
         if (NO == [keyPath hasPrefix:@"values."])
             return;
         NSString *key = [keyPath substringFromIndex:7];

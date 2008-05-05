@@ -41,19 +41,19 @@
 
 @implementation NSUserDefaultsController (SKExtensions)
 
-- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key {
-    [self addObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key] options:0 context:NULL];
+- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key context:(void *)context {
+    [self addObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key] options:0 context:context];
 }
 
 - (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key {
     [self removeObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key]];
 }
 
-- (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys {
+- (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys context:(void *)context {
     int i, iMax = [keys count];
     for (i = 0; i < iMax; i++) {
         NSString *keyPath = [NSString stringWithFormat:@"values.%@", [keys objectAtIndex:i]];
-        [self addObserver:anObserver forKeyPath:keyPath options:0 context:NULL];
+        [self addObserver:anObserver forKeyPath:keyPath options:0 context:context];
     }
 }
 

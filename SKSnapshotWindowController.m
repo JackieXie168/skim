@@ -66,6 +66,8 @@ static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
+static NSString *SKSnapshotWindowDefaultsObservationContext = @"SKSnapshotWindowDefaultsObservationContext";
+
 @implementation SKSnapshotWindowController
 
 - (void)dealloc {
@@ -83,7 +85,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:SKSnapshotWindowDefaultsObservationContext];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -531,7 +533,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+    if (context == SKSnapshotWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKSnapshotsOnTopKey]) {
             BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
