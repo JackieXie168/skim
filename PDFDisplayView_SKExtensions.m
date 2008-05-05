@@ -88,21 +88,21 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 #pragma mark Accessibility
 
 - (NSArray *)replacementAccessibilityAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil)
-        attributes = [[originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
-    return attributes;
-}
-
-- (NSArray *)replacementAccessibilityParameterizedAttributeNames {
     if ([[self skPdfView] respondsToSelector:@selector(accessibilityChildren)]) {
         static NSArray *attributes = nil;
         if (attributes == nil)
-            attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
+            attributes = [[originalAccessibilityAttributeNames(self, _cmd) arrayByAddingObject:NSAccessibilityChildrenAttribute] retain];
         return attributes;
     } else {
         return originalAccessibilityAttributeNames(self, _cmd);
     }
+}
+
+- (NSArray *)replacementAccessibilityParameterizedAttributeNames {
+    static NSArray *attributes = nil;
+    if (attributes == nil)
+        attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
+    return attributes;
 }
 
 - (id)replacementAccessibilityAttributeValue:(NSString *)attribute {
