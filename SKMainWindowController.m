@@ -129,6 +129,7 @@ static float segmentedControlOffset = 1.0;
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
 static NSString *SKPDFAnnotationPropertiesObservationContext = @"SKPDFAnnotationPropertiesObservationContext";
+static NSString *SKMainWindowDefaultsObservationContext = @"SKMainWindowDefaultsObservationContext";
 
 NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
@@ -3237,7 +3238,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, nil]];
+                                  SKTableFontSizeKey, nil]
+        context:SKMainWindowDefaultsObservationContext];
 }
 
 - (void)unregisterAsObserver {
@@ -3300,7 +3302,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+    if (context == SKMainWindowDefaultsObservationContext) {
         
         // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];

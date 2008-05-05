@@ -49,7 +49,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
-#import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "OBUtilities.h"
