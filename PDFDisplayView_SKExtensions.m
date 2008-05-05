@@ -50,8 +50,15 @@
 - (void)generateAccessibilityTable;
 @end
 
+
 @interface PDFDisplayView (SKExtensions)
 @end
+
+
+@interface NSAttributedString (SKExtensions)
+- (NSAttributedString *)accessibilityAttributedString;
+@end
+
 
 @implementation PDFDisplayView (SKExtensions)
 
@@ -101,7 +108,7 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 - (NSArray *)replacementAccessibilityParameterizedAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil)
-        attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, nil]] retain];
+        attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, NSAccessibilityAttributedStringForRangeParameterizedAttribute, nil]] retain];
     return attributes;
 }
 
@@ -146,6 +153,52 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
         @catch (id exception) {}
         NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
         return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
+    }
+    return nil;
+}
+
+- (id)replacementAccessibilityAttributedStringForRangeAttributeForParameter:(id)parameter {
+    id pdfView = [self skPdfView];
+    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
+        @try {
+            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                [self generateAccessibilityTable];
+        }
+        @catch (id exception) {}
+        NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
+        return [attributedString accessibilityAttributedString];
+    }
+    return nil;
+}
+
+- (id)replacementAccessibilityStyleRangeForIndexAttributeForParameter:(id)parameter {
+    id pdfView = [self skPdfView];
+    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
+        @try {
+            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
+                [self generateAccessibilityTable];
+        }
+        @catch (id exception) {}
+        int i = [parameter unsignedIntValue];
+        int n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
+        int start = MAX(0, i - 25), end = MIN(n, i + 25);
+        NSRange range = NSMakeRange(i, 1);
+        NSRange r = NSMakeRange(start, end - start);
+        BOOL foundRange = NO;
+        while (foundRange == NO) {
+            [[[self selectionForAccessibilityRange:r] attributedString] attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
+            foundRange = YES;
+            if (range.location == r.location && r.location > 0) {
+                start = MAX(0, (int)r.location - 25);
+                foundRange = NO;
+            }
+            if (NSMaxRange(range) == NSMaxRange(r) && (int)NSMaxRange(range) < n) {
+                end = MIN(n, (int)NSMaxRange(r) + 25);
+                foundRange = NO;
+            }
+            r = NSMakeRange(start, end - start);
+        }
+        return [NSValue valueWithRange:range];
     }
     return nil;
 }
@@ -217,6 +270,23 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
         OBAddMethodImplementationWithSelector(self, @selector(accessibilityRangeForPositionAttributeForParameter:), @selector(replacementAccessibilityRangeForPositionAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)] == NO)
         OBAddMethodImplementationWithSelector(self, @selector(accessibilityRTFForRangeAttributeForParameter:), @selector(replacementAccessibilityRTFForRangeAttributeForParameter:));
+    if ([self instancesRespondToSelector:@selector(accessibilityAttributedStringForRangeAttributeForParameter:)] == NO)
+        OBAddMethodImplementationWithSelector(self, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), @selector(replacementAccessibilityAttributedStringForRangeAttributeForParameter:));
+    if ([self instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
+        OBAddMethodImplementationWithSelector(self, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), @selector(replacementAccessibilityStyleRangeForIndexAttributeForParameter:));
+}
+
+@end
+
+
+@implementation NSAttributedString (SKExtensions)
+
+- (NSAttributedString *)accessibilityAttributedString {
+    NSTextFieldCell *cell = nil;
+    if (cell == nil)
+        cell = [[NSTextFieldCell alloc] init];
+    [cell setAttributedStringValue:self];
+    return [cell accessibilityAttributeValue:NSAccessibilityAttributedStringForRangeParameterizedAttribute forParameter:[NSValue valueWithRange:NSMakeRange(0, [self length])]];
 }
 
 @end
