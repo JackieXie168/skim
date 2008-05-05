@@ -901,31 +901,25 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
         scriptString = [NSMutableString stringWithString:@"tell application \"Microsoft Entourage\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendString:@"set m to make new draft window\n"];
+        [scriptString appendFormat:@"set m to make new draft window with properties {subject:\"%@\"}\n", [self displayName]];
         [scriptString appendString:@"tell m\n"];
-        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
-        [scriptString appendFormat:@"make new attachment at end of attchements with properties {file: POSIX file \"%@\"}\n", fileName];
+        [scriptString appendFormat:@"make new attachment with properties {file:POSIX file \"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
         scriptString = [NSMutableString stringWithString:@"tell application \"Mailsmith\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendString:@"set m to make new message window\n"];
+        [scriptString appendFormat:@"set m to make new message window with properties {subject:\"%@\"}\n", [self displayName]];
         [scriptString appendString:@"tell m\n"];
-        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
-        [scriptString appendFormat:@"make new enclosure at end of enclosures with properties {file: POSIX file \"%@\"}\n", fileName];
+        [scriptString appendFormat:@"make new enclosure with properties {file:POSIX file \"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     } else {
         scriptString = [NSMutableString stringWithString:@"tell application \"Mail\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendString:@"set m to make new outgoing message at beginning of outgoing messages\n"];
-        [scriptString appendString:@"tell m\n"];
-        [scriptString appendFormat:@"set subject to \"%@\"\n", [self displayName]];
-        [scriptString appendString:@"tell content\n"];
-        [scriptString appendFormat:@"make new attachment with properties {file name: \"%@\"} at after last character\n", fileName];
-        [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"set visible to true\n"];
+        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n", [self displayName]];
+        [scriptString appendString:@"tell content of m\n"];
+        [scriptString appendFormat:@"make new attachment at after last character with properties {file name:\"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     }
