@@ -58,7 +58,7 @@ static IMP originalTrackKnob = NULL;
 }
 
 + (void)load {
-    originalTrackKnob = OBReplaceMethodImplementationWithSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:));
+    originalTrackKnob = SKReplaceMethodImplementationWithSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:));
 }
 
 @end
