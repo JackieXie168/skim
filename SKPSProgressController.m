@@ -40,6 +40,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "Files_SKExtensions.h"
+#import "NSInvocation_SKExtensions.h"
 
 static NSString *SKPSProgressProviderKey = @"provider";
 static NSString *SKPSProgressConsumerKey = @"consumer";
@@ -88,13 +89,8 @@ static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
     if (delegate && [delegate respondsToSelector:@selector(conversionCompleted:)]) {
-        NSMethodSignature *ms = [delegate methodSignatureForSelector:@selector(conversionCompleted:)];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
-        [invocation setTarget:delegate];
-        [invocation setSelector:@selector(conversionCompleted:)];
-        
         BOOL val = (success == true);
-        [invocation setArgument:&val atIndex:2];
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:@selector(conversionCompleted:) argument:&val];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
     }
 }
@@ -169,11 +165,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
  
 - (void)stopModalOnMainThread:(BOOL)success {
     int val = (success ? SKConversionSucceeded : SKConversionFailed);
-    NSMethodSignature *ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
-    [invocation setTarget:NSApp];
-    [invocation setSelector:@selector(stopModalWithCode:)];
-    [invocation setArgument:&val atIndex:2];
+    NSInvocation *invocation = [NSInvocation invocationWithTarget:NSApp selector:@selector(stopModalWithCode:) argument:&val];
     [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 }
 
@@ -361,17 +353,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
     BOOL success = SKFileExistsAtPath(dviFile);
     
-    NSMethodSignature *ms;
     NSInvocation *invocation;
     
     if (success) {
         
         task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
         
-        ms = [self methodSignatureForSelector:@selector(conversionStarted)];
-        invocation = [NSInvocation invocationWithMethodSignature:ms];
-        [invocation setTarget:self];
-        [invocation setSelector:@selector(conversionStarted)];
+        invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
         if (success) {
@@ -409,11 +397,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         if (success)
             [pdfData setData:outData];
         
-        ms = [self methodSignatureForSelector:@selector(conversionCompleted:)];
-        invocation = [NSInvocation invocationWithMethodSignature:ms];
-        [invocation setTarget:self];
-        [invocation setSelector:@selector(conversionCompleted:)];
-        [invocation setArgument:&success atIndex:2];
+        invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionCompleted:) argument:&success];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
         [self stopModalOnMainThread:success];
