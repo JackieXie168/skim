@@ -55,6 +55,8 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
+static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWindowDefaultsObservationContext";
+
 @implementation SKPreferenceController
 
 + (id)sharedPrefenceController {
@@ -71,8 +73,8 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
-        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
+        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
     }
     return self;
 }
@@ -265,7 +267,7 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == sudc && [keyPath hasPrefix:@"values."]) {
+    if (context == SKPreferenceWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
             [self updateRevertButtons];
