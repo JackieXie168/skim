@@ -571,10 +571,17 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNote] && [annotation respondsToSelector:@selector(font)]) {
-            updatingFont = YES;
-            [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-            updatingFont = NO;
+        if ([annotation isNote]) {
+            if ([annotation respondsToSelector:@selector(font)]) {
+                updatingFont = YES;
+                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
+                updatingFont = NO;
+            }
+            if ([annotation respondsToSelector:@selector(fontColor)]) {
+                updatingFontAttributes = YES;
+                [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
+                updatingFontAttributes = NO;
+            }
         }
     }
 }
@@ -1228,6 +1235,19 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         updatingFont = YES;
         [(PDFAnnotationFreeText *)annotation setFont:font];
         updatingFont = NO;
+    }
+}
+
+- (IBAction)changeAttributes:(id)sender{
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if (updatingFontAttributes == NO && [annotation isNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
+        NSColor *color = [(PDFAnnotationFreeText *)annotation fontColor];
+        NSColor *newColor = [[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName];
+        if ([newColor isEqual:color] == NO) {
+            updatingFontAttributes = YES;
+            [(PDFAnnotationFreeText *)annotation setFontColor:newColor];
+            updatingFontAttributes = NO;
+        }
     }
 }
 
@@ -3450,6 +3470,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                     updatingFont = YES;
                     [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)note font] isMultiple:NO];
                     updatingFont = NO;
+                }
+                if (updatingFontAttributes == NO && ([keyPath isEqualToString:SKPDFAnnotationFontColorKey])) {
+                    updatingFontAttributes = YES;
+                    [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)note fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
+                    updatingFontAttributes = NO;
                 }
                 if (updatingLine == NO && ([keyPath isEqualToString:SKPDFAnnotationBorderKey] || [keyPath isEqualToString:SKPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKPDFAnnotationEndLineStyleKey])) {
                     updatingLine = YES;

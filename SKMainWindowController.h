@@ -222,6 +222,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     NSButton                    *colorAccessoryView;
     BOOL                        updatingColor;
     BOOL                        updatingFont;
+    BOOL                        updatingFontAttributes;
     BOOL                        updatingLine;
     
     BOOL                        settingUpWindow;
