@@ -1,10 +1,10 @@
 //
-//  OBUtilities.h
+//  SKUtilities.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.
 
-/* Some of the following functions are inspired by OmniBase/OBUtilities.h and subject to the following copyright */
+/* Some of the following functions are inspired by OmniBase/SKUtilities.h and subject to the following copyright */
 
 // Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
 //

@@ -88,7 +88,7 @@
 #import "SKSecondaryPDFView.h"
 #import "SKSheetController.h"
 #import "SKColorSwatch.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 #import "SKApplicationController.h"
 #import "SKCFCallbacks.h"
 #import "NSSegmentedControl_SKExtensions.h"

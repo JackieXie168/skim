@@ -37,7 +37,7 @@
  */
 
 #import "SKColorSwatch.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 #import <Carbon/Carbon.h>
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";

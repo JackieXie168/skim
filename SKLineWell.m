@@ -38,7 +38,7 @@
 
 #import "SKLineWell.h"
 #import "SKLineInspector.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 
 NSString *SKLineStylePboardType = @"SKLineStylePboardType";
 
