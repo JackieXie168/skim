@@ -183,12 +183,12 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
 }
 
 + (void)load{
-    originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
-    originalSetHasVerticalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasVerticalScroller:), @selector(replacementSetHasVerticalScroller:));
-    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
-    originalHasVerticalScroller = (typeof(originalHasVerticalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasVerticalScroller), @selector(replacementHasVerticalScroller));
-    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    originalTile = OBReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
+    originalSetHasHorizontalScroller = SKReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
+    originalSetHasVerticalScroller = SKReplaceMethodImplementationWithSelector(self, @selector(setHasVerticalScroller:), @selector(replacementSetHasVerticalScroller:));
+    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))SKReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
+    originalHasVerticalScroller = (typeof(originalHasVerticalScroller))SKReplaceMethodImplementationWithSelector(self, @selector(hasVerticalScroller), @selector(replacementHasVerticalScroller));
+    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    originalTile = SKReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
     
     // set doesn't retain, so no retain cycles; pointer equality used to compare views
     scrollViewsWithHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);

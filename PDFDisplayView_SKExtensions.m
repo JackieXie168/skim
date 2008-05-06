@@ -253,27 +253,27 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 }
 
 + (void)load {
-    originalResetCursorRects = OBReplaceMethodImplementationWithSelector(self, @selector(resetCursorRects), @selector(replacementResetCursorRects));
+    originalResetCursorRects = SKReplaceMethodImplementationWithSelector(self, @selector(resetCursorRects), @selector(replacementResetCursorRects));
     if ([self instancesRespondToSelector:@selector(passwordEntered:)])
-        originalPasswordEntered = OBReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
+        originalPasswordEntered = SKReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeNames)])
-        originalAccessibilityAttributeNames = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeNames), @selector(replacementAccessibilityAttributeNames));
+        originalAccessibilityAttributeNames = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeNames), @selector(replacementAccessibilityAttributeNames));
     if ([self instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
-        originalAccessibilityParameterizedAttributeNames = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityParameterizedAttributeNames), @selector(replacementAccessibilityParameterizedAttributeNames));
+        originalAccessibilityParameterizedAttributeNames = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityParameterizedAttributeNames), @selector(replacementAccessibilityParameterizedAttributeNames));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
-        originalAccessibilityAttributeValue = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:), @selector(replacementAccessibilityAttributeValue:));
+        originalAccessibilityAttributeValue = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeValue:), @selector(replacementAccessibilityAttributeValue:));
     if ([self instancesRespondToSelector:@selector(accessibilityHitTest:)])
-        originalAccessibilityHitTest = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityHitTest:), @selector(replacementAccessibilityHitTest:));
+        originalAccessibilityHitTest = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityHitTest:), @selector(replacementAccessibilityHitTest:));
     if ([self instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
-        originalAccessibilityFocusedUIElement = OBReplaceMethodImplementationWithSelector(self, @selector(accessibilityFocusedUIElement), @selector(replacementAccessibilityFocusedUIElement));
+        originalAccessibilityFocusedUIElement = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityFocusedUIElement), @selector(replacementAccessibilityFocusedUIElement));
     if ([self instancesRespondToSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)] == NO)
-        OBAddMethodImplementationWithSelector(self, @selector(accessibilityRangeForPositionAttributeForParameter:), @selector(replacementAccessibilityRangeForPositionAttributeForParameter:));
+        SKAddMethodImplementationWithSelector(self, @selector(accessibilityRangeForPositionAttributeForParameter:), @selector(replacementAccessibilityRangeForPositionAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)] == NO)
-        OBAddMethodImplementationWithSelector(self, @selector(accessibilityRTFForRangeAttributeForParameter:), @selector(replacementAccessibilityRTFForRangeAttributeForParameter:));
+        SKAddMethodImplementationWithSelector(self, @selector(accessibilityRTFForRangeAttributeForParameter:), @selector(replacementAccessibilityRTFForRangeAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityAttributedStringForRangeAttributeForParameter:)] == NO)
-        OBAddMethodImplementationWithSelector(self, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), @selector(replacementAccessibilityAttributedStringForRangeAttributeForParameter:));
+        SKAddMethodImplementationWithSelector(self, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), @selector(replacementAccessibilityAttributedStringForRangeAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
-        OBAddMethodImplementationWithSelector(self, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), @selector(replacementAccessibilityStyleRangeForIndexAttributeForParameter:));
+        SKAddMethodImplementationWithSelector(self, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), @selector(replacementAccessibilityStyleRangeForIndexAttributeForParameter:));
 }
 
 @end

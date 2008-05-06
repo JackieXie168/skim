@@ -172,7 +172,7 @@ static IMP originalDrawWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalDrawWithFrameInView = OBReplaceMethodImplementationWithSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
+    originalDrawWithFrameInView = SKReplaceMethodImplementationWithSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
 }
 
 @end

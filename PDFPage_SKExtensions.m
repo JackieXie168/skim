@@ -72,7 +72,7 @@ static IMP originalDealloc = NULL;
 }
 
 + (void)load {
-    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
 }
 

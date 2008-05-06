@@ -605,7 +605,7 @@ static IMP originalToolTip = NULL;
 
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
-        originalToolTip = OBReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
+        originalToolTip = SKReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
 }
 
 - (BOOL)isLink { return YES; }

@@ -4,7 +4,7 @@
 //
 //  Created by Christiaan Hofman on 2/15/07.
 
-/* Following functions are from OmniBase/OBUtilities.h and subject to the following copyright */
+/* Some of the following functions are inspired by OmniBase/OBUtilities.h and subject to the following copyright */
 
 // Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
 //
@@ -63,24 +63,24 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
     }
 }
 
-IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp)
 {
     Method localMethod, superMethod = NULL;
     IMP oldImp = NULL;
     Class superCls = Nil;
     extern void _objc_flush_caches(Class);
     
-    if ((localMethod = class_getInstanceMethod(aClass, oldSelector))) {
+    if ((localMethod = class_getInstanceMethod(aClass, aSelector))) {
         if (superCls = SK_class_getSuperclass(aClass))
-            superMethod = class_getInstanceMethod(superCls, oldSelector);
+            superMethod = class_getInstanceMethod(superCls, aSelector);
         
         if (superMethod == localMethod) {
             // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
             oldImp = SK_method_getImplementation(localMethod);
-            SK_class_addMethod(aClass, oldSelector, newImp, SK_method_getTypeEncoding(localMethod));
+            SK_class_addMethod(aClass, aSelector, anImp, SK_method_getTypeEncoding(localMethod));
         } else {
             // Replace the method in place
-            oldImp = SK_method_setImplementation(localMethod, newImp);
+            oldImp = SK_method_setImplementation(localMethod, anImp);
         }
         
         // Flush the method cache, deprecated on 10.5
@@ -91,13 +91,13 @@ IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp)
     return oldImp;
 }
 
-IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector)
+IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
-    return OBReplaceMethodImplementation(aClass, oldSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, newSelector)));
+    return SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, impSelector)));
 }
 
-void OBAddMethodImplementationWithSelector(Class aClass, SEL newSelector, SEL oldSelector)
+void SKAddMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
-    Method method = class_getInstanceMethod(aClass, oldSelector);
-    SK_class_addMethod(aClass, newSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method));
+    Method method = class_getInstanceMethod(aClass, impSelector);
+    SK_class_addMethod(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method));
 }

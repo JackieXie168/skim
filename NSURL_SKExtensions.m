@@ -55,8 +55,8 @@ static IMP originalInitWithString = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = OBReplaceMethodImplementationWithSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:));
-    originalInitWithString = OBReplaceMethodImplementationWithSelector(self, @selector(initWithString:), @selector(replacementInitWithString:));
+    originalInitFileURLWithPath = SKReplaceMethodImplementationWithSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:));
+    originalInitWithString = SKReplaceMethodImplementationWithSelector(self, @selector(initWithString:), @selector(replacementInitWithString:));
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

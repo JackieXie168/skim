@@ -4,7 +4,7 @@
 //
 //  Created by Christiaan Hofman on 2/15/07.
 
-/* Following functions are from OmniBase/OBUtilities.h and subject to the following copyright */
+/* Some of the following functions are inspired by OmniBase/OBUtilities.h and subject to the following copyright */
 
 // Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
 //
@@ -17,9 +17,9 @@
 #import <objc/objc-class.h>
 #import <objc/objc-runtime.h>
 
-IMP OBReplaceMethodImplementation(Class aClass, SEL oldSelector, IMP newImp);
-IMP OBReplaceMethodImplementationWithSelector(Class aClass, SEL oldSelector, SEL newSelector);
-void OBAddMethodImplementationWithSelector(Class aClass, SEL newSelector, SEL oldSelector);
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp);
+IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+void SKAddMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
 
 #define OBINITIALIZE \
     do { \
