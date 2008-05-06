@@ -19,6 +19,11 @@
 
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
+static Class SK_object_getClass(id object)
+{
+    return object_getClass != NULL ? object_getClass(object) : object->isa;
+}
+
 static IMP SK_method_getImplementation(Method aMethod)
 {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
@@ -63,21 +68,28 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
     }
 }
 
-IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp)
+static Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance)
 {
-    Method localMethod, superMethod = NULL;
+    return isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
+}
+
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, BOOL isInstance)
+{
+    Method superMethod = NULL;
+    Method localMethod = SK_class_getMethod(aClass, aSelector, isInstance);
     IMP oldImp = NULL;
     Class superCls = Nil;
+    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
     extern void _objc_flush_caches(Class);
     
-    if ((localMethod = class_getInstanceMethod(aClass, aSelector))) {
+    if (localMethod) {
         if (superCls = SK_class_getSuperclass(aClass))
-            superMethod = class_getInstanceMethod(superCls, aSelector);
+            superMethod = SK_class_getMethod(superCls, aSelector, isInstance);
         
         if (superMethod == localMethod) {
             // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
             oldImp = SK_method_getImplementation(localMethod);
-            SK_class_addMethod(aClass, aSelector, anImp, SK_method_getTypeEncoding(localMethod));
+            SK_class_addMethod(realClass, aSelector, anImp, SK_method_getTypeEncoding(localMethod));
         } else {
             // Replace the method in place
             oldImp = SK_method_setImplementation(localMethod, anImp);
@@ -85,7 +97,7 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp)
         
         // Flush the method cache, deprecated on 10.5
         if (_objc_flush_caches != NULL)
-            _objc_flush_caches(aClass);
+            _objc_flush_caches(realClass);
     }
     
     return oldImp;
@@ -93,11 +105,36 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp)
 
 IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
-    return SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, impSelector)));
+    return SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(class_getInstanceMethod(aClass, impSelector)), YES);
 }
 
-void SKAddMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
+IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
+    return SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(class_getClassMethod(aClass, impSelector)), NO);
+}
+
+IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
+{
+    IMP imp = NULL;
     Method method = class_getInstanceMethod(aClass, impSelector);
-    SK_class_addMethod(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method));
+    
+    if (method) {
+        imp = SK_method_getImplementation(method);
+        SK_class_addMethod(aClass, aSelector, imp, SK_method_getTypeEncoding(method));
+    }
+    
+    return imp;
+}
+
+IMP SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
+{
+    IMP imp = NULL;
+    Method method = class_getClassMethod(aClass, impSelector);
+    
+    if (method) {
+        imp = SK_method_getImplementation(method);
+        SK_class_addMethod(SK_object_getClass(aClass), aSelector, imp, SK_method_getTypeEncoding(method));
+    }
+    
+    return imp;
 }

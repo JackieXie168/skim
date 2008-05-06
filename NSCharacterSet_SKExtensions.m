@@ -37,11 +37,12 @@
  */
 
 #import "NSCharacterSet_SKExtensions.h"
+#import "SKUtilities.h"
 
 
 @implementation NSCharacterSet (SKExtensions)
 
-+ (id)newlineCharacterSet {
++ (id)replacementNewlineCharacterSet {
     static NSCharacterSet *newlineCharacterSet = nil;
     if (newlineCharacterSet == nil) {
         NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
@@ -65,6 +66,11 @@
     if (nonWhitespaceAndNewlineCharacterSet == nil)
         nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
     return nonWhitespaceAndNewlineCharacterSet;
+}
+
++ (void)load {
+    if ([self respondsToSelector:@selector(newlineCharacterSet)] == NO)
+        SKRegisterClassMethodImplementationWithSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet));
 }
 
 @end

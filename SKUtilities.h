@@ -17,9 +17,11 @@
 #import <objc/objc-class.h>
 #import <objc/objc-runtime.h>
 
-IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp);
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, BOOL isInstance);
 IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
-void SKAddMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+IMP SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
 
 #define OBINITIALIZE \
     do { \
