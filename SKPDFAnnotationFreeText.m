@@ -96,7 +96,7 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 - (NSDictionary *)properties{
     NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
     [dict setValue:[self font] forKey:SKPDFAnnotationFontKey];
-    if ([self respondsToSelector:@selector(fontColor)])
+    if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
         [dict setValue:[self fontColor] forKey:SKPDFAnnotationFontColorKey];
     if ([self respondsToSelector:@selector(rotation)])
         [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKPDFAnnotationRotationKey];
@@ -106,7 +106,13 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
-    [fdfString appendFormat:@"(/%@ %f Tf)", [[self font] fontName], [[self font] pointSize]];
+    [fdfString appendFormat:@"(/%@ %f Tf", [[self font] fontName], [[self font] pointSize]];
+    if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO) {
+        float r = 0.0, g = 0.0, b = 0.0, a;
+        [[self fontColor] getRed:&r green:&g blue:&b alpha:&a];
+        [fdfString appendFormat:@" %f %f %f rg", r, g, b];
+    }
+    [fdfString appendString:@")"];
     [fdfString appendFDFName:SKFDFDefaultStyleKey];
     [fdfString appendFormat:@"(font: %@ %fpt)", [[self font] fontName], [[self font] pointSize]];
     return fdfString;
