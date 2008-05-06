@@ -47,6 +47,7 @@
 		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
+		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
@@ -421,6 +422,8 @@
 		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDocument.icns; path = Images/PDFDocument.icns; sourceTree = "<group>"; };
 		CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotPageCell.h; sourceTree = "<group>"; };
 		CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotPageCell.m; sourceTree = "<group>"; };
+		CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSInvocation_SKExtensions.h; sourceTree = "<group>"; };
+		CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSInvocation_SKExtensions.m; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1099,6 +1102,8 @@
 				CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */,
 				CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */,
 				CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */,
+				CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */,
+				CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
@@ -2047,6 +2052,7 @@
 				CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */,
 				CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */,
 				CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */,
+				CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

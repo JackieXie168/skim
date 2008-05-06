@@ -39,6 +39,7 @@
 #import "SKSheetController.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
+#import "NSInvocation_SKExtensions.h"
 
 
 @implementation SKSheetController
@@ -70,12 +71,10 @@
 	if(theModalDelegate != nil && theDidEndSelector != NULL){
 		NSMethodSignature *signature = [theModalDelegate methodSignatureForSelector:theDidEndSelector];
         NSAssert2(nil != signature, @"%@ does not implement %@", theModalDelegate, NSStringFromSelector(theDidEndSelector));
-		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-		[invocation setSelector:theDidEndSelector];
-		[invocation setArgument:&self atIndex:2];
+		NSInvocation *invocation = [NSInvocation invocationWithTarget:theModalDelegate selector:theDidEndSelector argument:&self];
 		[invocation setArgument:&returnCode atIndex:3];
 		[invocation setArgument:&theContextInfo atIndex:4];
-		[invocation invokeWithTarget:theModalDelegate];
+		[invocation invoke];
 	}
 }
 
