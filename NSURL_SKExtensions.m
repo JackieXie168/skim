@@ -37,7 +37,7 @@
  */
 
 #import "NSURL_SKExtensions.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 
 NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 

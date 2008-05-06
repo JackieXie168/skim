@@ -51,7 +51,7 @@
 #import "SKPDFView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 
 
 unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle) {

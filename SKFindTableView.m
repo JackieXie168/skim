@@ -38,7 +38,7 @@
 
 #import "SKFindTableView.h"
 #import "SKStringConstants.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 
 
 @implementation SKFindTableView

@@ -37,7 +37,7 @@
  */
 
 #import "NSScrollView_SKExtensions.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 #import "BDSKEdgeView.h"
 
 

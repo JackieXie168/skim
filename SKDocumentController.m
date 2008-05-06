@@ -42,7 +42,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "OBUtilities.h"
+#import "SKUtilities.h"
 
 // See CFBundleTypeName in Info.plist
 static NSString *SKPDFDocumentTypeName = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
