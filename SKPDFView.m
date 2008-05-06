@@ -1975,12 +1975,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect editBounds = [activeAnnotation bounds];
         NSFont *font = [(PDFAnnotationFreeText *)activeAnnotation font];
         NSColor *color = [activeAnnotation color];
+        NSColor *fontColor = [(PDFAnnotationFreeText *)activeAnnotation fontColor];
         float alpha = [color alphaComponent];
         if (alpha < 1.0)
             color = [[NSColor controlBackgroundColor] blendedColorWithFraction:alpha ofColor:[color colorWithAlphaComponent:1.0]];
         editBounds = [self convertRect:[self convertRect:editBounds fromPage:[activeAnnotation page]] toView:[self documentView]];
         editField = [[NSTextField alloc] initWithFrame:editBounds];
         [editField setBackgroundColor:color];
+        [editField setTextColor:fontColor];
         [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
         [editField setStringValue:[activeAnnotation string]];
         [editField setDelegate:self];
