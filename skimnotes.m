@@ -9,11 +9,19 @@
 static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes agent [SERVER_NAME]\n skimnotes help";
 static char *versionStr = "SkimNotes command-line client, version 2.0.";
 
+static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\nUsage: skimnotes set PDF_FILE [SKIM_FILE|-]\n\nWrites notes to extended attributes of PDF_FILE from SKIM_FILE or standard input.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.";
+static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\nUsage: skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n\nReads Skim, Text, or RTF notes in from extended attributes of PDF_FILE and writes to NOTES_FILE or standard output.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\nReads Skim notes when no format is provided.";
+static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\nUsage: skimnotes remove PDF_FILE\n\nRemoves the Skim notes from the extended attributes of PDF_FILE.";
+static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\nUsage: skimnotes agent [SERVER_NAME]\n\nRuns a Skim Notes agent server with server name SERVER_NAME, to which a Cocoa application can connect using DO.\nWhen SERVER_NAME is not provided, a unique name is generated and returned on standard output.\nThe DO server conforms to the following formal protocol.\n\n@protocol SKAgentListenerProtocol\n- (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;\n@end\n";
+static char *helpHelpStr = "skimnotes help: get help on the skimnotes tool\nUsage: skimnotes help [VERB]]\n\nGet help on the verb VERB.";
+
 enum {
+    SKNActionUnknown,
     SKNActionGet,
     SKNActionSet,
     SKNActionRemove,
-    SKNActionAgent
+    SKNActionAgent,
+    SKNActionHelp
 };
 
 enum {
@@ -22,6 +30,21 @@ enum {
     SKNFormatText,
     SKNFormatRTF
 };
+
+static int SKNActionForName(NSString *actionString) {
+    if ([actionString caseInsensitiveCompare:@"get"] == NSOrderedSame)
+        return SKNActionGet;
+    else if ([actionString caseInsensitiveCompare:@"set"] == NSOrderedSame)
+        return SKNActionSet;
+    else if ([actionString caseInsensitiveCompare:@"remove"] == NSOrderedSame)
+        return SKNActionRemove;
+    else if ([actionString caseInsensitiveCompare:@"agent"] == NSOrderedSame)
+        return SKNActionAgent;
+    else if ([actionString caseInsensitiveCompare:@"help"] == NSOrderedSame)
+        return SKNActionHelp;
+    else
+        return SKNActionUnknown;
+}
 
 static inline NSString *SKNNormalizedPath(NSString *path, NSString *basePath) {
     if ([path isEqualToString:@"-"] == NO) {
@@ -38,35 +61,17 @@ static inline void SKNWriteUsageAndVersion() {
 }
 
 int main (int argc, const char * argv[]) {
-	int action = 0;
-    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
  
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     
-    if (argc < 3) {
-        if (argc == 2 && ([[args objectAtIndex:1] caseInsensitiveCompare:@"-h"] == NSOrderedSame || [[args objectAtIndex:1] caseInsensitiveCompare:@"-help"] == NSOrderedSame || [[args objectAtIndex:1] caseInsensitiveCompare:@"help"] == NSOrderedSame)) {
-            SKNWriteUsageAndVersion();
-            exit (0);
-        } else {
-            SKNWriteUsageAndVersion();
-            exit (1);
-        }
-    } 
-    
-    NSString *actionString = [args objectAtIndex:1];
-    if ([actionString caseInsensitiveCompare:@"get"] == NSOrderedSame) {
-        action = SKNActionGet;
-    } else if ([actionString caseInsensitiveCompare:@"set"] == NSOrderedSame) {
-        action = SKNActionSet;
-    } else if ([actionString caseInsensitiveCompare:@"remove"] == NSOrderedSame) {
-        action = SKNActionRemove;
-    } else if ([actionString caseInsensitiveCompare:@"agent"] == NSOrderedSame) {
-        action = SKNActionAgent;
-    } else {
+    if (argc < 2) {
         SKNWriteUsageAndVersion();
+        [pool release];
         exit (1);
     }
+    
+    int action = SKNActionForName([args objectAtIndex:1]);
     
     BOOL success = NO;
     
@@ -89,7 +94,39 @@ int main (int argc, const char * argv[]) {
         
         success = YES;
         
+    } else if (action == SKNActionHelp) {
+        
+        int helpAction = SKNActionForName([args count] > 2 ? [args objectAtIndex:2] : nil);
+        
+        switch (helpAction) {
+            case SKNActionUnknown:
+                fprintf (stdout, "%s\n%s\n", usageStr, versionStr);
+                break;
+            case SKNActionGet:
+                fprintf (stdout, "%s\n", getHelpStr);
+                break;
+            case SKNActionSet:
+                fprintf (stdout, "%s\n", setHelpStr);
+                break;
+            case SKNActionRemove:
+                fprintf (stdout, "%s\n", removeHelpStr);
+                break;
+            case SKNActionAgent:
+                fprintf (stdout, "%s\n", agentHelpStr);
+                break;
+            case SKNActionHelp:
+                fprintf (stdout, "%s\n", helpHelpStr);
+                break;
+        }
+        success = YES;
+        
     } else {
+        
+        if (argc < 3) {
+            SKNWriteUsageAndVersion();
+            [pool release];
+            exit (1);
+        }
         
         NSString *formatString = nil;
         int format = SKNFormatAuto;
@@ -98,6 +135,7 @@ int main (int argc, const char * argv[]) {
         if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
             if (argc < 5) {
                 SKNWriteUsageAndVersion();
+                [pool release];
                 exit (1);
             }
             offset = 4;
