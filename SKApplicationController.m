@@ -575,41 +575,45 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 - (NSDictionary *)defaultNoteColors {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [sud colorForKey:SKFreeTextNoteColorKey], @"textNote", 
-        [sud colorForKey:SKAnchoredNoteColorKey], @"anchoredNote", 
-        [sud colorForKey:SKCircleNoteColorKey], @"circleNote", 
-        [sud colorForKey:SKSquareNoteColorKey], @"squareNote", 
-        [sud colorForKey:SKHighlightNoteColorKey], @"highlightNote", 
-        [sud colorForKey:SKUnderlineNoteColorKey], @"underlineNote", 
-        [sud colorForKey:SKStrikeOutNoteColorKey], @"strikeOutNote", 
-        [sud colorForKey:SKLineNoteColorKey], @"lineNote", 
-        [sud colorForKey:SKCircleNoteInteriorColorKey], @"circleNoteInterior", 
-        [sud colorForKey:SKSquareNoteInteriorColorKey], @"squareNoteInterior", nil];
+        [sud colorForKey:SKFreeTextNoteColorKey], @"textNoteColor", 
+        [sud colorForKey:SKAnchoredNoteColorKey], @"anchoredNoteColor", 
+        [sud colorForKey:SKCircleNoteColorKey], @"circleNoteColor", 
+        [sud colorForKey:SKSquareNoteColorKey], @"squareNoteColor", 
+        [sud colorForKey:SKHighlightNoteColorKey], @"highlightNoteColor", 
+        [sud colorForKey:SKUnderlineNoteColorKey], @"underlineNoteColor", 
+        [sud colorForKey:SKStrikeOutNoteColorKey], @"strikeOutNoteColor", 
+        [sud colorForKey:SKLineNoteColorKey], @"lineNoteColor", 
+        [sud colorForKey:SKCircleNoteInteriorColorKey], @"circleNoteInteriorColor", 
+        [sud colorForKey:SKSquareNoteInteriorColorKey], @"squareNoteInteriorColor", 
+        [sud colorForKey:SKFreeTextNoteFontColorKey], @"textNoteFontColor", 
+        nil];
 }
 
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *color;
-    if (color = [colorDict objectForKey:@"textNote"])
+    if (color = [colorDict objectForKey:@"textNoteColor"])
         [sud setColor:color forKey:SKFreeTextNoteColorKey];
-    if (color = [colorDict objectForKey:@"anchoredNote"])
+    if (color = [colorDict objectForKey:@"anchoredNoteColor"])
         [sud setColor:color forKey:SKAnchoredNoteColorKey];
-    if (color = [colorDict objectForKey:@"circleNote"])
+    if (color = [colorDict objectForKey:@"circleNoteColor"])
         [sud setColor:color forKey:SKCircleNoteColorKey];
-    if (color = [colorDict objectForKey:@"squareNote"])
+    if (color = [colorDict objectForKey:@"squareNoteColor"])
         [sud setColor:color forKey:SKSquareNoteColorKey];
-    if (color = [colorDict objectForKey:@"highlightNote"])
+    if (color = [colorDict objectForKey:@"highlightNoteColor"])
         [sud setColor:color forKey:SKHighlightNoteColorKey];
-    if (color = [colorDict objectForKey:@"underlineNote"])
+    if (color = [colorDict objectForKey:@"underlineNoteColor"])
         [sud setColor:color forKey:SKUnderlineNoteColorKey];
-    if (color = [colorDict objectForKey:@"strikeOutNote"])
+    if (color = [colorDict objectForKey:@"strikeOutNoteColor"])
         [sud setColor:color forKey:SKStrikeOutNoteColorKey];
-    if (color = [colorDict objectForKey:@"lineNote"])
+    if (color = [colorDict objectForKey:@"lineNoteColor"])
         [sud setColor:color forKey:SKLineNoteColorKey];
-    if (color = [colorDict objectForKey:@"circleNoteInterior"])
+    if (color = [colorDict objectForKey:@"circleNoteInteriorColor"])
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:@"squareNoteInterior"])
+    if (color = [colorDict objectForKey:@"squareNoteInteriorColor"])
         [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
+    if (color = [colorDict objectForKey:@"textNoteFontColor"])
+        [sud setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 
 - (NSDictionary *)defaultLineWidths {

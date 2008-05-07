@@ -672,6 +672,10 @@
                 description="The font size in points of a text note.">
                 <cocoa key="fontSize"/>
             </property>
+            <property name="font color" code="FntC" type="RGBA color"
+                description="The text color of a text note.">
+                <cocoa key="fontColor"/>
+            </property>
             <property name="extended text" code="XTxt" type="rich text"
                 description="The rich extended text of an anchored note.">
                 <cocoa key="richText"/>
@@ -851,7 +855,7 @@
         <record-type name="note colors" code="NClr">
             <property name="text note color" code="CTxt" type="RGBA color"
                 description="Default text note color.">
-                <cocoa key="textNote"/>
+                <cocoa key="textNoteColor"/>
             </property>
             <property name="anchored note color" code="CAnc" type="RGBA color"
                 description="Default anchored note color.">
@@ -859,35 +863,39 @@
             </property>
             <property name="circle note color" code="CCir" type="RGBA color"
                 description="Default circle color.">
-                <cocoa key="circleNote"/>
+                <cocoa key="circleNoteColor"/>
             </property>
             <property name="box note color" code="CSqu" type="RGBA color"
                 description="Default box color.">
-                <cocoa key="squareNote"/>
+                <cocoa key="squareNoteColor"/>
             </property>
             <property name="highlight note color" code="CHil" type="RGBA color"
                 description="Default highlight color.">
-                <cocoa key="highlightNote"/>
+                <cocoa key="highlightNoteColor"/>
             </property>
             <property name="underline note color" code="CUnd" type="RGBA color"
                 description="Default underline highlight color.">
-                <cocoa key="underlineNote"/>
+                <cocoa key="underlineNoteColor"/>
             </property>
             <property name="strike out note color" code="CStr" type="RGBA color"
                 description="Default strike out highlight color.">
-                <cocoa key="strikeOutNote"/>
+                <cocoa key="strikeOutNoteColor"/>
             </property>
             <property name="line note color" code="CLin" type="RGBA color"
                 description="Default line color.">
-                <cocoa key="lineNote"/>
+                <cocoa key="lineNoteColor"/>
             </property>
             <property name="circle note interior color" code="CCiI" type="RGBA color"
                 description="Default circle fill color.">
-                <cocoa key="circleNoteInterior"/>
+                <cocoa key="circleNoteInteriorColor"/>
             </property>
             <property name="box note interior color" code="CSqI" type="RGBA color"
                 description="Default box fill color.">
-                <cocoa key="squareNoteInterior"/>
+                <cocoa key="squareNoteInteriorColor"/>
+            </property>
+            <property name="text note font color" code="CTxF" type="RGBA color"
+                description="Default text note font color.">
+                <cocoa key="textNoteFontColor"/>
             </property>
         </record-type>
 
