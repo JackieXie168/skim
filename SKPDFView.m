@@ -285,18 +285,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super dealloc];
 }
 
-// this is not called on Leopard
-- (void)resetCursorRects {
-	[super resetCursorRects];
-    [self resetHoverRects];
-}
-
-// this is a private method not defined on Tiger
-- (void)addTooltipsForVisiblePages {
-	[super addTooltipsForVisiblePages];
-    [self resetHoverRects];
-}
-
 #pragma mark Hover-rects
 
 // Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
@@ -306,7 +294,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)removeHoverRects {
     CFIndex idx = CFArrayGetCount(hoverRects);
     while (idx--)
-        [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(hoverRects, idx)];
+        [[self documentView] removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(hoverRects, idx)];
     CFArrayRemoveAllValues(hoverRects);
 }
 
@@ -327,7 +315,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 if ([[annotation type] isEqualToString:SKNoteString] || [[annotation type] isEqualToString:SKLinkString]) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {
-                        NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
+                        rect = [self convertRect:rect toView:[self documentView]];
+                        NSTrackingRectTag tag = [[self documentView] addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
                         CFArrayAppendValue(hoverRects, (void *)tag);
                     }
                 }
