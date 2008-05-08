@@ -46,6 +46,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKUtilities.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
@@ -56,6 +57,34 @@ static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObse
 static NSString *SKNoteWindowDefaultsObservationContext = @"SKNoteWindowDefaultsObservationContext";
 
 @implementation SKNoteWindowController
+
+static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
+
++ (void)makeNoteIcons {
+    if (noteIcons[0]) return;
+    
+    NSRect bounds = {NSZeroPoint, SKPDFAnnotationNoteSize};
+    PDFAnnotationText *annotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
+    PDFPage *page = [[PDFPage alloc] init];
+    [page setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
+    [page addAnnotation:annotation];
+    [annotation release];
+    
+    unsigned int i;
+    for (i = 0; i < 7; i++) {
+        noteIcons[i] = [[NSImage alloc] initWithSize:SKPDFAnnotationNoteSize];
+        [noteIcons[i] lockFocus];
+        [annotation setIconType:i];
+        [annotation drawWithBox:kPDFDisplayBoxMediaBox];
+        [noteIcons[i] unlockFocus];
+    }
+    [page release];
+}
+
++ (void)initialize {
+    OBINITIALIZE;
+    [self makeNoteIcons];
+}
 
 - (id)init {
     return self = [self initWithNote:nil];
@@ -106,6 +135,12 @@ static NSString *SKNoteWindowDefaultsObservationContext = @"SKNoteWindowDefaults
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
         if (font)
             [textView setFont:font];
+    }
+    
+    unsigned i, count = [iconTypePopUpButton numberOfItems];
+    for (i = 0; i < count; i++) {
+        NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
+        [item setImage:noteIcons[[item tag]]];
     }
     
     [self updateStatusMessage];
