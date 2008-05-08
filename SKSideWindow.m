@@ -108,7 +108,8 @@
         [animation setDuration:[self animationResizeTime:endFrame]];
         [animation startAnimation];
         [animation release];
-        [[controller window] makeKeyAndOrderFront:self];
+        [[controller window] orderFront:self];
+        [[controller window] makeKeyWindow];
         state = NSDrawerClosedState;
     }
 }
@@ -118,7 +119,7 @@
         state = NSDrawerOpeningState;
         NSRect screenFrame = [[[controller window] screen] frame];
         NSRect endFrame, startFrame = [self frame];
-        endFrame = startFrame;
+        endFrame = startFram
         endFrame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
         endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(endFrame) : NSMinX(screenFrame);
         NSDictionary *slideInDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
@@ -127,7 +128,8 @@
         [animation setDuration:[self animationResizeTime:endFrame]];
         [animation startAnimation];
         [animation release];
-        [self makeKeyAndOrderFront:nil];
+        [self orderFront:nil];
+        [self makeKeyWindow];
         state = NSDrawerOpenState;
     }
 }
