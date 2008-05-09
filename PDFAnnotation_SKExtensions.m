@@ -77,6 +77,18 @@ int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle) {
 }
 
 
+NSString *SKFreeTextString = @"FreeText";
+NSString *SKTextString = @"Text";
+NSString *SKNoteString = @"Note";
+NSString *SKCircleString = @"Circle";
+NSString *SKSquareString = @"Square";
+NSString *SKMarkUpString = @"MarkUp";
+NSString *SKHighlightString = @"Highlight";
+NSString *SKUnderlineString = @"Underline";
+NSString *SKStrikeOutString = @"StrikeOut";
+NSString *SKLineString = @"Line";
+NSString *SKLinkString = @"Link";
+
 NSString *SKPDFAnnotationTypeKey = @"type";
 NSString *SKPDFAnnotationBoundsKey = @"bounds";
 NSString *SKPDFAnnotationPageKey = @"page";

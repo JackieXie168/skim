@@ -38,7 +38,7 @@
 
 #import "SKAnnotationTypeImageCell.h"
 #import <Quartz/Quartz.h>
-#import "SKStringConstants.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 

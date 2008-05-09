@@ -39,6 +39,7 @@
 #import "SKNoteOutlineView.h"
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
 
 

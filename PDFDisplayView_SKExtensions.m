@@ -40,7 +40,6 @@
 #import "SKPDFView.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKPDFDocument.h"
-#import "SKStringConstants.h"
 #import "SKUtilities.h"
 
 @interface PDFDisplayView : NSView

@@ -38,7 +38,7 @@
 
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
-#import "SKStringConstants.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 
 NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";

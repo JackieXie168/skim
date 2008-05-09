@@ -114,15 +114,3 @@ extern NSString *SKAutoRemoveFinishedDownloadsKey;
 extern NSString *SKAutoCloseDownloadsWindowKey;
 extern NSString *SKShouldSetCreatorCodeKey;
 extern NSString *SKTableFontSizeKey;
-
-extern NSString *SKFreeTextString;
-extern NSString *SKTextString;
-extern NSString *SKNoteString;
-extern NSString *SKCircleString;
-extern NSString *SKSquareString;
-extern NSString *SKMarkUpString;
-extern NSString *SKHighlightString;
-extern NSString *SKUnderlineString;
-extern NSString *SKStrikeOutString;
-extern NSString *SKLineString;
-extern NSString *SKLinkString;
