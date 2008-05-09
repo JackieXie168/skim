@@ -43,7 +43,6 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"
-#import "SKStringConstants.h"
 
 #define WINDOW_OFFSET   20.0
 #define TEXT_MARGIN_X   2.0

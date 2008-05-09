@@ -41,7 +41,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
-#import "SKStringConstants.h"
+#import "PDFAnnotation_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
 

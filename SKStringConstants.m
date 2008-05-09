@@ -115,15 +115,3 @@ NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
 NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
 NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
 NSString *SKTableFontSizeKey = @"SKTableFontSize";
-
-NSString *SKFreeTextString = @"FreeText";
-NSString *SKTextString = @"Text";
-NSString *SKNoteString = @"Note";
-NSString *SKCircleString = @"Circle";
-NSString *SKSquareString = @"Square";
-NSString *SKMarkUpString = @"MarkUp";
-NSString *SKHighlightString = @"Highlight";
-NSString *SKUnderlineString = @"Underline";
-NSString *SKStrikeOutString = @"StrikeOut";
-NSString *SKLineString = @"Line";
-NSString *SKLinkString = @"Link";

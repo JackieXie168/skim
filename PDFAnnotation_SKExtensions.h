@@ -64,6 +64,18 @@ extern unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle);
 extern int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle);
 
 
+extern NSString *SKFreeTextString;
+extern NSString *SKTextString;
+extern NSString *SKNoteString;
+extern NSString *SKCircleString;
+extern NSString *SKSquareString;
+extern NSString *SKMarkUpString;
+extern NSString *SKHighlightString;
+extern NSString *SKUnderlineString;
+extern NSString *SKStrikeOutString;
+extern NSString *SKLineString;
+extern NSString *SKLinkString;
+
 extern NSString *SKPDFAnnotationTypeKey;
 extern NSString *SKPDFAnnotationBoundsKey;
 extern NSString *SKPDFAnnotationPageKey;
