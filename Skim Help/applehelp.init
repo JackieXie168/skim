@@ -219,6 +219,7 @@ sub appleHelp_print_Top_header($$)
 sub appleHelp_print_Top_head($)
 {
     my $fh = shift;
+    my $appletitle = "$Texi2HTML::NAME{'Top'}";
     my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
     $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
     #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
@@ -245,7 +246,7 @@ $description
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="$Texi2HTML::THISDOC{program}">
-<meta name="AppleTitle" content="Skim Help">
+<meta name="AppleTitle" content="$appletitle">
 <meta name="AppleIcon" content="Skim%20Help/gfx/SkimIcon.png">
 <meta name="robots" content="anchors">
 $encoding
