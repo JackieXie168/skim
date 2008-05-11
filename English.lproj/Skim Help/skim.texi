@@ -116,6 +116,7 @@ Control-Cmd-\key\
 @ifnottex
 @c DO NOT LOCALIZE THE NEXT LINE
 @node Top
+@c THIS SHOULD CORRESPOND TO THE HELP BOOK NAME IN Infoplist.strings
 @top Skim Help
 
 @box{topframe}
