@@ -115,7 +115,7 @@
 - (void)makeKeyAndOrderFront:(id)sender {
     [self stopAnimation];
     [self setAlphaValue:1.0];
-    [super orderFront:sender];
+    [super makeKeyAndOrderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
