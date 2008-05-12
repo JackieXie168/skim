@@ -108,8 +108,7 @@
         [animation setDuration:[self animationResizeTime:endFrame]];
         [animation startAnimation];
         [animation release];
-        [[controller window] orderFront:self];
-        [[controller window] makeKeyWindow];
+        [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
 }
@@ -128,8 +127,7 @@
         [animation setDuration:[self animationResizeTime:endFrame]];
         [animation startAnimation];
         [animation release];
-        [self orderFront:nil];
-        [self makeKeyWindow];
+        [self makeKeyAndOrderFront:nil];
         state = NSDrawerOpenState;
     }
 }
