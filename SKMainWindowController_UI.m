@@ -90,6 +90,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)selectSelectedNote;
 
+- (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
+
 @end
 
 #pragma mark -

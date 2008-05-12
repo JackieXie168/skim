@@ -44,9 +44,18 @@
 
 @interface PDFDisplayView : NSView
 - (void)passwordEntered:(id)sender;
+
 - (NSRange)accessibilityRangeForSelection:(id)selection;
 - (id)selectionForAccessibilityRange:(NSRange)range;
 - (void)generateAccessibilityTable;
+@end
+
+
+@interface PDFDisplayView (SKAccessibilityOptional)
+- (id)accessibilityRangeForPositionAttributeForParameter:(id)parameter;
+- (id)accessibilityRTFForRangeAttributeForParameter:(id)parameter;
+- (id)accessibilityAttributedStringForRangeAttributeForParameter:(id)parameter;
+- (id)accessibilityStyleRangeForIndexAttributeForParameter:(id)parameter;
 @end
 
 
