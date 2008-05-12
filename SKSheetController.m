@@ -69,8 +69,6 @@
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
 	if(theModalDelegate != nil && theDidEndSelector != NULL){
-		NSMethodSignature *signature = [theModalDelegate methodSignatureForSelector:theDidEndSelector];
-        NSAssert2(nil != signature, @"%@ does not implement %@", theModalDelegate, NSStringFromSelector(theDidEndSelector));
 		NSInvocation *invocation = [NSInvocation invocationWithTarget:theModalDelegate selector:theDidEndSelector argument:&self];
 		[invocation setArgument:&returnCode atIndex:3];
 		[invocation setArgument:&theContextInfo atIndex:4];
