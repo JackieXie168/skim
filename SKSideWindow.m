@@ -176,52 +176,19 @@
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
     if (ch == 0x1B && modifierFlags == 0) {
-        if (self == [controller leftSideWindow] && [controller leftSidePaneIsOpen])
-            [controller toggleLeftSidePane:self];
-        else if (self == [controller rightSideWindow] && [controller rightSidePaneIsOpen])
-            [controller toggleRightSidePane:self];
+        if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
+            [controller closeSideWindow:self];
         else
             [controller exitFullScreen:self];
     } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
-        [controller toggleLeftSidePane:self];
+        [controller closeSideWindow:self];
     } else {
         [super keyDown:theEvent];
     }
 }
 
-- (IBAction)toggleLeftSidePane:(id)sender {
-    [controller toggleLeftSidePane:sender];
-}
-
-- (IBAction)toggleRightSidePane:(id)sender {
-    [controller toggleRightSidePane:sender];
-}
-
-- (IBAction)changeLeftSidePaneState:(id)sender {
-    [controller changeLeftSidePaneState:sender];
-}
-
-- (IBAction)changeRightSidePaneState:(id)sender {
-    [controller changeRightSidePaneState:sender];
-}
-
-- (IBAction)toggleFullScreen:(id)sender {
-    [controller toggleFullScreen:sender];
-}
-
-- (IBAction)togglePresentation:(id)sender {
-    [controller togglePresentation:sender];
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    SEL action = [menuItem action];
-    if (action == @selector(toggleLeftSidePane:) || action == @selector(toggleRightSidePane:) ||
-        action == @selector(changeLeftSidePaneState:) || action == @selector(changeRightSidePaneState:) ||
-        action == @selector(toggleFullScreen:) || action == @selector(togglePresentation:)) {
-        return [controller validateMenuItem:menuItem];
-    } else {
-        return [super validateMenuItem:menuItem];
-    }
+- (NSResponder *)nextResponder {
+    return controller;
 }
 
 @end

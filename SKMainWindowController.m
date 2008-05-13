@@ -995,12 +995,14 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
-- (NSWindow *)leftSideWindow {
-    return leftSideWindow;
-}
-
-- (NSWindow *)rightSideWindow {
-    return rightSideWindow;
+- (void)closeSideWindow:(SKSideWindow *)sideWindow {    
+    if ([sideWindow state] == NSDrawerOpenState || [sideWindow state] == NSDrawerOpeningState) {
+        if (sideWindow == leftSideWindow) {
+            [self toggleLeftSidePane:self];
+        } else if (sideWindow == rightSideWindow) {
+            [self toggleRightSidePane:self];
+        }
+    }
 }
 
 - (NSArray *)notes {

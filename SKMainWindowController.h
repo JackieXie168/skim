@@ -391,8 +391,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (BOOL)leftSidePaneIsOpen;
 - (BOOL)rightSidePaneIsOpen;
 
-- (NSWindow *)leftSideWindow;
-- (NSWindow *)rightSideWindow;
+- (void)closeSideWindow:(SKSideWindow *)sideWindow;
 
 - (void)displayOutlineView;
 - (void)fadeInOutlineView;
