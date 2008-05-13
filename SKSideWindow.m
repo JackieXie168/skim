@@ -94,6 +94,15 @@
     [[self contentView] setAcceptsMouseOver:YES];
 }
 
+- (void)slideFromFrame:(NSRect)startFrame toFrame:(NSRect)endFrame {
+    NSDictionary *slideDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
+    NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideDict, nil]];
+    [animation setAnimationBlockingMode:NSAnimationBlocking];
+    [animation setDuration:[self animationResizeTime:endFrame]];
+    [animation startAnimation];
+    [animation release];
+}
+
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
@@ -102,12 +111,7 @@
         endFrame = startFrame;
         endFrame.size.width = WINDOW_OFFSET;
         endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
-        NSDictionary *slideInDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
-        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideInDict, nil]];
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:[self animationResizeTime:endFrame]];
-        [animation startAnimation];
-        [animation release];
+        [self slideFromFrame:startFrame toFrame:endFrame];
         [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
@@ -121,12 +125,7 @@
         endFrame = startFrame;
         endFrame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
         endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(endFrame) : NSMinX(screenFrame);
-        NSDictionary *slideInDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
-        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideInDict, nil]];
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:[self animationResizeTime:endFrame]];
-        [animation startAnimation];
-        [animation release];
+        [self slideFromFrame:startFrame toFrame:endFrame];
         [self makeKeyAndOrderFront:nil];
         state = NSDrawerOpenState;
     }
