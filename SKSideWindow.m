@@ -94,7 +94,12 @@
     [[self contentView] setAcceptsMouseOver:YES];
 }
 
-- (void)slideFromFrame:(NSRect)startFrame toFrame:(NSRect)endFrame {
+- (void)animateToWidth:(float)width {
+    NSRect screenFrame = [[[controller window] screen] frame];
+    NSRect endFrame, startFrame = [self frame];
+    endFrame = startFrame;
+    endFrame.size.width = width;
+    endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
     NSDictionary *slideDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
     NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideDict, nil]];
     [animation setAnimationBlockingMode:NSAnimationBlocking];
@@ -106,12 +111,7 @@
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
-        NSRect screenFrame = [[[controller window] screen] frame];
-        NSRect endFrame, startFrame = [self frame];
-        endFrame = startFrame;
-        endFrame.size.width = WINDOW_OFFSET;
-        endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
-        [self slideFromFrame:startFrame toFrame:endFrame];
+        [self animateToWidth:WINDOW_OFFSET];
         [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
@@ -120,12 +120,7 @@
 - (void)slideIn {
     if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
         state = NSDrawerOpeningState;
-        NSRect screenFrame = [[[controller window] screen] frame];
-        NSRect endFrame, startFrame = [self frame];
-        endFrame = startFrame;
-        endFrame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
-        endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(endFrame) : NSMinX(screenFrame);
-        [self slideFromFrame:startFrame toFrame:endFrame];
+        [self animateToWidth:NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET];
         [self makeKeyAndOrderFront:nil];
         state = NSDrawerOpenState;
     }
