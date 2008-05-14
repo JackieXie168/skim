@@ -131,8 +131,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
     if ([self isNoteType] && [[textView string] length] == 0) {
-        NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
-                                       size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+        NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+        float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+        NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
         if (font)
             [textView setFont:font];
     }
@@ -297,8 +298,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             return;
         NSString *key = [keyPath substringFromIndex:7];
         if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
-            NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
-                                           size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+            NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+            float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+            NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
             if (font)
                 [textView setFont:font];
         }
