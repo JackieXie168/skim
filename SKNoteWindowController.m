@@ -296,7 +296,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         if (NO == [keyPath hasPrefix:@"values."])
             return;
         NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey] && [self isNoteType] && [[textView string] length] == 0) {
+        if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
             NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
                                            size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
             if (font)
