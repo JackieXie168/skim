@@ -47,6 +47,8 @@
     unsigned int numberOfLines;
 }
 
+- (id)initWithPage:(PDFPage *)aPage;
+
 - (PDFPage *)page;
 - (void)setPage:(PDFPage *)newPage;
 

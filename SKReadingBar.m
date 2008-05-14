@@ -42,14 +42,18 @@
 
 @implementation SKReadingBar
 
-- (id)init {
+- (id)initWithPage:(PDFPage *)aPage {
     if (self = [super init]) {
-        page = nil;
+        numberOfLines = 1;
         lineBounds = nil;
         currentLine = -1;
-        numberOfLines = 1;
+        [self setPage:aPage];
     }
     return self;
+}
+
+- (id)init {
+    return [self initWithPage:nil];
 }
 
 - (void)dealloc {
