@@ -322,6 +322,16 @@ static float BDSKScaleMenuFontSize = 11.0;
     NSMenu *menu = [super menuForEvent:theEvent];
     int i, count = [menu numberOfItems];
     
+    [self setCurrentSelection:nil];
+    while ([menu numberOfItems]) {
+        NSMenuItem *item = [menu itemAtIndex:0];
+        NSString *action = NSStringFromSelector([item action]);
+        if ([item isSeparatorItem] || [action isEqualToString:@"_searchInSpotlight:"] ||  [action isEqualToString:@"_searchInGoogle:"] ||  [action isEqualToString:@"_searchInDictionary:"] || [self validateMenuItem:item] == NO)
+            [menu removeItemAtIndex:0];
+        else
+            break;
+    }
+    
     for (i = 0; i < count; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         if ([item action] == NSSelectorFromString(@"_setAutoSize:")) {
@@ -337,10 +347,10 @@ static float BDSKScaleMenuFontSize = 11.0;
     if ([menuItem action] == @selector(doAutoFit:)) {
         [menuItem setState:[self autoFits] ? NSOnState : NSOffState];
         return YES;
-    } else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd]) {
-        return [super validateMenuItem:menuItem];
     } else if ([menuItem action] == @selector(printDocument:)) {
         return [[self document] allowsPrinting];
+    } else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd]) {
+        return [super validateMenuItem:menuItem];
     }
     return YES;
 }

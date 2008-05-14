@@ -1197,8 +1197,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSMenuItem *item;
     
     // On Leopard the selection is automatically set. In some cases we never want a selection though.
-    if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [self currentSelection]))
+    if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [self currentSelection])) {
         [self setCurrentSelection:nil];
+        while ([menu numberOfItems]) {
+            NSMenuItem *item = [menu itemAtIndex:0];
+            NSString *action = NSStringFromSelector([item action]);
+            if ([item isSeparatorItem] || [action isEqualToString:@"_searchInSpotlight:"] ||  [action isEqualToString:@"_searchInGoogle:"] ||  [action isEqualToString:@"_searchInDictionary:"] || [self validateMenuItem:item] == NO)
+                [menu removeItemAtIndex:0];
+            else
+                break;
+        }
+    }
     
     if (interactionMode == SKPresentationMode)
         return menu;
