@@ -278,11 +278,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     if (dviToolPath == nil) {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
-        NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
+        NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvipdfmx";
         NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
         int i = 0, count = [paths count];
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSSet *supportedTools = [NSSet setWithObjects:@"dvips", @"dvipdf", @"dvipdfm", @"dvipdfmx", nil];
+        NSSet *supportedTools = [NSSet setWithObjects:@"dvips", @"dvipdfmx", @"dvipdfm", @"dvipdf", nil];
         
         NSAssert1([supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
         if ([supportedTools containsObject:commandName]) {
