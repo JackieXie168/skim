@@ -648,10 +648,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         readingBar = nil;
         [self setNeedsDisplay:YES];
     } else {
-        readingBar = [[SKReadingBar alloc] init];
-        [readingBar setPage:[self currentPage]];
+        readingBar = [[SKReadingBar alloc] initWithPage:[self currentPage]];
         [readingBar goToNextLine];
-        [self setNeedsDisplay:YES];
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
         [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
     }
