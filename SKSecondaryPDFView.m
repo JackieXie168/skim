@@ -350,6 +350,16 @@ static float SKPopUpMenuFontSize = 11.0;
     NSMenuItem *item;
     PDFDisplayMode displayMode = [self displayMode];
     
+    [self setCurrentSelection:nil];
+    while ([menu numberOfItems]) {
+        NSMenuItem *item = [menu itemAtIndex:0];
+        NSString *action = NSStringFromSelector([item action]);
+        if ([item isSeparatorItem] || [action isEqualToString:@"_searchInSpotlight:"] ||  [action isEqualToString:@"_searchInGoogle:"] ||  [action isEqualToString:@"_searchInDictionary:"] || [self validateMenuItem:item] == NO)
+            [menu removeItemAtIndex:0];
+        else
+            break;
+    }
+    
     if (i != -1) {
         if (displayMode == kPDFDisplayTwoUp || displayMode == kPDFDisplayTwoUpContinuous) { 
             item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBookFromMenu:) keyEquivalent:@"" atIndex:++i];
