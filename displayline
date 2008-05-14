@@ -5,8 +5,9 @@
 # Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
 
 # get arguments
+command=`basename "$0"`
 line=$1
-if [ "${0%forward-search.sh}" != "$0" ]; then
+if [ "$command" == "forward-search.sh" ]; then
 # if called as forward-search.sh, the order of arguments is different
 source="$2"
 file="$3"
