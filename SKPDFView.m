@@ -235,6 +235,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     mouseDownLoc = NSZeroPoint;
     clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
+    selectionPageIndex = NSNotFound;
     magnification = 0.0;
     didSelect = NO;
     mouseDownInAnnotation = NO;
@@ -431,7 +432,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         CGContextAddRect(context, *(CGRect *)&selectionRect);
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
-        if ([pdfPage isEqual:[self currentPage]] == NO) {
+        if ([pdfPage pageIndex] != selectionPageIndex) {
             color[3] = 0.3;
             CGContextSetFillColor(context, color);
             CGContextFillRect(context, *(CGRect *)&selectionRect);
@@ -730,10 +731,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [types addObject:SKSkimNotePboardType];
     }
     
-    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
         NSRect selRect = NSIntegralRect(selectionRect);
         NSRect targetRect = selRect;
-        PDFPage *page = [self currentPage];
+        PDFPage *page = [[self document] pageAtIndex:selectionPageIndex];
         
         if ([page rotation]) {
             NSAffineTransform *transform = [NSAffineTransform transform];
@@ -3216,16 +3217,21 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
+    float margin = 4.0 / [self scaleFactor];
     
     if (page == nil) {
         selectionRect = NSZeroRect;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
         return;
+    } else if ([page pageIndex] != selectionPageIndex && selectionPageIndex != NSNotFound) {
+        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:[[self document] pageAtIndex:selectionPageIndex]];
+        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
     
+    selectionPageIndex = [page pageIndex];
+    
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
-    float margin = 4.0 / [self scaleFactor];
     
     dragMask = 0;
     
@@ -3329,6 +3335,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (NSIsEmptyRect(selectionRect)) {
         selectionRect = NSZeroRect;
+        selectionPageIndex = NSNotFound;
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
     } else if (dragMask) {
