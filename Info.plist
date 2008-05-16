@@ -540,52 +540,6 @@
 				</array>
 			</dict>
 		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-				<string>com.apple.pdf</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>PDF With Embedded Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>PDFDDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.embedded.pdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>com.apple.ostype</key>
-				<string>PDF </string>
-				<key>public.filename-extension</key>
-				<array>
-					<string>pdf</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-				<string>com.apple.pdf</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>PDF Without Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>PDFDDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.bare.pdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>com.apple.ostype</key>
-				<string>PDF </string>
-				<key>public.filename-extension</key>
-				<array>
-					<string>pdf</string>
-				</array>
-			</dict>
-		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
@@ -703,6 +657,52 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>dvi</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+				<string>com.apple.pdf</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PDF With Embedded Notes</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.embedded.pdf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>PDF </string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+				<string>com.apple.pdf</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PDF Without Notes</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.bare.pdf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>PDF </string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdf</string>
 				</array>
 			</dict>
 		</dict>
