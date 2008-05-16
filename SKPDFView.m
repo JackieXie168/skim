@@ -466,6 +466,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [readingBar release];
     readingBar = nil;
     selectionRect = NSZeroRect;
+    selectionPageIndex = NSNotFound;
     [self removeHoverRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
@@ -487,6 +488,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self setCurrentSelection:nil];
         } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             selectionRect = NSZeroRect;
+            selectionPageIndex = NSNotFound;
             [self setNeedsDisplay:YES];
         }
         
@@ -595,7 +597,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (NSEqualRects(selectionRect, rect) == NO)
             [self setNeedsDisplay:YES];
         selectionRect = rect;
+        if (NSEqualRects(rect, NSZeroRect))
+            selectionPageIndex = NSNotFound;
     }
+}
+
+- (PDFPage *)currentSelectionPage {
+    return selectionPageIndex == NSNotFound ? nil : [[self document] pageAtIndex:selectionPageIndex];
 }
 
 - (float)currentMagnification {
@@ -734,7 +742,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
         NSRect selRect = NSIntegralRect(selectionRect);
         NSRect targetRect = selRect;
-        PDFPage *page = [[self document] pageAtIndex:selectionPageIndex];
+        PDFPage *page = [self currentSelectionPage];
         
         if ([page rotation]) {
             NSAffineTransform *transform = [NSAffineTransform transform];
@@ -923,6 +931,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (toolMode == SKSelectToolMode) {
         PDFPage *page = [self currentPage];
         selectionRect = NSIntersectionRect(NSUnionRect([page foregroundBox], selectionRect), [page boundsForBox:[self displayBox]]);
+        selectionPageIndex = [page pageIndex];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
     }
@@ -1103,7 +1112,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if (mouseDownInAnnotation) {
                 if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) { 	 
                      [self setNeedsDisplayInRect:selectionRect]; 	 
-                     selectionRect = NSZeroRect; 	 
+                     selectionRect = NSZeroRect;
+                     selectionPageIndex = NSNotFound;	 
                      [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self]; 	 
                  } else if ([activeAnnotation isLink]) { 	 
                      NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil]; 	 
@@ -1646,7 +1656,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark Services
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && ([types containsObject:NSPDFPboardType] || [types containsObject:NSTIFFPboardType])) {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && ([types containsObject:NSPDFPboardType] || [types containsObject:NSTIFFPboardType])) {
         NSMutableArray *writeTypes = [NSMutableArray array];
         NSData *pdfData = nil;
         NSData *tiffData = nil;
@@ -1655,7 +1665,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect targetRect = selRect;
         
         if ([types containsObject:NSPDFPboardType]) {
-            PDFPage *page = [self currentPage];
+            PDFPage *page = [self currentSelectionPage];
             
             if ([page rotation]) {
                 NSAffineTransform *transform = [NSAffineTransform transform];
@@ -1720,7 +1730,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && returnType == nil && ([sendType isEqualToString:NSPDFPboardType] || [sendType isEqualToString:NSTIFFPboardType])) {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound && returnType == nil && ([sendType isEqualToString:NSPDFPboardType] || [sendType isEqualToString:NSTIFFPboardType])) {
         return self;
     }
     return [super validRequestorForSendType:sendType returnType:returnType];
@@ -2217,9 +2227,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     NSRect rect = NSZeroRect;
     BOOL autoFits = NO;
     
-    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
-        rect = NSIntersectionRect(selectionRect, [[self currentPage] boundsForBox:kPDFDisplayBoxCropBox]);
-        page = [self currentPage];
+    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
+        page = [self currentSelectionPage];
+        rect = NSIntersectionRect(selectionRect, [page boundsForBox:kPDFDisplayBoxCropBox]);
         autoFits = YES;
 	}
     if (NSIsEmptyRect(rect)) {
@@ -2257,8 +2267,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [accessibilityChildren release];
         accessibilityChildren = nil;
     }
-    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
-        [self setNeedsDisplay:YES];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
@@ -2290,7 +2298,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             return YES;
         if ([activeAnnotation isNote] && [activeAnnotation isMovable])
             return YES;
-        if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
+        if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound)
             return YES;
         return NO;
     } else if (action == @selector(delete:)) {
@@ -3225,7 +3233,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [self setNeedsDisplay:YES];
         return;
     } else if ([page pageIndex] != selectionPageIndex && selectionPageIndex != NSNotFound) {
-        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:[[self document] pageAtIndex:selectionPageIndex]];
+        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:[self currentSelectionPage]];
         [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:page];
     }
     
