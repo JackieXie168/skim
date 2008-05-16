@@ -1620,7 +1620,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
                 scale = NSWidth(bounds) / NSWidth(selRect);
             [pdfView setScaleFactor:scale];
         }
-        [pdfView scrollRect:selRect inPageToVisible:[pdfView currentPage]]; 
+        [pdfView scrollRect:selRect inPageToVisible:[pdfView currentSelectionPage]]; 
     } else NSBeep();
 }
 
@@ -1756,7 +1756,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (IBAction)crop:(id)sender {
     NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
     if (NSIsEmptyRect(rect))
-        rect = [[pdfView currentPage] foregroundBox];
+        rect = [[pdfView currentSelectionPage] foregroundBox];
     [self cropPageAtIndex:[[pdfView currentPage] pageIndex] toRect:rect];
 }
 
