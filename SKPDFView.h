@@ -117,6 +117,7 @@ typedef enum _SKInteractionMode {
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
     NSRect selectionRect;
+    unsigned int selectionPageIndex;
     float magnification;
     BOOL didSelect;
     BOOL mouseDownInAnnotation;
