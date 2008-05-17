@@ -71,8 +71,6 @@ static NSString *SKRecentDocumentAliasKey = @"alias";
 static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
 static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 
-static NSString *SKBookmarkDefaultsObservationContext = @"SKBookmarkDefaultsObservationContext";
-
 @implementation SKBookmarkController
 
 static unsigned int maxRecentDocumentsCount = 0;
@@ -778,21 +776,21 @@ static unsigned int maxRecentDocumentsCount = 0;
     NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
     if (fontSize)
         [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKBookmarkDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:NULL];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKBookmarkDefaultsObservationContext) {
-        if (NO == [keyPath hasPrefix:@"values."])
-            return;
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKTableFontSizeKey]) {
-            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-            [self setFont:font];
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if ([keyPath hasPrefix:@"values."]) {
+            NSString *key = [keyPath substringFromIndex:7];
+            if ([key isEqualToString:SKTableFontSizeKey]) {
+                NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
+                [self setFont:font];
+                return;
+            }
         }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end

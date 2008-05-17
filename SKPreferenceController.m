@@ -55,8 +55,6 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
-static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWindowDefaultsObservationContext";
-
 @implementation SKPreferenceController
 
 + (id)sharedPrefenceController {
@@ -73,8 +71,8 @@ static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWi
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
-        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
+        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:NULL];
+        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:NULL];
     }
     return self;
 }
@@ -267,14 +265,16 @@ static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWi
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKPreferenceWindowDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
-            [self updateRevertButtons];
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if ([keyPath hasPrefix:@"values."]) {
+            NSString *key = [keyPath substringFromIndex:7];
+            if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
+                [self updateRevertButtons];
+                return;
+            }
         }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end

@@ -83,8 +83,6 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
-static NSString *SKPDFDocumentDefaultsObservationContext = @"SKPDFDocumentDefaultsObservationContext";
-
 @interface NSFileManager (SKPDFDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
 @end
@@ -166,7 +164,7 @@ static NSString *SKPDFDocumentDefaultsObservationContext = @"SKPDFDocumentDefaul
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:SKPDFDocumentDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:NULL];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
 }
@@ -1282,12 +1280,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 #pragma mark Notification observation
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKPDFDocumentDefaultsObservationContext) {
-        if (NO == [keyPath hasPrefix:@"values."])
-            return;
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
-            [self checkFileUpdatesIfNeeded];
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if ([keyPath hasPrefix:@"values."]) {
+            NSString *key = [keyPath substringFromIndex:7];
+            if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
+                [self checkFileUpdatesIfNeeded];
+                return;
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
