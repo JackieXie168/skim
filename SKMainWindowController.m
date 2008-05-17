@@ -129,7 +129,6 @@ static float segmentedControlOffset = 1.0;
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
 static NSString *SKPDFAnnotationPropertiesObservationContext = @"SKPDFAnnotationPropertiesObservationContext";
-static NSString *SKMainWindowDefaultsObservationContext = @"SKMainWindowDefaultsObservationContext";
 
 NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
@@ -3261,7 +3260,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                   SKTableFontSizeKey, nil]
-        context:SKMainWindowDefaultsObservationContext];
+        context:NULL];
 }
 
 - (void)unregisterAsObserver {
@@ -3324,10 +3323,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKMainWindowDefaultsObservationContext) {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
         
         // A default value that we are observing has changed
-        NSString *key = [keyPath substringFromIndex:7];
+        NSString *key = [keyPath hasPrefix:@"values."] ? [keyPath substringFromIndex:7] : nil;
         if ([key isEqualToString:SKBackgroundColorKey]) {
             if ([self isFullScreen] == NO && [self isPresentation] == NO)
                 [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];

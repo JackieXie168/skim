@@ -66,8 +66,6 @@ static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
-static NSString *SKSnapshotWindowDefaultsObservationContext = @"SKSnapshotWindowDefaultsObservationContext";
-
 @implementation SKSnapshotWindowController
 
 - (void)dealloc {
@@ -85,7 +83,7 @@ static NSString *SKSnapshotWindowDefaultsObservationContext = @"SKSnapshotWindow
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:SKSnapshotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:NULL];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -533,16 +531,18 @@ static NSString *SKSnapshotWindowDefaultsObservationContext = @"SKSnapshotWindow
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKSnapshotWindowDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKSnapshotsOnTopKey]) {
-            BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-            [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-            [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if ([keyPath hasPrefix:@"values."]) {
+            NSString *key = [keyPath substringFromIndex:7];
+            if ([key isEqualToString:SKSnapshotsOnTopKey]) {
+                BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+                [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+                [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+                return;
+            }
         }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end
