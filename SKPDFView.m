@@ -487,9 +487,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([self currentSelection])
                 [self setCurrentSelection:nil];
         } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
-            selectionRect = NSZeroRect;
-            selectionPageIndex = NSNotFound;
-            [self setNeedsDisplay:YES];
+            [self setCurrentSelectionRect:NSZeroRect];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         }
         
         toolMode = newToolMode;
