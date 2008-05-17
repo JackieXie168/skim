@@ -105,6 +105,8 @@ static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateC
 static NSString *SKDefaultFreeTextNoteContentsKey = @"SKDefaultFreeTextNoteContents";
 static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteContents";
 
+static NSString *SKPDFViewDefaultsObservationContext = @"SKPDFViewDefaultsObservationContext";
+
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
@@ -249,7 +251,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                                                  name:PDFViewScaleChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
-        context:NULL];
+        context:(void *)SKPDFViewDefaultsObservationContext];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -2316,20 +2318,18 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
-        if ([keyPath hasPrefix:@"values."]) {
-            NSString *key = [keyPath substringFromIndex:7];
-            if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
-                if (readingBar) {
-                    [self setNeedsDisplay:YES];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
-                        object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
-                }
-                return;
+    if (context == SKPDFViewDefaultsObservationContext) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
+            if (readingBar) {
+                [self setNeedsDisplay:YES];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
+                    object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
             }
         }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page {

@@ -54,6 +54,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
 static NSString *SKNoteWindowPageObservationContext = @"SKNoteWindowPageObservationContext";
 static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObservationContext";
+static NSString *SKNoteWindowDefaultsObservationContext = @"SKNoteWindowDefaultsObservationContext";
 
 @implementation SKNoteWindowController
 
@@ -99,7 +100,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         
         [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
         [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:(void *)SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
@@ -292,22 +293,19 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
-        if ([keyPath hasPrefix:@"values."]) {
-            NSString *key = [keyPath substringFromIndex:7];
-            if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
-                NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-                float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-                NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
-                if (font)
-                    [textView setFont:font];
-            }
-            return;
+    if (context == SKNoteWindowDefaultsObservationContext) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
+            NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+            float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+            NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
+            if (font)
+                [textView setFont:font];
         }
     } else if (context == SKNoteWindowBoundsObservationContext || context == SKNoteWindowPageObservationContext) {
         [self updateStatusMessage];
-        return;
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 @end
