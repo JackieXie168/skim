@@ -38,31 +38,28 @@
 
 #import "NSUserDefaultsController_SKExtensions.h"
 
+#define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 
 @implementation NSUserDefaultsController (SKExtensions)
 
 - (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key context:(void *)context {
-    [self addObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key] options:0 context:context];
+    [self addObserver:anObserver forKeyPath:VALUES_KEY_PATH(key) options:0 context:context];
 }
 
 - (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key {
-    [self removeObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key]];
+    [self removeObserver:anObserver forKeyPath:VALUES_KEY_PATH(key)];
 }
 
 - (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys context:(void *)context {
     int i, iMax = [keys count];
-    for (i = 0; i < iMax; i++) {
-        NSString *keyPath = [NSString stringWithFormat:@"values.%@", [keys objectAtIndex:i]];
-        [self addObserver:anObserver forKeyPath:keyPath options:0 context:context];
-    }
+    for (i = 0; i < iMax; i++)
+        [self addObserver:anObserver forKey:[keys objectAtIndex:i] context:context];
 }
 
 - (void)removeObserver:(NSObject *)anObserver forKeys:(NSArray *)keys {
     int i, iMax = [keys count];
-    for (i = 0; i < iMax; i++) {
-        NSString *keyPath = [NSString stringWithFormat:@"values.%@", [keys objectAtIndex:i]];
-        [self removeObserver:anObserver forKeyPath:keyPath];
-    }
+    for (i = 0; i < iMax; i++)
+        [self removeObserver:anObserver forKey:[keys objectAtIndex:i]];
 }
 
 - (void)revertToInitialValueForKey:(NSString *)key {
