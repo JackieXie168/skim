@@ -105,7 +105,7 @@ static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateC
 static NSString *SKDefaultFreeTextNoteContentsKey = @"SKDefaultFreeTextNoteContents";
 static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteContents";
 
-static NSString *SKPDFViewDefaultsObservationContext = @"SKPDFViewDefaultsObservationContext";
+static void *SKPDFViewDefaultsObservationContext = (void *)@"SKPDFViewDefaultsObservationContext";
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
@@ -251,7 +251,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                                                  name:PDFViewScaleChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
-        context:(void *)SKPDFViewDefaultsObservationContext];
+        context:SKPDFViewDefaultsObservationContext];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {

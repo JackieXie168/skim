@@ -71,7 +71,7 @@ static NSString *SKRecentDocumentAliasKey = @"alias";
 static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
 static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 
-static NSString *SKBookmarkDefaultsObservationContext = @"SKBookmarkDefaultsObservationContext";
+static void *SKBookmarkDefaultsObservationContext = (void *)@"SKBookmarkDefaultsObservationContext";
 
 @implementation SKBookmarkController
 
@@ -778,7 +778,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
     if (fontSize)
         [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:(void *)SKBookmarkDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKBookmarkDefaultsObservationContext];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

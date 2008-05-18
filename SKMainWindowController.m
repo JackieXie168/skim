@@ -128,9 +128,9 @@ static float segmentedControlOffset = 1.0;
 
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
-static NSString *SKPDFAnnotationPropertiesObservationContext = @"SKPDFAnnotationPropertiesObservationContext";
+static void *SKPDFAnnotationPropertiesObservationContext = (void *)@"SKPDFAnnotationPropertiesObservationContext";
 
-static NSString *SKMainWindowDefaultsObservationContext = @"SKMainWindowDefaultsObservationContext";
+static void *SKMainWindowDefaultsObservationContext = (void *)@"SKMainWindowDefaultsObservationContext";
 
 NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
@@ -3262,7 +3262,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                   SKTableFontSizeKey, nil]
-        context:(void *)SKMainWindowDefaultsObservationContext];
+        context:SKMainWindowDefaultsObservationContext];
 }
 
 - (void)unregisterAsObserver {

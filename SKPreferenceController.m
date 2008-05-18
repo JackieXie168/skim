@@ -55,7 +55,7 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
-static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWindowDefaultsObservationContext";
+static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferenceWindowDefaultsObservationContext";
 
 @implementation SKPreferenceController
 
@@ -73,8 +73,8 @@ static NSString *SKPreferenceWindowDefaultsObservationContext = @"SKPreferenceWi
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:(void *)SKPreferenceWindowDefaultsObservationContext];
-        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:(void *)SKPreferenceWindowDefaultsObservationContext];
+        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
+        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
     }
     return self;
 }

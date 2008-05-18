@@ -52,9 +52,9 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
 static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
-static NSString *SKNoteWindowPageObservationContext = @"SKNoteWindowPageObservationContext";
-static NSString *SKNoteWindowBoundsObservationContext = @"SKNoteWindowBoundsObservationContext";
-static NSString *SKNoteWindowDefaultsObservationContext = @"SKNoteWindowDefaultsObservationContext";
+static void *SKNoteWindowPageObservationContext = (void *)@"SKNoteWindowPageObservationContext";
+static void *SKNoteWindowBoundsObservationContext = (void *)@"SKNoteWindowBoundsObservationContext";
+static void *SKNoteWindowDefaultsObservationContext = (void *)@"SKNoteWindowDefaultsObservationContext";
 
 @implementation SKNoteWindowController
 
@@ -100,7 +100,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         
         [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
         [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:(void *)SKNoteWindowDefaultsObservationContext];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
