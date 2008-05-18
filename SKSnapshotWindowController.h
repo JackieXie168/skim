@@ -46,6 +46,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
     IBOutlet BDSKZoomablePDFView* pdfView;
     NSImage *thumbnail;
     id delegate;
+    NSString *pageLabel;
+    BOOL hasWindow;
     BOOL miniaturizing;
     BOOL forceOnTop;
 }
@@ -65,7 +67,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (void)setThumbnail:(NSImage *)newThumbnail;
 
 - (unsigned int)pageIndex;
-
+- (NSString *)pageLabel;
+- (BOOL)hasWindow;
 - (NSDictionary *)pageAndWindow;
 
 - (NSDictionary *)currentSetup;

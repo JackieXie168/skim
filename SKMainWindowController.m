@@ -95,9 +95,7 @@
 #import "NSImage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
 
-NSString *SKMainWindowPageLabelKey = @"pageLabel";
 NSString *SKMainWindowPageLabelsKey = @"pageLabels";
-NSString *SKMainWindowPageNumberKey = @"pageNumber";
 NSString *SKMainWindowSearchResultsKey = @"searchResults";
 NSString *SKMainWindowGroupedSearchResultsKey = @"groupedSearchResults";
 NSString *SKMainWindowNotesKey = @"notes";
@@ -231,6 +229,8 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         rightSidePaneState = SKNoteSidePaneState;
         findPaneState = SKSingularFindPaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
+        pageLabel = nil;
+        pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
         isAnimating = NO;
@@ -259,6 +259,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 	[notes release];
 	[snapshots release];
     [pageLabels release];
+    [pageLabel release];
 	CFRelease(rowHeights);
     [lastViewedPages release];
 	[leftSideWindow release];
@@ -688,7 +689,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     int i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
-    [self willChangeValueForKey:SKMainWindowPageLabelKey];
     [self willChangeValueForKey:SKMainWindowPageLabelsKey];
     [pageLabels removeAllObjects];
     for (i = 0; i < count; i++) {
@@ -698,7 +698,8 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         [pageLabels addObject:label];
     }
     [self didChangeValueForKey:SKMainWindowPageLabelsKey];
-    [self didChangeValueForKey:SKMainWindowPageLabelKey];
+    
+    [self setPageLabel:[[pdfView currentPage] label]];
     
     [self updatePageColumnWidthForTableView:thumbnailTableView];
     [self updatePageColumnWidthForTableView:snapshotTableView];
@@ -880,25 +881,32 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 }
 
 - (unsigned int)pageNumber {
-    return [[pdfView currentPage] pageIndex] + 1;
+    return pageNumber;
 }
 
-- (void)setPageNumber:(unsigned int)pageNumber {
+- (void)setPageNumber:(unsigned int)number {
     // Check that the page number exists
     unsigned int pageCount = [[pdfView document] pageCount];
-    if (pageNumber > pageCount)
-        [self goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
-    else if (pageNumber > 0)
-        [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+    if (number > pageCount)
+        number = pageCount;
+    if (number > 0) {
+        pageNumber = number;
+        if ([[pdfView currentPage] pageIndex] != pageNumber - 1)
+            [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+    }
 }
 
 - (NSString *)pageLabel {
-    return [[pdfView currentPage] label];
+    return pageLabel;
 }
 
 - (void)setPageLabel:(NSString *)label {
+    if (label != pageLabel) {
+        [pageLabel release];
+        pageLabel = [label retain];
+    }
     unsigned int idx = [pageLabels indexOfObject:label];
-    if (idx != NSNotFound)
+    if (idx != NSNotFound && [[[pdfView currentPage] label] isEqual:label] == NO)
         [self goToPage:[[pdfView document] pageAtIndex:idx]];
 }
 

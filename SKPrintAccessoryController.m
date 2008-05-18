@@ -45,6 +45,7 @@
     [self setKeys:[NSArray arrayWithObjects:@"autoRotate", @"printScalingMode", nil] triggerChangeNotificationsForDependentKey:@"localizedSummaryItems"];
     [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"autoRotate"];
     [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"printScalingMode"];
+    [super initialize];
 }
 
 - (NSString *)nibName {

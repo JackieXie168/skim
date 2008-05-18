@@ -1239,16 +1239,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    [lastViewedPages insertObject:[NSNumber numberWithInt:[[pdfView currentPage] pageIndex]] atIndex:0];
+    PDFPage *page = [pdfView currentPage];
+    
+    [lastViewedPages insertObject:[NSNumber numberWithUnsignedInt:[page pageIndex]] atIndex:0];
     if ([lastViewedPages count] > 5)
         [lastViewedPages removeLastObject];
     [thumbnailTableView setNeedsDisplay:YES];
     [outlineView setNeedsDisplay:YES];
     
-    [self willChangeValueForKey:SKMainWindowPageNumberKey];
-    [self willChangeValueForKey:SKMainWindowPageLabelKey];
-    [self didChangeValueForKey:SKMainWindowPageLabelKey];
-    [self didChangeValueForKey:SKMainWindowPageNumberKey];
+    [self setPageLabel:[page label]];
+    [self setPageNumber:[page pageIndex] + 1];
     
     [previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
     [previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];

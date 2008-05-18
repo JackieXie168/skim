@@ -68,9 +68,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-extern NSString *SKMainWindowPageLabelKey;
 extern NSString *SKMainWindowPageLabelsKey;
-extern NSString *SKMainWindowPageNumberKey;
 extern NSString *SKMainWindowSearchResultsKey;
 extern NSString *SKMainWindowGroupedSearchResultsKey;
 extern NSString *SKMainWindowNotesKey;
@@ -228,6 +226,9 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     BOOL                        settingUpWindow;
     
     NSMutableArray              *pageLabels;
+    
+    NSString                    *pageLabel;
+    unsigned int                pageNumber;
     
     unsigned int                markedPageIndex;
     unsigned int                beforeMarkedPageIndex;

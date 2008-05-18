@@ -65,13 +65,13 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 @implementation SKFontWell
 
 + (void)initialize {
-    OBINITIALIZE;
-    
     [self exposeBinding:SKFontWellFontNameKey];
     [self exposeBinding:SKFontWellFontSizeKey];
     
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontNameKey];
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontSizeKey];
+    
+    OBINITIALIZE;
 }
 
 + (Class)cellClass {
