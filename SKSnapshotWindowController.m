@@ -50,6 +50,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
+#import "SKUtilities.h"
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
@@ -60,7 +61,8 @@ static NSString *SKSnapshotAutoFitsKey = @"autoFits";
 static NSString *SKSnapshotHasWindowKey = @"hasWindow";
 static NSString *SKSnapshotWindowFrameKey = @"windowFrame";
 
-static NSString *SKSnapshotWindowPageIndexKey = @"pageIndex";
+static NSString *SKSnapshotWindowPageLabelKey = @"pageLabel";
+static NSString *SKSnapshotWindowHasWindowKey = @"hasWindow";
 static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
@@ -68,11 +70,22 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWindowDefaultsObservationContext";
 
+@interface SKSnapshotWindowController (SKPrivate) 
+- (void)setPageLabel:(NSString *)newPageLabel;
+- (void)setHasWindow:(BOOL)flag;
+@end
+
 @implementation SKSnapshotWindowController
+
++ (void)initialize {
+    [self setKeys:[NSArray arrayWithObjects:SKSnapshotWindowPageLabelKey, SKSnapshotWindowHasWindowKey, nil] triggerChangeNotificationsForDependentKey:SKSnapshotWindowPageAndWindowKey];
+    OBINITIALIZE;
+}
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [thumbnail release];
+    [pageLabel release];
     [super dealloc];
 }
 
@@ -85,6 +98,10 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:SKSnaphotWindowDefaultsObservationContext];
+}
+
+- (void)windowDidExpose:(NSNotification *)notification {
+    [self setHasWindow:YES];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -122,17 +139,15 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
+    NSString *label = [[pdfView currentPage] label];
+    [self setPageLabel:label ? label : [NSString stringWithFormat:@"%i", [self pageIndex]]];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    [self willChangeValueForKey:SKSnapshotWindowPageIndexKey];
-    [self didChangeValueForKey:SKSnapshotWindowPageIndexKey];
-    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
-    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
-    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    NSString *label = [[pdfView currentPage] label];
+    [self setPageLabel:label ? label : [NSString stringWithFormat:@"%i", [self pageIndex]]];
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
@@ -296,10 +311,27 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     return [[pdfView currentPage] pageIndex];
 }
 
+- (NSString *)pageLabel {
+    return pageLabel;
+}
+
+- (void)setPageLabel:(NSString *)newPageLabel {
+    if (pageLabel != newPageLabel) {
+        [pageLabel release];
+        pageLabel = [newPageLabel retain];
+    }
+}
+
+- (BOOL)hasWindow {
+    return hasWindow;
+}
+
+- (void)setHasWindow:(BOOL)flag {
+    hasWindow = flag;
+}
+
 - (NSDictionary *)pageAndWindow {
-    NSString *label = [[pdfView currentPage] label];
-    NSNumber *hasWindow = [NSNumber numberWithBool:[[self window] isVisible]];
-    return [NSDictionary dictionaryWithObjectsAndKeys:label ? label : @"", SKSnapshotPageCellLabelKey, hasWindow, SKSnapshotPageCellHasWindowKey, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[self pageLabel], SKSnapshotPageCellLabelKey, [NSNumber numberWithBool:[self hasWindow]], SKSnapshotPageCellHasWindowKey, nil];
 }
 
 - (BOOL)forceOnTop {
@@ -505,8 +537,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
         [[self window] orderOut:self];
     }
     miniaturizing = NO;
-    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
-    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self setHasWindow:NO];
 }
 
 - (void)deminiaturize {
@@ -526,8 +557,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     } else {
         [self showWindow:self];
     }
-    [self willChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
-    [self didChangeValueForKey:SKSnapshotWindowPageAndWindowKey];
+    [self setHasWindow:YES];
 }
 
 #pragma mark KVO
