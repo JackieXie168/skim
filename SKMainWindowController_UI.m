@@ -75,6 +75,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)updateLeftStatus;
 - (void)updateRightStatus;
 
+- (void)updatePageNumber;
+- (void)updatePageLabel;
+
 - (void)updateNoteFilterPredicate;
 
 - (void)updateFindResultHighlights:(BOOL)scroll;
@@ -1247,8 +1250,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [thumbnailTableView setNeedsDisplay:YES];
     [outlineView setNeedsDisplay:YES];
     
-    [self setPageLabel:[page label]];
-    [self setPageNumber:[page pageIndex] + 1];
+    [self updatePageNumber];
+    [self updatePageLabel];
     
     [previousNextPageButton setEnabled:[pdfView canGoToPreviousPage] forSegment:0];
     [previousNextPageButton setEnabled:[pdfView canGoToNextPage] forSegment:1];

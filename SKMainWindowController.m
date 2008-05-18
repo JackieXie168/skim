@@ -107,6 +107,9 @@ NSString *SKMainWindowPageColumnIdentifer = @"page";
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
 
+static NSString *SKMainWindowPageNumberKey = @"pageNumber";
+static NSString *SKMainWindowPageLabelKey = @"pageLabel";
+
 static NSString *SKMainWindowFrameKey = @"windowFrame";
 static NSString *SKMainWindowLeftSidePaneWidthKey = @"leftSidePaneWidth";
 static NSString *SKMainWindowRightSidePaneWidthKey = @"rightSidePaneWidth";
@@ -203,6 +206,13 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         segmentedControlHeight = 25.0;
         segmentedControlOffset = 0.0;
     }
+}
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
+    if ([key isEqualToString:SKMainWindowPageNumberKey] || [key isEqualToString:SKMainWindowPageLabelKey])
+        return NO;
+    else
+        return [super automaticallyNotifiesObserversForKey:key];
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -880,6 +890,15 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     return pdfView;
 }
 
+- (void)updatePageNumber {
+    unsigned int number = [[pdfView currentPage] pageIndex] + 1;
+    if (pageNumber != number) {
+        [self willChangeValueForKey:SKMainWindowPageNumberKey];
+        pageNumber = number;
+        [self didChangeValueForKey:SKMainWindowPageNumberKey];
+    }
+}
+
 - (unsigned int)pageNumber {
     return pageNumber;
 }
@@ -889,10 +908,17 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     unsigned int pageCount = [[pdfView document] pageCount];
     if (number > pageCount)
         number = pageCount;
-    if (number > 0) {
-        pageNumber = number;
-        if ([[pdfView currentPage] pageIndex] != pageNumber - 1)
-            [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+    if (number > 0 && [[pdfView currentPage] pageIndex] != pageNumber - 1)
+        [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+}
+
+- (void)updatePageLabel {
+    NSString *label = [[pdfView currentPage] label];
+    if (label != pageLabel) {
+        [self willChangeValueForKey:SKMainWindowPageLabelKey];
+        [pageLabel release];
+        pageLabel = [label retain];
+        [self didChangeValueForKey:SKMainWindowPageLabelKey];
     }
 }
 
@@ -901,10 +927,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 }
 
 - (void)setPageLabel:(NSString *)label {
-    if (label != pageLabel) {
-        [pageLabel release];
-        pageLabel = [label retain];
-    }
     unsigned int idx = [pageLabels indexOfObject:label];
     if (idx != NSNotFound && [[[pdfView currentPage] label] isEqual:label] == NO)
         [self goToPage:[[pdfView document] pageAtIndex:idx]];
