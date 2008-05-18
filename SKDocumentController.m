@@ -334,7 +334,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    if (SKIsNotesTextDocumentType(type)) {
+    if (SKIsNotesDocumentType(type)) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
             NSString *pdfFile = [[absoluteURL path] stringByReplacingPathExtension:@"pdf"];
