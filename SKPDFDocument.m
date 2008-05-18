@@ -83,7 +83,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
-static NSString *SKPDFDocumentDefaultsObservationContext = @"SKPDFDocumentDefaultsObservationContext";
+static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
 
 @interface NSFileManager (SKPDFDocumentExtensions)
 - (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
@@ -166,7 +166,7 @@ static NSString *SKPDFDocumentDefaultsObservationContext = @"SKPDFDocumentDefaul
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:(void *)SKPDFDocumentDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
 }
