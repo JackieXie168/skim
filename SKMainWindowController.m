@@ -2946,16 +2946,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
         [[statusBar progressIndicator] setDoubleValue:0.0];
         [statusBar startAnimation:self];
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
     }
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
         [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
         [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
         [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
@@ -2969,10 +2969,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
     [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
     if ([pageIndex unsignedIntValue] % 50 == 0) {
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
         [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
+        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
     }
 }
 
