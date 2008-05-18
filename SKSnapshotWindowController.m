@@ -66,7 +66,7 @@ static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
-static NSString *SKSnaphotWindowDefaultsObservationContext = @"SKSnaphotWindowDefaultsObservationContext";
+static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWindowDefaultsObservationContext";
 
 @implementation SKSnapshotWindowController
 
@@ -84,7 +84,7 @@ static NSString *SKSnaphotWindowDefaultsObservationContext = @"SKSnaphotWindowDe
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:(void *)SKSnaphotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:SKSnaphotWindowDefaultsObservationContext];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
