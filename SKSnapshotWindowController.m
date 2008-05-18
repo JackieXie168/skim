@@ -148,16 +148,16 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [notification object];
-    PDFPage *page = [[notification userInfo] objectForKey:@"page"];
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
+    PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     if ([[page document] isEqual:[pdfView document]] && [self isPageVisible:page])
         [self setNeedsDisplayForAnnotation:annotation onPage:page];
 }
 
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
-    PDFPage *oldPage = [[notification userInfo] objectForKey:@"oldPage"];
-    PDFPage *newPage = [[notification userInfo] objectForKey:@"newPage"];
+    PDFPage *oldPage = [[notification userInfo] objectForKey:SKPDFViewOldPageKey];
+    PDFPage *newPage = [[notification userInfo] objectForKey:SKPDFViewNewPageKey];
     if ([[newPage document] isEqual:[pdfView document]]) {
         if ([self isPageVisible:oldPage])
             [self setNeedsDisplayForAnnotation:annotation onPage:oldPage];
