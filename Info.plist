@@ -665,7 +665,7 @@
 			<array>
 				<string>public.data</string>
 				<string>public.composite-content</string>
-				<string>com.apple.pdf</string>
+				<string>com.adobe.pdf</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>PDF With Embedded Notes</string>
@@ -688,7 +688,7 @@
 			<array>
 				<string>public.data</string>
 				<string>public.composite-content</string>
-				<string>com.apple.pdf</string>
+				<string>com.adobe.pdf</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>PDF Without Notes</string>
