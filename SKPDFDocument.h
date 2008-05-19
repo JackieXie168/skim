@@ -80,6 +80,8 @@ enum {
     BOOL autoUpdate;
     BOOL disableAutoReload;
     BOOL isSaving;
+    BOOL isUpdatingFile;
+    BOOL receivedFileUpdateNotification;
     BOOL fileChangedOnDisk;
     BOOL exportUsingPanel;
     
