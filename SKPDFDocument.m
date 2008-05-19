@@ -1161,11 +1161,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         [[alert window] orderOut:nil];
         
-        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] == NO && error) {
-            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error])
             receivedFileUpdateNotification = NO;
-            isUpdatingFile = NO;
-        }
+        else if (error)
+            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
         disableAutoReload = NO;
@@ -1190,7 +1189,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             
             // check for attached sheet, since reloading the document while an alert is up looks a bit strange
             if ([[self windowForSheet] attachedSheet]) {
-                receivedFileUpdateNotification = YES;
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                              name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
                 return;
