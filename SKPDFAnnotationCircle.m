@@ -41,7 +41,7 @@
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
-#import "NSUserDefaultsController_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 

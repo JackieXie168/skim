@@ -1,8 +1,8 @@
 //
-//  NSUserDefaultsController_SKExtensions.h
+//  NSUserDefaults_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/24/07.
+//  Created by Christiaan Hofman on 5/19/08.
 /*
  This software is Copyright (c) 2007-2008
  Christiaan Hofman. All rights reserved.
@@ -39,13 +39,9 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSUserDefaultsController (SKExtensions)
+@interface NSUserDefaults (SKExtensions)
 
-- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key context:(void *)context;
-- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key;
-- (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys context:(void *)context;
-- (void)removeObserver:(NSObject *)anObserver forKeys:(NSArray *)keys;
-- (void)revertToInitialValueForKey:(NSString *)key;
-- (void)revertToInitialValuesForKeys:(NSArray *)keys;
+- (NSColor *)colorForKey:(NSString *)key;
+- (void)setColor:(NSColor *)color forKey:(NSString *)key;
 
 @end
