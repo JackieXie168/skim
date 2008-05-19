@@ -73,15 +73,13 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKey:SKDefaultPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
-        [sudc addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey context:SKPreferenceWindowDefaultsObservationContext];
+        [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:SKPreferenceWindowDefaultsObservationContext];
     }
     return self;
 }
 
 - (void)dealloc {
-    [sudc removeObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
-    [sudc removeObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    [sudc removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
     [resettableKeys release];
     [super dealloc];
 }
