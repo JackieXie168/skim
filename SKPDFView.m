@@ -54,6 +54,7 @@
 #import "SKApplication.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 #import "SKReadingBar.h"
 #import "SKPDFDocument.h"
 #import "SKPDFSynchronizer.h"

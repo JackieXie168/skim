@@ -48,7 +48,7 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "SKVersionNumber.h"
-#import "NSUserDefaultsController_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
 #import "RemoteControl.h"

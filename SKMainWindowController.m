@@ -67,6 +67,7 @@
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 #import "SKTocOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"

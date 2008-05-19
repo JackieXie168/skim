@@ -42,7 +42,7 @@
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "PDFSelection_SKExtensions.h"
-#import "NSUserDefaultsController_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallbacks.h"
 
