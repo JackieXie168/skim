@@ -139,6 +139,7 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
+		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -650,6 +651,8 @@
 		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
+		CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaults_SKExtensions.h; sourceTree = "<group>"; };
+		CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaults_SKExtensions.m; sourceTree = "<group>"; };
 		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
 		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
 		CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Skim-Leopard.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1108,8 +1111,8 @@
 				CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */,
 				CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */,
 				CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */,
-				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
-				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
+				CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */,
+				CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
 			);
@@ -1480,6 +1483,8 @@
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
 				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
+				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
+				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
 				CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */,
 				CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */,
@@ -2011,6 +2016,7 @@
 				CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */,
 				CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */,
 				CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */,
+				CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
