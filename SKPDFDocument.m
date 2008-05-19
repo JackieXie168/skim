@@ -1175,88 +1175,88 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)fileUpdated {
-        receivedFileUpdateNotification = NO;
-        isUpdatingFile = NO;
+    receivedFileUpdateNotification = NO;
+    isUpdatingFile = NO;
+    
+    NSString *fileName = [self fileName];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
+        [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         
-        NSString *fileName = [self fileName];
+        isUpdatingFile = YES;
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-            [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
-            
-            isUpdatingFile = YES;
-            
-            fileChangedOnDisk = YES;
-            
-            // check for attached sheet, since reloading the document while an alert is up looks a bit strange
-            if ([[self windowForSheet] attachedSheet]) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
-                                                             name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
-                return;
-            }
-            
-            NSString *extension = [fileName pathExtension];
-            BOOL isDVI = NO;
-            if (extension) {
-                NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-                if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
-                    NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
-                    if (pdfFile == nil) {
-                        isUpdatingFile = NO;
-                        receivedFileUpdateNotification = NO;
-                        return;
-                    }
-                    fileName = [fileName stringByAppendingPathComponent:pdfFile];
-                } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
-                    isDVI = YES;
+        fileChangedOnDisk = YES;
+        
+        // check for attached sheet, since reloading the document while an alert is up looks a bit strange
+        if ([[self windowForSheet] attachedSheet]) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
+                                                         name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
+            return;
+        }
+        
+        NSString *extension = [fileName pathExtension];
+        BOOL isDVI = NO;
+        if (extension) {
+            NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
+            if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
+                NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
+                if (pdfFile == nil) {
+                    isUpdatingFile = NO;
+                    receivedFileUpdateNotification = NO;
+                    return;
                 }
-            }
-            
-            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-            
-            // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
-            unsigned long long fileEnd = [fh seekToEndOfFile];
-            unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
-            [fh seekToFileOffset:startPos];
-            NSData *trailerData = [fh readDataToEndOfFile];
-            NSRange range = NSMakeRange(0, [trailerData length]);
-            const char *pattern = "%%EOF";
-            unsigned patternLength = strlen(pattern);
-            unsigned trailerIndex;
-            
-            if (isDVI) {
-                pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
-                patternLength = strlen(pattern);
-                range = NSMakeRange(patternLength, [trailerData length] - patternLength);
-            }
-            trailerIndex = [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
-            
-            if (trailerIndex != NSNotFound) {
-                BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
-                if (disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
-                    // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
-                    [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
-                } else {
-                    NSString *message;
-                    if ([self isDocumentEdited] || [[self notes] count] > 0)
-                        message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                    else 
-                        message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
-                    
-                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                     defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Auto", @"Button title")
-                                                       otherButton:NSLocalizedString(@"No", @"Button title")
-                                         informativeTextWithFormat:message];
-                    [alert beginSheetModalForWindow:[self windowForSheet]
-                                      modalDelegate:self
-                                     didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                        contextInfo:NULL];
-                }
-            } else {
-                isUpdatingFile = NO;
-                receivedFileUpdateNotification = NO;
+                fileName = [fileName stringByAppendingPathComponent:pdfFile];
+            } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
+                isDVI = YES;
             }
         }
+        
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+        
+        // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
+        unsigned long long fileEnd = [fh seekToEndOfFile];
+        unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
+        [fh seekToFileOffset:startPos];
+        NSData *trailerData = [fh readDataToEndOfFile];
+        NSRange range = NSMakeRange(0, [trailerData length]);
+        const char *pattern = "%%EOF";
+        unsigned patternLength = strlen(pattern);
+        unsigned trailerIndex;
+        
+        if (isDVI) {
+            pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
+            patternLength = strlen(pattern);
+            range = NSMakeRange(patternLength, [trailerData length] - patternLength);
+        }
+        trailerIndex = [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
+        
+        if (trailerIndex == NSNotFound) {
+            isUpdatingFile = NO;
+            receivedFileUpdateNotification = NO;
+        } else {
+            BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
+            if (disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
+                // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
+                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+            } else {
+                NSString *message;
+                if ([self isDocumentEdited] || [[self notes] count] > 0)
+                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                else 
+                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
+                
+                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
+                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                                   otherButton:NSLocalizedString(@"No", @"Button title")
+                                     informativeTextWithFormat:message];
+                [alert beginSheetModalForWindow:[self windowForSheet]
+                                  modalDelegate:self
+                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
+                                    contextInfo:NULL];
+            }
+        }
+    }
 }
 
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
