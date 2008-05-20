@@ -37,7 +37,6 @@
  */
 
 #import "SKBookmark.h"
-#import "SKBookmarkController.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
 #import "SKUtilities.h"
@@ -146,6 +145,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
+    [undoManager release];
     if (self != defaultPlaceholderBookmark)
         [super dealloc];
 }
@@ -199,6 +199,17 @@ static Class SKBookmarkClass = Nil;
     return NO;
 }
 
+- (NSUndoManager *)undoManager {
+    return undoManager ? undoManager : [parent undoManager];
+}
+
+- (void)setUndoManager:(NSUndoManager *)newUndoManager {
+    if (undoManager != newUndoManager) {
+        [undoManager release];
+        undoManager = [newUndoManager retain];
+    }
+}
+
 @end
 
 #pragma mark -
@@ -225,7 +236,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
+    [[self undoManager] removeAllActionsWithTarget:self];
     [alias release];
     [aliasData release];
     [label release];
@@ -300,8 +311,7 @@ static Class SKBookmarkClass = Nil;
 
 - (void)setLabel:(NSString *)newLabel {
     if (label != newLabel) {
-        NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-        [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] setLabel:label];
+        [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] setLabel:label];
         [label release];
         label = [newLabel retain];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
@@ -328,7 +338,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
+    [[self undoManager] removeAllActionsWithTarget:self];
     [label release];
     [children release];
     [super dealloc];
@@ -356,8 +366,7 @@ static Class SKBookmarkClass = Nil;
 
 - (void)setLabel:(NSString *)newLabel {
     if (label != newLabel) {
-        NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-        [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] setLabel:label];
+        [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] setLabel:label];
         [label release];
         label = [newLabel retain];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
@@ -369,8 +378,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)anIndex {
-    NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-    [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] removeChild:child];
+    [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] removeChild:child];
     [children insertObject:child atIndex:anIndex];
     [child setParent:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
@@ -381,8 +389,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)removeChild:(SKBookmark *)child {
-    NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
-    [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
+    [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkWillBeRemovedNotification object:self];
     [child setParent:nil];
     [children removeObject:child];

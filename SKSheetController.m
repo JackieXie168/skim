@@ -145,11 +145,13 @@
 }
 
 - (void)prepare {
-    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
+    SKBookmarkController *bookmarkController = [SKBookmarkController sharedBookmarkController];
+    SKBookmark *root = [bookmarkController bookmarkRoot];
     [folderPopUp removeAllItems];
     NSMenuItem *item = [[folderPopUp menu] addItemWithTitle:NSLocalizedString(@"Bookmarks Menu", @"Menu item title") action:NULL keyEquivalent:@""];
     [item setImage:[NSImage imageNamed:@"SmallMenu"]];
-    [self addMenuItemsForBookmarks:bookmarks level:1 toMenu:[folderPopUp menu]];
+    [item setRepresentedObject:root];
+    [self addMenuItemsForBookmarks:[root children] level:1 toMenu:[folderPopUp menu]];
     [folderPopUp selectItemAtIndex:0];
 }
 

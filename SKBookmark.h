@@ -51,6 +51,7 @@ enum {
 
 @interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
+    NSUndoManager *undoManager;
 }
 
 - (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
@@ -83,6 +84,9 @@ enum {
 
 - (SKBookmark *)parent;
 - (void)setParent:(SKBookmark *)newParent;
+
+- (NSUndoManager *)undoManager;
+- (void)setUndoManager:(NSUndoManager *)newUndoManager;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
