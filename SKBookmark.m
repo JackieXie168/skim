@@ -295,7 +295,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSString *)label {
-    return label;
+    return label ? label : @"";
 }
 
 - (void)setLabel:(NSString *)newLabel {
@@ -351,7 +351,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSString *)label {
-    return label;
+    return label ? label : @"";
 }
 
 - (void)setLabel:(NSString *)newLabel {
