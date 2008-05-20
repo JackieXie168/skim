@@ -44,7 +44,7 @@
 @interface SKBookmarkController : NSWindowController {
     IBOutlet SKBookmarkOutlineView *outlineView;
     IBOutlet SKStatusBar *statusBar;
-    NSMutableArray *bookmarks;
+    SKBookmark *bookmarkRoot;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;
     NSArray *draggedBookmarks;
@@ -53,12 +53,7 @@
 
 + (id)sharedBookmarkController;
 
-- (NSArray *)bookmarks;
-- (void)setBookmarks:(NSArray *)newBookmarks;
-- (unsigned)countOfBookmarks;
-- (id)objectInBookmarksAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index;
-- (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
+- (SKBookmark *)bookmarkRoot;
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;

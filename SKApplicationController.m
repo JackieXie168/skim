@@ -79,6 +79,7 @@
 
 #define FILE_MENU_INDEX 1
 #define VIEW_MENU_INDEX 4
+#define BOOKMARKS_MENU_INDEX 8
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
@@ -130,6 +131,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         if (idx != NSNotFound)
             [fileMenu removeItemAtIndex:idx];
     }
+    
+    [[[NSApp mainMenu] itemAtIndex:BOOKMARKS_MENU_INDEX] setRepresentedObject:[[SKBookmarkController sharedBookmarkController] bookmarkRoot]];
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
@@ -310,32 +313,34 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     NSMenu *supermenu = [menu supermenu];
     NSMenuItem *item = [supermenu itemAtIndex:[supermenu indexOfItemWithSubmenu:menu]];
     SKBookmark *bm = [item representedObject];
-    if ([bm isKindOfClass:[SKBookmark class]] == NO) bm = nil;
-    NSArray *bookmarks = bm ? [bm children] : [[SKBookmarkController sharedBookmarkController] bookmarks];
-    int i = [menu numberOfItems], numFixed = bm ? 0 : 2, numBookmarks = [bookmarks count];
-    while (i-- > numFixed)
-        [menu removeItemAtIndex:i];
-    if (numFixed > 0 && numBookmarks > 0)
-        [menu addItem:[NSMenuItem separatorItem]];
-    for (i = 0; i < numBookmarks; i++) {
-        bm = [bookmarks objectAtIndex:i];
-        switch ([bm bookmarkType]) {
-            case SKBookmarkTypeFolder:
-                item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
-                [item setRepresentedObject:bm];
-                [item setImage:[bm icon]];
-                [item setSubmenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
-                [[item submenu] setDelegate:self];
-                break;
-            case SKBookmarkTypeSeparator:
-                [menu addItem:[NSMenuItem separatorItem]];
-                break;
-            default:
-                item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
-                [item setTarget:self];
-                [item setRepresentedObject:bm];
-                [item setImage:[bm icon]];
-                break;
+    
+    if ([bm isKindOfClass:[SKBookmark class]]) {
+        NSArray *bookmarks = [bm children];
+        int i = [menu numberOfItems], numBookmarks = [bookmarks count];
+        while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
+            [menu removeItemAtIndex:i];
+        if ([menu numberOfItems] > 0 && numBookmarks > 0)
+            [menu addItem:[NSMenuItem separatorItem]];
+        for (i = 0; i < numBookmarks; i++) {
+            bm = [bookmarks objectAtIndex:i];
+            switch ([bm bookmarkType]) {
+                case SKBookmarkTypeFolder:
+                    item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
+                    [item setRepresentedObject:bm];
+                    [item setImage:[bm icon]];
+                    [item setSubmenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
+                    [[item submenu] setDelegate:self];
+                    break;
+                case SKBookmarkTypeSeparator:
+                    [menu addItem:[NSMenuItem separatorItem]];
+                    break;
+                default:
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
+                    [item setTarget:self];
+                    [item setRepresentedObject:bm];
+                    [item setImage:[bm icon]];
+                    break;
+            }
         }
     }
 }
