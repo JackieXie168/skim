@@ -2737,28 +2737,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 #pragma mark Searching
 
-- (void)didMatchString:(PDFSelection *)instance {
-    if (findPanelFind == NO) {
-        [searchResults addObject:instance];
-        
-        PDFPage *page = [[instance pages] objectAtIndex:0];
-        SKGroupedSearchResult *result = [groupedSearchResults lastObject];
-        unsigned int maxCount = [result maxCount];
-        if ([[result page] isEqual:page] == NO) {
-            result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
-            [groupedSearchResults addObject:result];
-        }
-        [result addMatch:instance];
-        
-        if ([result count] > maxCount) {
-            NSEnumerator *resultEnum = [groupedSearchResults objectEnumerator];
-            maxCount = [result count];
-            while (result = [resultEnum nextObject])
-                [result setMaxCount:maxCount];
-        }
-    }
-}
-
 - (void)temporaryAnnotationTimerFired:(NSTimer *)timer {
     [self removeTemporaryAnnotations];
 }
@@ -2963,6 +2941,28 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 #pragma mark PDFDocument delegate
+
+- (void)didMatchString:(PDFSelection *)instance {
+    if (findPanelFind == NO) {
+        [searchResults addObject:instance];
+        
+        PDFPage *page = [[instance pages] objectAtIndex:0];
+        SKGroupedSearchResult *result = [groupedSearchResults lastObject];
+        unsigned int maxCount = [result maxCount];
+        if ([[result page] isEqual:page] == NO) {
+            result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
+            [groupedSearchResults addObject:result];
+        }
+        [result addMatch:instance];
+        
+        if ([result count] > maxCount) {
+            NSEnumerator *resultEnum = [groupedSearchResults objectEnumerator];
+            maxCount = [result count];
+            while (result = [resultEnum nextObject])
+                [result setMaxCount:maxCount];
+        }
+    }
+}
 
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
