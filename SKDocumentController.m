@@ -43,6 +43,7 @@
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKUtilities.h"
+#import "SKApplicationController.h"
 
 // See CFBundleTypeName in Info.plist
 static NSString *SKPDFDocumentTypeName = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
@@ -180,6 +181,11 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
         SKPostScriptDocumentType = SKPostScriptDocumentUTI;
         SKDVIDocumentType = SKDVIDocumentUTI;
     }
+}
+
+- (void)dealloc {
+    [customExportTemplateFiles release];
+    [super dealloc];
 }
 
 - (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
@@ -354,6 +360,57 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         return [super validateUserInterfaceItem:anItem];
     } else
         return YES;
+}
+
+- (NSArray *)customExportTemplateFiles {
+    if (customExportTemplateFiles == nil) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSMutableSet *templateNames = [NSMutableSet setWithObjects:@"notesTemplate.txt", @"notesTemplate.rtf", @"notesTemplate.rtfd", nil];
+        NSMutableArray *templateFiles = [NSMutableArray array];
+        int domains[3] = {kUserDomain, kLocalDomain, kNetworkDomain};
+        int i;
+        for (i = 0; i < 3; i++) {
+            NSString *templatesPath = [[[NSApp delegate] applicationSupportPathForDomain:domains[i] create:NO] stringByAppendingPathComponent:@"Templates"];
+            BOOL isDir;
+            if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
+                NSEnumerator *fileEnum = [[fm subpathsAtPath:templatesPath] objectEnumerator];
+                NSString *file;
+                while (file = [fileEnum nextObject]) {
+                    if ([file hasPrefix:@"."] == NO && [templateNames containsObject:file] == NO) {
+                        [templateFiles addObject:[templatesPath stringByAppendingPathComponent:file]];
+                        [templateFiles addObject:file];
+                    }
+                }
+            }
+        }
+        customExportTemplateFiles = [templateFiles copy];
+    }
+    return customExportTemplateFiles;
+}
+
+- (void)resetCustomExportTemplateFiles {
+    [customExportTemplateFiles release];
+    customExportTemplateFiles = nil;
+}
+
+- (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
+    NSArray *fileExtensions = [super fileExtensionsFromType:documentTypeName];
+    if ([fileExtensions count] == 0) {
+        NSArray *customTemplates = [[self customExportTemplateFiles] valueForKey:@"lastPathComponent"];
+        if ([customTemplates containsObject:documentTypeName])
+            fileExtensions = [NSArray arrayWithObjects:[documentTypeName pathExtension], nil];
+	}
+	return fileExtensions;
+}
+
+- (NSString *)displayNameForType:(NSString *)documentTypeName{
+    NSString *displayName = nil;
+    NSArray *customTemplates = [[self customExportTemplateFiles] valueForKey:@"lastPathComponent"];
+    if ([customTemplates containsObject:documentTypeName])
+        displayName = [[documentTypeName stringByDeletingPathExtension] stringByAppendingFormat:@" (%@)", [[documentTypeName pathExtension] uppercaseString]];
+    else
+        displayName = [super displayNameForType:documentTypeName];
+    return displayName;
 }
 
 @end

@@ -500,6 +500,10 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 }
 
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
+    return [self pathForApplicationSupportFile:file ofType:extension inDirectory:nil];
+}
+
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *filename = [file stringByAppendingPathExtension:extension];
     NSString *fullPath = nil;
@@ -509,13 +513,18 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     
     for (i = 0; fullPath == nil && i < 3; i++) {
         if (appSupportPath = [self applicationSupportPathForDomain:domains[i] create:NO]) {
+            if (subpath)
+                fullPath = [fullPath stringByAppendingPathComponent:subpath];
             fullPath = [appSupportPath stringByAppendingPathComponent:filename];
             if ([fm fileExistsAtPath:fullPath] == NO)
                 fullPath = nil;
         }
     }
     if (fullPath == nil) {
-        fullPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:filename];
+        fullPath = [[NSBundle mainBundle] sharedSupportPath];
+        if (subpath)
+            fullPath = [fullPath stringByAppendingPathComponent:subpath];
+        fullPath = [fullPath stringByAppendingPathComponent:filename];
         if ([fm fileExistsAtPath:fullPath] == NO)
             fullPath = nil;
     }

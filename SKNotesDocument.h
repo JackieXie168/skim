@@ -58,5 +58,6 @@
 
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
+- (NSData *)notesDataUsingTemplateFile:(NSString *)templatePath;
 
 @end
