@@ -48,6 +48,8 @@
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
+		CE0ECCD90DE71868006EEDDB /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
+		CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
@@ -61,8 +63,6 @@
 		CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
-		CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
-		CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
@@ -90,10 +90,6 @@
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
 		CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */; };
-		CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */; };
-		CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */; };
-		CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */; };
-		CE48BC330C08B58700A166C6 /* notesTemplate.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */; };
 		CE4972510BDE898F00D7F1D2 /* SKMainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */; };
 		CE49726D0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */; };
 		CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4972890BDE8B2900D7F1D2 /* SKToolbarItem.m */; };
@@ -344,10 +340,8 @@
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
 				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
-				CE48BC330C08B58700A166C6 /* notesTemplate.txt in CopyFiles */,
-				CE48BC320C08B58700A166C6 /* notesTemplate.rtf in CopyFiles */,
-				CE20B1600C9EFC29007C72F9 /* notesTemplate.rtfd in CopyFiles */,
 				CEFA613A0D9C77740003F152 /* SKAgentListenerProtocol.h in CopyFiles */,
+				CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +418,7 @@
 		CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotPageCell.m; sourceTree = "<group>"; };
 		CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSInvocation_SKExtensions.h; sourceTree = "<group>"; };
 		CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSInvocation_SKExtensions.m; sourceTree = "<group>"; };
+		CE0ECCD40DE71868006EEDDB /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -446,7 +441,6 @@
 		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
-		CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = notesTemplate.rtfd; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
@@ -509,8 +503,6 @@
 		CE485BF00BC4443B00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateParser.h; sourceTree = "<group>"; };
 		CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateParser.m; sourceTree = "<group>"; };
-		CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notesTemplate.txt; sourceTree = "<group>"; };
-		CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = notesTemplate.rtf; sourceTree = "<group>"; };
 		CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindow.h; sourceTree = "<group>"; };
 		CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindow.m; sourceTree = "<group>"; };
 		CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFSelection_SKExtensions.h; sourceTree = "<group>"; };
@@ -1515,11 +1507,9 @@
 		CEE22EA20BFB8631002B746B /* Shared Support */ = {
 			isa = PBXGroup;
 			children = (
+				CE0ECCD40DE71868006EEDDB /* Templates */,
 				CE1E2F120BDB86A10011D9DD /* displayline */,
 				CE2A11660CE3B51600A0499B /* archivedmg.sh */,
-				CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */,
-				CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */,
-				CE20AC990C9EF2F9007C72F9 /* notesTemplate.rtfd */,
 			);
 			name = "Shared Support";
 			sourceTree = "<group>";
@@ -1722,8 +1712,6 @@
 				CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */,
 				CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */,
 				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
-				CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */,
-				CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */,
 				CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */,
 				CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */,
 				CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */,
@@ -1743,7 +1731,6 @@
 				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
-				CE20AC9C0C9EF2F9007C72F9 /* notesTemplate.rtfd in Resources */,
 				CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */,
 				CEAE392C0CA441F700849B0F /* PageSheet.nib in Resources */,
 				CEAE392F0CA4423A00849B0F /* ScaleSheet.nib in Resources */,
@@ -1757,6 +1744,7 @@
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */,
 				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
+				CE0ECCD90DE71868006EEDDB /* Templates in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
