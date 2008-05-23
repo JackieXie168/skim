@@ -513,9 +513,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     
     for (i = 0; fullPath == nil && i < 3; i++) {
         if (appSupportPath = [self applicationSupportPathForDomain:domains[i] create:NO]) {
-            if (subpath)
-                fullPath = [fullPath stringByAppendingPathComponent:subpath];
-            fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+            fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
+            fullPath = [fullPath stringByAppendingPathComponent:filename];
             if ([fm fileExistsAtPath:fullPath] == NO)
                 fullPath = nil;
         }

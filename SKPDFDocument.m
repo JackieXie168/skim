@@ -477,7 +477,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:&error];
         else 
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
-    } else if ([[typeName pathExtension] caseInsensitiveCompare:@"rtfd"]) {
+    } else if ([[typeName pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
         NSFileWrapper *fileWrapper = [self notesFileWrapperUsingTemplateFile:typeName];
         if (fileWrapper)
             didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
