@@ -38,8 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKDocumentErrorDomain;
-
 extern NSString *SKPDFDocumentWillSaveNotification;
 extern NSString *SKSkimFileDidSaveNotification;
 
@@ -108,14 +106,8 @@ enum {
 - (SKPDFView *)pdfView;
 
 - (NSData *)notesData;
-- (NSString *)notesString;
-- (NSData *)notesRTFData;
-- (NSFileWrapper *)notesRTFDFileWrapper;
 - (NSString *)notesFDFString;
 - (NSString *)notesFDFStringForFile:(NSString *)filename;
-
-- (NSData *)notesDataUsingTemplateFile:(NSString *)templatePath;
-- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templatePath;
 
 - (NSArray *)fileIDStrings;
 
@@ -148,11 +140,6 @@ enum {
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
 - (id)handleShowTeXScriptCommand:(NSScriptCommand *)command;
 
-@end
-
-
-@interface NSDocument (SKExtensions)
-- (void)saveRecentDocumentInfo;
 @end
 
 
