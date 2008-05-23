@@ -66,9 +66,16 @@ extern NSString *SKNotesFDFDocumentType;
 extern NSString *SKPostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 
-@interface SKDocumentController : NSDocumentController
+@interface SKDocumentController : NSDocumentController {
+    NSArray *customExportTemplateFiles;
+}
+
 - (void)newDocumentFromClipboard:(id)sender;
 - (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+
+- (void)resetCustomExportTemplateFiles;
+- (NSArray *)customExportTemplateFiles;
+
 @end

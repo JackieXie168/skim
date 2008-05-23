@@ -218,6 +218,27 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 
 #pragma mark Document read/write
 
+- (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
+    NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
+    if (saveOperation == NSSaveToOperation) {
+        [[NSDocumentController sharedDocumentController] resetCustomExportTemplateFiles];
+        NSArray *customTemplates = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
+        [writableTypes addObjectsFromArray:[customTemplates valueForKey:@"lastPathComponent"]];
+    }
+    return writableTypes;
+}
+
+- (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
+    // this will never be called on 10.4, so we can safely call super
+    NSString *fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
+    if (fileExtension == nil) {
+        NSArray *customTemplates = [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] valueForKey:@"lastPathComponent"];
+        if ([customTemplates containsObject:typeName])
+            fileExtension = [typeName pathExtension];
+	}
+    return fileExtension;
+}
+
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     if (exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
@@ -459,6 +480,24 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:&error];
         else 
             error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as FDF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    } else {
+        NSArray *customTemplates = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
+        unsigned int idx = [[customTemplates valueForKey:@"lastPathComponent"] indexOfObject:typeName];
+        if (idx != NSNotFound) {
+            if ([[typeName pathExtension] caseInsensitiveCompare:@"rtfd"]) {
+                NSFileWrapper *fileWrapper = [self notesFileWrapperUsingTemplateFile:[customTemplates objectAtIndex:idx]];
+                if (fileWrapper)
+                    didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
+                else
+                    error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes using template", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            } else {
+                NSData *data = [self notesDataUsingTemplateFile:[customTemplates objectAtIndex:idx]];
+                if (data)
+                    didWrite = [data writeToURL:absoluteURL options:0 error:&error];
+                else
+                    error = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes using template", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            }
+        }
     }
     
     if (didWrite == NO && outError != NULL)
@@ -1483,7 +1522,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSString *)notesString {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt" inDirectory:@"Templates"];
     NSStringEncoding encoding = NSUTF8StringEncoding;
     NSError *error = nil;
     NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:encoding error:&error];
@@ -1493,7 +1532,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSData *)notesRTFData {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtf"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtf" inDirectory:@"Templates"];
     NSDictionary *docAttributes = nil;
     NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
     NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
@@ -1503,7 +1542,42 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSFileWrapper *)notesRTFDFileWrapper {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtfd"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtfd" inDirectory:@"Templates"];
+    NSDictionary *docAttributes = nil;
+    NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
+    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+    NSFileWrapper *fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
+    [templateAttrString release];
+    return fileWrapper;
+}
+
+- (NSData *)notesDataUsingTemplateFile:(NSString *)templatePath {
+    static NSSet *richTextTypes = nil;
+    if (richTextTypes == nil) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"odt", nil];
+        else
+            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
+    }
+    NSString *fileType = [[templatePath pathExtension] lowercaseString];
+    NSData *data = nil;
+    if ([richTextTypes containsObject:fileType]) {
+        NSDictionary *docAttributes = nil;
+        NSError *error = nil;
+        NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
+        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+        data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
+        [templateAttrString release];
+    } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
+        NSError *error = nil;
+        NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
+        NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
+        data = [string dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+    }
+    return data;
+}
+
+- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templatePath {
     NSDictionary *docAttributes = nil;
     NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
     NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];

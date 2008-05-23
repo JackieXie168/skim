@@ -114,6 +114,9 @@ enum {
 - (NSString *)notesFDFString;
 - (NSString *)notesFDFStringForFile:(NSString *)filename;
 
+- (NSData *)notesDataUsingTemplateFile:(NSString *)templatePath;
+- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templatePath;
+
 - (NSArray *)fileIDStrings;
 
 - (void)savePasswordInKeychain:(NSString *)password;

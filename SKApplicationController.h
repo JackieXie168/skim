@@ -71,6 +71,7 @@ extern NSString *SKDocumentSetupFileNameKey;
 
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath;
 
 - (NSDictionary *)defaultPdfViewSettings;
 - (void)setDefaultPdfViewSettings:(NSDictionary *)settings;
