@@ -37,7 +37,6 @@
  */
 
 #import "SKNotesDocument.h"
-#import "SKPDFDocument.h"
 #import "SKNoteOutlineView.h"
 #import "BDAlias.h"
 #import "SKDocumentController.h"
@@ -52,6 +51,7 @@
 #import "SKFDFParser.h"
 #import "SKStatusBar.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -106,7 +106,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         NSString *file;
         while (file = [fileEnum nextObject]) {
             if ([[file pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame)
-                [writableTypes addObject:[file lastPathComponent]];
+                [writableTypes addObject:file];
         }
     }
     return writableTypes;
@@ -116,9 +116,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     // this will never be called on 10.4, so we can safely call super
     NSString *fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
     if (fileExtension == nil) {
-        [[NSDocumentController sharedDocumentController] resetCustomExportTemplateFiles];
-        NSArray *customTemplates = [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] valueForKey:@"lastPathComponent"];
-        if ([customTemplates containsObject:typeName])
+        if ([[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
             fileExtension = [typeName pathExtension];
 	}
     return fileExtension;
@@ -144,10 +142,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     } else if (SKIsNotesTextDocumentType(typeName)) {
         data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
     } else {
-        NSArray *customTemplates = [[NSDocumentController sharedDocumentController] customExportTemplateFiles];
-        unsigned int idx = [[customTemplates valueForKey:@"lastPathComponent"] indexOfObject:typeName];
-        if (idx != NSNotFound)
-            data = [self notesDataUsingTemplateFile:[customTemplates objectAtIndex:idx]];
+        data = [self notesDataUsingTemplateFile:typeName];
     }
     
     if (data == nil && outError != NULL)
@@ -218,49 +213,6 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         [dict setObject:[NSNumber numberWithUnsignedLong:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
-}
-
-- (NSString *)notesString {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt" inDirectory:@"Templates"];
-    NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:NULL];
-    NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
-    return string;
-}
-
-- (NSData *)notesRTFData {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtf" inDirectory:@"Templates"];
-    NSDictionary *docAttributes = nil;
-    NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
-    NSData *data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
-    [templateAttrString release];
-    return data;
-}
-
-- (NSData *)notesDataUsingTemplateFile:(NSString *)templatePath {
-    static NSSet *richTextTypes = nil;
-    if (richTextTypes == nil) {
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"odt", nil];
-        else
-            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
-    }
-    NSString *fileType = [[templatePath pathExtension] lowercaseString];
-    NSData *data = nil;
-    if ([richTextTypes containsObject:fileType]) {
-        NSDictionary *docAttributes = nil;
-        NSError *error = nil;
-        NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
-        data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
-        [templateAttrString release];
-    } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame) {
-        NSError *error = nil;
-        NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
-        NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
-        data = [string dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
-    }
-    return data;
 }
 
 // these are necessary for the app controller, we may change it there

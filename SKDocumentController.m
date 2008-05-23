@@ -37,6 +37,7 @@
  */
 
 #import "SKDocumentController.h"
+#import "NSDocument_SKExtensions.h"
 #import "SKPDFDocument.h"
 #import "SKDownloadController.h"
 #import "NSString_SKExtensions.h"
@@ -365,8 +366,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (NSArray *)customExportTemplateFiles {
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSMutableSet *templateNames = [NSMutableSet setWithObjects:@"notesTemplate.txt", @"notesTemplate.rtf", @"notesTemplate.rtfd", nil];
-        NSMutableArray *templateFiles = [NSMutableArray array];
+        NSMutableSet *templateFiles = [NSMutableSet set];
         int domains[3] = {kUserDomain, kLocalDomain, kNetworkDomain};
         int i;
         for (i = 0; i < 3; i++) {
@@ -376,14 +376,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 NSEnumerator *fileEnum = [[fm subpathsAtPath:templatesPath] objectEnumerator];
                 NSString *file;
                 while (file = [fileEnum nextObject]) {
-                    if ([file hasPrefix:@"."] == NO && [templateNames containsObject:file] == NO) {
-                        [templateFiles addObject:[templatesPath stringByAppendingPathComponent:file]];
+                    if ([file hasPrefix:@"."] == NO)
                         [templateFiles addObject:file];
-                    }
                 }
             }
         }
-        customExportTemplateFiles = [templateFiles copy];
+        [templateFiles minusSet:[NSSet setWithObjects:@"notesTemplate.txt", @"notesTemplate.rtf", @"notesTemplate.rtfd", nil]];
+        customExportTemplateFiles = [[[templateFiles allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] copy];
     }
     return customExportTemplateFiles;
 }
@@ -395,19 +394,15 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
     NSArray *fileExtensions = [super fileExtensionsFromType:documentTypeName];
-    if ([fileExtensions count] == 0) {
-        NSArray *customTemplates = [[self customExportTemplateFiles] valueForKey:@"lastPathComponent"];
-        if ([customTemplates containsObject:documentTypeName])
-            fileExtensions = [NSArray arrayWithObjects:[documentTypeName pathExtension], nil];
-	}
+    if ([fileExtensions count] == 0 && [[self customExportTemplateFiles] containsObject:documentTypeName])
+        fileExtensions = [NSArray arrayWithObjects:[documentTypeName pathExtension], nil];
 	return fileExtensions;
 }
 
 - (NSString *)displayNameForType:(NSString *)documentTypeName{
     NSString *displayName = nil;
-    NSArray *customTemplates = [[self customExportTemplateFiles] valueForKey:@"lastPathComponent"];
-    if ([customTemplates containsObject:documentTypeName])
-        displayName = [[documentTypeName stringByDeletingPathExtension] stringByAppendingFormat:@" (%@)", [[documentTypeName pathExtension] uppercaseString]];
+    if ([[self customExportTemplateFiles] containsObject:documentTypeName])
+        displayName = [documentTypeName stringByDeletingPathExtension];
     else
         displayName = [super displayNameForType:documentTypeName];
     return displayName;

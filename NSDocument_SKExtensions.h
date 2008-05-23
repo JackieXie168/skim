@@ -1,10 +1,10 @@
 //
-//  SKNotesDocument.h
+//  NSDocument_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/10/07.
+//  Created by Christiaan Hofman on 5/23/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,22 +38,18 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKNoteOutlineView, SKStatusBar;
+extern NSString *SKDocumentErrorDomain;
 
-@interface SKNotesDocument : NSDocument {
-    IBOutlet SKNoteOutlineView *outlineView;
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKStatusBar *statusBar;
-    NSMutableArray *notes;
-}
+@interface NSDocument (SKExtensions)
 
-- (IBAction)openPDF:(id)sender;
+- (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile;
+- (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile;
+- (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile;
 
-- (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
-- (unsigned)countOfNotes;
-- (id)objectInNotesAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned)index;
+- (NSString *)notesString;
+- (NSData *)notesRTFData;
+- (NSFileWrapper *)notesRTFDFileWrapper;
+
+- (void)saveRecentDocumentInfo;
 
 @end
