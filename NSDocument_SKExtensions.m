@@ -61,10 +61,10 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         else
             richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
     }
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
-    NSString *fileType = [[templatePath pathExtension] lowercaseString];
+    NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
     if ([richTextTypes containsObject:fileType]) {
+        NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -72,7 +72,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
     } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"odt"] != NSOrderedSame) {
-        data = [[self notesStringUsingTemplateFile:templatePath] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+        data = [[self notesStringUsingTemplateFile:templateFile] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     }
     return data;
 }
