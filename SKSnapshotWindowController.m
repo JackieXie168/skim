@@ -307,6 +307,11 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     }
 }
 
+- (NSRect)bounds {
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    return [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
+}
+
 - (unsigned int)pageIndex {
     return [[pdfView currentPage] pageIndex];
 }
