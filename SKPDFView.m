@@ -655,13 +655,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (readingBar) {
         [readingBar release];
         readingBar = nil;
-        [self setNeedsDisplay:YES];
     } else {
         readingBar = [[SKReadingBar alloc] initWithPage:[self currentPage]];
         [readingBar goToNextLine];
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
         [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
     }
+    [self setNeedsDisplay:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
 }
 
