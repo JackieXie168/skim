@@ -1787,9 +1787,12 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 - (IBAction)crop:(id)sender {
     NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
+    PDFPage *page = [pdfView currentSelectionPage];
     if (NSIsEmptyRect(rect))
         rect = [[pdfView currentSelectionPage] foregroundBox];
-    [self cropPageAtIndex:[[pdfView currentPage] pageIndex] toRect:rect];
+    if (page == nil)
+        page = [pdfView currentPage];
+    [self cropPageAtIndex:[page pageIndex] toRect:rect];
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
