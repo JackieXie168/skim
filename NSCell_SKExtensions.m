@@ -40,7 +40,6 @@
 
 #import "NSCell_SKExtensions.h"
 #import "SKUtilities.h"
-#import "SKPDFView.h"
 
 
 @implementation NSCell (SKExtensions)
