@@ -61,6 +61,7 @@
 #import "SKDownloadController.h"
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
+#import "NSDocument_SKExtensions.h"
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "NSView_SKExtensions.h"
