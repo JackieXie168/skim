@@ -77,4 +77,6 @@ enum {
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
 
+- (NSString *)accessibilityValue;
+
 @end

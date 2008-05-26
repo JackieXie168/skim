@@ -126,4 +126,12 @@
     return descriptor;
 }
 
+- (NSString *)accessibilityValue {
+    static NSColorWell *colorWell = nil;
+    if (colorWell == nil)
+        colorWell = [[NSColorWell alloc] init];
+    [colorWell setColor:self];
+    return [colorWell accessibilityAttributeValue:NSAccessibilityValueAttribute];
+}
+
 @end
