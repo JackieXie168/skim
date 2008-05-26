@@ -6,34 +6,6 @@
 	<array>
 		<dict>
 			<key>CLASS</key>
-			<string>NSObject</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>startAnimation</key>
-				<string>id</string>
-				<key>stopAnimation</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKStatusBar</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>leftCell</key>
-				<string>id</string>
-				<key>rightCell</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>BDSKGradientView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -66,11 +38,49 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>startAnimation</key>
+				<string>id</string>
+				<key>stopAnimation</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKStatusBar</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>leftCell</key>
+				<string>id</string>
+				<key>rightCell</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKNoteWindowController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
+				<key>iconTypePopUpButton</key>
+				<string>NSPopUpButton</string>
 				<key>imageView</key>
 				<string>BDSKDragImageView</string>
 				<key>statusBar</key>
@@ -80,14 +90,6 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
 		</dict>
 	</array>
 	<key>IBVersion</key>
