@@ -199,12 +199,12 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
 - (IBAction)changeTeXEditorPreset:(id)sender {
     int idx = [sender indexOfSelectedItem];
     if (idx < [sender numberOfItems] - 1) {
-        [sud setObject:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [sud setObject:SKTeXEditorCommands[idx] forKey:SKTeXEditorCommandKey];
-        [sud setObject:SKTeXEditorArguments[idx] forKey:SKTeXEditorArgumentsKey];
+        [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
+        [[sudc values] setValue:SKTeXEditorCommands[idx] forKey:SKTeXEditorCommandKey];
+        [[sudc values] setValue:SKTeXEditorArguments[idx] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
-        [sud setObject:@"" forKey:SKTeXEditorPresetKey];
+        [[sudc values] setValue:@"" forKey:SKTeXEditorPresetKey];
         [self setCustomTeXEditor:YES];
     }
 }
