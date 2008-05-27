@@ -1829,6 +1829,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKHighlightString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
+                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
@@ -1836,6 +1837,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKUnderlineString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
+                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
@@ -1843,6 +1845,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
+                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
