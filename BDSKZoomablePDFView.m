@@ -152,7 +152,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         [scalePopUpButton selectItemAtIndex:cnt];
         
         // put it in the scrollview
-        [scrollView setSubcontrols:[NSArray arrayWithObject:scalePopUpButton]];
+        [scrollView setPlacards:[NSArray arrayWithObject:scalePopUpButton]];
         [scalePopUpButton release];
     }
 }

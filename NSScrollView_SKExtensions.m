@@ -54,7 +54,7 @@ static CFMutableSetRef scrollViewsWithHorizontalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithoutHorizontalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithVerticalScrollers = NULL;
 static CFMutableSetRef scrollViewsWithoutVerticalScrollers = NULL;
-static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
+static CFMutableDictionaryRef scrollViewPlacards = NULL;
 
 - (void)replacementDealloc;
 {
@@ -62,7 +62,7 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
     CFSetRemoveValue(scrollViewsWithoutHorizontalScrollers, self);
     CFSetRemoveValue(scrollViewsWithVerticalScrollers, self);
     CFSetRemoveValue(scrollViewsWithoutVerticalScrollers, self);
-    CFDictionaryRemoveValue(scrollViewSubcontrols, self);
+    CFDictionaryRemoveValue(scrollViewPlacards, self);
     originalDealloc(self, _cmd);
 }
 
@@ -151,15 +151,15 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
 - (void)replacementTile {
     originalTile(self, _cmd);
     
-    NSArray *subcontrols = [self subcontrols];
+    NSArray *placards = [self placards];
     
-    if ([subcontrols count]) {
-        NSEnumerator *viewEnum = [subcontrols objectEnumerator];
+    if ([placards count]) {
+        NSEnumerator *viewEnum = [placards objectEnumerator];
         NSView *view;
         NSScroller *horizScroller = [self horizontalScroller];
         NSRect viewFrame, horizScrollerFrame = [horizScroller frame];
         float height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
-        BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[subcontrols lastObject] superview] superview];
+        BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[placards lastObject] superview] superview];
         
         if ([edgeView isDescendantOf:self] == NO) {
             edgeView = [[[BDSKEdgeView alloc] init] autorelease];
@@ -195,29 +195,29 @@ static CFMutableDictionaryRef scrollViewSubcontrols = NULL;
     scrollViewsWithoutHorizontalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
     scrollViewsWithVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
     scrollViewsWithoutVerticalScrollers = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-    scrollViewSubcontrols = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    scrollViewPlacards = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
-- (NSArray *)subcontrols {
-    return (NSArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);
+- (NSArray *)placards {
+    return (NSArray *)CFDictionaryGetValue(scrollViewPlacards, self);
 }
 
-- (void)setSubcontrols:(NSArray *)newSubControls {
-    NSMutableArray *subcontrols = (NSMutableArray *)CFDictionaryGetValue(scrollViewSubcontrols, self);
-    if (subcontrols == nil && [newSubControls count]) {
-        subcontrols = [NSMutableArray array];
-        CFDictionarySetValue(scrollViewSubcontrols, self, subcontrols);
+- (void)setPlacards:(NSArray *)newPlacards {
+    NSMutableArray *placards = (NSMutableArray *)CFDictionaryGetValue(scrollViewPlacards, self);
+    if (placards == nil && [newPlacards count]) {
+        placards = [NSMutableArray array];
+        CFDictionarySetValue(scrollViewPlacards, self, placards);
     }
     
-    [[[[subcontrols lastObject] superview] superview] removeFromSuperview];
-    [subcontrols setArray:newSubControls];
+    [[[[placards lastObject] superview] superview] removeFromSuperview];
+    [placards setArray:newPlacards];
     
-    if ([subcontrols count] == 0 && subcontrols) {
-        CFDictionaryRemoveValue(scrollViewSubcontrols, self);
-        subcontrols = nil;
+    if ([placards count] == 0 && placards) {
+        CFDictionaryRemoveValue(scrollViewPlacards, self);
+        placards = nil;
     }
     
-    [self setAlwaysHasHorizontalScroller:[subcontrols count] != 0];
+    [self setAlwaysHasHorizontalScroller:[placards count] != 0];
     
     [self tile];
 }

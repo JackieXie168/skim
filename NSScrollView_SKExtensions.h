@@ -41,8 +41,8 @@
 
 @interface NSScrollView (SKExtensions) 
 
-- (NSArray *)subcontrols;
-- (void)setSubcontrols:(NSArray *)newSubcontrols;
+- (NSArray *)placards;
+- (void)setPlacards:(NSArray *)newPlacards;
 
 // new API allows ignoring PDFView's attempts to remove the horizontal scroller
 - (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
