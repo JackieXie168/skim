@@ -156,7 +156,7 @@ static float SKPopUpMenuFontSize = 11.0;
         return;
     
     NSScrollView *scrollView = [self scrollView];
-    [scrollView setAlwaysHasHorizontalScroller:YES];
+    [scrollView setHasHorizontalScroller:YES];
     NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
     
     if (scalePopUpButton == nil) {

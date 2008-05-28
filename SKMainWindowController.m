@@ -2505,9 +2505,9 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
     [pdfView setDisplaysPageBreaks:YES];
-    [scrollView setNeverHasHorizontalScroller:YES];
-    [scrollView setNeverHasVerticalScroller:YES];
     [scrollView setAutohidesScrollers:YES];
+    [scrollView setHasHorizontalScroller:NO];
+    [scrollView setHasVerticalScroller:NO];
     
     [pdfView setCurrentSelection:nil];
     if ([pdfView hasReadingBar])
@@ -2531,9 +2531,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
-    [scrollView setNeverHasHorizontalScroller:NO];
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasHorizontalScrollerKey] boolValue]];
-    [scrollView setNeverHasVerticalScroller:NO];
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasVerticalScrollerKey] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:SKMainWindowAutoHidesScrollersKey] boolValue]];
     

@@ -101,7 +101,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     if (scalePopUpButton == nil) {
         
         NSScrollView *scrollView = [self scrollView];
-        [scrollView setAlwaysHasHorizontalScroller:YES];
+        [scrollView setHasHorizontalScroller:YES];
         
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
