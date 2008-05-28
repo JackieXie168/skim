@@ -230,7 +230,7 @@ static float SKPopUpMenuFontSize = 11.0;
         [pagePopUpButton setAction:@selector(pagePopUpAction:)];
 
         // put it in the scrollview
-        [scrollView setSubcontrols:[NSArray arrayWithObjects:pagePopUpButton, scalePopUpButton, nil]];
+        [scrollView setPlacards:[NSArray arrayWithObjects:pagePopUpButton, scalePopUpButton, nil]];
         [scalePopUpButton release];
         [pagePopUpButton release];
     }
