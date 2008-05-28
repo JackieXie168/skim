@@ -164,8 +164,15 @@ typedef enum _SKInteractionMode {
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
 - (IBAction)delete:(id)sender;
+- (IBAction)paste:(id)sender;
+- (IBAction)alternatePaste:(id)sender;
+- (IBAction)pasteAsPlainText:(id)sender;
+- (IBAction)copy:(id)sender;
+- (IBAction)cut:(id)sender;
 - (IBAction)deselectAll:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
+- (IBAction)changeToolMode:(id)sender;
+- (IBAction)changeAnnotationMode:(id)sender;
 
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;

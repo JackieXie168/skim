@@ -685,14 +685,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     }
 }
 
-- (void)goToNextPage:(id)sender {
+- (IBAction)goToNextPage:(id)sender {
     if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
-- (void)goToPreviousPage:(id)sender {
+- (IBAction)goToPreviousPage:(id)sender {
     if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
@@ -707,7 +707,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [(id)super printDocument:sender];
 }
 
-- (void)delete:(id)sender
+- (IBAction)delete:(id)sender
 {
 	if ([activeAnnotation isNote])
         [self removeActiveAnnotation:self];
@@ -715,7 +715,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSBeep();
 }
 
-- (void)copy:(id)sender
+- (IBAction)copy:(id)sender
 {
     if ([[self document] allowsCopying]) {
         [super copy:sender];
@@ -823,14 +823,20 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [pboard setData:tiffData forType:NSTIFFPboardType];
 }
 
-- (void)pasteNoteAlternate:(BOOL)isAlternate {
+- (void)pasteNote:(BOOL)preferNote plainText:(BOOL)isPlainText {
     if ([self hideNotes]) {
         NSBeep();
         return;
     }
     
+    NSMutableArray *pboardTypes = [NSMutableArray arrayWithObjects:NSStringPboardType, nil];
+    if (isPlainText || preferNote)
+        [pboardTypes addObject:NSRTFPboardType];
+    if (isPlainText == NO)
+        [pboardTypes addObject:SKSkimNotePboardType];
+    
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
+    NSString *pboardType = [pboard availableTypeFromArray:pboardTypes];
     if (pboardType == nil) {
         NSBeep();
         return;
@@ -854,7 +860,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
     } else {
         
-        NSAssert([pboardType isEqualToString:NSStringPboardType], @"inconsistent pasteboard type");
+        NSAssert([pboardType isEqualToString:NSStringPboardType] || (isPlainText && [pboardType isEqualToString:NSRTFPboardType]), @"inconsistent pasteboard type");
         
 		// First try the current mouse position
         NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
@@ -874,16 +880,30 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-        NSSize defaultSize = isAlternate ? SKPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
+        NSSize defaultSize = preferNote ? SKPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
         NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
         
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
         
-        if (isAlternate)
+        if (preferNote) {
             newAnnotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
-        else
+            NSMutableAttributedString *attrString = nil;
+            if ([pboardType isEqualToString:NSStringPboardType])
+                attrString = [[[NSMutableAttributedString alloc] initWithString:[pboard stringForType:NSStringPboardType]] autorelease];
+            else if ([pboardType isEqualToString:NSRTFPboardType])
+                attrString = [[[NSMutableAttributedString alloc] initWithRTF:[pboard dataForType:NSStringPboardType] documentAttributes:NULL] autorelease];
+            if (isPlainText || [pboardType isEqualToString:NSStringPboardType]) {
+                NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+                float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+                NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : [NSFont userFontOfSize:fontSize];
+                [attrString setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil] range:NSMakeRange(0, [attrString length])];
+            }
+            [(SKPDFAnnotationNote *)newAnnotation setText:attrString];
+        } else {
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
-        [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
+            [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
+        }
+        
     }
     
     [self addAnnotation:newAnnotation toPage:page];
@@ -892,30 +912,25 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setActiveAnnotation:newAnnotation];
 }
 
-- (void)paste:(id)sender {
-    [self pasteNoteAlternate:NO];
+- (IBAction)paste:(id)sender {
+    [self pasteNote:NO plainText:NO];
 }
 
-- (void)alternatePaste:(id)sender {
-    [self pasteNoteAlternate:YES];
+- (IBAction)alternatePaste:(id)sender {
+    [self pasteNote:YES plainText:NO];
 }
 
-- (void)cut:(id)sender
+- (IBAction)pasteAsPlainText:(id)sender {
+    [self pasteNote:YES plainText:YES];
+}
+
+- (IBAction)cut:(id)sender
 {
 	if ([self hideNotes] == NO && [activeAnnotation isNote]) {
         [self copy:sender];
         [self delete:sender];
     } else
         NSBeep();
-}
-
-- (void)changeToolMode:(id)sender {
-    [self setToolMode:[sender tag]];
-}
-
-- (void)changeAnnotationMode:(id)sender {
-    [self setToolMode:SKNoteToolMode];
-    [self setAnnotationMode:[sender tag]];
 }
 
 - (IBAction)selectAll:(id)sender {
@@ -935,6 +950,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
     }
+}
+
+- (void)changeToolMode:(id)sender {
+    [self setToolMode:[sender tag]];
+}
+
+- (void)changeAnnotationMode:(id)sender {
+    [self setToolMode:SKNoteToolMode];
+    [self setAnnotationMode:[sender tag]];
 }
 
 #pragma mark Event Handling
@@ -2304,6 +2328,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound)
             return YES;
         return NO;
+    } else if (action == @selector(paste:)) {
+        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
+    } else if (action == @selector(alternatePaste:)) {
+        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSRTFPboardType, NSStringPboardType, nil]];
+    } else if (action == @selector(pasteAsPlainText:)) {
+        return nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSRTFPboardType, NSStringPboardType, nil]];
     } else if (action == @selector(delete:)) {
         return [activeAnnotation isNote];
     } else if (action == @selector(printDocument:)) {
