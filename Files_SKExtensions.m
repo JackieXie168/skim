@@ -44,7 +44,7 @@ NSURL *SKDownloadFolderURL() {
 	static CFURLRef downloadsURL = nil;
     
     if (nil == downloadsURL) {
-        OSStatus err;
+        OSStatus err = fnfErr;
         FSRef pathRef;
         
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
@@ -56,17 +56,17 @@ NSURL *SKDownloadFolderURL() {
             long size = sizeof(ICFileSpec);
             
             err = ICStart(&inst, 'SKim');
-            if (noErr == err)
+            if (noErr == err) {
                 err = ICBegin(inst, icReadOnlyPerm);
-            
-            if (err == noErr) {
-                err = ICGetPref(inst, kICDownloadFolder, &junk, &spec, &size);
-                if (noErr == err) {
+                
+                if (err == noErr) {
+                    err = ICGetPref(inst, kICDownloadFolder, &junk, &spec, &size);
                     ICEnd(inst);
-                    ICStop(inst);
+                    if (err == noErr)
+                        err = FSpMakeFSRef(&(spec.fss), &pathRef);
                 }
                 
-                err = FSpMakeFSRef(&(spec.fss), &pathRef);
+                ICStop(inst);
             }
         }
         if(err == noErr)
