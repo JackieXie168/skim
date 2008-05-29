@@ -46,18 +46,26 @@
 /* For genstrings:
     NSLocalizedStringFromTable(@"Auto", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"10%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"20%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"25%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"35%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"50%", @"ZoomValues", @"Zoom popup entry")
-    NSLocalizedStringFromTable(@"75%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"60%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"71%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"85%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"100%", @"ZoomValues", @"Zoom popup entry")
-    NSLocalizedStringFromTable(@"128%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"120%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"141%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"170%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"200%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"300%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"400%", @"ZoomValues", @"Zoom popup entry")
+    NSLocalizedStringFromTable(@"600%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"800%", @"ZoomValues", @"Zoom popup entry")
 */   
-static NSString *BDSKDefaultScaleMenuLabels[] = {/* @"Set...", */ @"Auto", @"10%", @"25%", @"50%", @"75%", @"100%", @"128%", @"150%", @"200%", @"400%", @"800%"};
-static float BDSKDefaultScaleMenuFactors[] = {/* 0.0, */ 0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.28, 1.5, 2.0, 4.0, 8.0};
-static float BDSKScaleMenuFontSize = 11.0;
+static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
+static float SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
+static float SKScaleMenuFontSize = 11.0;
 
 #pragma mark Popup button
 
