@@ -40,34 +40,40 @@
 #import <Carbon/Carbon.h>
 
 NSURL *SKDownloadFolderURL() {
-    OSStatus err;
-	ICInstance inst;
-	ICAttr junk = 0;
-	ICFileSpec spec;
     
-	static CFURLRef pathURL = NULL;
+	static NSURL *downloadsURL = nil;
     
-    if (NULL == pathURL) {
-        long size = sizeof(ICFileSpec);
-        FSRef pathRef;
-        
-        err = ICStart(&inst, 'SKim');
-        if (noErr == err)
-            err = ICBegin(inst, icReadOnlyPerm);
-        
-        if (err == noErr) {
-            err = ICGetPref(inst, kICDownloadFolder, &junk, &spec, &size);
-            if (noErr == err) {
-                ICEnd(inst);
-                ICStop(inst);
-            }
+    if (nil == downloadsURL) {
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
+            NSString *path = [paths count] ? [paths objectAtIndex:0] : [NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"];
+            downloadsURL = [[NSURL alloc] initFileURLWithPath:path];
+        } else {
+            OSStatus err;
+            ICInstance inst;
+            ICAttr junk = 0;
+            ICFileSpec spec;
+            long size = sizeof(ICFileSpec);
+            FSRef pathRef;
             
-            err = FSpMakeFSRef(&(spec.fss), &pathRef);
-            if(err == noErr)
-                pathURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
+            err = ICStart(&inst, 'SKim');
+            if (noErr == err)
+                err = ICBegin(inst, icReadOnlyPerm);
+            
+            if (err == noErr) {
+                err = ICGetPref(inst, kICDownloadFolder, &junk, &spec, &size);
+                if (noErr == err) {
+                    ICEnd(inst);
+                    ICStop(inst);
+                }
+                
+                err = FSpMakeFSRef(&(spec.fss), &pathRef);
+                if(err == noErr)
+                    downloadsURL = (NSURL *)CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
+            }
         }
     }
-    return (NSURL *)pathURL;
+    return downloadsURL;
 }
 
 BOOL SKFileIsInTrash(NSURL *fileURL) {
