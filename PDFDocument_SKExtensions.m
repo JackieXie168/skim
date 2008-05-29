@@ -62,10 +62,8 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
         
         Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
-        if (printAccessoryControllerClass == Nil) {
-            [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] load];
-            printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
-        }
+        if (printAccessoryControllerClass == Nil)
+            printAccessoryControllerClass = [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] classNamed:@"SKPrintAccessoryController"];
         id printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
         if (printAccessoryViewController)
             [printPanel addAccessoryController:printAccessoryViewController];
