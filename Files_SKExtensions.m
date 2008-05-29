@@ -41,20 +41,19 @@
 
 NSURL *SKDownloadFolderURL() {
     
-	static NSURL *downloadsURL = nil;
+	static CFURLRef downloadsURL = nil;
     
     if (nil == downloadsURL) {
+        OSStatus err;
+        FSRef pathRef;
+        
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
-            NSString *path = [paths count] ? [paths objectAtIndex:0] : [NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"];
-            downloadsURL = [[NSURL alloc] initFileURLWithPath:path];
+            err = FSFindFolder(kUserDomain, kDownloadsFolderType, TRUE, &pathRef);
         } else {
-            OSStatus err;
             ICInstance inst;
             ICAttr junk = 0;
             ICFileSpec spec;
             long size = sizeof(ICFileSpec);
-            FSRef pathRef;
             
             err = ICStart(&inst, 'SKim');
             if (noErr == err)
@@ -68,12 +67,12 @@ NSURL *SKDownloadFolderURL() {
                 }
                 
                 err = FSpMakeFSRef(&(spec.fss), &pathRef);
-                if(err == noErr)
-                    downloadsURL = (NSURL *)CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
             }
         }
+        if(err == noErr)
+            downloadsURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
     }
-    return downloadsURL;
+    return (NSURL *)downloadsURL;
 }
 
 BOOL SKFileIsInTrash(NSURL *fileURL) {
