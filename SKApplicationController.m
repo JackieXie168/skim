@@ -590,110 +590,110 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 - (NSDictionary *)defaultNoteColors {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [sud colorForKey:SKFreeTextNoteColorKey], @"textNoteColor", 
-        [sud colorForKey:SKAnchoredNoteColorKey], @"anchoredNoteColor", 
-        [sud colorForKey:SKCircleNoteColorKey], @"circleNoteColor", 
-        [sud colorForKey:SKSquareNoteColorKey], @"squareNoteColor", 
-        [sud colorForKey:SKHighlightNoteColorKey], @"highlightNoteColor", 
-        [sud colorForKey:SKUnderlineNoteColorKey], @"underlineNoteColor", 
-        [sud colorForKey:SKStrikeOutNoteColorKey], @"strikeOutNoteColor", 
-        [sud colorForKey:SKLineNoteColorKey], @"lineNoteColor", 
-        [sud colorForKey:SKCircleNoteInteriorColorKey], @"circleNoteInteriorColor", 
-        [sud colorForKey:SKSquareNoteInteriorColorKey], @"squareNoteInteriorColor", 
-        [sud colorForKey:SKFreeTextNoteFontColorKey], @"textNoteFontColor", 
+        [sud colorForKey:SKFreeTextNoteColorKey], SKFreeTextString, 
+        [sud colorForKey:SKAnchoredNoteColorKey], SKNoteString, 
+        [sud colorForKey:SKCircleNoteColorKey], SKCircleString, 
+        [sud colorForKey:SKSquareNoteColorKey], SKSquareString, 
+        [sud colorForKey:SKHighlightNoteColorKey], SKHighlightString, 
+        [sud colorForKey:SKUnderlineNoteColorKey], SKUnderlineString, 
+        [sud colorForKey:SKStrikeOutNoteColorKey], SKStrikeOutString, 
+        [sud colorForKey:SKLineNoteColorKey], SKLineString, 
+        [sud colorForKey:SKCircleNoteInteriorColorKey], @"CircleInterior", 
+        [sud colorForKey:SKSquareNoteInteriorColorKey], @"SquareInterior", 
+        [sud colorForKey:SKFreeTextNoteFontColorKey], @"FreeTextFont", 
         nil];
 }
 
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *color;
-    if (color = [colorDict objectForKey:@"textNoteColor"])
+    if (color = [colorDict objectForKey:SKFreeTextString])
         [sud setColor:color forKey:SKFreeTextNoteColorKey];
-    if (color = [colorDict objectForKey:@"anchoredNoteColor"])
+    if (color = [colorDict objectForKey:SKNoteString])
         [sud setColor:color forKey:SKAnchoredNoteColorKey];
-    if (color = [colorDict objectForKey:@"circleNoteColor"])
+    if (color = [colorDict objectForKey:SKCircleString])
         [sud setColor:color forKey:SKCircleNoteColorKey];
-    if (color = [colorDict objectForKey:@"squareNoteColor"])
+    if (color = [colorDict objectForKey:SKSquareString])
         [sud setColor:color forKey:SKSquareNoteColorKey];
-    if (color = [colorDict objectForKey:@"highlightNoteColor"])
+    if (color = [colorDict objectForKey:SKHighlightString])
         [sud setColor:color forKey:SKHighlightNoteColorKey];
-    if (color = [colorDict objectForKey:@"underlineNoteColor"])
+    if (color = [colorDict objectForKey:SKUnderlineString])
         [sud setColor:color forKey:SKUnderlineNoteColorKey];
-    if (color = [colorDict objectForKey:@"strikeOutNoteColor"])
+    if (color = [colorDict objectForKey:SKStrikeOutString])
         [sud setColor:color forKey:SKStrikeOutNoteColorKey];
-    if (color = [colorDict objectForKey:@"lineNoteColor"])
+    if (color = [colorDict objectForKey:SKLineString])
         [sud setColor:color forKey:SKLineNoteColorKey];
-    if (color = [colorDict objectForKey:@"circleNoteInteriorColor"])
+    if (color = [colorDict objectForKey:@"CircleInterior"])
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:@"squareNoteInteriorColor"])
+    if (color = [colorDict objectForKey:@"SquareInterior"])
         [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
-    if (color = [colorDict objectForKey:@"textNoteFontColor"])
+    if (color = [colorDict objectForKey:@"FreeTextFont"])
         [sud setColor:color forKey:SKFreeTextNoteFontColorKey];
 }
 
 - (NSDictionary *)defaultLineWidths {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithFloat:[sud floatForKey:SKFreeTextNoteLineWidthKey]], @"textNote", 
-        [NSNumber numberWithFloat:[sud floatForKey:SKCircleNoteLineWidthKey]], @"circleNote", 
-        [NSNumber numberWithFloat:[sud floatForKey:SKSquareNoteLineWidthKey]], @"squareNote", 
-        [NSNumber numberWithFloat:[sud floatForKey:SKLineNoteLineWidthKey]], @"lineNote", nil];
+        [NSNumber numberWithFloat:[sud floatForKey:SKFreeTextNoteLineWidthKey]], SKFreeTextString, 
+        [NSNumber numberWithFloat:[sud floatForKey:SKCircleNoteLineWidthKey]], SKCircleString, 
+        [NSNumber numberWithFloat:[sud floatForKey:SKSquareNoteLineWidthKey]], SKSquareString, 
+        [NSNumber numberWithFloat:[sud floatForKey:SKLineNoteLineWidthKey]], SKLineString, nil];
 }
 
 - (void)setDefaultLineWidth:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
-    if (number = [dict objectForKey:@"textNote"])
+    if (number = [dict objectForKey:SKFreeTextString])
         [sud setFloat:[number floatValue] forKey:SKFreeTextNoteLineWidthKey];
-    if (number = [dict objectForKey:@"circleNote"])
+    if (number = [dict objectForKey:SKCircleString])
         [sud setFloat:[number floatValue] forKey:SKCircleNoteLineWidthKey];
-    if (number = [dict objectForKey:@"squareNote"])
+    if (number = [dict objectForKey:SKSquareString])
         [sud setFloat:[number floatValue] forKey:SKSquareNoteLineWidthKey];
-    if (number = [dict objectForKey:@"lineNote"])
+    if (number = [dict objectForKey:SKLineString])
         [sud setFloat:[number floatValue] forKey:SKLineNoteLineWidthKey];
 }
 
 - (NSDictionary *)defaultLineStyles {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], @"textNote", 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], @"circleNote", 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], @"squareNote", 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], @"lineNote", nil];
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], SKFreeTextString, 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], SKCircleString, 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], SKSquareString, 
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], SKLineString, nil];
 }
 
 - (void)setDefaultLineStyles:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
-    if (number = [dict objectForKey:@"textNote"])
+    if (number = [dict objectForKey:SKFreeTextString])
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKFreeTextNoteLineStyleKey];
-    if (number = [dict objectForKey:@"circleNote"])
+    if (number = [dict objectForKey:SKCircleString])
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKCircleNoteLineStyleKey];
-    if (number = [dict objectForKey:@"squareNote"])
+    if (number = [dict objectForKey:SKSquareString])
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKSquareNoteLineStyleKey];
-    if (number = [dict objectForKey:@"lineNote"])
+    if (number = [dict objectForKey:SKLineString])
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKLineNoteLineStyleKey];
 }
 
 - (NSDictionary *)defaultDashPatterns {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [sud arrayForKey:SKFreeTextNoteDashPatternKey], @"textNote", 
-        [sud arrayForKey:SKCircleNoteDashPatternKey], @"circleNote", 
-        [sud arrayForKey:SKSquareNoteDashPatternKey], @"squareNote", 
-        [sud arrayForKey:SKLineNoteDashPatternKey], @"lineNote", nil];
+        [sud arrayForKey:SKFreeTextNoteDashPatternKey], SKFreeTextString, 
+        [sud arrayForKey:SKCircleNoteDashPatternKey], SKCircleString, 
+        [sud arrayForKey:SKSquareNoteDashPatternKey], SKSquareString, 
+        [sud arrayForKey:SKLineNoteDashPatternKey], SKLineString, nil];
 }
 
 - (void)setDefaultDashPattern:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSArray *array;
-    if (array = [dict objectForKey:@"textNote"])
+    if (array = [dict objectForKey:SKFreeTextString])
         [sud setObject:array forKey:SKFreeTextNoteDashPatternKey];
-    if (array = [dict objectForKey:@"circleNote"])
+    if (array = [dict objectForKey:SKCircleString])
         [sud setObject:array forKey:SKCircleNoteDashPatternKey];
-    if (array = [dict objectForKey:@"squareNote"])
+    if (array = [dict objectForKey:SKSquareString])
         [sud setObject:array forKey:SKSquareNoteDashPatternKey];
-    if (array = [dict objectForKey:@"lineNote"])
+    if (array = [dict objectForKey:SKLineString])
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
 }
 

@@ -855,85 +855,85 @@
         <record-type name="note colors" code="NClr">
             <property name="text note color" code="CTxt" type="RGBA color"
                 description="Default text note color.">
-                <cocoa key="textNoteColor"/>
+                <cocoa key="FreeText"/>
             </property>
             <property name="anchored note color" code="CAnc" type="RGBA color"
                 description="Default anchored note color.">
-                <cocoa key="anchoredNote"/>
+                <cocoa key="Note"/>
             </property>
             <property name="circle note color" code="CCir" type="RGBA color"
                 description="Default circle color.">
-                <cocoa key="circleNoteColor"/>
+                <cocoa key="Circle"/>
             </property>
             <property name="box note color" code="CSqu" type="RGBA color"
                 description="Default box color.">
-                <cocoa key="squareNoteColor"/>
+                <cocoa key="Square"/>
             </property>
             <property name="highlight note color" code="CHil" type="RGBA color"
                 description="Default highlight color.">
-                <cocoa key="highlightNoteColor"/>
+                <cocoa key="Highlight"/>
             </property>
             <property name="underline note color" code="CUnd" type="RGBA color"
                 description="Default underline highlight color.">
-                <cocoa key="underlineNoteColor"/>
+                <cocoa key="Underline"/>
             </property>
             <property name="strike out note color" code="CStr" type="RGBA color"
                 description="Default strike out highlight color.">
-                <cocoa key="strikeOutNoteColor"/>
+                <cocoa key="StrikeOut"/>
             </property>
             <property name="line note color" code="CLin" type="RGBA color"
                 description="Default line color.">
-                <cocoa key="lineNoteColor"/>
+                <cocoa key="Line"/>
             </property>
             <property name="circle note interior color" code="CCiI" type="RGBA color"
                 description="Default circle fill color.">
-                <cocoa key="circleNoteInteriorColor"/>
+                <cocoa key="CircleInterior"/>
             </property>
             <property name="box note interior color" code="CSqI" type="RGBA color"
                 description="Default box fill color.">
-                <cocoa key="squareNoteInteriorColor"/>
+                <cocoa key="SquareInterior"/>
             </property>
             <property name="text note font color" code="CTxF" type="RGBA color"
                 description="Default text note font color.">
-                <cocoa key="textNoteFontColor"/>
+                <cocoa key="FreeTextFont"/>
             </property>
         </record-type>
 
         <record-type name="note line widths" code="NLWd">
             <property name="text note line width" code="WTxt" type="real"
                 description="Default text note line width.">
-                <cocoa key="textNote"/>
+                <cocoa key="FreeText"/>
             </property>
             <property name="circle note line width" code="WCir" type="real"
                 description="Default circle line width.">
-                <cocoa key="circleNote"/>
+                <cocoa key="Circle"/>
             </property>
             <property name="box note line width" code="WSqu" type="real"
                 description="Default box line width.">
-                <cocoa key="squareNote"/>
+                <cocoa key="Square"/>
             </property>
             <property name="line note line width" code="WLin" type="real"
                 description="Default line line width.">
-                <cocoa key="lineNote"/>
+                <cocoa key="Line"/>
             </property>
         </record-type>
 
         <record-type name="note line styles" code="NLSt">
             <property name="text note line style" code="STxt" type="note line style"
                 description="Default text note line width.">
-                <cocoa key="textNote"/>
+                <cocoa key="FreeText"/>
             </property>
             <property name="circle note line style" code="SCir" type="note line style"
                 description="Default circle line width.">
-                <cocoa key="circleNote"/>
+                <cocoa key="Circle"/>
             </property>
             <property name="box note line style" code="SSqu" type="note line style"
                 description="Default box line width.">
-                <cocoa key="squareNote"/>
+                <cocoa key="Square"/>
             </property>
             <property name="line note line style" code="SLin" type="note line style"
                 description="Default line line width.">
-                <cocoa key="lineNote"/>
+                <cocoa key="Line"/>
             </property>
         </record-type>
 
@@ -941,22 +941,22 @@
             <property name="text note dash pattern" code="DTxt"
                 description="Default text note dash pattern.">
                 <type type="real" list="yes"/>
-                <cocoa key="textNote"/>
+                <cocoa key="FreeText"/>
             </property>
             <property name="circle note dash pattern" code="DCir"
                 description="Default circle dash pattern.">
                 <type type="real" list="yes"/>
-                <cocoa key="circleNote"/>
+                <cocoa key="Circle"/>
             </property>
             <property name="box note dash pattern" code="DSqu"
                 description="Default box dash pattern.">
                 <type type="real" list="yes"/>
-                <cocoa key="squareNote"/>
+                <cocoa key="Square"/>
             </property>
             <property name="line note dash pattern" code="DLin"
                 description="Default line dash pattern.">
                 <type type="real" list="yes"/>
-                <cocoa key="lineNote"/>
+                <cocoa key="Line"/>
             </property>
         </record-type>
 
