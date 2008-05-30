@@ -146,7 +146,9 @@ typedef enum _SKInteractionMode {
 
 - (NSRect)currentSelectionRect;
 - (void)setCurrentSelectionRect:(NSRect)rect;
+
 - (PDFPage *)currentSelectionPage;
+- (void)setCurrentSelectionPage:(PDFPage *)page;
 
 - (float)currentMagnification;
 

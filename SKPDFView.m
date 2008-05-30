@@ -606,6 +606,16 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     return selectionPageIndex == NSNotFound ? nil : [[self document] pageAtIndex:selectionPageIndex];
 }
 
+- (void)setCurrentSelectionPage:(PDFPage *)page {
+    if (toolMode == SKSelectToolMode) {
+        if (selectionPageIndex != [page pageIndex] || (page == nil && selectionPageIndex != NSNotFound))
+            [self setNeedsDisplay:YES];
+       selectionPageIndex = [page pageIndex];
+       if (page == nil)
+            selectionRect = NSZeroRect;
+    }
+}
+
 - (float)currentMagnification {
     return magnification;
 }

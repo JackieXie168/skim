@@ -135,6 +135,10 @@ enum {
 - (NSString *)text;
 - (id)selectionSpecifier;
 - (void)setSelectionSpecifier:(id)specifier;
+- (NSData *)selectionQDRect;
+- (void)setSelectionQDRect:(NSData *)inQDBoundsAsData;
+- (id)selectionPage;
+- (void)setSelectionPage:(PDFPage *)page;
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;

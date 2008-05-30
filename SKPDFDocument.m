@@ -1824,6 +1824,31 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self pdfView] setCurrentSelection:selection];
 }
 
+- (NSData *)selectionQDRect {
+    Rect qdRect = RectFromNSRect([[self pdfView] currentSelectionRect]);
+    return [NSData dataWithBytes:&qdRect length:sizeof(Rect)];
+}
+
+- (void)setSelectionQDRect:(NSData *)inQDRectAsData {
+    if ([inQDRectAsData length] == sizeof(Rect)) {
+        const Rect *qdBounds = (const Rect *)[inQDRectAsData bytes];
+        NSRect newBounds = NSRectFromRect(*qdBounds);
+        [[self pdfView] setCurrentSelectionRect:newBounds];
+        if ([[self pdfView] currentSelectionPage] == nil)
+            [[self pdfView] setCurrentSelectionPage:[[self pdfView] currentPage]];
+    }
+}
+
+- (id)selectionPage {
+    PDFPage *page = [[self pdfView] currentSelectionPage];
+    return page ? (id)page : (id)[NSNull null];
+}
+
+- (void)setSelectionPage:(PDFPage *)page {
+    if (NSIsEmptyRect([[self pdfView] currentSelectionRect]) == NO)
+        [[self pdfView] setCurrentSelectionPage:[page isKindOfClass:[PDFPage class]] ? page : nil];
+}
+
 - (NSDictionary *)pdfViewSettings {
     return [[[self mainWindowController] currentPDFSettings] AppleScriptPDFViewSettingsFromPDFViewSettings];
 }
