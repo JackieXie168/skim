@@ -149,13 +149,12 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         PDFPage *page = [pdfDocument pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
+        BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
         
         printInfo = [printInfo copy];
-        [printInfo setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"dictionary.PDFPrintAutoRotate"];
-        if ([page rotation] % 180 == 90)
-            pageSize = NSMakeSize(pageSize.height, pageSize.width);
-        if (NO == NSEqualSizes(pageSize, [printInfo paperSize]))
-            [printInfo setPaperSize:pageSize];
+        [[printInfo dictionary] setValue:[NSNumber numberWithBool:autoRotate] forKey:@"PDFPrintAutoRotate"];
+        if (isLandscape)
+            [printInfo setOrientation:NSLandscapeOrientation];
         [self setPrintInfo:printInfo];
         [printInfo release];
     }
