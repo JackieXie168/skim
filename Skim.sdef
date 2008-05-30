@@ -133,6 +133,14 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
+            <property name="selection bounds" code="SelB" type="rectangle"
+                description="The bounds of the selection from the selection tool of the document (left, top, right, bottom).">
+                <cocoa key="selectionQDRect"/>
+            </property>
+            <property name="selection page" code="SelP" type="page"
+                description="The page for the selection from the selection tool of the document.">
+                <cocoa key="selectionPage"/>
+            </property>
             <property name="view settings" type="PDF view settings" code="vSet"
                 description="The PDF view settings.">
                 <cocoa key="pdfViewSettings"/>
