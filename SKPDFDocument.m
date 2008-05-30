@@ -1845,8 +1845,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)setSelectionPage:(PDFPage *)page {
-    if (NSIsEmptyRect([[self pdfView] currentSelectionRect]) == NO)
-        [[self pdfView] setCurrentSelectionPage:[page isKindOfClass:[PDFPage class]] ? page : nil];
+    [[self pdfView] setCurrentSelectionPage:[page isKindOfClass:[PDFPage class]] ? page : nil];
 }
 
 - (NSDictionary *)pdfViewSettings {

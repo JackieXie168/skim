@@ -596,9 +596,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (toolMode == SKSelectToolMode) {
         if (NSEqualRects(selectionRect, rect) == NO)
             [self setNeedsDisplay:YES];
-        selectionRect = rect;
-        if (NSEqualRects(rect, NSZeroRect))
+        if (NSIsEmptyRect(rect)) {
+            selectionRect = NSZeroRect;
             selectionPageIndex = NSNotFound;
+        } else {
+            selectionRect = rect;
+            if (selectionPageIndex == NSNotFound)
+                selectionPageIndex = [[self currentPage] pageIndex];
+        }
     }
 }
 
@@ -610,9 +615,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (toolMode == SKSelectToolMode) {
         if (selectionPageIndex != [page pageIndex] || (page == nil && selectionPageIndex != NSNotFound))
             [self setNeedsDisplay:YES];
-       selectionPageIndex = [page pageIndex];
-       if (page == nil)
+        if (page == nil) {
+            selectionPageIndex = NSNotFound;
             selectionRect = NSZeroRect;
+        } else {
+            selectionPageIndex = [page pageIndex];
+            if (NSIsEmptyRect(selectionRect))
+                selectionRect = [page boundsForBox:kPDFDisplayBoxCropBox];
+        }
     }
 }
 
