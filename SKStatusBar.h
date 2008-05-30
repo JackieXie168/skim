@@ -50,7 +50,6 @@ typedef enum {
 	id leftCell;
 	id rightCell;
 	NSProgressIndicator *progressIndicator;
-    int state;
     CGLayerRef layer;
 }
 
@@ -73,11 +72,29 @@ typedef enum {
 - (NSAttributedString *)rightAttributedStringValue;
 - (void)setRightAttributedStringValue:(NSAttributedString *)object;
 
-- (NSFont *)font;
-- (void)setFont:(NSFont *)fontObject;
+- (SEL)leftAction;
+- (void)setLeftAction:(SEL)selector;
+
+- (id)leftTarget;
+- (void)setLeftTarget:(id)newTarget;
+
+- (SEL)rightAction;
+- (void)setRightAction:(SEL)selector;
+
+- (id)rightTarget;
+- (void)setRightTarget:(id)newTarget;
+
+- (int)leftState;
+- (void)setLeftState:(int)newState;
+
+- (int)rightState;
+- (void)setRightState:(int)newState;
 
 - (int)state;
 - (void)setState:(int)newState;
+
+- (NSFont *)font;
+- (void)setFont:(NSFont *)fontObject;
 
 - (NSProgressIndicator *)progressIndicator;
 

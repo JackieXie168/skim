@@ -70,6 +70,8 @@
 - (BOOL)forceOnTop;
 - (void)setForceOnTop:(BOOL)flag;
 
+- (void)statusBarClicked:(id)sender;
+
 - (BOOL)commitEditing;
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
 
