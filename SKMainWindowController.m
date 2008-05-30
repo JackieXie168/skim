@@ -662,7 +662,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     if (NSEqualRects(selRect, NSZeroRect)) {
         float magnification = [pdfView currentMagnification];
         if (magnification > 0.0001)
-            message = [NSString stringWithFormat:@"%.2f x", magnification];
+            message = [NSString stringWithFormat:@"%.2f %C", magnification, 0xD7];
         else
            message = @"";
     } else {
@@ -670,9 +670,9 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
             float factor = useMetric ? 0.035277778 : 0.013888889;
-            message = [NSString stringWithFormat:@"%.2f x %.2f %@", NSWidth(selRect) * factor, NSHeight(selRect) * factor, units];
+            message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, 0xD7, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%i x %i pt", (int)NSWidth(selRect), (int)NSHeight(selRect)];
+            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (int)NSWidth(selRect), 0xD7, (int)NSHeight(selRect), (int)NSMinX(selRect), (int)NSMinY(selRect)];
         }
     }
     [statusBar setRightStringValue:message];
