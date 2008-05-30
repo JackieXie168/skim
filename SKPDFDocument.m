@@ -1448,6 +1448,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 } else if ((toolPath = [[[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
                            [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
+                } else if ((toolPath = [[appBundle resourcePath] stringByAppendingPathComponent:editorCmd]) &&
+                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                    editorCmd = toolPath;
+                } else if ((toolPath = [[[appBundle resourcePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
+                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                    editorCmd = toolPath;
                 }
             }
         } else {
