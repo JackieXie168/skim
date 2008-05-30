@@ -666,7 +666,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         else
            message = @"";
     } else {
-        if ([statusBar state] == NSOnState) {
+        if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
             float factor = useMetric ? 0.035277778 : 0.013888889;
@@ -1986,8 +1986,8 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
-        [statusBar setAction:@selector(statusBarClicked:)];
-        [statusBar setTarget:self];
+        [statusBar setRightAction:@selector(statusBarClicked:)];
+        [statusBar setRightTarget:self];
     }
     [statusBar toggleBelowView:splitView offset:1.0];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];

@@ -43,6 +43,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKStatusBar.h"
 #import "SKPDFDocument.h"
+#import "SKPDFView.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -144,6 +145,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [item setImage:noteIcons[[item tag]]];
     }
     
+    [statusBar setLeftAction:@selector(statusBarClicked:)];
+    [statusBar setLeftTarget:self];
+    
     [self updateStatusMessage];
     
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
@@ -205,6 +209,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     forceOnTop = flag;
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+}
+
+- (void)statusBarClicked:(id)sender {
+    SKPDFView *pdfView = [(SKPDFDocument *)[self document] pdfView];
+    [pdfView scrollAnnotationToVisible:note];
+    [pdfView setActiveAnnotation:note];
 }
 
 - (void)objectDidBeginEditing:(id)editor {

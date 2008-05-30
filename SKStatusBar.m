@@ -175,21 +175,24 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([[rightCell stringValue] length]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        float width = [rightCell cellSize].width;
-        NSRect ignored, rect = [self bounds];
-        NSDivideRect([self bounds], &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
-        NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
-        NSDivideRect(rect, &rect, &ignored, width, NSMaxXEdge);
-        if (NSPointInRect(mouseLoc, rect)) {
-            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
-            mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-            if (NSPointInRect(mouseLoc, rect)) {
-                state = state == NSOnState ? NSOffState : NSOnState;
-                [self sendAction:[rightCell action] to:[rightCell target]];
-            }
-        }
+    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    float leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
+    float rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
+    NSRect ignored, leftRect, rightRect, rect = [self bounds];
+    NSDivideRect(rect, &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
+    NSDivideRect(rect, &rightRect, &ignored, rightWidth, NSMaxXEdge);
+    NSDivideRect(rect, &leftRect, &ignored, leftWidth, NSMinXEdge);
+    if (NSPointInRect(mouseLoc, rightRect)) {
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
+        mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        if (NSPointInRect(mouseLoc, rightRect))
+            [rightCell performClick:self];
+    } else if (NSPointInRect(mouseLoc, leftRect)) {
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
+        mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        if (NSPointInRect(mouseLoc, leftRect))
+            [leftCell performClick:self];
     }
 }
 
@@ -241,30 +244,76 @@
 	[self setNeedsDisplay:YES];
 }
 
-- (SEL)action {
+- (SEL)leftAction {
     return [rightCell action];
 }
 
-- (void)setAction:(SEL)selector {
+- (void)setLeftAction:(SEL)selector {
+    [leftCell setAction:selector];
+}
+
+- (id)leftTarget {
+    return [leftCell target];
+}
+
+- (void)setLeftTarget:(id)newTarget {
+    [leftCell setTarget:newTarget];
+}
+
+- (SEL)rightAction {
+    return [rightCell action];
+}
+
+- (void)setRightAction:(SEL)selector {
     [rightCell setAction:selector];
 }
 
-- (id)target {
+- (id)rightTarget {
     return [rightCell target];
 }
 
-- (void)setTarget:(id)newTarget {
+- (void)setRightTarget:(id)newTarget {
     [rightCell setTarget:newTarget];
 }
 
+- (SEL)action {
+    return [self rightAction];
+}
+
+- (void)setAction:(SEL)selector {
+    [self setRightAction:selector];
+}
+
+- (id)target {
+    return [self rightTarget];
+}
+
+- (void)setTarget:(id)newTarget {
+    [self setRightTarget:newTarget];
+}
+
+- (int)leftState {
+    return [leftCell state];
+}
+
+- (void)setLeftState:(int)newState {
+    [leftCell setState:newState];
+}
+
+- (int)rightState {
+    return [rightCell state];
+}
+
+- (void)setRightState:(int)newState {
+    [rightCell setState:newState];
+}
+
 - (int)state {
-    return state;
+    return [self rightState];
 }
 
 - (void)setState:(int)newState {
-    if (state != newState) {
-        state = newState;
-    }
+    [self setRightState:newState];
 }
 
 #pragma mark Progress indicator
