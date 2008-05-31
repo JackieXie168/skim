@@ -45,6 +45,16 @@
 #define SEPARATION          2.0
 #define PROGRESSBAR_WIDTH   100.0
 
+
+@interface SKStatusTextFieldCell : NSTextFieldCell {
+    BOOL underlined;
+}
+- (BOOL)isUnderlined;
+- (void)setUnderlined:(BOOL)flag;
+@end
+
+#pragma mark -
+
 @implementation SKStatusBar
 
 + (CIColor *)lowerColor{
@@ -64,16 +74,18 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        leftCell = [[NSTextFieldCell alloc] initTextCell:@""];
+        leftCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
 		[leftCell setFont:[NSFont labelFontOfSize:0]];
         [leftCell setAlignment:NSLeftTextAlignment];
         [leftCell setControlView:self];
-        rightCell = [[NSActionCell alloc] initTextCell:@""];
+        rightCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
 		[rightCell setFont:[NSFont labelFontOfSize:0]];
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
 		progressIndicator = nil;
         layer = NULL;
+        leftTrackingRectTag = 0;
+        rightTrackingRectTag = 0;
     }
     return self;
 }
@@ -97,6 +109,21 @@
         layer = NULL;
     }
     [super setBounds:aRect];
+}
+
+- (void)getLeftFrame:(NSRect *)leftFrame rightFrame:(NSRect *)rightFrame {
+    float leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
+    float rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
+    NSRect ignored, rect = [self bounds];
+    float rightMargin = RIGHT_MARGIN;
+    if (progressIndicator)
+        rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
+    NSDivideRect(rect, &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(rect, &ignored, &rect, rightMargin, NSMaxXEdge);
+    if (rightFrame != NULL)
+        NSDivideRect(rect, rightFrame, &ignored, rightWidth, NSMaxXEdge);
+    if (leftFrame != NULL)
+        NSDivideRect(rect, leftFrame, &ignored, leftWidth, NSMinXEdge);
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -176,13 +203,8 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    float leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
-    float rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
-    NSRect ignored, leftRect, rightRect, rect = [self bounds];
-    NSDivideRect(rect, &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
-    NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
-    NSDivideRect(rect, &rightRect, &ignored, rightWidth, NSMaxXEdge);
-    NSDivideRect(rect, &leftRect, &ignored, leftWidth, NSMinXEdge);
+    NSRect leftRect, rightRect;
+    [self getLeftFrame:&leftRect rightFrame:&rightRect];
     if (NSPointInRect(mouseLoc, rightRect)) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -205,6 +227,7 @@
 - (void)setLeftStringValue:(NSString *)aString {
 	[leftCell setStringValue:aString];
 	[self setNeedsDisplay:YES];
+    [self resetCursorRects];
 }
 
 - (NSAttributedString *)leftAttributedStringValue {
@@ -214,6 +237,7 @@
 - (void)setLeftAttributedStringValue:(NSAttributedString *)object {
 	[leftCell setAttributedStringValue:object];
 	[self setNeedsDisplay:YES];
+    [self resetCursorRects];
 }
 
 - (NSString *)rightStringValue {
@@ -223,6 +247,7 @@
 - (void)setRightStringValue:(NSString *)aString {
 	[rightCell setStringValue:aString];
 	[self setNeedsDisplay:YES];
+    [self resetCursorRects];
 }
 
 - (NSAttributedString *)rightAttributedStringValue {
@@ -232,6 +257,7 @@
 - (void)setRightAttributedStringValue:(NSAttributedString *)object {
 	[rightCell setAttributedStringValue:object];
 	[self setNeedsDisplay:YES];
+    [self resetCursorRects];
 }
 
 - (NSFont *)font {
@@ -245,11 +271,12 @@
 }
 
 - (SEL)leftAction {
-    return [rightCell action];
+    return [leftCell action];
 }
 
 - (void)setLeftAction:(SEL)selector {
     [leftCell setAction:selector];
+    [self resetCursorRects];
 }
 
 - (id)leftTarget {
@@ -266,6 +293,7 @@
 
 - (void)setRightAction:(SEL)selector {
     [rightCell setAction:selector];
+    [self resetCursorRects];
 }
 
 - (id)rightTarget {
@@ -365,6 +393,7 @@
 		[progressIndicator release];
 	}
 	[[self superview] setNeedsDisplayInRect:[self frame]];
+    [self resetCursorRects];
 }
 
 - (void)startAnimation:(id)sender {
@@ -373,6 +402,42 @@
 
 - (void)stopAnimation:(id)sender {
 	[progressIndicator stopAnimation:sender];
+}
+
+#pragma mark Tracking rects
+
+- (void)resetCursorRects {
+    [super resetCursorRects];
+    if (leftTrackingRectTag != 0)
+        [self removeTrackingRect:leftTrackingRectTag];
+    if (rightTrackingRectTag != 0)
+        [self removeTrackingRect:rightTrackingRectTag];
+    NSRect leftRect, rightRect;
+    [self getLeftFrame:&leftRect rightFrame:&rightRect];
+    if ([self leftAction] != NULL)
+        leftTrackingRectTag = [self addTrackingRect:leftRect owner:self userData:nil assumeInside:NO];
+    if ([self rightAction] != NULL)
+        rightTrackingRectTag = [self addTrackingRect:rightRect owner:self userData:nil assumeInside:NO];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    if ([theEvent trackingNumber] == leftTrackingRectTag) {
+        [leftCell setUnderlined:YES];
+        [self setNeedsDisplay:YES];
+    } else if ([theEvent trackingNumber] == rightTrackingRectTag) {
+        [rightCell setUnderlined:YES];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    if ([theEvent trackingNumber] == leftTrackingRectTag) {
+        [leftCell setUnderlined:NO];
+        [self setNeedsDisplay:YES];
+    } else if ([theEvent trackingNumber] == rightTrackingRectTag) {
+        [rightCell setUnderlined:NO];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 #pragma mark Accessibility
@@ -393,17 +458,9 @@
 
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
-    NSRect rect, childRect, ignored;
-    NSDivideRect([self bounds], &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
-    NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
-    if (progressIndicator) {
-        NSDivideRect(rect, &childRect, &rect, NSWidth([progressIndicator frame]), NSMaxXEdge);
-        if (NSPointInRect(localPoint, childRect))
-            return NSAccessibilityUnignoredAncestor(progressIndicator);
-        NSDivideRect(rect, &ignored, &rect, SEPARATION, NSMaxXEdge);
-	}
-    NSDivideRect(rect, &childRect, &rect, MIN(NSWidth(rect), [rightCell cellSize].width), NSMaxXEdge);
-    if (NSPointInRect(localPoint, childRect))
+    NSRect leftRect, rightRect;
+    [self getLeftFrame:&leftRect rightFrame:&rightRect];
+    if (NSPointInRect(localPoint, rightRect))
         return NSAccessibilityUnignoredAncestor(rightCell);
     else
         return NSAccessibilityUnignoredAncestor(leftCell);
@@ -420,6 +477,35 @@
 
 - (BOOL)accessibilityIsIgnored {
     return NO;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKStatusTextFieldCell
+
+- (BOOL)isUnderlined {
+    return underlined;
+}
+
+- (void)setUnderlined:(BOOL)flag {
+    underlined = flag;
+}
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    if ([self isUnderlined]) {
+        NSAttributedString *attrString = [[self attributedStringValue] copy];
+        NSMutableAttributedString *mutAttrString = [attrString mutableCopy];
+        [mutAttrString addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSUnderlineStyleSingle] range:NSMakeRange(0, [mutAttrString length])];
+        [self setAttributedStringValue:mutAttrString];
+        [mutAttrString release];
+        [super drawInteriorWithFrame:cellFrame inView:controlView];
+        [self setAttributedStringValue:attrString];
+        [attrString release];
+    } else {
+        [super drawInteriorWithFrame:cellFrame inView:controlView];
+    }
 }
 
 @end

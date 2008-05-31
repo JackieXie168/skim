@@ -51,6 +51,8 @@ typedef enum {
 	id rightCell;
 	NSProgressIndicator *progressIndicator;
     CGLayerRef layer;
+    NSTrackingRectTag leftTrackingRectTag;
+    NSTrackingRectTag rightTrackingRectTag;
 }
 
 + (CIColor *)lowerColor;
