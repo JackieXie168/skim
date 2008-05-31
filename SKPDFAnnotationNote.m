@@ -233,6 +233,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 - (NSString *)toolTip { return nil; }
 - (NSString *)toolTipNoLabel { return nil; }
 
+- (PDFAnnotationPopup *)popup { return nil; }
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *noteKeys = nil;
     if (noteKeys == nil) {
