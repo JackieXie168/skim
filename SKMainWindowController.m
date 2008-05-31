@@ -1986,7 +1986,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
-        [statusBar setRightAction:@selector(statusBarClicked:)];
+        [statusBar setRightAction:[pdfView toolMode] == SKSelectToolMode ? @selector(statusBarClicked:) : NULL];
         [statusBar setRightTarget:self];
     }
     [statusBar toggleBelowView:splitView offset:1.0];

@@ -416,8 +416,12 @@
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
     if ([self leftAction] != NULL)
         leftTrackingRectTag = [self addTrackingRect:leftRect owner:self userData:nil assumeInside:NO];
+    else
+        [leftCell setUnderlined:NO];
     if ([self rightAction] != NULL)
         rightTrackingRectTag = [self addTrackingRect:rightRect owner:self userData:nil assumeInside:NO];
+    else
+        [rightCell setUnderlined:NO];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
