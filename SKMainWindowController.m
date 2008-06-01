@@ -2877,21 +2877,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		[pdfView scrollSelectionToVisible:self];
         [findTableView deselectAll:self];
         [groupedFindTableView deselectAll:self];
-        if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)]) {
-            [pdfView setCurrentSelection:selection animate:YES];
-        } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
             [self removeTemporaryAnnotations];
             [self addAnnotationsForSelection:selection];
             temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
         }
+        if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
+            [pdfView setCurrentSelection:selection animate:YES];
 	} else {
 		NSBeep();
 	}
 }
 
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
-    BOOL canAnimate = [pdfView respondsToSelector:@selector(setCurrentSelection:animate:)];
-    BOOL highlight = canAnimate == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
+    BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
     // union all selected objects
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
@@ -2907,10 +2906,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self removeTemporaryAnnotations];
     
     // add an annotation so it's easier to see the search result
-    if (canAnimate)
-        [pdfView setCurrentSelection:currentSel animate:YES];
-    else if (highlight)
+    if (highlight)
         [self addAnnotationsForSelection:currentSel];
+    
+    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
+        [pdfView setCurrentSelection:currentSel animate:YES];
     
     while (sel = [selE nextObject]) {
         [currentSel addSelection:sel];

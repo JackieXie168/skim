@@ -67,8 +67,6 @@
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
 
-- (BOOL)isLeopard;
-
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 - (IBAction)changeUpdateInterval:(id)sender;
 - (IBAction)changeTeXEditorPreset:(id)sender;
