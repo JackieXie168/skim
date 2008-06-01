@@ -2863,6 +2863,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)findString:(NSString *)string options:(int)options{
+    BOOL canAnimate = [pdfView respondsToSelector:@selector(setCurrentSelection:animate:)];
+    BOOL highlight = canAnimate == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
     PDFSelection *sel = [pdfView currentSelection];
     unsigned pageIndex = [[pdfView currentPage] pageIndex];
     while ([sel string] == nil && pageIndex-- > 0) {
@@ -2873,11 +2875,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (selection == nil && [sel string])
         selection = [self findString:string fromSelection:nil withOptions:options];
     if (selection) {
-		[pdfView setCurrentSelection:selection];
+        if (canAnimate)
+            [pdfView setCurrentSelection:selection animate:YES];
+        else
+            [pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
         [findTableView deselectAll:self];
         [groupedFindTableView deselectAll:self];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+        if (highlight) {
             [self removeTemporaryAnnotations];
             [self addAnnotationsForSelection:selection];
             temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
@@ -2888,7 +2893,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
-    BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
+    BOOL canAnimate = [pdfView respondsToSelector:@selector(setCurrentSelection:animate:)];
+    BOOL highlight = canAnimate == NO && [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
     // union all selected objects
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
@@ -2896,7 +2902,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
     PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
     
-    [pdfView setCurrentSelection:currentSel];
+    if (canAnimate)
+        [pdfView setCurrentSelection:currentSel animate:YES];
+    else
+        [pdfView setCurrentSelection:currentSel];
     
     if (scroll && [findResults count])
         [pdfView scrollSelectionToVisible:self];

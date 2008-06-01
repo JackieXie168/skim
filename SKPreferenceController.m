@@ -172,6 +172,10 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
     isCustomTeXEditor = flag;
 }
 
+- (BOOL)isLeopard {
+    return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4;
+}
+
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
     if ([sender state] == NSOnState) {
         [thumbnailSizeSlider setNumberOfTickMarks:8];
