@@ -2907,7 +2907,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self removeTemporaryAnnotations];
     
     // add an annotation so it's easier to see the search result
-    if (highlight)
+    if (canAnimate)
+        [pdfView setCurrentSelection:currentSel animate:YES];
+    else if (highlight)
         [self addAnnotationsForSelection:currentSel];
     
     while (sel = [selE nextObject]) {
@@ -2916,10 +2918,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self addAnnotationsForSelection:sel];
     }
     
-    if (canAnimate)
-        [pdfView setCurrentSelection:currentSel animate:YES];
-    else
-        [pdfView setCurrentSelection:currentSel];
+    [pdfView setCurrentSelection:currentSel];
 }
 
 - (void)goToFindResults:(NSArray *)findResults {
