@@ -43,8 +43,12 @@
 @implementation SKPDFAnnotationTemporary
 - (BOOL)isTemporaryAnnotation { return YES; }
 - (BOOL)shouldPrint { return NO; }
+- (void)hideIfTemporary { [self setShouldDisplay:NO]; }
+- (void)displayIfTemporary { [self setShouldDisplay:YES]; }
 @end
 
 @implementation PDFAnnotation (SKPDFAnnotationTemporary)
 - (BOOL)isTemporaryAnnotation { return NO; }
+- (void)hideIfTemporary {}
+- (void)displayIfTemporary {}
 @end

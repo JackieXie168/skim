@@ -38,6 +38,7 @@
 
 #import "PDFPage_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationTemporary.h"
 #import "SKPDFDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
@@ -197,8 +198,11 @@ static IMP originalDealloc = NULL;
         [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
         [transform concat];
     }
-
+    
+    [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
     [self drawWithBox:box]; 
+    [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
+    
     if (NSIsEmptyRect(readingBarRect) == NO) {
         [[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKReadingBarColorKey]] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {

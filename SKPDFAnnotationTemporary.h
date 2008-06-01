@@ -45,4 +45,6 @@
 
 @interface PDFAnnotation (SKPDFAnnotationTemporary)
 - (BOOL)isTemporaryAnnotation;
+- (void)hideIfTemporary;
+- (void)displayIfTemporary;
 @end
