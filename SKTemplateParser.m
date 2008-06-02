@@ -860,11 +860,26 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     return YES;
 }
 
-- (id)safeValueForKeyPath:(NSString *)keyPath {
+- (id)valueForKeyPathOrNil:(NSString *)keyPath {
     id value = nil;
     @try{ value = [self valueForKeyPath:keyPath]; }
     @catch (id exception) { value = nil; }
     return value;
+}
+
+- (id)safeValueForKeyPath:(NSString *)keyPath {
+    unsigned int atIndex = [keyPath rangeOfString:@"@"].location;
+    if (atIndex != NSNotFound) {
+        unsigned int dotIndex = [keyPath rangeOfString:@"@" options:0 range:NSMakeRange(atIndex + 1, [keyPath length])].location;
+        if (dotIndex != NSNotFound) {
+            static NSSet *arrayOperators = nil;
+            if (arrayOperators == nil)
+                arrayOperators = [[NSSet alloc] initWithObjects:@"@avg", @"@max", @"@min", @"@sum", @"@distinctUnionOfArrays", @"@distinctUnionOfObjects", @"@distinctUnionOfSets", @"@unionOfArrays", @"@unionOfObjects", @"@unionOfSets", nil];
+            if ([arrayOperators containsObject:[keyPath substringWithRange:NSMakeRange(atIndex, dotIndex - atIndex)]] == NO)
+                return [[self valueForKeyPathOrNil:[keyPath substringToIndex:dotIndex]] safeValueForKeyPath:[keyPath substringFromIndex:dotIndex + 1]];
+        }
+    }
+    return [self valueForKeyPathOrNil:keyPath];
 }
 
 @end
