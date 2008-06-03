@@ -37,11 +37,11 @@
  */
 
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationSquare.h"
-#import "SKPDFAnnotationLine.h"
-#import "SKPDFAnnotationMarkup.h"
-#import "SKPDFAnnotationFreeText.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
+#import "PDFAnnotationSquare_SKExtensions.h"
+#import "PDFAnnotationLine_SKExtensions.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
+#import "PDFAnnotationFreeText_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -115,8 +115,25 @@ enum {
 
 @implementation PDFAnnotation (SKExtensions)
 
+static CFMutableSetRef notes = NULL;
+
+static IMP originalDealloc = NULL;
+
+- (void)replacementDealloc {
+    CFSetRemoveValue(notes, self);
+    originalDealloc(self, _cmd);
+}
+
++ (void)load {
+    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    notes = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
+}
+
 - (id)initNoteWithBounds:(NSRect)bounds {
-    return [self initWithBounds:bounds];
+    if (self = [self initWithBounds:bounds]) {
+        [self setNote:YES];
+    }
+    return self;
 
 }
 
@@ -133,15 +150,15 @@ enum {
         if ([type isEqualToString:SKNoteString] || [type isEqualToString:SKTextString])
             annotationClass = [SKPDFAnnotationNote class];
         else if ([type isEqualToString:SKFreeTextString])
-            annotationClass = [SKPDFAnnotationFreeText class];
+            annotationClass = [PDFAnnotationFreeText class];
         else if ([type isEqualToString:SKCircleString])
-            annotationClass = [SKPDFAnnotationCircle class];
+            annotationClass = [PDFAnnotationCircle class];
         else if ([type isEqualToString:SKSquareString])
-            annotationClass = [SKPDFAnnotationSquare class];
+            annotationClass = [PDFAnnotationSquare class];
         else if ([type isEqualToString:SKHighlightString] || [type isEqualToString:SKMarkUpString] || [type isEqualToString:SKUnderlineString] || [type isEqualToString:SKStrikeOutString])
-            annotationClass = [SKPDFAnnotationMarkup class];
+            annotationClass = [PDFAnnotationMarkup class];
         else if ([type isEqualToString:SKLineString])
-            annotationClass = [SKPDFAnnotationLine class];
+            annotationClass = [PDFAnnotationLine class];
         
         [[self initWithBounds:NSZeroRect] release];
         self = [[annotationClass alloc] initWithProperties:dict];
@@ -309,7 +326,16 @@ enum {
 
 - (NSColor *)interiorColor { return nil; }
 
-- (BOOL)isNote { return NO; }
+- (BOOL)isNote {
+    return CFSetContainsValue(notes, self);
+}
+
+- (void)setNote:(BOOL)flag {
+    if (flag)
+        CFSetAddValue(notes, self);
+    else
+        CFSetRemoveValue(notes, self);
+}
 
 - (BOOL)isMarkup { return NO; }
 
@@ -322,8 +348,6 @@ enum {
 - (BOOL)isEditable { return NO; }
 
 - (BOOL)isConvertibleAnnotation { return NO; }
-
-- (id)copyNoteAnnotation { return nil; }
 
 - (BOOL)hitTest:(NSPoint)point {
     NSRect bounds = [self bounds];
@@ -381,23 +405,23 @@ enum {
                         markupType = kPDFMarkupTypeUnderline;
                     else if (type == SKScriptingStrikeOutNote)
                         markupType = kPDFMarkupTypeStrikeOut;
-                    if (self = [[SKPDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType]) {
+                    if (self = [[PDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType]) {
                         PDFPage *page = [[selection pages] objectAtIndex:0];
                         if (page && [self respondsToSelector:@selector(setPage:)])
                             [self performSelector:@selector(setPage:) withObject:page];
                     }
                 }
             } else if (type == SKScriptingTextNote) {
-                self = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingAnchoredNote) {
                 bounds.size = SKPDFAnnotationNoteSize;
                 self = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingCircleNote) {
-                self = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationCircle alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingSquareNote) {
-                self = [[SKPDFAnnotationSquare alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationSquare alloc] initNoteWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
-                self = [[SKPDFAnnotationLine alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationLine alloc] initNoteWithBounds:bounds];
             }
         }
     }
@@ -434,12 +458,12 @@ enum {
     // remove all custom properties that are not valid for this class
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     NSMutableSet *customKeys = [[NSMutableSet alloc] init];
-    [customKeys unionSet:[SKPDFAnnotationCircle customScriptingKeys]];
-    [customKeys unionSet:[SKPDFAnnotationSquare customScriptingKeys]];
-    [customKeys unionSet:[SKPDFAnnotationFreeText customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
     [customKeys unionSet:[SKPDFAnnotationNote customScriptingKeys]];
-    [customKeys unionSet:[SKPDFAnnotationLine customScriptingKeys]];
-    [customKeys unionSet:[SKPDFAnnotationMarkup customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
     [customKeys minusSet:[[self class] customScriptingKeys]];
     [properties removeObjectsForKeys:[customKeys allObjects]];
     [customKeys release];

@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationMarkup.h
+//  PDFAnnotationMarkup_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -48,9 +48,7 @@ extern NSString *SKPDFAnnotationSelectionSpecifierKey;
 extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 
-@interface SKPDFAnnotationMarkup : PDFAnnotationMarkup {
-    CFMutableArrayRef lineRects;
-}
+@interface PDFAnnotationMarkup (SKExtensions)
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
 - (PDFSelection *)selection;

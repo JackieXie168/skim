@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationCircle.m
+//  PDFAnnotationCircle_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationCircle.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -45,7 +45,7 @@
 
 NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
-@implementation SKPDFAnnotationCircle
+@implementation PDFAnnotationCircle (SKExtensions)
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
@@ -88,11 +88,11 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     return fdfString;
 }
 
-- (BOOL)isNote { return YES; }
+- (BOOL)isResizable { return [self isNote]; }
 
-- (BOOL)isResizable { return YES; }
+- (BOOL)isMovable { return [self isNote]; }
 
-- (BOOL)isMovable { return YES; }
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *circleKeys = nil;
@@ -151,26 +151,6 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
 - (id)accessibilityVisibleCharacterRangeAttribute {
     return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationCircle (SKExtensions)
-@end
-
-@implementation PDFAnnotationCircle (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    SKPDFAnnotationCircle *annotation = [[SKPDFAnnotationCircle alloc] initNoteWithBounds:[self bounds]];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    [annotation setInteriorColor:[self interiorColor]];
-    return annotation;
 }
 
 @end

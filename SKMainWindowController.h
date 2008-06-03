@@ -252,7 +252,6 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     BOOL                        usesDrawers;
     
     NSMutableDictionary         *undoGroupOldPropertiesPerNote;
-    NSMutableSet                *undoGroupInsertedNotes;
 }
 
 - (IBAction)changeColor:(id)sender;
@@ -414,6 +413,9 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (void)updateOutlineSelection;
 
 - (void)updateNoteSelection;
+
+- (void)addNote:(PDFAnnotation *)note;
+- (void)removeNote:(PDFAnnotation *)note;
 
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;

@@ -120,6 +120,8 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSArray *)texts;
 
 - (BOOL)isNote;
+- (void)setNote:(BOOL)flag;
+
 - (BOOL)isMarkup;
 - (BOOL)isLink;
 - (BOOL)isResizable;
@@ -127,7 +129,6 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (BOOL)isEditable;
 
 - (BOOL)isConvertibleAnnotation;
-- (id)copyNoteAnnotation;
 
 - (BOOL)hitTest:(NSPoint)point;
 

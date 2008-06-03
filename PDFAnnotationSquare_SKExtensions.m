@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationSquare.m
+//  PDFAnnotationSquare_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -36,16 +36,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationSquare.h"
+#import "PDFAnnotationSquare_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 
 
-@implementation SKPDFAnnotationSquare
+@implementation PDFAnnotationSquare (SKExtensions)
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
@@ -88,11 +88,11 @@
     return fdfString;
 }
 
-- (BOOL)isNote { return YES; }
+- (BOOL)isResizable { return [self isNote]; }
 
-- (BOOL)isResizable { return YES; }
+- (BOOL)isMovable { return [self isNote]; }
 
-- (BOOL)isMovable { return YES; }
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *squareKeys = nil;
@@ -151,26 +151,6 @@
 
 - (id)accessibilityVisibleCharacterRangeAttribute {
     return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationSquare (SKExtensions)
-@end
-
-@implementation PDFAnnotationSquare (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    SKPDFAnnotationSquare *annotation = [[SKPDFAnnotationSquare alloc] initNoteWithBounds:[self bounds]];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    [annotation setInteriorColor:[self interiorColor]];
-    return annotation;
 }
 
 @end
