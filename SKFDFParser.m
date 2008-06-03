@@ -44,11 +44,12 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationSquare.h"
-#import "SKPDFAnnotationLine.h"
-#import "SKPDFAnnotationMarkup.h"
-#import "SKPDFAnnotationFreeText.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
+#import "PDFAnnotationSquare_SKExtensions.h"
+#import "PDFAnnotationLine_SKExtensions.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
+#import "PDFAnnotationFreeText_SKExtensions.h"
+#import "PDFAnnotationText_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 
 const char *SKFDFFDFKey = "FDF";

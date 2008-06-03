@@ -42,6 +42,7 @@
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "SKPDFAnnotationNote.h"
 #import "SKPSProgressController.h"
 #import "SKFindController.h"
 #import "BDAlias.h"
@@ -96,6 +97,9 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
 - (void)setPassword:(NSString *)newPassword;
+
+- (void)addAsNote:(PDFAnnotation *)annotation;
+- (void)removeAsNote:(PDFAnnotation *)annotation;
 
 - (void)tryToUnlockDocument:(PDFDocument *)document;
 
@@ -877,6 +881,18 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                        contextInfo:NULL];		
 }
 
+- (void)addAsNote:(PDFAnnotation *)annotation {
+    [[[self undoManager] prepareWithInvocationTarget:self] removeAsNote:annotation];
+    [annotation setNote:YES];
+    [[self mainWindowController] addNote:annotation];                
+}
+
+- (void)removeAsNote:(PDFAnnotation *)annotation {
+    [[[self undoManager] prepareWithInvocationTarget:self] addAsNote:annotation];
+    [annotation setNote:NO];
+    [[self mainWindowController] removeNote:annotation];                
+}
+
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertAlternateReturn)
         return;
@@ -898,10 +914,14 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         
         while (annotation = [annEnum nextObject]) {
             if ([annotation isNote] == NO && [annotation isConvertibleAnnotation]) {
-                PDFAnnotation *newAnnotation = [annotation copyNoteAnnotation];
-                [[self pdfView] removeAnnotation:annotation];
-                [[self pdfView] addAnnotation:newAnnotation toPage:page];
-                [newAnnotation release];
+                if ([[annotation type] isEqualToString:SKTextString]) {
+                    PDFAnnotation *newAnnotation = [[SKPDFAnnotationNote alloc] initWithProperties:[annotation properties]];
+                    [[self pdfView] removeAnnotation:annotation];
+                    [[self pdfView] addAnnotation:newAnnotation toPage:page];
+                    [newAnnotation release];
+                } else {
+                    [self addAsNote:annotation];                
+                }
                 didConvert = YES;
             }
         }

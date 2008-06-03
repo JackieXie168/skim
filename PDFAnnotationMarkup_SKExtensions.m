@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationMarkup.m
+//  PDFAnnotationMarkup_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationMarkup.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -45,6 +45,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallbacks.h"
+#import "SKUtilities.h"
 
 
 NSString *SKPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
@@ -69,7 +70,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 @end
 
 
-@implementation SKPDFAnnotationMarkup
+@implementation PDFAnnotationMarkup (SKExtensions)
 
 static NSArray *createStringsFromPoints(NSArray *points)
 {
@@ -128,6 +129,45 @@ static NSColor *defaultColorForMarkupType(int markupType)
     return nil;
 }
 
+static CFMutableDictionaryRef lineRectsDict = NULL;
+
+static IMP originalDealloc = NULL;
+static IMP originalDrawWithBoxInContext = NULL;
+
+- (void)replacementDealloc {
+    CFDictionaryRemoveValue(lineRectsDict, self);
+    originalDealloc(self, _cmd);
+}
+
+// fix a bug in PDFKit, the color space sometimes is not correct
+- (void)replacementDrawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
+    CGContextSaveGState(context);
+    SKCGContextSetDefaultRGBColorSpace(context);
+    [super drawWithBox:box inContext:context];
+    CGContextRestoreGState(context);
+}
+
++ (void)load {
+    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        originalDrawWithBoxInContext = SKReplaceMethodImplementationWithSelector(self, @selector(drawWithBox:inContext:), @selector(relacementDrawWithBox:inContext:));
+    lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+}
+
+- (CFMutableArrayRef)lineRects {
+    CFMutableArrayRef lineRects = (CFMutableArrayRef)CFDictionaryGetValue(lineRectsDict, self);
+    if (lineRects == NULL) {
+        lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
+        CFDictionaryAddValue(lineRectsDict, self, lineRects);
+        CFRelease(lineRects);
+    }
+    return lineRects;
+}
+
+- (BOOL)hasLineRects {
+    return CFDictionaryContainsKey(lineRectsDict, self);
+}
+
 - (id)initNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initNoteWithBounds:bounds]) {
         [self setShouldPrint:YES];
@@ -140,7 +180,6 @@ static NSColor *defaultColorForMarkupType(int markupType)
         NSArray *quadPoints = pointStrings ? createPointsFromStrings(pointStrings) : createQuadPointsWithBounds(bounds, bounds.origin);
         [self setQuadrilateralPoints:quadPoints];
         [quadPoints release];
-        lineRects = nil;
     }
     return self;
 }
@@ -178,7 +217,6 @@ static NSColor *defaultColorForMarkupType(int markupType)
             [quadPoints release];
         }
         
-        lineRects = nil;
     }
     return self;
 }
@@ -233,9 +271,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     } else {
                         // start of a new line
                         if (NSIsEmptyRect(lineRect) == NO) {
-                            if (lineRects == NULL)
-                                lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
-                            CFArrayAppendValue(lineRects, &lineRect);
+                            CFArrayAppendValue([self lineRects], &lineRect);
                             newBounds = NSUnionRect(lineRect, newBounds);
                         }
                         // ignore whitespace at the beginning of the new line
@@ -244,9 +280,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 }
             }
             if (NSIsEmptyRect(lineRect) == NO) {
-                if (lineRects == NULL)
-                    lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
-                CFArrayAppendValue(lineRects, &lineRect);
+                CFArrayAppendValue([self lineRects], &lineRect);
                 newBounds = NSUnionRect(lineRect, newBounds);
             }
             if (NSIsEmptyRect(newBounds)) {
@@ -254,11 +288,14 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 self = nil;
             } else {
                 [self setBounds:newBounds];
-                iMax = lineRects == NULL ? 0 : CFArrayGetCount(lineRects);
-                for (i = 0; i < iMax; i++) {
-                    NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lineRects, i), [self bounds].origin);
-                    [quadPoints addObjectsFromArray:quadLine];
-                    [quadLine release];
+                if ([self hasLineRects]) {
+                    CFArrayRef lines = [self lineRects];
+                    iMax = CFArrayGetCount(lines);
+                    for (i = 0; i < iMax; i++) {
+                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lines, i), [self bounds].origin);
+                        [quadPoints addObjectsFromArray:quadLine];
+                        [quadLine release];
+                    }
                 }
             }
         }
@@ -266,12 +303,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [quadPoints release];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    if (lineRects) CFRelease(lineRects);
-    [super dealloc];
 }
 
 - (NSDictionary *)properties {
@@ -304,11 +335,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
 
     unsigned j, jMax = [quadPoints count] / 4;
+    CFMutableArrayRef lines = [self lineRects];
     
-    if (lineRects == NULL)
-        lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
-    else
-        CFArrayRemoveAllValues(lineRects);
+    CFArrayRemoveAllValues(lines);
     
     for (j = 0; j < jMax; j += 1) {
         
@@ -326,20 +355,21 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         lineRect.size.height = points[1].y - points[2].y;
         lineRect.size.width = points[1].x - points[2].x;
         lineRect.origin = SKAddPoints(points[2], [self bounds].origin);
-        CFArrayAppendValue(lineRects, &lineRect);
+        CFArrayAppendValue(lines, &lineRect);
     }
 }
 
 - (PDFSelection *)selection {
-    if (lineRects == nil)
+    if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     
     PDFSelection *sel, *selection = nil;
-    unsigned i, iMax = CFArrayGetCount(lineRects);
+    CFMutableArrayRef lines = [self lineRects];
+    unsigned i, iMax = CFArrayGetCount(lines);
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
-        if (sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lineRects, i), -1.0, -1.0)]) {
+        if (sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lines, i), -1.0, -1.0)]) {
             if (selection == nil)
                 selection = sel;
             else
@@ -355,14 +385,15 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         return NO;
     
     // archived annotations (or annotations we didn't create) won't have these
-    if (lineRects == nil)
+    if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     
-    unsigned i = CFArrayGetCount(lineRects);
+    CFMutableArrayRef lines = [self lineRects];
+    unsigned i = CFArrayGetCount(lines);
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
-        isContained = NSPointInRect(point, *(NSRect *)CFArrayGetValueAtIndex(lineRects, i));
+        isContained = NSPointInRect(point, *(NSRect *)CFArrayGetValueAtIndex(lines, i));
     
     return isContained;
 }
@@ -377,21 +408,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return bounds;
 }
 
-- (BOOL)isNote { return YES; }
-
 - (BOOL)isMarkup { return YES; }
 
-// fix a bug in PDFKit, the color space sometimes is not correct
-- (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        CGContextSaveGState(context);
-        SKCGContextSetDefaultRGBColorSpace(context);
-    }
-    [super drawWithBox:box inContext:context];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        CGContextRestoreGState(context);
-    }
-}
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 #pragma mark Scripting support
 
@@ -453,27 +472,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)accessibilityVisibleCharacterRangeAttribute {
     return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationMarkup (SKExtensions)
-@end
-
-@implementation PDFAnnotationMarkup (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
-    SKPDFAnnotationMarkup *annotation = [[SKPDFAnnotationMarkup alloc] initNoteWithBounds:[self bounds] markupType:[self markupType] quadrilateralPointsAsStrings:quadPoints];
-    [quadPoints release];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    return annotation;
 }
 
 @end

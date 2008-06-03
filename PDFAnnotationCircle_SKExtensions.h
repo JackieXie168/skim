@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationSquare.h
+//  PDFAnnotationCircle_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationInteriorColorKey;
 
-@interface SKPDFAnnotationSquare : PDFAnnotationSquare
+@interface PDFAnnotationCircle (SKExtensions)
 @end

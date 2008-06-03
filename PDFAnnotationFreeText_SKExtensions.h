@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationFreeText.h
+//  PDFAnnotationFreeText_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -46,7 +46,7 @@ extern NSString *SKPDFAnnotationFontSizeKey;
 extern NSString *SKPDFAnnotationRotationKey;
 
 
-@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
+@interface PDFAnnotationFreeText (SKExtensions)
 
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(float)pointSize;

@@ -1359,12 +1359,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if (annotation) {
-        updatingNoteSelection = YES;
-        [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:annotation];
-        [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
-        updatingNoteSelection = NO;
-    }
+    if ([annotation isNote])
+        [self addNote:annotation];
+    
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
@@ -1375,17 +1372,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
         [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:page];
     }
-    [noteOutlineView reloadData];
 }
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([[self selectedNotes] containsObject:annotation])
-        [noteOutlineView deselectAll:self];
-    
-    if (annotation) {
+    if ([annotation isNote]) {
+        if ([[self selectedNotes] containsObject:annotation])
+            [noteOutlineView deselectAll:self];
+        
         NSWindowController *wc = nil;
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
         
@@ -1395,8 +1391,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 break;
             }
         }
-        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:annotation];
-        [noteArrayController rearrangeObjects];
+        
+        [self removeNote:annotation];
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];

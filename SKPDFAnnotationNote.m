@@ -37,6 +37,7 @@
  */
 
 #import "SKPDFAnnotationNote.h"
+#import "PDFAnnotationText_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -46,38 +47,9 @@
 #import "NSString_SKExtensions.h"
 
 
-unsigned long SKScriptingIconTypeFromIconType(int iconType) {
-    switch (iconType) {
-        case kPDFTextAnnotationIconComment: return SKScriptingTextAnnotationIconComment;
-        case kPDFTextAnnotationIconKey: return SKScriptingTextAnnotationIconKey;
-        case kPDFTextAnnotationIconNote: return SKScriptingTextAnnotationIconNote;
-        case kPDFTextAnnotationIconHelp: return SKScriptingTextAnnotationIconHelp;
-        case kPDFTextAnnotationIconNewParagraph: return SKScriptingTextAnnotationIconNewParagraph;
-        case kPDFTextAnnotationIconParagraph: return SKScriptingTextAnnotationIconParagraph;
-        case kPDFTextAnnotationIconInsert: return SKScriptingTextAnnotationIconInsert;
-        default: return kPDFTextAnnotationIconNote;
-    }
-}
-
-int SKIconTypeFromScriptingIconType(unsigned long iconType) {
-    switch (iconType) {
-        case SKScriptingTextAnnotationIconComment: return kPDFTextAnnotationIconComment;
-        case SKScriptingTextAnnotationIconKey: return kPDFTextAnnotationIconKey;
-        case SKScriptingTextAnnotationIconNote: return kPDFTextAnnotationIconNote;
-        case SKScriptingTextAnnotationIconHelp: return kPDFTextAnnotationIconHelp;
-        case SKScriptingTextAnnotationIconNewParagraph: return kPDFTextAnnotationIconNewParagraph;
-        case SKScriptingTextAnnotationIconParagraph: return kPDFTextAnnotationIconParagraph;
-        case SKScriptingTextAnnotationIconInsert: return kPDFTextAnnotationIconInsert;
-        default: return kPDFTextAnnotationIconNote;
-    }
-}
-
-
-NSString *SKPDFAnnotationIconTypeKey = @"iconType";
 NSString *SKPDFAnnotationTextKey = @"text";
 NSString *SKPDFAnnotationImageKey = @"image";
 
-NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
@@ -115,15 +87,12 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
         Class imageClass = [NSImage class];
         NSAttributedString *aText = [dict objectForKey:SKPDFAnnotationTextKey];
         NSImage *anImage = [dict objectForKey:SKPDFAnnotationImageKey];
-        NSNumber *iconType = [dict objectForKey:SKPDFAnnotationIconTypeKey];
         if ([anImage isKindOfClass:imageClass])
             image = [anImage retain];
         if ([aText isKindOfClass:attrStringClass])
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:aText];
         else if ([aText isKindOfClass:stringClass])
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withString:(NSString *)aText];
-        if ([iconType respondsToSelector:@selector(intValue)])
-            [self setIconType:[iconType intValue]];
         [self updateContents];
     }
     return self;
@@ -139,24 +108,14 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (NSDictionary *)properties{
     NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKPDFAnnotationIconTypeKey];
     [dict setValue:[self text] forKey:SKPDFAnnotationTextKey];
     [dict setValue:[self image] forKey:SKPDFAnnotationImageKey];
     return dict;
 }
 
-- (NSString *)fdfString {
-    NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    [fdfString appendFDFName:SKFDFAnnotationIconTypeKey];
-    [fdfString appendFDFName:SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType([self iconType])];
-    return fdfString;
-}
+- (BOOL)isMovable { return [self isNote]; }
 
-- (BOOL)isNote { return YES; }
-
-- (BOOL)isMovable { return YES; }
-
-- (BOOL)isEditable { return YES; }
+- (BOOL)isEditable { return [self isNote]; }
 
 - (NSString *)type {
     return SKNoteString;
@@ -239,7 +198,6 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     static NSSet *noteKeys = nil;
     if (noteKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationIconTypeKey];
         [mutableKeys addObject:SKPDFAnnotationTextKey];
         [mutableKeys addObject:SKPDFAnnotationImageKey];
         noteKeys = [mutableKeys copy];
@@ -254,23 +212,11 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     static NSSet *customNoteScriptingKeys = nil;
     if (customNoteScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKPDFAnnotationScriptingIconTypeKey];
         [customKeys addObject:SKPDFAnnotationRichTextKey];
-        [customKeys removeObject:SKPDFAnnotationLineWidthKey];
-        [customKeys removeObject:SKPDFAnnotationScriptingBorderStyleKey];
-        [customKeys removeObject:SKPDFAnnotationDashPatternKey];
         customNoteScriptingKeys = [customKeys copy];
         [customKeys release];
     }
     return customNoteScriptingKeys;
-}
-
-- (unsigned long)scriptingIconType {
-    return SKScriptingIconTypeFromIconType([self iconType]);
-}
-
-- (void)setScriptingIconType:(unsigned long)type {
-    [self setIconType:SKIconTypeFromScriptingIconType(type)];
 }
 
 - (id)richText;
@@ -330,28 +276,6 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (NSArray *)accessibilityActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationText (SKExtensions)
-@end
-
-@implementation PDFAnnotationText (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    NSRect bounds = [self bounds];
-    bounds.size = SKPDFAnnotationNoteSize;
-    SKPDFAnnotationNote *annotation = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    [annotation setIconType:[self iconType]];
-    return annotation;
 }
 
 @end

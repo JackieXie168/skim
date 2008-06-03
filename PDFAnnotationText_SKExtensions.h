@@ -1,8 +1,8 @@
 //
-//  SKPDFAnnotationLine.h
+//  PDFAnnotationText_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/1/08.
+//  Created by Christiaan Hofman on 6/3/08.
 /*
  This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
@@ -37,38 +37,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationIconTypeKey;
 
-enum {
-    SKScriptingLineStyleNone = 'LSNo',
-    SKScriptingLineStyleSquare = 'LSSq',
-    SKScriptingLineStyleCircle = 'LSCi',
-    SKScriptingLineStyleDiamond = 'LSDi',
-    SKScriptingLineStyleOpenArrow = 'LSOA',
-    SKScriptingLineStyleClosedArrow = 'LSCA'
-};
-
-extern unsigned long SKScriptingLineStyleFromLineStyle(int lineStyle);
-extern int SKLineStyleFromScriptingLineStyle(unsigned long lineStyle);
-
-
-extern NSString *SKPDFAnnotationStartLineStyleKey;
-extern NSString *SKPDFAnnotationEndLineStyleKey;
-extern NSString *SKPDFAnnotationStartPointKey;
-extern NSString *SKPDFAnnotationEndPointKey;
-
-extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
-extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
-extern NSString *SKPDFAnnotationScriptingStartLineStyleKey;
-extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
-
-
-@interface SKPDFAnnotationLine : PDFAnnotationLine
-
-- (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
-- (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
-- (void)setScriptingStartLineStyle:(unsigned long)style;
-- (void)setScriptingEndLineStyle:(unsigned long)style;
-
+@interface PDFAnnotationText (SKExtensions)
+- (void)setScriptingIconType:(unsigned long)type;
 @end

@@ -67,7 +67,7 @@
 #import "NSView_SKExtensions.h"
 #import "SKUtilities.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationLine.h"
+#import "PDFAnnotationLine_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKRemoteStateWindow.h"
 

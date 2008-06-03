@@ -58,9 +58,9 @@
 #import "BDSKEdgeView.h"
 #import "BDSKGradientView.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationFreeText.h"
-#import "SKPDFAnnotationCircle.h"
-#import "SKPDFAnnotationLine.h"
+#import "PDFAnnotationFreeText_SKExtensions.h"
+#import "PDFAnnotationCircle_SKExtensions.h"
+#import "PDFAnnotationLine_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"
@@ -257,7 +257,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 - (void)dealloc {
     [self stopObservingNotes:[self notes]];
     [undoGroupOldPropertiesPerNote release];
-    [undoGroupInsertedNotes release];
     [colorSwatch unbind:SKColorSwatchColorsKey];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
@@ -1056,13 +1055,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     [old release];
     [new release];
     
-    // Record the inserted graphics so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
-    if ([[[self document] undoManager] isUndoRegistrationEnabled] && [added count]) {
-        if (undoGroupInsertedNotes == nil)
-            undoGroupInsertedNotes = [[NSMutableSet alloc] init];
-        [undoGroupInsertedNotes unionSet:added];
-    }
-    
     if ([removed count]) {
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
         NSWindowController *wc = [wcEnum nextObject];
@@ -1106,13 +1098,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
     [notes insertObject:obj atIndex:theIndex];
-
-    // Record the inserted notes so we can filter out observer notifications from them. This way we don't waste memory registering undo operations for changes that wouldn't have any effect because the graphics are going to be removed anyway. In Sketch this makes a difference when you create a graphic and then drag the mouse to set its initial size right away. Why don't we do this if undo registration is disabled? Because we don't want to add to this set during document reading. (See what -readFromData:ofType:error: does with the undo manager.) That would ruin the undoability of the first graphic editing you do after reading a document.
-    if ([[[self document] undoManager] isUndoRegistrationEnabled]) {
-        if (undoGroupInsertedNotes == nil)
-            undoGroupInsertedNotes = [[NSMutableSet alloc] init];
-        [undoGroupInsertedNotes addObject:obj];
-    }
 
     // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
     [self startObservingNotes:[NSArray arrayWithObject:obj]];
@@ -1314,7 +1299,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
-        [(SKPDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
+        [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
         updatingLine = NO;
     }
 }
@@ -1324,7 +1309,7 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
         updatingLine = YES;
-        [(SKPDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
+        [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
         updatingLine = NO;
     }
 }
@@ -3355,8 +3340,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     // Start the coalescing of note property changes over.
     [undoGroupOldPropertiesPerNote release];
     undoGroupOldPropertiesPerNote = nil;
-    [undoGroupInsertedNotes release];
-    undoGroupInsertedNotes = nil;
 }
 
 #pragma mark KVO
@@ -3434,36 +3417,32 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         // All values are suppsed to be true value objects that should be compared with isEqual:
         if ([newValue isEqual:oldValue] == NO) {
             
-            // Don't waste memory by recording undo operations affecting notes that would be removed during undo anyway. In Sketch this check matters when you use a creation tool to create a new note and then drag the mouse to resize it; there's no reason to record a change of "bounds" in that situation
-            if (NO == [undoGroupInsertedNotes containsObject:note]) {
-                // Is this the first observed note change in the current undo group?
-                NSUndoManager *undoManager = [[self document] undoManager];
-                if (undoGroupOldPropertiesPerNote == nil) {
-                    // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
-                    undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
-                    // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
-                    [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
-                }
-
-                // Find the dictionary in which we're recording the old values of properties for the changed note
-                NSMutableDictionary *oldNoteProperties = [undoGroupOldPropertiesPerNote objectForKey:note];
-                if (oldNoteProperties == nil) {
-                    // We have to create a dictionary to hold old values for the changed note
-                    oldNoteProperties = [[NSMutableDictionary alloc] init];
-                    // -setValue:forKey: copies, even if the callback doesn't, so we need to use CF functions
-                    CFDictionarySetValue((CFMutableDictionaryRef)undoGroupOldPropertiesPerNote, note, oldNoteProperties);
-                    [oldNoteProperties release];
-                }
-
-                // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
-                if ([oldNoteProperties objectForKey:keyPath] == nil)
-                    [oldNoteProperties setObject:oldValue forKey:keyPath];
-
-                // Don't set the undo action name during undoing and redoing
-                if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO)
-                    [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-                
+            // Is this the first observed note change in the current undo group?
+            NSUndoManager *undoManager = [[self document] undoManager];
+            if (undoGroupOldPropertiesPerNote == nil) {
+                // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
+                undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
+                // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
+                [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
             }
+
+            // Find the dictionary in which we're recording the old values of properties for the changed note
+            NSMutableDictionary *oldNoteProperties = [undoGroupOldPropertiesPerNote objectForKey:note];
+            if (oldNoteProperties == nil) {
+                // We have to create a dictionary to hold old values for the changed note
+                oldNoteProperties = [[NSMutableDictionary alloc] init];
+                // -setValue:forKey: copies, even if the callback doesn't, so we need to use CF functions
+                CFDictionarySetValue((CFMutableDictionaryRef)undoGroupOldPropertiesPerNote, note, oldNoteProperties);
+                [oldNoteProperties release];
+            }
+
+            // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
+            if ([oldNoteProperties objectForKey:keyPath] == nil)
+                [oldNoteProperties setObject:oldValue forKey:keyPath];
+
+            // Don't set the undo action name during undoing and redoing
+            if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO)
+                [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
             
             // Update the UI, we should always do that unless the value did not really change
             
@@ -3713,6 +3692,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         filterPredicate = searchPredicate;
     }
     [noteArrayController setFilterPredicate:filterPredicate];
+    [noteOutlineView reloadData];
+}
+
+- (void)addNote:(PDFAnnotation *)note {
+    updatingNoteSelection = YES;
+    [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:note];
+    [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+    updatingNoteSelection = NO;
+    [noteOutlineView reloadData];
+}
+
+- (void)removeNote:(PDFAnnotation *)note {
+    updatingNoteSelection = YES;
+    [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:note];
+    [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+    updatingNoteSelection = NO;
     [noteOutlineView reloadData];
 }
 

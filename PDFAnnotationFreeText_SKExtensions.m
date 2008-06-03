@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationFreeText.m
+//  PDFAnnotationFreeText_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationFreeText.h"
+#import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -56,7 +56,7 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 @end
 
 
-@implementation SKPDFAnnotationFreeText
+@implementation PDFAnnotationFreeText (SKExtensions)
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
@@ -120,13 +120,13 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return fdfString;
 }
 
-- (BOOL)isNote { return YES; }
+- (BOOL)isResizable { return [self isNote]; }
 
-- (BOOL)isResizable { return YES; }
+- (BOOL)isMovable { return [self isNote]; }
 
-- (BOOL)isMovable { return YES; }
+- (BOOL)isEditable { return [self isNote]; }
 
-- (BOOL)isEditable { return YES; }
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *freeTextKeys = nil;
@@ -222,28 +222,6 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 - (NSArray *)accessibilityActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationFreeText (SKExtensions)
-@end
-
-@implementation PDFAnnotationFreeText (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    SKPDFAnnotationFreeText *annotation = [[SKPDFAnnotationFreeText alloc] initNoteWithBounds:[self bounds]];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    [annotation setFont:[self font]];
-    if ([self respondsToSelector:@selector(rotation)] && [annotation respondsToSelector:@selector(setRotation:)])
-        [annotation setRotation:[self rotation]];
-    return annotation;
 }
 
 @end

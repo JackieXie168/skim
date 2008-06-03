@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationLine.m
+//  PDFAnnotationLine_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/1/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationLine.h"
+#import "PDFAnnotationLine_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -81,7 +81,7 @@ NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle"
 NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 
-@implementation SKPDFAnnotationLine
+@implementation PDFAnnotationLine (SKExtensions)
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
@@ -142,11 +142,11 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return fdfString;
 }
 
-- (BOOL)isNote { return YES; }
+- (BOOL)isResizable { return [self isNote]; }
 
-- (BOOL)isResizable { return YES; }
+- (BOOL)isMovable { return [self isNote]; }
 
-- (BOOL)isMovable { return YES; }
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {
     NSRect bounds = [self bounds];
@@ -334,29 +334,6 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 - (id)accessibilityVisibleCharacterRangeAttribute {
     return [NSValue valueWithRange:NSMakeRange(0, [[self accessibilityValueAttribute] length])];
-}
-
-@end
-
-#pragma mark -
-
-@interface PDFAnnotationLine (SKExtensions)
-@end
-
-@implementation PDFAnnotationLine (SKExtensions)
-
-- (BOOL)isConvertibleAnnotation { return YES; }
-
-- (id)copyNoteAnnotation {
-    SKPDFAnnotationLine *annotation = [[SKPDFAnnotationLine alloc] initNoteWithBounds:[self bounds]];
-    [annotation setString:[self string]];
-    [annotation setColor:[self color]];
-    [annotation setBorder:[[[self border] copy] autorelease]];
-    [annotation setStartPoint:[self startPoint]];
-    [annotation setEndPoint:[self endPoint]];
-    [annotation setStartLineStyle:[self startLineStyle]];
-    [annotation setEndLineStyle:[self endLineStyle]];
-    return annotation;
 }
 
 @end
