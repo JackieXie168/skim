@@ -60,7 +60,6 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
-        [self setShouldPrint:YES];
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         if (font)

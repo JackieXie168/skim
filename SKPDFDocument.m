@@ -883,6 +883,10 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 
 - (void)addAsNote:(PDFAnnotation *)annotation {
     [[[self undoManager] prepareWithInvocationTarget:self] removeAsNote:annotation];
+    [[[self undoManager] prepareWithInvocationTarget:annotation] setShouldDisplay:[annotation shouldDisplay]];
+    [[[self undoManager] prepareWithInvocationTarget:annotation] setShouldPrint:[annotation shouldPrint]];
+    [annotation setShouldDisplay:[[self pdfView] hideNotes] == NO];
+    [annotation setShouldPrint:[[self pdfView] hideNotes] == NO];
     [annotation setNote:YES];
     [[self mainWindowController] addNote:annotation];                
 }

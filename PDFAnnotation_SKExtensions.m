@@ -131,6 +131,7 @@ static IMP originalDealloc = NULL;
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [self initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         [self setNote:YES];
     }
     return self;

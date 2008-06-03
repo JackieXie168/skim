@@ -49,7 +49,6 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
 - (id)initNoteWithBounds:(NSRect)bounds {
     if (self = [super initNoteWithBounds:bounds]) {
-        [self setShouldPrint:YES];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [self setInteriorColor:color];
