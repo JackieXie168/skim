@@ -870,7 +870,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 - (id)safeValueForKeyPath:(NSString *)keyPath {
     unsigned int atIndex = [keyPath rangeOfString:@"@"].location;
     if (atIndex != NSNotFound) {
-        unsigned int dotIndex = [keyPath rangeOfString:@"@" options:0 range:NSMakeRange(atIndex + 1, [keyPath length])].location;
+        unsigned int dotIndex = [keyPath rangeOfString:@"." options:0 range:NSMakeRange(atIndex + 1, [keyPath length] - atIndex - 1)].location;
         if (dotIndex != NSNotFound) {
             static NSSet *arrayOperators = nil;
             if (arrayOperators == nil)
