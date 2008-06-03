@@ -170,7 +170,6 @@ static IMP originalDrawWithBoxInContext = NULL;
 
 - (id)initNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initNoteWithBounds:bounds]) {
-        [self setShouldPrint:YES];
         [self setMarkupType:type];
         
         NSColor *color = defaultColorForMarkupType(type);
