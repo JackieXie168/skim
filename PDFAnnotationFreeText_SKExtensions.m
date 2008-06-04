@@ -77,8 +77,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return self;
 }
 
-- (id)initWithProperties:(NSDictionary *)dict{
-    if (self = [super initWithProperties:dict]) {
+- (id)initNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initNoteWithProperties:dict]) {
         Class fontClass = [NSFont class];
         Class colorClass = [NSColor class];
         NSFont *font = [dict objectForKey:SKPDFAnnotationFontKey];

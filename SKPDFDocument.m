@@ -919,7 +919,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         while (annotation = [annEnum nextObject]) {
             if ([annotation isNote] == NO && [annotation isConvertibleAnnotation]) {
                 if ([[annotation type] isEqualToString:SKTextString]) {
-                    PDFAnnotation *newAnnotation = [[SKPDFAnnotationNote alloc] initWithProperties:[annotation properties]];
+                    PDFAnnotation *newAnnotation = [[SKPDFAnnotationNote alloc] initNoteWithProperties:[annotation properties]];
                     [[self pdfView] removeAnnotation:annotation];
                     [[self pdfView] addAnnotation:newAnnotation toPage:page];
                     [newAnnotation release];
