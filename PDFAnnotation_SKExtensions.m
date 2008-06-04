@@ -141,14 +141,15 @@ static IMP originalDealloc = NULL;
 - (id)initNoteWithProperties:(NSDictionary *)dict{
     Class stringClass = [NSString class];
     
-    if ([self class] == [PDFAnnotation class]) {
+    if ([self isMemberOfClass:[PDFAnnotation class]]) {
         // generic, initalize the class for the type in the dictionary
         NSString *type = [dict objectForKey:SKPDFAnnotationTypeKey];
         Class annotationClass = NULL;
+        NSZone *zone = [self zone];
         
         if ([type isKindOfClass:stringClass] == NO)
             annotationClass = Nil;
-        if ([type isEqualToString:SKNoteString] || [type isEqualToString:SKTextString])
+        else if ([type isEqualToString:SKNoteString] || [type isEqualToString:SKTextString])
             annotationClass = [SKPDFAnnotationNote class];
         else if ([type isEqualToString:SKFreeTextString])
             annotationClass = [PDFAnnotationFreeText class];
@@ -162,7 +163,7 @@ static IMP originalDealloc = NULL;
             annotationClass = [PDFAnnotationLine class];
         
         [[self initWithBounds:NSZeroRect] release];
-        self = [[annotationClass alloc] initNoteWithProperties:dict];
+        self = [[annotationClass allocWithZone:zone] initNoteWithProperties:dict];
         
     } else {
         // called from the initialization of a subclass
