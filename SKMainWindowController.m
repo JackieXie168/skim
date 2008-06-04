@@ -2875,33 +2875,35 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
-    BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
-    // union all selected objects
+    if ([findResults count] == 0)
+        return;
+    
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
     
     // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
-    PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
+    PDFSelection *firstSel = [selE nextObject];
+    PDFSelection *currentSel = [[firstSel copy] autorelease];
     
-    [pdfView setCurrentSelection:currentSel];
+    while (sel = [selE nextObject])
+        [currentSel addSelection:sel];
     
-    if (scroll && [findResults count])
+    if (scroll) {
+        [pdfView setCurrentSelection:currentSel];
         [pdfView scrollSelectionToVisible:self];
+    }
     
     [self removeTemporaryAnnotations];
     
     // add an annotation so it's easier to see the search result
-    if (highlight)
-        [self addAnnotationsForSelection:currentSel];
-    
-    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
-        [pdfView setCurrentSelection:currentSel animate:YES];
-    
-    while (sel = [selE nextObject]) {
-        [currentSel addSelection:sel];
-        if (highlight)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+        selE = [findResults objectEnumerator];
+        while (sel = [selE nextObject])
             [self addAnnotationsForSelection:sel];
     }
+    
+    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
+        [pdfView setCurrentSelection:firstSel animate:YES];
     
     [pdfView setCurrentSelection:currentSel];
 }
