@@ -75,6 +75,17 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 
 @implementation PDFAnnotationText (SKExtensions)
 
+- (id)initNoteWithBounds:(NSRect)bounds {
+    if ([self isMemberOfClass:[PDFAnnotationText class]]) {
+        NSZone *zone = [self zone];
+        [[self initWithBounds:NSZeroRect] release];
+        self = [[SKPDFAnnotationNote allocWithZone:zone] initNoteWithBounds:bounds];
+    } else {
+        self = [super initNoteWithBounds:bounds];
+    }
+    return self;
+}
+
 - (id)initNoteWithProperties:(NSDictionary *)dict{
     if (self = [super initNoteWithProperties:dict]) {
         NSNumber *iconType = [dict objectForKey:SKPDFAnnotationIconTypeKey];

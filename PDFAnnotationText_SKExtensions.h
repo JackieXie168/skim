@@ -40,6 +40,9 @@
 
 extern NSString *SKPDFAnnotationIconTypeKey;
 
+extern NSString *SKPDFAnnotationScriptingIconTypeKey;
+
+
 @interface PDFAnnotationText (SKExtensions)
 - (void)setScriptingIconType:(unsigned long)type;
 @end
