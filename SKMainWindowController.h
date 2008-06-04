@@ -142,6 +142,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     BOOL                        wholeWordSearch;
     CFMutableSetRef             temporaryAnnotations;
     NSTimer                     *temporaryAnnotationTimer;
+    NSTimer                     *highlightTimer;
     
     IBOutlet NSArrayController  *groupedFindArrayController;
     IBOutlet NSTableView        *groupedFindTableView;

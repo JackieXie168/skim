@@ -2874,6 +2874,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
+- (void)removeHighlightedSelections:(NSTimer *)timer {
+    [highlightTimer invalidate];
+    [highlightTimer release];
+    highlightTimer = nil;
+    [pdfView setHighlightedSelections:nil];
+}
+
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
@@ -2897,6 +2904,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         selE = [findResults objectEnumerator];
         while (sel = [selE nextObject])
             [self addAnnotationsForSelection:sel];
+    }
+    
+    if (highlightTimer)
+        [self removeHighlightedSelections:highlightTimer];
+    if ([pdfView respondsToSelector:@selector(setHighlightedSelections:)] && [currentSel respondsToSelector:@selector(setColor:)] && [findResults count] > 1) {
+        PDFSelection *tmpSel = [[currentSel copy] autorelease];
+        [tmpSel setColor:[NSColor yellowColor]];
+        [pdfView setHighlightedSelections:[NSArray arrayWithObject:tmpSel]];
+        highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
     if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && firstSel)
