@@ -2875,9 +2875,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll {
-    if ([findResults count] == 0)
-        return;
-    
     NSEnumerator *selE = [findResults objectEnumerator];
     PDFSelection *sel;
     
@@ -2888,7 +2885,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     while (sel = [selE nextObject])
         [currentSel addSelection:sel];
     
-    if (scroll) {
+    if (scroll && firstSel) {
         [pdfView setCurrentSelection:currentSel];
         [pdfView scrollSelectionToVisible:self];
     }
@@ -2902,10 +2899,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self addAnnotationsForSelection:sel];
     }
     
-    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
+    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && firstSel)
         [pdfView setCurrentSelection:firstSel animate:YES];
     
-    [pdfView setCurrentSelection:currentSel];
+    if (currentSel)
+        [pdfView setCurrentSelection:currentSel];
 }
 
 - (void)goToFindResults:(NSArray *)findResults {
