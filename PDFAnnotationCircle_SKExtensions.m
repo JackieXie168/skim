@@ -60,8 +60,8 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     return self;
 }
 
-- (id)initWithProperties:(NSDictionary *)dict{
-    if (self = [super initWithProperties:dict]) {
+- (id)initNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initNoteWithProperties:dict]) {
         Class colorClass = [NSColor class];
         NSColor *interiorColor = [dict objectForKey:SKPDFAnnotationInteriorColorKey];
         if ([interiorColor isKindOfClass:colorClass])

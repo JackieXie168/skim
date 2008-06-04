@@ -79,8 +79,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     [self setContents:contents];
 }
 
-- (id)initWithProperties:(NSDictionary *)dict{
-    if (self = [super initWithProperties:dict]) {
+- (id)initNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initNoteWithProperties:dict]) {
         Class attrStringClass = [NSAttributedString class];
         Class stringClass = [NSString class];
         Class imageClass = [NSImage class];

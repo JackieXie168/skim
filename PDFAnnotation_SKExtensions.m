@@ -138,7 +138,7 @@ static IMP originalDealloc = NULL;
 
 }
 
-- (id)initWithProperties:(NSDictionary *)dict{
+- (id)initNoteWithProperties:(NSDictionary *)dict{
     Class stringClass = [NSString class];
     
     if ([self class] == [PDFAnnotation class]) {
@@ -162,7 +162,7 @@ static IMP originalDealloc = NULL;
             annotationClass = [PDFAnnotationLine class];
         
         [[self initWithBounds:NSZeroRect] release];
-        self = [[annotationClass alloc] initWithProperties:dict];
+        self = [[annotationClass alloc] initNoteWithProperties:dict];
         
     } else {
         // called from the initialization of a subclass
@@ -406,7 +406,7 @@ static IMP originalDealloc = NULL;
                         markupType = kPDFMarkupTypeUnderline;
                     else if (type == SKScriptingStrikeOutNote)
                         markupType = kPDFMarkupTypeStrikeOut;
-                    if (self = [[PDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType]) {
+                    if (self = [[PDFAnnotationMarkup alloc] initNoteWithSelection:selection markupType:markupType]) {
                         PDFPage *page = [[selection pages] objectAtIndex:0];
                         if (page && [self respondsToSelector:@selector(setPage:)])
                             [self performSelector:@selector(setPage:) withObject:page];
@@ -442,7 +442,7 @@ static IMP originalDealloc = NULL;
 // to support the 'duplicate' command
 - (id)copyWithZone:(NSZone *)zone {
     if ([self isMovable]) // we don't want to duplicate markup
-        return [[PDFAnnotation allocWithZone:zone] initWithProperties:[self properties]];
+        return [[PDFAnnotation allocWithZone:zone] initNoteWithProperties:[self properties]];
     else
         return nil;
 }

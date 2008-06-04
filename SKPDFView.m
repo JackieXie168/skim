@@ -871,7 +871,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         NSRect bounds;
         
-        newAnnotation = [[[PDFAnnotation alloc] initWithProperties:note] autorelease];
+        newAnnotation = [[[PDFAnnotation alloc] initNoteWithProperties:note] autorelease];
         bounds = [newAnnotation bounds];
         page = [self currentPage];
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
@@ -1875,7 +1875,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeHighlight];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
             if ([[activeAnnotation type] isEqualToString:SKUnderlineString] && [[activeAnnotation page] isEqual:page]) {
@@ -1883,7 +1883,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeUnderline];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
             if ([[activeAnnotation type] isEqualToString:SKStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
@@ -1891,7 +1891,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKLineNote:
             newAnnotation = [[PDFAnnotationLine alloc] initNoteWithBounds:bounds];
@@ -2937,7 +2937,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (hideNotes == NO) {
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
-            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithProperties:[newActiveAnnotation properties]];
+            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initNoteWithProperties:[newActiveAnnotation properties]];
             [self addAnnotation:newAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
@@ -2968,7 +2968,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [accessibilityChildren release];
             accessibilityChildren = nil;
             
-            newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
+            newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:markupType] autorelease];
             [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
             [self addAnnotation:newActiveAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];

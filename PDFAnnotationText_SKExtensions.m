@@ -75,8 +75,8 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 
 @implementation PDFAnnotationText (SKExtensions)
 
-- (id)initWithProperties:(NSDictionary *)dict{
-    if (self = [super initWithProperties:dict]) {
+- (id)initNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initNoteWithProperties:dict]) {
         NSNumber *iconType = [dict objectForKey:SKPDFAnnotationIconTypeKey];
         if ([iconType respondsToSelector:@selector(intValue)])
             [self setIconType:[iconType intValue]];

@@ -188,8 +188,8 @@ static IMP originalDrawWithBoxInContext = NULL;
     return self;
 }
 
-- (id)initWithProperties:(NSDictionary *)dict{
-    if (self = [super initWithProperties:dict]) {
+- (id)initNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initNoteWithProperties:dict]) {
         Class stringClass = [NSString class];
         NSString *type = [dict objectForKey:SKPDFAnnotationTypeKey];
         if ([type isKindOfClass:stringClass]) {
@@ -237,7 +237,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return YES;
 }
 
-- (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
+- (id)initNoteWithSelection:(PDFSelection *)selection markupType:(int)type {
     NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
