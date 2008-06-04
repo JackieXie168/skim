@@ -1351,7 +1351,7 @@ NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
     [toolbarSelectToolImage unlockFocus];
     [toolbarSelectToolImage setName:SKImageNameToolbarSelectTool];
     
-    toolbarNewFolderImage = [[self folderImage] copy];
+    toolbarNewFolderImage = [[self smallFolderImage] copy];
     [toolbarNewFolderImage lockFocus];
     [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 18.0)];
     [toolbarNewFolderImage unlockFocus];
@@ -1785,6 +1785,9 @@ NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
     [shadow1 release];
 }
 
+static NSSize smallImageSize = {32.0, 32.0};
+static NSSize tinyImageSize = {16.0, 16.0};
+
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code {
 	IconRef iconref;
 	OSErr myErr = GetIconRef (kOnSystemDisk, kSystemIconsCreator, code, &iconref);
@@ -1807,29 +1810,33 @@ NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
 	return [image autorelease];
 }
 
-+ (NSImage *)imageWithIconForToolboxCode:(OSType) code {
-    return [self iconWithSize:NSMakeSize(32.0, 32.0) forToolboxCode:code];
++ (NSImage *)smallImageWithIconForToolboxCode:(OSType) code {
+    return [self iconWithSize:smallImageSize forToolboxCode:code];
 }
 
-+ (NSImage *)folderImage {
-    static NSImage *image = nil;
-    if(image == nil)
-        image = [[self iconWithSize:NSMakeSize(32.0, 32.0) forToolboxCode:kGenericFolderIcon] retain];
-    return image;
++ (NSImage *)tinyImageWithIconForToolboxCode:(OSType) code {
+    return [self iconWithSize:tinyImageSize forToolboxCode:code];
 }
 
 + (NSImage *)smallFolderImage {
     static NSImage *image = nil;
     if(image == nil)
-        image = [[self iconWithSize:NSMakeSize(16.0, 16.0) forToolboxCode:kGenericFolderIcon] retain];
+        image = [[self smallImageWithIconForToolboxCode:kGenericFolderIcon] retain];
     return image;
 }
 
-+ (NSImage *)missingFileImage {
++ (NSImage *)tinyFolderImage {
+    static NSImage *image = nil;
+    if(image == nil)
+        image = [[self tinyImageWithIconForToolboxCode:kGenericFolderIcon] retain];
+    return image;
+}
+
++ (NSImage *)smallMissingFileImage {
     static NSImage *image = nil;
     if(image == nil){
-        image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
-        NSImage *genericDocImage = [self iconWithSize:NSMakeSize(32.0, 32.0) forToolboxCode:kGenericDocumentIcon];
+        image = [[NSImage alloc] initWithSize:smallImageSize];
+        NSImage *genericDocImage = [self smallImageWithIconForToolboxCode:kGenericDocumentIcon];
         NSImage *questionMark = [self iconWithSize:NSMakeSize(20.0, 20.0) forToolboxCode:kQuestionMarkIcon];
         [image lockFocus];
         [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
@@ -1839,11 +1846,11 @@ NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
     return image;
 }
 
-+ (NSImage *)smallMissingFileImage {
++ (NSImage *)tinyMissingFileImage {
     static NSImage *image = nil;
     if(image == nil){
-        image = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        NSImage *genericDocImage = [self iconWithSize:NSMakeSize(16.0, 16.0) forToolboxCode:kGenericDocumentIcon];
+        image = [[NSImage alloc] initWithSize:tinyImageSize];
+        NSImage *genericDocImage = [self tinyImageWithIconForToolboxCode:kGenericDocumentIcon];
         NSImage *questionMark = [self iconWithSize:NSMakeSize(10.0, 10.0) forToolboxCode:kQuestionMarkIcon];
         [image lockFocus];
         [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];

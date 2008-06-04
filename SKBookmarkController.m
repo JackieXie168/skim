@@ -650,7 +650,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKBookmarksDeleteToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"Delete", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Delete Selected Items", @"Tool tip message")];
-    [item setImage:[NSImage imageWithIconForToolboxCode:kToolbarDeleteIcon]];
+    [item setImage:[NSImage smallImageWithIconForToolboxCode:kToolbarDeleteIcon]];
     [item setTarget:self];
     [item setAction:@selector(deleteBookmark:)];
     [toolbarItems setObject:item forKey:SKBookmarksDeleteToolbarItemIdentifier];
