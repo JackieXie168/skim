@@ -1,10 +1,10 @@
 //
-//  PDFSelection_SKExtensions.h
+//  SKJoinCommand.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/24/07.
+//  Created by Christiaan Hofman on 6/4/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,19 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface PDFSelection (SKExtensions)
-
-// the search table columns bind to these methods for display
-- (NSString *)firstPageLabel;
-- (NSAttributedString *)contextString;
-
-- (PDFDestination *)destination;
-
-- (int)safeNumberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
-
-+ (id)selectionWithSpecifier:(id)specifier;
-+ (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;
-- (id)objectSpecifier;
-
+@interface SKJoinCommand : NSScriptCommand
 @end

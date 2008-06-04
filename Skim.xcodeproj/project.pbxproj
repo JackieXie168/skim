@@ -91,6 +91,11 @@
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
 		CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */; };
+		CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */; };
+		CE4643D50DF6B60500CFD8D2 /* SKPagesCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */; };
+		CE4643D80DF6B63500CFD8D2 /* SKTextCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */; };
+		CE4643DB0DF6B66000CFD8D2 /* SKIndexCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643DA0DF6B66000CFD8D2 /* SKIndexCommand.m */; };
+		CE4643DE0DF6B77800CFD8D2 /* SKBoundsCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643DD0DF6B77800CFD8D2 /* SKBoundsCommand.m */; };
 		CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */; };
 		CE4972510BDE898F00D7F1D2 /* SKMainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */; };
 		CE49726D0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */; };
@@ -493,6 +498,16 @@
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PSDocument.icns; path = Images/PSDocument.icns; sourceTree = "<group>"; };
 		CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKExtensions.h; sourceTree = "<group>"; };
 		CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationText_SKExtensions.m; sourceTree = "<group>"; };
+		CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKJoinCommand.h; sourceTree = "<group>"; };
+		CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKJoinCommand.m; sourceTree = "<group>"; };
+		CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPagesCommand.h; sourceTree = "<group>"; };
+		CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPagesCommand.m; sourceTree = "<group>"; };
+		CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextCommand.h; sourceTree = "<group>"; };
+		CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextCommand.m; sourceTree = "<group>"; };
+		CE4643D90DF6B66000CFD8D2 /* SKIndexCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKIndexCommand.h; sourceTree = "<group>"; };
+		CE4643DA0DF6B66000CFD8D2 /* SKIndexCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKIndexCommand.m; sourceTree = "<group>"; };
+		CE4643DC0DF6B77800CFD8D2 /* SKBoundsCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBoundsCommand.h; sourceTree = "<group>"; };
+		CE4643DD0DF6B77800CFD8D2 /* SKBoundsCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBoundsCommand.m; sourceTree = "<group>"; };
 		CE485B650BC4420900FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = "Dutch.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE485B780BC4426800FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CE485B7B0BC4427100FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MainMenu.nib; sourceTree = "<group>"; };
@@ -1004,6 +1019,7 @@
 				CE2DE4D00B85D8C400D0DA12 /* Windows */,
 				CE2DE4D10B85D92F00D0DA12 /* Views */,
 				CE32DC1D0DAD282E0099414B /* Parsers */,
+				CE4643F10DF6BADC00CFD8D2 /* Commands */,
 				CE070EC10B89063400733CC8 /* Foundation Categories */,
 				CEE1776D0DBDF54000E6C317 /* AppKit Categories */,
 				CEE177700DBDF60500E6C317 /* PDFKit Categories */,
@@ -1330,6 +1346,23 @@
 				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
 			);
 			name = Parsers;
+			sourceTree = "<group>";
+		};
+		CE4643F10DF6BADC00CFD8D2 /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				CE4643DC0DF6B77800CFD8D2 /* SKBoundsCommand.h */,
+				CE4643DD0DF6B77800CFD8D2 /* SKBoundsCommand.m */,
+				CE4643D90DF6B66000CFD8D2 /* SKIndexCommand.h */,
+				CE4643DA0DF6B66000CFD8D2 /* SKIndexCommand.m */,
+				CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */,
+				CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */,
+				CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */,
+				CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */,
+				CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */,
+				CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */,
+			);
+			name = Commands;
 			sourceTree = "<group>";
 		};
 		CE4DA8CF0B9E157E0039E89C /* Help Sources */ = {
@@ -2017,6 +2050,11 @@
 				CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */,
 				CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */,
 				CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */,
+				CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */,
+				CE4643D50DF6B60500CFD8D2 /* SKPagesCommand.m in Sources */,
+				CE4643D80DF6B63500CFD8D2 /* SKTextCommand.m in Sources */,
+				CE4643DB0DF6B66000CFD8D2 /* SKIndexCommand.m in Sources */,
+				CE4643DE0DF6B77800CFD8D2 /* SKBoundsCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,10 +1,10 @@
 //
-//  PDFSelection_SKExtensions.h
+//  SKPagesCommand.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/24/07.
+//  Created by Christiaan Hofman on 6/4/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,22 +36,32 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKPagesCommand.h"
+#import <Quartz/Quartz.h>
+#import "SKPDFDocument.h"
+#import "PDFSelection_SKExtensions.h"
 
 
-@interface PDFSelection (SKExtensions)
+@implementation SKPagesCommand
 
-// the search table columns bind to these methods for display
-- (NSString *)firstPageLabel;
-- (NSAttributedString *)contextString;
-
-- (PDFDestination *)destination;
-
-- (int)safeNumberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
-
-+ (id)selectionWithSpecifier:(id)specifier;
-+ (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;
-- (id)objectSpecifier;
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+    id dPO = nil;
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dPO = [dP objectsByEvaluatingSpecifier];
+    
+    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
+        return [dPO valueForKey:@"pages"];
+    } else if ([dPO isKindOfClass:[PDFPage class]]) {
+        return [NSArray arrayWithObjects:dPO, nil];
+    } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
+        return [NSArray arrayWithObjects:[dPO page], nil];
+    } else {
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
+        return selection ? [selection pages] : [NSArray array];
+    }
+    
+    return nil;
+}
 
 @end
