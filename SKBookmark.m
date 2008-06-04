@@ -268,19 +268,19 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    static NSMutableDictionary *smallIcons = nil;
+    static NSMutableDictionary *tinyIcons = nil;
     
     NSString *filePath = [self path];
     
     if (filePath == nil)
-        return [NSImage smallMissingFileImage];
+        return [NSImage tinyMissingFileImage];
     
     NSString *extension = [filePath pathExtension];
-    NSImage *icon = [smallIcons objectForKey:extension];
+    NSImage *icon = [tinyIcons objectForKey:extension];
     
     if (icon == nil) {
-        if (smallIcons == nil)
-            smallIcons = [[NSMutableDictionary alloc] init];
+        if (tinyIcons == nil)
+            tinyIcons = [[NSMutableDictionary alloc] init];
         NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
         if (image) {
             NSRect sourceRect = {NSZeroPoint, [image size]};
@@ -290,7 +290,7 @@ static Class SKBookmarkClass = Nil;
             [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
             [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
             [icon unlockFocus];
-            [smallIcons setObject:icon forKey:extension];
+            [tinyIcons setObject:icon forKey:extension];
             [icon release];
         }
     }
@@ -357,7 +357,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    return [NSImage smallFolderImage];
+    return [NSImage tinyFolderImage];
 }
 
 - (NSString *)label {
