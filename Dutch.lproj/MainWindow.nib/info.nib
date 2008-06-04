@@ -37,13 +37,15 @@
 	<array/>
 	<key>IBOpenObjects</key>
 	<array>
+		<integer>168</integer>
+		<integer>224</integer>
+		<integer>942</integer>
+		<integer>796</integer>
 		<integer>694</integer>
 		<integer>830</integer>
 		<integer>687</integer>
-		<integer>942</integer>
-		<integer>168</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>9C7010</string>
+	<string>9D34</string>
 </dict>
 </plist>
