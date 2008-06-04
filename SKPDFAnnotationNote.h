@@ -58,7 +58,6 @@ extern int SKIconTypeFromScriptingIconType(unsigned long iconType);
 extern NSString *SKPDFAnnotationTextKey;
 extern NSString *SKPDFAnnotationImageKey;
 
-extern NSString *SKPDFAnnotationScriptingIconTypeKey;
 extern NSString *SKPDFAnnotationRichTextKey;
 
 extern NSSize SKPDFAnnotationNoteSize;
