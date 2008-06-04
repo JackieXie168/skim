@@ -189,7 +189,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 	
     [self doSpotlightImportIfNeeded];
     
-    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
+    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
     
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     RemoteControlContainer *container = [[RemoteControlContainer alloc] initWithDelegate:self];
