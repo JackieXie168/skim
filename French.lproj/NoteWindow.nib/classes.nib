@@ -32,6 +32,7 @@
             CLASS = SKNoteWindowController;
             LANGUAGE = ObjC;
             OUTLETS =             {
+                iconTypePopUpButton = NSPopUpButton;
                 imageView = BDSKDragImageView;
                 statusBar = SKStatusBar;
                 textView = NSTextView;
