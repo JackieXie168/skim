@@ -40,6 +40,7 @@
 #import "SKLineWell.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
+#import "SKNumberArrayFormatter.h"
 
 NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";
 NSString *SKLineInspectorLineStyleDidChangeNotification = @"SKLineInspectorLineStyleDidChangeNotification";
@@ -513,91 +514,6 @@ static SKLineInspector *sharedLineInspector = nil;
     } else {
         [super setNilValueForKey:key];
     }
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKNumberArrayFormatter
-
-- (void)commonInit {
-    numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    [numberFormatter setFormat:@"0;0;-0"];
-    [numberFormatter setMinimum:[NSNumber numberWithFloat:0.0]];
-}
-
- - (id)init {
-    if (self = [super init])
-        [self commonInit];
-    return self;
- }
-
- - (id)initWithCoder:(NSCoder *)aCoder {
-    if (self = [super initWithCoder:aCoder])
-        [self commonInit];
-    return self;
-}
-
-- (void)dealloc {
-    [numberFormatter release];
-    [super dealloc];
-}
- 
-- (NSString *)stringForObjectValue:(id)obj {
-    if ([obj isKindOfClass:[NSNumber class]])
-        obj = [NSArray arrayWithObjects:obj, nil];
-    
-    NSEnumerator *numberEnum = [obj objectEnumerator];
-    NSNumber *number;
-    NSMutableString *string = [NSMutableString string];
-    
-    while (number = [numberEnum nextObject]) {
-        NSString *s = [numberFormatter stringForObjectValue:number];
-        if ([s length]) {
-            if ([string length])
-                [string appendString:@" "];
-            [string appendString:s];
-        }
-    }
-    return string;
-}
-
-- (NSAttributedString *)attributedStringForObjectValue:(id)obj withDefaultAttributes:(NSDictionary *)attrs {
-    if ([obj isKindOfClass:[NSNumber class]])
-        obj = [NSArray arrayWithObjects:obj, nil];
-    
-    NSEnumerator *numberEnum = [obj objectEnumerator];
-    NSNumber *number;
-    NSMutableAttributedString *string = [[[NSMutableAttributedString alloc] init] autorelease];
-    
-    while (number = [numberEnum nextObject]) {
-        NSAttributedString *s = [numberFormatter attributedStringForObjectValue:number withDefaultAttributes:attrs];
-        if ([s length]) {
-            if ([string length])
-                [string appendAttributedString:[[[NSAttributedString alloc] initWithString:@" " attributes:attrs] autorelease]];
-            [string appendAttributedString:s];
-        }
-    }
-    return string;
-}
-
-- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
-    NSEnumerator *stringEnum = [[string componentsSeparatedByString:@" "] objectEnumerator];
-    NSString *s;
-    NSNumber *number;
-    NSMutableArray *array = [NSMutableArray array];
-    BOOL success = YES;
-    
-    while (success && (s = [stringEnum nextObject])) {
-        if ([s length] && (success = [numberFormatter getObjectValue:&number forString:s errorDescription:error]))
-            [array addObject:number];
-    }
-    if (success)
-        *obj = array;
-    return success;
 }
 
 @end
