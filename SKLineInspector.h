@@ -92,9 +92,3 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 - (void)changeEndLineStyle:(id)sender;
 
 @end
-
-
-@interface SKNumberArrayFormatter : NSFormatter {
-    NSNumberFormatter *numberFormatter;
-}
-@end
