@@ -38,7 +38,7 @@
 #import "SKAgentListener.h"
 #import "SKAgentListenerProtocol.h"
 #import <AppKit/AppKit.h>
-#import "NSFileManager_ExtendedAttributes.h"
+#import "NSFileManager_SKExtendedAttributes.h"
 
 
 @implementation SKAgentListener

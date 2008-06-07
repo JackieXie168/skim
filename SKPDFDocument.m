@@ -40,7 +40,7 @@
 #import <Quartz/Quartz.h>
 #import <Carbon/Carbon.h>
 #import "SKMainWindowController.h"
-#import "NSFileManager_ExtendedAttributes.h"
+#import "NSFileManager_SKExtendedAttributes.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKPSProgressController.h"

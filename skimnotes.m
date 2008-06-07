@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "NSFileManager_ExtendedAttributes.h"
+#import "NSFileManager_SKExtendedAttributes.h"
 #import "SKAgentListener.h"
 
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"

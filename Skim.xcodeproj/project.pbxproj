@@ -115,7 +115,7 @@
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
-		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
+		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
 		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
@@ -220,7 +220,7 @@
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
-		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
+		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_SKExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */; };
 		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
@@ -588,8 +588,8 @@
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
-		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_ExtendedAttributes.h; sourceTree = "<group>"; };
-		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_ExtendedAttributes.m; sourceTree = "<group>"; };
+		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKExtendedAttributes.h; sourceTree = "<group>"; };
+		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKExtendedAttributes.m; sourceTree = "<group>"; };
 		CE54898B0B35D4EF00F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
@@ -1110,8 +1110,8 @@
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */,
 				CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */,
-				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
-				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.h */,
+				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */,
 				CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */,
 				CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */,
 				CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */,
@@ -1933,7 +1933,7 @@
 				4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */,
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
-				CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */,
+				CE5487BC0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m in Sources */,
 				CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */,
 				F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */,
 				F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */,
@@ -2077,7 +2077,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */,
-				CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */,
+				CEF3C0AE0B9A15E800E12E3D /* NSFileManager_SKExtendedAttributes.m in Sources */,
 				CEFA61300D9C76A10003F152 /* SKAgentListener.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
