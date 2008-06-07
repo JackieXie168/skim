@@ -1,5 +1,5 @@
 //
-//  NSFileManager_ExtendedAttributes.h
+//  NSFileManager_SKExtendedAttributes.h
 //
 //  Created by Adam R. Maxwell on 05/12/05.
 //  Copyright 2005-2008 Adam R. Maxwell. All rights reserved.
@@ -40,11 +40,11 @@ enum {
 };
 
 /*!
-    @category    NSFileManager (ExtendedAttributes)
+    @category    NSFileManager (SKExtendedAttributes)
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
     @discussion  (comprehensive description)
 */
-@interface NSFileManager (ExtendedAttributes)
+@interface NSFileManager (SKExtendedAttributes)
 
 /*!
     @method     extendedAttributeNamesAtPath:traverseLink:

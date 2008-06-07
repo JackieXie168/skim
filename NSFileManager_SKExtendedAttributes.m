@@ -1,5 +1,5 @@
 //
-//  NSFileManager_ExtendedAttributes.m
+//  NSFileManager_SKExtendedAttributes.m
 //
 //  Created by Adam R. Maxwell on 05/12/05.
 //  Copyright 2005-2008 Adam R. Maxwell. All rights reserved.
@@ -28,7 +28,7 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSFileManager_ExtendedAttributes.h"
+#import "NSFileManager_SKExtendedAttributes.h"
 #include <sys/xattr.h>
 #import "bzlib.h"
 
@@ -43,7 +43,7 @@
 // private function to print error messages
 static NSString *xattrError(int err, const char *path);
 
-@implementation NSFileManager (ExtendedAttributes)
+@implementation NSFileManager (SKExtendedAttributes)
 
 - (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
