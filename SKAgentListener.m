@@ -40,6 +40,10 @@
 #import <AppKit/AppKit.h>
 #import "NSFileManager_SKExtendedAttributes.h"
 
+#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
+#define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
+#define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
+
 
 @implementation SKAgentListener
 
@@ -121,7 +125,7 @@
         if (nil == data)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
-        data = [[NSFileManager defaultManager] extendedAttributeNamed:@"net_sourceforge_skim-app_notes" atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
+        data = [[NSFileManager defaultManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
         if (nil == data && [error code] != ENOATTR)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
@@ -141,7 +145,7 @@
         if (nil == data)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
-        data = [[NSFileManager defaultManager] extendedAttributeNamed:@"net_sourceforge_skim-app_rtf_notes" atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
+        data = [[NSFileManager defaultManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
         if (nil == data && [error code] != ENOATTR)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
@@ -161,7 +165,7 @@
         if (nil == string)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
-        string = [[NSFileManager defaultManager] propertyListFromExtendedAttributeNamed:@"net_sourceforge_skim-app_text_notes" atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
+        string = [[NSFileManager defaultManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
         if (nil == string && [[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR)
             fprintf(stderr, "SkimNotesAgent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
