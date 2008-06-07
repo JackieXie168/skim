@@ -30,13 +30,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef UInt32 BDSKXattrFlags;
+typedef UInt32 SKXattrFlags;
 enum {
-    kBDSKXattrDefault     = 0,       /* create or replace, follow symlinks, split data    */
-    kBDSKXattrNoFollow    = 1L << 1, /* don't follow symlinks                             */
-    kBDSKXattrCreateOnly  = 1L << 2, /* setting will fail if the attribute already exists */
-    kBDSKXattrReplaceOnly = 1L << 3, /* setting will fail if the attribute does not exist */
-    kBDSKXattrNoSplitData = 1L << 4  /* don't split data objects into segments            */
+    kSKXattrDefault     = 0,       /* create or replace, follow symlinks, split data    */
+    kSKXattrNoFollow    = 1L << 1, /* don't follow symlinks                             */
+    kSKXattrCreateOnly  = 1L << 2, /* setting will fail if the attribute already exists */
+    kSKXattrReplaceOnly = 1L << 3, /* setting will fail if the attribute does not exist */
+    kSKXattrNoSplitData = 1L << 4  /* don't split data objects into segments            */
 };
 
 /*!
@@ -100,11 +100,11 @@ enum {
     @param      attr The attribute name.
     @param      value The value of the attribute as NSData.
     @param      path Path to the object in the file system.
-    @param      options see BDSKXattrFlags
+    @param      options see SKXattrFlags
     @param      error Error object describing the error if NO was returned.
     @result     Returns NO if an error occurred.
 */
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(SKXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     setExtendedAttributeNamed:toPropertyListValue:atPath:options:error:
@@ -117,7 +117,7 @@ enum {
     @param      error (description)
     @result     (description)
 */
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(SKXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     removeExtendedAttribute:atPath:followLinks:error:

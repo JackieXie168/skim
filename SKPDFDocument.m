@@ -738,7 +738,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             //NSLog(@"%@: %@", self, error);
         }
         
-        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_notes" toValue:data atPath:path options:kBDSKXattrDefault error:&error] == NO) {
+        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_notes" toValue:data atPath:path options:kSKXattrDefault error:&error] == NO) {
             success = NO;
             if (outError) *outError = error;
             NSLog(@"%@: %@", self, error);
