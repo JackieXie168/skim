@@ -123,38 +123,38 @@ extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
 #pragma mark -
 
 static inline
-Rect RectFromNSRect(NSRect rect) {
+Rect SKQDRectFromNSRect(NSRect nsRect) {
     Rect qdRect;
-    qdRect.left = round(NSMinX(rect));
-    qdRect.bottom = round(NSMinY(rect));
-    qdRect.right = round(NSMaxX(rect));
-    qdRect.top = round(NSMaxY(rect));
+    qdRect.left = round(NSMinX(nsRect));
+    qdRect.bottom = round(NSMinY(nsRect));
+    qdRect.right = round(NSMaxX(nsRect));
+    qdRect.top = round(NSMaxY(nsRect));
     return qdRect;
 }
 
 static inline
-NSRect NSRectFromRect(Rect qdRect) {
-    NSRect rect;
-    rect.origin.x = (float)qdRect.left;
-    rect.origin.y = (float)qdRect.bottom;
-    rect.size.width = (float)(qdRect.right - qdRect.left);
-    rect.size.height = (float)(qdRect.top - qdRect.bottom);
-    return rect;
+NSRect SKNSRectFromQDRect(Rect qdRect) {
+    NSRect nsRect;
+    nsRect.origin.x = (float)qdRect.left;
+    nsRect.origin.y = (float)qdRect.bottom;
+    nsRect.size.width = (float)(qdRect.right - qdRect.left);
+    nsRect.size.height = (float)(qdRect.top - qdRect.bottom);
+    return nsRect;
 }
 
 
 static inline
-Point PointFromNSPoint(NSPoint point) {
+Point SKQDPointFromNSPoint(NSPoint nsPoint) {
     Point qdPoint;
-    qdPoint.h = round(point.x);
-    qdPoint.v = round(point.y);
+    qdPoint.h = round(nsPoint.x);
+    qdPoint.v = round(nsPoint.y);
     return qdPoint;
 }
 
 static inline
-NSPoint NSPointFromPoint(Point qdPoint) {
-    NSPoint point;
-    point.x = (float)qdPoint.h;
-    point.y = (float)qdPoint.v;
-    return point;
+NSPoint SKNSPointFromQDPoint(Point qdPoint) {
+    NSPoint nsPoint;
+    nsPoint.x = (float)qdPoint.h;
+    nsPoint.y = (float)qdPoint.v;
+    return nsPoint;
 }

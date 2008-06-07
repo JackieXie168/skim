@@ -1855,14 +1855,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSData *)selectionQDRect {
-    Rect qdRect = RectFromNSRect([[self pdfView] currentSelectionRect]);
+    Rect qdRect = SKQDRectFromNSRect([[self pdfView] currentSelectionRect]);
     return [NSData dataWithBytes:&qdRect length:sizeof(Rect)];
 }
 
 - (void)setSelectionQDRect:(NSData *)inQDRectAsData {
     if ([inQDRectAsData length] == sizeof(Rect)) {
         const Rect *qdBounds = (const Rect *)[inQDRectAsData bytes];
-        NSRect newBounds = NSRectFromRect(*qdBounds);
+        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
         [[self pdfView] setCurrentSelectionRect:newBounds];
         if ([[self pdfView] currentSelectionPage] == nil)
             [[self pdfView] setCurrentSelectionPage:[[self pdfView] currentPage]];
@@ -2055,7 +2055,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         page = [[self pdfView] currentPage];
     if ([pointData isKindOfClass:[NSDate class]] && [pointData length] != sizeof(Point)) {
         const Point *qdPoint = (const Point *)[pointData bytes];
-        point = NSPointFromPoint(*qdPoint);
+        point = SKNSPointFromQDPoint(*qdPoint);
     } else {
         NSRect bounds = [page boundsForBox:[[self pdfView] displayBox]];
         point = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
