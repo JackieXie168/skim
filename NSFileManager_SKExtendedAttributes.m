@@ -412,13 +412,31 @@ static NSString *xattrError(int err, const char *path);
     if  (nil == allAttributes)
         return NO;
     
+    const char *fsPath;
+    ssize_t status;
+    int err;
+    NSString *errMsg;
+    int xopts;
+    
+    if(follow)
+        xopts = 0;
+    else
+        xopts = XATTR_NOFOLLOW;
+    
     NSEnumerator *e = [allAttributes objectEnumerator];
     NSString *attrName;
     while (attrName = [e nextObject]) {
         
+        fsPath = [self fileSystemRepresentationWithPath:path];
+        status = removexattr(fsPath, [attrName UTF8String], xopts);
+        
         // return NO as soon as any single removal fails
-        if ([self removeExtendedAttribute:attrName atPath:path traverseLink:follow error:error] == NO)
+        if (status == -1){
+            err = errno;
+            errMsg = xattrError(err, fsPath);
+            if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
             return NO;
+        }
     }
     return YES;
 }
