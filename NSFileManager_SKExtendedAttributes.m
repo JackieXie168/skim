@@ -242,7 +242,7 @@ static NSString *xattrError(int err, const char *path);
     return plist;
 }
 
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(SKXattrFlags)options error:(NSError **)error;
 {
 
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
@@ -254,16 +254,16 @@ static NSString *xattrError(int err, const char *path);
         
     // options passed to xattr functions
     int xopts = 0;
-    if(options & kBDSKXattrNoFollow)
+    if(options & kSKXattrNoFollow)
         xopts = xopts | XATTR_NOFOLLOW;
-    if(options & kBDSKXattrCreateOnly)
+    if(options & kSKXattrCreateOnly)
         xopts = xopts | XATTR_CREATE;
-    if(options & kBDSKXattrReplaceOnly)
+    if(options & kSKXattrReplaceOnly)
         xopts = xopts | XATTR_REPLACE;
     
     BOOL success;
 
-    if ((options & kBDSKXattrNoSplitData) == 0 && [value length] > MAX_XATTR_LENGTH) {
+    if ((options & kSKXattrNoSplitData) == 0 && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
         value = [value bzip2];
@@ -313,7 +313,7 @@ static NSString *xattrError(int err, const char *path);
     return success;
 }
 
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(SKXattrFlags)options error:(NSError **)error;
 {
     NSString *errorString;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:plist 
