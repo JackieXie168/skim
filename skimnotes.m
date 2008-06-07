@@ -50,18 +50,16 @@ static int SKNActionForName(NSString *actionString) {
         return SKNActionUnknown;
 }
 
-static inline NSString *SKNNormalizedPath(NSString *path, NSString *basePath) {
+static inline NSString *SKNNormalizedPath(NSString *path) {
     if ([path isEqualToString:@"-"] == NO) {
-        unichar ch = [path length] ? [path characterAtIndex:0] : 0;
-        if (basePath && ch != '/' && ch != '~')
-            path = [basePath stringByAppendingPathComponent:path];
+        if ([path isAbsolutePath] == NO) {
+            NSString *basePath = [[NSFileManager defaultManager] currentDirectoryPath];
+            if (basePath)
+                path = [basePath stringByAppendingPathComponent:path];
+        }
         path = [path stringByStandardizingPath];
     }
     return path;
-}
-
-static inline void SKNWriteUsageAndVersion() {
-    fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
 }
 
 int main (int argc, const char * argv[]) {
@@ -70,7 +68,7 @@ int main (int argc, const char * argv[]) {
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     
     if (argc < 2) {
-        SKNWriteUsageAndVersion();
+        fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
         [pool release];
         exit (1);
     }
@@ -134,7 +132,7 @@ int main (int argc, const char * argv[]) {
     } else {
         
         if (argc < 3) {
-            SKNWriteUsageAndVersion();
+            fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
             [pool release];
             exit (1);
         }
@@ -145,7 +143,7 @@ int main (int argc, const char * argv[]) {
         
         if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
             if (argc < 5) {
-                SKNWriteUsageAndVersion();
+                fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
                 [pool release];
                 exit (1);
             }
@@ -160,9 +158,8 @@ int main (int argc, const char * argv[]) {
         }
         
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSString *currentDir = [fm currentDirectoryPath];
-        NSString *pdfPath = SKNNormalizedPath([args objectAtIndex:offset], currentDir);
-        NSString *notesPath = argc < offset + 2 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 1], currentDir);
+        NSString *pdfPath = SKNNormalizedPath([args objectAtIndex:offset]);
+        NSString *notesPath = argc < offset + 2 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 1]);
         BOOL isDir = NO;
         NSError *error = nil;
         
