@@ -6,14 +6,15 @@
 #define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
-static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes agent [SERVER_NAME]\n skimnotes help";
-static char *versionStr = "SkimNotes command-line client, version 2.0.";
+static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes agent [SERVER_NAME]\n skimnotes help\n skimnotes version";
+static char *versionStr = "SkimNotes command-line client, version 2.1.";
 
 static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\nUsage: skimnotes set PDF_FILE [SKIM_FILE|-]\n\nWrites notes to extended attributes of PDF_FILE from SKIM_FILE or standard input.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.";
 static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\nUsage: skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n\nReads Skim, Text, or RTF notes in from extended attributes of PDF_FILE and writes to NOTES_FILE or standard output.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\nReads Skim notes when no format is provided.";
 static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\nUsage: skimnotes remove PDF_FILE\n\nRemoves the Skim notes from the extended attributes of PDF_FILE.";
 static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\nUsage: skimnotes agent [SERVER_NAME]\n\nRuns a Skim Notes agent server with server name SERVER_NAME, to which a Cocoa application can connect using DO.\nWhen SERVER_NAME is not provided, a unique name is generated and returned on standard output.\nThe DO server conforms to the following formal protocol.\n\n@protocol SKAgentListenerProtocol\n- (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;\n@end\n";
 static char *helpHelpStr = "skimnotes help: get help on the skimnotes tool\nUsage: skimnotes help [VERB]]\n\nGet help on the verb VERB.";
+static char *versionHelpStr = "skimnotes version: get version of the skimnotes tool\nUsage: skimnotes version.\n\nGet the version of the tool and exit.";
 
 enum {
     SKNActionUnknown,
@@ -21,6 +22,7 @@ enum {
     SKNActionSet,
     SKNActionRemove,
     SKNActionAgent,
+    SKNActionVersion,
     SKNActionHelp
 };
 
@@ -40,6 +42,8 @@ static int SKNActionForName(NSString *actionString) {
         return SKNActionRemove;
     else if ([actionString caseInsensitiveCompare:@"agent"] == NSOrderedSame)
         return SKNActionAgent;
+    else if ([actionString caseInsensitiveCompare:@"version"] == NSOrderedSame)
+        return SKNActionVersion;
     else if ([actionString caseInsensitiveCompare:@"help"] == NSOrderedSame)
         return SKNActionHelp;
     else
@@ -96,7 +100,7 @@ int main (int argc, const char * argv[]) {
         
     } else if (action == SKNActionHelp) {
         
-        int helpAction = SKNActionForName([args count] > 2 ? [args objectAtIndex:2] : nil);
+        int helpAction = SKNActionForName([args count] > 2 ? [args objectAtIndex:2] : @"");
         
         switch (helpAction) {
             case SKNActionUnknown:
@@ -114,11 +118,18 @@ int main (int argc, const char * argv[]) {
             case SKNActionAgent:
                 fprintf (stdout, "%s\n", agentHelpStr);
                 break;
+            case SKNActionVersion:
+                fprintf (stdout, "%s\n", versionHelpStr);
+                break;
             case SKNActionHelp:
                 fprintf (stdout, "%s\n", helpHelpStr);
                 break;
         }
         success = YES;
+        
+    } else if (action == SKNActionVersion) {
+        
+        fprintf (stdout, "%s\n", versionStr);
         
     } else {
         
