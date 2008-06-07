@@ -212,7 +212,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint startPoint = NSPointFromPoint(*qdPoint);
+        NSPoint startPoint = SKNSPointFromQDPoint(*qdPoint);
         
         NSRect bounds = [self bounds];
         NSPoint endPoint = SKIntegralPoint(SKAddPoints([self endPoint], bounds.origin));
@@ -243,14 +243,14 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSPoint startPoint = SKAddPoints([self startPoint], bounds.origin);
     startPoint.x = floorf(startPoint.x);
     startPoint.y = floorf(startPoint.y);
-    Point qdPoint = PointFromNSPoint(startPoint);
+    Point qdPoint = SKQDPointFromNSPoint(startPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint endPoint = NSPointFromPoint(*qdPoint);
+        NSPoint endPoint = SKNSPointFromQDPoint(*qdPoint);
         
         NSRect bounds = [self bounds];
         NSPoint startPoint = SKIntegralPoint(SKAddPoints([self startPoint], bounds.origin));
@@ -281,7 +281,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSPoint endPoint = SKAddPoints([self endPoint], bounds.origin);
     endPoint.x = floorf(endPoint.x);
     endPoint.y = floorf(endPoint.y);
-    Point qdPoint = PointFromNSPoint(endPoint);
+    Point qdPoint = SKQDPointFromNSPoint(endPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 

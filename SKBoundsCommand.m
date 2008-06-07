@@ -80,7 +80,7 @@
             bounds = [selection boundsForPage:page];
     }
     
-    Rect qdBounds = RectFromNSRect(bounds);
+    Rect qdBounds = SKQDRectFromNSRect(bounds);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 

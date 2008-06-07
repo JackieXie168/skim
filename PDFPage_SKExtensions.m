@@ -373,7 +373,7 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSData *)boundsAsQDRect {
-    Rect qdBounds = RectFromNSRect([self boundsForBox:kPDFDisplayBoxCropBox]);
+    Rect qdBounds = SKQDRectFromNSRect([self boundsForBox:kPDFDisplayBoxCropBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
@@ -386,7 +386,7 @@ static IMP originalDealloc = NULL;
         // but we cannot undo the document change count because there may be real changes to the document in the script
         
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = NSRectFromRect(*qdBounds);
+        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
         if (NSWidth(newBounds) < 0.0)
             newBounds.size.width = 0.0;
         if (NSHeight(newBounds) < 0.0)
@@ -399,7 +399,7 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSData *)mediaBoundsAsQDRect {
-    Rect qdBounds = RectFromNSRect([self boundsForBox:kPDFDisplayBoxMediaBox]);
+    Rect qdBounds = SKQDRectFromNSRect([self boundsForBox:kPDFDisplayBoxMediaBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
@@ -412,7 +412,7 @@ static IMP originalDealloc = NULL;
         // but we cannot undo the document change count because there may be real changes to the document in the script
         
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = NSRectFromRect(*qdBounds);
+        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
         if (NSWidth(newBounds) < 0.0)
             newBounds.size.width = 0.0;
         if (NSHeight(newBounds) < 0.0)
@@ -425,7 +425,7 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSData *)contentBoundsAsQDRect {
-    Rect qdBounds = RectFromNSRect([self foregroundBox]);
+    Rect qdBounds = SKQDRectFromNSRect([self foregroundBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 

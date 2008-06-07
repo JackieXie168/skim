@@ -523,7 +523,7 @@ static IMP originalDealloc = NULL;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
     if ([inQDBoundsAsData length] == sizeof(Rect) && [self isMovable]) {
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = NSRectFromRect(*qdBounds);
+        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
         if ([self isResizable] == NO) {
             newBounds.size = [self bounds].size;
         } else {
@@ -538,7 +538,7 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSData *)boundsAsQDRect {
-    Rect qdBounds = RectFromNSRect([self bounds]);
+    Rect qdBounds = SKQDRectFromNSRect([self bounds]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
