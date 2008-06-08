@@ -40,7 +40,7 @@
 
 // This function is not thread safe
 
-extern NSURL *SKDownloadFolderURL();
+NSString *SKDownloadDirectory();
 
 // These functions are thread safe
 

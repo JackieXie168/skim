@@ -39,13 +39,14 @@
 #import "Files_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
-NSURL *SKDownloadFolderURL() {
+NSString *SKDownloadDirectory() {
     
-	static CFURLRef downloadsURL = nil;
+	static NSString *downloadsDirectory = nil;
     
-    if (nil == downloadsURL) {
+    if (nil == downloadsDirectory) {
         OSStatus err = fnfErr;
         FSRef pathRef;
+        CFURLRef downloadsURL;
         
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
             err = FSFindFolder(kUserDomain, kDownloadsFolderType, TRUE, &pathRef);
@@ -69,10 +70,12 @@ NSURL *SKDownloadFolderURL() {
                 ICStop(inst);
             }
         }
-        if(err == noErr)
-            downloadsURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef);
+        if(err == noErr && (downloadsURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef))) {
+            downloadsDirectory = (NSString *)CFURLCopyFileSystemPath(downloadsURL, kCFURLPOSIXPathStyle);
+            CFRelease(downloadsURL);
+        }
     }
-    return (NSURL *)downloadsURL;
+    return downloadsDirectory;
 }
 
 BOOL SKFileIsInTrash(NSURL *fileURL) {
