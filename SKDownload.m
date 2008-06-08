@@ -296,7 +296,7 @@
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    [URLDownload setDestination:[[SKDownloadFolderURL() path] stringByAppendingPathComponent:filename] allowOverwrite:NO];
+    [URLDownload setDestination:[SKDownloadDirectory() stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
