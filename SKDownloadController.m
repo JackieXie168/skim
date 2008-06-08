@@ -78,9 +78,10 @@ static NSString *SKDownloadFileNameKey = @"fileName";
 - (NSString *)windowNibName { return @"DownloadsWindow"; }
 
 - (void)reloadTableView {
-    NSView *view;
-    while (view = [[tableView subviews] lastObject])
-        [view removeFromSuperview];
+    NSEnumerator *downloadEnum = [downloads objectEnumerator];
+    SKDownload *download;
+    while (download = [downloadEnum nextObject])
+        [[download progressIndicator] removeFromSuperview];
     [tableView reloadData];
 }
 
@@ -159,7 +160,7 @@ static NSString *SKDownloadFileNameKey = @"fileName";
     }
     if (download && [download status] == SKDownloadStatusCanceled) {
         [download resumeDownload];
-        [self reloadTableView];
+        [tableView reloadData];
         [self updateButtons];
     }
 }
@@ -244,7 +245,7 @@ static NSString *SKDownloadFileNameKey = @"fileName";
 #pragma mark SKDownloadDelegate
 
 - (void)downloadDidStart:(SKDownload *)download {
-    [self reloadTableView];
+    [tableView reloadData];
     [self updateButtons];
 }
 
