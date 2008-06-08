@@ -1799,8 +1799,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point {
-	PDFPage *page;
-	NSRect bounds;
+	PDFPage *page = nil;
+	NSRect bounds = NSZeroRect;
     PDFSelection *selection = [self currentSelection];
     NSString *text = nil;
 	
@@ -1816,10 +1816,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             bounds = NSInsetRect(bounds, -5.0, -5.0);
         else if (annotationType == SKAnchoredNote)
             bounds.size = SKPDFAnnotationNoteSize;
-	} else if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
-        NSBeep();
-        return;
-    } else {
+	} else if (annotationType != SKHighlightNote && annotationType != SKUnderlineNote && annotationType != SKStrikeOutNote) {
         
 		// First try the current mouse position
         NSPoint center = [self convertPoint:point fromView:nil];
@@ -1845,7 +1842,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         // Make sure it fits in the page
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
 	}
-    [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
+    if (page != nil)
+        [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
+    else NSBeep();
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds {
@@ -2884,7 +2883,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
-    PDFAnnotation *newActiveAnnotation = NULL;
+    PDFAnnotation *newActiveAnnotation = nil;
     NSArray *annotations;
     int i;
     NSPoint pagePoint;
@@ -2934,7 +2933,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         }
     }
     
-    if (hideNotes == NO) {
+    if (hideNotes == NO && page != nil) {
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initNoteWithProperties:[newActiveAnnotation properties]];
