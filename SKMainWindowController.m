@@ -138,6 +138,7 @@ NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
+static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
@@ -2230,7 +2231,10 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
             // Because of a PDFView bug, display properties can not be changed before it is placed in a window
             [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
             [secondaryPdfView setDisplaysPageBreaks:NO];
-            [secondaryPdfView setAutoScales:YES];
+            if ([pdfView autoScales] || [[NSUserDefaults standardUserDefaults] boolForKey:SKSplitPDFCopiesZoomKey] == NO)
+                [secondaryPdfView setAutoScales:YES];
+            else
+                [secondaryPdfView setScaleFactor:[pdfView scaleFactor]];
             [secondaryPdfView setDocument:[pdfView document]];
         } else {
             [secondaryPdfEdgeView setFrame:frame2];
