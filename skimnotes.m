@@ -14,7 +14,7 @@ static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\nUsage: ski
 static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\nUsage: skimnotes remove PDF_FILE\n\nRemoves the Skim notes from the extended attributes of PDF_FILE.";
 static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\nUsage: skimnotes agent [SERVER_NAME]\n\nRuns a Skim Notes agent server with server name SERVER_NAME, to which a Cocoa application can connect using DO.\nWhen SERVER_NAME is not provided, a unique name is generated and returned on standard output.\nThe DO server conforms to the following formal protocol.\n\n@protocol SKAgentListenerProtocol\n- (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;\n@end\n";
 static char *helpHelpStr = "skimnotes help: get help on the skimnotes tool\nUsage: skimnotes help [VERB]\n\nGet help on the verb VERB.";
-static char *versionHelpStr = "skimnotes version: get version of the skimnotes tool\nUsage: skimnotes version.\n\nGet the version of the tool and exit.";
+static char *versionHelpStr = "skimnotes version: get version of the skimnotes tool\nUsage: skimnotes version\n\nGet the version of the tool and exit.";
 
 enum {
     SKNActionUnknown,
