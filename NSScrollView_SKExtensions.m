@@ -126,14 +126,12 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
     [[[[placards lastObject] superview] superview] removeFromSuperview];
     [placards setArray:newPlacards];
     
-    if ([placards count] == 0 && placards) {
-        CFDictionaryRemoveValue(scrollViewPlacards, self);
-        placards = nil;
-    }
-    
     if ([placards count] != 0) {
         originalSetHasHorizontalScroller(self, _cmd, YES);
         originalSetAutohidesScrollers(self, _cmd, NO);
+    } else if (placards) {
+        CFDictionaryRemoveValue(scrollViewPlacards, self);
+        placards = nil;
     }
     
     [self tile];
