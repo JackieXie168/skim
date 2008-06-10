@@ -47,6 +47,7 @@ NSString *SKColorSwatchColorsKey = @"colors";
 
 static NSString *SKColorSwatchTargetKey = @"target";
 static NSString *SKColorSwatchActionKey = @"action";
+static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
 
 static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsObservationContext";
 
@@ -76,19 +77,25 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         return [super valueClassForBinding:binding];
 }
 
+- (void)commonInit {
+    highlightedIndex = -1;
+    insertionIndex = -1;
+    focusedIndex = 0;
+    clickedIndex = -1;
+    draggedIndex = -1;
+    
+    bindingInfo = [[NSMutableDictionary alloc] init];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+}
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         colors = [[NSMutableArray alloc] initWithObjects:[NSColor whiteColor], nil];
-        highlightedIndex = -1;
-        insertionIndex = -1;
-        focusedIndex = 0;
-        clickedIndex = -1;
-        draggedIndex = -1;
+        action = NULL;
+        target = nil;
         autoResizes = YES;
-        
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
@@ -99,21 +106,14 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
             colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:SKColorSwatchColorsKey]];
             action = NSSelectorFromString([decoder decodeObjectForKey:SKColorSwatchActionKey]);
             target = [decoder decodeObjectForKey:SKColorSwatchTargetKey];
+            autoResizes = [decoder decodeBoolForKey:SKColorSwatchAutoresizesKey];
         } else {
             colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObject]];
             [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
             target = [decoder decodeObject];
+            [decoder decodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
         }
-        
-        highlightedIndex = -1;
-        insertionIndex = -1;
-        focusedIndex = 0;
-        clickedIndex = -1;
-        draggedIndex = -1;
-        autoResizes = YES;
-        
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
@@ -124,10 +124,12 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
         [coder encodeObject:colors forKey:SKColorSwatchColorsKey];
         [coder encodeObject:NSStringFromSelector(action) forKey:SKColorSwatchActionKey];
         [coder encodeConditionalObject:target forKey:SKColorSwatchTargetKey];
+        [coder encodeBool:autoResizes forKey:SKColorSwatchAutoresizesKey];
     } else {
         [coder encodeObject:colors];
         [coder encodeValueOfObjCType:@encode(SEL) at:action];
         [coder encodeConditionalObject:target];
+        [coder encodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
     }
 }
 
