@@ -58,6 +58,7 @@
 #import "SKGroupedSearchResult.h"
 #import "NSString_SKExtensions.h"
 #import "SKApplication.h"
+#import "NSMenu_SKExtensions.h"
 
 static NSString *SKMainWindowLabelColumnIdentifer = @"label";
 static NSString *SKMainWindowNoteColumnIdentifer = @"note";
@@ -346,23 +347,19 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     NSMenu *menu = nil;
     if ([tv isEqual:thumbnailTableView]) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) target:self];
         [menuItem setRepresentedObject:[[pdfView document] pageAtIndex:row]];
     } else if ([tv isEqual:snapshotTableView]) {
         [snapshotTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) target:self];
         [menuItem setRepresentedObject:controller];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(showSnapshot:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(showSnapshot:) target:self];
         [menuItem setRepresentedObject:controller];
         if ([[controller window] isVisible]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Hide", @"Menu item title") action:@selector(hideSnapshot:) keyEquivalent:@""];
-            [menuItem setTarget:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Hide", @"Menu item title") action:@selector(hideSnapshot:) target:self];
             [menuItem setRepresentedObject:controller];
         }
     }
@@ -780,13 +777,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         if ([self outlineView:ov canDeleteItems:items]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) keyEquivalent:@""];
-            [menuItem setTarget:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNotes:) target:self];
             [menuItem setRepresentedObject:items];
         }
         if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) keyEquivalent:@""];
-            [menuItem setTarget:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
             [menuItem setRepresentedObject:items];
         }
         if ([pdfView hideNotes] == NO) {
@@ -794,25 +789,21 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             if ([noteItems count] == 1) {
                 PDFAnnotation *annotation = [noteItems lastObject];
                 if ([annotation isEditable]) {
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
-                    [menuItem setTarget:pdfView];
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) target:pdfView];
                     [menuItem setRepresentedObject:annotation];
                 }
                 if ([pdfView activeAnnotation] == annotation)
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) keyEquivalent:@""];
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
                 else
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) keyEquivalent:@""];
-                [menuItem setTarget:self];
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
                 [menuItem setRepresentedObject:annotation];
             }
         }
         if ([menu numberOfItems] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
-        menuItem = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
         [menuItem setRepresentedObject:items];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
     }
     return menu;
 }

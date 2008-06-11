@@ -52,6 +52,7 @@
 #import "SKStatusBar.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -464,16 +465,13 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
     if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) target:self];
         [menuItem setRepresentedObject:item];
         [menu addItem:[NSMenuItem separatorItem]];
     }
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
-    [menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
     [menuItem setRepresentedObject:item];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) keyEquivalent:@""];
-    [menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
     
     return menu;
 }

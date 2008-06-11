@@ -42,6 +42,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 
 @implementation SKNoteOutlineView
@@ -207,43 +208,33 @@
     if (menu == nil) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         NSMenuItem *menuItem = nil;
-        menuItem = [menu addItemWithTitle:[SKFreeTextString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKFreeTextString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKFreeTextString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNoteString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKNoteString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setState:NSOnState];
         [menuItem setRepresentedObject:SKNoteString];
-        menuItem = [menu addItemWithTitle:[SKCircleString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKCircleString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKCircleString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKSquareString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKSquareString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKSquareString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKHighlightString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKHighlightString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKHighlightString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKUnderlineString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKUnderlineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKUnderlineString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKStrikeOutString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKLineString typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[SKLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKLineString];
         [menuItem setState:NSOnState];
         [menu addItem:[NSMenuItem separatorItem]];
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
-        [menuItem setTarget:self];
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) target:self];
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) target:self];
         [[self headerView] setMenu:menu];
     }
     

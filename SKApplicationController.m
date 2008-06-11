@@ -70,6 +70,7 @@
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKRemoteStateWindow.h"
+#import "NSMenu_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
@@ -311,8 +312,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 #pragma mark Support
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
-    NSMenu *supermenu = [menu supermenu];
-    NSMenuItem *item = [supermenu itemAtIndex:[supermenu indexOfItemWithSubmenu:menu]];
+    NSMenuItem *item = [menu supermenuItem];
     SKBookmark *bm = [item representedObject];
     
     if ([bm isKindOfClass:[SKBookmark class]]) {
@@ -326,18 +326,16 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             bm = [bookmarks objectAtIndex:i];
             switch ([bm bookmarkType]) {
                 case SKBookmarkTypeFolder:
-                    item = [menu addItemWithTitle:[bm label] action:NULL keyEquivalent:@""];
+                    item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
                     [item setRepresentedObject:bm];
                     [item setImage:[bm icon]];
-                    [item setSubmenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
                     [[item submenu] setDelegate:self];
                     break;
                 case SKBookmarkTypeSeparator:
                     [menu addItem:[NSMenuItem separatorItem]];
                     break;
                 default:
-                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
-                    [item setTarget:self];
+                    item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
                     [item setRepresentedObject:bm];
                     [item setImage:[bm icon]];
                     break;
