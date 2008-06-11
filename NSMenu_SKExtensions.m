@@ -91,6 +91,12 @@
     return [self insertItemWithTitle:aString submenu:aSubmenu atIndex:[self numberOfItems]];
 }
 
+- (void)removeAllItems {
+    NSInteger i = [self numberOfItems];
+    while (i--)
+        [self removeItemAtIndex:i];
+}
+
 @end
 
 

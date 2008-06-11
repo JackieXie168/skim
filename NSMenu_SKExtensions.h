@@ -55,6 +55,8 @@
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu atIndex:(NSInteger)anIndex;
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
 
+- (void)removeAllItems;
+
 @end
 
 
