@@ -49,8 +49,8 @@
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex;
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 
-- (NSMenuItem *)insertItemWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex;
-- (NSMenuItem *)addItemWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
+- (NSMenuItem *)insertItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex;
+- (NSMenuItem *)addItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu atIndex:(NSInteger)anIndex;
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
@@ -62,7 +62,7 @@
 
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget;
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
-- (id)initWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
+- (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 - (id)initWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
 
 @end

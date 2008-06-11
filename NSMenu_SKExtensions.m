@@ -69,15 +69,15 @@
     return [self insertItemWithTitle:aString action:aSelector target:aTarget tag:aTag atIndex:[self numberOfItems]];
 }
 
-- (NSMenuItem *)insertItemWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex {
-    NSMenuItem *item = [[NSMenuItem allocWithZone:[self zone]] initWithTitle:aString image:anImage action:aSelector target:aTarget tag:aTag];
+- (NSMenuItem *)insertItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag atIndex:(NSInteger)anIndex {
+    NSMenuItem *item = [[NSMenuItem allocWithZone:[self zone]] initWithTitle:aString imageNamed:anImageName action:aSelector target:aTarget tag:aTag];
     [self insertItem:item atIndex:anIndex];
     [item release];
     return item;
 }
 
-- (NSMenuItem *)addItemWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
-    return [self insertItemWithTitle:aString image:anImage action:aSelector target:aTarget tag:aTag atIndex:[self numberOfItems]];
+- (NSMenuItem *)addItemWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
+    return [self insertItemWithTitle:aString imageNamed:anImageName action:aSelector target:aTarget tag:aTag atIndex:[self numberOfItems]];
 }
 
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu atIndex:(NSInteger)anIndex {
@@ -97,16 +97,17 @@
 @implementation NSMenuItem (SKExtensions)
 
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget {
-    return [self initWithTitle:aString image:nil action:aSelector target:aTarget tag:0];
+    return [self initWithTitle:aString imageNamed:nil action:aSelector target:aTarget tag:0];
 }
 
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
-    return [self initWithTitle:aString image:nil action:aSelector target:aTarget tag:aTag];
+    return [self initWithTitle:aString imageNamed:nil action:aSelector target:aTarget tag:aTag];
 }
 
-- (id)initWithTitle:(NSString *)aString image:(NSImage *)anImage action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
+- (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
     if (self = [self initWithTitle:aString action:aSelector keyEquivalent:@""]) {
-        [self setImage:anImage];
+        if (anImageName)
+            [self setImage:[NSImage imageNamed:anImageName]];
         [self setTarget:aTarget];
         [self setTag:aTag];
     }
