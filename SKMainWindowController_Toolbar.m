@@ -423,13 +423,13 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 #pragma mark SKDocumentToolbarNewTextNoteItemIdentifier
 	
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddTextNote] action:@selector(createNewTextNote:) target:self tag:SKFreeTextNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddAnchoredNote] action:@selector(createNewTextNote:) target:self tag:SKAnchoredNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewTextNote:) target:self tag:SKFreeTextNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewTextNote:) target:self tag:SKAnchoredNote];
     [textNoteButton setMenu:menu forSegment:0];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddTextNote] action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddAnchoredNote] action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") submenu:menu] autorelease];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewTextNoteItemIdentifier];
@@ -444,13 +444,13 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 #pragma mark SKDocumentToolbarNewCircleNoteItemIdentifier
 	
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddCircleNote] action:@selector(createNewCircleNote:) target:self tag:SKCircleNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddSquareNote] action:@selector(createNewCircleNote:) target:self tag:SKSquareNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewCircleNote:) target:self tag:SKCircleNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarAddSquareNote action:@selector(createNewCircleNote:) target:self tag:SKSquareNote];
     [circleNoteButton setMenu:menu forSegment:0];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddCircleNote] action:@selector(createNewNote:) target:self tag:SKCircleNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddSquareNote] action:@selector(createNewNote:) target:self tag:SKSquareNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewNote:) target:self tag:SKCircleNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarAddSquareNote action:@selector(createNewNote:) target:self tag:SKSquareNote];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Shape", @"Toolbar item label") submenu:menu] autorelease];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
@@ -465,15 +465,15 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 #pragma mark SKDocumentToolbarNewMarkupItemIdentifier
 	
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddHighlightNote] action:@selector(createNewMarkupNote:) target:self tag:SKHighlightNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddUnderlineNote] action:@selector(createNewMarkupNote:) target:self tag:SKUnderlineNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote] action:@selector(createNewMarkupNote:) target:self tag:SKStrikeOutNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarAddHighlightNote action:@selector(createNewMarkupNote:) target:self tag:SKHighlightNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarAddUnderlineNote action:@selector(createNewMarkupNote:) target:self tag:SKUnderlineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarAddStrikeOutNote action:@selector(createNewMarkupNote:) target:self tag:SKStrikeOutNote];
     [markupNoteButton setMenu:menu forSegment:0];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddHighlightNote] action:@selector(createNewNote:) target:self tag:SKHighlightNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddUnderlineNote] action:@selector(createNewNote:) target:self tag:SKUnderlineNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote] action:@selector(createNewNote:) target:self tag:SKStrikeOutNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarAddHighlightNote action:@selector(createNewNote:) target:self tag:SKHighlightNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarAddUnderlineNote action:@selector(createNewNote:) target:self tag:SKUnderlineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarAddStrikeOutNote action:@selector(createNewNote:) target:self tag:SKStrikeOutNote];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Markup", @"Toolbar item label") submenu:menu] autorelease];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewMarkupItemIdentifier];
@@ -502,14 +502,14 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 #pragma mark SKDocumentToolbarNewNoteItemIdentifier
 	
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddTextNote] action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddAnchoredNote] action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddCircleNote] action:@selector(createNewNote:) target:self tag:SKCircleNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddSquareNote] action:@selector(createNewNote:) target:self tag:SKSquareNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddHighlightNote] action:@selector(createNewNote:) target:self tag:SKHighlightNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddUnderlineNote] action:@selector(createNewNote:) target:self tag:SKUnderlineNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote] action:@selector(createNewNote:) target:self tag:SKStrikeOutNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAddLineNote] action:@selector(createNewNote:) target:self tag:SKLineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewNote:) target:self tag:SKCircleNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarAddSquareNote action:@selector(createNewNote:) target:self tag:SKSquareNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarAddHighlightNote action:@selector(createNewNote:) target:self tag:SKHighlightNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarAddUnderlineNote action:@selector(createNewNote:) target:self tag:SKUnderlineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarAddStrikeOutNote action:@selector(createNewNote:) target:self tag:SKStrikeOutNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") imageNamed:SKImageNameToolbarAddLineNote action:@selector(createNewNote:) target:self tag:SKLineNote];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") submenu:menu] autorelease];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
@@ -532,14 +532,14 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 #pragma mark SKDocumentToolbarToolModeItemIdentifier
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
-    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarTextNote] action:@selector(changeAnnotationMode:) target:self tag:SKFreeTextNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarAnchoredNote] action:@selector(changeAnnotationMode:) target:self tag:SKAnchoredNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarCircleNote] action:@selector(changeAnnotationMode:) target:self tag:SKCircleNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarSquareNote] action:@selector(changeAnnotationMode:) target:self tag:SKSquareNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarHighlightNote] action:@selector(changeAnnotationMode:) target:self tag:SKHighlightNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarUnderlineNote] action:@selector(changeAnnotationMode:) target:self tag:SKUnderlineNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarStrikeOutNote] action:@selector(changeAnnotationMode:) target:self tag:SKStrikeOutNote];
-    [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") image:[NSImage imageNamed:SKImageNameToolbarLineNote] action:@selector(changeAnnotationMode:) target:self tag:SKLineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarTextNote action:@selector(changeAnnotationMode:) target:self tag:SKFreeTextNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAnchoredNote action:@selector(changeAnnotationMode:) target:self tag:SKAnchoredNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarCircleNote action:@selector(changeAnnotationMode:) target:self tag:SKCircleNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarSquareNote action:@selector(changeAnnotationMode:) target:self tag:SKSquareNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarHighlightNote action:@selector(changeAnnotationMode:) target:self tag:SKHighlightNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarUnderlineNote action:@selector(changeAnnotationMode:) target:self tag:SKUnderlineNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarStrikeOutNote action:@selector(changeAnnotationMode:) target:self tag:SKStrikeOutNote];
+    [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") imageNamed:SKImageNameToolbarLineNote action:@selector(changeAnnotationMode:) target:self tag:SKLineNote];
     [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
 	
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
