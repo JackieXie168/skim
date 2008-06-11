@@ -178,17 +178,18 @@ typedef enum _SKInteractionMode {
 
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
-- (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
-- (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;
+
 - (void)editActiveAnnotation:(id)sender;
 - (void)editThisAnnotation:(id)sender;
 - (void)endAnnotationEdit:(id)sender;
+
 - (void)selectNextActiveAnnotation:(id)sender;
 - (void)selectPreviousActiveAnnotation:(id)sender;
+
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
 - (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(unsigned int)pageIndex;
