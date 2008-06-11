@@ -38,6 +38,7 @@
 
 #import "SKOutlineView.h"
 #import "SKTypeSelectHelper.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKOutlineView
@@ -87,9 +88,8 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    unichar eventChar = [theEvent firstCharacter];
+	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];

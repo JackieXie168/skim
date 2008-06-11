@@ -79,6 +79,7 @@
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
+		CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
 		CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */; };
@@ -480,6 +481,8 @@
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSEvent_SKExtensions.h; sourceTree = "<group>"; };
+		CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSEvent_SKExtensions.m; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
@@ -1505,6 +1508,8 @@
 				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CE0ECD1A0DE73604006EEDDB /* NSDocument_SKExtensions.h */,
 				CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */,
+				CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */,
+				CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */,
 				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
 				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
 				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
@@ -2061,6 +2066,7 @@
 				CE4643DB0DF6B66000CFD8D2 /* SKIndexCommand.m in Sources */,
 				CE4643DE0DF6B77800CFD8D2 /* SKBoundsCommand.m in Sources */,
 				CE4645910DF8140200CFD8D2 /* SKNumberArrayFormatter.m in Sources */,
+				CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

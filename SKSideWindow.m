@@ -39,6 +39,7 @@
 #import "SKSideWindow.h"
 #import "SKMainWindowController.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -171,9 +172,8 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    unichar ch = [theEvent firstCharacter];
+	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (ch == 0x1B && modifierFlags == 0) {
         if (state == NSDrawerOpenState || state == NSDrawerOpeningState)

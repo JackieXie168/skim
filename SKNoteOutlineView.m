@@ -41,6 +41,7 @@
 #import "SKTypeSelectHelper.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKNoteOutlineView
@@ -111,9 +112,8 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+    unichar eventChar = [theEvent firstCharacter];
+	unsigned modifiers = [theEvent standardModifierFlags];
     
     if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifiers == 0) {
         if ([[self delegate] respondsToSelector:@selector(outlineViewInsertNewline:)])

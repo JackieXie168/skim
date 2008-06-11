@@ -70,6 +70,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityProxyElement.h"
+#import "NSEvent_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 8
 #define TOOL_MODE_COUNT 5
@@ -988,9 +989,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+    unichar eventChar = [theEvent firstCharacter];
+	unsigned int modifiers = [theEvent standardModifierFlags];
     
     if (interactionMode == SKPresentationMode) {
         // Presentation mode

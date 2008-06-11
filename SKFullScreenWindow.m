@@ -38,6 +38,7 @@
 
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKFullScreenWindow
@@ -70,9 +71,8 @@
 - (BOOL)canBecomeMainWindow { return YES; }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    unichar ch = [theEvent firstCharacter];
+	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (modifierFlags == 0) {
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
