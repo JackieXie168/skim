@@ -127,6 +127,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 @interface SKPDFView (Private)
 
+- (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
+- (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
+
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
 
 - (NSRange)visiblePageIndexRange;
@@ -1832,7 +1835,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if (page == nil) {
                 // Get center of the current page
                 page = [self currentPage];
-                center = [sef convertPoint:SKCenterPoint([page bounds]) fromPage:page];
+                center = [self convertPoint:SKCenterPoint([page boundsForBox:[self displayBox]]) fromPage:page];
             }
         }
         
