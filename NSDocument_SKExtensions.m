@@ -78,12 +78,15 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 }
 
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
-    NSDictionary *docAttributes = nil;
-    NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
-    NSFileWrapper *fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
-    [templateAttrString release];
+    NSFileWrapper *fileWrapper = nil;
+    if ([[templateFile pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
+        NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSDictionary *docAttributes = nil;
+        NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
+        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+        NSFileWrapper *fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
+        [templateAttrString release];
+    }
     return fileWrapper;
 }
 
