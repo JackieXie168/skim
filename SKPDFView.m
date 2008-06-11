@@ -1829,6 +1829,11 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             NSRect viewFrame = [self frame];
             center = SKCenterPoint(viewFrame);
             page = [self pageForPoint: center nearest: YES];
+            if (page == nil) {
+                // Get center of the current page
+                page = [self currentPage];
+                center = [sef convertPoint:SKCenterPoint([page bounds]) fromPage:page];
+            }
         }
         
         float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
