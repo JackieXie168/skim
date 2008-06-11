@@ -38,6 +38,7 @@
 
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKTableView
@@ -65,9 +66,8 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    unichar eventChar = [theEvent firstCharacter];
+	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
     
 	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
