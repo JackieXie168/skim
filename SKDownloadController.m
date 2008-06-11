@@ -44,6 +44,7 @@
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSString_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
@@ -393,30 +394,24 @@ static NSString *SKDownloadFileNameKey = @"fileName";
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     
     if ([download canCancel]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
         [menuItem setRepresentedObject:download];
     } else {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
         [menuItem setRepresentedObject:download];
     }
     if ([download canResume]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
         [menuItem setRepresentedObject:download];
     }
     if ([download status] == SKDownloadStatusFinished) {
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Open", @"Menu item title") stringByAppendingEllipsis] action:@selector(openDownloadedFile:) target:self];
         [menuItem setRepresentedObject:download];
         
-        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Reveal", @"Menu item title") stringByAppendingEllipsis] action:@selector(revealDownloadedFile:) target:self];
         [menuItem setRepresentedObject:download];
         
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) keyEquivalent:@""];
-        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Move to Trash", @"Menu item title") action:@selector(trashDownloadedFile:) target:self];
         [menuItem setRepresentedObject:download];
     }
     
