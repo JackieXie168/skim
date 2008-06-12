@@ -1,10 +1,10 @@
 //
-//  NSScanner_SKExtensions.h
+//  NSAttributedString_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/22/07.
+//  Created by Christiaan Hofman on 6/12/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,11 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSScanner (SKExtensions)
+@interface NSAttributedString (SKExtensions)
 
-- (BOOL)scanCharacter:(unichar *)ch;
-- (BOOL)peekCharacter:(unichar *)ch;
+- (NSAttributedString *)accessibilityAttributedString;
+
+- (NSString *)xmlString;
+- (NSData *)RTFRepresentation;
 
 @end

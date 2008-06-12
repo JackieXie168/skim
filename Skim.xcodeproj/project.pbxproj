@@ -80,6 +80,8 @@
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
 		CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */; };
+		CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401DF0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m */; };
+		CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */; };
 		CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
@@ -484,6 +486,10 @@
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMenu_SKExtensions.h; sourceTree = "<group>"; };
 		CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenu_SKExtensions.m; sourceTree = "<group>"; };
+		CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedString_SKExtensions.h; sourceTree = "<group>"; };
+		CE3401DF0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSAttributedString_SKExtensions.m; sourceTree = "<group>"; };
+		CE3401E40E01388700A7FFE6 /* NSNumber_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumber_SKExtensions.h; sourceTree = "<group>"; };
+		CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSNumber_SKExtensions.m; sourceTree = "<group>"; };
 		CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSEvent_SKExtensions.h; sourceTree = "<group>"; };
 		CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSEvent_SKExtensions.m; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
@@ -1110,6 +1116,8 @@
 			children = (
 				CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */,
 				CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */,
+				CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */,
+				CE3401DF0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m */,
 				CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */,
 				CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */,
 				CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */,
@@ -1124,6 +1132,8 @@
 				CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */,
 				CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */,
 				CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */,
+				CE3401E40E01388700A7FFE6 /* NSNumber_SKExtensions.h */,
+				CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
@@ -2073,6 +2083,8 @@
 				CE4645910DF8140200CFD8D2 /* SKNumberArrayFormatter.m in Sources */,
 				CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */,
 				CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */,
+				CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */,
+				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -39,6 +39,7 @@
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKPDFView.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "NSAttributedString_SKExtensions.h"
 #import "SKPDFDocument.h"
 #import "SKUtilities.h"
 
@@ -60,11 +61,6 @@
 
 
 @interface PDFDisplayView (SKExtensions)
-@end
-
-
-@interface NSAttributedString (SKExtensions)
-- (NSAttributedString *)accessibilityAttributedString;
 @end
 
 
@@ -282,19 +278,6 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
         SKRegisterMethodImplementationWithSelector(self, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), @selector(replacementAccessibilityAttributedStringForRangeAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
         SKRegisterMethodImplementationWithSelector(self, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), @selector(replacementAccessibilityStyleRangeForIndexAttributeForParameter:));
-}
-
-@end
-
-
-@implementation NSAttributedString (SKExtensions)
-
-- (NSAttributedString *)accessibilityAttributedString {
-    NSTextFieldCell *cell = nil;
-    if (cell == nil)
-        cell = [[NSTextFieldCell alloc] init];
-    [cell setAttributedStringValue:self];
-    return [cell accessibilityAttributeValue:NSAccessibilityAttributedStringForRangeParameterizedAttribute forParameter:[NSValue valueWithRange:NSMakeRange(0, [self length])]];
 }
 
 @end

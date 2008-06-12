@@ -98,4 +98,20 @@
     return NSNotFound;
 }
 
+#pragma mark Templating support
+
+- (NSString *)xmlString {
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
+    NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    int loc = NSMaxRange([string rangeOfString:@"<data>"]);
+    if (loc == NSNotFound)
+        return nil;
+    [string deleteCharactersInRange:NSMakeRange(0, loc)];
+    loc = [string rangeOfString:@"</data>" options:NSBackwardsSearch].location;
+    if (loc == NSNotFound)
+        return nil;
+    [string deleteCharactersInRange:NSMakeRange(loc, [string length] - loc)];
+    return string;
+}
+
 @end

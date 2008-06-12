@@ -1,10 +1,10 @@
 //
-//  NSScanner_SKExtensions.h
+//  NSAttributedString_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/22/07.
+//  Created by Christiaan Hofman on 6/12/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,12 +36,28 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSAttributedString_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 
-@interface NSScanner (SKExtensions)
+@implementation NSAttributedString (SKExtensions)
 
-- (BOOL)scanCharacter:(unichar *)ch;
-- (BOOL)peekCharacter:(unichar *)ch;
+- (NSAttributedString *)accessibilityAttributedString {
+    NSTextFieldCell *cell = nil;
+    if (cell == nil)
+        cell = [[NSTextFieldCell alloc] init];
+    [cell setAttributedStringValue:self];
+    return [cell accessibilityAttributeValue:NSAccessibilityAttributedStringForRangeParameterizedAttribute forParameter:[NSValue valueWithRange:NSMakeRange(0, [self length])]];
+}
+
+#pragma mark Templating support
+
+- (NSString *)xmlString {
+    return [[self string] xmlString];
+}
+
+- (NSData *)RTFRepresentation {
+    return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:nil];
+}
 
 @end

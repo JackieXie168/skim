@@ -261,70 +261,6 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [string autorelease];
 }
 
-#pragma mark Empty lines
-
-// whitespace at the beginning of the string up to and including a newline
-- (NSRange)rangeOfLeadingEmptyLine {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:YES];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:YES range:range];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
-    NSRange firstCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int start = range.location;
-    if (firstCharRange.location == NSNotFound) {
-        if (requireNL == NO)
-            wsRange = range;
-    } else {
-        unichar firstChar = [self characterAtIndex:firstCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(firstCharRange);
-        if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
-            if (firstChar == '\r' && rangeEnd < NSMaxRange(range) && [self characterAtIndex:rangeEnd] == '\n')
-                wsRange = NSMakeRange(start, rangeEnd + 1 - start);
-            else 
-                wsRange = NSMakeRange(start, rangeEnd - start);
-        }
-    }
-    return wsRange;
-}
-
-// whitespace at the end of the string after a newline
-- (NSRange)rangeOfTrailingEmptyLine {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:YES];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:YES range:range];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
-    NSRange lastCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int end = NSMaxRange(range);
-    if (lastCharRange.location == NSNotFound) {
-        if (requireNL == NO)
-            wsRange = range;
-    } else {
-        unichar lastChar = [self characterAtIndex:lastCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(lastCharRange);
-        if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
-            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
-    }
-    return wsRange;
-}
-
 #pragma mark Templating support
 
 - (NSString *)typeName {
@@ -490,6 +426,20 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     }
     
     return attrString;
+}
+
+- (NSString *)xmlString {
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
+    NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    int loc = NSMaxRange([string rangeOfString:@"<string>"]);
+    if (loc == NSNotFound)
+        return self;
+    [string deleteCharactersInRange:NSMakeRange(0, loc)];
+    loc = [string rangeOfString:@"</string>" options:NSBackwardsSearch].location;
+    if (loc == NSNotFound)
+        return self;
+    [string deleteCharactersInRange:NSMakeRange(loc, [string length] - loc)];
+    return string;
 }
 
 @end
