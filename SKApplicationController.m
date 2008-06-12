@@ -444,58 +444,18 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
-- (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create {
-    static CFMutableDictionaryRef pathDict = nil;
-    if (pathDict == nil)
-        pathDict = CFDictionaryCreateMutable(NULL, 3, NULL, &kCFTypeDictionaryValueCallBacks);
-    
-    NSString *path = (NSString *)CFDictionaryGetValue(pathDict, (void *)domain);
-    
-    if (path == nil || (create && [[NSFileManager defaultManager] fileExistsAtPath:path] == NO)) {
-        FSRef foundRef;
-        OSStatus err = noErr;
-        
-        err = FSFindFolder(domain, kApplicationSupportFolderType, create ? kCreateFolder : kDontCreateFolder, &foundRef);
-        if (err != noErr) {
-            if (create)
-                NSLog(@"Error %d:  the system was unable to find your Application Support folder.", err);
-            return nil;
-        }
-        
-        if (path == nil) {
-            CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
-            
-            if (url != nil) {
-                path = [(NSURL *)url path];
-                CFRelease(url);
-            }
-            
-            NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleExecutableKey];
-            
-            if(appName == nil)
-                [NSException raise:NSObjectNotAvailableException format:NSLocalizedString(@"Unable to find CFBundleIdentifier for %@", @"Exception message"), [NSApp description]];
-            
-            path = [path stringByAppendingPathComponent:appName];
-            
-            CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
-        }
+- (NSArray *)applicationSupportDirectories {
+    static NSArray *applicationSupportDirectories = nil;
+    if (applicationSupportDirectories == nil) {
+        NSMutableArray *pathArray = [NSMutableArray array];
+        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
+        NSEnumerator *pathEnum = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES) objectEnumerator];
+        NSString *path;
+        while (path = [pathEnum nextObject])
+            [pathArray addObject:[path stringByAppendingPathComponent:appName]];
+        applicationSupportDirectories = [pathArray copy];
     }
-    
-    // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
-    if (create) {
-        BOOL dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
-        if (dirExists == NO) {
-            BOOL pathIsDir;
-            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-            if (dirExists == NO || pathIsDir == NO)
-                [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-            // make sure it was created
-            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-            NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
-        }
-    }
-    
-    return path;
+    return applicationSupportDirectories;
 }
 
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
@@ -506,17 +466,14 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *filename = [file stringByAppendingPathExtension:extension];
     NSString *fullPath = nil;
+    NSEnumerator *pathEnum = [[self applicationSupportDirectories] objectEnumerator];
     NSString *appSupportPath = nil;
-    int domains[3] = {kUserDomain, kLocalDomain, kNetworkDomain};
-    int i;
     
-    for (i = 0; fullPath == nil && i < 3; i++) {
-        if (appSupportPath = [self applicationSupportPathForDomain:domains[i] create:NO]) {
-            fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
-            fullPath = [fullPath stringByAppendingPathComponent:filename];
-            if ([fm fileExistsAtPath:fullPath] == NO)
-                fullPath = nil;
-        }
+    while (appSupportPath = [pathEnum nextObject]) {
+        fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
+        fullPath = [fullPath stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO)
+            fullPath = nil;
     }
     if (fullPath == nil) {
         fullPath = [[NSBundle mainBundle] sharedSupportPath];

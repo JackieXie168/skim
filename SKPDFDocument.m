@@ -1483,18 +1483,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         } else {
             NSString *path = [environment objectForKey:@"PATH"];
             NSMutableArray *paths = [NSMutableArray arrayWithObjects:@"/usr/local/bin", nil];
+            NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
             NSString *appSupportPath;
             if ([path length]) 
                 [paths insertObject:path atIndex:0];
-            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kUserDomain create:NO]) {
-                [paths addObject:appSupportPath];
-                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
-            }
-            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kLocalDomain create:NO]) {
-                [paths addObject:appSupportPath];
-                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
-            }
-            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kNetworkDomain create:NO]) {
+            while (appSupportPath = [pathEnum nextObject]) {
                 [paths addObject:appSupportPath];
                 [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
             }
