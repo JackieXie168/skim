@@ -37,6 +37,7 @@
  */
 
 #import "NSScanner_SKExtensions.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 
 @implementation NSScanner (SKExtensions)

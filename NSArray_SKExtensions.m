@@ -43,6 +43,8 @@
 
 @implementation NSArray (SKExtensions)
 
+#pragma mark Templating support
+
 - (NSArray *)arraySortedByPageIndex {
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease]]];
 }

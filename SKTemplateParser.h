@@ -51,39 +51,39 @@
 
 @end
 
+#pragma mark -
 
 @interface NSObject (SKTemplateParser)
-- (NSString *)stringDescription;
+
 - (BOOL)isNotEmpty;
+
 - (id)safeValueForKeyPath:(NSString *)keyPath;
+- (id)templateValueForKeyPath:(NSString *)keyPath;
+
+- (NSString *)templateStringValue;
+- (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes;
+
 @end
 
+#pragma mark -
 
 @interface NSScanner (SKTemplateParser)
+
 - (BOOL)scanEmptyLine;
+
 @end
 
-
-@interface NSAttributedString (SKTemplateParser)
-- (id)initWithAttributedString:(NSAttributedString *)attributedString attributes:(NSDictionary *)attributes;
-- (NSString *)xmlString;
-- (NSData *)RTFRepresentation;
-@end
-
+#pragma mark -
 
 @interface NSString (SKTemplateParser)
-- (NSString *)xmlString;
-@end
 
+- (NSRange)rangeOfLeadingEmptyLine;
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL;
+- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
+- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
+- (NSRange)rangeOfTrailingEmptyLine;
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL;
+- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
+- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
 
-@interface NSNumber (SKTemplateParser)
-- (NSNumber *)numberByAddingOne;
-- (NSString *)romanNumeralValue;
-- (NSString *)alphaCounterValue;
-- (NSString *)greekCounterValue;
-@end
-
-
-@interface NSData (SKTemplateParser)
-- (NSString *)xmlString;
 @end

@@ -40,7 +40,11 @@
 
 
 @interface NSData (SKExtensions)
+
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength;
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask;
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange;
+
+- (NSString *)xmlString;
+
 @end

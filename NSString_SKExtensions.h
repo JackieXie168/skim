@@ -58,15 +58,6 @@
 
 - (NSString *)stringByEscapingParenthesis;
 
-- (NSRange)rangeOfLeadingEmptyLine;
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL;
-- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
-- (NSRange)rangeOfTrailingEmptyLine;
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL;
-- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range;
-
 - (NSString *)typeName;
 
 - (NSString *)rectString;
@@ -98,5 +89,7 @@
 - (NSAttributedString *)smallIcon;
 
 - (NSAttributedString *)typeIcon;
+
+- (NSString *)xmlString;
 
 @end
