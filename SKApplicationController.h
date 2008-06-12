@@ -69,7 +69,7 @@ extern NSString *SKDocumentSetupFileNameKey;
 
 - (void)saveCurrentOpenDocuments:(id)sender;
 
-- (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create;
+- (NSArray *)applicationSupportDirectories;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath;
 

@@ -367,10 +367,11 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableSet *templateFiles = [NSMutableSet set];
-        int domains[3] = {kUserDomain, kLocalDomain, kNetworkDomain};
-        int i;
-        for (i = 0; i < 3; i++) {
-            NSString *templatesPath = [[[NSApp delegate] applicationSupportPathForDomain:domains[i] create:NO] stringByAppendingPathComponent:@"Templates"];
+        NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
+        NSString *appSupportPath;
+        
+        while (appSupportPath = [pathEnum nextObject]) {
+            NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:@"Templates"];
             BOOL isDir;
             if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
                 NSEnumerator *fileEnum = [[fm subpathsAtPath:templatesPath] objectEnumerator];
