@@ -1,11 +1,15 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            CLASS = SKInfoWindowController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = SKInfoWindowController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
