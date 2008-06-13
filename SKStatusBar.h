@@ -37,7 +37,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BDSKGradientView.h"
 
 typedef enum {
    SKProgressIndicatorNone = -1,
