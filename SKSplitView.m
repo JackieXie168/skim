@@ -62,13 +62,16 @@
     if (self = [super initWithFrame:frameRect]) {
         blendEnds = NO;
         dividerLayer = NULL;
+        minBlendLayer = NULL;
+        maxBlendLayer = NULL;
     }
     return self;
 }
 
 - (void)dealloc {
-    if (dividerLayer)
-        CGLayerRelease(dividerLayer);
+    CGLayerRelease(dividerLayer);
+    CGLayerRelease(minBlendLayer);
+    CGLayerRelease(maxBlendLayer);
     [super dealloc];
 }
 
@@ -102,6 +105,7 @@
 
 - (void)drawDividerInRect:(NSRect)aRect {
     CGContextRef currentContext = [[NSGraphicsContext currentContext] graphicsPort];
+    
     if (NULL == dividerLayer) {
         CGSize dividerSize = CGSizeMake(aRect.size.width, aRect.size.height);
         dividerLayer = CGLayerCreateWithContext(currentContext, dividerSize, NULL);
@@ -117,10 +121,34 @@
     
     if (blendEnds) {
         NSRect endRect, ignored;
+        
         NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMinYEdge : NSMinXEdge);
-        [[NSBezierPath bezierPathWithRect:endRect] fillPathVertically:[self isVertical] withStartColor:[[self class] endColor] endColor:[CIColor clearColor]];
+        if (NULL == minBlendLayer) {
+            CGSize blendSize = CGSizeMake(endRect.size.width, endRect.size.height);
+            minBlendLayer = CGLayerCreateWithContext(currentContext, blendSize, NULL);
+            [NSGraphicsContext saveGraphicsState];
+            NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:CGLayerGetContext(minBlendLayer) flipped:NO];
+            [NSGraphicsContext setCurrentContext:nsContext];
+            NSRect rectToFill = endRect;
+            rectToFill.origin = NSZeroPoint;
+            [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:[self isVertical] withStartColor:[[self class] endColor] endColor:[CIColor clearColor]];
+            [NSGraphicsContext restoreGraphicsState];
+        }
+        CGContextDrawLayerInRect(currentContext, *(CGRect *)&endRect, minBlendLayer);
+        
         NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMaxYEdge : NSMaxXEdge);
-        [[NSBezierPath bezierPathWithRect:endRect] fillPathVertically:[self isVertical] withStartColor:[CIColor clearColor] endColor:[[self class] startColor]];
+        if (NULL == maxBlendLayer) {
+            CGSize blendSize = CGSizeMake(endRect.size.width, endRect.size.height);
+            maxBlendLayer = CGLayerCreateWithContext(currentContext, blendSize, NULL);
+            [NSGraphicsContext saveGraphicsState];
+            NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:CGLayerGetContext(maxBlendLayer) flipped:NO];
+            [NSGraphicsContext setCurrentContext:nsContext];
+            NSRect rectToFill = endRect;
+            rectToFill.origin = NSZeroPoint;
+            [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:[self isVertical] withStartColor:[CIColor clearColor] endColor:[[self class] startColor]];
+            [NSGraphicsContext restoreGraphicsState];
+        }
+        CGContextDrawLayerInRect(currentContext, *(CGRect *)&endRect, maxBlendLayer);
     }
     
     [NSGraphicsContext saveGraphicsState];
@@ -178,7 +206,25 @@
 }
 
 - (void)setBlendEnds:(BOOL)flag {
-    blendEnds = flag;
+    if (blendEnds != flag) {
+        blendEnds = flag;
+        CGLayerRelease(minBlendLayer);
+        minBlendLayer = NULL;
+        CGLayerRelease(maxBlendLayer);
+        maxBlendLayer = NULL;
+    }
+}
+
+- (void)setVertical:(BOOL)flag {
+    if ([self isVertical] != flag) {
+        CGLayerRelease(dividerLayer);
+        dividerLayer = NULL;
+        CGLayerRelease(minBlendLayer);
+        minBlendLayer = NULL;
+        CGLayerRelease(maxBlendLayer);
+        maxBlendLayer = NULL;
+    }
+    [super setVertical:flag];
 }
 
 @end
