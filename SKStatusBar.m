@@ -111,6 +111,36 @@
     [super setBounds:aRect];
 }
 
+- (void)setBoundsSize:(NSSize)aSize
+{
+    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
+    if (ABS(aSize.height - NSHeight([self bounds])) > 0.01) {
+        CGLayerRelease(layer);
+        layer = NULL;
+    }
+    [super setBoundsSize:aSize];
+}
+
+- (void)setFrame:(NSRect)aRect
+{
+    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
+    if (ABS(NSHeight(aRect) - NSHeight([self frame])) > 0.01) {
+        CGLayerRelease(layer);
+        layer = NULL;
+    }
+    [super setFrame:aRect];
+}
+
+- (void)setFrameSize:(NSSize)aSize
+{
+    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
+    if (ABS(aSize.height - NSHeight([self frame])) > 0.01) {
+        CGLayerRelease(layer);
+        layer = NULL;
+    }
+    [super setFrameSize:aSize];
+}
+
 - (void)getLeftFrame:(NSRect *)leftFrame rightFrame:(NSRect *)rightFrame {
     float leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
     float rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
