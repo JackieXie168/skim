@@ -189,6 +189,7 @@
 		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
+		CEBA2D210E05A64A0000B2E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */; };
 		CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */; };
@@ -221,7 +222,6 @@
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
-		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_SKExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */; };
@@ -964,8 +964,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */,
 				CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */,
+				CEBA2D210E05A64A0000B2E6 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
