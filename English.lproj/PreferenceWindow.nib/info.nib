@@ -4,11 +4,13 @@
 <dict>
 	<key>IBFramework Version</key>
 	<string>652</string>
+	<key>IBLastKnownRelativeProjectPath</key>
+	<string>../Skim.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>6</integer>
+		<integer>174</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>9D34</string>
