@@ -91,7 +91,7 @@ extern int SKPDFBorderStyleFromFDFBorderStyle(const char *name);
 extern const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle);
 
 extern int SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(const char *name);
-const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType);
+extern const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType);
 
 extern int SKPDFLineStyleFromFDFLineStyle(const char *name);
 extern const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle);
