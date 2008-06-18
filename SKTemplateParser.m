@@ -238,7 +238,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                [currentTag setText:[[currentTag text] stringByAppendingString:beforeText]];
+                [currentTag setText:[[(SKTextTag *)currentTag text] stringByAppendingString:beforeText]];
             } else {
                 currentTag = [[SKTextTag alloc] initWithText:beforeText];
                 [result addObject:currentTag];
@@ -270,13 +270,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 // collection template tag
                 // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                    wsRange = [[currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
+                    wsRange = [[(SKTextTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
                     if (wsRange.location != NSNotFound) {
                         if (wsRange.length == [[currentTag text] length]) {
                             [result removeLastObject];
                             currentTag = [result lastObject];
                         } else {
-                            [currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                            [(SKTextTag *)currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
                         }
                     }
                 }
@@ -340,13 +340,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     // condition template tag
                     // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        wsRange = [[currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
+                        wsRange = [[(SKTextTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
                         if (wsRange.location != NSNotFound) {
                             if (wsRange.length == [[currentTag text] length]) {
                                 [result removeLastObject];
                                 currentTag = [result lastObject];
                             } else {
-                                [currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                                [(SKTextTag *)currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
                             }
                         }
                     }
@@ -398,7 +398,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     
                     // an open delimiter without a close delimiter, so no template tag. Rewind
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        [currentTag setText:[[currentTag text] stringByAppendingString:START_TAG_OPEN_DELIM]];
+                        [(SKTextTag *)currentTag setText:[[currentTag text] stringByAppendingString:START_TAG_OPEN_DELIM]];
                     } else {
                         currentTag = [[SKTextTag alloc] initWithText:START_TAG_OPEN_DELIM];
                         [result addObject:currentTag];
@@ -424,7 +424,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
         
         if (type == SKTextTagType) {
             
-            [result appendString:[tag text]];
+            [result appendString:[(SKTextTag *)tag text]];
             
         } else {
             
