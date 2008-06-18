@@ -63,8 +63,6 @@
 			</array>
 			<key>UTTypeDescription</key>
 			<string>PDF Bundle</string>
-			<key>UTTypeIconFile</key>
-			<string>PDFDDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>net.sourceforge.skim-app.pdfd</string>
 			<key>UTTypeTagSpecification</key>
@@ -84,8 +82,6 @@
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Skim Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>NoteDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>net.sourceforge.skim-app.skimnotes</string>
 			<key>UTTypeTagSpecification</key>
