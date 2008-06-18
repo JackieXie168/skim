@@ -41,6 +41,8 @@
                 doZoomToSelection = id; 
                 editBookmarks = id; 
                 editNote = id; 
+                emailArchive = id; 
+                emailDiskImage = id; 
                 getInfo = id; 
                 goToMarkedPage = id; 
                 markPage = id; 
