@@ -53,5 +53,51 @@
 	</dict>
 	<key>CFPlugInUnloadFunction</key>
 	<string></string>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PDF Bundle</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.pdfd</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>PDFD</string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdfd</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Skim Notes</string>
+			<key>UTTypeIconFile</key>
+			<string>NoteDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.skimnotes</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>SKNT</string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>skim</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>
