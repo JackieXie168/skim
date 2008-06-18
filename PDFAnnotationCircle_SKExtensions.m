@@ -43,12 +43,11 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 
-NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
 
 @implementation PDFAnnotationCircle (SKExtensions)
 
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [super initNoteWithBounds:bounds]) {
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
+    if (self = [super initSkimNoteWithBounds:bounds]) {
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [self setInteriorColor:color];
@@ -58,22 +57,6 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineStyleKey]];
     }
     return self;
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class colorClass = [NSColor class];
-        NSColor *interiorColor = [dict objectForKey:SKPDFAnnotationInteriorColorKey];
-        if ([interiorColor isKindOfClass:colorClass])
-            [self setInteriorColor:interiorColor];
-    }
-    return self;
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[self interiorColor] forKey:SKPDFAnnotationInteriorColorKey];
-    return dict;
 }
 
 - (NSString *)fdfString {
@@ -87,9 +70,9 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     return fdfString;
 }
 
-- (BOOL)isResizable { return [self isNote]; }
+- (BOOL)isResizable { return [self isSkimNote]; }
 
-- (BOOL)isMovable { return [self isNote]; }
+- (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
@@ -97,7 +80,7 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     static NSSet *circleKeys = nil;
     if (circleKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationInteriorColorKey];
+        [mutableKeys addObject:SKNPDFAnnotationInteriorColorKey];
         circleKeys = [mutableKeys copy];
         [mutableKeys release];
     }
@@ -110,7 +93,7 @@ NSString *SKPDFAnnotationInteriorColorKey = @"interiorColor";
     static NSSet *customCircleScriptingKeys = nil;
     if (customCircleScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKPDFAnnotationInteriorColorKey];
+        [customKeys addObject:SKNPDFAnnotationInteriorColorKey];
         customCircleScriptingKeys = [customKeys copy];
         [customKeys release];
     }

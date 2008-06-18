@@ -51,7 +51,7 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "SKStringConstants.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKPDFHoverWindow.h"
 #import "SKPDFDocument.h"
 #import "PDFPage_SKExtensions.h"
@@ -499,13 +499,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             ascending = [[sortDescriptors lastObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
-            NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:ascending] autorelease];
-            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+            NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
+            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
@@ -617,7 +617,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSMutableArray *types = [NSMutableArray array];
         NSData *noteData = nil;
-        NSMutableAttributedString *attrString = [[items valueForKey:SKPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
+        NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
         NSMutableString *string = [NSMutableString string];
         NSEnumerator *itemEnum;
         id item;
@@ -1046,7 +1046,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
-        return [self isPresentation] == NO && [annotation isNote] && ([[annotation type] isEqualToString:SKFreeTextString] || [[annotation type] isEqualToString:SKNoteString]);
+        return [self isPresentation] == NO && [annotation isSkimNote] && ([[annotation type] isEqualToString:SKNFreeTextString] || [[annotation type] isEqualToString:SKNNoteString]);
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
@@ -1336,7 +1336,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [self updateColorPanel];
         [self updateLineInspector];
     }
-    if ([annotation isNote]) {
+    if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation] == NO) {
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
@@ -1350,7 +1350,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([annotation isNote])
+    if ([annotation isSkimNote])
         [self addNote:annotation];
     
     if (page) {
@@ -1369,7 +1369,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([annotation isNote]) {
+    if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation])
             [noteOutlineView deselectAll:self];
         

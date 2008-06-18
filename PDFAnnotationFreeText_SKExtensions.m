@@ -43,14 +43,8 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 
-NSString *SKPDFAnnotationFontKey = @"font";
-NSString *SKPDFAnnotationFontColorKey = @"fontColor";
-NSString *SKPDFAnnotationFontNameKey = @"fontName";
-NSString *SKPDFAnnotationFontSizeKey = @"fontSize";
-NSString *SKPDFAnnotationRotationKey = @"rotation";
 
-
-@interface PDFAnnotationFreeText (SKPDFAnnotationFreeTextPrivateDeclarations)
+@interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
 - (int)rotation;
 - (void)setRotation:(int)rotation;
 @end
@@ -58,8 +52,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
 
 @implementation PDFAnnotationFreeText (SKExtensions)
 
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [super initNoteWithBounds:bounds]) {
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
+    if (self = [super initSkimNoteWithBounds:bounds]) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         if (font)
@@ -77,33 +71,6 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return self;
 }
 
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class fontClass = [NSFont class];
-        Class colorClass = [NSColor class];
-        NSFont *font = [dict objectForKey:SKPDFAnnotationFontKey];
-        NSColor *fontColor = [dict objectForKey:SKPDFAnnotationFontColorKey];
-        NSNumber *rotation = [dict objectForKey:SKPDFAnnotationRotationKey];
-        if ([font isKindOfClass:fontClass])
-            [self setFont:font];
-        if ([fontColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setFontColor:)])
-            [self setFontColor:fontColor];
-        if ([rotation respondsToSelector:@selector(intValue)] && [self respondsToSelector:@selector(setRotation:)])
-            [self setRotation:[rotation intValue]];
-    }
-    return self;
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[self font] forKey:SKPDFAnnotationFontKey];
-    if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
-        [dict setValue:[self fontColor] forKey:SKPDFAnnotationFontColorKey];
-    if ([self respondsToSelector:@selector(rotation)])
-        [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKPDFAnnotationRotationKey];
-    return dict;
-}
-
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
@@ -119,11 +86,11 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     return fdfString;
 }
 
-- (BOOL)isResizable { return [self isNote]; }
+- (BOOL)isResizable { return [self isSkimNote]; }
 
-- (BOOL)isMovable { return [self isNote]; }
+- (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isEditable { return [self isNote]; }
+- (BOOL)isEditable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
@@ -131,8 +98,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     static NSSet *freeTextKeys = nil;
     if (freeTextKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationFontKey];
-        [mutableKeys addObject:SKPDFAnnotationFontColorKey];
+        [mutableKeys addObject:SKNPDFAnnotationFontKey];
+        [mutableKeys addObject:SKNPDFAnnotationFontColorKey];
         freeTextKeys = [mutableKeys copy];
         [mutableKeys release];
     }
@@ -145,8 +112,8 @@ NSString *SKPDFAnnotationRotationKey = @"rotation";
     static NSSet *customFreeTextScriptingKeys = nil;
     if (customFreeTextScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKPDFAnnotationFontNameKey];
-        [customKeys addObject:SKPDFAnnotationFontSizeKey];
+        [customKeys addObject:SKNPDFAnnotationFontNameKey];
+        [customKeys addObject:SKNPDFAnnotationFontSizeKey];
         customFreeTextScriptingKeys = [customKeys copy];
         [customKeys release];
     }

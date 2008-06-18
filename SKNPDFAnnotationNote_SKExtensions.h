@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationNote.h
+//  SKNPDFAnnotationNote_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/6/07.
@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import <SkimNotes/SKNPDFAnnotationNote.h>
 
 
 enum {
@@ -54,13 +55,13 @@ enum {
 extern unsigned long SKScriptingIconTypeFromIconType(int iconType);
 extern int SKIconTypeFromScriptingIconType(unsigned long iconType);
 
-
+/*
 extern NSString *SKPDFAnnotationTextKey;
 extern NSString *SKPDFAnnotationImageKey;
-
+*/
 extern NSString *SKPDFAnnotationRichTextKey;
 
-extern NSSize SKPDFAnnotationNoteSize;
+//extern NSSize SKNPDFAnnotationNote_SKExtensionsSize;
 
 
 @interface PDFAnnotationText (SKLeopardDeprecated)
@@ -71,7 +72,7 @@ extern NSSize SKPDFAnnotationNoteSize;
 
 #pragma mark -
 
-@interface SKPDFAnnotationNote : PDFAnnotationText {
+@interface SKNPDFAnnotationNote (SKExtensions) /* : PDFAnnotationText {
     NSString *string;
     NSImage *image;
     NSTextStorage *textStorage;
@@ -81,7 +82,7 @@ extern NSSize SKPDFAnnotationNoteSize;
 
 - (void)setImage:(NSImage *)newImage;
 - (void)setText:(NSAttributedString *)newText;
-
+*/
 - (void)setRichText:(id)newText;
 
 @end

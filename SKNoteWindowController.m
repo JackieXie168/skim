@@ -40,7 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "BDSKDragImageView.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStatusBar.h"
 #import "SKPDFDocument.h"
 #import "SKPDFView.h"
@@ -64,7 +64,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 + (void)makeNoteIcons {
     if (noteIcons[0]) return;
     
-    NSRect bounds = {NSZeroPoint, SKPDFAnnotationNoteSize};
+    NSRect bounds = {NSZeroPoint, SKNPDFAnnotationNoteSize};
     PDFAnnotationText *annotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
     PDFPage *page = [[PDFPage alloc] init];
     [page setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
@@ -73,7 +73,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     
     unsigned int i;
     for (i = 0; i < 7; i++) {
-        noteIcons[i] = [[NSImage alloc] initWithSize:SKPDFAnnotationNoteSize];
+        noteIcons[i] = [[NSImage alloc] initWithSize:SKNPDFAnnotationNoteSize];
         [noteIcons[i] lockFocus];
         [annotation setIconType:i];
         [annotation drawWithBox:kPDFDisplayBoxMediaBox];
@@ -99,16 +99,16 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
         
-        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
-        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
 
 - (void)dealloc {
-    [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
-    [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
+    [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
+    [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
@@ -176,19 +176,19 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return note;
 }
 
-- (void)setNote:(PDFAnnotation *)newNote {
+- (void)setSkimNote:(PDFAnnotation *)newNote {
     if (note != newNote) {
-        [note removeObserver:self forKeyPath:SKPDFAnnotationPageKey];
-        [note removeObserver:self forKeyPath:SKPDFAnnotationBoundsKey];
+        [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
+        [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
         [note release];
         note = [newNote retain];
-        [note addObserver:self forKeyPath:SKPDFAnnotationPageKey options:0 context:NULL];
-        [note addObserver:self forKeyPath:SKPDFAnnotationBoundsKey options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:NULL];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:NULL];
     }
 }
 
 - (BOOL)isNoteType {
-    return [[note type] isEqualToString:SKNoteString];
+    return [[note type] isEqualToString:SKNNoteString];
 }
 
 - (BOOL)keepOnTop {
@@ -265,14 +265,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     NSImage *image = [[NSImage alloc] initWithPasteboard:[sender draggingPasteboard]];
     
     if (image) {
-        [(SKPDFAnnotationNote *)note setImage:image];
+        [(SKNPDFAnnotationNote *)note setImage:image];
         [image release];
         return YES;
     } else return NO;
 }
 
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
-    NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
+    NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSString *name = [note string];
         if ([name length] == 0)
@@ -285,7 +285,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
-    NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
+    NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
         NSString *name = [note string];
         if ([name length] == 0)

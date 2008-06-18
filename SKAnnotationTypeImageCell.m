@@ -38,7 +38,7 @@
 
 #import "SKAnnotationTypeImageCell.h"
 #import <Quartz/Quartz.h>
-#import "PDFAnnotation_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "NSImage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 
@@ -103,14 +103,14 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
         noteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
         invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
         
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameTextNoteAdorn, SKFreeTextString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameAnchoredNoteAdorn, SKNoteString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameCircleNoteAdorn, SKCircleString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameSquareNoteAdorn, SKSquareString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameHighlightNoteAdorn, SKHighlightString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameUnderlineNoteAdorn, SKUnderlineString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameStrikeOutNoteAdorn, SKStrikeOutString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameLineNoteAdorn, SKLineString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameTextNoteAdorn, SKNFreeTextString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameAnchoredNoteAdorn, SKNNoteString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameCircleNoteAdorn, SKNCircleString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameSquareNoteAdorn, SKNSquareString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameHighlightNoteAdorn, SKNHighlightString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameUnderlineNoteAdorn, SKNUnderlineString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameStrikeOutNoteAdorn, SKNStrikeOutString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameLineNoteAdorn, SKNLineString, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];

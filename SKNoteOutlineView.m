@@ -39,7 +39,7 @@
 #import "SKNoteOutlineView.h"
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import "PDFAnnotation_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
@@ -208,29 +208,29 @@
     if (menu == nil) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         NSMenuItem *menuItem = nil;
-        menuItem = [menu addItemWithTitle:[SKFreeTextString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKFreeTextString];
+        menuItem = [menu addItemWithTitle:[SKNFreeTextString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNFreeTextString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKNoteString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        menuItem = [menu addItemWithTitle:[SKNNoteString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setState:NSOnState];
-        [menuItem setRepresentedObject:SKNoteString];
-        menuItem = [menu addItemWithTitle:[SKCircleString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKCircleString];
+        [menuItem setRepresentedObject:SKNNoteString];
+        menuItem = [menu addItemWithTitle:[SKNCircleString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNCircleString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKSquareString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKSquareString];
+        menuItem = [menu addItemWithTitle:[SKNSquareString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNSquareString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKHighlightString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKHighlightString];
+        menuItem = [menu addItemWithTitle:[SKNHighlightString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNHighlightString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKUnderlineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKUnderlineString];
+        menuItem = [menu addItemWithTitle:[SKNUnderlineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNUnderlineString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKStrikeOutString];
+        menuItem = [menu addItemWithTitle:[SKNStrikeOutString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNStrikeOutString];
         [menuItem setState:NSOnState];
-        menuItem = [menu addItemWithTitle:[SKLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        [menuItem setRepresentedObject:SKLineString];
+        menuItem = [menu addItemWithTitle:[SKNLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+        [menuItem setRepresentedObject:SKNLineString];
         [menuItem setState:NSOnState];
         [menu addItem:[NSMenuItem separatorItem]];
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) target:self];

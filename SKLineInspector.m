@@ -38,7 +38,7 @@
 
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
-#import "PDFAnnotation_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
 
@@ -495,12 +495,12 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation {
     NSString *type = [annotation type];
-    if ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString]) {
+    if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString]) {
         [self setLineWidth:[annotation border] ? [[annotation border] lineWidth] : 0.0];
         [self setDashPattern:[[annotation border] dashPattern]];
         [self setStyle:[annotation border] ? [[annotation border] style] : 0];
     }
-    if ([type isEqualToString:SKLineString]) {
+    if ([type isEqualToString:SKNLineString]) {
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
         [self setEndLineStyle:[(PDFAnnotationLine *)annotation endLineStyle]];
     }

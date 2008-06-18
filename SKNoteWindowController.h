@@ -60,7 +60,7 @@
 - (id)initWithNote:(PDFAnnotation *)aNote;
 
 - (PDFAnnotation *)note;
-- (void)setNote:(PDFAnnotation *)newNote;
+- (void)setSkimNote:(PDFAnnotation *)newNote;
 
 - (BOOL)isNoteType;
 

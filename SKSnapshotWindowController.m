@@ -123,11 +123,11 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
     NSRect bounds = [annotation bounds];
-    if ([[annotation type] isEqualToString:SKUnderlineString]) {
+    if ([[annotation type] isEqualToString:SKNUnderlineString]) {
         float delta = 0.03 * NSHeight(bounds);
         bounds.origin.y -= delta;
         bounds.size.height += delta;
-    } else if ([[annotation type] isEqualToString:SKLineString]) {
+    } else if ([[annotation type] isEqualToString:SKNLineString]) {
         // need a large padding amount for large line width and cap changes
         bounds = NSInsetRect(bounds, -20.0, -20.0);
     }

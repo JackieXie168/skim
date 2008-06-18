@@ -42,7 +42,8 @@
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationFreeText_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
@@ -77,30 +78,6 @@ int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle) {
 }
 
 
-NSString *SKFreeTextString = @"FreeText";
-NSString *SKTextString = @"Text";
-NSString *SKNoteString = @"Note";
-NSString *SKCircleString = @"Circle";
-NSString *SKSquareString = @"Square";
-NSString *SKMarkUpString = @"MarkUp";
-NSString *SKHighlightString = @"Highlight";
-NSString *SKUnderlineString = @"Underline";
-NSString *SKStrikeOutString = @"StrikeOut";
-NSString *SKLineString = @"Line";
-NSString *SKLinkString = @"Link";
-
-NSString *SKPDFAnnotationTypeKey = @"type";
-NSString *SKPDFAnnotationBoundsKey = @"bounds";
-NSString *SKPDFAnnotationPageKey = @"page";
-NSString *SKPDFAnnotationPageIndexKey = @"pageIndex";
-NSString *SKPDFAnnotationContentsKey = @"contents";
-NSString *SKPDFAnnotationStringKey = @"string";
-NSString *SKPDFAnnotationColorKey = @"color";
-NSString *SKPDFAnnotationBorderKey = @"border";
-NSString *SKPDFAnnotationLineWidthKey = @"lineWidth";
-NSString *SKPDFAnnotationBorderStyleKey = @"borderStyle";
-NSString *SKPDFAnnotationDashPatternKey = @"dashPattern";
-
 NSString *SKPDFAnnotationScriptingNoteTypeKey = @"scriptingNoteType";
 NSString *SKPDFAnnotationScriptingBorderStyleKey = @"scriptingBorderStyle";
 
@@ -115,107 +92,6 @@ enum {
 
 @implementation PDFAnnotation (SKExtensions)
 
-static CFMutableSetRef notes = NULL;
-
-static IMP originalDealloc = NULL;
-
-- (void)replacementDealloc {
-    CFSetRemoveValue(notes, self);
-    originalDealloc(self, _cmd);
-}
-
-+ (void)load {
-    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    notes = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
-}
-
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [self initWithBounds:bounds]) {
-        [self setShouldPrint:YES];
-        [self setNote:YES];
-    }
-    return self;
-
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    Class stringClass = [NSString class];
-    
-    if ([self isMemberOfClass:[PDFAnnotation class]]) {
-        // generic, initalize the class for the type in the dictionary
-        NSString *type = [dict objectForKey:SKPDFAnnotationTypeKey];
-        Class annotationClass = NULL;
-        NSZone *zone = [self zone];
-        
-        if ([type isKindOfClass:stringClass] == NO)
-            annotationClass = Nil;
-        else if ([type isEqualToString:SKNoteString] || [type isEqualToString:SKTextString])
-            annotationClass = [SKPDFAnnotationNote class];
-        else if ([type isEqualToString:SKFreeTextString])
-            annotationClass = [PDFAnnotationFreeText class];
-        else if ([type isEqualToString:SKCircleString])
-            annotationClass = [PDFAnnotationCircle class];
-        else if ([type isEqualToString:SKSquareString])
-            annotationClass = [PDFAnnotationSquare class];
-        else if ([type isEqualToString:SKHighlightString] || [type isEqualToString:SKMarkUpString] || [type isEqualToString:SKUnderlineString] || [type isEqualToString:SKStrikeOutString])
-            annotationClass = [PDFAnnotationMarkup class];
-        else if ([type isEqualToString:SKLineString])
-            annotationClass = [PDFAnnotationLine class];
-        
-        [[self initWithBounds:NSZeroRect] release];
-        self = [[annotationClass allocWithZone:zone] initNoteWithProperties:dict];
-        
-    } else {
-        // called from the initialization of a subclass
-        NSString *boundsString = [dict objectForKey:SKPDFAnnotationBoundsKey];
-        NSRect bounds = [boundsString isKindOfClass:stringClass] ? NSRectFromString(boundsString) : NSZeroRect;
-        if (self = [self initNoteWithBounds:bounds]) {
-            Class colorClass = [NSColor class];
-            Class arrayClass = [NSArray class];
-            NSString *contents = [dict objectForKey:SKPDFAnnotationContentsKey];
-            NSColor *color = [dict objectForKey:SKPDFAnnotationColorKey];
-            NSNumber *lineWidth = [dict objectForKey:SKPDFAnnotationLineWidthKey];
-            NSNumber *borderStyle = [dict objectForKey:SKPDFAnnotationBorderStyleKey];
-            NSArray *dashPattern = [dict objectForKey:SKPDFAnnotationDashPatternKey];
-            
-            if ([contents isKindOfClass:stringClass])
-                [self setString:contents];
-            if ([color isKindOfClass:colorClass])
-                [self setColor:color];
-            if (lineWidth == nil && borderStyle == nil && dashPattern == nil) {
-                if ([self border])
-                    [self setBorder:nil];
-            } else {
-                if ([self border] == nil)
-                    [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-                if ([lineWidth respondsToSelector:@selector(floatValue)])
-                    [[self border] setLineWidth:[lineWidth floatValue]];
-                if ([borderStyle respondsToSelector:@selector(intValue)])
-                    [[self border] setStyle:[lineWidth intValue]];
-                if ([dashPattern isKindOfClass:arrayClass])
-                    [[self border] setDashPattern:dashPattern];
-            }
-        }
-        
-    }
-    return self;
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:5];
-    [dict setValue:[self type] forKey:SKPDFAnnotationTypeKey];
-    [dict setValue:[self string] forKey:SKPDFAnnotationContentsKey];
-    [dict setValue:[self color] forKey:SKPDFAnnotationColorKey];
-    [dict setValue:NSStringFromRect([self bounds]) forKey:SKPDFAnnotationBoundsKey];
-    [dict setValue:[NSNumber numberWithUnsignedInt:[self pageIndex]] forKey:SKPDFAnnotationPageIndexKey];
-    if ([self border]) {
-        [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:SKPDFAnnotationLineWidthKey];
-        [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:SKPDFAnnotationBorderStyleKey];
-        [dict setValue:[[self border] dashPattern] forKey:SKPDFAnnotationDashPatternKey];
-    }
-    return dict;
-}
-
 - (NSString *)fdfString {
     NSMutableString *fdfString = [NSMutableString string];
     NSRect bounds = [self bounds];
@@ -226,7 +102,7 @@ static IMP originalDealloc = NULL;
     [fdfString appendFDFName:SKFDFTypeKey];
     [fdfString appendFDFName:SKFDFAnnotation];
     [fdfString appendFDFName:SKFDFAnnotationTypeKey];
-    [fdfString appendString:[[self type] isEqualToString:SKNoteString] ? SKTextString : [self type]];
+    [fdfString appendString:[[self type] isEqualToString:SKNNoteString] ? SKNTextString : [self type]];
     [fdfString appendFDFName:SKFDFAnnotationBoundsKey];
     [fdfString appendFormat:@"[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [fdfString appendFDFName:SKFDFAnnotationPageIndexKey];
@@ -312,14 +188,6 @@ static IMP originalDealloc = NULL;
     [border release];
 }
 
-- (NSString *)string {
-    return [self contents];
-}
-
-- (void)setString:(NSString *)newString {
-    [self setContents:newString];
-}
-
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
@@ -327,17 +195,6 @@ static IMP originalDealloc = NULL;
 - (NSArray *)texts { return nil; }
 
 - (NSColor *)interiorColor { return nil; }
-
-- (BOOL)isNote {
-    return CFSetContainsValue(notes, self);
-}
-
-- (void)setNote:(BOOL)flag {
-    if (flag)
-        CFSetAddValue(notes, self);
-    else
-        CFSetRemoveValue(notes, self);
-}
 
 - (BOOL)isMarkup { return NO; }
 
@@ -367,7 +224,7 @@ static IMP originalDealloc = NULL;
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *keys = nil;
     if (keys == nil)
-        keys = [[NSSet alloc] initWithObjects:SKPDFAnnotationBoundsKey, SKPDFAnnotationStringKey, SKPDFAnnotationColorKey, SKPDFAnnotationBorderKey, nil];
+        keys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationStringKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil];
     return keys;
 }
 
@@ -414,16 +271,16 @@ static IMP originalDealloc = NULL;
                     }
                 }
             } else if (type == SKScriptingTextNote) {
-                self = [[PDFAnnotationFreeText alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingAnchoredNote) {
-                bounds.size = SKPDFAnnotationNoteSize;
-                self = [[SKPDFAnnotationNote alloc] initNoteWithBounds:bounds];
+                bounds.size = SKNPDFAnnotationNoteSize;
+                self = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingCircleNote) {
-                self = [[PDFAnnotationCircle alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingSquareNote) {
-                self = [[PDFAnnotationSquare alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
-                self = [[PDFAnnotationLine alloc] initNoteWithBounds:bounds];
+                self = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             }
         }
     }
@@ -443,7 +300,7 @@ static IMP originalDealloc = NULL;
 // to support the 'duplicate' command
 - (id)copyWithZone:(NSZone *)zone {
     if ([self isMovable]) // we don't want to duplicate markup
-        return [[PDFAnnotation allocWithZone:zone] initNoteWithProperties:[self properties]];
+        return [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self properties]];
     else
         return nil;
 }
@@ -452,7 +309,7 @@ static IMP originalDealloc = NULL;
 + (NSSet *)customScriptingKeys {
     static NSSet *customScriptingKeys = nil;
     if (customScriptingKeys == nil)
-        customScriptingKeys = [[NSSet alloc] initWithObjects:SKPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKPDFAnnotationDashPatternKey, nil];
+        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, nil];
     return customScriptingKeys;
 }
 
@@ -463,7 +320,7 @@ static IMP originalDealloc = NULL;
     [customKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
-    [customKeys unionSet:[SKPDFAnnotationNote customScriptingKeys]];
+    [customKeys unionSet:[SKNPDFAnnotationNote customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
     [customKeys minusSet:[[self class] customScriptingKeys]];
@@ -473,21 +330,21 @@ static IMP originalDealloc = NULL;
 }
 
 - (unsigned long)scriptingNoteType {
-    if ([[self type] isEqualToString:SKFreeTextString])
+    if ([[self type] isEqualToString:SKNFreeTextString])
         return SKScriptingTextNote;
-    else if ([[self type] isEqualToString:SKNoteString])
+    else if ([[self type] isEqualToString:SKNNoteString])
         return SKScriptingAnchoredNote;
-    else if ([[self type] isEqualToString:SKCircleString])
+    else if ([[self type] isEqualToString:SKNCircleString])
         return SKScriptingCircleNote;
-    else if ([[self type] isEqualToString:SKSquareString])
+    else if ([[self type] isEqualToString:SKNSquareString])
         return SKScriptingSquareNote;
-    else if ([[self type] isEqualToString:SKHighlightString] || [[self type] isEqualToString:SKMarkUpString])
+    else if ([[self type] isEqualToString:SKNHighlightString] || [[self type] isEqualToString:SKNMarkUpString])
         return SKScriptingHighlightNote;
-    else if ([[self type] isEqualToString:SKUnderlineString])
+    else if ([[self type] isEqualToString:SKNUnderlineString])
         return SKScriptingUnderlineNote;
-    else if ([[self type] isEqualToString:SKStrikeOutString])
+    else if ([[self type] isEqualToString:SKNStrikeOutString])
         return SKScriptingStrikeOutNote;
-    else if ([[self type] isEqualToString:SKLineString])
+    else if ([[self type] isEqualToString:SKNLineString])
         return SKScriptingLineNote;
     return 0;
 }

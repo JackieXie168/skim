@@ -70,11 +70,6 @@ int SKLineStyleFromScriptingLineStyle(unsigned long lineStyle) {
 }
 
 
-NSString *SKPDFAnnotationStartLineStyleKey = @"startLineStyle";
-NSString *SKPDFAnnotationEndLineStyleKey = @"endLineStyle";
-NSString *SKPDFAnnotationStartPointKey = @"startPoint";
-NSString *SKPDFAnnotationEndPointKey = @"endPoint";
-
 NSString *SKPDFAnnotationStartPointAsQDPointKey = @"startPointAsQDPoint";
 NSString *SKPDFAnnotationEndPointAsQDPointKey = @"endPointAsQDPoint";
 NSString *SKPDFAnnotationScriptingStartLineStyleKey = @"scriptingStartLineStyle";
@@ -82,51 +77,6 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 
 @implementation PDFAnnotationLine (SKExtensions)
-
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [super initNoteWithBounds:bounds]) {
-        [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]];
-        [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
-        [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
-        [self setStartPoint:NSMakePoint(0.0, 0.0)];
-        [self setEndPoint:NSMakePoint(NSWidth(bounds), NSHeight(bounds))];
-        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
-        [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineWidthKey]];
-        [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKLineNoteDashPatternKey]];
-        [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]];
-        [self setBorder:[border lineWidth] > 0.0 ? border : nil];
-        [border release];
-    }
-    return self;
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class stringClass = [NSString class];
-        NSString *startPoint = [dict objectForKey:SKPDFAnnotationStartPointKey];
-        NSString *endPoint = [dict objectForKey:SKPDFAnnotationEndPointKey];
-        NSNumber *startLineStyle = [dict objectForKey:SKPDFAnnotationStartLineStyleKey];
-        NSNumber *endLineStyle = [dict objectForKey:SKPDFAnnotationEndLineStyleKey];
-        if ([startPoint isKindOfClass:stringClass])
-            [self setStartPoint:NSPointFromString(startPoint)];
-        if ([endPoint isKindOfClass:stringClass])
-            [self setEndPoint:NSPointFromString(endPoint)];
-        if ([startLineStyle respondsToSelector:@selector(intValue)])
-            [self setStartLineStyle:[startLineStyle intValue]];
-        if ([endLineStyle respondsToSelector:@selector(intValue)])
-            [self setEndLineStyle:[endLineStyle intValue]];
-    }
-    return self;
-}
-
-- (NSDictionary *)properties {
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:SKPDFAnnotationStartLineStyleKey];
-    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKPDFAnnotationEndLineStyleKey];
-    [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKPDFAnnotationStartPointKey];
-    [dict setValue:NSStringFromPoint([self endPoint]) forKey:SKPDFAnnotationEndPointKey];
-    return dict;
-}
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
@@ -142,9 +92,9 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return fdfString;
 }
 
-- (BOOL)isResizable { return [self isNote]; }
+- (BOOL)isResizable { return [self isSkimNote]; }
 
-- (BOOL)isMovable { return [self isNote]; }
+- (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
@@ -183,10 +133,10 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     static NSSet *lineKeys = nil;
     if (lineKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationStartLineStyleKey];
-        [mutableKeys addObject:SKPDFAnnotationEndLineStyleKey];
-        [mutableKeys addObject:SKPDFAnnotationStartPointKey];
-        [mutableKeys addObject:SKPDFAnnotationEndPointKey];
+        [mutableKeys addObject:SKNPDFAnnotationStartLineStyleKey];
+        [mutableKeys addObject:SKNPDFAnnotationEndLineStyleKey];
+        [mutableKeys addObject:SKNPDFAnnotationStartPointKey];
+        [mutableKeys addObject:SKNPDFAnnotationEndPointKey];
         lineKeys = [mutableKeys copy];
         [mutableKeys release];
     }
