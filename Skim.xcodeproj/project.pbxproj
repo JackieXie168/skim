@@ -148,6 +148,7 @@
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
 		CE7DC7DB0E093BDA00D6D76D /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
+		CE7DC8F60E09551800D6D76D /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
@@ -365,6 +366,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 12;
 			files = (
+				CE7DC8F60E09551800D6D76D /* skimnotes in CopyFiles */,
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */,
