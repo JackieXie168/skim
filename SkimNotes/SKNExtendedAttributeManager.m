@@ -38,10 +38,6 @@
 
 #define MAX_XATTR_LENGTH    2048
 #define UNIQUE_VALUE        [[NSProcessInfo processInfo] globallyUniqueString]
-#define NAME_PREFIX         @"net_sourceforge_skim-app_"
-#define UNIQUE_KEY          @"net_sourceforge_skim-app_unique_key"
-#define WRAPPER_KEY         @"net_sourceforge_skim-app_has_wrapper"
-#define FRAGMENTS_KEY       @"net_sourceforge_skim-app_number_of_fragments"
 
 static NSString *SKNErrorDomain = @"SKNErrorDomain";
 
@@ -67,14 +63,27 @@ static id sharedManager = nil;
 
 - (id)init;
 {
-    self = [super init];
-    if (sharedManager) {
-        [self release];
-        self = [sharedManager retain];
-    } else {
-        sharedManager = self;
+    return [self initWithPrefix:@"net_sourceforge_skim-app"];
+}
+
+- (id)initWithPrefix:(NSString *)prefix;
+{
+    if (self = [super init]) {
+        namePrefix = [[NSString alloc] initWithFormat:@"%@_", prefix];
+        uniqueKey = [[NSString alloc] initWithFormat:@"%@_key", prefix];
+        wrapperKey = [[NSString alloc] initWithFormat:@"%@_has_wrapper", prefix];
+        fragmentsKey = [[NSString alloc] initWithFormat:@"%@_number_of_fragments", prefix];
+        
     }
     return self;
+}
+
+- (void)dealloc {
+    [namePrefix release];
+    [uniqueKey release];
+    [wrapperKey release];
+    [fragmentsKey release];
+    [super dealloc];
 }
 
 - (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
@@ -208,10 +217,10 @@ static id sharedManager = nil;
         plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
     
     // even if it's a plist, it may not be a dictionary or have the key we're looking for
-    if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
+    if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
         
-        NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
-        unsigned int i, numberOfFragments = [[plist objectForKey:FRAGMENTS_KEY] unsignedIntValue];
+        NSString *uniqueValue = [plist objectForKey:uniqueKey];
+        unsigned int i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
         NSString *name;
 
         NSMutableData *buffer = [NSMutableData data];
@@ -280,9 +289,9 @@ static id sharedManager = nil;
         value = [self bzip2:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
-        NSString *uniqueValue = [NAME_PREFIX stringByAppendingString:UNIQUE_VALUE];
+        NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
         unsigned numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
-        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
+        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, UNIQUE_VALUE, uniqueKey, [NSNumber numberWithUnsignedInt:numberOfFragments], fragmentsKey, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
         
@@ -383,10 +392,10 @@ static id sharedManager = nil;
                 plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
             
             // even if it's a plist, it may not be a dictionary or have the key we're looking for
-            if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
+            if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
                 
-                NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
-                unsigned int i, numberOfFragments = [[plist objectForKey:FRAGMENTS_KEY] unsignedIntValue];
+                NSString *uniqueValue = [plist objectForKey:uniqueKey];
+                unsigned int i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
                 NSString *name;
                 
                 // remove the sub attributes

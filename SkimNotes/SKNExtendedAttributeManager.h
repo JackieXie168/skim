@@ -44,7 +44,12 @@ enum {
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
     @discussion  (comprehensive description)
 */
-@interface SKNExtendedAttributeManager : NSObject
+@interface SKNExtendedAttributeManager : NSObject {
+    NSString *namePrefix;
+    NSString *uniqueKey;
+    NSString *wrapperKey;
+    NSString *fragmentsKey;
+}
 
 /*!
     @method     sharedManager
@@ -53,6 +58,15 @@ enum {
     @result     (description)
 */
 + (id)sharedManager;
+
+/*!
+    @method     initWithPrefix:
+    @abstract   Initializes a new extended attribute manager with keys and attribute name prefixes used for segments determined by a prefix.
+    @discussion The prefix should only contain characters that are valid in attribute names.
+    @param      prefix Defaults to "skim-app.sourcesforge.net", which is the prefix used by Skim.
+    @result     (description)
+*/
+- (id)initWithPrefix:(NSString *)prefix;
 
 /*!
     @method     extendedAttributeNamesAtPath:traverseLink:
