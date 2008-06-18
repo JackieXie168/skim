@@ -238,7 +238,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                [currentTag setText:[[(SKTextTag *)currentTag text] stringByAppendingString:beforeText]];
+                [(SKTextTag *)currentTag setText:[[(SKTextTag *)currentTag text] stringByAppendingString:beforeText]];
             } else {
                 currentTag = [[SKTextTag alloc] initWithText:beforeText];
                 [result addObject:currentTag];
@@ -276,7 +276,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                             [result removeLastObject];
                             currentTag = [result lastObject];
                         } else {
-                            [(SKTextTag *)currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                            [(SKTextTag *)currentTag setText:[[(SKTextTag *)currentTag text] substringToIndex:wsRange.location]];
                         }
                     }
                 }
@@ -346,7 +346,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                                 [result removeLastObject];
                                 currentTag = [result lastObject];
                             } else {
-                                [(SKTextTag *)currentTag setText:[[currentTag text] substringToIndex:wsRange.location]];
+                                [(SKTextTag *)currentTag setText:[[(SKTextTag *)currentTag text] substringToIndex:wsRange.location]];
                             }
                         }
                     }
@@ -398,7 +398,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     
                     // an open delimiter without a close delimiter, so no template tag. Rewind
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        [(SKTextTag *)currentTag setText:[[currentTag text] stringByAppendingString:START_TAG_OPEN_DELIM]];
+                        [(SKTextTag *)currentTag setText:[[(SKTextTag *)currentTag text] stringByAppendingString:START_TAG_OPEN_DELIM]];
                     } else {
                         currentTag = [[SKTextTag alloc] initWithText:START_TAG_OPEN_DELIM];
                         [result addObject:currentTag];
