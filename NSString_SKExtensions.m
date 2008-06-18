@@ -41,7 +41,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
-#import "PDFAnnotation_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import <Carbon/Carbon.h>
 
 
@@ -112,21 +112,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 - (NSNumber *)noteTypeOrder {
     int order = 8;
-    if ([self isEqualToString:SKFreeTextString])
+    if ([self isEqualToString:SKNFreeTextString])
         order = 0;
-    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
+    else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
         order = 1;
-    else if ([self isEqualToString:SKCircleString])
+    else if ([self isEqualToString:SKNCircleString])
         order = 2;
-    else if ([self isEqualToString:SKSquareString])
+    else if ([self isEqualToString:SKNSquareString])
         order = 3;
-    else if ([self isEqualToString:SKHighlightString] || [self isEqualToString:SKMarkUpString])
+    else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
         order = 4;
-    else if ([self isEqualToString:SKUnderlineString])
+    else if ([self isEqualToString:SKNUnderlineString])
         order = 5;
-    else if ([self isEqualToString:SKStrikeOutString])
+    else if ([self isEqualToString:SKNStrikeOutString])
         order = 6;
-    else if ([self isEqualToString:SKLineString])
+    else if ([self isEqualToString:SKNLineString])
         order = 7;
     return [NSNumber numberWithInt:order];
 }
@@ -264,21 +264,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 #pragma mark Templating support
 
 - (NSString *)typeName {
-    if ([self isEqualToString:SKFreeTextString])
+    if ([self isEqualToString:SKNFreeTextString])
         return NSLocalizedString(@"Text Note", @"Description for export");
-    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
+    else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
         return NSLocalizedString(@"Anchored Note", @"Description for export");
-    else if ([self isEqualToString:SKCircleString])
+    else if ([self isEqualToString:SKNCircleString])
         return NSLocalizedString(@"Circle", @"Description for export");
-    else if ([self isEqualToString:SKSquareString])
+    else if ([self isEqualToString:SKNSquareString])
         return NSLocalizedString(@"Box", @"Description for export");
-    else if ([self isEqualToString:SKMarkUpString] || [self isEqualToString:SKHighlightString])
+    else if ([self isEqualToString:SKNMarkUpString] || [self isEqualToString:SKNHighlightString])
         return NSLocalizedString(@"Highlight", @"Description for export");
-    else if ([self isEqualToString:SKUnderlineString])
+    else if ([self isEqualToString:SKNUnderlineString])
         return NSLocalizedString(@"Underline", @"Description for export");
-    else if ([self isEqualToString:SKStrikeOutString])
+    else if ([self isEqualToString:SKNStrikeOutString])
         return NSLocalizedString(@"Strike Out", @"Description for export");
-    else if ([self isEqualToString:SKLineString])
+    else if ([self isEqualToString:SKNLineString])
         return NSLocalizedString(@"Line", @"Description for export");
     else
         return self;
@@ -394,21 +394,21 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     NSAttributedString *attrString = nil;
     
     NSString *imageName = nil;
-    if ([self isEqualToString:SKFreeTextString])
+    if ([self isEqualToString:SKNFreeTextString])
         imageName = SKImageNameTextNoteAdorn;
-    else if ([self isEqualToString:SKNoteString] || [self isEqualToString:SKTextString])
+    else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
         imageName = SKImageNameAnchoredNoteAdorn;
-    else if ([self isEqualToString:SKCircleString])
+    else if ([self isEqualToString:SKNCircleString])
         imageName = SKImageNameCircleNoteAdorn;
-    else if ([self isEqualToString:SKSquareString])
+    else if ([self isEqualToString:SKNSquareString])
         imageName = SKImageNameSquareNoteAdorn;
-    else if ([self isEqualToString:SKHighlightString] || [self isEqualToString:SKMarkUpString])
+    else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
         imageName = SKImageNameHighlightNoteAdorn;
-    else if ([self isEqualToString:SKUnderlineString])
+    else if ([self isEqualToString:SKNUnderlineString])
         imageName = SKImageNameUnderlineNoteAdorn;
-    else if ([self isEqualToString:SKStrikeOutString])
+    else if ([self isEqualToString:SKNStrikeOutString])
         imageName = SKImageNameStrikeOutNoteAdorn;
-    else if ([self isEqualToString:SKLineString])
+    else if ([self isEqualToString:SKNLineString])
         imageName = SKImageNameLineNoteAdorn;
     
     if (imageName) {

@@ -61,7 +61,7 @@
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationCircle_SKExtensions.h"
 #import "PDFAnnotationLine_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"
 #import "NSScrollView_SKExtensions.h"
@@ -130,7 +130,7 @@ static float segmentedControlOffset = 1.0;
 
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
-static void *SKPDFAnnotationPropertiesObservationContext = (void *)@"SKPDFAnnotationPropertiesObservationContext";
+static void *SKNPDFAnnotationPropertiesObservationContext = (void *)@"SKNPDFAnnotationPropertiesObservationContext";
 
 static void *SKMainWindowDefaultsObservationContext = (void *)@"SKMainWindowDefaultsObservationContext";
 
@@ -437,8 +437,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     [self resetSnapshotSizeIfNeeded];
     
     // this needs to be done before loading the PDFDocument
-    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease];
+    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:YES selector:@selector(boundsCompare:)] autorelease];
     [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
     [ownerController setContent:self];
@@ -584,7 +584,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNote]) {
+        if ([annotation isSkimNote]) {
             if ([annotation respondsToSelector:@selector(font)]) {
                 updatingFont = YES;
                 [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
@@ -605,7 +605,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     NSView *accessoryView = nil;
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNote]) {
+        if ([annotation isSkimNote]) {
             if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
                 if (colorAccessoryView == nil) {
                     colorAccessoryView = [[NSButton alloc] init];
@@ -642,7 +642,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     NSString *type = [annotation type];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
+        if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKNLineString])) {
             updatingLine = YES;
             [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
             updatingLine = NO;
@@ -838,8 +838,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        unsigned pageIndex = [[dict objectForKey:SKPDFAnnotationPageIndexKey] unsignedIntValue];
-        if (annotation = [[PDFAnnotation alloc] initNoteWithProperties:dict]) {
+        unsigned pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
@@ -1218,7 +1218,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingColor == NO && [annotation isNote]) {
+    if (updatingColor == NO && [annotation isSkimNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
         NSColor *color = isFill ? [(id)annotation interiorColor] : [annotation color];
         if (color == nil)
@@ -1240,7 +1240,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (IBAction)selectColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNote]) {
+    if ([annotation isSkimNote]) {
         NSColor *color = [annotation color];
         NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO)
@@ -1250,7 +1250,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingFont == NO && [annotation isNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+    if (updatingFont == NO && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
         updatingFont = YES;
         [(PDFAnnotationFreeText *)annotation setFont:font];
@@ -1260,7 +1260,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (IBAction)changeAttributes:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingFontAttributes == NO && [annotation isNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
+    if (updatingFontAttributes == NO && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
         NSColor *color = [(PDFAnnotationFreeText *)annotation fontColor];
         NSColor *newColor = [[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName];
         if ([newColor isEqual:color] == NO) {
@@ -1274,7 +1274,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)changeLineWidth:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKNLineString])) {
         [annotation setLineWidth:[sender lineWidth]];
     }
 }
@@ -1282,7 +1282,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)changeLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString])) {
         [annotation setBorderStyle:[sender style]];
     }
 }
@@ -1290,7 +1290,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)changeDashPattern:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNote] && ([type isEqualToString:SKFreeTextString] || [type isEqualToString:SKCircleString] || [type isEqualToString:SKSquareString] || [type isEqualToString:SKLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString])) {
         [annotation setDashPattern:[sender dashPattern]];
     }
 }
@@ -1298,7 +1298,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)changeStartLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
+    if (updatingLine == NO && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
         updatingLine = YES;
         [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
         updatingLine = NO;
@@ -1308,7 +1308,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)changeEndLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isNote] && [type isEqualToString:SKLineString]) {
+    if (updatingLine == NO && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
         updatingLine = YES;
         [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
         updatingLine = NO;
@@ -3327,7 +3327,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *key;
         while (key = [keyEnumerator nextObject]) {
             // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
-            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKPDFAnnotationPropertiesObservationContext];
+            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKNPDFAnnotationPropertiesObservationContext];
         }
     }
 }
@@ -3422,7 +3422,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self updatePageColumnWidthForTableView:outlineView];
         }
         
-    } else if (context == SKPDFAnnotationPropertiesObservationContext) {
+    } else if (context == SKNPDFAnnotationPropertiesObservationContext) {
         
         // The value of some note's property has changed
         PDFAnnotation *note = (PDFAnnotation *)object;
@@ -3468,7 +3468,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             
             PDFPage *page = [note page];
             NSRect oldRect = NSZeroRect;
-            if ([keyPath isEqualToString:SKPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
                 oldRect = [note displayRectForBounds:[oldValue rectValue]];
             
             [self updateThumbnailAtPageIndex:[note pageIndex]];
@@ -3490,7 +3490,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
                 [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
             }
-            if ([[note type] isEqualToString:SKNoteString] && [keyPath isEqualToString:SKPDFAnnotationBoundsKey])
+            if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetHoverRects];
             
             [noteArrayController rearrangeObjects];
@@ -3498,22 +3498,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             
             // update the various panels if necessary
             if ([[self window] isMainWindow] && [note isEqual:[pdfView activeAnnotation]]) {
-                if (updatingColor == NO && ([keyPath isEqualToString:SKPDFAnnotationColorKey] || [keyPath isEqualToString:SKPDFAnnotationInteriorColorKey])) {
+                if (updatingColor == NO && ([keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationInteriorColorKey])) {
                     updatingColor = YES;
                     [[NSColorPanel sharedColorPanel] setColor:[note color]];
                     updatingColor = NO;
                 }
-                if (updatingFont == NO && ([keyPath isEqualToString:SKPDFAnnotationFontKey])) {
+                if (updatingFont == NO && ([keyPath isEqualToString:SKNPDFAnnotationFontKey])) {
                     updatingFont = YES;
                     [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)note font] isMultiple:NO];
                     updatingFont = NO;
                 }
-                if (updatingFontAttributes == NO && ([keyPath isEqualToString:SKPDFAnnotationFontColorKey])) {
+                if (updatingFontAttributes == NO && ([keyPath isEqualToString:SKNPDFAnnotationFontColorKey])) {
                     updatingFontAttributes = YES;
                     [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)note fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
                     updatingFontAttributes = NO;
                 }
-                if (updatingLine == NO && ([keyPath isEqualToString:SKPDFAnnotationBorderKey] || [keyPath isEqualToString:SKPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKPDFAnnotationEndLineStyleKey])) {
+                if (updatingLine == NO && ([keyPath isEqualToString:SKNPDFAnnotationBorderKey] || [keyPath isEqualToString:SKNPDFAnnotationStartLineStyleKey] || [keyPath isEqualToString:SKNPDFAnnotationEndLineStyleKey])) {
                     updatingLine = YES;
                     [[SKLineInspector sharedLineInspector] setAnnotationStyle:note];
                     updatingLine = NO;

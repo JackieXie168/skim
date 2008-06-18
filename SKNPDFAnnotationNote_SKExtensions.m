@@ -1,5 +1,5 @@
 //
-//  SKPDFAnnotationNote.m
+//  SKNPDFAnnotationNote_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/6/07.
@@ -36,8 +36,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFAnnotationNote.h"
-#import "PDFAnnotationText_SKExtensions.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
+#import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
@@ -46,18 +46,18 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 
-
+/*
 NSString *SKPDFAnnotationTextKey = @"text";
 NSString *SKPDFAnnotationImageKey = @"image";
-
+*/
 NSString *SKPDFAnnotationRichTextKey = @"richText";
 
-NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
+//NSSize SKNPDFAnnotationNote_SKExtensionsSize = {16.0, 16.0};
 
-@implementation SKPDFAnnotationNote
+@implementation SKNPDFAnnotationNote (SKExtensions)
 
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [super initNoteWithBounds:bounds]) {
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
+    if (self = [super initSkimNoteWithBounds:bounds]) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
@@ -67,7 +67,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     }
     return self;
 }
-
+/*
 - (void)updateContents {
     NSMutableString *contents = [NSMutableString string];
     if ([string length])
@@ -111,11 +111,11 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     [dict setValue:[self image] forKey:SKPDFAnnotationImageKey];
     return dict;
 }
+*/
+- (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isMovable { return [self isNote]; }
-
-- (BOOL)isEditable { return [self isNote]; }
-
+- (BOOL)isEditable { return [self isSkimNote]; }
+/*
 - (NSString *)type {
     return SKNoteString;
 }
@@ -186,7 +186,7 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     [texts makeObjectsPerformSelector:@selector(didChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
     [self updateContents];
 }
-
+*/
 // override these Leopard methods to avoid showing the standard tool tips over our own
 - (NSString *)toolTip { return nil; }
 - (NSString *)toolTipNoLabel { return nil; }
@@ -197,8 +197,8 @@ NSSize SKPDFAnnotationNoteSize = {16.0, 16.0};
     static NSSet *noteKeys = nil;
     if (noteKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationTextKey];
-        [mutableKeys addObject:SKPDFAnnotationImageKey];
+        [mutableKeys addObject:SKNPDFAnnotationTextKey];
+        [mutableKeys addObject:SKNPDFAnnotationImageKey];
         noteKeys = [mutableKeys copy];
         [mutableKeys release];
     }

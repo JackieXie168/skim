@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKPDFAnnotationIconTypeKey;
 
 extern NSString *SKPDFAnnotationScriptingIconTypeKey;
 

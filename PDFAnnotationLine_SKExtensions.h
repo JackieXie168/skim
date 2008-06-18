@@ -53,11 +53,6 @@ extern unsigned long SKScriptingLineStyleFromLineStyle(int lineStyle);
 extern int SKLineStyleFromScriptingLineStyle(unsigned long lineStyle);
 
 
-extern NSString *SKPDFAnnotationStartLineStyleKey;
-extern NSString *SKPDFAnnotationEndLineStyleKey;
-extern NSString *SKPDFAnnotationStartPointKey;
-extern NSString *SKPDFAnnotationEndPointKey;
-
 extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
 extern NSString *SKPDFAnnotationEndPointAsQDPointKey;
 extern NSString *SKPDFAnnotationScriptingStartLineStyleKey;

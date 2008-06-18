@@ -48,8 +48,6 @@
 #import "SKUtilities.h"
 
 
-NSString *SKPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
-
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
 
 
@@ -116,19 +114,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
-static NSColor *defaultColorForMarkupType(int markupType)
-{
-    switch (markupType) {
-        case kPDFMarkupTypeUnderline:
-            return [[NSUserDefaults standardUserDefaults] colorForKey:SKUnderlineNoteColorKey];
-        case kPDFMarkupTypeStrikeOut:
-            return [[NSUserDefaults standardUserDefaults] colorForKey:SKStrikeOutNoteColorKey];
-        case kPDFMarkupTypeHighlight:
-            return [[NSUserDefaults standardUserDefaults] colorForKey:SKHighlightNoteColorKey];
-    }
-    return nil;
-}
-
 static CFMutableDictionaryRef lineRectsDict = NULL;
 
 static IMP originalDealloc = NULL;
@@ -168,11 +153,24 @@ static IMP originalDrawWithBoxInContext = NULL;
     return CFDictionaryContainsKey(lineRectsDict, self);
 }
 
-- (id)initNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
-    if (self = [super initNoteWithBounds:bounds]) {
++ (NSColor *)defaultColorForMarkupType:(int)markupType
+{
+    switch (markupType) {
+        case kPDFMarkupTypeUnderline:
+            return [[NSUserDefaults standardUserDefaults] colorForKey:SKUnderlineNoteColorKey];
+        case kPDFMarkupTypeStrikeOut:
+            return [[NSUserDefaults standardUserDefaults] colorForKey:SKStrikeOutNoteColorKey];
+        case kPDFMarkupTypeHighlight:
+            return [[NSUserDefaults standardUserDefaults] colorForKey:SKHighlightNoteColorKey];
+    }
+    return nil;
+}
+
+- (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
+    if (self = [super initSkimNoteWithBounds:bounds]) {
         [self setMarkupType:type];
         
-        NSColor *color = defaultColorForMarkupType(type);
+        NSColor *color = [[self class] defaultColorForMarkupType:type];
         if (color)
             [self setColor:color];
         
@@ -183,40 +181,8 @@ static IMP originalDrawWithBoxInContext = NULL;
     return self;
 }
 
-- (id)initNoteWithBounds:(NSRect)bounds {
-    self = [self initNoteWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
-    return self;
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class stringClass = [NSString class];
-        NSString *type = [dict objectForKey:SKPDFAnnotationTypeKey];
-        if ([type isKindOfClass:stringClass]) {
-            int markupType = kPDFMarkupTypeHighlight;
-            if ([type isEqualToString:SKUnderlineString])
-                markupType = kPDFMarkupTypeUnderline;
-            else if ([type isKindOfClass:stringClass] && [type isEqualToString:SKStrikeOutString])
-                markupType = kPDFMarkupTypeStrikeOut;
-            if (markupType != [self markupType]) {
-                [self setMarkupType:markupType];
-                if ([dict objectForKey:SKPDFAnnotationColorKey] == nil) {
-                    NSColor *color = defaultColorForMarkupType(markupType);
-                    if (color)
-                        [self setColor:color];
-                }
-            }
-        }
-        
-        Class arrayClass = [NSArray class];
-        NSArray *pointStrings = [dict objectForKey:SKPDFAnnotationQuadrilateralPointsKey];
-        if ([pointStrings isKindOfClass:arrayClass]) {
-            NSArray *quadPoints = createPointsFromStrings(pointStrings);
-            [self setQuadrilateralPoints:quadPoints];
-            [quadPoints release];
-        }
-        
-    }
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
+    self = [self initSkimNoteWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
     return self;
 }
 
@@ -242,7 +208,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
-    } else if (self = [self initNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
+    } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         PDFPage *page = [[selection pages] objectAtIndex:0];
         NSString *string = [page string];
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
@@ -302,14 +268,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [quadPoints release];
     }
     return self;
-}
-
-- (NSDictionary *)properties {
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
-    [dict setValue:quadPoints forKey:SKPDFAnnotationQuadrilateralPointsKey];
-    [quadPoints release];
-    return dict;
 }
 
 - (NSString *)fdfString {
@@ -418,9 +376,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if (customMarkupScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
         [customKeys addObject:SKPDFAnnotationSelectionSpecifierKey];
-        [customKeys removeObject:SKPDFAnnotationLineWidthKey];
+        [customKeys removeObject:SKNPDFAnnotationLineWidthKey];
         [customKeys removeObject:SKPDFAnnotationScriptingBorderStyleKey];
-        [customKeys removeObject:SKPDFAnnotationDashPatternKey];
+        [customKeys removeObject:SKNPDFAnnotationDashPatternKey];
         customMarkupScriptingKeys = [customKeys copy];
         [customKeys release];
     }

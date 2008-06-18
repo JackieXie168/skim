@@ -37,8 +37,9 @@
  */
 
 #import "PDFAnnotationText_SKExtensions.h"
+#import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKFDFParser.h"
 
 
@@ -69,36 +70,19 @@ int SKIconTypeFromScriptingIconType(unsigned long iconType) {
 }
 
 
-NSString *SKPDFAnnotationIconTypeKey = @"iconType";
-
 NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
 
 @implementation PDFAnnotationText (SKExtensions)
 
-- (id)initNoteWithBounds:(NSRect)bounds {
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
     if ([self isMemberOfClass:[PDFAnnotationText class]]) {
         NSZone *zone = [self zone];
         [[self initWithBounds:NSZeroRect] release];
-        self = [[SKPDFAnnotationNote allocWithZone:zone] initNoteWithBounds:bounds];
+        self = [[SKNPDFAnnotationNote allocWithZone:zone] initSkimNoteWithBounds:bounds];
     } else {
-        self = [super initNoteWithBounds:bounds];
+        self = [super initSkimNoteWithBounds:bounds];
     }
     return self;
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        NSNumber *iconType = [dict objectForKey:SKPDFAnnotationIconTypeKey];
-        if ([iconType respondsToSelector:@selector(intValue)])
-            [self setIconType:[iconType intValue]];
-    }
-    return self;
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKPDFAnnotationIconTypeKey];
-    return dict;
 }
 
 - (NSString *)fdfString {
@@ -108,9 +92,9 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     return fdfString;
 }
 
-- (BOOL)isMovable { return [self isNote]; }
+- (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isEditable { return [self isNote]; }
+- (BOOL)isEditable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
@@ -118,7 +102,7 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     static NSSet *textKeys = nil;
     if (textKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationIconTypeKey];
+        [mutableKeys addObject:SKNPDFAnnotationIconTypeKey];
         textKeys = [mutableKeys copy];
         [mutableKeys release];
     }
@@ -132,9 +116,9 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     if (customTextScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
         [customKeys addObject:SKPDFAnnotationScriptingIconTypeKey];
-        [customKeys removeObject:SKPDFAnnotationLineWidthKey];
+        [customKeys removeObject:SKNPDFAnnotationLineWidthKey];
         [customKeys removeObject:SKPDFAnnotationScriptingBorderStyleKey];
-        [customKeys removeObject:SKPDFAnnotationDashPatternKey];
+        [customKeys removeObject:SKNPDFAnnotationDashPatternKey];
         customTextScriptingKeys = [customKeys copy];
         [customKeys release];
     }

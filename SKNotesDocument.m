@@ -46,7 +46,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKPDFAnnotationNote.h"
+#import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "SKStatusBar.h"
@@ -88,8 +88,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
-    NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:YES] autorelease];
-    NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
+    NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
+    NSSortDescriptor *stringSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, stringSortDescriptor, nil]];
     [outlineView reloadData];
     
@@ -169,19 +169,19 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         while (dict = [dictEnum nextObject]) {
             NSMutableDictionary *note = [dict mutableCopy];
             
-            [note setValue:[dict valueForKey:SKPDFAnnotationContentsKey] forKey:SKPDFAnnotationStringKey];
-            if ([[note valueForKey:SKPDFAnnotationTypeKey] isEqualToString:SKTextString])
-                [note setValue:SKNoteString forKey:SKPDFAnnotationTypeKey];
-            if ([[note valueForKey:SKPDFAnnotationTypeKey] isEqualToString:SKNoteString]) {
-                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], SKNotesDocumentRowHeightKey, [dict valueForKey:SKPDFAnnotationTextKey], SKPDFAnnotationTextKey, [[dict valueForKey:SKPDFAnnotationTextKey] string], SKPDFAnnotationStringKey, nil] forKey:SKNotesDocumentChildKey];
+            [note setValue:[dict valueForKey:SKNPDFAnnotationContentsKey] forKey:SKNPDFAnnotationStringKey];
+            if ([[note valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNTextString])
+                [note setValue:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
+            if ([[note valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNNoteString]) {
+                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], SKNotesDocumentRowHeightKey, [dict valueForKey:SKNPDFAnnotationTextKey], SKNPDFAnnotationTextKey, [[dict valueForKey:SKNPDFAnnotationTextKey] string], SKNPDFAnnotationStringKey, nil] forKey:SKNotesDocumentChildKey];
                 NSMutableString *contents = [[NSMutableString alloc] init];
-                if ([[dict valueForKey:SKPDFAnnotationContentsKey] length])
-                    [contents appendString:[dict valueForKey:SKPDFAnnotationContentsKey]];
-                if ([[dict valueForKey:SKPDFAnnotationTextKey] length]) {
+                if ([[dict valueForKey:SKNPDFAnnotationContentsKey] length])
+                    [contents appendString:[dict valueForKey:SKNPDFAnnotationContentsKey]];
+                if ([[dict valueForKey:SKNPDFAnnotationTextKey] length]) {
                     [contents appendString:@"  "];
-                    [contents appendString:[[dict valueForKey:SKPDFAnnotationTextKey] string]];
+                    [contents appendString:[[dict valueForKey:SKNPDFAnnotationTextKey] string]];
                 }
-                [note setValue:contents forKey:SKPDFAnnotationContentsKey];
+                [note setValue:contents forKey:SKNPDFAnnotationContentsKey];
                 [contents release];
             }
             
@@ -279,7 +279,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
-        [cell setObjectValue:[item valueForKey:SKPDFAnnotationTypeKey] ? [item valueForKey:SKPDFAnnotationStringKey] : [item valueForKey:SKPDFAnnotationTextKey]];
+        [cell setObjectValue:[item valueForKey:SKNPDFAnnotationTypeKey] ? [item valueForKey:SKNPDFAnnotationStringKey] : [item valueForKey:SKNPDFAnnotationTextKey]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)] forKey:SKNotesDocumentRowHeightKey];
@@ -321,13 +321,13 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil)
         return [[arrayController arrangedObjects] count];
-    else if ([[item valueForKey:SKPDFAnnotationTypeKey] isEqualToString:SKNoteString])
+    else if ([[item valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNNoteString])
         return 1;
     return 0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
-    return [[item valueForKey:SKPDFAnnotationTypeKey] isEqualToString:SKNoteString];
+    return [[item valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNNoteString];
 }
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
@@ -341,11 +341,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
-        return [item valueForKey:SKPDFAnnotationTypeKey] ? [item valueForKey:SKPDFAnnotationStringKey] : [item valueForKey:SKPDFAnnotationTextKey];
+        return [item valueForKey:SKNPDFAnnotationTypeKey] ? [item valueForKey:SKNPDFAnnotationStringKey] : [item valueForKey:SKNPDFAnnotationTextKey];
     } else if([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:SKPDFAnnotationTypeKey], SKPDFAnnotationTypeKey, nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:SKNPDFAnnotationTypeKey], SKNPDFAnnotationTypeKey, nil];
     } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
-        NSNumber *pageNumber = [item valueForKey:SKPDFAnnotationPageIndexKey];
+        NSNumber *pageNumber = [item valueForKey:SKNPDFAnnotationPageIndexKey];
         return pageNumber ? [NSString stringWithFormat:@"%i", [pageNumber intValue] + 1] : nil;
     }
     return nil;
@@ -360,13 +360,13 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         ascending = [[sortDescriptors lastObject] ascending];
     } else {
         NSString *tcID = [tableColumn identifier];
-        NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationPageIndexKey ascending:ascending] autorelease];
-        NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+        NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
+        NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
         NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
         if ([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
-            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
         } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
             if (oldTableColumn == nil)
                 ascending = NO;
@@ -387,7 +387,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     if ([types count] == 8) {
         [arrayController setFilterPredicate:nil];
     } else {
-        NSExpression *lhs = [NSExpression expressionForKeyPath:SKPDFAnnotationTypeKey];
+        NSExpression *lhs = [NSExpression expressionForKeyPath:SKNPDFAnnotationTypeKey];
         NSMutableArray *predicateArray = [NSMutableArray array];
         NSEnumerator *typeEnum = [types objectEnumerator];
         NSString *type;
@@ -405,7 +405,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSMutableArray *types = [NSMutableArray array];
-    NSMutableAttributedString *attrString = [[items valueForKey:SKPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
+    NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
     NSMutableString *string = [NSMutableString string];
     NSEnumerator *itemEnum = [items objectEnumerator];
     NSDictionary *item;
@@ -415,12 +415,12 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
             [string appendString:@"\n\n"];
         if ([attrString length])
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-        if ([item valueForKey:SKPDFAnnotationTypeKey]) {
-            [string appendString:[item valueForKey:SKPDFAnnotationStringKey]];
-            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item valueForKey:SKPDFAnnotationStringKey]];
+        if ([item valueForKey:SKNPDFAnnotationTypeKey]) {
+            [string appendString:[item valueForKey:SKNPDFAnnotationStringKey]];
+            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item valueForKey:SKNPDFAnnotationStringKey]];
         } else {
-            [string appendString:[item valueForKey:SKPDFAnnotationStringKey]];
-            [attrString appendAttributedString:[item valueForKey:SKPDFAnnotationTextKey]];
+            [string appendString:[item valueForKey:SKNPDFAnnotationStringKey]];
+            [attrString appendAttributedString:[item valueForKey:SKNPDFAnnotationTextKey]];
         }
     }
     
@@ -454,7 +454,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    return [item valueForKey:SKPDFAnnotationStringKey];
+    return [item valueForKey:SKNPDFAnnotationStringKey];
 }
 
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
@@ -483,7 +483,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         id item = [outlineView itemAtRow:i];
-        NSString *string = [item valueForKey:SKPDFAnnotationStringKey];
+        NSString *string = [item valueForKey:SKNPDFAnnotationStringKey];
         [texts addObject:string ? string : @""];
     }
     return texts;

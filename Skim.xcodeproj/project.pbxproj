@@ -85,7 +85,7 @@
 		CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
-		CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */; };
+		CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
@@ -119,7 +119,6 @@
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
-		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
 		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
@@ -147,6 +146,8 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
+		CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
+		CE7DC7DB0E093BDA00D6D76D /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
@@ -189,7 +190,6 @@
 		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
-		CEBA2D210E05A64A0000B2E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */; };
 		CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBF85E00CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m */; };
 		CEC7B39A0CF5F2D2008CCD63 /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */; };
@@ -209,7 +209,6 @@
 		CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
 		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
-		CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
 		CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */; };
 		CEE54D930DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D920DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m */; };
 		CEE54D980DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D970DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m */; };
@@ -222,9 +221,6 @@
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
-		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
-		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
-		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_SKExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */; };
 		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
@@ -232,8 +228,6 @@
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
-		CEFA61300D9C76A10003F152 /* SKAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFA61260D9C73920003F152 /* SKAgentListener.m */; };
-		CEFA613A0D9C77740003F152 /* SKAgentListenerProtocol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
@@ -250,13 +244,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CE1E39870BDBCC930011D9DD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CEF3BF740B99CA2900E12E3D;
-			remoteInfo = skimnotes;
-		};
 		CE2BD81F0BD4127A00A5F4DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */;
@@ -284,6 +271,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
 			remoteInfo = Skim;
+		};
+		CE7DC7310E09286500D6D76D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
+			remoteInfo = SkimNotes;
+		};
+		CE7DC7330E09286500D6D76D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEBA2B550E0566B00000B2E6 /* skimnotes */;
+			remoteInfo = skimnotes;
+		};
+		CE7DC75A0E0928D700D6D76D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
+			remoteInfo = SkimNotes;
+		};
+		CE7DC7E10E093C1A00D6D76D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			remoteInfo = skimnotes;
 		};
 		CE816A020D70F8F7008D807D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -339,6 +354,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CE7DC7DB0E093BDA00D6D76D /* SkimNotes.framework in CopyFiles */,
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,9 +366,7 @@
 			dstSubfolderSpec = 12;
 			files = (
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
-				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
 				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
-				CEFA613A0D9C77740003F152 /* SKAgentListenerProtocol.h in CopyFiles */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,8 +509,8 @@
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
-		CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFAnnotationNote.h; sourceTree = "<group>"; };
-		CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFAnnotationNote.m; sourceTree = "<group>"; };
+		CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNPDFAnnotationNote_SKExtensions.h; sourceTree = "<group>"; };
+		CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNPDFAnnotationNote_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
 		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
@@ -600,8 +614,6 @@
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
-		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKExtendedAttributes.h; sourceTree = "<group>"; };
-		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKExtendedAttributes.m; sourceTree = "<group>"; };
 		CE54898B0B35D4EF00F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
@@ -679,6 +691,8 @@
 		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
+		CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimNotes.xcodeproj; path = SkimNotes/SkimNotes.xcodeproj; sourceTree = "<group>"; };
+		CE7DC7440E0928A700D6D76D /* SkimNotes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaults_SKExtensions.h; sourceTree = "<group>"; };
 		CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaults_SKExtensions.m; sourceTree = "<group>"; };
 		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
@@ -897,8 +911,6 @@
 		CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKUnarchiveFromDataArrayTransformer.m; sourceTree = "<group>"; };
 		CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_UI.h; sourceTree = "<group>"; };
 		CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController_UI.m; sourceTree = "<group>"; };
-		CEF3BF750B99CA2900E12E3D /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEF3BF850B99CAD300E12E3D /* skimnotes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = skimnotes.m; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
 		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
@@ -910,9 +922,6 @@
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
 		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallPreferences.tiff; path = Images/SmallPreferences.tiff; sourceTree = "<group>"; };
-		CEFA61250D9C73920003F152 /* SKAgentListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAgentListener.h; sourceTree = "<group>"; };
-		CEFA61260D9C73920003F152 /* SKAgentListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAgentListener.m; sourceTree = "<group>"; };
-		CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAgentListenerProtocol.h; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -948,6 +957,7 @@
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
+				CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,15 +967,6 @@
 			files = (
 				CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */,
 				CE816B040D71963B008D807D /* Quartz.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CEF3BF730B99CA2900E12E3D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */,
-				CEBA2D210E05A64A0000B2E6 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -981,6 +982,7 @@
 				455989F70B2662FF00E5419B /* Quartz.framework */,
 				CE1ADB170C4BC6DE00071840 /* OpenGL.framework */,
 				CE5F42D30BF8A3400069D89C /* IOKit.framework */,
+				CE7DC7440E0928A700D6D76D /* SkimNotes.framework */,
 				CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */,
 				F977319E0B939B7D002A7823 /* libbz2.dylib */,
 			);
@@ -1000,7 +1002,6 @@
 			isa = PBXGroup;
 			children = (
 				8D15AC370486D014006FF6A4 /* Skim.app */,
-				CEF3BF750B99CA2900E12E3D /* skimnotes */,
 				CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */,
 			);
 			name = Products;
@@ -1013,7 +1014,6 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				453DC2740B4F23E500A72509 /* Third Party Sources */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
-				CEF3BF840B99CA9900E12E3D /* Skimnotes */,
 				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
@@ -1124,8 +1124,6 @@
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */,
 				CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */,
-				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.h */,
-				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m */,
 				CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */,
 				CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */,
 				CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */,
@@ -1155,6 +1153,7 @@
 		CE2BD8160BD4123D00A5F4DB /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
+				CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */,
 				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */,
 				CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */,
@@ -1331,8 +1330,8 @@
 				CE8978CC0CBFC70B00EA2D98 /* SKTag.m */,
 				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
-				CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */,
-				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
+				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
+				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -1431,6 +1430,15 @@
 				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		CE7DC7290E09286500D6D76D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE7DC7320E09286500D6D76D /* SkimNotes.framework */,
+				CE7DC7340E09286500D6D76D /* skimnotes */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		CE816AA10D718C5B008D807D /* Leopard */ = {
@@ -1582,17 +1590,6 @@
 			name = "Shared Support";
 			sourceTree = "<group>";
 		};
-		CEF3BF840B99CA9900E12E3D /* Skimnotes */ = {
-			isa = PBXGroup;
-			children = (
-				CEF3BF850B99CAD300E12E3D /* skimnotes.m */,
-				CEFA61250D9C73920003F152 /* SKAgentListener.h */,
-				CEFA61260D9C73920003F152 /* SKAgentListener.m */,
-				CEFA612E0D9C76300003F152 /* SKAgentListenerProtocol.h */,
-			);
-			name = Skimnotes;
-			sourceTree = "<group>";
-		};
 		CEFD68620C01D3BB0027B933 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1625,11 +1622,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				CE7DC75B0E0928D700D6D76D /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
-				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
+				CE816AB60D7195E8008D807D /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
 				CE816A030D70F8F7008D807D /* PBXTargetDependency */,
-				CE816AB60D7195E8008D807D /* PBXTargetDependency */,
+				CE7DC7E20E093C1A00D6D76D /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -1653,22 +1651,6 @@
 			productName = Leopard;
 			productReference = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */;
 			productType = "com.apple.product-type.bundle";
-		};
-		CEF3BF740B99CA2900E12E3D /* skimnotes */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CEF3BF7B0B99CA4800E12E3D /* Build configuration list for PBXNativeTarget "skimnotes" */;
-			buildPhases = (
-				CEF3BF720B99CA2900E12E3D /* Sources */,
-				CEF3BF730B99CA2900E12E3D /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = skimnotes;
-			productName = skimnotes;
-			productReference = CEF3BF750B99CA2900E12E3D /* skimnotes */;
-			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -1701,6 +1683,10 @@
 					ProjectRef = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
 				},
 				{
+					ProductGroup = CE7DC7290E09286500D6D76D /* Products */;
+					ProjectRef = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+				},
+				{
 					ProductGroup = CE2BD8180BD4127A00A5F4DB /* Products */;
 					ProjectRef = CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */;
 				},
@@ -1709,7 +1695,6 @@
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
-				CEF3BF740B99CA2900E12E3D /* skimnotes */,
 				CE816AAA0D71958F008D807D /* Skim-Leopard */,
 			);
 		};
@@ -1728,6 +1713,20 @@
 			fileType = wrapper.application;
 			path = "Sparkle Test App.app";
 			remoteRef = CE2BD8210BD4127A00A5F4DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE7DC7320E09286500D6D76D /* SkimNotes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SkimNotes.framework;
+			remoteRef = CE7DC7310E09286500D6D76D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE7DC7340E09286500D6D76D /* skimnotes */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = skimnotes;
+			remoteRef = CE7DC7330E09286500D6D76D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */ = {
@@ -1953,7 +1952,6 @@
 				4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */,
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
-				CE5487BC0B35A20A00F8AFB6 /* NSFileManager_SKExtendedAttributes.m in Sources */,
 				CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */,
 				F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */,
 				F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */,
@@ -1962,7 +1960,7 @@
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
 				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
-				CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */,
+				CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */,
 				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
 				CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */,
 				CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */,
@@ -2096,24 +2094,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEF3BF720B99CA2900E12E3D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */,
-				CEF3C0AE0B9A15E800E12E3D /* NSFileManager_SKExtendedAttributes.m in Sources */,
-				CEFA61300D9C76A10003F152 /* SKAgentListener.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CE1E39880BDBCC930011D9DD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CEF3BF740B99CA2900E12E3D /* skimnotes */;
-			targetProxy = CE1E39870BDBCC930011D9DD /* PBXContainerItemProxy */;
-		};
 		CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Sparkle;
@@ -2123,6 +2106,16 @@
 			isa = PBXTargetDependency;
 			target = 8D15AC270486D014006FF6A4 /* Skim */;
 			targetProxy = CE592C610B9239CD00C113DF /* PBXContainerItemProxy */;
+		};
+		CE7DC75B0E0928D700D6D76D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SkimNotes;
+			targetProxy = CE7DC75A0E0928D700D6D76D /* PBXContainerItemProxy */;
+		};
+		CE7DC7E20E093C1A00D6D76D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = skimnotes;
+			targetProxy = CE7DC7E10E093C1A00D6D76D /* PBXContainerItemProxy */;
 		};
 		CE816A030D70F8F7008D807D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2567,9 +2560,11 @@
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/vendorsrc\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
@@ -2597,9 +2592,11 @@
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/vendorsrc\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -2724,72 +2721,6 @@
 			};
 			name = Release;
 		};
-		CEF3BF7C0B99CA4800E12E3D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = skimnotes;
-				WARNING_CFLAGS = "-Wfloat-equal";
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
-		CEF3BF7D0B99CA4800E12E3D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_FAST_OBJC_DISPATCH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = skimnotes;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-parentheses",
-					"-Wundeclared-selector",
-					"-Wfloat-equal",
-					"-Winline",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2825,15 +2756,6 @@
 			buildConfigurations = (
 				CE816AAD0D719591008D807D /* Debug */,
 				CE816AAE0D719591008D807D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CEF3BF7B0B99CA4800E12E3D /* Build configuration list for PBXNativeTarget "skimnotes" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CEF3BF7C0B99CA4800E12E3D /* Debug */,
-				CEF3BF7D0B99CA4800E12E3D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -47,8 +47,8 @@
 
 @implementation PDFAnnotationSquare (SKExtensions)
 
-- (id)initNoteWithBounds:(NSRect)bounds {
-    if (self = [super initNoteWithBounds:bounds]) {
+- (id)initSkimNoteWithBounds:(NSRect)bounds {
+    if (self = [super initSkimNoteWithBounds:bounds]) {
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [self setInteriorColor:color];
@@ -58,22 +58,6 @@
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineStyleKey]];
     }
     return self;
-}
-
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class colorClass = [NSColor class];
-        NSColor *interiorColor = [dict objectForKey:SKPDFAnnotationInteriorColorKey];
-        if ([interiorColor isKindOfClass:colorClass])
-            [self setInteriorColor:interiorColor];
-    }
-    return self;
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[self interiorColor] forKey:SKPDFAnnotationInteriorColorKey];
-    return dict;
 }
 
 - (NSString *)fdfString {
@@ -87,9 +71,9 @@
     return fdfString;
 }
 
-- (BOOL)isResizable { return [self isNote]; }
+- (BOOL)isResizable { return [self isSkimNote]; }
 
-- (BOOL)isMovable { return [self isNote]; }
+- (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
@@ -97,7 +81,7 @@
     static NSSet *squareKeys = nil;
     if (squareKeys == nil) {
         NSMutableSet *mutableKeys = [[super keysForValuesToObserveForUndo] mutableCopy];
-        [mutableKeys addObject:SKPDFAnnotationInteriorColorKey];
+        [mutableKeys addObject:SKNPDFAnnotationInteriorColorKey];
         squareKeys = [mutableKeys copy];
         [mutableKeys release];
     }
@@ -110,7 +94,7 @@
     static NSSet *customSquareScriptingKeys = nil;
     if (customSquareScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
-        [customKeys addObject:SKPDFAnnotationInteriorColorKey];
+        [customKeys addObject:SKNPDFAnnotationInteriorColorKey];
         customSquareScriptingKeys = [customKeys copy];
         [customKeys release];
     }
