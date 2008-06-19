@@ -50,6 +50,8 @@
 #import "SKProgressController.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "SKStringConstants.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SKNPDFAnnotationNote.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKPDFHoverWindow.h"

@@ -37,6 +37,7 @@
  */
 
 #import "PDFAnnotationMarkup_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"

@@ -39,7 +39,9 @@
 #import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
 #import <Carbon/Carbon.h>
+#import <SkimNotes/NSFilemanager_SKNExtensions.h>
 #import "SKMainWindowController.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKPSProgressController.h"
