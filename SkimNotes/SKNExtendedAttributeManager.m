@@ -54,6 +54,7 @@ static NSString *SKNErrorDomain = @"SKNErrorDomain";
 @implementation SKNExtendedAttributeManager
 
 static id sharedManager = nil;
+static id sharedNoSplitManager = nil;
 
 + (id)sharedManager;
 {
@@ -62,21 +63,40 @@ static id sharedManager = nil;
     return sharedManager;
 }
 
++ (id)sharedNoSplitManager;
+{
+    if (sharedNoSplitManager == nil)
+        sharedNoSplitManager = [[[self class] alloc] initWithPrefix:nil];
+    return sharedNoSplitManager;
+}
+
 - (id)init;
 {
-    return [self initWithPrefix:nil];
+    self = [self initWithPrefix:PREFIX];
+    if (sharedManager) {
+        [self release];
+        self = [sharedManager retain];
+    } else {
+        sharedManager = self = [self initWithPrefix:PREFIX];
+    }
+    return self;
 }
 
 - (id)initWithPrefix:(NSString *)prefix;
 {
     if (self = [super init]) {
-        if (prefix == nil)
-            prefix = PREFIX;
-        namePrefix = [[prefix stringByAppendingString:@"_"] retain];
-        uniqueKey = [[prefix stringByAppendingString:@"_key"] retain];
-        wrapperKey = [[prefix stringByAppendingString:@"_has_wrapper"] retain];
-        fragmentsKey = [[prefix stringByAppendingString:@"_number_of_fragments"] retain];
-        
+        if (prefix) {
+            namePrefix = [[prefix stringByAppendingString:@"_"] retain];
+            uniqueKey = [[prefix stringByAppendingString:@"_key"] retain];
+            wrapperKey = [[prefix stringByAppendingString:@"_has_wrapper"] retain];
+            fragmentsKey = [[prefix stringByAppendingString:@"_number_of_fragments"] retain];
+        } else if (sharedNoSplitManager) {
+            [self release];
+            self = [sharedNoSplitManager retain];
+        } else {
+            namePrefix = uniqueKey = wrapperKey = fragmentsKey = nil;
+            sharedNoSplitManager = self;
+        }
     }
     return self;
 }
@@ -216,7 +236,7 @@ static id sharedManager = nil;
 
     id plist = nil;
     
-    if ([attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+    if (namePrefix && [attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
         plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
     
     // even if it's a plist, it may not be a dictionary or have the key we're looking for
@@ -286,7 +306,7 @@ static id sharedManager = nil;
     
     BOOL success;
 
-    if ((options & kSKNXattrNoSplitData) == 0 && [value length] > MAX_XATTR_LENGTH) {
+    if ((options & kSKNXattrNoSplitData) == 0 && namePrefix && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
         value = [self bzip2:value];
@@ -391,7 +411,7 @@ static id sharedManager = nil;
 
             id plist = nil;
             
-            if ([attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+            if (namePrefix && [attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
                 plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
             
             // even if it's a plist, it may not be a dictionary or have the key we're looking for
