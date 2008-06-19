@@ -71,17 +71,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 @implementation PDFAnnotationMarkup (SKExtensions)
 
-static NSArray *createStringsFromPoints(NSArray *points)
-{
-    if (points == nil)
-        return nil;
-    int i, iMax = [points count];
-    NSMutableArray *strings = [[NSMutableArray alloc] initWithCapacity:iMax];
-    for (i = 0; i < iMax; i++)
-        [strings addObject:NSStringFromPoint([[points objectAtIndex:i] pointValue])];
-    return strings;
-}
-
 static NSArray *createPointsFromStrings(NSArray *strings)
 {
     if (strings == nil)
