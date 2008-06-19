@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import <SkimNotes/SkimNotes.h>
 
 
 enum {

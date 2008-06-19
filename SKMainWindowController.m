@@ -57,10 +57,12 @@
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
 #import "BDSKGradientView.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
+#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
+#import <SkimNotes/PDFAnnotationLine_SKNExtensions.h>
+#import <SkimNotes/SKNPDFAnnotationNote.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "PDFAnnotationFreeText_SKExtensions.h"
-#import "PDFAnnotationCircle_SKExtensions.h"
-#import "PDFAnnotationLine_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"

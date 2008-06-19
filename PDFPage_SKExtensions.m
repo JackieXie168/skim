@@ -37,7 +37,7 @@
  */
 
 #import "PDFPage_SKExtensions.h"
-#import "PDFAnnotation_SKExtensions.h"
+#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "SKPDFAnnotationTemporary.h"
 #import "SKPDFDocument.h"
 #import "SKPDFView.h"
