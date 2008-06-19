@@ -277,28 +277,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = SkimNotes;
 		};
 		CE7DC7330E09286500D6D76D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CEBA2B550E0566B00000B2E6 /* skimnotes */;
+			remoteGlobalIDString = CEBA2B550E0566B00000B2E6;
 			remoteInfo = skimnotes;
 		};
 		CE7DC75A0E0928D700D6D76D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = SkimNotes;
 		};
 		CE7DC7E10E093C1A00D6D76D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
 			remoteInfo = skimnotes;
 		};
 		CE816A020D70F8F7008D807D /* PBXContainerItemProxy */ = {
