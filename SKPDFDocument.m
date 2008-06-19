@@ -660,8 +660,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                         readOption = [alert runModal];
                     }
                     if (readOption == NSAlertDefaultReturn) {
-                        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-                        if (array) {
+                        array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:[NSURL fileURLWithPath:path] error:NULL];
+                        if ([array count]) {
                             [self setNoteDicts:array];
                             [self updateChangeCount:NSChangeDone];
                         }
