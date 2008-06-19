@@ -77,7 +77,7 @@ static id sharedNoSplitManager = nil;
         [self release];
         self = [sharedManager retain];
     } else {
-        sharedManager = self = [self initWithPrefix:PREFIX];
+        sharedManager = [self retain]; // we don't care about overretaining a shared object, but we care about overreleasing
     }
     return self;
 }
@@ -95,7 +95,7 @@ static id sharedNoSplitManager = nil;
             self = [sharedNoSplitManager retain];
         } else {
             namePrefix = uniqueKey = wrapperKey = fragmentsKey = nil;
-            sharedNoSplitManager = self;
+            sharedNoSplitManager = [self retain]; // we don't care about overretaining a shared object, but we care about overreleasing
         }
     }
     return self;
