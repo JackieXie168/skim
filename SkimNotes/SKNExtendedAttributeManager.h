@@ -60,12 +60,20 @@ enum {
 + (id)sharedManager;
 
 /*!
+    @method     sharedNoSplitManager
+    @abstract   Returns a shared instance with nil prefix.  This instance never splits attributes, and can also not reassemble splitted attributes.
+    @discussion (comprehensive description)
+    @result     (description)
+*/
++ (id)sharedNoSplitManager;
+
+/*!
     @method     initWithPrefix:
     @abstract   Initializes a new extended attribute manager with keys and attribute name prefixes used for segments determined by a prefix.
     @discussion The prefix is used in splitting large attributes.  EA managers with different prefixes are mutually incompatible,
                 i.e. attributes written with one manager cannot be safely read by a manager with a different prefix.
                 It is safest to just use the shared instance.  The prefix should only contain characters that are valid in attribute names.
-    @param      prefix Defaults to "net_sourceforge_skim-app" for the shared instance.
+    @param      prefix Defaults to "net_sourceforge_skim-app" for the shared instance.  If nil, the manager never splits attributes.
     @result     (description)
 */
 - (id)initWithPrefix:(NSString *)prefix;
