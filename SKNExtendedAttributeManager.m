@@ -36,8 +36,9 @@
 #define SKNLocalizedString(key, comment) key
 #endif
 
-#define MAX_XATTR_LENGTH    2048
-#define UNIQUE_VALUE        [[NSProcessInfo processInfo] globallyUniqueString]
+#define MAX_XATTR_LENGTH        2048
+#define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
+#define PREFIX                  @"net_sourceforge_skim-app"
 
 static NSString *SKNErrorDomain = @"SKNErrorDomain";
 
@@ -63,16 +64,18 @@ static id sharedManager = nil;
 
 - (id)init;
 {
-    return [self initWithPrefix:@"net_sourceforge_skim-app"];
+    return [self initWithPrefix:nil];
 }
 
 - (id)initWithPrefix:(NSString *)prefix;
 {
     if (self = [super init]) {
-        namePrefix = [[NSString alloc] initWithFormat:@"%@_", prefix];
-        uniqueKey = [[NSString alloc] initWithFormat:@"%@_key", prefix];
-        wrapperKey = [[NSString alloc] initWithFormat:@"%@_has_wrapper", prefix];
-        fragmentsKey = [[NSString alloc] initWithFormat:@"%@_number_of_fragments", prefix];
+        if (prefix == nil)
+            prefix = PREFIX;
+        namePrefix = [[prefix stringByAppendingString:@"_"] retain];
+        uniqueKey = [[prefix stringByAppendingString:@"_key"] retain];
+        wrapperKey = [[prefix stringByAppendingString:@"_has_wrapper"] retain];
+        fragmentsKey = [[prefix stringByAppendingString:@"_number_of_fragments"] retain];
         
     }
     return self;

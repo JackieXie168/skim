@@ -53,7 +53,7 @@ enum {
 
 /*!
     @method     sharedManager
-    @abstract   Returns the shared instance.
+    @abstract   Returns the shared instance.  You probably always should use this instance, and is required for Skim notes.
     @discussion (comprehensive description)
     @result     (description)
 */
@@ -62,8 +62,10 @@ enum {
 /*!
     @method     initWithPrefix:
     @abstract   Initializes a new extended attribute manager with keys and attribute name prefixes used for segments determined by a prefix.
-    @discussion The prefix should only contain characters that are valid in attribute names.
-    @param      prefix Defaults to "skim-app.sourcesforge.net", which is the prefix used by Skim.
+    @discussion The prefix is used in splitting large attributes.  EA managers with different prefixes are mutually incompatible,
+                i.e. attributes written with one manager cannot be safely read by a manager with a different prefix.
+                It is safest to just use the shared instance.  The prefix should only contain characters that are valid in attribute names.
+    @param      prefix Defaults to "net_sourceforge_skim-app" for the shared instance.
     @result     (description)
 */
 - (id)initWithPrefix:(NSString *)prefix;
