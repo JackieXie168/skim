@@ -1332,8 +1332,6 @@
 				CE8978CC0CBFC70B00EA2D98 /* SKTag.m */,
 				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
-				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
-				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -1568,6 +1566,8 @@
 				CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */,
 				CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */,
 				CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */,
+				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
+				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
 				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
 				CEE54DC70DA2EAE00037169F /* PDFBorder_SKExtensions.m */,
 				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
