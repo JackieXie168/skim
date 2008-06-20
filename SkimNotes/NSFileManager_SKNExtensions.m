@@ -162,9 +162,11 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         
         if ([data length])
             notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        
-        if (notes == nil)
+        else if ([error code] == ENOATTR)
             notes = [NSArray array];
+        
+        if (notes == nil && error != nil && outError) 
+            *outError = error;
     } else {
         if(error == nil && outError) 
             *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
@@ -180,8 +182,11 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
 
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (string == nil)
+        if (string == nil && [error code] == ENOATTR)
             string = [NSString string];
+        
+        if (string == nil && error != nil && outError) 
+            *outError = error;
     } else {
         if(error == nil && outError) 
             *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
@@ -197,8 +202,11 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
 
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (data == nil)
+        if (data == nil && [error code] == ENOATTR)
             data = [NSData data];
+        
+        if (data == nil && error != nil && outError) 
+            *outError = error;
     } else {
         if(error == nil && outError) 
             *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
