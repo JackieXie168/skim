@@ -647,7 +647,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                     pdfDoc = nil;
                 }
             } else if ([array count] == 0) {
-                [self setNoteDicts:array];
                 NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
                     int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
@@ -667,6 +666,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                         }
                     }
                 }
+            } else {
+                [self setNoteDicts:array];
             }
         }
     } else if (SKIsPDFBundleDocumentType(docType)) {
