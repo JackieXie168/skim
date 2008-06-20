@@ -540,10 +540,10 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                tmpAttrStr = [[currentTag attributedText] mutableCopy];
+                tmpAttrStr = [[(SKRichTextTag *)currentTag attributedText] mutableCopy];
                 [tmpAttrStr appendAttributedString:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
                 [tmpAttrStr fixAttributesInRange:NSMakeRange(0, [tmpAttrStr length])];
-                [currentTag setAttributedText:tmpAttrStr];
+                [(SKRichTextTag *)currentTag setAttributedText:tmpAttrStr];
                 [tmpAttrStr release];
             } else {
                 currentTag = [[SKRichTextTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
@@ -578,13 +578,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 // collection template tag
                 // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                    wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
+                    wsRange = [[[(SKRichTextTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
                     if (wsRange.location != NSNotFound) {
-                        if (wsRange.length == [[currentTag attributedText] length]) {
+                        if (wsRange.length == [[(SKRichTextTag *)currentTag attributedText] length]) {
                             [result removeLastObject];
                             currentTag = [result lastObject];
                         } else {
-                            [currentTag setAttributedText:[[currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
+                            [(SKRichTextTag *)currentTag setAttributedText:[[(SKRichTextTag *)currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
                         }
                     }
                 }
@@ -649,13 +649,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     // condition template tag
                     // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        wsRange = [[[currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
+                        wsRange = [[[(SKRichTextTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] != 1];
                         if (wsRange.location != NSNotFound) {
-                            if (wsRange.length == [[currentTag attributedText] length]) {
+                            if (wsRange.length == [[(SKRichTextTag *)currentTag attributedText] length]) {
                                 [result removeLastObject];
                                 currentTag = [result lastObject];
                             } else {
-                                [currentTag setAttributedText:[[currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
+                                [(SKRichTextTag *)currentTag setAttributedText:[[(SKRichTextTag *)currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
                             }
                         }
                     }
@@ -708,10 +708,10 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     
                     // a START_TAG_OPEN_DELIM without COLLECTION_TAG_CLOSE_DELIM, so no template tag. Rewind
                     if (currentTag && [(SKTag *)currentTag type] == SKTextTagType) {
-                        tmpAttrStr = [[currentTag attributedText] mutableCopy];
+                        tmpAttrStr = [[(SKRichTextTag *)currentTag attributedText] mutableCopy];
                         [tmpAttrStr appendAttributedString:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
                         [tmpAttrStr fixAttributesInRange:NSMakeRange(0, [tmpAttrStr length])];
-                        [currentTag setAttributedText:tmpAttrStr];
+                        [(SKRichTextTag *)currentTag setAttributedText:tmpAttrStr];
                         [tmpAttrStr release];
                     } else {
                         currentTag = [[SKRichTextTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
@@ -741,7 +741,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
         
         if (type == SKTextTagType) {
             
-            [result appendAttributedString:[tag attributedText]];
+            [result appendAttributedString:[(SKRichTextTag *)tag attributedText]];
             
         } else {
             
