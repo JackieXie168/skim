@@ -44,8 +44,8 @@ static NSString *SKNErrorDomain = @"SKNErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
 // private methods to (un)compress data
-- (NSData *)bzip2:(NSData *)data;
-- (NSData *)bunzip2:(NSData *)data;
+- (NSData *)bzip2Data:(NSData *)data;
+- (NSData *)bunzip2Data:(NSData *)data;
 // private method to print error messages
 - (NSError *)xattrError:(int)err forPath:(NSString *)path;
 @end
@@ -261,7 +261,7 @@ static id sharedNoSplitManager = nil;
         }
         
         [attribute release];
-        attribute = success ? [[self bunzip2:buffer] retain] : nil;
+        attribute = success ? [[self bunzip2Data:buffer] retain] : nil;
     }
     return [attribute autorelease];
 }
@@ -274,6 +274,16 @@ static id sharedNoSplitManager = nil;
     if (nil == data) {
         if (outError) *outError = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, error, NSUnderlyingErrorKey, nil]];
     } else {
+        // decompress the data if necessary, we may have compressed when setting
+        static NSData *bzipHeaderData = nil;
+        if (nil == bzipHeaderData) {
+            char *h = "BZh";
+            bzipHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+        }
+        
+        if ([data length] >= [bzipHeaderData length] && [bzipHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, [bzipHeaderData length])]])
+            data = [self bunzip2Data:data];
+        
         NSString *errorString;
         plist = [NSPropertyListSerialization propertyListFromData:data 
                                                  mutabilityOption:NSPropertyListImmutable 
@@ -309,7 +319,7 @@ static id sharedNoSplitManager = nil;
     if ((options & kSKNXattrNoSplitData) == 0 && namePrefix && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
-        value = [self bzip2:value];
+        value = [self bzip2Data:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
@@ -366,6 +376,10 @@ static id sharedNoSplitManager = nil;
         [errorString release];
         success = NO;
     } else {
+        // if we don't split and the data is too long, compress the data using bzip to save space
+        if (((options & kSKNXattrNoSplitData) != 0 || namePrefix == nil) && [data length] > MAX_XATTR_LENGTH)
+            data = [self bzip2Data:data];
+        
         success = [self setExtendedAttributeNamed:attr toValue:data atPath:path options:options error:error];
     }
     return success;
@@ -536,7 +550,7 @@ static id sharedNoSplitManager = nil;
 // implementation modified after http://www.cocoadev.com/index.pl?NSDataPlusBzip (removed exceptions)
 //
 
-- (NSData *)bzip2:(NSData *)data;
+- (NSData *)bzip2Data:(NSData *)data;
 {
 	int compression = 5;
     int bzret, buffer_size = 1000000;
@@ -570,7 +584,7 @@ static id sharedNoSplitManager = nil;
 	return compressed;
 }
 
-- (NSData *)bunzip2:(NSData *)data;
+- (NSData *)bunzip2Data:(NSData *)data;
 {
 	int bzret;
 	bz_stream stream = { 0 };
