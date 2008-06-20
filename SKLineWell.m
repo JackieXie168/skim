@@ -81,6 +81,16 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         return [NSNumber class];
 }
 
+- (void)commonInit {
+    bindingInfo = [[NSMutableDictionary alloc] init];
+    
+    existsActiveLineWell = NO;
+    updatingFromLineInspector = NO;
+    updatingFromBinding = NO;
+    
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
+}
+
 - (id)initWithFrame:(NSRect)frame {
     if (self = [super initWithFrame:frame]) {
         lineWidth = 1.0;
@@ -95,14 +105,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         target = nil;
         action = NULL;
         
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        
-        existsActiveLineWell = NO;
-        
-        updatingFromLineInspector = NO;
-        updatingFromBinding = NO;
-        
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
@@ -130,15 +133,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
             [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
             target = [decoder decodeObject];
         }
-        
-        bindingInfo = [[NSMutableDictionary alloc] init];
-        
-        existsActiveLineWell = NO;
-        
-        updatingFromLineInspector = NO;
-        updatingFromBinding = NO;
-        
-        [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
+        [self commonInit];
     }
     return self;
 }
@@ -181,7 +176,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     [super dealloc];
 }
 
-- (BOOL)isOpaque{  return YES; }
+- (BOOL)isOpaque{ return YES; }
 
 - (BOOL)acceptsFirstResponder { return [self canActivate]; }
 
@@ -640,44 +635,32 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 
 #pragma mark Notification handlers
 
-- (void)lineInspectorLineWidthChanged:(NSNotification *)notification {
+- (void)lineInspectorChangedValueForKey:(NSString *)key {
     BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
     updatingFromLineInspector = YES;
-    [self setLineWidth:[[notification object] lineWidth]];
+    [self setValue:[[SKLineInspector sharedLineInspector] valueForKey:key] forKey:key];
     [self sendAction:[self action] to:[self target]];
     updatingFromLineInspector = savedUpdatingFromLineInspector;
+}
+
+- (void)lineInspectorLineWidthChanged:(NSNotification *)notification {
+    [self lineInspectorChangedValueForKey:SKLineWellLineWidthKey];
 }
 
 - (void)lineInspectorLineStyleChanged:(NSNotification *)notification {
-    BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
-    updatingFromLineInspector = YES;
-    [self setStyle:[[notification object] style]];
-    [self sendAction:[self action] to:[self target]];
-    updatingFromLineInspector = savedUpdatingFromLineInspector;
+    [self lineInspectorChangedValueForKey:SKLineWellStyleKey];
 }
 
 - (void)lineInspectorDashPatternChanged:(NSNotification *)notification {
-    BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
-    updatingFromLineInspector = YES;
-    [self setDashPattern:[[notification object] dashPattern]];
-    [self sendAction:[self action] to:[self target]];
-    updatingFromLineInspector = savedUpdatingFromLineInspector;
+    [self lineInspectorChangedValueForKey:SKLineWellDashPatternKey];
 }
 
 - (void)lineInspectorStartLineStyleChanged:(NSNotification *)notification {
-    BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
-    updatingFromLineInspector = YES;
-    [self setStartLineStyle:[[notification object] startLineStyle]];
-    [self sendAction:[self action] to:[self target]];
-    updatingFromLineInspector = savedUpdatingFromLineInspector;
+    [self lineInspectorChangedValueForKey:SKLineWellStartLineStyleKey];
 }
 
 - (void)lineInspectorEndLineStyleChanged:(NSNotification *)notification {
-    BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
-    updatingFromLineInspector = YES;
-    [self setEndLineStyle:[[notification object] endLineStyle]];
-    [self sendAction:[self action] to:[self target]];
-    updatingFromLineInspector = savedUpdatingFromLineInspector;
+    [self lineInspectorChangedValueForKey:SKLineWellEndLineStyleKey];
 }
 
 #pragma mark Binding support
