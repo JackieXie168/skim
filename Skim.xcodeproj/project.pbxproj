@@ -66,8 +66,11 @@
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
+		CE2BB7D00E0DAFD30090E848 /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
+		CE2BB7D10E0DAFDE0090E848 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CE2BB7DF0E0DB0460090E848 /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
+		CE2BB7E20E0DB0520090E848 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
-		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4C60B85D78200D0DA12 /* SKMiniaturizeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */; };
@@ -147,7 +150,6 @@
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
-		CE7DC7DB0E093BDA00D6D76D /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
 		CE7DC8F60E09551800D6D76D /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
@@ -355,8 +357,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE7DC7DB0E093BDA00D6D76D /* SkimNotes.framework in CopyFiles */,
-				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CE2BB7DF0E0DB0460090E848 /* SkimNotes.framework in CopyFiles */,
+				CE2BB7E20E0DB0520090E848 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -960,6 +962,8 @@
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
 				CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */,
+				CE2BB7D00E0DAFD30090E848 /* SkimNotes.framework in Frameworks */,
+				CE2BB7D10E0DAFDE0090E848 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -984,8 +988,6 @@
 				455989F70B2662FF00E5419B /* Quartz.framework */,
 				CE1ADB170C4BC6DE00071840 /* OpenGL.framework */,
 				CE5F42D30BF8A3400069D89C /* IOKit.framework */,
-				CE7DC7440E0928A700D6D76D /* SkimNotes.framework */,
-				CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */,
 				F977319E0B939B7D002A7823 /* libbz2.dylib */,
 			);
 			name = "Linked Frameworks";
@@ -1097,6 +1099,8 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE7DC7440E0928A700D6D76D /* SkimNotes.framework */,
+				CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
