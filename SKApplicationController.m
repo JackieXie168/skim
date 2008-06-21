@@ -467,7 +467,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *filename = [file stringByAppendingPathExtension:extension];
     NSString *fullPath = nil;
-    NSEnumerator *pathEnum = [[self applicationSupportDirectories] objectEnumerator];
+    NSEnumerator *pathEnum = [[[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]] objectEnumerator];
     NSString *appSupportPath = nil;
     
     while (appSupportPath = [pathEnum nextObject]) {
@@ -475,14 +475,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         fullPath = [fullPath stringByAppendingPathComponent:filename];
         if ([fm fileExistsAtPath:fullPath] == NO)
             fullPath = nil;
-    }
-    if (fullPath == nil) {
-        fullPath = [[NSBundle mainBundle] sharedSupportPath];
-        if (subpath)
-            fullPath = [fullPath stringByAppendingPathComponent:subpath];
-        fullPath = [fullPath stringByAppendingPathComponent:filename];
-        if ([fm fileExistsAtPath:fullPath] == NO)
-            fullPath = nil;
+        else break;
     }
     
     return fullPath;
