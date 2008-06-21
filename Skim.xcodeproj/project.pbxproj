@@ -1099,9 +1099,8 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE7DC7440E0928A700D6D76D /* SkimNotes.framework */,
-				CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
+				CE2BB81B0E0DB4FA0090E848 /* Embedded Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -1154,6 +1153,15 @@
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
 			);
 			name = "Foundation Categories";
+			sourceTree = "<group>";
+		};
+		CE2BB81B0E0DB4FA0090E848 /* Embedded Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE7DC7440E0928A700D6D76D /* SkimNotes.framework */,
+				CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */,
+			);
+			name = "Embedded Frameworks";
 			sourceTree = "<group>";
 		};
 		CE2BD8160BD4123D00A5F4DB /* Subprojects */ = {
