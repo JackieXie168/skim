@@ -366,7 +366,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (NSArray *)customExportTemplateFiles {
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSMutableSet *templateFiles = [NSMutableSet set];
+        NSMutableArray *templateFiles = [NSMutableArray array];
         NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
         NSString *appSupportPath;
         
@@ -377,13 +377,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 NSEnumerator *fileEnum = [[fm subpathsAtPath:templatesPath] objectEnumerator];
                 NSString *file;
                 while (file = [fileEnum nextObject]) {
-                    if ([file hasPrefix:@"."] == NO)
+                    if ([file hasPrefix:@"."] == NO && [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO)
                         [templateFiles addObject:file];
                 }
             }
         }
-        [templateFiles minusSet:[NSSet setWithObjects:@"notesTemplate.txt", @"notesTemplate.rtf", @"notesTemplate.rtfd", nil]];
-        customExportTemplateFiles = [[[templateFiles allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] copy];
+        [templateFiles sortUsingSelector:@selector(caseInsensitiveCompare:)];
+        customExportTemplateFiles = [templateFiles copy];
     }
     return customExportTemplateFiles;
 }
