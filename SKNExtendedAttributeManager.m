@@ -266,13 +266,13 @@ static id sharedNoSplitManager = nil;
     return [attribute autorelease];
 }
 
-- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)outError;
+- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)error;
 {
-    NSError *error;
-    NSData *data = [self extendedAttributeNamed:attr atPath:path traverseLink:traverse error:&error];
+    NSError *anError;
+    NSData *data = [self extendedAttributeNamed:attr atPath:path traverseLink:traverse error:&anError];
     id plist = nil;
     if (nil == data) {
-        if (outError) *outError = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, error, NSUnderlyingErrorKey, nil]];
+        if (error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, anError, NSUnderlyingErrorKey, nil]];
     } else {
         // decompress the data if necessary, we may have compressed when setting
         static NSData *bzipHeaderData = nil;
@@ -290,7 +290,7 @@ static id sharedNoSplitManager = nil;
                                                            format:NULL 
                                                  errorDescription:&errorString];
         if (nil == plist) {
-            if (outError) *outError = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
+            if (error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
             [errorString release];
         }
     }

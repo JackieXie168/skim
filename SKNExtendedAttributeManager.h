@@ -120,10 +120,10 @@ enum {
     @param      attr (description)
     @param      path (description)
     @param      traverse (description)
-    @param      outError (description)
+    @param      error (description)
     @result     (description)
 */
-- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)outError;
+- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)error;
 
 /*!
     @method     setExtendedAttributeNamed:toValue:atPath:options:error:
