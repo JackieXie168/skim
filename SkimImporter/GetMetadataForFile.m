@@ -157,7 +157,7 @@ Boolean GetMetadataForFile(void* thisInterface,
         
         success = TRUE;
     } else {
-        NSLog(@"Importer asked to handle unknown UTI %@ at path", contentTypeUTI, pathToFile);
+        NSLog(@"Unable to read note path %@ when importing file %@", notePath, pathToFile);
     }
     
     [pool release];
