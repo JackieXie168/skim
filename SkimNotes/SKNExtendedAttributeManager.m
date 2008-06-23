@@ -87,7 +87,7 @@ static id sharedNoSplitManager = nil;
     if (self = [super init]) {
         if (prefix) {
             namePrefix = [[prefix stringByAppendingString:@"_"] retain];
-            uniqueKey = [[prefix stringByAppendingString:@"_key"] retain];
+            uniqueKey = [[prefix stringByAppendingString:@"_unique_key"] retain];
             wrapperKey = [[prefix stringByAppendingString:@"_has_wrapper"] retain];
             fragmentsKey = [[prefix stringByAppendingString:@"_number_of_fragments"] retain];
         } else if (sharedNoSplitManager) {
@@ -249,6 +249,9 @@ static id sharedNoSplitManager = nil;
         NSMutableData *buffer = [NSMutableData data];
         NSData *subdata;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
+        
+        // somewhat generic error message here; include failing key?
+        if (NO == success && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"failed to read key from property list", @""), NSLocalizedDescriptionKey, nil]];
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
