@@ -61,7 +61,7 @@
             serverName = [[NSProcessInfo processInfo] globallyUniqueString];
 
         if ([connection registerName:serverName] == NO) {
-            fprintf(stderr, "SkimNotesAgent pid %d: unable to register connection name %s; another process must be running\n", getpid(), [serverName UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: unable to register connection name %s; another process must be running\n", getpid(), [serverName UTF8String]);
             [self destroyConnection];
             [self release];
             self = nil;
@@ -119,15 +119,15 @@
         if (notePath)
             data = [NSData dataWithContentsOfFile:notePath options:0 error:&error];
         if (nil == data)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
         data = [NSData dataWithContentsOfFile:aFile options:0 error:&error];
         if (nil == data)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
         if (nil == data && [error code] != ENOATTR)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
     return data;
 }
@@ -143,11 +143,11 @@
         if (notePath)
             data = [NSData dataWithContentsOfFile:notePath options:0 error:&error];
         if (nil == data)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
         if (nil == data && [error code] != ENOATTR)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
     return data;
 }
@@ -163,11 +163,11 @@
         if (notePath)
             string = [NSString stringWithContentsOfFile:notePath encoding:NSUTF8StringEncoding error:&error];
         if (nil == string)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
+            fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     } else {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
-        if (nil == string && [[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR)
-            fprintf(stderr, "SkimNotesAgent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
+        if (nil == string && [error code] != ENOATTR)
+            fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     }
     // Returning the string directly can fail under some conditions.  For some strings with corrupt copy-paste characters (typical for notes), -[NSString canBeConvertedToEncoding:NSUTF8StringEncoding] returns YES but the actual conversion fails.  A result seems to be that encoding the string also fails, which causes the DO client to get a timeout.  Returning NSUnicodeStringEncoding data seems to work in those cases (and is safe since we're not going over the wire between big/little-endian systems).
     return [string dataUsingEncoding:encoding];
@@ -186,7 +186,7 @@
 - (void)portDied:(NSNotification *)notification
 {
     [self destroyConnection];
-    fprintf(stderr, "SkimNotesAgent pid %d dying because port %s is invalid\n", getpid(), [[[notification object] description] UTF8String]);
+    fprintf(stderr, "skimnotes agent pid %d dying because port %s is invalid\n", getpid(), [[[notification object] description] UTF8String]);
     exit(0);
 }
 
@@ -194,7 +194,7 @@
 - (BOOL)makeNewConnection:(NSConnection *)newConnection sender:(NSConnection *)parentConnection
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portDied:) name:NSPortDidBecomeInvalidNotification object:[newConnection sendPort]];
-    fprintf(stderr, "SkimNotesAgent pid %d connection registered\n", getpid());
+    fprintf(stderr, "skimnotes agent pid %d connection registered\n", getpid());
     return YES;
 }
 
