@@ -58,10 +58,6 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
-		CE2082E30C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */; };
-		CE2082E40C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */; };
-		CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */; };
-		CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
@@ -144,8 +140,6 @@
 		CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */; };
 		CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC9930D699F21003A072F /* TransitionMask.jpg */; };
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
-		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
-		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
@@ -465,10 +459,6 @@
 		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
-		CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeLeftDownCursor.tiff; path = Images/ResizeLeftDownCursor.tiff; sourceTree = "<group>"; };
-		CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeLeftUpCursor.tiff; path = Images/ResizeLeftUpCursor.tiff; sourceTree = "<group>"; };
-		CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeRightDownCursor.tiff; path = Images/ResizeRightDownCursor.tiff; sourceTree = "<group>"; };
-		CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeRightUpCursor.tiff; path = Images/ResizeRightUpCursor.tiff; sourceTree = "<group>"; };
 		CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKGradientView.h; sourceTree = "<group>"; };
 		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
@@ -689,8 +679,6 @@
 		CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarMoveTool.tiff; path = Images/ToolbarMoveTool.tiff; sourceTree = "<group>"; };
 		CE6DC9930D699F21003A072F /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
 		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
-		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
-		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
@@ -1434,12 +1422,6 @@
 				CE6DC9930D699F21003A072F /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
-				CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */,
-				CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */,
-				CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */,
-				CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */,
-				CE7467540B7F321100CBF969 /* zoomInCursor.tiff */,
-				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -1778,8 +1760,6 @@
 				CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */,
 				CE7469180B7F40B700CBF969 /* Skim.icns in Resources */,
 				CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */,
-				CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */,
-				CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */,
 				CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */,
 				CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */,
 				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
@@ -1801,10 +1781,6 @@
 				CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */,
 				CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */,
 				CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */,
-				CE2082E30C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff in Resources */,
-				CE2082E40C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff in Resources */,
-				CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */,
-				CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */,
 				CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */,
 				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,

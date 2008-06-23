@@ -116,10 +116,18 @@ extern NSString *SKImageNameUnderlineNoteAdorn;
 extern NSString *SKImageNameStrikeOutNoteAdorn;
 extern NSString *SKImageNameLineNoteAdorn;
 
+extern NSString *SKImageNameResizeRightDownCursor;
+extern NSString *SKImageNameResizeLeftDownCursor;
+extern NSString *SKImageNameResizeRightUpCursor;
+extern NSString *SKImageNameResizeLeftUpCursor;
+extern NSString *SKImageNameZoomInCursor;
+extern NSString *SKImageNameZoomOutCursor;
+
 @interface NSImage (SKExtensions)
 
 + (void)makeToolbarImages;
 + (void)makeAdornImages;
++ (void)makeCursorImages;
 
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType)code;
 + (NSImage *)smallImageWithIconForToolboxCode:(OSType)code;

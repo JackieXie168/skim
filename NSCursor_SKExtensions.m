@@ -37,6 +37,7 @@
  */
 
 #import "NSCursor_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 
 @implementation NSCursor (SKExtensions)
@@ -44,7 +45,7 @@
 + (NSCursor *)zoomInCursor {
     static NSCursor *zoomInCursor = nil;
     if (nil == zoomInCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomInCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameZoomInCursor] copy] autorelease];
         zoomInCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
     }
     return zoomInCursor;
@@ -53,7 +54,7 @@
 + (NSCursor *)zoomOutCursor {
     static NSCursor *zoomOutCursor = nil;
     if (nil == zoomOutCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomOutCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameZoomOutCursor] copy] autorelease];
         zoomOutCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
     }
     return zoomOutCursor;
@@ -62,7 +63,7 @@
 + (NSCursor *)resizeLeftUpCursor {
     static NSCursor *resizeLeftUpCursor = nil;
     if (nil == resizeLeftUpCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeLeftUpCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameResizeLeftUpCursor] copy] autorelease];
         resizeLeftUpCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
     }
     return resizeLeftUpCursor;
@@ -71,7 +72,7 @@
 + (NSCursor *)resizeLeftDownCursor {
     static NSCursor *resizeLeftDownCursor = nil;
     if (nil == resizeLeftDownCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeLeftDownCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameResizeLeftDownCursor] copy] autorelease];
         resizeLeftDownCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
     }
     return resizeLeftDownCursor;
@@ -80,7 +81,7 @@
 + (NSCursor *)resizeRightUpCursor {
     static NSCursor *resizeRightUpCursor = nil;
     if (nil == resizeRightUpCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeRightUpCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameResizeRightUpCursor] copy] autorelease];
         resizeRightUpCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
     }
     return resizeRightUpCursor;
@@ -89,7 +90,7 @@
 + (NSCursor *)resizeRightDownCursor {
     static NSCursor *resizeRightDownCursor = nil;
     if (nil == resizeRightDownCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeRightDownCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameResizeRightDownCursor] copy] autorelease];
         resizeRightDownCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
     }
     return resizeRightDownCursor;
