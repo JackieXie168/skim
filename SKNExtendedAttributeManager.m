@@ -275,11 +275,11 @@ static id sharedNoSplitManager = nil;
 
 - (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)error;
 {
-    NSError *anError;
+    NSError *anError = nil;
     NSData *data = [self extendedAttributeNamed:attr atPath:path traverseLink:traverse error:&anError];
     id plist = nil;
     if (nil == data) {
-        if (error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, anError, NSUnderlyingErrorKey, nil]];
+        if (error) *error = anError;
     } else {
         // decompress the data if necessary, we may have compressed when setting
         static NSData *bzipHeaderData = nil;
