@@ -251,16 +251,18 @@ static id sharedNoSplitManager = nil;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
         // somewhat generic error message here; include failing key?
-        if (NO == success && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"failed to read key from property list", @""), NSLocalizedDescriptionKey, nil]];
+        if (NO == success && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to read key from property list.", @"Error description"), NSLocalizedDescriptionKey, nil]];
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:error];
-            if (nil == subdata)
+            if (nil == subdata) {
+                if (NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
                 success = NO;
-            else
+            } else {
                 [buffer appendData:subdata];
+            }
         }
         
         [attribute release];
