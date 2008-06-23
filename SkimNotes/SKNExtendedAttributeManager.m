@@ -250,15 +250,15 @@ static id sharedNoSplitManager = nil;
         NSData *subdata;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
-        // somewhat generic error message here; include failing key?
-        if (NO == success && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to read key from property list.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        if (success == NO)
+            NSLog(@"failed to read unique key %@ from property list.", uniqueKey);
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:error];
             if (nil == subdata) {
-                if (NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+                NSLog(@"failed to find subattribute %@ of attribute named %@", name, attr);
                 success = NO;
             } else {
                 [buffer appendData:subdata];
@@ -267,6 +267,8 @@ static id sharedNoSplitManager = nil;
         
         [attribute release];
         attribute = success ? [[self bunzip2Data:buffer] retain] : nil;
+        
+        if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     return [attribute autorelease];
 }
