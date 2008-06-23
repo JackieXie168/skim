@@ -86,12 +86,6 @@ static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
 static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
 
-@interface NSFileManager (SKPDFDocumentExtensions)
-- (NSString *)subfileWithExtension:(NSString *)extensions inPDFBundleAtPath:(NSString *)path;
-@end
-
-#pragma mark -
-
 @interface SKPDFDocument (SKPrivate)
 
 - (void)setPDFData:(NSData *)data;
@@ -468,7 +462,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
         if (filename && SKIsPDFBundleDocumentType([self fileType])) {
-            NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
+            NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
             filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
         }
         NSString *string = [self notesFDFStringForFile:filename];
@@ -721,7 +715,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     NSString *filePath = [[self fileURL] path];
     NSString *filename = [filePath lastPathComponent];
     if (filename && SKIsPDFBundleDocumentType([self fileType])) {
-        NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:filePath];
+        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
         filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
     }
     return [self notesFDFStringForFile:filename];
@@ -1238,7 +1232,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if (extension) {
             NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
             if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
-                NSString *pdfFile = [[NSFileManager defaultManager] subfileWithExtension:@"pdf" inPDFBundleAtPath:fileName];
+                NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
                 if (pdfFile == nil) {
                     isUpdatingFile = NO;
                     receivedFileUpdateNotification = NO;
@@ -2067,26 +2061,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
-}
-
-@end
-
-
-@implementation NSFileManager (SKPDFDocumentExtensions)
-
-- (NSString *)subfileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path {
-    NSArray *subfiles = [self subpathsAtPath:path];
-    NSString *fileName = [[[path stringByDeletingLastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-    NSString *pdfFile = nil;
-    
-    if ([subfiles containsObject:fileName]) {
-        pdfFile = fileName;
-    } else {
-        unsigned int idx = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
-        if (idx != NSNotFound)
-            pdfFile = [subfiles objectAtIndex:idx];
-    }
-    return pdfFile;
 }
 
 @end
