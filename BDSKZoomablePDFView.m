@@ -327,14 +327,16 @@ static float BDSKScaleMenuFontSize = 11.0;
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    static NSSet *selectionActions = nil;
+    if (selectionActions == nil)
+        selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     int i, count = [menu numberOfItems];
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
         NSMenuItem *item = [menu itemAtIndex:0];
-        NSString *action = NSStringFromSelector([item action]);
-        if ([item isSeparatorItem] || [action isEqualToString:@"_searchInSpotlight:"] ||  [action isEqualToString:@"_searchInGoogle:"] ||  [action isEqualToString:@"_searchInDictionary:"] || [self validateMenuItem:item] == NO)
+        if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
             [menu removeItemAtIndex:0];
         else
             break;

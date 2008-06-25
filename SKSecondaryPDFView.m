@@ -353,6 +353,9 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    static NSSet *selectionActions = nil;
+    if (selectionActions == nil)
+        selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
     NSMenuItem *item;
@@ -360,9 +363,8 @@ static float SKPopUpMenuFontSize = 11.0;
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
-        item = [menu itemAtIndex:0];
-        NSString *action = NSStringFromSelector([item action]);
-        if ([item isSeparatorItem] || [action isEqualToString:@"_searchInSpotlight:"] ||  [action isEqualToString:@"_searchInGoogle:"] ||  [action isEqualToString:@"_searchInDictionary:"] || [self validateMenuItem:item] == NO)
+        NSMenuItem *item = [menu itemAtIndex:0];
+        if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
             [menu removeItemAtIndex:0];
         else
             break;
