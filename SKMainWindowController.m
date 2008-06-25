@@ -2963,15 +2963,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             unsigned int l = [string length];
             [copy extendSelectionAtEnd:1];
             string = [copy string];
-            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]]) {
+            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]])
                 return;
-            }
             l = [string length];
             [copy extendSelectionAtStart:1];
             string = [copy string];
-            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]]) {
+            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]])
                 return;
-            }
         }
         [searchResults addObject:instance];
         
