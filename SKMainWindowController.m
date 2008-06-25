@@ -2957,6 +2957,22 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)didMatchString:(PDFSelection *)instance {
     if (findPanelFind == NO) {
+        if (wholeWordSearch) {
+            PDFSelection *copy = [[instance copy] autorelease];
+            NSString *string = [instance string];
+            unsigned int l = [string length];
+            [copy extendSelectionAtEnd:1];
+            string = [copy string];
+            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:0]]) {
+                return;
+            }
+            l = [string length];
+            [copy extendSelectionAtStart:1];
+            string = [copy string];
+            if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]]) {
+                return;
+            }
+        }
         [searchResults addObject:instance];
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
