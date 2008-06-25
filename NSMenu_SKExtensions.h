@@ -56,6 +56,7 @@
 - (NSMenuItem *)addItemWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
 
 - (void)removeAllItems;
+- (void)removeDoubleSeparators;
 
 @end
 

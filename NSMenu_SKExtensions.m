@@ -97,6 +97,21 @@
         [self removeItemAtIndex:i];
 }
 
+- (void)removeDoubleSeparators {
+    int anIndex = [self numberOfItems];
+    BOOL wasSeparator = YES;
+    
+    while (anIndex--) {
+        if ([[self itemAtIndex:anIndex] isSeparatorItem]) {
+            if (wasSeparator)
+                [self removeItemAtIndex:anIndex];
+            wasSeparator = YES;
+        } else {
+            wasSeparator = NO;
+        }
+    }
+}
+
 @end
 
 
