@@ -417,6 +417,14 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarBackImage unlockFocus];
     [toolbarBackImage setName:SKImageNameToolbarBack];
     
+    if (isTiger) {
+        // the image drawn right after ToolbarBack on Tiger has drawing artifacts, a gray upward pointing arrow at the bottom, so we make it a dummy image
+        NSImage *dummy = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
+        [dummy lockFocus];
+        [dummy unlockFocus];
+        // a release here won't work to fix the bug
+    }
+    
     toolbarForwardImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
     [toolbarForwardImage lockFocus];
     [NSGraphicsContext saveGraphicsState];
