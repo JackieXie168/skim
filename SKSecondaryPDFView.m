@@ -363,7 +363,7 @@ static float SKPopUpMenuFontSize = 11.0;
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
-        NSMenuItem *item = [menu itemAtIndex:0];
+        item = [menu itemAtIndex:0];
         if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
             [menu removeItemAtIndex:0];
         else
