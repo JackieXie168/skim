@@ -911,8 +911,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     unsigned int pageCount = [[pdfView document] pageCount];
     if (number > pageCount)
         number = pageCount;
-    if (number > 0 && [[pdfView currentPage] pageIndex] != pageNumber - 1)
-        [self goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+    if (number > 0 && [[pdfView currentPage] pageIndex] != number - 1)
+        [self goToPage:[[pdfView document] pageAtIndex:number - 1]];
 }
 
 - (void)updatePageLabel {
