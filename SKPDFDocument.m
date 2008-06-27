@@ -321,7 +321,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 
             }
             
-            if (NO == [[NSFileManager defaultManager] writeSkimNotes:[self notes] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
+            if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
                 NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                                   NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
                 NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")]
@@ -414,7 +414,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
         if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
-            didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self notes] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:&error];
+            didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
@@ -439,7 +439,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
     } else if (SKIsNotesDocumentType(typeName)) {
-        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self notes] toSkimFileAtURL:absoluteURL error:&error];
+        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] toSkimFileAtURL:absoluteURL error:&error];
     } else if (SKIsNotesRTFDocumentType(typeName)) {
         NSData *data = [self notesRTFData];
         if (data)
@@ -461,10 +461,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     } else if (SKIsNotesFDFDocumentType(typeName)) {
         NSString *filePath = [[self fileURL] path];
         NSString *filename = [filePath lastPathComponent];
-        if (filename && SKIsPDFBundleDocumentType([self fileType])) {
-            NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-            filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
-        }
+        if (filename && SKIsPDFBundleDocumentType([self fileType]))
+            filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
         NSString *string = [self notesFDFStringForFile:filename];
         if (string)
             didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSISOLatin1StringEncoding error:&error];
@@ -665,8 +663,30 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             }
         }
     } else if (SKIsPDFBundleDocumentType(docType)) {
-        NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
-        [self setNoteDicts:[array count] ? array : nil];
+        NSString *path = [absoluteURL path];
+        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
+        if (pdfFile) {
+            NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
+            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
+                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
+                NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
+                if (array == nil) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                    if ([alert runModal] == NSAlertDefaultReturn) {
+                        [data release];
+                        data = nil;
+                        [pdfDoc release];
+                        pdfDoc = nil;
+                    }
+                } else if ([array count]) {
+                    [self setNoteDicts:array];
+                }
+            }
+        }
     } else if (SKIsPostScriptDocumentType(docType)) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
@@ -714,10 +734,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (NSString *)notesFDFString {
     NSString *filePath = [[self fileURL] path];
     NSString *filename = [filePath lastPathComponent];
-    if (filename && SKIsPDFBundleDocumentType([self fileType])) {
-        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
-        filename = pdfFile ? [filename stringByAppendingPathComponent:pdfFile] : nil;
-    }
+    if (filename && SKIsPDFBundleDocumentType([self fileType]))
+        filename = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:filePath error:NULL];
     return [self notesFDFStringForFile:filename];
 }
 
@@ -1232,13 +1250,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if (extension) {
             NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
             if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
-                NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
-                if (pdfFile == nil) {
+                fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
+                if (fileName == nil) {
                     isUpdatingFile = NO;
                     receivedFileUpdateNotification = NO;
                     return;
                 }
-                fileName = [fileName stringByAppendingPathComponent:pdfFile];
             } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
                 isDVI = YES;
             }
