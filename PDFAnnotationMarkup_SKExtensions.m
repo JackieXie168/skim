@@ -118,7 +118,7 @@ static IMP originalDrawWithBoxInContext = NULL;
 - (void)replacementDrawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
     SKCGContextSetDefaultRGBColorSpace(context);
-    [super drawWithBox:box inContext:context];
+    originalDrawWithBoxInContext(self, _cmd, box, context);
     CGContextRestoreGState(context);
 }
 
