@@ -224,7 +224,7 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         NSString *skimFile = [self bundledFileWithExtension:@"skim" inPDFBundleAtPath:path error:&error];
         
         if (skimFile)
-            notes = [NSKeyedUnarchiver unarchiveObjectWithFile:[path stringByAppendingPathComponent:skimFile]];
+            notes = [NSKeyedUnarchiver unarchiveObjectWithFile:skimFile];
         
         if (notes == nil)
             notes = [NSArray array];
