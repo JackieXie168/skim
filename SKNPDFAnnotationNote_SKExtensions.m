@@ -57,7 +57,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     if (self = [super initSkimNoteWithBounds:bounds]) {
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]];
         [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
-        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
@@ -120,6 +119,12 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         return value;
     else
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
+}
+
+- (NSArray *)texts {
+    if (texts == nil)
+        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
+    return texts;
 }
 
 #pragma mark Accessibility
