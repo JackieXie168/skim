@@ -83,6 +83,7 @@ static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
+static NSString *SKIgnoreReadNotesErrorsKey = @"SKIgnoreReadNotesErrors";
 
 static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
 
@@ -626,7 +627,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
-            if (array == nil) {
+            if (array == nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKIgnoreReadNotesErrorsKey] == NO) {
                 NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
                                                  defaultButton:NSLocalizedString(@"No", @"Button title")
                                                alternateButton:NSLocalizedString(@"Yes", @"Button title")
