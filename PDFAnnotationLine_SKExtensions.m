@@ -80,6 +80,23 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 
 @implementation PDFAnnotationLine (SKExtensions)
 
+- (id)initSkimNoteWithBounds:(NSRect)bounds { 	 
+    if (self = [super initSkimNoteWithBounds:bounds]) { 	 
+        [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]]; 	 
+        [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]]; 	 
+        [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]]; 	 
+        [self setStartPoint:NSMakePoint(0.0, 0.0)]; 	 
+        [self setEndPoint:NSMakePoint(NSWidth(bounds), NSHeight(bounds))]; 	 
+        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init]; 	 
+        [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineWidthKey]]; 	 
+        [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKLineNoteDashPatternKey]]; 	 
+        [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]]; 	 
+        [self setBorder:[border lineWidth] > 0.0 ? border : nil]; 	 
+        [border release]; 	 
+    } 	 
+    return self; 	 
+} 	 
+
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     [fdfString appendFDFName:SKFDFAnnotationLineStylesKey];
