@@ -1,0 +1,59 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fswiss\fcharset77 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;\red255\green0\blue0;}
+\vieww9000\viewh9000\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 										
+\f1\b\fs28 \cf2 b\cf0 Distributed.com, Inc.
+\f0\b0\fs24 \
+
+\fs20 										2549 W. Golf Rd. #348\
+										Hoffman Estates, IL 60194\
+										Phone: (847) 372-3955\
+										Fax: (847) 589-3738\
+										Web: bdistributed.com\
+										Email: info@bdistributed.com\
+
+\fs24 \
+
+\f1\b What is BDAlias?
+\f0\b0 \
+BDAlias is a simple Cocoa class for dealing with alias records, a form of persistent file reference that is more robust and provides a better user experience than a textual path.  Macintosh applications should always use alias records for persistent file references, and often for exchanging references to files with other applications.\
+\
+
+\f1\b How do I use BDAlias?
+\f0\b0 \
+"You've got the source."\
+\
+Seriously though, you create an instance of BDAlias using one of the \ul aliasWithXXX:\ulnone  messages whenever you need to keep a persistent reference to a file around.  If you're interacting with the rest of Cocoa, you'll probably use either \ul aliasWithPath:\ulnone  or \ul aliasWithPath:relativeToPath:\ulnone  When you're ready to "resolve" this reference to actually access a file, just send it a \ul fullPath\ulnone  or \ul fullPathRelativeToPath:\ulnone  message.\
+\
+Since the whole point of aliases is to 
+\f2\i persistently
+\f0\i0  reference a file, you can easily convert an alias to an NSData object.  Sending a BDAlias the \ul aliasData\ulnone  message will return an autoreleased instance of NSData containing the record data ready to store wherever you can store an NSData.\
+\
+
+\f1\b Who is bDistributed.com?
+\f0\b0 \
+bDistributed.com is a Chicago-based consulting firm that specializes in WebObjects and Mac OS X development.  If you'd like to discuss a project with bDistributed.com, email a brief overview of your project and contact information to sales@bdistributed.com.\
+\
+
+\f1\b License Agreement\
+
+\f0\b0 By using or downloading this software, you agree to be bound by the following license.  If you do not agree to be bound by the license, please destroy all copies of this software.\
+\
+Copyright \'a9 2001-2002, bDistributed.com, Inc.\
+All rights reserved.\
+\
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li580\fi-580\ql\qnatural
+\cf0 *	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\
+\
+*	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\
+\
+*	Neither the name of bDistributed.com, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. }

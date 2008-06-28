@@ -1,0 +1,60 @@
+{
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                paste = id;
+                show = id;
+            };
+            CLASS = BDSKDragImageView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                delegate = id;
+            };
+            SUPERCLASS = NSImageView;
+        },
+                {
+            CLASS = BDSKGradientView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            ACTIONS =             {
+                statusBarClicked = id;
+            };
+            CLASS = SKNoteWindowController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                iconTypePopUpButton = NSPopUpButton;
+                imageView = BDSKDragImageView;
+                statusBar = SKStatusBar;
+                textView = NSTextView;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            ACTIONS =             {
+                startAnimation = id;
+                stopAnimation = id;
+            };
+            CLASS = SKStatusBar;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                leftCell = id;
+                rightCell = id;
+            };
+            SUPERCLASS = NSControl;
+        }
+    );
+    IBVersion = 1;
+}
