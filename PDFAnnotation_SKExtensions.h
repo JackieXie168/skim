@@ -60,8 +60,8 @@ enum {
 };
 
 
-extern unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle);
-extern int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle);
+extern FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle);
+extern PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderStyle);
 
 extern NSString *SKPDFAnnotationScriptingNoteTypeKey;
 extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
@@ -102,8 +102,8 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 + (NSSet *)customScriptingKeys;
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (unsigned long)scriptingNoteType;
-- (unsigned long)scriptingIconType;
+- (FourCharCode)scriptingNoteType;
+- (FourCharCode)scriptingIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;
@@ -111,12 +111,12 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;
 - (float)fontSize;
-- (unsigned long)scriptingBorderStyle;
+- (FourCharCode)scriptingBorderStyle;
 - (void)setScriptingBorderStyle:(int)style;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
-- (unsigned long)scriptingStartLineStyle;
-- (unsigned long)scriptingEndLineStyle;
+- (FourCharCode)scriptingStartLineStyle;
+- (FourCharCode)scriptingEndLineStyle;
 - (id)selectionSpecifier;
 
 - (NSArray *)accessibilityAttributeNames;

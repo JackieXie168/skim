@@ -39,9 +39,24 @@
 #import <Cocoa/Cocoa.h>
 
 
+enum {
+    SKScriptingTextAnnotationIconComment = 'ICmt',
+    SKScriptingTextAnnotationIconKey = 'IKey',
+    SKScriptingTextAnnotationIconNote = 'INot',
+    SKScriptingTextAnnotationIconHelp = 'IHlp',
+    SKScriptingTextAnnotationIconNewParagraph = 'INPa',
+    SKScriptingTextAnnotationIconParagraph = 'IPar',
+    SKScriptingTextAnnotationIconInsert = 'IIns'
+};
+
+
+extern FourCharCode SKScriptingIconTypeFromIconType(PDFTextAnnotationIconType iconType);
+extern PDFTextAnnotationIconType SKIconTypeFromScriptingIconType(FourCharCode iconType);
+
+
 extern NSString *SKPDFAnnotationScriptingIconTypeKey;
 
 
 @interface PDFAnnotationText (SKExtensions)
-- (void)setScriptingIconType:(unsigned long)type;
+- (void)setScriptingIconType:(FourCharCode)type;
 @end

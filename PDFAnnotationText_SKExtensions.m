@@ -44,7 +44,7 @@
 #import "SKFDFParser.h"
 
 
-unsigned long SKScriptingIconTypeFromIconType(int iconType) {
+FourCharCode SKScriptingIconTypeFromIconType(PDFTextAnnotationIconType iconType) {
     switch (iconType) {
         case kPDFTextAnnotationIconComment: return SKScriptingTextAnnotationIconComment;
         case kPDFTextAnnotationIconKey: return SKScriptingTextAnnotationIconKey;
@@ -57,7 +57,7 @@ unsigned long SKScriptingIconTypeFromIconType(int iconType) {
     }
 }
 
-int SKIconTypeFromScriptingIconType(unsigned long iconType) {
+PDFTextAnnotationIconType SKIconTypeFromScriptingIconType(FourCharCode iconType) {
     switch (iconType) {
         case SKScriptingTextAnnotationIconComment: return kPDFTextAnnotationIconComment;
         case SKScriptingTextAnnotationIconKey: return kPDFTextAnnotationIconKey;
@@ -126,11 +126,11 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     return customTextScriptingKeys;
 }
 
-- (unsigned long)scriptingIconType {
+- (FourCharCode)scriptingIconType {
     return SKScriptingIconTypeFromIconType([self iconType]);
 }
 
-- (void)setScriptingIconType:(unsigned long)type {
+- (void)setScriptingIconType:(FourCharCode)type {
     [self setIconType:SKIconTypeFromScriptingIconType(type)];
 }
 

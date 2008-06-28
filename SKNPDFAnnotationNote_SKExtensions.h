@@ -41,27 +41,7 @@
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 
 
-enum {
-    SKScriptingTextAnnotationIconComment = 'ICmt',
-    SKScriptingTextAnnotationIconKey = 'IKey',
-    SKScriptingTextAnnotationIconNote = 'INot',
-    SKScriptingTextAnnotationIconHelp = 'IHlp',
-    SKScriptingTextAnnotationIconNewParagraph = 'INPa',
-    SKScriptingTextAnnotationIconParagraph = 'IPar',
-    SKScriptingTextAnnotationIconInsert = 'IIns'
-};
-
-
-extern unsigned long SKScriptingIconTypeFromIconType(int iconType);
-extern int SKIconTypeFromScriptingIconType(unsigned long iconType);
-
-/*
-extern NSString *SKPDFAnnotationTextKey;
-extern NSString *SKPDFAnnotationImageKey;
-*/
 extern NSString *SKPDFAnnotationRichTextKey;
-
-//extern NSSize SKNPDFAnnotationNote_SKExtensionsSize;
 
 
 @interface PDFAnnotationText (SKLeopardDeprecated)
@@ -72,19 +52,8 @@ extern NSString *SKPDFAnnotationRichTextKey;
 
 #pragma mark -
 
-@interface SKNPDFAnnotationNote (SKExtensions) /* : PDFAnnotationText {
-    NSString *string;
-    NSImage *image;
-    NSTextStorage *textStorage;
-    NSAttributedString *text;
-    NSArray *texts;
-}
-
-- (void)setImage:(NSImage *)newImage;
-- (void)setText:(NSAttributedString *)newText;
-*/
+@interface SKNPDFAnnotationNote (SKExtensions)
 - (void)setRichText:(id)newText;
-
 @end
 
 #pragma mark -

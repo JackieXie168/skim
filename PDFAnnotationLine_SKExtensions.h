@@ -49,8 +49,8 @@ enum {
     SKScriptingLineStyleClosedArrow = 'LSCA'
 };
 
-extern unsigned long SKScriptingLineStyleFromLineStyle(int lineStyle);
-extern int SKLineStyleFromScriptingLineStyle(unsigned long lineStyle);
+extern FourCharCode SKScriptingLineStyleFromLineStyle(PDFLineStyle lineStyle);
+extern PDFLineStyle SKLineStyleFromScriptingLineStyle(FourCharCode lineStyle);
 
 
 extern NSString *SKPDFAnnotationStartPointAsQDPointKey;
@@ -63,7 +63,7 @@ extern NSString *SKPDFAnnotationScriptingEndLineStyleKey;
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
-- (void)setScriptingStartLineStyle:(unsigned long)style;
-- (void)setScriptingEndLineStyle:(unsigned long)style;
+- (void)setScriptingStartLineStyle:(FourCharCode)style;
+- (void)setScriptingEndLineStyle:(FourCharCode)style;
 
 @end
