@@ -60,6 +60,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
+        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
     }
     return self;
 }
@@ -73,6 +74,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 - (NSString *)toolTipNoLabel { return nil; }
 
 - (PDFAnnotationPopup *)popup { return nil; }
+
+- (NSArray *)texts { return texts; }
 
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *noteKeys = nil;
@@ -119,12 +122,6 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         return value;
     else
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
-}
-
-- (NSArray *)texts {
-    if (texts == nil)
-        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
-    return texts;
 }
 
 #pragma mark Accessibility
