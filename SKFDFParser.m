@@ -37,7 +37,6 @@
  */
 
 #import "SKFDFParser.h"
-#import <Quartz/Quartz.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSScanner_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
@@ -53,71 +52,75 @@
 #import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 
-const char *SKFDFFDFKey = "FDF";
-const char *SKFDFAnnotationsKey = "Annots";
-const char *SKFDFFileKey = "F";
-const char *SKFDFFileIDKey = "ID";
-const char *SKFDFRootKey = "Root";
+SKFDFString SKFDFFDFKey = "FDF";
+SKFDFString SKFDFAnnotationsKey = "Annots";
+SKFDFString SKFDFFileKey = "F";
+SKFDFString SKFDFFileIDKey = "ID";
+SKFDFString SKFDFRootKey = "Root";
 
-const char *SKFDFTypeKey = "Type";
+SKFDFString SKFDFTypeKey = "Type";
 
-const char *SKFDFAnnotationFlagsKey = "F";
-const char *SKFDFAnnotationTypeKey = "Subtype";
-const char *SKFDFAnnotationBoundsKey = "Rect";
-const char *SKFDFAnnotationPageIndexKey = "Page";
-const char *SKFDFAnnotationContentsKey = "Contents";
-const char *SKFDFAnnotationColorKey = "C";
-const char *SKFDFAnnotationInteriorColorKey = "IC";
-const char *SKFDFAnnotationBorderStylesKey = "BS";
-const char *SKFDFAnnotationLineWidthKey = "W";
-const char *SKFDFAnnotationDashPatternKey = "D";
-const char *SKFDFAnnotationBorderStyleKey = "S";
-const char *SKFDFAnnotationBorderKey = "Border";
-const char *SKFDFAnnotationIconTypeKey = "Name";
-const char *SKFDFAnnotationLineStylesKey = "LE";
-const char *SKFDFAnnotationLinePointsKey = "L";
-const char *SKFDFAnnotationQuadrilateralPointsKey = "QuadPoints";
-const char *SKFDFDefaultAppearanceKey = "DA";
-const char *SKFDFDefaultStyleKey = "DS";
+SKFDFString SKFDFAnnotationFlagsKey = "F";
+SKFDFString SKFDFAnnotationTypeKey = "Subtype";
+SKFDFString SKFDFAnnotationBoundsKey = "Rect";
+SKFDFString SKFDFAnnotationPageIndexKey = "Page";
+SKFDFString SKFDFAnnotationContentsKey = "Contents";
+SKFDFString SKFDFAnnotationColorKey = "C";
+SKFDFString SKFDFAnnotationInteriorColorKey = "IC";
+SKFDFString SKFDFAnnotationBorderStylesKey = "BS";
+SKFDFString SKFDFAnnotationLineWidthKey = "W";
+SKFDFString SKFDFAnnotationDashPatternKey = "D";
+SKFDFString SKFDFAnnotationBorderStyleKey = "S";
+SKFDFString SKFDFAnnotationBorderKey = "Border";
+SKFDFString SKFDFAnnotationIconTypeKey = "Name";
+SKFDFString SKFDFAnnotationLineStylesKey = "LE";
+SKFDFString SKFDFAnnotationLinePointsKey = "L";
+SKFDFString SKFDFAnnotationQuadrilateralPointsKey = "QuadPoints";
+SKFDFString SKFDFDefaultAppearanceKey = "DA";
+SKFDFString SKFDFDefaultStyleKey = "DS";
 
-const char *SKFDFAnnotation = "Annot";
+SKFDFString SKFDFAnnotation = "Annot";
 
-const char *SKFDFBorderStyleSolid = "S";
-const char *SKFDFBorderStyleDashed = "D";
-const char *SKFDFBorderStyleBeveled = "B";
-const char *SKFDFBorderStyleInset = "I";
-const char *SKFDFBorderStyleUnderline = "U";
+SKFDFString SKFDFBorderStyleSolid = "S";
+SKFDFString SKFDFBorderStyleDashed = "D";
+SKFDFString SKFDFBorderStyleBeveled = "B";
+SKFDFString SKFDFBorderStyleInset = "I";
+SKFDFString SKFDFBorderStyleUnderline = "U";
 
-const char *SKFDFTextAnnotationIconComment = "Comment";
-const char *SKFDFTextAnnotationIconKey = "Key";
-const char *SKFDFTextAnnotationIconNote = "Note";
-const char *SKFDFTextAnnotationIconNewParagraph = "NewParagraph";
-const char *SKFDFTextAnnotationIconParagraph = "Paragraph";
-const char *SKFDFTextAnnotationIconInsert = "Insert";
+SKFDFString SKFDFTextAnnotationIconComment = "Comment";
+SKFDFString SKFDFTextAnnotationIconKey = "Key";
+SKFDFString SKFDFTextAnnotationIconNote = "Note";
+SKFDFString SKFDFTextAnnotationIconNewParagraph = "NewParagraph";
+SKFDFString SKFDFTextAnnotationIconParagraph = "Paragraph";
+SKFDFString SKFDFTextAnnotationIconInsert = "Insert";
 
-const char *SKFDFLineStyleNone = "None";
-const char *SKFDFLineStyleSquare = "Square";
-const char *SKFDFLineStyleCircle = "Circle";
-const char *SKFDFLineStyleDiamond = "Diamond";
-const char *SKFDFLineStyleOpenArrow = "OpenArrow";
-const char *SKFDFLineStyleClosedArrow = "ClosedArrow";
+SKFDFString SKFDFLineStyleNone = "None";
+SKFDFString SKFDFLineStyleSquare = "Square";
+SKFDFString SKFDFLineStyleCircle = "Circle";
+SKFDFString SKFDFLineStyleDiamond = "Diamond";
+SKFDFString SKFDFLineStyleOpenArrow = "OpenArrow";
+SKFDFString SKFDFLineStyleClosedArrow = "ClosedArrow";
 
-int SKPDFBorderStyleFromFDFBorderStyle(const char *name) {
-    if (strcmp(name, SKFDFBorderStyleSolid) == 0)
+static BOOL SKFDFEqualStrings(SKFDFString string1, SKFDFString string2) {
+    return strcmp(string1, string2) == 0;
+}
+
+PDFBorderStyle SKPDFBorderStyleFromFDFBorderStyle(SKFDFString name) {
+    if (SKFDFEqualStrings(name, SKFDFBorderStyleSolid))
         return kPDFBorderStyleSolid;
-    else if (strcmp(name, SKFDFBorderStyleDashed) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFBorderStyleDashed))
         return kPDFBorderStyleDashed;
-    else if (strcmp(name, SKFDFBorderStyleBeveled) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFBorderStyleBeveled))
         return kPDFBorderStyleBeveled;
-    else if (strcmp(name, SKFDFBorderStyleInset) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFBorderStyleInset))
         return kPDFBorderStyleInset;
-    else if (strcmp(name, SKFDFBorderStyleUnderline) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFBorderStyleUnderline))
         return kPDFBorderStyleUnderline;
     else
         return kPDFBorderStyleSolid;
 }
 
-const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle) {
+SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle) {
     switch (borderStyle) {
         case kPDFBorderStyleSolid: return SKFDFBorderStyleSolid;
         case kPDFBorderStyleDashed: return SKFDFBorderStyleDashed;
@@ -128,24 +131,24 @@ const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle) {
     }
 }
 
-int SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(const char *name) {
-    if (strcmp(name, SKFDFTextAnnotationIconComment) == 0)
+PDFTextAnnotationIconType SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(SKFDFString name) {
+    if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconComment))
         return kPDFTextAnnotationIconComment;
-    else if (strcmp(name, SKFDFTextAnnotationIconKey) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconKey))
         return kPDFTextAnnotationIconKey;
-    else if (strcmp(name, SKFDFTextAnnotationIconNote) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconNote))
         return kPDFTextAnnotationIconNote;
-    else if (strcmp(name, SKFDFTextAnnotationIconNewParagraph) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconNewParagraph))
         return kPDFTextAnnotationIconNewParagraph;
-    else if (strcmp(name, SKFDFTextAnnotationIconParagraph) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconParagraph))
         return kPDFTextAnnotationIconParagraph;
-    else if (strcmp(name, SKFDFTextAnnotationIconInsert) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFTextAnnotationIconInsert))
         return kPDFTextAnnotationIconInsert;
     else
         return kPDFTextAnnotationIconNote;
 }
 
-const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType) {
+SKFDFString SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(PDFTextAnnotationIconType iconType) {
     switch (iconType) {
         case kPDFTextAnnotationIconComment: return SKFDFTextAnnotationIconComment;
         case kPDFTextAnnotationIconKey: return SKFDFTextAnnotationIconKey;
@@ -157,24 +160,24 @@ const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconTyp
     }
 }
 
-int SKPDFLineStyleFromFDFLineStyle(const char *name) {
-    if (strcmp(name, SKFDFLineStyleNone) == 0)
+PDFLineStyle SKPDFLineStyleFromFDFLineStyle(SKFDFString name) {
+    if (SKFDFEqualStrings(name, SKFDFLineStyleNone))
         return kPDFLineStyleNone;
-    else if (strcmp(name, SKFDFLineStyleSquare) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFLineStyleSquare))
         return kPDFLineStyleSquare;
-    else if (strcmp(name, SKFDFLineStyleCircle) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFLineStyleCircle))
         return kPDFLineStyleCircle;
-    else if (strcmp(name, SKFDFLineStyleDiamond) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFLineStyleDiamond))
         return kPDFLineStyleDiamond;
-    else if (strcmp(name, SKFDFLineStyleOpenArrow) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFLineStyleOpenArrow))
         return kPDFLineStyleOpenArrow;
-    else if (strcmp(name, SKFDFLineStyleClosedArrow) == 0)
+    else if (SKFDFEqualStrings(name, SKFDFLineStyleClosedArrow))
         return kPDFLineStyleClosedArrow;
     else
         return kPDFLineStyleNone;
 }
 
-const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
+SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     switch (lineStyle) {
         case kPDFLineStyleNone: return SKFDFLineStyleNone;
         case kPDFLineStyleSquare: return SKFDFLineStyleSquare;
@@ -197,13 +200,13 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
     CGPDFDictionaryRef dict;
     CGPDFArrayRef array;
     CGPDFStringRef string;
-    const char *name;
+    SKFDFString name;
     CGPDFReal real;
     CGPDFInteger integer;
     BOOL success = YES;
     NSRect bounds = NSZeroRect;
     
-    if (CGPDFDictionaryGetName(annot, SKFDFTypeKey, &name) == NO || strcmp(name, SKFDFAnnotation) != 0) {
+    if (CGPDFDictionaryGetName(annot, SKFDFTypeKey, &name) == NO || SKFDFEqualStrings(name, SKFDFAnnotation) == NO) {
         success = NO;
     }
     
@@ -436,7 +439,7 @@ const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle) {
 
 
 @implementation NSMutableString (SKFDFExtensions)
-- (void)appendFDFName:(const char *)name {
+- (void)appendFDFName:(SKFDFString)name {
     [self appendFormat:@"/%s", name];
 }
 @end
