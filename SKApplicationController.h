@@ -89,12 +89,12 @@ extern NSString *SKDocumentSetupFileNameKey;
 - (void)setDefaultLineStyles:(NSDictionary *)dict;
 - (NSDictionary *)defaultDashPatterns;
 - (void)setDefaultDashPattern:(NSDictionary *)dict;
-- (unsigned long)defaultStartLineStyle;
-- (void)setDefaultStartLineStyle:(unsigned long)style;
-- (unsigned long)defaultEndLineStyle;
-- (void)setDefaultEndLineStyle:(unsigned long)style;
-- (unsigned long)defaultIconType;
-- (void)setDefaultIconType:(unsigned long)type;
+- (FourCharCode)defaultStartLineStyle;
+- (void)setDefaultStartLineStyle:(FourCharCode)style;
+- (FourCharCode)defaultEndLineStyle;
+- (void)setDefaultEndLineStyle:(FourCharCode)style;
+- (FourCharCode)defaultIconType;
+- (void)setDefaultIconType:(FourCharCode)type;
 - (unsigned int)countOfLines;
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 

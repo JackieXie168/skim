@@ -2034,21 +2034,21 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings {
     NSMutableDictionary *setup = [[self mutableCopy] autorelease];
     
-    unsigned long displayMode = 0;
+    FourCharCode displayMode = 0;
     switch ([[setup objectForKey:@"displayMode"] intValue]) {
         case kPDFDisplaySinglePage: displayMode = SKScriptingDisplaySinglePage; break;
         case kPDFDisplaySinglePageContinuous: displayMode = SKScriptingDisplaySinglePageContinuous; break;
         case kPDFDisplayTwoUp: displayMode = SKScriptingDisplayTwoUp; break;
         case kPDFDisplayTwoUpContinuous: displayMode = SKScriptingDisplayTwoUpContinuous; break;
     }
-    [setup setObject:[NSNumber numberWithInt:displayMode] forKey:@"displayMode"];
+    [setup setObject:[NSNumber numberWithUnsignedLong:displayMode] forKey:@"displayMode"];
     
-    unsigned long displayBox = 0;
+    FourCharCode displayBox = 0;
     switch ([[setup objectForKey:@"displayBox"] intValue]) {
         case kPDFDisplayBoxMediaBox: displayBox = SKScriptingMediaBox; break;
         case kPDFDisplayBoxCropBox: displayBox = SKScriptingCropBox; break;
     }
-    [setup setObject:[NSNumber numberWithInt:displayBox] forKey:@"displayBox"];
+    [setup setObject:[NSNumber numberWithUnsignedLong:displayBox] forKey:@"displayBox"];
     
     return setup;
 }

@@ -42,6 +42,7 @@
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationFreeText_SKExtensions.h"
+#import "PDFAnnotationText_SKExtensions.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
@@ -57,7 +58,7 @@
 #import "SKUtilities.h"
 
 
-unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
+FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {
     switch (borderStyle) {
         case kPDFBorderStyleSolid: return SKScriptingBorderStyleSolid;
         case kPDFBorderStyleDashed: return SKScriptingBorderStyleDashed;
@@ -68,7 +69,7 @@ unsigned long SKScriptingBorderStyleFromBorderStyle(int borderStyle) {
     }
 }
 
-int SKBorderStyleFromScriptingBorderStyle(unsigned long borderStyle) {
+PDFBorderStyle SKBorderStyleFromScriptingBorderStyle(FourCharCode borderStyle) {
     switch (borderStyle) {
         case SKScriptingBorderStyleSolid: return kPDFBorderStyleSolid;
         case SKScriptingBorderStyleDashed: return kPDFBorderStyleDashed;
@@ -238,7 +239,7 @@ enum {
     self = nil;
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
-        unsigned long classCode = [[(NSCreateCommand *)currentCommand createClassDescription] appleEventCode];
+        FourCharCode classCode = [[(NSCreateCommand *)currentCommand createClassDescription] appleEventCode];
         NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
         bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
@@ -246,7 +247,7 @@ enum {
         if (classCode == SKPDFAnnotationScriptingNoteClassCode) {
             
             NSDictionary *properties = [(NSCreateCommand *)currentCommand resolvedKeyDictionary];
-            unsigned long type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
+            FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
             
             if (type == 0) {
                 [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -331,7 +332,7 @@ enum {
     return properties;
 }
 
-- (unsigned long)scriptingNoteType {
+- (FourCharCode)scriptingNoteType {
     if ([[self type] isEqualToString:SKNFreeTextString])
         return SKScriptingTextNote;
     else if ([[self type] isEqualToString:SKNNoteString])
@@ -351,13 +352,13 @@ enum {
     return 0;
 }
 
-- (void)setScriptingNoteType:(unsigned long)type {
+- (void)setScriptingNoteType:(FourCharCode)type {
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
         [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
 }
 
-- (unsigned long)scriptingIconType {
+- (FourCharCode)scriptingIconType {
     return SKScriptingTextAnnotationIconNote;
 }
 
@@ -409,7 +410,7 @@ enum {
     return 0;
 }
 
-- (unsigned long)scriptingBorderStyle {
+- (FourCharCode)scriptingBorderStyle {
     return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }
 
@@ -425,11 +426,11 @@ enum {
     return (id)[NSNull null];
 }
 
-- (unsigned long)scriptingStartLineStyle {
+- (FourCharCode)scriptingStartLineStyle {
     return SKScriptingLineStyleNone;
 }
 
-- (unsigned long)scriptingEndLineStyle {
+- (FourCharCode)scriptingEndLineStyle {
     return SKScriptingLineStyleNone;
 }
 

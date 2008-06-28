@@ -647,27 +647,27 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
 }
 
-- (unsigned long)defaultStartLineStyle {
+- (FourCharCode)defaultStartLineStyle {
     return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]);
 }
 
-- (void)setDefaultStartLineStyle:(unsigned long)style {
+- (void)setDefaultStartLineStyle:(FourCharCode)style {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteStartLineStyleKey];
 }
 
-- (unsigned long)defaultEndLineStyle {
+- (FourCharCode)defaultEndLineStyle {
     return SKScriptingLineStyleFromLineStyle([[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]);
 }
 
-- (void)setDefaultEndLineStyle:(unsigned long)style {
+- (void)setDefaultEndLineStyle:(FourCharCode)style {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKLineStyleFromScriptingLineStyle(style) forKey:SKLineNoteEndLineStyleKey];
 }
 
-- (unsigned long)defaultIconType {
+- (FourCharCode)defaultIconType {
     return SKScriptingIconTypeFromIconType([[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]);
 }
 
-- (void)setDefaultIconType:(unsigned long)type {
+- (void)setDefaultIconType:(FourCharCode)type {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
 }
 

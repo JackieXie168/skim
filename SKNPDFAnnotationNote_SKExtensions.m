@@ -47,13 +47,9 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 
-/*
-NSString *SKPDFAnnotationTextKey = @"text";
-NSString *SKPDFAnnotationImageKey = @"image";
-*/
+
 NSString *SKPDFAnnotationRichTextKey = @"richText";
 
-//NSSize SKNPDFAnnotationNote_SKExtensionsSize = {16.0, 16.0};
 
 @implementation SKNPDFAnnotationNote (SKExtensions)
 
@@ -68,126 +64,11 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     }
     return self;
 }
-/*
-- (void)updateContents {
-    NSMutableString *contents = [NSMutableString string];
-    if ([string length])
-        [contents appendString:string];
-    if ([text length]) {
-        [contents appendString:@"  "];
-        [contents appendString:[text string]];
-    }
-    [self setContents:contents];
-}
 
-- (id)initNoteWithProperties:(NSDictionary *)dict{
-    if (self = [super initNoteWithProperties:dict]) {
-        Class attrStringClass = [NSAttributedString class];
-        Class stringClass = [NSString class];
-        Class imageClass = [NSImage class];
-        NSAttributedString *aText = [dict objectForKey:SKPDFAnnotationTextKey];
-        NSImage *anImage = [dict objectForKey:SKPDFAnnotationImageKey];
-        if ([anImage isKindOfClass:imageClass])
-            image = [anImage retain];
-        if ([aText isKindOfClass:attrStringClass])
-            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:aText];
-        else if ([aText isKindOfClass:stringClass])
-            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withString:(NSString *)aText];
-        [self updateContents];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [textStorage release];
-    [text release];
-    [image release];
-    [texts release];
-    [super dealloc];
-}
-
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
-    [dict setValue:[self text] forKey:SKPDFAnnotationTextKey];
-    [dict setValue:[self image] forKey:SKPDFAnnotationImageKey];
-    return dict;
-}
-*/
 - (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isEditable { return [self isSkimNote]; }
-/*
-- (NSString *)type {
-    return SKNoteString;
-}
 
-- (NSString *)string {
-    return string;
-}
-
-- (void)setString:(NSString *)newString {
-    if (string != newString) {
-        [string release];
-        string = [newString retain];
-        [self updateContents];
-    }
-}
-
-- (NSImage *)image;
-{
-    return image;
-}
-
-- (void)setImage:(NSImage *)newImage;
-{
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-    }
-}
-
-+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
-{
-    if ([key isEqualToString:SKPDFAnnotationTextKey])
-        return NO;
-    else
-        return [super automaticallyNotifiesObserversForKey:key];
-}
-
-- (NSAttributedString *)text;
-{
-    return text;
-}
-
-- (void)setText:(NSAttributedString *)newText;
-{
-    if (textStorage != newText) {
-        if (newText)
-            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];
-        else
-            [textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
-    }
-}
-
-- (NSArray *)texts {
-    return texts;
-}
-
-- (void)textStorageWillProcessEditing:(NSNotification *)notification;
-{
-}
-
-- (void)textStorageDidProcessEditing:(NSNotification *)notification;
-{
-    [texts makeObjectsPerformSelector:@selector(willChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
-    [self willChangeValueForKey:SKPDFAnnotationTextKey];
-    [text release];
-    text = [[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:textStorage];
-    [self didChangeValueForKey:SKPDFAnnotationTextKey];
-    [texts makeObjectsPerformSelector:@selector(didChangeValueForKey:) withObject:SKPDFAnnotationTextKey];
-    [self updateContents];
-}
-*/
 // override these Leopard methods to avoid showing the standard tool tips over our own
 - (NSString *)toolTip { return nil; }
 - (NSString *)toolTipNoLabel { return nil; }
@@ -219,13 +100,11 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     return customNoteScriptingKeys;
 }
 
-- (id)richText;
-{
+- (id)richText {
     return textStorage;
 }
 
-- (void)setRichText:(id)newText;
-{
+- (void)setRichText:(id)newText {
     if (newText != textStorage) {
         // We are willing to accept either a string or an attributed string.
         if ([newText isKindOfClass:[NSAttributedString class]])
@@ -235,8 +114,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
     }
 }
 
-- (id)coerceValueForRichText:(id)value;
-{
+- (id)coerceValueForRichText:(id)value {
     // We want to just get Strings unchanged.  We will detect this and do the right thing in setRichText.  We do this because, this way, we will do more reasonable things about attributes when we are receiving plain text.
     if ([value isKindOfClass:[NSString class]])
         return value;
