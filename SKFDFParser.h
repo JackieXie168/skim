@@ -37,64 +37,67 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
-extern const char *SKFDFFDFKey;
-extern const char *SKFDFAnnotationsKey;
-extern const char *SKFDFFileKey;
-extern const char *SKFDFFileIDKey;
-extern const char *SKFDFRootKey;
+typedef const char *SKFDFString;
 
-extern const char *SKFDFTypeKey;
+extern SKFDFString SKFDFFDFKey;
+extern SKFDFString SKFDFAnnotationsKey;
+extern SKFDFString SKFDFFileKey;
+extern SKFDFString SKFDFFileIDKey;
+extern SKFDFString SKFDFRootKey;
 
-extern const char *SKFDFAnnotationFlagsKey;
-extern const char *SKFDFAnnotationTypeKey;
-extern const char *SKFDFAnnotationBoundsKey;
-extern const char *SKFDFAnnotationPageIndexKey;
-extern const char *SKFDFAnnotationContentsKey;
-extern const char *SKFDFAnnotationColorKey;
-extern const char *SKFDFAnnotationInteriorColorKey;
-extern const char *SKFDFAnnotationBorderStylesKey;
-extern const char *SKFDFAnnotationLineWidthKey;
-extern const char *SKFDFAnnotationDashPatternKey;
-extern const char *SKFDFAnnotationBorderStyleKey;
-extern const char *SKFDFAnnotationBorderKey;
-extern const char *SKFDFAnnotationIconTypeKey;
-extern const char *SKFDFAnnotationLineStylesKey;
-extern const char *SKFDFAnnotationLinePointsKey;
-extern const char *SKFDFAnnotationQuadrilateralPointsKey;
-extern const char *SKFDFDefaultAppearanceKey;
-extern const char *SKFDFDefaultStyleKey;
+extern SKFDFString SKFDFTypeKey;
 
-extern const char *SKFDFAnnotation;
+extern SKFDFString SKFDFAnnotationFlagsKey;
+extern SKFDFString SKFDFAnnotationTypeKey;
+extern SKFDFString SKFDFAnnotationBoundsKey;
+extern SKFDFString SKFDFAnnotationPageIndexKey;
+extern SKFDFString SKFDFAnnotationContentsKey;
+extern SKFDFString SKFDFAnnotationColorKey;
+extern SKFDFString SKFDFAnnotationInteriorColorKey;
+extern SKFDFString SKFDFAnnotationBorderStylesKey;
+extern SKFDFString SKFDFAnnotationLineWidthKey;
+extern SKFDFString SKFDFAnnotationDashPatternKey;
+extern SKFDFString SKFDFAnnotationBorderStyleKey;
+extern SKFDFString SKFDFAnnotationBorderKey;
+extern SKFDFString SKFDFAnnotationIconTypeKey;
+extern SKFDFString SKFDFAnnotationLineStylesKey;
+extern SKFDFString SKFDFAnnotationLinePointsKey;
+extern SKFDFString SKFDFAnnotationQuadrilateralPointsKey;
+extern SKFDFString SKFDFDefaultAppearanceKey;
+extern SKFDFString SKFDFDefaultStyleKey;
 
-extern const char *SKFDFBorderStyleSolid;
-extern const char *SKFDFBorderStyleDashed;
-extern const char *SKFDFBorderStyleBeveled;
-extern const char *SKFDFBorderStyleInset;
-extern const char *SKFDFBorderStyleUnderline;
+extern SKFDFString SKFDFAnnotation;
 
-extern const char *SKFDFTextAnnotationIconComment;
-extern const char *SKFDFTextAnnotationIconKey;
-extern const char *SKFDFTextAnnotationIconNote;
-extern const char *SKFDFTextAnnotationIconNewParagraph;
-extern const char *SKFDFTextAnnotationIconParagraph;
-extern const char *SKFDFTextAnnotationIconInsert;
+extern SKFDFString SKFDFBorderStyleSolid;
+extern SKFDFString SKFDFBorderStyleDashed;
+extern SKFDFString SKFDFBorderStyleBeveled;
+extern SKFDFString SKFDFBorderStyleInset;
+extern SKFDFString SKFDFBorderStyleUnderline;
 
-extern const char *SKFDFLineStyleNone;
-extern const char *SKFDFLineStyleSquare;
-extern const char *SKFDFLineStyleCircle;
-extern const char *SKFDFLineStyleDiamond;
-extern const char *SKFDFLineStyleOpenArrow;
-extern const char *SKFDFLineStyleClosedArrow;
+extern SKFDFString SKFDFTextAnnotationIconComment;
+extern SKFDFString SKFDFTextAnnotationIconKey;
+extern SKFDFString SKFDFTextAnnotationIconNote;
+extern SKFDFString SKFDFTextAnnotationIconNewParagraph;
+extern SKFDFString SKFDFTextAnnotationIconParagraph;
+extern SKFDFString SKFDFTextAnnotationIconInsert;
 
-extern int SKPDFBorderStyleFromFDFBorderStyle(const char *name);
-extern const char *SKFDFBorderStyleFromPDFBorderStyle(int borderStyle);
+extern SKFDFString SKFDFLineStyleNone;
+extern SKFDFString SKFDFLineStyleSquare;
+extern SKFDFString SKFDFLineStyleCircle;
+extern SKFDFString SKFDFLineStyleDiamond;
+extern SKFDFString SKFDFLineStyleOpenArrow;
+extern SKFDFString SKFDFLineStyleClosedArrow;
 
-extern int SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(const char *name);
-extern const char *SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(int iconType);
+extern PDFBorderStyle SKPDFBorderStyleFromFDFBorderStyle(SKFDFString name);
+extern SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle);
 
-extern int SKPDFLineStyleFromFDFLineStyle(const char *name);
-extern const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle);
+extern PDFTextAnnotationIconType SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(SKFDFString name);
+extern SKFDFString SKFDFTextAnnotationIconTypeFromPDFTextAnnotationIconType(PDFTextAnnotationIconType iconType);
+
+extern PDFLineStyle SKPDFLineStyleFromFDFLineStyle(SKFDFString name);
+extern SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle);
 
 
 @interface SKFDFParser : NSObject
@@ -103,5 +106,5 @@ extern const char *SKFDFLineStyleFromPDFLineStyle(int lineStyle);
 
 
 @interface NSMutableString (SKFDFExtensions)
-- (void)appendFDFName:(const char *)name;
+- (void)appendFDFName:(SKFDFString)name;
 @end
