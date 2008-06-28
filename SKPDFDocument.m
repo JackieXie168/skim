@@ -83,7 +83,6 @@ static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
-static NSString *SKIgnoreReadNotesErrorsKey = @"SKIgnoreReadNotesErrors";
 
 static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
 
@@ -627,40 +626,44 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
-            if (array == nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKIgnoreReadNotesErrorsKey] == NO) {
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"No", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Yes", @"Button title")
-                                                   otherButton:nil
-                                     informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
-                if ([alert runModal] == NSAlertDefaultReturn) {
-                    [data release];
-                    data = nil;
-                    [pdfDoc release];
-                    pdfDoc = nil;
-                }
-            } else if ([array count] == 0) {
-                NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
-                if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                    int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
-                    if (readOption == NSAlertOtherReturn) {
-                        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
-                                                         defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                                       alternateButton:NSLocalizedString(@"No", @"Button title")
-                                                           otherButton:nil
-                                             informativeTextWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]];
-                        readOption = [alert runModal];
+            if ([array count]) {
+                [self setNoteDicts:array];
+            } else {
+                // we found no notes, see if we had an error finding notes. if EAs were not supported we ignore the error, as we may assume there won't be any notes
+                if (array == nil && [error code] != ENOTSUP && [error code] != ENOATTR && [error code] != EINVAL) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                    if ([alert runModal] == NSAlertDefaultReturn) {
+                        [data release];
+                        data = nil;
+                        [pdfDoc release];
+                        pdfDoc = nil;
                     }
-                    if (readOption == NSAlertDefaultReturn) {
-                        array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:[NSURL fileURLWithPath:path] error:NULL];
-                        if ([array count]) {
-                            [self setNoteDicts:array];
-                            [self updateChangeCount:NSChangeDone];
+                }
+                if (pdfDoc) {
+                    NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                        int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
+                        if (readOption == NSAlertOtherReturn) {
+                            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
+                                                             defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                                           alternateButton:NSLocalizedString(@"No", @"Button title")
+                                                               otherButton:nil
+                                                 informativeTextWithFormat:NSLocalizedString(@"Unable to read notes for %@, but a Skim notes file with the same name was found.  Do you want Skim to read the notes from this file?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath]];
+                            readOption = [alert runModal];
+                        }
+                        if (readOption == NSAlertDefaultReturn) {
+                            array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:[NSURL fileURLWithPath:path] error:NULL];
+                            if ([array count]) {
+                                [self setNoteDicts:array];
+                                [self updateChangeCount:NSChangeDone];
+                            }
                         }
                     }
                 }
-            } else {
-                [self setNoteDicts:array];
             }
         }
     } else if (SKIsPDFBundleDocumentType(docType)) {
