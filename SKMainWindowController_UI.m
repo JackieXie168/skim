@@ -58,6 +58,7 @@
 #import "SKPDFDocument.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
+#import "PDFSelection_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKApplication.h"
 #import "NSMenu_SKExtensions.h"
@@ -271,11 +272,40 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [pboard setData:pdfData forType:NSPDFPboardType];
             [pboard setData:tiffData forType:NSTIFFPboardType];
         }
+    } else if ([tv isEqual:findTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        unsigned int idx = [rowIndexes firstIndex];
+        while (idx != NSNotFound) {
+            PDFSelection *match = [searchResults objectAtIndex:idx];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
+            [string appendFormat:@": %@\n", [[match contextString] string]];
+            idx = [rowIndexes indexGreaterThanIndex:idx];
+        }
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
+        [pboard setString:string forType:NSStringPboardType];
+    } else if ([tv isEqual:groupedFindTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        unsigned int idx = [rowIndexes firstIndex];
+        while (idx != NSNotFound) {
+            SKGroupedSearchResult *result = [groupedSearchResults objectAtIndex:idx];
+            NSArray *matches = [result matches];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] label]];
+            [string appendString:@": "];
+            [string appendFormat:NSLocalizedString(@"%i Results", @""), [matches count]];
+            [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
+            idx = [rowIndexes indexGreaterThanIndex:idx];
+        }
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
+        [pboard setString:string forType:NSStringPboardType];
     }
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:thumbnailTableView]) {
+    if ([tv isEqual:thumbnailTableView] || [tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
