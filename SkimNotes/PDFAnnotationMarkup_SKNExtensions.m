@@ -83,4 +83,18 @@ NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
     return self;
 }
 
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    NSArray *quadPoints = [self quadrilateralPoints];
+    if (quadPoints) {
+        int i, iMax = [quadPoints count];
+        NSMutableArray *quadPointStrings = [[NSMutableArray alloc] initWithCapacity:iMax];
+        for (i = 0; i < iMax; i++)
+            [strings addObject:NSStringFromPoint([[quadPoints objectAtIndex:i] pointValue])];
+        [dict setValue:quadPointStrings forKey:SKPDFAnnotationQuadrilateralPointsKey];
+        [quadPointStrings release];
+    }
+    return dict;
+}
+
 @end
