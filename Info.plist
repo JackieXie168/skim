@@ -534,6 +534,7 @@
 				</array>
 			</dict>
 		</dict>
+	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -617,7 +618,6 @@
 				</array>
 			</dict>
 		</dict>
-	</array>
 	</array>
 </dict>
 </plist>
