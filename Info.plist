@@ -588,8 +588,6 @@
 			<string>net.sourceforge.skim-app.embedded.pdf</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
-				<key>com.apple.ostype</key>
-				<string>PDF </string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>pdf</string>
@@ -610,8 +608,6 @@
 			<string>net.sourceforge.skim-app.bare.pdf</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
-				<key>com.apple.ostype</key>
-				<string>PDF </string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>pdf</string>
