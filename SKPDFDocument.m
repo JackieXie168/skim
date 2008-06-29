@@ -1345,9 +1345,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
-        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
-        [fileUpdateTimer invalidate];
-        fileUpdateTimer = nil;
+        [self stopCheckingFileUpdates];
     }
 }
 
