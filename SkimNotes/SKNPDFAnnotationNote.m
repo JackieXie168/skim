@@ -78,9 +78,9 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
         if ([anImage isKindOfClass:imageClass])
             image = [anImage retain];
         if ([aText isKindOfClass:attrStringClass])
-            text = [aText copy];
+            [self setText:aText];
         else if ([aText isKindOfClass:stringClass])
-            text = [[NSAttributedString alloc] initWithString:(NSString *)aText];
+            [self setText:[[[NSAttributedString alloc] initWithString:(NSString *)aText] autorelease]];
         [self updateContents];
     }
     return self;
@@ -113,6 +113,7 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
     if (string != newString) {
         [string release];
         string = [newString retain];
+        // update the contents to string + text
         [self updateContents];
     }
 }
@@ -128,6 +129,8 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
     }
 }
 
+// changes to text are made through textStorage, this allows Skim to provide edits through AppleScript, which works directly on the textStorage
+// KVO is triggered manually when the textStorage is edited, either through setText: or through some other means, e.g. through AppleScript
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
     if ([key isEqualToString:SKNPDFAnnotationTextKey])
         return NO;
@@ -141,6 +144,7 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
 
 - (void)setText:(NSAttributedString *)newText {
     if (textStorage != newText) {
+        // edit the textStorage, this will trigger KVO and update the text automatically
         if (newText)
             [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];
         else
@@ -148,14 +152,17 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
     }
 }
 
-- (void)textStorageDidProcessEditing:(NSNotification *)notification;
-{
+- (void)textStorageDidProcessEditing:(NSNotification *)notification {
+    // texts should be an array of objects wrapping the text of the note, used by Skim to provide a data source for the children in the outlineView
     [texts makeObjectsPerformSelector:@selector(willChangeValueForKey:) withObject:SKNPDFAnnotationTextKey];
+    // trigger KVO manually
     [self willChangeValueForKey:SKNPDFAnnotationTextKey];
+    // update the text
     [text release];
     text = [[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:textStorage];
     [self didChangeValueForKey:SKNPDFAnnotationTextKey];
     [texts makeObjectsPerformSelector:@selector(didChangeValueForKey:) withObject:SKNPDFAnnotationTextKey];
+    // update the contents to string + text
     [self updateContents];
 }
 
