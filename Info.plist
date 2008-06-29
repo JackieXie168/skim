@@ -550,6 +550,86 @@
 				<string>public.composite-content</string>
 			</array>
 			<key>UTTypeDescription</key>
+			<string>PDF</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.pdf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>PDF</string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Text</string>
+			<key>UTTypeIdentifier</key>
+			<string>public.plain-text</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>TEXT</string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>txt</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>RTF</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.apple.rtf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>RTF </string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rtf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+				<string>public.composite-​content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>RTFD</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.apple.rtfd</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.ostype</key>
+				<string>RTFD</string>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rtfd</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
 			<string>FDF</string>
 			<key>UTTypeIdentifier</key>
 			<string>com.adobe.fdf</string>
