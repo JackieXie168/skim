@@ -136,16 +136,16 @@ enum {
 - (void)setSelectionQDRect:(NSData *)inQDBoundsAsData;
 - (id)selectionPage;
 - (void)setSelectionPage:(PDFPage *)page;
-- (id)handleRevertScriptCommand:(NSScriptCommand *)command;
-- (id)handleGoToScriptCommand:(NSScriptCommand *)command;
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command;
+- (void)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
-- (id)handleShowTeXScriptCommand:(NSScriptCommand *)command;
+- (void)handleShowTeXScriptCommand:(NSScriptCommand *)command;
 
 @end
 
 
 @interface NSWindow (SKScriptingExtensions)
-- (id)handleRevertScriptCommand:(NSScriptCommand *)command;
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 @end
 
 

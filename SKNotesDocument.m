@@ -54,8 +54,11 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
+
+static NSString *SKLastExportedNotesTypeKey = @"SKLastExportedNotesType";
 
 static NSString *SKNotesDocumentRowHeightKey = @"rowHeight";
 static NSString *SKNotesDocumentChildKey = @"child";
@@ -115,13 +118,50 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
-    // this will never be called on 10.4, so we can safely call super
-    NSString *fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil) {
-        if ([[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+    NSString *fileExtension = nil;
+    if ([[SKNotesDocument superclass] instancesRespondToSelector:_cmd]) {
+        fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
+        if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
             fileExtension = [typeName pathExtension];
-	}
+    } else {
+        NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:typeName];
+        if ([fileExtensions count])
+            fileExtension = [fileExtensions objectAtIndex:0];
+    }
     return fileExtension;
+}
+
+- (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
+    BOOL success = [super prepareSavePanel:savePanel];
+    if (success && exportUsingPanel) {
+        NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
+        if (formatPopup) {
+            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedNotesTypeKey];
+            if (lastExportedType) {
+                int idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
+                    [formatPopup selectItemAtIndex:idx];
+                    [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+                    [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
+                }
+            }
+        }
+    }
+    return success;
+}
+
+- (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
+    // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
+    if (saveOperation == NSSaveToOperation)
+        exportUsingPanel = YES;
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+}
+
+- (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
+    if (saveOperation == NSSaveToOperation && exportUsingPanel)
+        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedNotesTypeKey];
+    exportUsingPanel = NO;
+    return [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {

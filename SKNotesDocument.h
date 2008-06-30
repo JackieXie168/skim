@@ -45,6 +45,7 @@
     IBOutlet NSArrayController *arrayController;
     IBOutlet SKStatusBar *statusBar;
     NSMutableArray *notes;
+    BOOL exportUsingPanel;
 }
 
 - (IBAction)openPDF:(id)sender;
