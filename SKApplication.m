@@ -83,7 +83,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     [super terminate:sender];
 }
 
-- (void)handleOpenScriptCommand:(NSScriptCommand *)command {
+- (id)handleOpenScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id file = [command directParameter];
 	id lineNumber = [args objectForKey:@"line"];
@@ -92,7 +92,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1)) {
         if ([[SKApplication superclass] instancesRespondToSelector:_cmd])
             [super handleOpenScriptCommand:command];
-        return;
+        return nil;
     }
 	
     if ([file isKindOfClass:[NSArray class]])
@@ -128,7 +128,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         [command setScriptErrorString:@"File argument is not a file."];
     }
     
-    return;
+    return nil;
 }
 
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {

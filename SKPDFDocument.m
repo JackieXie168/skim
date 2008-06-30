@@ -226,13 +226,10 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
-    // this should never be called on 10.4, but just make sure
     if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
         fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-        if (fileExtension == nil) {
-            if ([[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
-                fileExtension = [typeName pathExtension];
-        }
+        if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+            fileExtension = [typeName pathExtension];
     } else {
         NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:typeName];
         if ([fileExtensions count])
@@ -242,7 +239,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
-    if (exportUsingPanel) {
+    BOOL success = [super prepareSavePanel:savePanel];
+    if (success && exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
@@ -256,17 +254,12 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
                     [formatPopup selectItemAtIndex:idx];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
-                    NSArray *fileTypes = nil;
-                    if (NSAppKitVersionNumber > NSAppKitVersionNumber10_4)
-                        fileTypes = [NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil];
-                    else
-                        fileTypes = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:lastExportedType];
-                    [savePanel setAllowedFileTypes:fileTypes];
+                    [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
                 }
             }
         }
     }
-    return YES;
+    return success;
 }
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
@@ -1841,14 +1834,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return info;
 }
 
-// fix a bug in Apple's implementation, which ignores the file type (for export)
+// fix a bug in Apple's implementation, which ignores the file type (for export), also make some more sensible choice of save operation
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id fileURL = [args objectForKey:@"File"];
     id fileType = [args objectForKey:@"FileType"];
-    // we don't want to expose the value of NSPDFPboardType to the user, we advertise this type as "PDF".
+    // we don't want to expose the value of SKPDFDocumentType to the user, we advertise this type as "PDF".
     if ([fileType isEqualToString:@"PDF"]) {
-        fileType = NSPDFPboardType;
+        fileType = SKPDFDocumentType;
         NSMutableDictionary *arguments = [[command arguments] mutableCopy];
         [arguments setObject:fileType forKey:@"FileType"];
         [command setArguments:arguments];
@@ -1859,28 +1852,22 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
             [command setScriptErrorString:@"The file is not a file or alias."];
         } else {
-            NSArray *fileExtensions = nil;
-            NSString *extension = [[fileURL path] pathExtension];
-            if (NSAppKitVersionNumber > NSAppKitVersionNumber10_4)
-                fileExtensions = [NSArray arrayWithObjects:[self fileNameExtensionForType:SKNormalizedDocumentType(fileType) saveOperation:fileType ? NSSaveToOperation : NSSaveAsOperation], nil];
-            else
-                fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:SKNormalizedDocumentType(fileType)];
+            NSSaveOperationType saveOperation = fileType ? NSSaveToOperation : NSSaveAsOperation;
+            fileType = fileType ? SKNormalizedDocumentType(fileType) : SKPDFDocumentType;
             
-            if (extension == nil && [fileExtensions count]) {
-                extension = [fileExtensions objectAtIndex:0];
+            NSString *requiredExtension = [self fileNameExtensionForType:fileType saveOperation:saveOperation];
+            NSString *extension = [[fileURL path] pathExtension];
+            
+            if (extension == nil && requiredExtension) {
+                extension = requiredExtension;
                 fileURL = [NSURL fileURLWithPath:[[fileURL path] stringByAppendingPathExtension:extension]];
             }
-            if ([fileExtensions containsObject:[extension lowercaseString]] == NO) {
+            if (requiredExtension && [requiredExtension caseInsensitiveCompare:extension] != NSOrderedSame) {
                 [command setScriptErrorNumber:NSArgumentsWrongScriptError];
                 [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."]];
-            } else if (fileType) {
-                if ([self saveToURL:fileURL ofType:SKNormalizedDocumentType(fileType) forSaveOperation:NSSaveToOperation error:NULL] == NO) {
-                    [command setScriptErrorNumber:NSInternalScriptError];
-                    [command setScriptErrorString:@"Unable to export."];
-                }
-            } else if ([self saveToURL:fileURL ofType:NSPDFPboardType forSaveOperation:NSSaveAsOperation error:NULL] == NO) {
+            } else if ([self saveToURL:fileURL ofType:fileType forSaveOperation:saveOperation error:NULL] == NO) {
                 [command setScriptErrorNumber:NSInternalScriptError];
-                [command setScriptErrorString:@"Unable to save."];
+                [command setScriptErrorString:saveOperation == NSSaveToOperation ? @"Unable to export." : @"Unable to save."];
             }
         }
     } else if (fileType) {
@@ -1924,7 +1911,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return nil;
 }
 
-- (id)handleRevertScriptCommand:(NSScriptCommand *)command {
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
@@ -1934,10 +1921,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"File does not exist."];
     }
-    return nil;
 }
 
-- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
+- (void)handleGoToScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id location = [args objectForKey:@"To"];
     
@@ -1960,7 +1946,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             [[self pdfView] scrollRect:bounds inPageToVisible:page];
         }
     }
-    return nil;
 }
 
 - (id)handleFindScriptCommand:(NSScriptCommand *)command {
@@ -1994,7 +1979,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return specifier ? specifier : [NSArray array];
 }
 
-- (id)handleShowTeXScriptCommand:(NSScriptCommand *)command {
+- (void)handleShowTeXScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id page = [args objectForKey:@"Page"];
     id pointData = [args objectForKey:@"Point"];
@@ -2016,8 +2001,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         [[self synchronizer] findLineForLocation:point inRect:rect atPageIndex:pageIndex];
     }
-    
-    return nil;
 }
 
 @end
@@ -2025,14 +2008,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 @implementation NSWindow (SKScriptingExtensions)
 
-- (id)handleRevertScriptCommand:(NSScriptCommand *)command {
+- (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];
     if (document == nil) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"Window does not have a document."];
-        return nil;
     } else
-        return [document handleRevertScriptCommand:command];
+        [document handleRevertScriptCommand:command];
 }
 
 @end
