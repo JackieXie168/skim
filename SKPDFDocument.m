@@ -225,12 +225,19 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 }
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
-    // this will never be called on 10.4, so we can safely call super
-    NSString *fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-    if (fileExtension == nil) {
-        if ([[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
-            fileExtension = [typeName pathExtension];
-	}
+    NSString *fileExtension = nil;
+    // this should never be called on 10.4, but just make sure
+    if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
+        fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
+        if (fileExtension == nil) {
+            if ([[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+                fileExtension = [typeName pathExtension];
+        }
+    } else {
+        NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:typeName];
+        if ([fileExtensions count])
+            fileExtension = [fileExtensions objectAtIndex:0];
+    }
     return fileExtension;
 }
 
@@ -250,7 +257,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                     [formatPopup selectItemAtIndex:idx];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
                     NSArray *fileTypes = nil;
-                    if ([self respondsToSelector:@selector(fileNameExtensionForType:saveOperation:)])
+                    if (NSAppKitVersionNumber > NSAppKitVersionNumber10_4)
                         fileTypes = [NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil];
                     else
                         fileTypes = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:lastExportedType];
