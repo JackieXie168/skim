@@ -14,7 +14,11 @@
 
 - (void)fetchAppcastFromURL:(NSURL *)url
 {
-	[NSThread detachNewThreadSelector:@selector(_fetchAppcastFromURL:) toTarget:self withObject:url]; // let's not block the main thread
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+            
+    data = [[NSMutableData alloc] init];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    [connection retain];
 }
 
 - (void)setDelegate:del
@@ -24,13 +28,14 @@
 
 - (void)dealloc
 {
+	[data release];
 	[items release];
 	[super dealloc];
 }
 
 - (SUAppcastItem *)newestItem
 {
-	return [items count] ? [items objectAtIndex:0] : nil; // the RSS class takes care of sorting by published date, descending.
+	return [items count] ? [items objectAtIndex:0] : nil; // we take care of sorting by published date, descending.
 }
 
 - (NSArray *)items
@@ -38,37 +43,52 @@
 	return items;
 }
 
-- (void)_fetchAppcastFromURL:(NSURL *)url
+- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	return request;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)incrementalData
+{
+	[data appendData:incrementalData];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	[connection release];
+	
+    if ([delegate respondsToSelector:@selector(appcastDidFailToLoad:)])
+		[delegate appcastDidFailToLoad:self];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	[connection release];
 	
 	NSError *error = nil;
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
-    NSURLResponse *response = nil;
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     NSXMLDocument *document = nil;
-    
-    if (data)
-        document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
-        
-	BOOL failed = NO;
-	
-	if (nil == document)
-		failed = YES;
-		
-	NSArray *xmlItems = [document nodesForXPath:@"/rss/channel/item" error:&error];
-	if (nil == xmlItems)
-		failed = YES;
-	
+	NSArray *xmlItems = nil;
 	NSMutableArray *appcastItems = [NSMutableArray array];
+    BOOL failed = NO;
 	
-	if (xmlItems) {
+    if ([data length])
+        document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
+    
+    if (document == nil) {
+        failed = YES;
+	} else {
+        xmlItems = [document nodesForXPath:@"/rss/channel/item" error:&error];
+        if (nil == xmlItems)
+            failed = YES;
+	}
+	
+	if (failed == NO) {
 		
 		NSEnumerator *nodeEnum = [xmlItems objectEnumerator];
 		NSXMLNode *node;
 		NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 		
-		while ((node = [nodeEnum nextObject])) {
+		while (failed == NO && (node = [nodeEnum nextObject])) {
 			
 			// walk the children in reverse
 			node = [[node children] lastObject];
@@ -101,11 +121,17 @@
 				node = [node previousSibling];
 			}
 			SUAppcastItem *anItem = [[SUAppcastItem alloc] initWithDictionary:dict];
-			[appcastItems addObject:anItem];
-			[anItem release];
+            if (anItem == nil) {
+                failed = YES;
+            } else {
+                [appcastItems addObject:anItem];
+                [anItem release];
+            }
 			[dict removeAllObjects];
 		}
 	}
+	
+	[document release];
 	
 	if ([appcastItems count]) {
 		NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
@@ -114,12 +140,9 @@
 	}
 	
 	if (failed && [delegate respondsToSelector:@selector(appcastDidFailToLoad:)])
-		[delegate performSelectorOnMainThread:@selector(appcastDidFailToLoad:) withObject:self waitUntilDone:NO];
+		[delegate appcastDidFailToLoad:self];
 	else if (NO == failed && [delegate respondsToSelector:@selector(appcastDidFinishLoading:)])
-		[delegate performSelectorOnMainThread:@selector(appcastDidFinishLoading:) withObject:self waitUntilDone:NO];
-	
-	[document release];
-	[pool release];
+		[delegate appcastDidFinishLoading:self];
 }
 
 @end
