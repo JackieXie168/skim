@@ -8,8 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class RSS, SUAppcastItem;
+@class SUAppcastItem;
 @interface SUAppcast : NSObject {
+    NSMutableData *data;
 	NSArray *items;
 	id delegate;
 }
@@ -23,5 +24,6 @@
 @end
 
 @interface NSObject (SUAppcastDelegate)
-- appcastDidFinishLoading:(SUAppcast *)appcast;
+- (void)appcastDidFinishLoading:(SUAppcast *)appcast;
+- (void)appcastDidFailToLoad:(SUAppcast *)appcast;
 @end
