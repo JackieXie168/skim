@@ -37,11 +37,6 @@
  */
 
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationSquare_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationLine_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationMarkup_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 #import <objc/objc.h>
 #import <objc/objc-class.h>
@@ -69,6 +64,23 @@ NSString *SKNPDFAnnotationBorderKey = @"border";
 NSString *SKNPDFAnnotationLineWidthKey = @"lineWidth";
 NSString *SKNPDFAnnotationBorderStyleKey = @"borderStyle";
 NSString *SKNPDFAnnotationDashPatternKey = @"dashPattern";
+
+NSString *SKNPDFAnnotationInteriorColorKey = @"interiorColor";
+
+NSString *SKNPDFAnnotationStartLineStyleKey = @"startLineStyle";
+NSString *SKNPDFAnnotationEndLineStyleKey = @"endLineStyle";
+NSString *SKNPDFAnnotationStartPointKey = @"startPoint";
+NSString *SKNPDFAnnotationEndPointKey = @"endPoint";
+
+NSString *SKNPDFAnnotationFontKey = @"font";
+NSString *SKNPDFAnnotationFontColorKey = @"fontColor";
+NSString *SKNPDFAnnotationFontNameKey = @"fontName";
+NSString *SKNPDFAnnotationFontSizeKey = @"fontSize";
+NSString *SKNPDFAnnotationRotationKey = @"rotation";
+
+NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
+
+NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
 
 @implementation PDFAnnotation (SKNExtensions)
@@ -207,6 +219,203 @@ static IMP originalDealloc = NULL;
 
 - (void)setString:(NSString *)newString {
     [self setContents:newString];
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationCircle (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class colorClass = [NSColor class];
+        NSColor *interiorColor = [dict objectForKey:SKNPDFAnnotationInteriorColorKey];
+        if ([interiorColor isKindOfClass:colorClass])
+            [self setInteriorColor:interiorColor];
+    }
+    return self;
+}
+
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    [dict setValue:[self interiorColor] forKey:SKNPDFAnnotationInteriorColorKey];
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationSquare (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class colorClass = [NSColor class];
+        NSColor *interiorColor = [dict objectForKey:SKNPDFAnnotationInteriorColorKey];
+        if ([interiorColor isKindOfClass:colorClass])
+            [self setInteriorColor:interiorColor];
+    }
+    return self;
+}
+
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    [dict setValue:[self interiorColor] forKey:SKNPDFAnnotationInteriorColorKey];
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationLine (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class stringClass = [NSString class];
+        NSString *startPoint = [dict objectForKey:SKNPDFAnnotationStartPointKey];
+        NSString *endPoint = [dict objectForKey:SKNPDFAnnotationEndPointKey];
+        NSNumber *startLineStyle = [dict objectForKey:SKNPDFAnnotationStartLineStyleKey];
+        NSNumber *endLineStyle = [dict objectForKey:SKNPDFAnnotationEndLineStyleKey];
+        if ([startPoint isKindOfClass:stringClass])
+            [self setStartPoint:NSPointFromString(startPoint)];
+        if ([endPoint isKindOfClass:stringClass])
+            [self setEndPoint:NSPointFromString(endPoint)];
+        if ([startLineStyle respondsToSelector:@selector(intValue)])
+            [self setStartLineStyle:[startLineStyle intValue]];
+        if ([endLineStyle respondsToSelector:@selector(intValue)])
+            [self setEndLineStyle:[endLineStyle intValue]];
+    }
+    return self;
+}
+
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:SKNPDFAnnotationStartLineStyleKey];
+    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKNPDFAnnotationEndLineStyleKey];
+    [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKNPDFAnnotationStartPointKey];
+    [dict setValue:NSStringFromPoint([self endPoint]) forKey:SKNPDFAnnotationEndPointKey];
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
+- (int)rotation;
+- (void)setRotation:(int)rotation;
+@end
+
+
+@implementation PDFAnnotationFreeText (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class fontClass = [NSFont class];
+        Class colorClass = [NSColor class];
+        NSFont *font = [dict objectForKey:SKNPDFAnnotationFontKey];
+        NSColor *fontColor = [dict objectForKey:SKNPDFAnnotationFontColorKey];
+        NSNumber *rotation = [dict objectForKey:SKNPDFAnnotationRotationKey];
+        if ([font isKindOfClass:fontClass])
+            [self setFont:font];
+        if ([fontColor isKindOfClass:colorClass] && [self respondsToSelector:@selector(setFontColor:)])
+            [self setFontColor:fontColor];
+        if ([rotation respondsToSelector:@selector(intValue)] && [self respondsToSelector:@selector(setRotation:)])
+            [self setRotation:[rotation intValue]];
+    }
+    return self;
+}
+
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    [dict setValue:[self font] forKey:SKNPDFAnnotationFontKey];
+    if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
+        [dict setValue:[self fontColor] forKey:SKNPDFAnnotationFontColorKey];
+    if ([self respondsToSelector:@selector(rotation)])
+        [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:SKNPDFAnnotationRotationKey];
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationMarkup (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class stringClass = [NSString class];
+        NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
+        if ([type isKindOfClass:stringClass]) {
+            int markupType = kPDFMarkupTypeHighlight;
+            if ([type isEqualToString:SKNUnderlineString])
+                markupType = kPDFMarkupTypeUnderline;
+            else if ([type isKindOfClass:stringClass] && [type isEqualToString:SKNStrikeOutString])
+                markupType = kPDFMarkupTypeStrikeOut;
+            if (markupType != [self markupType]) {
+                [self setMarkupType:markupType];
+                if ([dict objectForKey:SKNPDFAnnotationColorKey] == nil && [[self class] respondsToSelector:@selector(defaultColorForMarkupType:)]) {
+                    NSColor *color = [[self class] defaultColorForMarkupType:markupType];
+                    if (color)
+                        [self setColor:color];
+                }
+            }
+        }
+        
+        Class arrayClass = [NSArray class];
+        NSArray *pointStrings = [dict objectForKey:SKNPDFAnnotationQuadrilateralPointsKey];
+        if ([pointStrings isKindOfClass:arrayClass]) {
+            int i, iMax = [pointStrings count];
+            NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:iMax];
+            for (i = 0; i < iMax; i++) {
+                NSPoint p = NSPointFromString([pointStrings objectAtIndex:i]);
+                NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
+                [quadPoints addObject:value];
+                [value release];
+            }
+            [self setQuadrilateralPoints:quadPoints];
+            [quadPoints release];
+        }
+        
+    }
+    return self;
+}
+
+- (NSDictionary *)properties {
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    NSArray *quadPoints = [self quadrilateralPoints];
+    if (quadPoints) {
+        int i, iMax = [quadPoints count];
+        NSMutableArray *quadPointStrings = [[NSMutableArray alloc] initWithCapacity:iMax];
+        for (i = 0; i < iMax; i++)
+            [quadPointStrings addObject:NSStringFromPoint([[quadPoints objectAtIndex:i] pointValue])];
+        [dict setValue:quadPointStrings forKey:SKNPDFAnnotationQuadrilateralPointsKey];
+        [quadPointStrings release];
+    }
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationText (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        NSNumber *iconType = [dict objectForKey:SKNPDFAnnotationIconTypeKey];
+        if ([iconType respondsToSelector:@selector(intValue)])
+            [self setIconType:[iconType intValue]];
+    }
+    return self;
+}
+
+- (NSDictionary *)properties{
+    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
+    return dict;
 }
 
 @end
