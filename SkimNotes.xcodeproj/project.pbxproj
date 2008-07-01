@@ -32,18 +32,6 @@
 		CEBA2B670E05675E0000B2E6 /* SKNExtendedAttributeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */; };
 		CEBA2B710E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEBA2B720E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */; };
-		CEBA2B750E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B730E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B760E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B740E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.m */; };
-		CEBA2B790E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B770E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B7A0E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B780E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.m */; };
-		CEBA2B7D0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B7B0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B7E0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B7C0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.m */; };
-		CEBA2B810E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B7F0E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B820E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B800E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.m */; };
-		CEBA2B850E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B830E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B860E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B840E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.m */; };
-		CEBA2B890E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B870E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CEBA2B8A0E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B880E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.m */; };
 		CEBA2B8D0E0569010000B2E6 /* SKNPDFAnnotationNote.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEBA2B8E0E0569010000B2E6 /* SKNPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */; };
 		CEBA2BD50E05826D0000B2E6 /* NSFileManager_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -98,18 +86,6 @@
 		CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNExtendedAttributeManager.m; sourceTree = "<group>"; };
 		CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotation_SKNExtensions.h; sourceTree = "<group>"; };
 		CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotation_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B730E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationCircle_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B740E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationCircle_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B770E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationSquare_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B780E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationSquare_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B7B0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationFreeText_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B7C0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationFreeText_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B7F0E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B800E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationText_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B830E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationMarkup_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B840E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationMarkup_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2B870E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationLine_SKNExtensions.h; sourceTree = "<group>"; };
-		CEBA2B880E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationLine_SKNExtensions.m; sourceTree = "<group>"; };
 		CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNPDFAnnotationNote.h; sourceTree = "<group>"; };
 		CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNPDFAnnotationNote.m; sourceTree = "<group>"; };
 		CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKNExtensions.h; sourceTree = "<group>"; };
@@ -260,18 +236,6 @@
 			children = (
 				CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */,
 				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
-				CEBA2B730E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.h */,
-				CEBA2B740E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.m */,
-				CEBA2B7B0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.h */,
-				CEBA2B7C0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.m */,
-				CEBA2B870E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.h */,
-				CEBA2B880E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.m */,
-				CEBA2B830E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.h */,
-				CEBA2B840E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.m */,
-				CEBA2B770E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.h */,
-				CEBA2B780E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.m */,
-				CEBA2B7F0E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.h */,
-				CEBA2B800E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.m */,
 				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
 				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
 			);
@@ -297,12 +261,6 @@
 			files = (
 				CEBA2B660E05675E0000B2E6 /* SKNExtendedAttributeManager.h in Headers */,
 				CEBA2B710E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h in Headers */,
-				CEBA2B750E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.h in Headers */,
-				CEBA2B790E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.h in Headers */,
-				CEBA2B7D0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.h in Headers */,
-				CEBA2B810E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.h in Headers */,
-				CEBA2B850E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.h in Headers */,
-				CEBA2B890E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.h in Headers */,
 				CEBA2B8D0E0569010000B2E6 /* SKNPDFAnnotationNote.h in Headers */,
 				CEBA2BD50E05826D0000B2E6 /* NSFileManager_SKNExtensions.h in Headers */,
 				CEBA2BE20E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h in Headers */,
@@ -413,12 +371,6 @@
 			files = (
 				CEBA2B670E05675E0000B2E6 /* SKNExtendedAttributeManager.m in Sources */,
 				CEBA2B720E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m in Sources */,
-				CEBA2B760E05685B0000B2E6 /* PDFAnnotationCircle_SKNExtensions.m in Sources */,
-				CEBA2B7A0E0568700000B2E6 /* PDFAnnotationSquare_SKNExtensions.m in Sources */,
-				CEBA2B7E0E05688A0000B2E6 /* PDFAnnotationFreeText_SKNExtensions.m in Sources */,
-				CEBA2B820E0568A20000B2E6 /* PDFAnnotationText_SKNExtensions.m in Sources */,
-				CEBA2B860E0568BD0000B2E6 /* PDFAnnotationMarkup_SKNExtensions.m in Sources */,
-				CEBA2B8A0E0568E50000B2E6 /* PDFAnnotationLine_SKNExtensions.m in Sources */,
 				CEBA2B8E0E0569010000B2E6 /* SKNPDFAnnotationNote.m in Sources */,
 				CEBA2BD60E05826D0000B2E6 /* NSFileManager_SKNExtensions.m in Sources */,
 				CEBA2BE30E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m in Sources */,

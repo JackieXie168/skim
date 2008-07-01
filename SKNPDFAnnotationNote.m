@@ -38,7 +38,6 @@
 
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
 
 NSString *SKNPDFAnnotationTextKey = @"text";
 NSString *SKNPDFAnnotationImageKey = @"image";
