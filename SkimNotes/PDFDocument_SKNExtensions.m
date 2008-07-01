@@ -38,11 +38,6 @@
 
 #import <SkimNotes/PDFDocument_SKNExtensions.h>
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationSquare_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationLine_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationMarkup_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 #import <SkimNotes/NSFileManager_SKNExtensions.h>
 

@@ -62,6 +62,24 @@ extern NSString *SKNPDFAnnotationLineWidthKey;
 extern NSString *SKNPDFAnnotationBorderStyleKey;
 extern NSString *SKNPDFAnnotationDashPatternKey;
 
+extern NSString *SKNPDFAnnotationInteriorColorKey;
+
+extern NSString *SKNPDFAnnotationStartLineStyleKey;
+extern NSString *SKNPDFAnnotationEndLineStyleKey;
+extern NSString *SKNPDFAnnotationStartPointKey;
+extern NSString *SKNPDFAnnotationEndPointKey;
+
+extern NSString *SKNPDFAnnotationFontKey;
+extern NSString *SKNPDFAnnotationFontColorKey;
+extern NSString *SKNPDFAnnotationFontNameKey;
+extern NSString *SKNPDFAnnotationFontSizeKey;
+extern NSString *SKNPDFAnnotationRotationKey;
+
+extern NSString *SKNPDFAnnotationQuadrilateralPointsKey;
+
+extern NSString *SKNPDFAnnotationIconTypeKey;
+
+
 @interface PDFAnnotation (SKNExtensions)
 
 /*!
@@ -120,4 +138,44 @@ extern NSString *SKNPDFAnnotationDashPatternKey;
 */
 - (void)setString:(NSString *)newString;
 
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationCircle (SKNExtensions)
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationSquare (SKNExtensions)
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationLine (SKNExtensions)
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationFreeText (SKNExtensions)
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationMarkup (SKNExtensions)
+@end
+
+@interface PDFAnnotationMarkup (SKNOptional)
+/*!
+    @method     defaultColorForMarkupType:
+    @abstract   This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.
+    @param      markupType (description)
+    @discussion This method is not implemented by default.
+*/
++ (NSColor *)defaultColorForMarkupType:(int)markupType;
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationText (SKNExtensions)
 @end
