@@ -38,7 +38,7 @@
 
 /*!
     @header      NSFileManager_SKNExtensions.h
-    @discussion  This file defines an NSFileManager category to read/write Skim notes.
+    @discussion  This file defines an <code>NSFileManager</code> category to read/write Skim notes.
 */
 #import <Cocoa/Cocoa.h>
 
@@ -55,18 +55,18 @@
     @abstract   Reads Skim notes as an array of property dictionaries from the extended attributes of a file.
     @discussion Reads the data from the extended attributes of the file and convert.
     @param      aURL The URL for the file to read the Skim notes from.
-    @param      outError If there is an error reading the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or NULL if there was an error reading the Skim notes.
+    @param      outError If there is an error reading the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or <code>NULL</code> if there was an error reading the Skim notes.
 */
 - (NSArray *)readSkimNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
     @method     readSkimTextNotesFromExtendedAttributesAtURL:error:
     @abstract   Reads text Skim notes as a string from the extended attributes of a file.
-    @discussion Reads the data from the extended attributes of the file and unarchives it using NSKeyedUnarchiver.
+    @discussion Reads the data from the extended attributes of the file and unarchives it using <code>NSKeyedUnarchiver</code>.
     @param      aURL The URL for the file to read the text Skim notes from.
-    @param      outError If there is an error reading the text Skim notes, upon return contains an NSError object that describes the problem.
-    @result     A string representation of the Skim notes, an empty string if no text Skim notes were found, or NULL if there was an error reading the text Skim notes.
+    @param      outError If there is an error reading the text Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     A string representation of the Skim notes, an empty string if no text Skim notes were found, or <code>NULL</code> if there was an error reading the text Skim notes.
 */
 - (NSString *)readSkimTextNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -75,8 +75,8 @@
     @abstract   Reads rich text Skim notes as RTF data from the extended attributes of a file.
     @discussion Reads the data from the extended attributes of the file.
     @param      aURL The URL for the file to read the RTF Skim notes from.
-    @param      outError If there is an error reading the RTF Skim notes, upon return contains an NSError object that describes the problem.
-    @result     NSData for an RTF representation of the Skim notes, an empty NSData object if no RTF Skim notes were found, or NULL if there was an error reading the RTF Skim notes.
+    @param      outError If there is an error reading the RTF Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     <code>NSData</code> for an RTF representation of the Skim notes, an empty <code>NSData</code> object if no RTF Skim notes were found, or <code>NULL</code> if there was an error reading the RTF Skim notes.
 */
 - (NSData *)readSkimRTFNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -86,7 +86,7 @@
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .skim extension.
     @param      aURL The URL for the PDF bundle to read the Skim notes from.
     @param      outError If there is an error reading the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or NULL if there was an error reading the Skim notes.
+    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or <code>NULL</code> if there was an error reading the Skim notes.
 */
 - (NSArray *)readSkimNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -95,8 +95,8 @@
     @abstract   Reads text Skim notes as a string from the contents of a PDF bundle.
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .txt extension.
     @param      aURL The URL for the PDF bundle to read the text Skim notes from.
-    @param      outError If there is an error reading the text Skim notes, upon return contains an NSError object that describes the problem.
-    @result     A string representation of the Skim notes, an empty string if no text Skim notes were found, or NULL if there was an error reading the text Skim notes.
+    @param      outError If there is an error reading the text Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     A string representation of the Skim notes, an empty string if no text Skim notes were found, or <code>NULL</code> if there was an error reading the text Skim notes.
 */
 - (NSString *)readSkimTextNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -105,8 +105,8 @@
     @abstract   Reads rich text Skim notes as RTF data from the contents of a PDF bundle.
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .rtf extension.
     @param      aURL The URL for the PDF bundle to read the RTF Skim notes from.
-    @param      outError If there is an error reading the RTF Skim notes, upon return contains an NSError object that describes the problem.
-    @result     NSData for an RTF representation of the Skim notes, an empty NSData object if no RTF Skim notes were found, or NULL if there was an error reading the RTF Skim notes.
+    @param      outError If there is an error reading the RTF Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     <code>NSData</code> for an RTF representation of the Skim notes, an empty <code>NSData</code> object if no RTF Skim notes were found, or <code>NULL</code> if there was an error reading the RTF Skim notes.
 */
 - (NSData *)readSkimRTFNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -115,43 +115,43 @@
     @abstract   Reads Skim notes as an array of property dictionaries from the contents of a .skim file.
     @discussion Reads data from the file and unarchives it using NSKeyedUnarchiver.
     @param      aURL The URL for the .skim file to read the Skim notes from.
-    @param      outError If there is an error reading the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or NULL if there was an error reading the Skim notes.
+    @param      outError If there is an error reading the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     An array of dictionaries with Skim note properties, an empty array if no Skim notes were found, or <code>NULL</code> if there was an error reading the Skim notes.
 */
 - (NSArray *)readSkimNotesFromSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
     @method     writeSkimNotes:toExtendedAttributesAtURL:error:
-    @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for  text Skim notes and RTF Skim notes.
-    @discussion Calls writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error: with nil notesString and notesRTFData.
+    @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
+    @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
     @param      aURL The URL for the file to write the Skim notes to.
-    @param      outError If there is an error writing the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     Returns YES if writing out the Skim notes was successful; otherwise returns NO.
+    @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
 */
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
     @method     writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error:
-    @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to NSData using NSKeyedArchiver.
-    @discussion This writes three types of Skim notes to the extended attributes to the file located through aURL.
-    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
-    @param      notesString A text representation of the Skim notes.  When NULL, a default representation will be generated from notes.
-    @param      notesRTFData An RTF data representation of the Skim notes.  When NULL, a default representation will be generated from notes.
+    @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
+    @discussion This writes three types of Skim notes to the extended attributes to the file located through <code>aURL</code>.
+    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+    @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
+    @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
     @param      aURL The URL for the file to write the Skim notes to.
-    @param      outError If there is an error writing the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     Returns YES if writing out the Skim notes was successful; otherwise returns NO.
+    @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
 */
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
     @method     writeSkimNotes:toSkimFileAtURL:error:
     @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.
-    @discussion Archives notes using NSKeyedArchiver and writes the data to the file located by aURL.
-    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
+    @discussion Archives notes using NSKeyedArchiver and writes the data to the file located by <code>aURL</code>.
+    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      aURL The URL for the .skim file to write the Skim notes to.
-    @param      outError If there is an error writing the Skim notes, upon return contains an NSError object that describes the problem.
-    @result     Returns YES if writing out the Skim notes was successful; otherwise returns NO.
+    @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
 */
 - (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
 
@@ -161,8 +161,8 @@
     @discussion If more than one bundled files with the given extension exist in the PDF bundle, this will follow the naming rules followed by Skim to find the best match.
     @param      extension The file extension for which to find a bundled file.
     @param      path The path to the PDF bundle.
-    @param      outError If there is an error getting the bundled file, upon return contains an NSError object that describes the problem.
-    @result     A full path to the bundled file inside the PDF bundle, or NULL if no bundled file was found.
+    @param      outError If there is an error getting the bundled file, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     A full path to the bundled file inside the PDF bundle, or <code>NULL</code> if no bundled file was found.
 */
 - (NSString *)bundledFileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path error:(NSError **)outError;
 

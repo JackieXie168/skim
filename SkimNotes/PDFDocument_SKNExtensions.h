@@ -38,7 +38,7 @@
 
 /*!
     @header      PDFDocument_SKNExtensions.h
-    @discussion  This file defines an PDFDocument category to add Skim note annotations to a PDFDocument.
+    @discussion  This file defines an <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
 */
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
@@ -46,27 +46,27 @@
 
 /*!
     @category    PDFDocument (SKNExtensions)
-    @abstract    Provides methods to add Skim notes to a PDFDocument.
-    @discussion  This category can be used to add Skim notes from their properties to a PDFDocument or easily load a PDFDocument including attached Skim notes.
+    @abstract    Provides methods to add Skim notes to a <code>PDFDocument</code>.
+    @discussion  This category can be used to add Skim notes from their properties to a <code>PDFDocument</code> or easily load a <code>PDFDocument</code> including attached Skim notes.
 */
 @interface PDFDocument (SKNExtensions)
 
 /*!
     @method     initWithURL:readSkimNotes:
-    @abstract   Initializes a new PDFDocument from a file or PDF bundle, adding Skim notes from the extended attributes of the file or the contents of the PDF bundle.  The added Skim notes are returned by reference as an array of PDFAnnotations.
-    @discussion Initializes a new PDFDocument using initWithURL:, reads Skim notes from theextended attributes or the bundle, and adds new PDFAnnotation objects to the document initialized by the found Skim note properties.
+    @abstract   Initializes a new <code>PDFDocument</code> from a file or PDF bundle, adding Skim notes from the extended attributes of the file or the contents of the PDF bundle.  The added Skim notes are returned by reference as an array of <code>PDFAnnotation</code>s.
+    @discussion Initializes a new <code>PDFDocument</code> using <code>initWithURL:</code>, reads Skim notes from theextended attributes or the bundle, and adds new <code>PDFAnnotation</code> objects to the document initialized by the found Skim note properties.
     @param      url The URL of the PDF file or PDF bundle.
-    @param      notes An array of PDFAnnotation objects initialized using the Skim note properties read from the extended attributes or bundled Skim file.
-    @result     The initialized PDFDocument.
+    @param      notes An array of <code>PDFAnnotation</code> objects initialized using the Skim note properties read from the extended attributes or bundled Skim file.
+    @result     The initialized <code>PDFDocument</code>.
 */
 - (id)initWithURL:(NSURL *)url readSkimNotes:(NSArray **)notes;
 
 /*!
     @method     addSkimNotesWithProperties:
-    @abstract   Adds new Skim notes from an array of property dictionaries to the receiver, and returns the added Skim notes as an array of PDFAnnotations.
-    @discussion This method initializes new PDFAnnotation objects from the passed in properties and adds them to the appropriate pages of the PDFDocument.
-    @param      noteDicts An array of dictionaries containing Skim note properties as returned by the properties of PDFAnnotation objects.
-    @result     An array of PDFAnnotation objects initialized using the Skim note properties read from the extended attributes or bundled Skim file.
+    @abstract   Adds new Skim notes from an array of property dictionaries to the receiver, and returns the added Skim notes as an array of <code>PDFAnnotations</code>.
+    @discussion This method initializes new <code>PDFAnnotation</code> objects from the passed in properties and adds them to the appropriate pages of the <code>PDFDocument</code>.
+    @param      noteDicts An array of dictionaries containing Skim note properties as returned by the properties of <code>PDFAnnotation</code> objects.
+    @result     An array of <code>PDFAnnotation</code> objects initialized using the Skim note properties read from the extended attributes or bundled Skim file.
 */
 - (NSArray *)addSkimNotesWithProperties:(NSArray *)noteDicts;
 
