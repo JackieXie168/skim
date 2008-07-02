@@ -36,6 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*!
+    @header      PDFAnnotation_SKNExtensions.h
+    @discussion  This file defines an PDFAnnotation categories to manage Skim notes.
+*/
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
@@ -80,61 +84,68 @@ extern NSString *SKNPDFAnnotationQuadrilateralPointsKey;
 extern NSString *SKNPDFAnnotationIconTypeKey;
 
 
+/*!
+    @category    PDFAnnotation (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Methods from this category are used by the PDFDocument (SKNExtensions) category to add new annotations from Skim notes.
+*/
 @interface PDFAnnotation (SKNExtensions)
 
 /*!
     @method     initSkimNoteWithBounds:
-    @abstract   Initializes a new Skim note annotation .
-    @discussion This is the designated intiializer for a SKim note.
-    @param      bounds (description)
-    @result     (description)
+    @abstract   Initializes a new Skim note annotation.  This is the designated initializer for a Skim note.
+    @discussion This method can be implemented in subclasses to provide default properties for Skim notes.
+    @param      bounds The bounding box of the annotation, in page space.
+    @result     An initialized Skim note annotation instance, or NULL if the object could not be initialized.
 */
 - (id)initSkimNoteWithBounds:(NSRect)bounds;
 
 /*!
     @method     initSkimNoteWithProperties:
     @abstract   Initializes a new Skim note annotation with the given properties.
-    @discussion (comprehensive description)
-    @param      bounds (description)
-    @result     (description)
+    @discussion This method determines the proper subclass from the value for the "type" key in dict, initializes an instance using initSkimNoteWithBounds:, and sets the known properties from dict. Implementations in subclasses should call it on super and set their properties from dict if available.
+    @param      dict A dictionary with Skim notes properties, as returned from properties.  This is required to contain values for "type" and "bounds".
+    @result     An initialized Skim note annotation instance, or NULL if the object could not be initialized.
 */
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict;
 
 /*!
     @method     properties
-    @abstract   The Skim notes properties.  These properties can be used to initialize a new copy, and to save to extended attributes or file.
-    @discussion (comprehensive description)
-    @result     (description)
+    @abstract   The Skim notes properties.
+    @discussion These properties can be used to initialize a new copy, and to save to extended attributes or file.
+    @result     A dictionary with properties of the Skim note.  All values are standard Cocoa objects conforming to NSCoding and NSCopying.
 */
 - (NSDictionary *)properties;
 
 /*!
     @method     isSkimNote
-    @abstract   Returns whether the annotation is a Skim note.  An annotation initalized with initializers starting with initSkimNote will return YES by default.
-    @discussion (comprehensive description)
-    @result     (description)
+    @abstract   Returns whether the annotation is a Skim note.  
+    @discussion An annotation initalized with initializers starting with initSkimNote will return YES by default.
+    @result     YES if the annotation is a Skim note; otherwise NO.
 */
 - (BOOL)isSkimNote;
 
 /*!
     @method     setSkimNote:
-    @abstract   Sets whether the receiver is to be interpreted as a Skim note.  You normally would not use this yourself.
-    @discussion (comprehensive description)
+    @abstract   Sets whether the receiver is to be interpreted as a Skim note.
+    @discussion You normally would not use this yourself, but rely on the initializer to set the isSkimNote flag.
+    @param      flag Set this value to YES if you want the annotation to be interpreted as a Skim note.
 */
 - (void)setSkimNote:(BOOL)flag;
 
 /*!
     @method     string
-    @abstract   The string value of the annotation.  By default, this is just the same as the contents.  However for SKNPDFAnnotationNote the contents will contain both string and text.
-    @discussion (comprehensive description)
-    @result     (description)
+    @abstract   The string value of the annotation.
+    @discussion By default, this is just the same as the contents.  However for SKNPDFAnnotationNote the contents will contain both string and text.
+    @result     A string representing the string value associated with the annotation.
 */
 - (NSString *)string;
 
 /*!
     @method     setString:
     @abstract   Sets the string of the annotation.  By default just sets the contents.
-    @discussion (comprehensive description)
+    @discussion By default just calls setContent:.
+    @param      newString The new string value for the annotation.
 */
 - (void)setString:(NSString *)newString;
 
@@ -142,40 +153,76 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationCircle (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a circle annotation.
+*/
 @interface PDFAnnotationCircle (SKNExtensions)
 @end
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationSquare (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a square annotation.
+*/
 @interface PDFAnnotationSquare (SKNExtensions)
 @end
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationLine (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a line annotation.
+*/
 @interface PDFAnnotationLine (SKNExtensions)
 @end
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationFreeText (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a free text annotation.
+*/
 @interface PDFAnnotationFreeText (SKNExtensions)
 @end
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationMarkup (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a markup annotation.
+*/
 @interface PDFAnnotationMarkup (SKNExtensions)
 @end
 
+/*!
+    @category    PDFAnnotationMarkup (SKNOptional)
+    @abstract    An informal protocol providing a method name for an optional method that may be implemented in a category.
+    @discussion  This defines an optional method that another PDFAnnotationMarkup category may implement to provide a default color.
+*/
 @interface PDFAnnotationMarkup (SKNOptional)
 /*!
     @method     defaultColorForMarkupType:
-    @abstract   This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.
-    @param      markupType (description)
-    @discussion This method is not implemented by default.
+    @abstract   Optional method to implement to return the default color to use for markup initialized with properties that do not contain a color.
+    @param      markupType The markup style for which to return the default color.
+    @discussion This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.  This method is not implemented by default.
+    @result     The default color for an annotation with the passed in markup style.
 */
 + (NSColor *)defaultColorForMarkupType:(int)markupType;
 @end
 
 #pragma mark -
 
+/*!
+    @category    PDFAnnotationText (SKNExtensions)
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and PDFAnnotation objects.
+    @discussion  Implements initSkimNotesWithProperties: and properties to take care of the extra properties of a text annotation.
+*/
 @interface PDFAnnotationText (SKNExtensions)
 @end

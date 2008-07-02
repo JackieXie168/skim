@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		CE665A840E1C086D00D0704D /* HeaderDocs */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CE665A880E1C089700D0704D /* Build configuration list for PBXAggregateTarget "HeaderDocs" */;
+			buildPhases = (
+				CE665A830E1C086D00D0704D /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = HeaderDocs;
+			productName = HeaderDocs;
+		};
 		CEBA2EA20E0673B60000B2E6 /* Archive */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = CEBA2EA70E0673F30000B2E6 /* Build configuration list for PBXAggregateTarget "Archive" */;
@@ -178,7 +189,10 @@
 				CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */,
 				CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */,
 				CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */,
-				CEBA2DD90E05A6FA0000B2E6 /* Annotations */,
+				CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */,
+				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
+				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
+				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
 			);
 			name = "Framework Classes";
 			sourceTree = "<group>";
@@ -229,17 +243,6 @@
 				CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */,
 			);
 			name = "Shared Classes";
-			sourceTree = "<group>";
-		};
-		CEBA2DD90E05A6FA0000B2E6 /* Annotations */ = {
-			isa = PBXGroup;
-			children = (
-				CEBA2B6F0E0568430000B2E6 /* PDFAnnotation_SKNExtensions.h */,
-				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
-				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
-				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
-			);
-			name = Annotations;
 			sourceTree = "<group>";
 		};
 		CEBA30790E06DC4C0000B2E6 /* Configurations */ = {
@@ -332,6 +335,7 @@
 			targets = (
 				8DC2EF4F0486A6940098B216 /* SkimNotes */,
 				CEBA2B540E0566B00000B2E6 /* skimnotes */,
+				CE665A840E1C086D00D0704D /* HeaderDocs */,
 				CEBA2EA20E0673B60000B2E6 /* Archive */,
 			);
 		};
@@ -349,6 +353,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		CE665A830E1C086D00D0704D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/gatherheaderdoc $TARGET_BUILD_DIR/SkimNotes\\ Documentation\n/usr/bin/headerdoc2html -o $TARGET_BUILD_DIR/SkimNotes\\ Documentation $SRCROOT/*.h\nexit 0";
+		};
 		CEBA2EA10E0673B60000B2E6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -492,6 +509,27 @@
 			};
 			name = Release;
 		};
+		CE665A860E1C086F00D0704D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = HeaderDocs;
+			};
+			name = Debug;
+		};
+		CE665A870E1C086F00D0704D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = HeaderDocs;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		CEBA2B570E0566B30000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -569,6 +607,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE665A880E1C089700D0704D /* Build configuration list for PBXAggregateTarget "HeaderDocs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE665A860E1C086F00D0704D /* Debug */,
+				CE665A870E1C086F00D0704D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
