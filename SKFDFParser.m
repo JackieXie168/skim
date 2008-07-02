@@ -43,13 +43,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationSquare_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationLine_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationMarkup_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 
 SKFDFString SKFDFFDFKey = "FDF";

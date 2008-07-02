@@ -44,7 +44,6 @@
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"

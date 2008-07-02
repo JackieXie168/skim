@@ -41,11 +41,6 @@
 #import "SKPDFHoverWindow.h"
 #import "SKMainWindowController.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationFreeText_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationSquare_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationMarkUp_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationLine_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
