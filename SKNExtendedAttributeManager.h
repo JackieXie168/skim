@@ -28,6 +28,10 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*!
+    @header      SKNExtendedAttributeManager.h
+    @discussion  This file defines a singleton class to read and write extended attributes in the format expected for Skim notes.
+*/
 #import <Cocoa/Cocoa.h>
 
 typedef UInt32 SKNXattrFlags;
