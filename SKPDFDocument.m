@@ -919,10 +919,10 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (void)saveArchiveToFile:(NSString *)fileName {
-    [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
-                        arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[[self fileURL] path] lastPathComponent], nil]
-             currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
+- (BOOL)saveArchiveToFile:(NSString *)fileName {
+    return [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
+                               arguments:[NSArray arrayWithObjects:@"-czf", fileName, [[[self fileURL] path] lastPathComponent], nil]
+                    currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
 }
 
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
@@ -948,7 +948,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
 }
 
-- (void)emailAttachmentFile:(NSString *)fileName {
+- (BOOL)emailAttachmentFile:(NSString *)fileName {
     NSMutableString *scriptString = nil;
     
     NSString *mailAppName = nil;
@@ -986,11 +986,17 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     if (scriptString) {
         NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
         NSDictionary *errorDict = nil;
-        if ([script compileAndReturnError:&errorDict] == NO)
+        if ([script compileAndReturnError:&errorDict] == NO) {
             NSLog(@"Error compiling mail to script: %@", errorDict);
-        else if ([script executeAndReturnError:&errorDict] == NO)
+            return NO;
+        }
+        if ([script executeAndReturnError:&errorDict] == NO) {
             NSLog(@"Error running mail to script: %@", errorDict);
+            return NO;
+        }
+        return YES;
     }
+    return NO;
 }
 
 - (IBAction)emailArchive:(id)sender {
@@ -998,8 +1004,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
         NSString *tmpDir = SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
         NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"tgz"]];
-        [self saveArchiveToFile:tmpFile];
-        [self emailAttachmentFile:tmpFile];
+        if ([self saveArchiveToFile:tmpFile] == NO || [self emailAttachmentFile:tmpFile] == NO)
+            NSBeep();
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
@@ -1024,7 +1030,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
     }
     
-    [NSTask runTaskWithLaunchPath:scriptPath arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]];
+    if ([NSTask runTaskWithLaunchPath:scriptPath arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]] == NO)
+        NSBeep();
     
     [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];
     
