@@ -42,6 +42,7 @@
 #import "SKPDFDocument.h"
 #import "SKMainWindowController.h"
 #import "Files_SKExtensions.h"
+#import "SKBookmarkOutlineView.h"
 #import "SKOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
@@ -50,7 +51,6 @@
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKUtilities.h"
-#import "NSUserDefaultsController_SKExtensions.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 
@@ -71,7 +71,6 @@ static NSString *SKRecentDocumentAliasKey = @"alias";
 static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
 static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 
-static void *SKBookmarkDefaultsObservationContext = (void *)@"SKBookmarkDefaultsObservationContext";
 
 @implementation SKBookmarkController
 
@@ -704,52 +703,6 @@ static unsigned int maxRecentDocumentsCount = 0;
         return YES;
     }
     return YES;
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKBookmarkOutlineView
-
-#define SEPARATOR_LEFT_INDENT 20.0
-#define SEPARATOR_RIGHT_INDENT 2.0
-
-- (void)dealloc {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey];
-    [super dealloc];
-}
-
-- (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:drawSeparatorRowForItem:)] &&
-        [[self delegate] outlineView:self drawSeparatorRowForItem:[self itemAtRow:rowIndex]]) {
-        float indent = [self levelForItem:[self itemAtRow:rowIndex]] * [self indentationPerLevel];
-        NSRect rect = [self rectOfRow:rowIndex];
-        [[NSColor gridColor] setStroke];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, floorf(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, floorf(NSMidY(rect)) + 0.5)];
-    } else {
-        [super drawRow:rowIndex clipRect:clipRect];
-    }
-}
-
-- (void)awakeFromNib {
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    if (fontSize)
-        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKBookmarkDefaultsObservationContext];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKBookmarkDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKTableFontSizeKey]) {
-            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-            [self setFont:font];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 @end

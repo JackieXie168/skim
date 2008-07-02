@@ -1,10 +1,10 @@
 //
-//  SKBookmarkController.h
+//  SKBookmarkOutlineView.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 3/16/07.
+//  Created by Christiaan Hofman on 7/2/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,43 +37,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKOutlineView.h"
 
-@class SKBookmark, SKBookmarkOutlineView, SKStatusBar;
 
-@interface SKBookmarkController : NSWindowController {
-    IBOutlet SKBookmarkOutlineView *outlineView;
-    IBOutlet SKStatusBar *statusBar;
-    SKBookmark *bookmarkRoot;
-    NSMutableArray *recentDocuments;
-    NSUndoManager *undoManager;
-    NSArray *draggedBookmarks;
-    NSMutableDictionary *toolbarItems;
-}
+@interface SKBookmarkOutlineView : SKOutlineView
+@end
 
-+ (id)sharedBookmarkController;
 
-- (SKBookmark *)bookmarkRoot;
-
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
-- (void)handleBookmarkChangedNotification:(NSNotification *)notification;
-- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification;
-- (NSString *)bookmarksFilePath;
-- (void)openBookmarks:(NSArray *)items;
-
-- (IBAction)doubleClickBookmark:(id)sender;
-- (IBAction)insertBookmarkFolder:(id)sender;
-- (IBAction)insertBookmarkSeparator:(id)sender;
-- (IBAction)deleteBookmark:(id)sender;
-- (IBAction)toggleStatusBar:(id)sender;
-
-- (NSArray *)recentDocuments;
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
-- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
-- (NSArray *)snapshotsAtPath:(NSString *)path;
-
-- (NSUndoManager *)undoManager;
-
-- (void)setupToolbar;
-
+@interface NSObject (SKBookmarkOutlineViewDelegate)
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView drawSeparatorRowForItem:(id)item;
 @end

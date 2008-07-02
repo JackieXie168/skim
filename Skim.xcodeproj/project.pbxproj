@@ -129,6 +129,7 @@
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
 		CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */; };
 		CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */ = {isa = PBXBuildFile; fileRef = CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */; };
+		CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */; };
 		CE6A5BB20D663771003B7CC3 /* ToolbarPrint.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */; };
@@ -628,6 +629,8 @@
 		CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFontsBlack.tiff; path = Images/ToolbarFontsBlack.tiff; sourceTree = "<group>"; };
 		CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFCallBacks.h; sourceTree = "<group>"; };
 		CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCFCallBacks.m; sourceTree = "<group>"; };
+		CE665A120E1BF43700D0704D /* SKBookmarkOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkOutlineView.h; sourceTree = "<group>"; };
+		CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkOutlineView.m; sourceTree = "<group>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE68C62F0CEF891B00B082F1 /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/InfoWindow.nib; sourceTree = "<group>"; };
@@ -1253,6 +1256,8 @@
 			children = (
 				CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */,
 				CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */,
+				CE665A120E1BF43700D0704D /* SKBookmarkOutlineView.h */,
+				CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */,
 				CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */,
 				CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */,
 				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
@@ -2073,6 +2078,7 @@
 				CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */,
 				CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */,
 				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,
+				CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
