@@ -38,8 +38,6 @@
 
 #import "PDFAnnotationSquare_SKExtensions.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationCircle_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotationSquare_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationCircle_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
