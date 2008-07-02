@@ -38,7 +38,7 @@
 
 /*!
     @header      SKNPDFAnnotationNote.h
-    @discussion  This file defines a concrete PDFAnnotation class representing a SKim anchored note.
+    @discussion  This file defines a concrete <code>PDFAnnotation</code> class representing a SKim anchored note.
 */
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
@@ -50,8 +50,8 @@ extern NSSize SKNPDFAnnotationNoteSize;
 
 /*!
     class        SKNPDFAnnotationNote
-    @abstract    A concrete PDFAnnotation subclass, a subclass of PDFAnnotationText, representing a Skim anchored note.
-    @discussion  This is a PDFAnnotationText subclass containing a separate short string value, a longer rich text property, and an image property.
+    @abstract    A concrete <code>PDFAnnotation</code> subclass, a subclass of <code>PDFAnnotationText</code>, representing a Skim anchored note.
+    @discussion  This is a <code>PDFAnnotationText</code> subclass containing a separate short string value, a longer rich text property, and an image property.
 */
 @interface SKNPDFAnnotationNote : PDFAnnotationText {
     NSString *string;
@@ -72,7 +72,7 @@ extern NSSize SKNPDFAnnotationNoteSize;
 /*!
     @method     setString:
     @abstract   This is overridden and different from the contents.
-    @discussion This should set the short string value of the annotation.  This updates the contents using updateContents.
+    @discussion This should set the short string value of the annotation.  This updates the contents using <code>updateContents</code>.
     @param      newString The new string value for the annotation.
 */
 - (void)setString:(NSString *)newString;
@@ -87,7 +87,7 @@ extern NSSize SKNPDFAnnotationNoteSize;
 /*!
     @method     setText:
     @abstract   Sets the rich text of the annotation.
-    @discussion This should set the longer rich text contents of the annotation.  This updates the contents using updateContents.
+    @discussion This should set the longer rich text contents of the annotation.  This updates the contents using <code>updateContents</code>.
     @param      newText The new rich text value for the annotation.
 */
 - (void)setText:(NSAttributedString *)newText;

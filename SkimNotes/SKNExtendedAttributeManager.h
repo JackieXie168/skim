@@ -34,19 +34,30 @@
 */
 #import <Cocoa/Cocoa.h>
 
-typedef UInt32 SKNXattrFlags;
+/*!
+    @enum        SKNXattrFlags 
+    @abstract    Options for writing extended attributes.
+    @discussion  These options can be passed to methods writing extended attributes to modify the way these methods behave.
+    @constant    kSKNXattrDefault      Create or replace, follow symlinks, split data.
+    @constant    kSKNXattrNoFollow     Don't follow symlinks.
+    @constant    kSKNXattrCreateOnly   Setting will fail if the attribute already exists.
+    @constant    kSKNXattrReplaceOnly  Setting will fail if the attribute does not exist.
+    @constant    kSKNXattrNoSplitData  Don't split data objects into segments.
+*/
 enum {
-    kSKNXattrDefault     = 0,       /* create or replace, follow symlinks, split data    */
-    kSKNXattrNoFollow    = 1L << 1, /* don't follow symlinks                             */
-    kSKNXattrCreateOnly  = 1L << 2, /* setting will fail if the attribute already exists */
-    kSKNXattrReplaceOnly = 1L << 3, /* setting will fail if the attribute does not exist */
-    kSKNXattrNoSplitData = 1L << 4  /* don't split data objects into segments            */
+    kSKNXattrDefault     = 0,
+    kSKNXattrNoFollow    = 1L << 1,
+    kSKNXattrCreateOnly  = 1L << 2,
+    kSKNXattrReplaceOnly = 1L << 3,
+    kSKNXattrNoSplitData = 1L << 4
 };
+typedef UInt32 SKNXattrFlags;
+
 
 /*!
     @class       SKNExtendedAttributeManager
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
-    @discussion  (comprehensive description)
+    @discussion  This class is the core object to read and write extended attributes, which are used to store Skim notes with PDF files.
 */
 @interface SKNExtendedAttributeManager : NSObject {
     NSString *namePrefix;
@@ -58,16 +69,17 @@ enum {
 /*!
     @method     sharedManager
     @abstract   Returns the shared instance.  You probably always should use this instance, and is required for Skim notes.
-    @discussion (comprehensive description)
-    @result     (description)
+    @discussion This shared manager uses the default prefix and is used for reading and writing Skim notes to PDF files.  It may split attributes into fragments if the data is too long.
+    @result     The default shared EA manager used for Skim notes.
 */
 + (id)sharedManager;
 
 /*!
     @method     sharedNoSplitManager
     @abstract   Returns a shared instance with nil prefix.  This instance never splits attributes, and can also not reassemble splitted attributes.
-    @discussion (comprehensive description)
-    @result     (description)
+    @discussion This manager never splits attributes into fragments.  Settting attributes is always as if <code>kSKNXattrNoSplitData</code> is passed. Also when reading it will not be able to reassemble split attributes.
+                However attributes that were set using this manager will be readable also by managers with different prefixes, such as the <code>sharedManager</code>.
+    @result     A shared EA manager that never splits extended attributes.
 */
 + (id)sharedNoSplitManager;
 
@@ -77,43 +89,44 @@ enum {
     @discussion The prefix is used in splitting large attributes.  EA managers with different prefixes are mutually incompatible,
                 i.e. attributes written with one manager cannot be safely read by a manager with a different prefix.
                 It is safest to just use the shared instance.  The prefix should only contain characters that are valid in attribute names.
-    @param      prefix Defaults to "net_sourceforge_skim-app" for the shared instance.  If nil, the manager never splits attributes.
-    @result     (description)
+                This is the designated initializer, and should be used for any subclass.
+    @param      prefix Defaults to <code>"net_sourceforge_skim-app"</code> for the shared instance.  If <code>nil</code>, the manager never splits attributes.
+    @result     An initialized EA manager object.  This may be one of the shared managers.
 */
 - (id)initWithPrefix:(NSString *)prefix;
 
 /*!
     @method     extendedAttributeNamesAtPath:traverseLink:
     @abstract   Return a list of extended attributes for the given file.
-    @discussion Calls <tt>listxattr(2)</tt> to determine all of the extended attributes, and returns them as
-                an array of NSString objects.  Returns nil if an error occurs.    
+    @discussion Calls <code>listxattr(2)</code> to determine all of the extended attributes, and returns them as
+                an array of <code>NSString</code> objects.  Returns <code>nil</code> if an error occurs.    
     @param      path Path to the object in the file system.
-    @param      follow Follow symlinks (<tt>listxattr(2)</tt> does this by default, so typically you should pass YES).
-    @param      error Error object describing the error if nil was returned.
-    @result     Array of strings or nil.
+    @param      follow Follow symlinks (<code>listxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>nil</code> was returned.
+    @result     Array of strings or <code>nil</code> if an error occurred.
 */
 - (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @method     extendedAttributeNamed:atPath:traverseLink:error:
-    @abstract   Return the extended attribute named <tt>attr</tt> for a given file.
-    @discussion Calls <tt>getxattr(2)</tt> to determine the extended attribute, and returns it as data.
+    @abstract   Return the extended attribute named <code>attr</code> for a given file.
+    @discussion Calls <code>getxattr(2)</code> to determine the extended attribute, and returns it as data.
     @param      attr The attribute name.
     @param      path Path to the object in the file system.
-    @param      follow Follow symlinks (<tt>getxattr(2)</tt> does this by default, so typically you should pass YES).
-    @param      error Error object describing the error if nil was returned.
-    @result     Data object representing the extended attribute or nil if an error occurred.
+    @param      follow Follow symlinks (<code>getxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>nil</code> was returned.
+    @result     Data object representing the extended attribute or <code>nil</code> if an error occurred.
 */
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @method     allExtendedAttributesAtPath:traverseLink:error:
-    @abstract   Returns all extended attributes for the given file, each as an NSData object.
-    @discussion (comprehensive description)
-    @param      path (description)
-    @param      follow (description)
-    @param      error (description)
-    @result     (description)
+    @abstract   Returns all extended attributes for the given file, each as an <code>NSData</code> object.
+    @discussion Calls <code>extendedAttributeNamesAtPath:traverseLink:error:</code> to find all attribute names and then calls <code>extendedAttributeNamed:atPath:traverseLink:error:</code> repreatedly for all attribute names.
+    @param      path Path to the object in the file system.
+    @param      follow Follow symlinks (<code>getxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>nil</code> was returned.
+    @result     Array of data objects or <code>nil</code> if an error occurred.
 */
 - (NSArray *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
@@ -121,60 +134,62 @@ enum {
     @method     propertyListFromExtendedAttributeNamed:atPath:traverseLink:error:
     @abstract   Returns a property list using NSPropertyListSerialization.
     @discussion (comprehensive description)
-    @param      attr (description)
-    @param      path (description)
-    @param      traverse (description)
-    @param      error (description)
-    @result     (description)
+    @param      attr The attribute name.
+    @param      path Path to the object in the file system.
+    @param      follow Follow symlinks (<code>getxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>nil</code> was returned.
+    @result     A property list object <code>nil</code> if an error occurred.
 */
-- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)traverse error:(NSError **)error;
+- (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @method     setExtendedAttributeNamed:toValue:atPath:options:error:
-    @abstract   Sets the value of attribute named <tt>attr</tt> to <tt>value</tt>, which is an NSData object.
-    @discussion Calls <tt>setxattr(2)</tt> to set the attributes for the file.
+    @abstract   Sets the value of attribute named <code>attr</code> to <code>value</code>, which is an <code>NSData</code> object.
+    @discussion Calls <code>setxattr(2)</code> to set the attributes for the file.
+                If the options do not contain the <code>kSKNXattrNoSplitData</code> flag and the prefix is not <code>nil</code>, the data may be split into subfragments and a dictionary pointing to the fragments is saved in the attribute names <code>attr</code>.
     @param      attr The attribute name.
-    @param      value The value of the attribute as NSData.
+    @param      value The value of the attribute as <code>NSData</code>.
     @param      path Path to the object in the file system.
-    @param      options see SKNXattrFlags
-    @param      error Error object describing the error if NO was returned.
-    @result     Returns NO if an error occurred.
+    @param      options See </code>SKNXattrFlags<code> for valid options and their behavior.
+    @param      error Error object describing the error if <code>NO</code> was returned.
+    @result     Returns <code>NO</code> if an error occurred.
 */
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(SKNXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     setExtendedAttributeNamed:toPropertyListValue:atPath:options:error:
-    @abstract   Sets the extended attribute named <tt>attr</tt> to the specified property list.  The plist is converted to NSData using NSPropertyListSerialization.
-    @discussion (comprehensive description)
-    @param      attr (description)
-    @param      plist (description)
-    @param      path (description)
-    @param      options (description)
-    @param      error (description)
-    @result     (description)
+    @abstract   Sets the extended attribute named <code>attr</code> to the specified property list.
+    @discussion The plist is converted to <code>NSData</code> using <code>NSPropertyListSerialization</code> and set using <code>setExtendedAttributeNamed:toValue:atPath:options:error:</code>.
+                For the non-split manager without prefix, the data may be compressed using <code>bzip2</code> when the archived data is too large.
+    @param      attr The attribute name.
+    @param      plist The value of the attribute as a plist object.
+    @param      path Path to the object in the file system.
+    @param      options See </code>SKNXattrFlags<code> for valid options and their behavior.
+    @param      error Error object describing the error if <code>NO</code> was returned.
+    @result     Returns <code>NO</code> if an error occurred.
 */
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(SKNXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     removeExtendedAttribute:atPath:followLinks:error:
-    @abstract   Removes the given attribute <tt>attr</tt> from the named file at <tt>path</tt>.
-    @discussion Calls <tt>removexattr(2)</tt> to remove the given attribute from the file.
+    @abstract   Removes the given attribute <code>attr</code> from the named file at <code>path</code>.
+    @discussion Calls <code>removexattr(2)</code> to remove the given attribute from the file.
     @param      attr The attribute name.
     @param      path Path to the object in the file system.
-    @param      follow Follow symlinks (<tt>removexattr(2)</tt> does this by default, so typically you should pass YES).
-    @param      error Error object describing the error if nil was returned.
-    @result     Returns NO if an error occurred.
+    @param      follow Follow symlinks (<code>removexattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>nil</code> was returned.
+    @result     Returns <code>NO</code> if an error occurred.
 */
 - (BOOL)removeExtendedAttribute:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @method     removeAllExtendedAttributesAtPath:traverseLink:error:
     @abstract   Removes all extended attributes at the specified path.
-    @discussion (comprehensive description)
-    @param      path (description)
-    @param      follow (description)
-    @param      error (description)
-    @result     (description)
+    @discussion Calls <code>removexattr(2)</code> repeatedly to remove all attributes from the file.
+    @param      path Path to the object in the file system.
+    @param      follow Follow symlinks (<code>removexattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
+    @param      error Error object describing the error if <code>NO</code> was returned.
+    @result     Returns <code>NO</code> if an error occurred.
 */
 - (BOOL)removeAllExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
