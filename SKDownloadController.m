@@ -57,24 +57,35 @@ static NSString *SKDownloadFileNameKey = @"fileName";
 
 @implementation SKDownloadController
 
+static SKDownloadController *sharedDownloadController = nil;
+
 + (id)sharedDownloadController {
-    static SKDownloadController *sharedDownloadController = nil;
-    if (sharedDownloadController == nil)
-        sharedDownloadController = [[self alloc] init];
-    return sharedDownloadController;
+    return sharedDownloadController ? sharedDownloadController : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedDownloadController ? sharedDownloadController : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super init]) {
+    if (sharedDownloadController == nil && (sharedDownloadController = self = [super init])) {
         downloads = [[NSMutableArray alloc] init];
     }
-    return self;
+    return sharedDownloadController;
 }
 
 - (void)dealloc {
     [downloads release];
     [super dealloc];
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSString *)windowNibName { return @"DownloadsWindow"; }
 

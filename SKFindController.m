@@ -45,20 +45,22 @@ static NSString *SKFindPanelFrameAutosaveName = @"SKFindPanel";
 
 @implementation SKFindController
 
-static id sharedFindController = nil;
+static SKFindController *sharedFindController = nil;
 
 + (id)sharedFindController {
-    if (sharedFindController == nil)
-        sharedFindController = [[self alloc] init];
-    return sharedFindController;
+    return sharedFindController ? sharedFindController : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedFindController ? sharedFindController : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super init]) {
+    if (sharedFindController == nil && (sharedFindController = self = [super init])) {
         ignoreCase = YES;
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
     }
-    return self;
+    return sharedFindController;
 }
 
 - (void)dealloc {
@@ -67,24 +69,13 @@ static id sharedFindController = nil;
     [super dealloc];
 }
 
-- (id)retain {
-    if (self == sharedFindController)
-        return self;
-    else
-        return [super retain];
-}
+- (id)retain { return self; }
 
-- (void)release {
-    if (self != sharedFindController)
-        [super release];
-}
+- (id)autorelease { return self; }
 
-- (id)autorelease {
-    if (self == sharedFindController)
-        return self;
-    else
-        return [super autorelease];
-}
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSString *)windowNibName { return @"FindPanel"; }
 

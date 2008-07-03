@@ -46,9 +46,7 @@ static NSString *SKNotesPanelFrameAutosaveName = @"SKNotesPanel";
 static SKNotesPanelController *sharedController = nil;
 
 + (id)sharedController {
-    if (sharedController == nil)
-        [[self alloc] init];
-    return sharedController;
+    return sharedController ? sharedController : [[self alloc] init];
 }
 
 + (BOOL)sharedControllerExists {
@@ -56,10 +54,7 @@ static SKNotesPanelController *sharedController = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    if (sharedController == nil)
-        return [super allocWithZone:[self zone]];
-    else
-        return sharedController;
+    return sharedController ? sharedController : [super allocWithZone:[self zone]];
 }
 
 - (id)init {
