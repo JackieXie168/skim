@@ -60,15 +60,18 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 
 @implementation SKPDFHoverWindow
 
+static SKPDFHoverWindow *sharedHoverWindow = nil;
+
 + (id)sharedHoverWindow {
-    static SKPDFHoverWindow *sharedHoverWindow = nil;
-    if (sharedHoverWindow == nil)
-        sharedHoverWindow = [[self alloc] init];
-    return sharedHoverWindow;
+    return sharedHoverWindow ? sharedHoverWindow : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedHoverWindow ? sharedHoverWindow : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super initWithContentRect:NSZeroRect]) {
+    if (sharedHoverWindow == nil && (sharedHoverWindow = self = [super initWithContentRect:NSZeroRect])) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
 		[self setOpaque:YES];
@@ -92,7 +95,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
     }
-    return self;
+    return sharedHoverWindow;
 }
 
 - (void)dealloc {
@@ -102,6 +105,14 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
     [labelColor release];
     [super dealloc];
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSFont *)font {
     return font;

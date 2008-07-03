@@ -52,23 +52,37 @@
 
 @implementation SKRemoteStateWindow
 
+static id sharedRemoteStateWindow = nil;
+
 + (id)sharedRemoteStateWindow {
-    static id sharedRemoteStateWindow = nil;
-    if (sharedRemoteStateWindow == nil)
-        sharedRemoteStateWindow = [[SKRemoteStateWindow alloc] init];
-    return sharedRemoteStateWindow;
+    return sharedRemoteStateWindow ? sharedRemoteStateWindow : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedRemoteStateWindow ? sharedRemoteStateWindow : [super allocWithZone:zone];
 }
 
 - (id)init {
-    NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(60.0));
-    if (self = [super initWithContentRect:contentRect]) {
-        [self setIgnoresMouseEvents:YES];
-        [self setDisplaysWhenScreenProfileChanges:NO];
-        [self setLevel:NSStatusWindowLevel];
-        [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
+    if (sharedRemoteStateWindow == nil) {
+        NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(60.0));
+        if (self = [super initWithContentRect:contentRect]) {
+            sharedRemoteStateWindow = self;
+            [self setIgnoresMouseEvents:YES];
+            [self setDisplaysWhenScreenProfileChanges:NO];
+            [self setLevel:NSStatusWindowLevel];
+            [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
+        }
     }
-    return self;
+    return sharedRemoteStateWindow;
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (float)defaultAlphaValue { return 0.95; }
 
