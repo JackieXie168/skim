@@ -82,6 +82,4 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
                                withRTF:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ReleaseNotes" ofType:@"rtf"]]];
 }
 
-- (IBAction)download:(id)sender {}
-
 @end

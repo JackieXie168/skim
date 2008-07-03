@@ -41,11 +41,8 @@
 
 @interface SKReleaseNotesController : NSWindowController {
     IBOutlet NSTextView *textView;
-    IBOutlet NSButton *downloadButton;
 }
 
 + (id)sharedReleaseNotesController;
-
-- (IBAction)download:(id)sender;
 
 @end
