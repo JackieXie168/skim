@@ -46,7 +46,6 @@
 
 + (id)sharedReleaseNotesController;
 
-- (void)displayAttributedString:(NSAttributedString *)attrString;
 - (IBAction)download:(id)sender;
 
 @end

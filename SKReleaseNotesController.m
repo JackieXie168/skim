@@ -37,9 +37,6 @@
  */
 
 #import "SKReleaseNotesController.h"
-#include <sys/utsname.h>
-
-#define DOWNLOAD_URL @"http://skim-app.sourceforge.net/"
 
 
 @implementation SKReleaseNotesController
@@ -52,32 +49,39 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
     return sharedReleaseNotesController;
 }
 
++ (id)sharedReleaseNotesController {
+    return sharedReleaseNotesController ? sharedReleaseNotesController : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedReleaseNotesController ? sharedReleaseNotesController : [super allocWithZone:zone];
+}
+
+- (id)init {
+    if (sharedReleaseNotesController == nil) {
+        sharedReleaseNotesController = [super init];
+    }
+    return sharedReleaseNotesController;
+}
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
+
 - (NSString *)windowNibName {
     return @"ReleaseNotes";
 }
 
 - (void)windowDidLoad {
-    if(self == sharedReleaseNotesController){
-        [[self window] setTitle:NSLocalizedString(@"Release Notes", "Window title")];
-        [textView setString:@""];
-        [textView replaceCharactersInRange:[textView selectedRange]
-                                   withRTF:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ReleaseNotes" ofType:@"rtf"]]];
-    } else {
-        [[self window] setTitle:NSLocalizedString(@"Latest Release Notes", @"Window title")];
-        NSRect ignored, rect = [[textView enclosingScrollView] frame];
-        NSDivideRect(rect, &ignored, &rect, 61.0, NSMinYEdge);
-        [[textView enclosingScrollView] setFrame:rect];
-        [downloadButton setHidden:NO];
-    }
+    [textView setString:@""];
+    [textView replaceCharactersInRange:[textView selectedRange]
+                               withRTF:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ReleaseNotes" ofType:@"rtf"]]];
 }
 
-- (void)displayAttributedString:(NSAttributedString *)attrString {
-    [self window];
-    [[textView textStorage] setAttributedString:attrString];
-}
-
-- (IBAction)download:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:DOWNLOAD_URL]];
-}
+- (IBAction)download:(id)sender {}
 
 @end
