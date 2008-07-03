@@ -84,15 +84,18 @@ static unsigned int maxRecentDocumentsCount = 0;
         maxRecentDocumentsCount = 50;
 }
 
+static SKBookmarkController *sharedBookmarkController = nil;
+
 + (id)sharedBookmarkController {
-    static SKBookmarkController *sharedBookmarkController = nil;
-    if (sharedBookmarkController == nil)
-        sharedBookmarkController = [[self alloc] init];
-    return sharedBookmarkController;
+    return sharedBookmarkController ? sharedBookmarkController : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedBookmarkController ? sharedBookmarkController : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super init]) {
+    if (sharedBookmarkController == nil && (sharedBookmarkController = self = [super init])) {
         recentDocuments = [[NSMutableArray alloc] init];
         
         NSMutableArray *bookmarks = [NSMutableArray array];
@@ -139,7 +142,7 @@ static unsigned int maxRecentDocumentsCount = 0;
                                                      name:SKBookmarkWillBeRemovedNotification
                                                    object:nil];
     }
-    return self;
+    return sharedBookmarkController;
 }
 
 - (void)dealloc {
@@ -151,6 +154,14 @@ static unsigned int maxRecentDocumentsCount = 0;
     [statusBar release];
     [super dealloc];
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSString *)windowNibName { return @"BookmarksWindow"; }
 

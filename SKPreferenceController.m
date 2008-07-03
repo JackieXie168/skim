@@ -78,7 +78,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
         [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:SKPreferenceWindowDefaultsObservationContext];
     }
-    return self;
+    return sharedPrefenceController;
 }
 
 - (void)dealloc {
