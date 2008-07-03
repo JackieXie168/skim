@@ -46,6 +46,9 @@
 #import "SKUtilities.h"
 #import "SKApplicationController.h"
 
+static NSString *SKAutosaveIntervalKey = @"SKAutosaveInterval";
+
+
 // See CFBundleTypeName in Info.plist
 static NSString *SKPDFDocumentTypeName = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
 static NSString *SKPDFBundleDocumentTypeName = @"PDF Bundle";
@@ -182,6 +185,13 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
         SKPostScriptDocumentType = SKPostScriptDocumentUTI;
         SKDVIDocumentType = SKDVIDocumentUTI;
     }
+}
+
+- (id)init {
+    if (self = [super init]) {
+        [self setAutosavingDelay:[[NSUserDefaults standardUserDefaults] integerForKey:SKAutosaveIntervalKey]];
+    }
+    return self;
 }
 
 - (void)dealloc {
