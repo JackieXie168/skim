@@ -44,12 +44,6 @@
 static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 + (id)sharedReleaseNotesController {
-    if (sharedReleaseNotesController == nil) 
-        sharedReleaseNotesController = [[SKReleaseNotesController alloc] init];
-    return sharedReleaseNotesController;
-}
-
-+ (id)sharedReleaseNotesController {
     return sharedReleaseNotesController ? sharedReleaseNotesController : [[self alloc] init];
 }
 
