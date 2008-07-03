@@ -6,13 +6,9 @@
             SUPERCLASS = NSObject;
         },
                 {
-            ACTIONS =             {
-                download = id;
-            };
             CLASS = SKReleaseNotesController;
             LANGUAGE = ObjC;
             OUTLETS =             {
-                downloadButton = NSButton;
                 textView = NSTextView;
             };
             SUPERCLASS = NSWindowController;
