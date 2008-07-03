@@ -59,15 +59,18 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
 
 @implementation SKPreferenceController
 
+static SKPreferenceController *sharedPrefenceController = nil;
+
 + (id)sharedPrefenceController {
-    static SKPreferenceController *sharedPrefenceController = nil;
-    if (sharedPrefenceController == nil)
-        sharedPrefenceController = [[self alloc] init];
-    return sharedPrefenceController;
+    return sharedPrefenceController ? sharedPrefenceController : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedPrefenceController ? sharedPrefenceController : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super init]) {
+    if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super init])) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
         
@@ -83,6 +86,14 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
     [resettableKeys release];
     [super dealloc];
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSString *)windowNibName {
     return @"PreferenceWindow";

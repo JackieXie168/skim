@@ -61,9 +61,7 @@ static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
-    if (sharedLineInspector == nil)
-        [[self alloc] init];
-    return sharedLineInspector;
+    return sharedLineInspector ? sharedLineInspector : [[self alloc] init];
 }
 
 + (BOOL)sharedLineInspectorExists {
@@ -71,15 +69,11 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    if (sharedLineInspector == nil)
-        return [super allocWithZone:[self zone]];
-    else
-        return sharedLineInspector;
+    return sharedLineInspector ? sharedLineInspector : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedLineInspector == nil && (self = [super initWithWindowNibName:@"LineInspector"])) {
-        sharedLineInspector = self;
+    if (sharedLineInspector == nil && (sharedLineInspector = self = [super initWithWindowNibName:@"LineInspector"])) {
         style = kPDFBorderStyleSolid;
         lineWidth = 1.0;
         dashPattern = nil;

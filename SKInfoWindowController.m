@@ -59,6 +59,8 @@ static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
 
 @implementation SKInfoWindowController
 
+static SKInfoWindowController *sharedInstance = nil;
+
 + (void)initialize {
     OBINITIALIZE;
     
@@ -68,18 +70,18 @@ static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
 }
 
 + (id)sharedInstance {
-    static SKInfoWindowController *sharedInstance = nil;
-    if (sharedInstance == nil) {
-        sharedInstance = [[self alloc] init];
-    }
-    return sharedInstance;
+    return sharedInstance ? sharedInstance : [[self alloc] init];
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedInstance ? sharedInstance : [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (self = [super init]) {
+    if (sharedInstance == nil && (sharedInstance = self = [super init])) {
         info = [[NSMutableDictionary alloc] init];
     }
-    return self;
+    return sharedInstance;
 }
 
 - (void)dealloc {
@@ -87,6 +89,14 @@ static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
     [info release];
     [super dealloc];
 }
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (NSString *)windowNibName {
     return @"InfoWindow";
