@@ -1095,16 +1095,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [self isPresentation] == NO;
     } else if (action == @selector(changeDisplaySinglePages:)) {
         BOOL displaySinglePages1 = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
-        BOOL displaySinglePages2 = [menuItem tag] == kPDFDisplaySinglePage;
+        BOOL displaySinglePages2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePage;
         [menuItem setState:displaySinglePages1 == displaySinglePages2 ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeDisplayContinuous:)) {
         BOOL displayContinuous1 = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        BOOL displayContinuous2 = [menuItem tag] == kPDFDisplaySinglePageContinuous;
+        BOOL displayContinuous2 = (PDFDisplayMode)[menuItem tag] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displayContinuous1 == displayContinuous2 ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeDisplayMode:)) {
-        [menuItem setState:[pdfView displayMode] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[pdfView displayMode] == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(toggleDisplayContinuous:)) {
         BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
@@ -1117,16 +1117,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeDisplayBox:)) {
-        [menuItem setState:[pdfView displayBox] == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[pdfView displayBox] == (PDFDisplayBox)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeToolMode:)) {
-        [menuItem setState:[pdfView toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[pdfView toolMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(changeAnnotationMode:)) {
         if ([[menuItem menu] numberOfItems] > 8)
-            [menuItem setState:[pdfView toolMode] == SKNoteToolMode && [pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[pdfView toolMode] == SKNoteToolMode && [pdfView annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         else
-            [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[pdfView annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];
@@ -1198,10 +1198,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
-        [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
-        return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
+        [menuItem setState:leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
+        return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
-        [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(toggleSplitPDF:)) {
         if ([secondaryPdfView window])
