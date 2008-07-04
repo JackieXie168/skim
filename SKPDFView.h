@@ -62,15 +62,16 @@ extern NSString *SKPDFViewNewPageKey;
 
 extern NSString *SKSkimNotePboardType;
 
-typedef enum _SKToolMode {
+enum _SKToolMode {
     SKTextToolMode,
     SKMoveToolMode,
     SKMagnifyToolMode,
     SKSelectToolMode,
     SKNoteToolMode
-} SKToolMode;
+};
+typedef NSInteger SKToolMode;
 
-typedef enum _SKNoteType {
+enum {
     SKFreeTextNote,
     SKAnchoredNote,
     SKCircleNote,
@@ -79,13 +80,15 @@ typedef enum _SKNoteType {
     SKUnderlineNote,
     SKStrikeOutNote,
     SKLineNote
-} SKNoteType;
+};
+typedef NSInteger SKNoteType;
 
-typedef enum _SKInteractionMode {
+enum {
     SKNormalMode,
     SKFullScreenMode,
     SKPresentationMode
-} SKInteractionMode;
+};
+typedef NSInteger SKInteractionMode;
 
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper;
 

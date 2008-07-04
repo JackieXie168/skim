@@ -38,20 +38,23 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef enum _SKLeftSidePaneState {
+enum {
     SKThumbnailSidePaneState,
     SKOutlineSidePaneState
-} SKLeftSidePaneState;
+};
+typedef NSInteger SKLeftSidePaneState;
 
-typedef enum _SKRightSidePaneState {
+enum {
     SKNoteSidePaneState,
     SKSnapshotSidePaneState
-} SKRightSidePaneState;
+};
+typedef NSInteger SKRightSidePaneState;
 
-typedef enum _SKFindPaneState {
+enum {
     SKSingularFindPaneState,
     SKGroupedFindPaneState
-} SKFindPaneState;
+};
+typedef NSInteger SKFindPaneState;
 
 enum {
     SKDefaultWindowOption,

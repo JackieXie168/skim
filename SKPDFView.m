@@ -2338,13 +2338,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(changeToolMode:)) {
-        [menuItem setState:[self toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[self toolMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(changeAnnotationMode:)) {
         if ([[menuItem menu] numberOfItems] > 8)
-            [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         else
-            [menuItem setState:[self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+            [menuItem setState:[self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(copy:)) {
         if ([self currentSelection])
