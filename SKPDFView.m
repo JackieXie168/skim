@@ -3893,7 +3893,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             cursor = [NSCursor pointingHandCursor];
         else
             cursor = [NSCursor arrowCursor];
-    } else if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
+    } else if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
         if ([theEvent modifierFlags] & NSShiftKeyMask)
