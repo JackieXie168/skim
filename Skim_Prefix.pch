@@ -7,7 +7,6 @@
     #import <Cocoa/Cocoa.h>
     #import <objc/objc-class.h>
     #import <Quartz/Quartz.h>
-    #import <SkimNotes/SkimNotes.h>
 
     #ifndef NSAppKitVersionNumber10_4
     #define NSAppKitVersionNumber10_4 824
