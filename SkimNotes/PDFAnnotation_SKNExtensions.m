@@ -185,7 +185,7 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties{
+- (NSDictionary *)SkimNoteProperties{
     PDFPage *page = [self page];
     unsigned int pageIndex = page ? [[page document] indexForPage:page] : NSNotFound;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:5];
@@ -237,8 +237,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties{
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[self interiorColor] forKey:SKNPDFAnnotationInteriorColorKey];
     return dict;
 }
@@ -259,8 +259,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties{
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[self interiorColor] forKey:SKNPDFAnnotationInteriorColorKey];
     return dict;
 }
@@ -290,8 +290,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties {
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties {
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:SKNPDFAnnotationStartLineStyleKey];
     [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:SKNPDFAnnotationEndLineStyleKey];
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:SKNPDFAnnotationStartPointKey];
@@ -328,8 +328,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties{
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[self font] forKey:SKNPDFAnnotationFontKey];
     if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO)
         [dict setValue:[self fontColor] forKey:SKNPDFAnnotationFontColorKey];
@@ -356,8 +356,8 @@ static IMP originalDealloc = NULL;
                 markupType = kPDFMarkupTypeStrikeOut;
             if (markupType != [self markupType]) {
                 [self setMarkupType:markupType];
-                if ([dict objectForKey:SKNPDFAnnotationColorKey] == nil && [[self class] respondsToSelector:@selector(defaultColorForMarkupType:)]) {
-                    NSColor *color = [[self class] defaultColorForMarkupType:markupType];
+                if ([dict objectForKey:SKNPDFAnnotationColorKey] == nil && [[self class] respondsToSelector:@selector(defaultSkimNoteColorForMarkupType:)]) {
+                    NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:markupType];
                     if (color)
                         [self setColor:color];
                 }
@@ -383,8 +383,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties {
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties {
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     NSArray *quadPoints = [self quadrilateralPoints];
     if (quadPoints) {
         int i, iMax = [quadPoints count];
@@ -412,8 +412,8 @@ static IMP originalDealloc = NULL;
     return self;
 }
 
-- (NSDictionary *)properties{
-    NSMutableDictionary *dict = [[[super properties] mutableCopy] autorelease];
+- (NSDictionary *)SkimNoteProperties{
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
     return dict;
 }
