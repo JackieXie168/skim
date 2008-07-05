@@ -657,7 +657,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         itemEnum = [[self noteItems:items] objectEnumerator];
         while (item = [itemEnum nextObject]) {
             if ([item isMovable]) {
-                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item properties]];
+                noteData = [NSKeyedArchiver archivedDataWithRootObject:[item SkimNoteProperties]];
                 [types addObject:SKSkimNotePboardType];
                 break;
             }

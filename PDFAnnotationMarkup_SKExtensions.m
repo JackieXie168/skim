@@ -143,7 +143,7 @@ static IMP originalDrawWithBoxInContext = NULL;
     return CFDictionaryContainsKey(lineRectsDict, self);
 }
 
-+ (NSColor *)defaultColorForMarkupType:(int)markupType
++ (NSColor *)defaultSkimNoteColorForMarkupType:(int)markupType
 {
     switch (markupType) {
         case kPDFMarkupTypeUnderline:
@@ -160,7 +160,7 @@ static IMP originalDrawWithBoxInContext = NULL;
     if (self = [super initSkimNoteWithBounds:bounds]) {
         [self setMarkupType:type];
         
-        NSColor *color = [[self class] defaultColorForMarkupType:type];
+        NSColor *color = [[self class] defaultSkimNoteColorForMarkupType:type];
         if (color)
             [self setColor:color];
         
