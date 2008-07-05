@@ -110,12 +110,12 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict;
 
 /*!
-    @method     properties
+    @method     SkimNoteProperties
     @abstract   The Skim notes properties.
     @discussion These properties can be used to initialize a new copy, and to save to extended attributes or file.
     @result     A dictionary with properties of the Skim note.  All values are standard Cocoa objects conforming to <code>NSCoding</code> and <code>NSCopying</code>.
 */
-- (NSDictionary *)properties;
+- (NSDictionary *)SkimNoteProperties;
 
 /*!
     @method     isSkimNote
@@ -208,13 +208,13 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 */
 @interface PDFAnnotationMarkup (SKNOptional)
 /*!
-    @method     defaultColorForMarkupType:
+    @method     defaultSkimNoteColorForMarkupType:
     @abstract   Optional method to implement to return the default color to use for markup initialized with properties that do not contain a color.
     @param      markupType The markup style for which to return the default color.
     @discussion This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.  This method is not implemented by default.
     @result     The default color for an annotation with the passed in markup style.
 */
-+ (NSColor *)defaultColorForMarkupType:(int)markupType;
++ (NSColor *)defaultSkimNoteColorForMarkupType:(int)markupType;
 @end
 
 #pragma mark -
