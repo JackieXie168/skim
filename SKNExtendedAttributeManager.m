@@ -44,8 +44,10 @@ static NSString *SKNErrorDomain = @"SKNErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
 // private methods to (un)compress data
-- (NSData *)bzip2Data:(NSData *)data;
-- (NSData *)bunzip2Data:(NSData *)data;
+- (NSData *)bzipData:(NSData *)data;
+- (NSData *)bunzipData:(NSData *)data;
+- (BOOL)isBzipData:(NSData *)data;
+- (BOOL)isPlistData:(NSData *)data;
 // private method to print error messages
 - (NSError *)xattrError:(int)err forPath:(NSString *)path;
 @end
@@ -152,7 +154,8 @@ static id sharedNoSplitManager = nil;
     for(idx = 0; idx < bufSize; idx++){
         if(namebuf[idx] == '\0'){
             attribute = [[NSString alloc] initWithBytes:&namebuf[start] length:(idx - start) encoding:NSUTF8StringEncoding];
-            if(attribute) [attrs addObject:attribute];
+            // ignore fragments
+            if(attribute && (namePrefix == nil || [attribute hasPrefix:namePrefix] == NO)) [attrs addObject:attribute];
             [attribute release];
             attribute = nil;
             start = idx + 1;
@@ -226,17 +229,9 @@ static id sharedNoSplitManager = nil;
     
     NSPropertyListFormat format;
     NSString *errorString;
-    
-    // the plist parser logs annoying messages when failing to parse non-plist data, so sniff the header (this is correct for the binary plist that we use for split data)
-    static NSData *plistHeaderData = nil;
-    if (nil == plistHeaderData) {
-        char *h = "bplist00";
-        plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
-    }
-
     id plist = nil;
     
-    if (namePrefix && [attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+    if (namePrefix && [self isPlistData:attribute])
         plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
     
     // even if it's a plist, it may not be a dictionary or have the key we're looking for
@@ -251,14 +246,15 @@ static id sharedNoSplitManager = nil;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
         if (success == NO)
-            NSLog(@"failed to read unique key %@ from property list.", uniqueKey);
+            NSLog(@"failed to read unique key %@ for %i fragments from property list.", uniqueKey, numberOfFragments);
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
+            NSError *tmpError = nil;
             name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
-            subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:error];
+            subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
             if (nil == subdata) {
-                NSLog(@"failed to find subattribute %@ of attribute named %@", name, attr);
+                NSLog(@"failed to find subattribute %@ of %i for attribute named %@. %@", name, numberOfFragments, attr, [tmpError localizedDescription]);
                 success = NO;
             } else {
                 [buffer appendData:subdata];
@@ -266,7 +262,7 @@ static id sharedNoSplitManager = nil;
         }
         
         [attribute release];
-        attribute = success ? [[self bunzip2Data:buffer] retain] : nil;
+        attribute = success ? [[self bunzipData:buffer] retain] : nil;
         
         if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
@@ -282,14 +278,8 @@ static id sharedNoSplitManager = nil;
         if (error) *error = anError;
     } else {
         // decompress the data if necessary, we may have compressed when setting
-        static NSData *bzipHeaderData = nil;
-        if (nil == bzipHeaderData) {
-            char *h = "BZh";
-            bzipHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
-        }
-        
-        if ([data length] >= [bzipHeaderData length] && [bzipHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, [bzipHeaderData length])]])
-            data = [self bunzip2Data:data];
+        if ([self isBzipData:data]) 
+            data = [self bunzipData:data];
         
         NSString *errorString;
         plist = [NSPropertyListSerialization propertyListFromData:data 
@@ -326,7 +316,7 @@ static id sharedNoSplitManager = nil;
     if ((options & kSKNXattrNoSplitData) == 0 && namePrefix && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
-        value = [self bzip2Data:value];
+        value = [self bzipData:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
@@ -385,7 +375,7 @@ static id sharedNoSplitManager = nil;
     } else {
         // if we don't split and the data is too long, compress the data using bzip to save space
         if (((options & kSKNXattrNoSplitData) != 0 || namePrefix == nil) && [data length] > MAX_XATTR_LENGTH)
-            data = [self bzip2Data:data];
+            data = [self bzipData:data];
         
         success = [self setExtendedAttributeNamed:attr toValue:data atPath:path options:options error:error];
     }
@@ -422,17 +412,9 @@ static id sharedNoSplitManager = nil;
             
             NSPropertyListFormat format;
             NSString *errorString;
-            
-            // the plist parser logs annoying messages when failing to parse non-plist data, so sniff the header (this is correct for the binary plist that we use for split data)
-            static NSData *plistHeaderData = nil;
-            if (nil == plistHeaderData) {
-                char *h = "bplist00";
-                plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
-            }
-
             id plist = nil;
             
-            if (namePrefix && [attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+            if (namePrefix && [self isPlistData:attribute])
                 plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
             
             // even if it's a plist, it may not be a dictionary or have the key we're looking for
@@ -557,7 +539,7 @@ static id sharedNoSplitManager = nil;
 // implementation modified after http://www.cocoadev.com/index.pl?NSDataPlusBzip (removed exceptions)
 //
 
-- (NSData *)bzip2Data:(NSData *)data;
+- (NSData *)bzipData:(NSData *)data;
 {
 	int compression = 5;
     int bzret, buffer_size = 1000000;
@@ -591,7 +573,7 @@ static id sharedNoSplitManager = nil;
 	return compressed;
 }
 
-- (NSData *)bunzip2Data:(NSData *)data;
+- (NSData *)bunzipData:(NSData *)data;
 {
 	int bzret;
 	bz_stream stream = { 0 };
@@ -623,6 +605,31 @@ static id sharedNoSplitManager = nil;
     [buffer release];
 
 	return decompressed;
+}
+
+- (BOOL)isBzipData:(NSData *)data;
+{
+    static NSData *bzipHeaderData = nil;
+    static unsigned int bzipHeaderDataLength;
+    if (nil == bzipHeaderData) {
+        char *h = "BZh";
+        bzipHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+    }
+
+    return [data length] >= bzipHeaderDataLength && [bzipHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, bzipHeaderDataLength)]];
+}
+
+- (BOOL)isPlistData:(NSData *)data;
+{
+    static NSData *plistHeaderData = nil;
+    static unsigned int plistHeaderDataLength;
+    if (nil == plistHeaderData) {
+        char *h = "bplist00";
+        plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+        plistHeaderDataLength = [plistHeaderData length];
+    }
+
+    return [data length] >= plistHeaderDataLength && [plistHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, plistHeaderDataLength)]];
 }
 
 @end

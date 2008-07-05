@@ -99,7 +99,7 @@ typedef UInt32 SKNXattrFlags;
     @method     extendedAttributeNamesAtPath:traverseLink:
     @abstract   Return a list of extended attributes for the given file.
     @discussion Calls <code>listxattr(2)</code> to determine all of the extended attributes, and returns them as
-                an array of <code>NSString</code> objects.  Returns <code>nil</code> if an error occurs.    
+                an array of <code>NSString</code> objects.  Returns <code>nil</code> if an error occurs.  Does not return attribute names for fragments.
     @param      path Path to the object in the file system.
     @param      follow Follow symlinks (<code>listxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
     @param      error Error object describing the error if <code>nil</code> was returned.
