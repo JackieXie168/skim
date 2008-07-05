@@ -166,7 +166,7 @@ static id sharedNoSplitManager = nil;
     return attrs;
 }
 
-- (NSArray *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (NSDictionary *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
     NSError *anError = nil;
     NSArray *attrNames = [self extendedAttributeNamesAtPath:path traverseLink:follow error:&anError];
@@ -176,14 +176,14 @@ static id sharedNoSplitManager = nil;
     }
     
     NSEnumerator *e = [attrNames objectEnumerator];
-    NSMutableArray *attributes = [NSMutableArray arrayWithCapacity:[attrNames count]];
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithCapacity:[attrNames count]];
     NSData *data = nil;
     NSString *attrName = nil;
     
     while(attrName = [e nextObject]){
         data = [self extendedAttributeNamed:attrName atPath:path traverseLink:follow error:&anError];
         if(data != nil){
-            [attributes addObject:data];
+            [attributes setObject:data forKey:attrName];
         } else {
             if(error) *error = anError;
             return nil;

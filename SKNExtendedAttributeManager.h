@@ -126,9 +126,9 @@ typedef UInt32 SKNXattrFlags;
     @param      path Path to the object in the file system.
     @param      follow Follow symlinks (<code>getxattr(2)</code> does this by default, so typically you should pass <code>YES</code>).
     @param      error Error object describing the error if <code>nil</code> was returned.
-    @result     Array of data objects or <code>nil</code> if an error occurred.
+    @result     Dictionary of data objects as values and strings as key, or <code>nil</code> if an error occurred.
 */
-- (NSArray *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (NSDictionary *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @method     propertyListFromExtendedAttributeNamed:atPath:traverseLink:error:
