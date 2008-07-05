@@ -302,7 +302,7 @@ enum {
 // to support the 'duplicate' command
 - (id)copyWithZone:(NSZone *)zone {
     if ([self isMovable]) // we don't want to duplicate markup
-        return [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self properties]];
+        return [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self SkimNoteProperties]];
     else
         return nil;
 }

@@ -324,7 +324,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 
             }
             
-            if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
+            if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
                 NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                                   NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
                 NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")]
@@ -415,7 +415,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         // if we automatically save a .skim backup we silently ignore this problem
         if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
-            didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:&error];
+            didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
@@ -440,7 +440,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
     } else if (SKIsNotesDocumentType(typeName)) {
-        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"properties"] toSkimFileAtURL:absoluteURL error:&error];
+        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] toSkimFileAtURL:absoluteURL error:&error];
     } else if (SKIsNotesRTFDocumentType(typeName)) {
         NSData *data = [self notesRTFData];
         if (data)
@@ -732,7 +732,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 #pragma mark Notes
 
 - (NSData *)notesData {
-    NSArray *array = [[self notes] valueForKey:@"properties"];
+    NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
     return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
 }
 
@@ -872,7 +872,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         while (annotation = [annEnum nextObject]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
                 if ([[annotation type] isEqualToString:SKNTextString]) {
-                    PDFAnnotation *newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithProperties:[annotation properties]];
+                    PDFAnnotation *newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithProperties:[annotation SkimNoteProperties]];
                     [[self pdfView] removeAnnotation:annotation];
                     [[self pdfView] addAnnotation:newAnnotation toPage:page];
                     [newAnnotation release];
