@@ -111,7 +111,7 @@ static id sharedNoSplitManager = nil;
     [super dealloc];
 }
 
-- (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow includeFragments:(BOOL)fragments error:(NSError **)error;
 {
     const char *fsPath = [path fileSystemRepresentation];
     
@@ -155,7 +155,7 @@ static id sharedNoSplitManager = nil;
         if(namebuf[idx] == '\0'){
             attribute = [[NSString alloc] initWithBytes:&namebuf[start] length:(idx - start) encoding:NSUTF8StringEncoding];
             // ignore fragments
-            if(attribute && (namePrefix == nil || [attribute hasPrefix:namePrefix] == NO)) [attrs addObject:attribute];
+            if(attribute && (fragments || namePrefix == nil || [attribute hasPrefix:namePrefix] == NO)) [attrs addObject:attribute];
             [attribute release];
             attribute = nil;
             start = idx + 1;
@@ -164,6 +164,11 @@ static id sharedNoSplitManager = nil;
     
     NSZoneFree(zone, namebuf);
     return attrs;
+}
+
+- (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+{
+    return [self extendedAttributeNamesAtPath:path traverseLink:follow includeFragments:NO error:error];
 }
 
 - (NSDictionary *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
@@ -448,7 +453,7 @@ static id sharedNoSplitManager = nil;
 
 - (BOOL)removeAllExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
-    NSArray *allAttributes = [self extendedAttributeNamesAtPath:path traverseLink:follow error:error];
+    NSArray *allAttributes = [self extendedAttributeNamesAtPath:path traverseLink:follow includeFragments:YES error:error];
     if  (nil == allAttributes)
         return NO;
     
