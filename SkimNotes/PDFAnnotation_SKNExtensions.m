@@ -95,16 +95,13 @@ static IMP originalDealloc = NULL;
 }
 
 + (void)load {
+    Method aMethod = class_getInstanceMethod(self, @selector(dealloc));
+    Method impMethod = class_getInstanceMethod(self, @selector(replacementDealloc));
     if (method_getImplementation != NULL && method_setImplementation != NULL) {
-        originalDealloc = method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), method_getImplementation(class_getInstanceMethod(self, @selector(replacementDealloc))));
+        originalDealloc = method_setImplementation(aMethod, method_getImplementation(impMethod));
     } else {
-        Method impMethod = class_getInstanceMethod(self, @selector(replacementDealloc));
-        IMP anImp = impMethod->method_imp;
-        Method aMethod = class_getInstanceMethod(self, @selector(dealloc));
-        
         originalDealloc = aMethod->method_imp;
-        aMethod->method_imp = anImp;
-        
+        aMethod->method_imp = impMethod->method_imp;
         // Flush the method cache
         extern void _objc_flush_caches(Class);
         if (_objc_flush_caches != NULL)
