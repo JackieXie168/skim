@@ -104,7 +104,7 @@ enum {
     [fdfString appendFDFName:SKFDFTypeKey];
     [fdfString appendFDFName:SKFDFAnnotation];
     [fdfString appendFDFName:SKFDFAnnotationTypeKey];
-    [fdfString appendString:[[self type] isEqualToString:SKNNoteString] ? SKNTextString : [self type]];
+    [fdfString appendFormat:@"/%@", [[self type] isEqualToString:SKNNoteString] ? SKNTextString : [self type]];
     [fdfString appendFDFName:SKFDFAnnotationBoundsKey];
     [fdfString appendFormat:@"[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [fdfString appendFDFName:SKFDFAnnotationPageIndexKey];
