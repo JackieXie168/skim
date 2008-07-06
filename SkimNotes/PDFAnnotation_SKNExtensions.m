@@ -82,31 +82,44 @@ NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
 
 NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
+static IMP SKNReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector) {
+    Method aMethod = class_getInstanceMethod(aClass, aSelector);
+    Method impMethod = class_getInstanceMethod(aClass, impSelector);
+    IMP anImp = NULL;
+    if (method_getImplementation != NULL && method_setImplementation != NULL) {
+        anImp = method_setImplementation(aMethod, method_getImplementation(impMethod));
+    } else {
+        anImp = aMethod->method_imp;
+        aMethod->method_imp = impMethod->method_imp;
+        // Flush the method cache
+        extern void _objc_flush_caches(Class);
+        if (_objc_flush_caches != NULL)
+            _objc_flush_caches(aClass);
+    }
+    return anImp;
+}
 
 @implementation PDFAnnotation (SKNExtensions)
 
 static CFMutableSetRef SkimNotes = NULL;
 
 static IMP originalDealloc = NULL;
+static IMP originalFinalize = NULL;
 
-- (void)replacementDealloc {
+- (void)skn_replacementDealloc {
     CFSetRemoveValue(SkimNotes, self);
     originalDealloc(self, _cmd);
 }
 
+- (void)skn_replacementFinalize {
+    CFSetRemoveValue(SkimNotes, self);
+    originalFinalize(self, _cmd);
+}
+
 + (void)load {
-    Method aMethod = class_getInstanceMethod(self, @selector(dealloc));
-    Method impMethod = class_getInstanceMethod(self, @selector(replacementDealloc));
-    if (method_getImplementation != NULL && method_setImplementation != NULL) {
-        originalDealloc = method_setImplementation(aMethod, method_getImplementation(impMethod));
-    } else {
-        originalDealloc = aMethod->method_imp;
-        aMethod->method_imp = impMethod->method_imp;
-        // Flush the method cache
-        extern void _objc_flush_caches(Class);
-        if (_objc_flush_caches != NULL)
-            _objc_flush_caches(self);
-    }
+    originalDealloc = SKNReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(skn_replacementDealloc));
+    if ([self instancesRespondToSelector:@selector(finalize)])
+        originalFinalize = SKNReplaceMethodImplementationWithSelector(self, @selector(finalize), @selector(skn_replacementFinalize));
     SkimNotes = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
 }
 
