@@ -300,7 +300,7 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         if ([files containsObject:filename] == NO) {
             filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
             if ([files containsObject:filename] == NO) {
-                unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
+                unsigned int idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
                 filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
             }
         }

@@ -325,7 +325,7 @@ static id sharedNoSplitManager = nil;
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
-        unsigned numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
+        unsigned int numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, uniqueValue, uniqueKey, [NSNumber numberWithUnsignedInt:numberOfFragments], fragmentsKey, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
@@ -338,14 +338,14 @@ static id sharedNoSplitManager = nil;
         
         // now split the original data value into multiple segments
         NSString *name;
-        unsigned j;
+        unsigned int j;
         const char *valuePtr = [value bytes];
         
         for (j = 0; success && j < numberOfFragments; j++) {
             name = [[NSString alloc] initWithFormat:@"%@-%i", uniqueValue, j];
             
             char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
-            unsigned subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
+            unsigned int subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
             
             // could recurse here, but it's more efficient to use the variables we already have
             if (setxattr(fsPath, [name UTF8String], subdataPtr, subdataLen, 0, xopts)) {
