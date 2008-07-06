@@ -349,7 +349,7 @@ static IMP originalDealloc = NULL;
         Class stringClass = [NSString class];
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
         if ([type isKindOfClass:stringClass]) {
-            int markupType = kPDFMarkupTypeHighlight;
+            PDFMarkupType markupType = kPDFMarkupTypeHighlight;
             if ([type isEqualToString:SKNUnderlineString])
                 markupType = kPDFMarkupTypeUnderline;
             else if ([type isKindOfClass:stringClass] && [type isEqualToString:SKNStrikeOutString])
