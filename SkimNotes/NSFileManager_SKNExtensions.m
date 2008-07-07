@@ -58,11 +58,11 @@ static NSString *SKNTextNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        unsigned int pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
         NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
         NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
         
-        [textString appendFormat:@"* %@, page %i\n\n", type, pageIndex + 1];
+        [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
         if ([string length]) {
             [textString appendString:string];
             [textString appendString:@" \n\n"];
@@ -82,11 +82,11 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        unsigned int pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
         NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
         NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
         
-        [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %i\n\n", type, pageIndex + 1]];
+        [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
         if ([string length]) {
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:string];
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@" \n\n"];
@@ -300,7 +300,7 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         if ([files containsObject:filename] == NO) {
             filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
             if ([files containsObject:filename] == NO) {
-                unsigned int idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
+                NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:extension];
                 filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
             }
         }
