@@ -35,6 +35,7 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE1AB1060E2297C800FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
 		CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */; };
 		CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */; };
@@ -80,6 +81,7 @@
 		32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SkimNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-ReleaseGCSupport.xcconfig"; path = "Configurations/SkimNotes-ReleaseGCSupport.xcconfig"; sourceTree = "<group>"; };
 		CE3907AD0E082C2D0015B0B7 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B40E082C900015B0B7 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				CEBA30770E06DC2B0000B2E6 /* SkimNotes-Common.xcconfig */,
 				CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */,
 				CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */,
+				CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */,
 			);
 			name = Configurations;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
+				CE1AB1060E2297C800FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,7 +447,6 @@
 			baseConfigurationReference = CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -466,7 +469,6 @@
 			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -485,14 +487,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
 			};
 			name = Debug;
 		};
@@ -500,14 +499,78 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
 			};
 			name = Release;
+		};
+		CE1AB1000E22971400FBE87A /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+			};
+			name = "Release (GC dual-mode)";
+		};
+		CE1AB1010E22971400FBE87A /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = SkimNotes_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LD_DYLIB_INSTALL_NAME = "@executable_path/../Frameworks/$(EXECUTABLE_PATH)";
+				PRODUCT_NAME = SkimNotes;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = "Release (GC dual-mode)";
+		};
+		CE1AB1020E22971400FBE87A /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = skimnotes;
+			};
+			name = "Release (GC dual-mode)";
+		};
+		CE1AB1030E22971400FBE87A /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = HeaderDocs;
+				ZERO_LINK = NO;
+			};
+			name = "Release (GC dual-mode)";
+		};
+		CE1AB1040E22971400FBE87A /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Archive;
+				ZERO_LINK = NO;
+			};
+			name = "Release (GC dual-mode)";
 		};
 		CE665A860E1C086F00D0704D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -532,16 +595,15 @@
 		};
 		CEBA2B570E0566B30000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH)";
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = skimnotes;
@@ -550,22 +612,15 @@
 		};
 		CEBA2B580E0566B30000B2E6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = skimnotes;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -598,6 +653,7 @@
 			buildConfigurations = (
 				1DEB91AE08733DA50010E9CD /* Debug */,
 				1DEB91AF08733DA50010E9CD /* Release */,
+				CE1AB1010E22971400FBE87A /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -607,6 +663,7 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+				CE1AB1000E22971400FBE87A /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -616,6 +673,7 @@
 			buildConfigurations = (
 				CE665A860E1C086F00D0704D /* Debug */,
 				CE665A870E1C086F00D0704D /* Release */,
+				CE1AB1030E22971400FBE87A /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -625,6 +683,7 @@
 			buildConfigurations = (
 				CEBA2B570E0566B30000B2E6 /* Debug */,
 				CEBA2B580E0566B30000B2E6 /* Release */,
+				CE1AB1020E22971400FBE87A /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -634,6 +693,7 @@
 			buildConfigurations = (
 				CEBA2EA30E0673B60000B2E6 /* Debug */,
 				CEBA2EA40E0673B60000B2E6 /* Release */,
+				CE1AB1040E22971400FBE87A /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
