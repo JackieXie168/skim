@@ -35,7 +35,6 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		CE1AB1060E2297C800FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
 		CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */; };
 		CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */; };
@@ -350,7 +349,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
-				CE1AB1060E2297C800FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
