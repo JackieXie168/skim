@@ -538,7 +538,7 @@
 		};
 		CE1AB1020E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */;
+			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
