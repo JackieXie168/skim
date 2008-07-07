@@ -122,7 +122,7 @@ static id sharedNoSplitManager = nil;
     else
         xopts = XATTR_NOFOLLOW;    
     
-    ssize_t bufSize;
+    size_t bufSize;
     ssize_t status;
     
     // call with NULL as attr name to get the size of the returned buffer
@@ -145,7 +145,7 @@ static id sharedNoSplitManager = nil;
         return nil;
     }
     
-    int idx, start = 0;
+    unsigned int idx, start = 0;
 
     NSString *attribute = nil;
     NSMutableArray *attrs = [NSMutableArray array];
@@ -209,7 +209,7 @@ static id sharedNoSplitManager = nil;
     else
         xopts = XATTR_NOFOLLOW;
     
-    ssize_t bufSize;
+    size_t bufSize;
     ssize_t status;
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
@@ -251,15 +251,15 @@ static id sharedNoSplitManager = nil;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
         if (success == NO)
-            NSLog(@"failed to read unique key %@ for %i fragments from property list.", uniqueKey, numberOfFragments);
+            NSLog(@"failed to read unique key %@ for %u fragments from property list.", uniqueKey, numberOfFragments);
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             NSError *tmpError = nil;
-            name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
+            name = [NSString stringWithFormat:@"%@-%u", uniqueValue, i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
             if (nil == subdata) {
-                NSLog(@"failed to find subattribute %@ of %i for attribute named %@. %@", name, numberOfFragments, attr, [tmpError localizedDescription]);
+                NSLog(@"failed to find subattribute %@ of %u for attribute named %@. %@", name, numberOfFragments, attr, [tmpError localizedDescription]);
                 success = NO;
             } else {
                 [buffer appendData:subdata];
@@ -342,7 +342,7 @@ static id sharedNoSplitManager = nil;
         const char *valuePtr = [value bytes];
         
         for (j = 0; success && j < numberOfFragments; j++) {
-            name = [[NSString alloc] initWithFormat:@"%@-%i", uniqueValue, j];
+            name = [[NSString alloc] initWithFormat:@"%@-%u", uniqueValue, j];
             
             char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
             unsigned int subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
@@ -400,7 +400,7 @@ static id sharedNoSplitManager = nil;
     else
         xopts = XATTR_NOFOLLOW;
     
-    ssize_t bufSize;
+    size_t bufSize;
     ssize_t status;
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
@@ -431,7 +431,7 @@ static id sharedNoSplitManager = nil;
                 
                 // remove the sub attributes
                 for (i = 0; i < numberOfFragments; i++) {
-                    name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
+                    name = [NSString stringWithFormat:@"%@-%u", uniqueValue, i];
                     const char *subAttrName = [name UTF8String];
                     status = removexattr(fsPath, subAttrName, xopts);
                     if (status == -1) {
@@ -615,10 +615,11 @@ static id sharedNoSplitManager = nil;
 - (BOOL)isBzipData:(NSData *)data;
 {
     static NSData *bzipHeaderData = nil;
-    static unsigned int bzipHeaderDataLength;
+    static unsigned int bzipHeaderDataLength = 0;
     if (nil == bzipHeaderData) {
         char *h = "BZh";
         bzipHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+        bzipHeaderDataLength = [bzipHeaderData length];
     }
 
     return [data length] >= bzipHeaderDataLength && [bzipHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, bzipHeaderDataLength)]];
@@ -627,7 +628,7 @@ static id sharedNoSplitManager = nil;
 - (BOOL)isPlistData:(NSData *)data;
 {
     static NSData *plistHeaderData = nil;
-    static unsigned int plistHeaderDataLength;
+    static unsigned int plistHeaderDataLength = 0;
     if (nil == plistHeaderData) {
         char *h = "bplist00";
         plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];

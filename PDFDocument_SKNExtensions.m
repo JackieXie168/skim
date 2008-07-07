@@ -75,7 +75,7 @@
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        unsigned int pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;

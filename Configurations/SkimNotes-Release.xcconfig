@@ -1,6 +1,7 @@
 #include "SkimNotes-Common.xcconfig"
 
 ARCHS = ppc i386
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
 COPY_PHASE_STRIP = YES
 STRIP_INSTALLED_PRODUCT = YES
 STRIP_STYLE = all
@@ -18,7 +19,7 @@ GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS NDEBUG
 
 GCC_C_LANGUAGE_STANDARD = compiler-default
 
-// I think this is set to avoid a compiler warning on BibDesk_vers.c
+// I think this is set to avoid a compiler warning on SkimNotes_vers.c
 GCC_INPUT_FILETYPE = sourcecode.c.objc
 
 GCC_WARN_CHECK_SWITCH_STATEMENTS = YES

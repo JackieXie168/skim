@@ -196,13 +196,13 @@ void skn_replacementDealloc(id self, SEL _cmd) {
 
 - (NSDictionary *)SkimNoteProperties{
     PDFPage *page = [self page];
-    unsigned int pageIndex = page ? [[page document] indexForPage:page] : NSNotFound;
+    NSUInteger pageIndex = page ? [[page document] indexForPage:page] : NSNotFound;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:5];
     [dict setValue:[self type] forKey:SKNPDFAnnotationTypeKey];
     [dict setValue:[self string] forKey:SKNPDFAnnotationContentsKey];
     [dict setValue:[self color] forKey:SKNPDFAnnotationColorKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
-    [dict setValue:[NSNumber numberWithUnsignedInt:pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
+    [dict setValue:SKNNumberWithUnsignedInteger(pageIndex) forKey:SKNPDFAnnotationPageIndexKey];
     if ([self border]) {
         [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:SKNPDFAnnotationLineWidthKey];
         [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:SKNPDFAnnotationBorderStyleKey];
@@ -313,6 +313,8 @@ void skn_replacementDealloc(id self, SEL _cmd) {
 @interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
 - (int)rotation;
 - (void)setRotation:(int)rotation;
+- (NSColor *)fontColor;
+- (void)setFontColor:(NSColor *)color;
 @end
 
 
@@ -374,7 +376,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
         Class arrayClass = [NSArray class];
         NSArray *pointStrings = [dict objectForKey:SKNPDFAnnotationQuadrilateralPointsKey];
         if ([pointStrings isKindOfClass:arrayClass]) {
-            int i, iMax = [pointStrings count];
+            NSUInteger i, iMax = [pointStrings count];
             NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:iMax];
             for (i = 0; i < iMax; i++) {
                 NSPoint p = NSPointFromString([pointStrings objectAtIndex:i]);
@@ -394,7 +396,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
     NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     NSArray *quadPoints = [self quadrilateralPoints];
     if (quadPoints) {
-        int i, iMax = [quadPoints count];
+        NSUInteger i, iMax = [quadPoints count];
         NSMutableArray *quadPointStrings = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (i = 0; i < iMax; i++)
             [quadPointStrings addObject:NSStringFromPoint([[quadPoints objectAtIndex:i] pointValue])];

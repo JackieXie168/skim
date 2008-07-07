@@ -44,7 +44,6 @@
 #define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
-
 @implementation SKNAgentListener
 
 - (id)initWithServerName:(NSString *)serverName;
@@ -89,7 +88,7 @@
         if ([files containsObject:filename] == NO) {
             filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
             if ([files containsObject:filename] == NO) {
-                unsigned int idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+                NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
                 filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
             }
         }
