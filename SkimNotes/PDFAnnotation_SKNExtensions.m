@@ -84,30 +84,42 @@ NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
 @implementation PDFAnnotation (SKNExtensions)
 
-static CFMutableSetRef SkimNotes = NULL;
+static id SkimNotes = nil;
 
 static IMP originalDealloc = NULL;
 
-- (void)skn_replacementDealloc {
-    CFSetRemoveValue(SkimNotes, self);
+void skn_replacementDealloc(id self, SEL _cmd) {
+    [SkimNotes removeObject:self];
     originalDealloc(self, _cmd);
 }
 
 + (void)load {
-    Method aMethod = class_getInstanceMethod(self, @selector(dealloc));
-    Method impMethod = class_getInstanceMethod(self, @selector(skn_replacementDealloc));
-    IMP anImp = NULL;
-    if (method_getImplementation != NULL && method_setImplementation != NULL) {
-        originalDealloc = method_setImplementation(aMethod, method_getImplementation(impMethod));
-    } else {
-        originalDealloc = aMethod->method_imp;
-        aMethod->method_imp = impMethod->method_imp;
-        // Flush the method cache
-        extern void _objc_flush_caches(Class);
-        if (_objc_flush_caches != NULL)
-            _objc_flush_caches(self);
+#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [NSGarbageCollector defaultCollector])
+        SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory capacity:0];
+    else
+#endif
+    {
+        Method deallocMethod = class_getInstanceMethod(self, @selector(dealloc));
+#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
+        originalDealloc = method_setImplementation(deallocMethod, (IMP)skn_replacementDealloc);
+#else
+#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+        if (method_setImplementation != NULL)
+            originalDealloc = method_setImplementation(deallocMethod, (IMP)skn_replacementDealloc);
+        else
+#endif
+        {
+            originalDealloc = deallocMethod->method_imp;
+            deallocMethod->method_imp = (IMP)skn_replacementDealloc;
+            // Flush the method cache
+            extern void _objc_flush_caches(Class);
+            if (_objc_flush_caches != NULL)
+                _objc_flush_caches(self);
+        }
+#endif
+        SkimNotes = (NSMutableSet *)CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
     }
-    SkimNotes = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
@@ -200,14 +212,12 @@ static IMP originalDealloc = NULL;
 }
 
 - (BOOL)isSkimNote {
-    return CFSetContainsValue(SkimNotes, self);
+    return [SkimNotes containsObject:self];
 }
 
 - (void)setSkimNote:(BOOL)flag {
-    if (flag)
-        CFSetAddValue(SkimNotes, self);
-    else
-        CFSetRemoveValue(SkimNotes, self);
+    if (flag) [SkimNotes addObject:self];
+    else [SkimNotes removeObject:self];
 }
 
 - (NSString *)string {
