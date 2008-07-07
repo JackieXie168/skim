@@ -23,14 +23,21 @@
         #define NSUIntegerMax   ULONG_MAX
         #define NSINTEGER_DEFINED 1
     #endif
+    
     typedef NSInteger PDFMarkupType;
+    
     #define SKNUnsignedIntegerValue(number) [number unsignedIntValue]
     #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInt:value]
     
-    #else
+    #elif MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
     
     #define SKNUnsignedIntegerValue(number) ([number respondsToSelector:@selector(unsignedIntegerValue)] ? [number unsignedIntegerValue] : [number unsignedIntValue])
     #define SKNNumberWithUnsignedInteger(value) ([NSNumber respondsToSelector:@selector(numberWithUnsignedInteger:)] ? [NSNumber numberWithUnsignedInteger:value] : [NSNumber numberWithUnsignedInt:value])
     
+    #else
+    
+    #define SKNUnsignedIntegerValue(number) [number unsignedIntegerValue]
+    #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInteger:value]
+        
     #endif
 #endif
