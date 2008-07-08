@@ -1,9 +1,9 @@
 #include "Skim-Common.xcconfig"
 
 ARCHS = ppc i386
-COPY_PHASE_STRIP = YES
-STRIP_INSTALLED_PRODUCT = YES
-STRIP_STYLE = all
+
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
 GCC_FAST_OBJC_DISPATCH = YES
 GCC_AUTO_VECTORIZATION = NO
 GCC_ENABLE_FIX_AND_CONTINUE = NO
@@ -18,15 +18,13 @@ GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS NDEBUG
 
 GCC_C_LANGUAGE_STANDARD = compiler-default
 
-// I think this is set to avoid a compiler warning on BibDesk_vers.c
+// I think this is set to avoid a compiler warning on Skim_vers.c
 GCC_INPUT_FILETYPE = sourcecode.c.objc
 
 GCC_WARN_CHECK_SWITCH_STATEMENTS = YES
 GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO
 GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO
 GCC_WARN_SHADOW = YES
-
-// this warning is pretty useless since C defaults to double
 GCC_WARN_64_TO_32_BIT_CONVERSION = NO
 GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES
 GCC_WARN_INHIBIT_ALL_WARNINGS = NO
