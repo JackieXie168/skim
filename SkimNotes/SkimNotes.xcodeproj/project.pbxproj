@@ -113,6 +113,7 @@
 		CEBA30770E06DC2B0000B2E6 /* SkimNotes-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Common.xcconfig"; path = "Configurations/SkimNotes-Common.xcconfig"; sourceTree = "<group>"; };
 		CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Debug.xcconfig"; path = "Configurations/SkimNotes-Debug.xcconfig"; sourceTree = "<group>"; };
 		CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release.xcconfig"; path = "Configurations/SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
+		CEC3AC310E23D37000F40B0B /* SkimNotes-Release64Bit.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release64Bit.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +254,7 @@
 				CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */,
 				CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */,
 				CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */,
+				CEC3AC310E23D37000F40B0B /* SkimNotes-Release64Bit.xcconfig */,
 			);
 			name = Configurations;
 			sourceTree = "<group>";
@@ -444,14 +446,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1.1;
 				DYLIB_CURRENT_VERSION = 1.1;
 				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SkimNotes_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -466,11 +463,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1.1;
 				DYLIB_CURRENT_VERSION = 1.1;
 				FRAMEWORK_VERSION = A;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SkimNotes_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -519,11 +514,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE1AB1050E2297C500FBE87A /* SkimNotes-ReleaseGCSupport.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1.1;
 				DYLIB_CURRENT_VERSION = 1.1;
 				FRAMEWORK_VERSION = A;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SkimNotes_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -538,9 +531,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -595,12 +585,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEBA307A0E06DC680000B2E6 /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH)";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -612,9 +597,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEBA307D0E06DC950000B2E6 /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
