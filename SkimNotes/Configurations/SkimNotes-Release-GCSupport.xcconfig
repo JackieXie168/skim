@@ -1,0 +1,5 @@
+// Common to all targets for Release with GC and 64 Bits support
+
+#include "SkimNotes-Release-64Bit.xcconfig"
+
+GCC_ENABLE_OBJC_GC = supported

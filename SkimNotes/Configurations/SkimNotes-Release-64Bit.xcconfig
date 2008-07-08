@@ -1,3 +1,5 @@
+// Common to all tools for release with 64-Bit support
+
 #include "SkimNotes-Release.xcconfig"
 
 ARCHS = ppc i386 x86_64

@@ -1,3 +1,5 @@
+// Common to all targets and all configurations
+
 SDKROOT = $(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk
 DEBUG_INFORMATION_FORMAT = dwarf
 MACOSX_DEPLOYMENT_TARGET = 10.4
