@@ -54,14 +54,6 @@
 		CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D260E05A6AB0000B2E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		CEC3ACAF0E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACA70E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig */; };
-		CEC3ACB00E23DE8A00F40B0B /* SkimNotes-Framework-Release-64Bit.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACA80E23DE8A00F40B0B /* SkimNotes-Framework-Release-64Bit.xcconfig */; };
-		CEC3ACB20E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACAA0E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig */; };
-		CEC3ACB30E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACAB0E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig */; };
-		CEC3ACB40E23DE8A00F40B0B /* SkimNotes-Tool-Release-GCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACAC0E23DE8A00F40B0B /* SkimNotes-Tool-Release-GCSupport.xcconfig */; };
-		CEC3ACB50E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACAD0E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig */; };
-		CEC3ACB80E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACB70E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig */; };
-		CEC3ACBA0E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CEC3ACB90E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -365,14 +357,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
-				CEC3ACAF0E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig in Resources */,
-				CEC3ACB00E23DE8A00F40B0B /* SkimNotes-Framework-Release-64Bit.xcconfig in Resources */,
-				CEC3ACB20E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig in Resources */,
-				CEC3ACB30E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig in Resources */,
-				CEC3ACB40E23DE8A00F40B0B /* SkimNotes-Tool-Release-GCSupport.xcconfig in Resources */,
-				CEC3ACB50E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig in Resources */,
-				CEC3ACB80E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig in Resources */,
-				CEC3ACBA0E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
