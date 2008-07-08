@@ -1,3 +1,5 @@
+// Common to all targets for Release
+
 #include "SkimNotes-Common.xcconfig"
 
 ARCHS = ppc i386

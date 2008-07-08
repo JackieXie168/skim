@@ -1,3 +1,0 @@
-#include "SkimNotes-Release64Bit.xcconfig"
-
-GCC_ENABLE_OBJC_GC = supported
