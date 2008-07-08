@@ -1,0 +1,2 @@
+#include "SkimNotes-Release-GCSupport.xcconfig"
+#include "SkimNotes-Tool.xcconfig"

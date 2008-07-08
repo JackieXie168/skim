@@ -1,0 +1,2 @@
+#include "SkimNotes-Release-64Bit.xcconfig"
+#include "SkimNotes-Tool.xcconfig"

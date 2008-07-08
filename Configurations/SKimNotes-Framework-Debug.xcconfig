@@ -1,0 +1,2 @@
+#include "SkimNotes-Debug.xcconfig"
+#include "SkimNotes-Framework.xcconfig"

@@ -1,0 +1,4 @@
+// Tool only
+
+INSTALL_PATH = /usr/local/bin
+PRODUCT_NAME = skimnotes

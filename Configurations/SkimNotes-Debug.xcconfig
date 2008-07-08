@@ -1,3 +1,5 @@
+// Common to all targets for Debug
+
 #include "SkimNotes-Common.xcconfig"
 
 ARCHS = $(NATIVE_ARCH)
