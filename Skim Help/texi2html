@@ -10377,10 +10377,10 @@ sub rearrange_elements()
         if ($T2H_DEBUG & $DEBUG_ELEMENTS);
     foreach my $node (@nodes_list)
     {
-        if (!$node->{'first'} and !$node->{'top'} and !$node->{'menu_up'} and ($node->{'texi'} !~ /^top$/i) and $Texi2HTML::Config::SHOW_MENU)
-        {
-            warn "$WARN `$node->{'texi'}' doesn't appear in menus\n";
-        }
+        #if (!$node->{'first'} and !$node->{'top'} and !$node->{'menu_up'} and ($node->{'texi'} !~ /^top$/i) and $Texi2HTML::Config::SHOW_MENU)
+        #{
+        #    warn "$WARN `$node->{'texi'}' doesn't appear in menus\n";
+        #}
 
         # use values deduced from menus to complete missing up, next, prev
         # or from sectionning commands if automatic sectionning
