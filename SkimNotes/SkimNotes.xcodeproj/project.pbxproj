@@ -35,6 +35,12 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE17EF8A0E250E8B00DE06EA /* SkimNotes-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */; };
+		CE17EF8B0E250E8B00DE06EA /* SkimNotes-Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */; };
+		CE17EF8C0E250E8C00DE06EA /* SkimNotes-Release-64Bit.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */; };
+		CE17EF8D0E250E8C00DE06EA /* SkimNotes-Release-GCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */; };
+		CE17EF8E0E250E8C00DE06EA /* SkimNotes-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */; };
+		CE17EF8F0E250E8D00DE06EA /* SkimNotes-Tool.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
 		CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */; };
 		CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */; };
@@ -80,6 +86,12 @@
 		32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* SkimNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Debug.xcconfig"; path = "Configurations/SkimNotes-Debug.xcconfig"; sourceTree = "<group>"; };
+		CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Framework.xcconfig"; path = "Configurations/SkimNotes-Framework.xcconfig"; sourceTree = "<group>"; };
+		CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release-64Bit.xcconfig"; path = "Configurations/SkimNotes-Release-64Bit.xcconfig"; sourceTree = "<group>"; };
+		CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release-GCSupport.xcconfig"; path = "Configurations/SkimNotes-Release-GCSupport.xcconfig"; sourceTree = "<group>"; };
+		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release.xcconfig"; path = "Configurations/SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
+		CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool.xcconfig"; path = "Configurations/SkimNotes-Tool.xcconfig"; sourceTree = "<group>"; };
 		CE3907AD0E082C2D0015B0B7 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B40E082C900015B0B7 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
@@ -109,14 +121,6 @@
 		CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		CEBA303C0E06C92F0000B2E6 /* Licence.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Licence.txt; sourceTree = "<group>"; };
 		CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = SkimNotes.rtf; sourceTree = "<group>"; };
-		CEC3ACA70E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SKimNotes-Framework-Debug.xcconfig"; path = "Configurations/SKimNotes-Framework-Debug.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACA80E23DE8A00F40B0B /* SkimNotes-Framework-Release-64Bit.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Framework-Release-64Bit.xcconfig"; path = "Configurations/SkimNotes-Framework-Release-64Bit.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACAA0E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool-Debug.xcconfig"; path = "Configurations/SkimNotes-Tool-Debug.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACAB0E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool-Release-64Bit.xcconfig"; path = "Configurations/SkimNotes-Tool-Release-64Bit.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACAC0E23DE8A00F40B0B /* SkimNotes-Tool-Release-GCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool-Release-GCSupport.xcconfig"; path = "Configurations/SkimNotes-Tool-Release-GCSupport.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACAD0E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool-Release.xcconfig"; path = "Configurations/SkimNotes-Tool-Release.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACB70E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Framework-Release-GCSupport.xcconfig"; path = "Configurations/SkimNotes-Framework-Release-GCSupport.xcconfig"; sourceTree = "<group>"; };
-		CEC3ACB90E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Framework-Release.xcconfig"; path = "Configurations/SkimNotes-Framework-Release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,14 +257,12 @@
 		CEBA30790E06DC4C0000B2E6 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				CEC3ACA70E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig */,
-				CEC3ACB90E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig */,
-				CEC3ACA80E23DE8A00F40B0B /* SkimNotes-Framework-Release-64Bit.xcconfig */,
-				CEC3ACB70E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig */,
-				CEC3ACAA0E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig */,
-				CEC3ACAD0E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig */,
-				CEC3ACAB0E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig */,
-				CEC3ACAC0E23DE8A00F40B0B /* SkimNotes-Tool-Release-GCSupport.xcconfig */,
+				CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */,
+				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
+				CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */,
+				CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */,
+				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
+				CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */,
 			);
 			name = Configurations;
 			sourceTree = "<group>";
@@ -357,6 +359,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
+				CE17EF8A0E250E8B00DE06EA /* SkimNotes-Debug.xcconfig in Resources */,
+				CE17EF8B0E250E8B00DE06EA /* SkimNotes-Framework.xcconfig in Resources */,
+				CE17EF8C0E250E8C00DE06EA /* SkimNotes-Release-64Bit.xcconfig in Resources */,
+				CE17EF8D0E250E8C00DE06EA /* SkimNotes-Release-GCSupport.xcconfig in Resources */,
+				CE17EF8E0E250E8C00DE06EA /* SkimNotes-Release.xcconfig in Resources */,
+				CE17EF8F0E250E8D00DE06EA /* SkimNotes-Tool.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,94 +458,71 @@
 /* Begin XCBuildConfiguration section */
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACA70E23DE8A00F40B0B /* SKimNotes-Framework-Debug.xcconfig */;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACB90E23DF9C00F40B0B /* SkimNotes-Framework-Release.xcconfig */;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
 		};
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 			};
 			name = Debug;
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 			};
 			name = Release;
 		};
 		CE1AB1000E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 			};
 			name = "Release (GC dual-mode)";
 		};
 		CE1AB1010E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACB70E23DEEF00F40B0B /* SkimNotes-Framework-Release-GCSupport.xcconfig */;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
 			};
 			name = "Release (GC dual-mode)";
 		};
 		CE1AB1020E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACAB0E23DE8A00F40B0B /* SkimNotes-Tool-Release-64Bit.xcconfig */;
+			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
+				GCC_ENABLE_OBJC_GC = NO;
 			};
 			name = "Release (GC dual-mode)";
 		};
 		CE1AB1030E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = HeaderDocs;
-				ZERO_LINK = NO;
 			};
 			name = "Release (GC dual-mode)";
 		};
 		CE1AB1040E22971400FBE87A /* Release (GC dual-mode) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = Archive;
-				ZERO_LINK = NO;
 			};
 			name = "Release (GC dual-mode)";
 		};
 		CE665A860E1C086F00D0704D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = HeaderDocs;
 			};
 			name = Debug;
@@ -545,24 +530,20 @@
 		CE665A870E1C086F00D0704D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = HeaderDocs;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
 		CEBA2B570E0566B30000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACAA0E23DE8A00F40B0B /* SkimNotes-Tool-Debug.xcconfig */;
+			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		CEBA2B580E0566B30000B2E6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC3ACAD0E23DE8A00F40B0B /* SkimNotes-Tool-Release.xcconfig */;
+			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
@@ -570,9 +551,6 @@
 		CEBA2EA30E0673B60000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = Archive;
 			};
 			name = Debug;
@@ -580,11 +558,7 @@
 		CEBA2EA40E0673B60000B2E6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = Archive;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
