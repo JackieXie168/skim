@@ -51,8 +51,6 @@
 		CE0ECCD90DE71868006EEDDB /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
-		CE17EE470E24ED7C00DE06EA /* Skim-App.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */; };
-		CE17EE4B0E24EE7500DE06EA /* Skim-Leopard.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
@@ -1818,8 +1816,6 @@
 				CE64E81A0D92BB97000AD050 /* ToolbarFontsBlack.tiff in Resources */,
 				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
 				CE0ECCD90DE71868006EEDDB /* Templates in Resources */,
-				CE17EE470E24ED7C00DE06EA /* Skim-App.xcconfig in Resources */,
-				CE17EE4B0E24EE7500DE06EA /* Skim-Leopard.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
