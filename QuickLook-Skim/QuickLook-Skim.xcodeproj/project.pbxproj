@@ -286,7 +286,6 @@
 			buildSettings = {
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = Skim;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
