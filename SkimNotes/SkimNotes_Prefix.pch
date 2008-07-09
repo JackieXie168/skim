@@ -9,35 +9,35 @@
     #define SKNLocalizedString(key, comment) NSLocalizedStringFromTableInBundle(key, @"SkimNotes", [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.framework.skimnotes"], comment)
     
     #if !defined(MAC_OS_X_VERSION_10_5) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-    
-    #ifndef NSINTEGER_DEFINED
-        #ifdef NS_BUILD_32_LIKE_64
-            typedef long NSInteger;
-            typedef unsigned long NSUInteger;
-        #else
-            typedef int NSInteger;
-            typedef unsigned int NSUInteger;
-        #endif
-        #define NSIntegerMax    LONG_MAX
-        #define NSIntegerMin    LONG_MIN
-        #define NSUIntegerMax   ULONG_MAX
-        #define NSINTEGER_DEFINED 1
-    #endif
-    
-    typedef NSInteger PDFMarkupType;
-    
-    #define SKNUnsignedIntegerValue(number) [number unsignedIntValue]
-    #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInt:value]
-    
-    #elif MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-    
-    #define SKNUnsignedIntegerValue(number) ([number respondsToSelector:@selector(unsignedIntegerValue)] ? [number unsignedIntegerValue] : [number unsignedIntValue])
-    #define SKNNumberWithUnsignedInteger(value) ([NSNumber respondsToSelector:@selector(numberWithUnsignedInteger:)] ? [NSNumber numberWithUnsignedInteger:value] : [NSNumber numberWithUnsignedInt:value])
-    
-    #else
-    
-    #define SKNUnsignedIntegerValue(number) [number unsignedIntegerValue]
-    #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInteger:value]
         
+        #ifndef NSINTEGER_DEFINED
+            #ifdef NS_BUILD_32_LIKE_64
+                typedef long NSInteger;
+                typedef unsigned long NSUInteger;
+            #else
+                typedef int NSInteger;
+                typedef unsigned int NSUInteger;
+            #endif
+            #define NSIntegerMax    LONG_MAX
+            #define NSIntegerMin    LONG_MIN
+            #define NSUIntegerMax   ULONG_MAX
+            #define NSINTEGER_DEFINED 1
+        #endif
+        
+        typedef NSInteger PDFMarkupType;
+        
+        #define SKNUnsignedIntegerValue(number) [number unsignedIntValue]
+        #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInt:value]
+        
+    #elif MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+        
+        #define SKNUnsignedIntegerValue(number) ([number respondsToSelector:@selector(unsignedIntegerValue)] ? [number unsignedIntegerValue] : [number unsignedIntValue])
+        #define SKNNumberWithUnsignedInteger(value) ([NSNumber respondsToSelector:@selector(numberWithUnsignedInteger:)] ? [NSNumber numberWithUnsignedInteger:value] : [NSNumber numberWithUnsignedInt:value])
+        
+    #else
+        
+        #define SKNUnsignedIntegerValue(number) [number unsignedIntegerValue]
+        #define SKNNumberWithUnsignedInteger(value) [NSNumber numberWithUnsignedInteger:value]
+            
     #endif
 #endif
