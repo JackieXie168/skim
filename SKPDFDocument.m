@@ -356,7 +356,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             while (file = [fileEnum nextObject]) {
                 if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
                     if (tmpPath == nil)
-                        tmpPath = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
+                        tmpPath = SKUniqueTemporaryDirectory();
                     [fm movePath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] handler:nil];
                 }
             }
@@ -1002,7 +1002,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (IBAction)emailArchive:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSString *tmpDir = SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+        NSString *tmpDir = SKUniqueChewableItemsDirectory();
         NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"tgz"]];
         if ([self saveArchiveToFile:tmpFile] == NO || [self emailAttachmentFile:tmpFile] == NO)
             NSBeep();
@@ -1076,7 +1076,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (IBAction)emailDiskImage:(id)sender {
     NSString *path = [[self fileURL] path];
     if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
-        NSString *tmpDir = SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+        NSString *tmpDir = SKUniqueChewableItemsDirectory();
         NSString *tmpFile = [tmpDir stringByAppendingPathComponent:[[[[self fileURL] path] lastPathComponent] stringByReplacingPathExtension:@"dmg"]];
         [self saveDiskImageToFile:tmpFile email:YES];
     } else {
