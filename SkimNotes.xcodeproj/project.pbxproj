@@ -258,10 +258,10 @@
 			isa = PBXGroup;
 			children = (
 				CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */,
-				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
+				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
 				CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */,
 				CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */,
-				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
+				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
 				CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */,
 			);
 			name = Configurations;
