@@ -168,6 +168,14 @@ NSString *SKChewableItemsDirectory() {
     return chewableItemsDirectory;
 }
 
+NSString *SKUniqueTemporaryDirectory() {
+    return SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
+}
+
+NSString *SKUniqueChewableItemsDirectory() {
+    return SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+}
+
 // These are taken from MoreFilesX
 
 struct FSDeleteContainerGlobals
