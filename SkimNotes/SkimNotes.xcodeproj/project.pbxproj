@@ -35,12 +35,6 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		CE17EF8A0E250E8B00DE06EA /* SkimNotes-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */; };
-		CE17EF8B0E250E8B00DE06EA /* SkimNotes-Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */; };
-		CE17EF8C0E250E8C00DE06EA /* SkimNotes-Release-64Bit.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */; };
-		CE17EF8D0E250E8C00DE06EA /* SkimNotes-Release-GCSupport.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */; };
-		CE17EF8E0E250E8C00DE06EA /* SkimNotes-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */; };
-		CE17EF8F0E250E8D00DE06EA /* SkimNotes-Tool.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
 		CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */; };
 		CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */; };
@@ -359,12 +353,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
-				CE17EF8A0E250E8B00DE06EA /* SkimNotes-Debug.xcconfig in Resources */,
-				CE17EF8B0E250E8B00DE06EA /* SkimNotes-Framework.xcconfig in Resources */,
-				CE17EF8C0E250E8C00DE06EA /* SkimNotes-Release-64Bit.xcconfig in Resources */,
-				CE17EF8D0E250E8C00DE06EA /* SkimNotes-Release-GCSupport.xcconfig in Resources */,
-				CE17EF8E0E250E8C00DE06EA /* SkimNotes-Release.xcconfig in Resources */,
-				CE17EF8F0E250E8D00DE06EA /* SkimNotes-Tool.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
