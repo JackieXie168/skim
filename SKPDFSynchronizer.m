@@ -153,9 +153,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (NSString *)fileName {
+    NSString *file = nil;
     @synchronized(self) {
-        return [[fileName retain] autorelease];
+        file = [[fileName retain] autorelease];
     }
+    return file;
 }
 
 - (void)setFileName:(NSString *)newFileName {
@@ -172,9 +174,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (NSDate *)lastModDate {
+    NSDate *date = nil;
     @synchronized(self) {
-        return [[lastModDate retain] autorelease];
+        date = [[lastModDate retain] autorelease];
     }
+    return date;
 }
 
 - (void)setLastModDate:(NSDate *)date {
