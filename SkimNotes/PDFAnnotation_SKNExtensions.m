@@ -202,7 +202,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
     [dict setValue:[self string] forKey:SKNPDFAnnotationContentsKey];
     [dict setValue:[self color] forKey:SKNPDFAnnotationColorKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
-    [dict setValue:SKNNumberWithUnsignedInteger(pageIndex) forKey:SKNPDFAnnotationPageIndexKey];
+    [dict setValue:[NSNumber numberWithUnsignedInt:pageIndex == NSNotFound ? 0 : pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
     if ([self border]) {
         [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:SKNPDFAnnotationLineWidthKey];
         [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:SKNPDFAnnotationBorderStyleKey];
@@ -358,7 +358,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
         Class stringClass = [NSString class];
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
         if ([type isKindOfClass:stringClass]) {
-            PDFMarkupType markupType = kPDFMarkupTypeHighlight;
+            NSInteger markupType = kPDFMarkupTypeHighlight;
             if ([type isEqualToString:SKNUnderlineString])
                 markupType = kPDFMarkupTypeUnderline;
             else if ([type isKindOfClass:stringClass] && [type isEqualToString:SKNStrikeOutString])

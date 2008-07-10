@@ -86,6 +86,7 @@
 		CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release-GCSupport.xcconfig"; path = "Configurations/SkimNotes-Release-GCSupport.xcconfig"; sourceTree = "<group>"; };
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release.xcconfig"; path = "Configurations/SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
 		CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool.xcconfig"; path = "Configurations/SkimNotes-Tool.xcconfig"; sourceTree = "<group>"; };
+		CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Tool_Prefix.pch; sourceTree = "<group>"; };
 		CE3907AD0E082C2D0015B0B7 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B40E082C900015B0B7 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
@@ -224,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */,
+				CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";

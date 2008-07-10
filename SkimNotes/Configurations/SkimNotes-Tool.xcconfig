@@ -2,3 +2,6 @@
 
 INSTALL_PATH = /usr/local/bin
 PRODUCT_NAME = skimnotes
+
+GCC_PRECOMPILE_PREFIX_HEADER = YES
+GCC_PREFIX_HEADER = SkimNotes_Tool_Prefix.pch
