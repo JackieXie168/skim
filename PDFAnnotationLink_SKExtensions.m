@@ -40,7 +40,7 @@
 #import "SKUtilities.h"
 
 
-@implementation PDFAnnotationLink (SKLeopardPrivate)
+@interface PDFAnnotationLink (SKLeopardPrivate)
 - (NSString *)toolTipNoLabel;
 @end
 
