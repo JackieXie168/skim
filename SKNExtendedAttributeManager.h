@@ -46,12 +46,12 @@
 */
 enum {
     kSKNXattrDefault     = 0,
-    kSKNXattrNoFollow    = 1L << 1,
-    kSKNXattrCreateOnly  = 1L << 2,
-    kSKNXattrReplaceOnly = 1L << 3,
-    kSKNXattrNoSplitData = 1L << 4
+    kSKNXattrNoFollow    = 1 << 1,
+    kSKNXattrCreateOnly  = 1 << 2,
+    kSKNXattrReplaceOnly = 1 << 3,
+    kSKNXattrNoSplitData = 1 << 4
 };
-typedef UInt32 SKNXattrFlags;
+typedef int SKNXattrFlags;
 
 
 /*!
