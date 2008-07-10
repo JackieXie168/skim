@@ -106,8 +106,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
         fileName = nil;
         lastModDate = nil;
         
-        lock = [[NSLock alloc] init];
-        
         NSPort *port1 = [NSPort port];
         NSPort *port2 = [NSPort port];
         
@@ -137,7 +135,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (void)dealloc {
-    [lock release];
     [pages release];
     [lines release];
     [fileName release];
@@ -156,39 +153,37 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (NSString *)fileName {
-    [lock lock];
-    NSString *file = [[fileName retain] autorelease];
-    [lock unlock];
-    return file;
+    @synchronized(self) {
+        return [[fileName retain] autorelease];
+    }
 }
 
 - (void)setFileName:(NSString *)newFileName {
-    [lock lock];
-    if (fileName != newFileName) {
-        if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
-            [lastModDate release];
-            lastModDate = nil;
+    @synchronized(self) {
+        if (fileName != newFileName) {
+            if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
+                [lastModDate release];
+                lastModDate = nil;
+            }
+            [fileName release];
+            fileName = [newFileName retain];
         }
-        [fileName release];
-        fileName = [newFileName retain];
     }
-    [lock unlock];
 }
 
 - (NSDate *)lastModDate {
-    [lock lock];
-    NSDate *date = [[lastModDate retain] autorelease];
-    [lock unlock];
-    return date;
+    @synchronized(self) {
+        return [[lastModDate retain] autorelease];
+    }
 }
 
 - (void)setLastModDate:(NSDate *)date {
-    [lock lock];
-    if (date != lastModDate) {
-        [lastModDate release];
-        lastModDate = [date retain];
+    @synchronized(self) {
+        if (date != lastModDate) {
+            [lastModDate release];
+            lastModDate = [date retain];
+        }
     }
-    [lock unlock];
 }
 
 #pragma mark API
