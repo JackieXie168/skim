@@ -32,10 +32,6 @@
 #include <sys/xattr.h>
 #import "bzlib.h"
 
-#ifndef SKNLocalizedString
-#define SKNLocalizedString(key, comment) key
-#endif
-
 #define MAX_XATTR_LENGTH        2048
 #define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
 #define PREFIX                  @"net_sourceforge_skim-app"
@@ -49,7 +45,7 @@ static NSString *SKNErrorDomain = @"SKNErrorDomain";
 - (BOOL)isBzipData:(NSData *)data;
 - (BOOL)isPlistData:(NSData *)data;
 // private method to print error messages
-- (NSError *)xattrError:(int)err forPath:(NSString *)path;
+- (NSError *)xattrError:(NSInteger)err forPath:(NSString *)path;
 @end
 
 
@@ -145,7 +141,7 @@ static id sharedNoSplitManager = nil;
         return nil;
     }
     
-    unsigned int idx, start = 0;
+    NSUInteger idx, start = 0;
 
     NSString *attribute = nil;
     NSMutableArray *attrs = [NSMutableArray array];
@@ -243,7 +239,7 @@ static id sharedNoSplitManager = nil;
     if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
         
         NSString *uniqueValue = [plist objectForKey:uniqueKey];
-        unsigned int i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
+        NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
         NSString *name;
 
         NSMutableData *buffer = [NSMutableData data];
@@ -325,7 +321,7 @@ static id sharedNoSplitManager = nil;
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
-        unsigned int numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
+        NSUInteger numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], wrapperKey, uniqueValue, uniqueKey, [NSNumber numberWithUnsignedInt:numberOfFragments], fragmentsKey, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
@@ -338,14 +334,14 @@ static id sharedNoSplitManager = nil;
         
         // now split the original data value into multiple segments
         NSString *name;
-        unsigned int j;
+        NSUInteger j;
         const char *valuePtr = [value bytes];
         
         for (j = 0; success && j < numberOfFragments; j++) {
             name = [[NSString alloc] initWithFormat:@"%@-%u", uniqueValue, j];
             
             char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
-            unsigned int subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
+            size_t subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
             
             // could recurse here, but it's more efficient to use the variables we already have
             if (setxattr(fsPath, [name UTF8String], subdataPtr, subdataLen, 0, xopts)) {
@@ -426,7 +422,7 @@ static id sharedNoSplitManager = nil;
             if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:wrapperKey] boolValue]) {
                 
                 NSString *uniqueValue = [plist objectForKey:uniqueKey];
-                unsigned int i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
+                NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntValue];
                 NSString *name;
                 
                 // remove the sub attributes
@@ -483,7 +479,7 @@ static id sharedNoSplitManager = nil;
 }
 
 // guaranteed to return non-nil
-- (NSError *)xattrError:(int)err forPath:(NSString *)path;
+- (NSError *)xattrError:(NSInteger)err forPath:(NSString *)path;
 {
     NSString *errMsg = nil;
     switch (err)
@@ -546,8 +542,8 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)bzipData:(NSData *)data;
 {
-	int compression = 5;
-    int bzret, buffer_size = 1000000;
+	NSInteger compression = 5;
+    NSInteger bzret, buffer_size = 1000000;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = [data length];
@@ -580,12 +576,12 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)bunzipData:(NSData *)data;
 {
-	int bzret;
+	NSInteger bzret;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = [data length];
 	
-	const int buffer_size = 10000;
+	const NSInteger buffer_size = 10000;
 	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
 	stream.next_out = [buffer mutableBytes];
 	stream.avail_out = buffer_size;
@@ -615,7 +611,7 @@ static id sharedNoSplitManager = nil;
 - (BOOL)isBzipData:(NSData *)data;
 {
     static NSData *bzipHeaderData = nil;
-    static unsigned int bzipHeaderDataLength = 0;
+    static NSUInteger bzipHeaderDataLength = 0;
     if (nil == bzipHeaderData) {
         char *h = "BZh";
         bzipHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
@@ -628,7 +624,7 @@ static id sharedNoSplitManager = nil;
 - (BOOL)isPlistData:(NSData *)data;
 {
     static NSData *plistHeaderData = nil;
-    static unsigned int plistHeaderDataLength = 0;
+    static NSUInteger plistHeaderDataLength = 0;
     if (nil == plistHeaderData) {
         char *h = "bplist00";
         plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];

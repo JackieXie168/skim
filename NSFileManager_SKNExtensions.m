@@ -41,10 +41,6 @@
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import <SkimNotes/SKNPDFAnnotationNote.h>
 
-#ifndef SKNLocalizedString
-#define SKNLocalizedString(key, comment) key
-#endif
-
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
 #define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
@@ -58,9 +54,12 @@ static NSString *SKNTextNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
         NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
         NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
+        
+        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
+            pageIndex = 0;
         
         [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
         if ([string length]) {
@@ -82,9 +81,12 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
         NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
         NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
+        
+        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
+            pageIndex = 0;
         
         [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
         if ([string length]) {
