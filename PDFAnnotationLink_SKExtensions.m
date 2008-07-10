@@ -40,6 +40,11 @@
 #import "SKUtilities.h"
 
 
+@implementation PDFAnnotationLink (SKLeopardPrivate)
+- (NSString *)toolTipNoLabel;
+@end
+
+
 @implementation PDFAnnotationLink (SKExtensions)
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
