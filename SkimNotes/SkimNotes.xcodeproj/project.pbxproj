@@ -492,7 +492,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
 			buildSettings = {
-				GCC_ENABLE_OBJC_GC = NO;
 			};
 			name = "Release (GC dual-mode)";
 		};
