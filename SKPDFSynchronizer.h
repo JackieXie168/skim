@@ -48,8 +48,6 @@
     
     id delegate;
     
-    NSLock *lock;
-    
     id serverOnMainThread;
     id serverOnServerThread;
     NSConnection *mainThreadConnection;
