@@ -37,7 +37,7 @@ enum {
     SKNFormatRTF
 };
 
-static int SKNActionForName(NSString *actionString) {
+static NSInteger SKNActionForName(NSString *actionString) {
     if ([actionString caseInsensitiveCompare:@"get"] == NSOrderedSame)
         return SKNActionGet;
     else if ([actionString caseInsensitiveCompare:@"set"] == NSOrderedSame)
@@ -79,7 +79,7 @@ int main (int argc, const char * argv[]) {
         exit (1);
     }
     
-    int action = SKNActionForName([args objectAtIndex:1]);
+    NSInteger action = SKNActionForName([args objectAtIndex:1]);
     
     BOOL success = NO;
     
@@ -108,7 +108,7 @@ int main (int argc, const char * argv[]) {
         
     } else if (action == SKNActionHelp) {
         
-        int helpAction = SKNActionForName([args count] > 2 ? [args objectAtIndex:2] : @"");
+        NSInteger helpAction = SKNActionForName([args count] > 2 ? [args objectAtIndex:2] : @"");
         
         switch (helpAction) {
             case SKNActionUnknown:
@@ -151,7 +151,7 @@ int main (int argc, const char * argv[]) {
         }
         
         NSString *formatString = nil;
-        int format = SKNFormatAuto;
+        NSInteger format = SKNFormatAuto;
         int offset = 2;
         
         if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {

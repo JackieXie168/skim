@@ -73,11 +73,13 @@
     NSDictionary *dict;
     NSMutableArray *notes = [NSMutableArray array];
     
+    if ([self pageCount] == 0) return nil;
+    
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        NSUInteger pageIndex = SKNUnsignedIntegerValue([dict objectForKey:SKNPDFAnnotationPageIndexKey]);
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
-            if (pageIndex == NSNotFound)
+            if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
                 pageIndex = 0;
             else if (pageIndex >= [self pageCount])
                 pageIndex = [self pageCount] - 1;
