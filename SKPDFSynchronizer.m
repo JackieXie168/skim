@@ -43,9 +43,17 @@
 #import "Files_SKExtensions.h"
 
 
+static NSString *SKPDFSynchronizerRecordIndexKey = @"recordIndex";
+static NSString *SKPDFSynchronizerPageKey = @"page";
+static NSString *SKPDFSynchronizerXKey = @"x";
+static NSString *SKPDFSynchronizerYKey = @"y";
+static NSString *SKPDFSynchronizerFileKey = @"file";
+static NSString *SKPDFSynchronizerLineKey = @"line";
+static NSString *SKPDFSynchronizerTexExtension = @"tex";
+
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
-    if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
-        file = [file stringByAppendingPathExtension:@"tex"];
+    if ([[file pathExtension] caseInsensitiveCompare:SKPDFSynchronizerTexExtension] != NSOrderedSame)
+        file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
     if ([file hasPrefix:@"/"] == NO)
         file = [base stringByAppendingPathComponent:file];
     return file;
@@ -55,7 +63,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
     NSMutableDictionary *record = [records objectForKey:recordNumber];
     if (record == nil) {
-        record = [[NSMutableDictionary alloc] initWithObjectsAndKeys:recordNumber, @"recordIndex", nil];
+        record = [[NSMutableDictionary alloc] initWithObjectsAndKeys:recordNumber, SKPDFSynchronizerRecordIndexKey, nil];
         [records setObject:record forKey:recordNumber];
         [record release];
     }
@@ -380,8 +388,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
                 // we ignore the column
                 [scanner scanInt:NULL];
                 record = SKRecordForRecordIndex(records, recordIndex);
-                [record setObject:file forKey:@"file"];
-                [record setIntValue:line forKey:@"line"];
+                [record setObject:file forKey:SKPDFSynchronizerFileKey];
+                [record setIntValue:line forKey:SKPDFSynchronizerLineKey];
                 [[lines objectForKey:file] addObject:record];
             }
         } else if (ch == 'p') {
@@ -389,9 +397,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
             [scanner scanString:@"*" intoString:NULL] || [scanner scanString:@"+" intoString:NULL];
             if ([scanner scanInt:&recordIndex] && [scanner scanFloat:&x] && [scanner scanFloat:&y]) {
                 record = SKRecordForRecordIndex(records, recordIndex);
-                [record setIntValue:[pages count] - 1 forKey:@"page"];
-                [record setFloatValue:x / 65536 + pdfOffset.x forKey:@"x"];
-                [record setFloatValue:y / 65536 + pdfOffset.y forKey:@"y"];
+                [record setIntValue:[pages count] - 1 forKey:SKPDFSynchronizerPageKey];
+                [record setFloatValue:x / 65536 + pdfOffset.x forKey:SKPDFSynchronizerXKey];
+                [record setFloatValue:y / 65536 + pdfOffset.y forKey:SKPDFSynchronizerYKey];
                 [[pages lastObject] addObject:record];
             }
         } else if (ch == 's') {
@@ -429,9 +437,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     [scanner release];
     
-    NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"line" ascending:YES] autorelease];
-    NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"x" ascending:YES] autorelease];
-    NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
+    NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerLineKey ascending:YES] autorelease];
+    NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerXKey ascending:YES] autorelease];
+    NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerYKey ascending:NO] autorelease];
     
     [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
@@ -458,10 +466,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
-            if ([record objectForKey:@"line"] == nil)
+            if ([record objectForKey:SKPDFSynchronizerLineKey] == nil)
                 continue;
-            float x = [[record objectForKey:@"x"] floatValue];
-            float y = [[record objectForKey:@"y"] floatValue];
+            float x = [[record objectForKey:SKPDFSynchronizerXKey] floatValue];
+            float y = [[record objectForKey:SKPDFSynchronizerYKey] floatValue];
             if (y > NSMaxY(rect)) {
                 beforeRecord = record;
             } else if (y < NSMinY(rect)) {
@@ -482,10 +490,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
             NSNumber *nearest = [[[atRecords allKeys] sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:0];
             record = [atRecords objectForKey:nearest];
         } else if (beforeRecord && afterRecord) {
-            float beforeX = [[beforeRecord objectForKey:@"x"] floatValue];
-            float beforeY = [[beforeRecord objectForKey:@"y"] floatValue];
-            float afterX = [[afterRecord objectForKey:@"x"] floatValue];
-            float afterY = [[afterRecord objectForKey:@"y"] floatValue];
+            float beforeX = [[beforeRecord objectForKey:SKPDFSynchronizerXKey] floatValue];
+            float beforeY = [[beforeRecord objectForKey:SKPDFSynchronizerYKey] floatValue];
+            float afterX = [[afterRecord objectForKey:SKPDFSynchronizerXKey] floatValue];
+            float afterY = [[afterRecord objectForKey:SKPDFSynchronizerYKey] floatValue];
             if (beforeY - point.y < point.y - afterY)
                 record = beforeRecord;
             else if (beforeY - point.y > point.y - afterY)
@@ -503,8 +511,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            foundLine = [[record objectForKey:@"line"] intValue];
-            foundFile = [record objectForKey:@"file"];
+            foundLine = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
+            foundFile = [record objectForKey:SKPDFSynchronizerFileKey];
         }
         
         OSMemoryBarrier();
@@ -529,9 +537,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSEnumerator *recordEnum = [[lines objectForKey:file] objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
-            if ([record objectForKey:@"page"] == nil)
+            if ([record objectForKey:SKPDFSynchronizerPageKey] == nil)
                 continue;
-            int l = [[record objectForKey:@"line"] intValue];
+            int l = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
             if (l < line) {
                 beforeRecord = record;
             } else if (l > line) {
@@ -546,8 +554,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if (atRecord) {
             record = atRecord;
         } else if (beforeRecord && afterRecord) {
-            int beforeLine = [[beforeRecord objectForKey:@"line"] intValue];
-            int afterLine = [[afterRecord objectForKey:@"line"] intValue];
+            int beforeLine = [[beforeRecord objectForKey:SKPDFSynchronizerLineKey] intValue];
+            int afterLine = [[afterRecord objectForKey:SKPDFSynchronizerLineKey] intValue];
             if (beforeLine - line > line - afterLine)
                 record = afterRecord;
             else
@@ -559,8 +567,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            foundPageIndex = [[record objectForKey:@"page"] unsignedIntValue];
-            foundPoint = NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]);
+            foundPageIndex = [[record objectForKey:SKPDFSynchronizerPageKey] unsignedIntValue];
+            foundPoint = NSMakePoint([[record objectForKey:SKPDFSynchronizerXKey] floatValue], [[record objectForKey:SKPDFSynchronizerYKey] floatValue]);
         }
         
         OSMemoryBarrier();
