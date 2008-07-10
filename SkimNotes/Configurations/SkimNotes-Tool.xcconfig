@@ -5,3 +5,6 @@ PRODUCT_NAME = skimnotes
 
 GCC_PRECOMPILE_PREFIX_HEADER = YES
 GCC_PREFIX_HEADER = SkimNotes_Tool_Prefix.pch
+
+// the code for the tool is not GC safe, this should not be relevant anyway
+GCC_ENABLE_OBJC_GC = unsupported

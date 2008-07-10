@@ -68,14 +68,6 @@ static inline NSString *SKNNormalizedPath(NSString *path) {
     return path;
 }
 
-#if !defined(MAC_OS_X_VERSION_10_5) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-#define DRAIN(pool) [pool release]
-#elif MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-#define DRAIN(pool) ([pool respondsToSelector:@selector(drain)] ? [pool drain] : [pool release])
-#else
-#define DRAIN(pool) [pool drain]
-#endif
-
 int main (int argc, const char * argv[]) {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
  
@@ -83,7 +75,7 @@ int main (int argc, const char * argv[]) {
     
     if (argc < 2) {
         fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-        DRAIN(pool);
+        [pool release];
         exit (1);
     }
     
@@ -98,20 +90,14 @@ int main (int argc, const char * argv[]) {
         
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
-        NSDate *distantFuture = (id)CFRetain([NSDate distantFuture]);
         
-        [(id)CFRetain(listener) release];
-        
-        DRAIN(pool);
         do {
+            [pool release];
             pool = [NSAutoreleasePool new];
-            didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:distantFuture];
-            DRAIN(pool);
+            didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
         } while (listener && didRun);
-        pool = [NSAutoreleasePool new];
         
-        CFRelease(listener);
-        CFRelease(distantFuture);
+        [listener release];
         
         success = YES;
         
@@ -159,7 +145,7 @@ int main (int argc, const char * argv[]) {
         
         if (argc < 3) {
             fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-            DRAIN(pool);
+            [pool release];
             exit (1);
         }
         
@@ -170,7 +156,7 @@ int main (int argc, const char * argv[]) {
         if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
             if (argc < 5) {
                 fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-                DRAIN(pool);
+                [pool release];
                 exit (1);
             }
             offset = 4;
@@ -273,7 +259,7 @@ int main (int argc, const char * argv[]) {
         
     }
     
-    DRAIN(pool);
+    [pool release];
     
     return success ? 0 : 1;
 }

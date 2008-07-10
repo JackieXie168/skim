@@ -79,15 +79,6 @@
     [super dealloc];
 }
 
-#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-- (void)finalize
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self destroyConnection];
-    [super finalize];
-}
-#endif
-
 - (NSString *)notesFileWithExtension:(NSString *)extension atPath:(NSString *)path error:(NSError **)error {
     NSString *filePath = nil;
     
