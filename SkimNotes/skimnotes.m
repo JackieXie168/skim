@@ -68,14 +68,22 @@ static inline NSString *SKNNormalizedPath(NSString *path) {
     return path;
 }
 
+#if !defined(MAC_OS_X_VERSION_10_5) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+#define DRAIN(pool) [pool release]
+#elif MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+#define DRAIN(pool) ([pool respondsToSelector:@selector(drain)] ? [pool drain] : [pool release])
+#else
+#define DRAIN(pool) [pool drain]
+#endif
+
 int main (int argc, const char * argv[]) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
  
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     
     if (argc < 2) {
         fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-        [pool release];
+        DRAIN(pool);
         exit (1);
     }
     
@@ -87,18 +95,23 @@ int main (int argc, const char * argv[]) {
         
         NSString *serverName = [args count] > 2 ? [args lastObject] : nil;
         SKNAgentListener *listener = [[SKNAgentListener alloc] initWithServerName:serverName];
-
+        
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
-        NSDate *distantFuture = [NSDate distantFuture];
+        NSDate *distantFuture = (id)CFRetain([NSDate distantFuture]);
         
+        [(id)CFRetain(listener) release];
+        
+        DRAIN(pool);
         do {
-            [pool release];
             pool = [NSAutoreleasePool new];
             didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:distantFuture];
+            DRAIN(pool);
         } while (listener && didRun);
+        pool = [NSAutoreleasePool new];
         
-        [listener release];
+        CFRelease(listener);
+        CFRelease(distantFuture);
         
         success = YES;
         
@@ -146,7 +159,7 @@ int main (int argc, const char * argv[]) {
         
         if (argc < 3) {
             fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-            [pool release];
+            DRAIN(pool);
             exit (1);
         }
         
@@ -157,7 +170,7 @@ int main (int argc, const char * argv[]) {
         if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
             if (argc < 5) {
                 fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-                [pool release];
+                DRAIN(pool);
                 exit (1);
             }
             offset = 4;
@@ -260,7 +273,7 @@ int main (int argc, const char * argv[]) {
         
     }
     
-    [pool release];
+    DRAIN(pool);
     
     return success ? 0 : 1;
 }
