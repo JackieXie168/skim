@@ -101,6 +101,10 @@ Garbage Collection and 64-Bits
 \b0 \
 \
 The built versions of the SkimNotes framework and skimnotes tool included in the release are built using the Release configuration.  This means that Garbage Collection (GC) and 64-bits are not supported.  The Xcode project has a build configuration called "Release (GC dual-mode)" that builds the framework with GC supported (not required) and includes a 64-bit binary for Intel.  The framework should be safe for GC and 64-bits when build with this configuration, but you should be aware that it has not been tested in these environment.  The framework built with this configuration requires Mac OSX 10.5.\
+\
+The tool will never use GC, even when built using the "Release (GC dual-mode)" build configuration.\
+\
+If you want to support 64-bits but not GC, you could create a new build configuration (at the project level) duplicated from Release, but based on the "SkimNotes-Release-64Bit" configuration (choose this in the popup at the bottom of the Build section of the project Info window).\
 
 \b \
 Smaller SkimNotes Framework
