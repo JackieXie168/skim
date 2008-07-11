@@ -602,7 +602,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)synctexFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
 #ifdef SYNCTEX_FEATURE
-    if (synctex_edit_query(scanner, (int)pageIndex - 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
+    if (synctex_edit_query(scanner, (int)pageIndex + 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
         synctex_node_t node;
         if (node = synctex_next_result(scanner)) {
             *line = synctex_node_line(node);
@@ -619,7 +619,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (synctex_display_query(scanner, [file fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node;
         if ((node = synctex_next_result(scanner))) {
-            *pageIndex = synctex_node_page(node) + 1;
+            unsigned int page = synctex_node_page(node);
+            *pageIndex = page > 0 ? page - 1 : page;
             *point = NSMakePoint(SYNC_TO_PDF(synctex_node_h(node)), SYNC_TO_PDF(synctex_node_v(node)));
             return YES;
         }
