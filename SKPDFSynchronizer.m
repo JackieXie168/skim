@@ -42,6 +42,8 @@
 #import <Carbon/Carbon.h>
 #import "Files_SKExtensions.h"
 
+#define SYNC_TO_PDF(coord) ((float)coord / 65536.0)
+#define PDF_TO_SYNC(coord) (int)(coord * 65536.0)
 
 static NSString *SKPDFSynchronizerRecordIndexKey = @"recordIndex";
 static NSString *SKPDFSynchronizerPageKey = @"page";
@@ -50,6 +52,7 @@ static NSString *SKPDFSynchronizerYKey = @"y";
 static NSString *SKPDFSynchronizerFileKey = @"file";
 static NSString *SKPDFSynchronizerLineKey = @"line";
 static NSString *SKPDFSynchronizerTexExtension = @"tex";
+static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
     if ([[file pathExtension] caseInsensitiveCompare:SKPDFSynchronizerTexExtension] != NSOrderedSame)
@@ -88,16 +91,9 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 #pragma mark -
 
 @interface SKPDFSynchronizer (Private)
-
-- (NSDate *)lastModDate;
-- (void)setLastModDate:(NSDate *)date;
-
 - (void)runDOServerForPorts:(NSArray *)ports;
-
 // these following methods only be called on the server thread
-- (BOOL)parsePdfsyncFile;
-- (BOOL)parsePdfsyncFileIfNeeded;
-
+- (BOOL)parseSyncFileIfNeeded;
 @end
 
 #pragma mark -
@@ -113,6 +109,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         lines = [[NSMutableDictionary alloc] init];
         fileName = nil;
         lastModDate = nil;
+        isPdfsync = YES;
         
         NSPort *port1 = [NSPort port];
         NSPort *port2 = [NSPort port];
@@ -146,6 +143,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [pages release];
     [lines release];
     [fileName release];
+    [syncFileName release];
     [lastModDate release];
     [super dealloc];
 }
@@ -171,7 +169,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (void)setFileName:(NSString *)newFileName {
     @synchronized(self) {
         if (fileName != newFileName) {
-            if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
+            if ([fileName isEqualToString:newFileName] == NO) {
+                [syncFileName release];
+                syncFileName = nil;
                 [lastModDate release];
                 lastModDate = nil;
             }
@@ -181,21 +181,31 @@ static NSPoint pdfOffset = {0.0, 0.0};
     }
 }
 
+- (NSString *)syncFileName {
+    NSString *file = nil;
+    @synchronized(self) {
+        file = [[syncFileName retain] autorelease];
+    }
+    return file;
+}
+
+- (void)setSyncFileName:(NSString *)newSyncFileName {
+    @synchronized(self) {
+        if (syncFileName != newSyncFileName) {
+            [syncFileName release];
+            syncFileName = [newSyncFileName retain];
+        }
+        [lastModDate release];
+        lastModDate = [(syncFileName ? SKFileModificationDateAtPath(syncFileName) : nil) retain];
+    }
+}
+
 - (NSDate *)lastModDate {
     NSDate *date = nil;
     @synchronized(self) {
         date = [[lastModDate retain] autorelease];
     }
     return date;
-}
-
-- (void)setLastModDate:(NSDate *)date {
-    @synchronized(self) {
-        if (date != lastModDate) {
-            [lastModDate release];
-            lastModDate = [date retain];
-        }
-    }
 }
 
 #pragma mark API
@@ -266,6 +276,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     [serverOnMainThread release];
     serverOnMainThread = nil;    
+    
+#ifdef SYNCTEX_FEATURE
+    if (scanner)
+        synctex_scanner_free(scanner);
+#endif
 }
 
 - (void)runDOServerForPorts:(NSArray *)ports {
@@ -314,31 +329,13 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark | Parsing and Finding
 
-- (BOOL)parsePdfsyncFileIfNeeded {
-    NSString *theFileName = [self fileName];
-    
-    if (theFileName == nil || SKFileExistsAtPath(theFileName) == NO)
-        return NO;
-    
-    NSDate *modDate = SKFileModificationDateAtPath(theFileName);
-    NSDate *currentModDate = [self lastModDate];
-    
-    if (currentModDate == nil || [modDate compare:currentModDate] == NSOrderedDescending)
-        return [self parsePdfsyncFile];
-    
-    return YES;
-}
+- (BOOL)parsePdfsyncFile:(NSString *)theFileName {
 
-- (BOOL)parsePdfsyncFile {
-    NSString *theFileName = [self fileName];
-    
     [pages removeAllObjects];
     [lines removeAllObjects];
     
-    if (SKFileExistsAtPath(theFileName) == NO)
-        return NO;
-    
-    [self setLastModDate:SKFileModificationDateAtPath(theFileName)];
+    [self setSyncFileName:theFileName];
+    isPdfsync = YES;
     
     NSString *basePath = [theFileName stringByDeletingLastPathComponent];
     NSMutableDictionary *records = [NSMutableDictionary dictionary];
@@ -349,18 +346,18 @@ static NSPoint pdfOffset = {0.0, 0.0};
     float x, y;
     NSMutableDictionary *record;
     NSMutableArray *array;
-    NSScanner *scanner;
+    NSScanner *sc;
     unichar ch;
     
     if ([pdfsyncString length] == 0)
         return NO;
     
-    scanner = [[NSScanner alloc] initWithString:pdfsyncString];
-    [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
+    sc = [[NSScanner alloc] initWithString:pdfsyncString];
+    [sc setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
     
-    if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] == NO ||
-        [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO) {
-        [scanner release];
+    if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] == NO ||
+        [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO) {
+        [sc release];
         return NO;
     }
     
@@ -372,21 +369,21 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [array release];
     
     // we ignore the version
-    if ([scanner scanString:@"version" intoString:NULL] == NO ||
-        [scanner scanInt:NULL] == NO) {
-        [scanner release];
+    if ([sc scanString:@"version" intoString:NULL] == NO ||
+        [sc scanInt:NULL] == NO) {
+        [sc release];
         return NO;
     }
     
-    [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+    [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
     
     OSMemoryBarrier();
-    while (shouldKeepRunning && [scanner scanCharacter:&ch]) {
+    while (shouldKeepRunning && [sc scanCharacter:&ch]) {
         
         if (ch == 'l') {
-            if ([scanner scanInt:&recordIndex] && [scanner scanInt:&line]) {
+            if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
                 // we ignore the column
-                [scanner scanInt:NULL];
+                [sc scanInt:NULL];
                 record = SKRecordForRecordIndex(records, recordIndex);
                 [record setObject:file forKey:SKPDFSynchronizerFileKey];
                 [record setIntValue:line forKey:SKPDFSynchronizerLineKey];
@@ -394,17 +391,17 @@ static NSPoint pdfOffset = {0.0, 0.0};
             }
         } else if (ch == 'p') {
             // we ignore * and + modifiers
-            [scanner scanString:@"*" intoString:NULL] || [scanner scanString:@"+" intoString:NULL];
-            if ([scanner scanInt:&recordIndex] && [scanner scanFloat:&x] && [scanner scanFloat:&y]) {
+            [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
+            if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
                 record = SKRecordForRecordIndex(records, recordIndex);
                 [record setIntValue:[pages count] - 1 forKey:SKPDFSynchronizerPageKey];
-                [record setFloatValue:x / 65536 + pdfOffset.x forKey:SKPDFSynchronizerXKey];
-                [record setFloatValue:y / 65536 + pdfOffset.y forKey:SKPDFSynchronizerYKey];
+                [record setFloatValue:SYNC_TO_PDF(x) + pdfOffset.x forKey:SKPDFSynchronizerXKey];
+                [record setFloatValue:SYNC_TO_PDF(y) + pdfOffset.y forKey:SKPDFSynchronizerYKey];
                 [[pages lastObject] addObject:record];
             }
         } else if (ch == 's') {
             // start of a new page, the scanned integer should always equal [pages count]+1
-            if ([scanner scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
+            if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
             while (pageIndex > (int)[pages count]) {
                 array = [[NSMutableArray alloc] init];
                 [pages addObject:array];
@@ -412,7 +409,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             }
         } else if (ch == '(') {
             // start of a new source file
-            if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+            if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
                 file = SKTeXSourceFile(file, basePath);
                 [files addObject:file];
                 if ([lines objectForKey:file] == nil) {
@@ -429,13 +426,13 @@ static NSPoint pdfOffset = {0.0, 0.0};
             }
         }
         
-        [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-        [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+        [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+        [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
         
         OSMemoryBarrier();
     }
     
-    [scanner release];
+    [sc release];
     
     NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerLineKey ascending:YES] autorelease];
     NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerXKey ascending:YES] autorelease];
@@ -452,14 +449,51 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return returnValue;
 }
 
-- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    int foundLine = -1;
-    NSString *foundFile = nil;
-    NSDictionary *record = nil;
+- (BOOL)parseSynctexFile:(NSString *)theFileName {
+#ifdef SYNCTEX_FEATURE
+    if (scanner)
+        synctex_scanner_free(scanner);
+    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation]);
+    if (scanner) {
+        NSString *theSyncFileName = [NSString stringWithUTF8String:synctex_scanner_get_synctex(scanner)];
+        [self setSyncFileName:theSyncFileName];
+        isPdfsync = NO;
+        return YES;
+    }
+#endif
+    return NO;
+}
+
+- (BOOL)parseSyncFileIfNeeded {
+    NSString *theFileName = [self fileName];
     
-    OSMemoryBarrier();
-    if (shouldKeepRunning && [self parsePdfsyncFileIfNeeded] && pageIndex < [pages count]) {
+    if (theFileName == nil)
+        return NO;
+    
+    NSString *theSyncFileName = [self syncFileName];
+    
+    if (theSyncFileName && SKFileExistsAtPath(theSyncFileName)) {
+        NSDate *modDate = SKFileModificationDateAtPath(theFileName);
+        NSDate *currentModDate = [self lastModDate];
+    
+        if (currentModDate == nil || [modDate compare:currentModDate] == NSOrderedDescending)
+            return isPdfsync ? [self parsePdfsyncFile:theSyncFileName] : [self parseSynctexFile:theFileName];
+        else
+            return YES;
+    }
+    
+    theSyncFileName = [[theFileName stringByDeletingPathExtension] stringByAppendingPathExtension:SKPDFSynchronizerPdfsyncExtension];
+    
+    if (SKFileExistsAtPath(theSyncFileName))
+        return [self parsePdfsyncFile:theSyncFileName];
+    else
+        return [self parseSynctexFile:theFileName];
+}
+
+- (BOOL)pdfsyncFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    if (pageIndex < [pages count]) {
         
+        NSDictionary *record = nil;
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
         NSMutableDictionary *atRecords = [NSMutableDictionary dictionary];
@@ -511,26 +545,18 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            foundLine = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
-            foundFile = [record objectForKey:SKPDFSynchronizerFileKey];
+            *line = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
+            *file = [record objectForKey:SKPDFSynchronizerFileKey];
+            return YES;
         }
-        
-        OSMemoryBarrier();
     }
-    
-    OSMemoryBarrier();
-    if (shouldKeepRunning)
-        [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
+    return NO;
 }
 
-- (oneway void)serverFindPageLocationForLine:(int)line inFile:(bycopy NSString *)file {
-    unsigned int foundPageIndex = NSNotFound;
-    NSPoint foundPoint = NSZeroPoint;
-    NSDictionary *record = nil;
-    
-    OSMemoryBarrier();
-    if (shouldKeepRunning && file && [self parsePdfsyncFileIfNeeded] && [lines objectForKey:file]) {
+- (BOOL)pdfsyncFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+    if ([lines objectForKey:file]) {
         
+        NSDictionary *record = nil;
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
         NSDictionary *atRecord = nil;
@@ -567,11 +593,75 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            foundPageIndex = [[record objectForKey:SKPDFSynchronizerPageKey] unsignedIntValue];
-            foundPoint = NSMakePoint([[record objectForKey:SKPDFSynchronizerXKey] floatValue], [[record objectForKey:SKPDFSynchronizerYKey] floatValue]);
+            *pageIndex = [[record objectForKey:SKPDFSynchronizerPageKey] unsignedIntValue];
+            *point = NSMakePoint([[record objectForKey:SKPDFSynchronizerXKey] floatValue], [[record objectForKey:SKPDFSynchronizerYKey] floatValue]);
+            return YES;
         }
-        
+    }
+    return NO;
+}
+
+- (BOOL)synctexFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+#ifdef SYNCTEX_FEATURE
+    if (synctex_edit_query(scanner, (int)pageIndex - 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
+        synctex_node_t node;
+        if (node = synctex_next_result(scanner)) {
+            *line = synctex_node_line(node);
+            *file = [NSString stringWithUTF8String:synctex_scanner_get_name(scanner, synctex_node_tag(node))];
+            return YES;
+        }
+    }
+#endif
+    return NO;
+}
+
+- (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+#ifdef SYNCTEX_FEATURE
+    if (synctex_display_query(scanner, [file fileSystemRepresentation], line, 0) > 0) {
+        synctex_node_t node;
+        if ((node = synctex_next_result(scanner))) {
+            *pageIndex = synctex_node_page(node) + 1;
+            *point = NSMakePoint(SYNC_TO_PDF(synctex_node_h(node)), SYNC_TO_PDF(synctex_node_v(node)));
+            return YES;
+        }
+    }
+#endif
+    return NO;
+}
+
+- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    int foundLine = -1;
+    NSString *foundFile = nil;
+    
+    OSMemoryBarrier();
+    if (shouldKeepRunning && [self parseSyncFileIfNeeded]) {
         OSMemoryBarrier();
+        if (shouldKeepRunning) {
+            if (isPdfsync)
+                [self pdfsyncFindLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+            else
+                [self synctexFindLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+        }
+    }
+    
+    OSMemoryBarrier();
+    if (shouldKeepRunning)
+        [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
+}
+
+- (oneway void)serverFindPageLocationForLine:(int)line inFile:(bycopy NSString *)file {
+    unsigned int foundPageIndex = NSNotFound;
+    NSPoint foundPoint = NSZeroPoint;
+    
+    OSMemoryBarrier();
+    if (shouldKeepRunning && file && [self parseSyncFileIfNeeded] && [lines objectForKey:file]) {
+        OSMemoryBarrier();
+        if (shouldKeepRunning) {
+            if (isPdfsync)
+                [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
+            else
+                [self synctexFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
+        }
     }
     
     OSMemoryBarrier();
