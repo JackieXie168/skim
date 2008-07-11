@@ -41,6 +41,7 @@
 #import "NSScanner_SKExtensions.h"
 #import <Carbon/Carbon.h>
 #import "Files_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define SYNC_TO_PDF(coord) ((float)coord / 65536.0)
 #define PDF_TO_SYNC(coord) (int)(coord * 65536.0)
@@ -454,8 +455,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
-        NSString *theSyncFileName = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
-        [self setSyncFileName:theSyncFileName];
+        [self setSyncFileName:SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner))];
         isPdfsync = NO;
         return YES;
     }
@@ -481,7 +481,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             return YES;
     }
     
-    theSyncFileName = [[theFileName stringByDeletingPathExtension] stringByAppendingPathExtension:SKPDFSynchronizerPdfsyncExtension];
+    theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
     
     if (SKFileExistsAtPath(theSyncFileName))
         return [self parsePdfsyncFile:theSyncFileName];
@@ -606,7 +606,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node;
         if (node = synctex_next_result(scanner)) {
             *line = synctex_node_line(node);
-            *file = [SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))) retain];
+            *file = SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
             return YES;
         }
     }
