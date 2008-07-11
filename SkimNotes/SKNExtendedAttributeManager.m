@@ -30,7 +30,7 @@
 
 #import <SkimNotes/SKNExtendedAttributeManager.h>
 #include <sys/xattr.h>
-#import "bzlib.h"
+#import <bzlib.h>
 
 #define MAX_XATTR_LENGTH        2048
 #define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
