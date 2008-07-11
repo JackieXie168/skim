@@ -233,7 +233,6 @@
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
 		F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */; };
 		F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */; };
-		F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F977515E0B37460100DF673B /* ConversionProgressWindow.nib */; };
 		F97751630B37461000DF673B /* SKPSProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKPSProgressController.m */; };
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
@@ -498,6 +497,7 @@
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE33639F0E26E120005F99E6 /* synctex_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synctex_parser.c; path = vendorsrc/jeromelaurens/synctex_parser.c; sourceTree = "<group>"; };
 		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = vendorsrc/jeromelaurens/synctex_parser.h; sourceTree = "<group>"; };
+		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMenu_SKExtensions.h; sourceTree = "<group>"; };
 		CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenu_SKExtensions.m; sourceTree = "<group>"; };
 		CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedString_SKExtensions.h; sourceTree = "<group>"; };
@@ -935,7 +935,6 @@
 		F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKHeaderPopUpButton.m; sourceTree = "<group>"; };
 		F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSBitmapImageRep_SKExtensions.h; sourceTree = "<group>"; };
 		F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSBitmapImageRep_SKExtensions.m; sourceTree = "<group>"; };
-		F977319E0B939B7D002A7823 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		F977515F0B37460100DF673B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
 		F97751620B37461000DF673B /* SKPSProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPSProgressController.m; sourceTree = "<group>"; };
@@ -954,7 +953,6 @@
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
 				F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */,
-				F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */,
 				CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */,
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
@@ -986,7 +984,7 @@
 				455989F70B2662FF00E5419B /* Quartz.framework */,
 				CE1ADB170C4BC6DE00071840 /* OpenGL.framework */,
 				CE5F42D30BF8A3400069D89C /* IOKit.framework */,
-				F977319E0B939B7D002A7823 /* libbz2.dylib */,
+				CE3363CD0E26E378005F99E6 /* libz.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
