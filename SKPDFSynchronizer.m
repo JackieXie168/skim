@@ -136,7 +136,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         do {
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
             OSMemoryBarrier();
-        } while (serverReady == 1 && shouldKeepRunning == 1);
+        } while (serverReady == 0 && shouldKeepRunning == 1);
     }
     return self;
 }
