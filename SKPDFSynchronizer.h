@@ -38,13 +38,20 @@
 
 #import <Cocoa/Cocoa.h>
 #import <libkern/OSAtomic.h>
-
+#ifdef SYNCTEX_FEATURE
+#import "synctex_parser.h"
+#endif
 
 @interface SKPDFSynchronizer : NSObject {
     NSString *fileName;
+    NSString *syncFileName;
     NSDate *lastModDate;
     NSMutableArray *pages;
     NSMutableDictionary *lines;
+    BOOL isPdfsync;
+#ifdef SYNCTEX_FEATURE
+    synctex_scanner_t scanner;
+#endif
     
     id delegate;
     
