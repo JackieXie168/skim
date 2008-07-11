@@ -112,6 +112,18 @@ NSDate *SKFileModificationDateAtPath(NSString *path) {
         return nil;
 }
 
+NSString *SKPathFromFileSystemRepresentation(const char *path) {
+    NSString *thePath = nil;
+    if (path != NULL) {
+        CFURLRef theURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)path, strlen(path), NO);
+        if (theURL != NULL) {
+            thePath = [(NSURL *)theURL path];
+            CFRelease(theURL);
+        }
+    }
+    return thePath;
+}
+
 NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];

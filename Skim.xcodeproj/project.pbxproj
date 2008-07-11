@@ -78,6 +78,8 @@
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
+		CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.c */; };
+		CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3363CD0E26E378005F99E6 /* libz.dylib */; };
 		CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */; };
 		CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401DF0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m */; };
 		CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */; };
@@ -960,6 +962,7 @@
 				CE7DC7450E0928A700D6D76D /* SkimNotes.framework in Frameworks */,
 				CE2BB7D00E0DAFD30090E848 /* SkimNotes.framework in Frameworks */,
 				CE2BB7D10E0DAFDE0090E848 /* Sparkle.framework in Frameworks */,
+				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2099,6 +2102,7 @@
 				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,
 				CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */,
 				CEC3AD240E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m in Sources */,
+				CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
