@@ -38,6 +38,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import <libkern/OSAtomic.h>
+
+#define SYNCTEX_FEATURE 1
+
 #ifdef SYNCTEX_FEATURE
 #import "synctex_parser.h"
 #endif
@@ -61,8 +64,7 @@
     NSConnection *localThreadConnection;
     
     volatile int32_t shouldKeepRunning __attribute__ ((aligned (32)));
-    
-    BOOL serverReady;
+    volatile int32_t serverReady __attribute__ ((aligned (32)));
 }
 
 

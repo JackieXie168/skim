@@ -90,10 +90,8 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 
 #pragma mark -
 
-@interface SKPDFSynchronizer (Private)
+@interface SKPDFSynchronizer (SKPrivate)
 - (void)runDOServerForPorts:(NSArray *)ports;
-// these following methods only be called on the server thread
-- (BOOL)parseSyncFileIfNeeded;
 @end
 
 #pragma mark -
@@ -108,8 +106,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
         pages = [[NSMutableArray alloc] init];
         lines = [[NSMutableDictionary alloc] init];
         fileName = nil;
+        syncFileName = nil;
         lastModDate = nil;
         isPdfsync = YES;
+#ifdef SYNCTEX_FEATURE
+        scanner = NULL;
+#endif        
         
         NSPort *port1 = [NSPort port];
         NSPort *port2 = [NSPort port];
@@ -124,7 +126,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         serverOnServerThread = nil;
        
         shouldKeepRunning = 1;
-        serverReady = NO;
+        serverReady = 1;
         
         // run a background thread to connect to the remote server
         // this will connect back to the connection we just set up
@@ -134,7 +136,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         do {
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
             OSMemoryBarrier();
-        } while (serverReady == NO && shouldKeepRunning == 1);
+        } while (serverReady == 1 && shouldKeepRunning == 1);
     }
     return self;
 }
@@ -208,6 +210,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return date;
 }
 
+- (BOOL)shouldKeepRunning {
+    OSMemoryBarrier();
+    return shouldKeepRunning == 1;
+}
+
 #pragma mark API
 #pragma mark | DO server
 
@@ -243,20 +250,18 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (oneway void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
-    serverReady = YES;
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
 }
 
 #pragma mark | Finding
 
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file {
-    OSMemoryBarrier();
-    if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
 - (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
-    OSMemoryBarrier();
-    if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
         [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
 }
 
@@ -311,8 +316,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             [pool release];
             pool = [NSAutoreleasePool new];
             didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-            OSMemoryBarrier();
-        } while (shouldKeepRunning == 1 && didRun);
+        } while ([self shouldKeepRunning] && didRun);
     }
     @catch(id exception) {
         NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
@@ -377,8 +381,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
     
-    OSMemoryBarrier();
-    while (shouldKeepRunning && [sc scanCharacter:&ch]) {
+    while ([self shouldKeepRunning] && [sc scanCharacter:&ch]) {
         
         if (ch == 'l') {
             if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
@@ -428,8 +431,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
         
         [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
         [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-        
-        OSMemoryBarrier();
     }
     
     [sc release];
@@ -443,8 +444,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                            withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
     
-    OSMemoryBarrier();
-    BOOL returnValue = shouldKeepRunning == 1;
+    BOOL returnValue = [self shouldKeepRunning];
 
     return returnValue;
 }
@@ -453,9 +453,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #ifdef SYNCTEX_FEATURE
     if (scanner)
         synctex_scanner_free(scanner);
-    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation]);
-    if (scanner) {
-        NSString *theSyncFileName = [NSString stringWithUTF8String:synctex_scanner_get_synctex(scanner)];
+    if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
+        NSString *theSyncFileName = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
         [self setSyncFileName:theSyncFileName];
         isPdfsync = NO;
         return YES;
@@ -607,7 +606,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node;
         if (node = synctex_next_result(scanner)) {
             *line = synctex_node_line(node);
-            *file = [NSString stringWithUTF8String:synctex_scanner_get_name(scanner, synctex_node_tag(node))];
+            *file = [SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))) retain];
             return YES;
         }
     }
@@ -633,10 +632,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
     int foundLine = -1;
     NSString *foundFile = nil;
     
-    OSMemoryBarrier();
-    if (shouldKeepRunning && [self parseSyncFileIfNeeded]) {
-        OSMemoryBarrier();
-        if (shouldKeepRunning) {
+    if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
+        if ([self shouldKeepRunning]) {
             if (isPdfsync)
                 [self pdfsyncFindLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
             else
@@ -644,8 +641,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
     }
     
-    OSMemoryBarrier();
-    if (shouldKeepRunning)
+    if ([self shouldKeepRunning])
         [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
 }
 
@@ -653,10 +649,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
     unsigned int foundPageIndex = NSNotFound;
     NSPoint foundPoint = NSZeroPoint;
     
-    OSMemoryBarrier();
-    if (shouldKeepRunning && file && [self parseSyncFileIfNeeded] && [lines objectForKey:file]) {
-        OSMemoryBarrier();
-        if (shouldKeepRunning) {
+    if ([self shouldKeepRunning] && file && [self parseSyncFileIfNeeded] && [lines objectForKey:file]) {
+        if ([self shouldKeepRunning]) {
             if (isPdfsync)
                 [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
             else
@@ -664,8 +658,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
     }
     
-    OSMemoryBarrier();
-    if (shouldKeepRunning)
+    if ([self shouldKeepRunning])
         [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex];
 }
 
