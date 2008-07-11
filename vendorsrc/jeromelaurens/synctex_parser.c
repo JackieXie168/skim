@@ -978,7 +978,7 @@ typedef int synctex_status_t;
 
 #include <stdarg.h>
 
-inline static int _synctex_error(char * reason,...) {
+static int _synctex_error(char * reason,...) {
 	va_list arg;
 	int result;
 	result = fprintf(stderr,"SyncTeX ERROR: ");
@@ -1024,7 +1024,7 @@ void _synctex_display_glue(synctex_node_t node);
 void _synctex_display_math(synctex_node_t node);
 void _synctex_display_kern(synctex_node_t node);
 void _synctex_display_input(synctex_node_t node);
-inline static int _synctex_error(char * reason,...);
+static int _synctex_error(char * reason,...);
 synctex_status_t _synctex_buffer_get_available_size(synctex_scanner_t scanner, size_t * size_ptr);
 synctex_status_t _synctex_next_line(synctex_scanner_t scanner);
 synctex_status_t _synctex_match_string(synctex_scanner_t scanner, const char * the_string);
@@ -1109,27 +1109,27 @@ synctex_status_t _synctex_buffer_get_available_size(synctex_scanner_t scanner, s
 	if(SYNCTEX_FILE) {
 		/* Copy the remaining part of the buffer to the beginning,
 		 * then read the next part of the file */
-		int read = 0;
+		int rd = 0;
 		if(available) {
 			memmove(SYNCTEX_START, SYNCTEX_CUR, available);
 		}
 		SYNCTEX_CUR = SYNCTEX_START + available; /* the next character after the move, will change. */
 		/* Fill the buffer up to its end */
-		read = gzread(SYNCTEX_FILE,(void *)SYNCTEX_CUR,SYNCTEX_BUFFER_SIZE - available);
-		if(read>0) {
-			/*  We assume that 0<read<=SYNCTEX_BUFFER_SIZE - available, such that
-			 *  SYNCTEX_CUR + read = SYNCTEX_START + available  + read <= SYNCTEX_START + SYNCTEX_BUFFER_SIZE */
-			SYNCTEX_END = SYNCTEX_CUR + read;
+		rd = gzread(SYNCTEX_FILE,(void *)SYNCTEX_CUR,SYNCTEX_BUFFER_SIZE - available);
+		if(rd>0) {
+			/*  We assume that 0<rd<=SYNCTEX_BUFFER_SIZE - available, such that
+			 *  SYNCTEX_CUR + rd = SYNCTEX_START + available  + rd <= SYNCTEX_START + SYNCTEX_BUFFER_SIZE */
+			SYNCTEX_END = SYNCTEX_CUR + rd;
 			/*  If the end of the file was reached, all the required SYNCTEX_BUFFER_SIZE - available
 			 *  may not be filled with values from the file.
 			 *  In that case, the buffer should stop properly after read characters. */
 			* SYNCTEX_END = '\0';
 			SYNCTEX_CUR = SYNCTEX_START;
-			size = SYNCTEX_END - SYNCTEX_CUR; /* == old available + read*/
+			size = SYNCTEX_END - SYNCTEX_CUR; /* == old available + rd*/
 			return SYNCTEX_STATUS_OK; /* May be available is less than size, the caller will have to test. */
-		} else if(read<0) {
+		} else if(rd<0) {
 			/*There is an error */
-			_synctex_error("gzread error (1:%i)",read);
+			_synctex_error("gzread error (1:%i)",rd);
 			return SYNCTEX_STATUS_ERROR;
 		} else {
 			/*  Nothing was read, we are at the end of the file. */
@@ -3267,7 +3267,7 @@ int synctex_edit_query(synctex_scanner_t scanner,int page,float h,float v) {
 	int H,V;
 	int minH,maxH,minV,maxV;
 	int best_distance,distance;
-	if(NULL == scanner || 0 == scanner->unit) {
+	if(NULL == scanner || 0 >= scanner->unit) {
 		return 0;
 	}
 	/* Convert the given point to scanner integer coordinates */
