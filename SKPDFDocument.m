@@ -1386,7 +1386,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [self stopCheckingFileUpdates];
     [super setFileURL:absoluteURL];
     if ([absoluteURL isFileURL])
-        [synchronizer setFileName:[[absoluteURL path] stringByReplacingPathExtension:@"pdfsync"]];
+        [synchronizer setFileName:[absoluteURL path]];
     else
         [synchronizer setFileName:nil];
     // if we're saving this will be called when saving has finished
@@ -1398,7 +1398,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (synchronizer == nil) {
         synchronizer = [[SKPDFSynchronizer alloc] init];
         [synchronizer setDelegate:self];
-        [synchronizer setFileName:[[self fileName] stringByReplacingPathExtension:@"pdfsync"]];
+        [synchronizer setFileName:[self fileName]];
     }
     return synchronizer;
 }
