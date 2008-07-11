@@ -496,6 +496,8 @@
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CE33639F0E26E120005F99E6 /* synctex_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synctex_parser.c; path = vendorsrc/jeromelaurens/synctex_parser.c; sourceTree = "<group>"; };
+		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = vendorsrc/jeromelaurens/synctex_parser.h; sourceTree = "<group>"; };
 		CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMenu_SKExtensions.h; sourceTree = "<group>"; };
 		CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenu_SKExtensions.m; sourceTree = "<group>"; };
 		CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedString_SKExtensions.h; sourceTree = "<group>"; };
@@ -1108,6 +1110,7 @@
 				CE9BD6FB0D096F0500EB1A6C /* BDAlias */,
 				CE9BD6FA0D096EE300EB1A6C /* RemoteControl */,
 				CE9BD6FC0D096F1800EB1A6C /* UKKQueue */,
+				CE33639E0E26E086005F99E6 /* Synctex */,
 			);
 			name = "Third Party Sources";
 			sourceTree = "<group>";
@@ -1376,6 +1379,15 @@
 				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
 			);
 			name = Parsers;
+			sourceTree = "<group>";
+		};
+		CE33639E0E26E086005F99E6 /* Synctex */ = {
+			isa = PBXGroup;
+			children = (
+				CE33639F0E26E120005F99E6 /* synctex_parser.c */,
+				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
+			);
+			name = Synctex;
 			sourceTree = "<group>";
 		};
 		CE4643F10DF6BADC00CFD8D2 /* Commands */ = {
