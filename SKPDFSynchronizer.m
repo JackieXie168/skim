@@ -606,7 +606,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node;
         if (node = synctex_next_result(scanner)) {
             *line = synctex_node_line(node);
-            *file = SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
+            *file = SKTeXSourceFile(SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))), [[self fileName] stringByDeletingLastPathComponent]);
             return YES;
         }
     }
