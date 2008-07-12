@@ -105,7 +105,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, 0x2014, [[pdfView currentPage] label]];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, 0x2014, [[pdfView currentPage] displayLabel]];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
@@ -139,15 +139,13 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    NSString *label = [[pdfView currentPage] label];
-    [self setPageLabel:label ? label : [NSString stringWithFormat:@"%i", [self pageIndex]]];
+    [self setPageLabel:[[pdfView currentPage] displayLabel]];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    NSString *label = [[pdfView currentPage] label];
-    [self setPageLabel:label ? label : [NSString stringWithFormat:@"%i", [self pageIndex]]];
+    [self setPageLabel:[[pdfView currentPage] displayLabel]];
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {

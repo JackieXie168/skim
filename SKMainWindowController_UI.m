@@ -292,7 +292,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             SKGroupedSearchResult *result = [groupedSearchResults objectAtIndex:idx];
             NSArray *matches = [result matches];
             [string appendString:@"* "];
-            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] label]];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
             [string appendString:@": "];
             [string appendFormat:NSLocalizedString(@"%i Results", @""), [matches count]];
             [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
@@ -473,7 +473,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer]){
             return [(PDFOutline *)item label];
         }else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]){
-            return [[[(PDFOutline *)item destination] page] label];
+            return [[[(PDFOutline *)item destination] page] displayLabel];
         }else{
             [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
             return nil;
@@ -485,7 +485,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         } else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
         } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
-            return [[item page] label];
+            return [[item page] displayLabel];
         }
     }
     return nil;

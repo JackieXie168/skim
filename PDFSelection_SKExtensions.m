@@ -54,7 +54,7 @@
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
     NSArray *pages = [self pages];
-    return [pages count] ? [[pages objectAtIndex:0] label] : nil;
+    return [pages count] ? [[pages objectAtIndex:0] displayLabel] : nil;
 }
 
 - (NSAttributedString *)contextString {
