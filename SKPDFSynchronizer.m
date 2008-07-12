@@ -627,17 +627,18 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (oneway void)serverFindFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     int foundLine = -1;
     NSString *foundFile = nil;
+    BOOL success = NO;
     
     if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
         if ([self shouldKeepRunning]) {
             if (isPdfsync)
-                [self pdfsyncFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+                success = [self pdfsyncFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
             else
-                [self synctexFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+                success = [self synctexFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
         }
     }
     
-    if ([self shouldKeepRunning])
+    if (success && [self shouldKeepRunning])
         [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
 }
 
