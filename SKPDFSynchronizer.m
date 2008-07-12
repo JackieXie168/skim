@@ -79,7 +79,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 
 @protocol SKPDFSynchronizerServerThread
 - (oneway void)cleanup; 
-- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (oneway void)serverFindFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
 - (oneway void)serverFindPageLocationForLine:(int)line inFile:(bycopy NSString *)file;
 @end
 
@@ -237,8 +237,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark | Finding
 
-- (void)findLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    [serverOnServerThread serverFindLineForLocation:point inRect:rect atPageIndex:pageIndex];
+- (void)findFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    [serverOnServerThread serverFindFileLineForLocation:point inRect:rect atPageIndex:pageIndex];
 }
 
 - (void)findPageLocationForLine:(int)line inFile:(NSString *)file {
@@ -489,7 +489,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)pdfsyncFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (BOOL)pdfsyncFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
@@ -602,7 +602,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)synctexFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (BOOL)synctexFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
 #ifdef SYNCTEX_FEATURE
     if (synctex_edit_query(scanner, (int)pageIndex + 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
@@ -633,16 +633,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (oneway void)serverFindFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     int foundLine = -1;
     NSString *foundFile = nil;
     
     if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
         if ([self shouldKeepRunning]) {
             if (isPdfsync)
-                [self pdfsyncFindLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+                [self pdfsyncFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
             else
-                [self synctexFindLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+                [self synctexFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
         }
     }
     

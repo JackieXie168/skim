@@ -2007,7 +2007,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         
-        [[self synchronizer] findLineForLocation:point inRect:rect atPageIndex:pageIndex];
+        [[self synchronizer] findFileLineForLocation:point inRect:rect atPageIndex:pageIndex];
     }
 }
 
