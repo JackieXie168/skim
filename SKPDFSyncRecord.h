@@ -1,10 +1,10 @@
 //
-//  SKPDFSynchronizer.h
+//  SKPDFSyncRecord.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/21/07.
+//  Created by Christiaan Hofman on 7/12/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,52 +37,34 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <libkern/OSAtomic.h>
 
-#define SYNCTEX_FEATURE 1
 
-#ifdef SYNCTEX_FEATURE
-#import "synctex_parser.h"
-#endif
-
-@interface SKPDFSynchronizer : NSObject {
-    NSString *fileName;
-    NSString *syncFileName;
-    NSDate *lastModDate;
-    NSMutableArray *pages;
-    NSMutableDictionary *lines;
-    BOOL isPdfsync;
-#ifdef SYNCTEX_FEATURE
-    synctex_scanner_t scanner;
-#endif
-    
-    id delegate;
-    
-    id serverOnMainThread;
-    id serverOnServerThread;
-    NSConnection *mainThreadConnection;
-    NSConnection *localThreadConnection;
-    
-    volatile int32_t shouldKeepRunning __attribute__ ((aligned (32)));
-    volatile int32_t serverReady __attribute__ ((aligned (32)));
+@interface SKPDFSyncRecord : NSObject {
+    int recordIndex;
+    int pageIndex;
+    NSPoint point;
+    NSString *file;
+    int line;
 }
 
+- (id)initWithRecordIndex:(int)aRecordIndex;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (int)recordIndex;
+- (void)setRecordIndex:(int)newRecordIndex;
 
-- (NSString *)fileName;
-- (void)setFileName:(NSString *)newFileName;
+- (int)pageIndex;
+- (void)setPageIndex:(int)newPageIndex;
 
-- (void)findFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
-- (void)findPageLocationForLine:(int)line inFile:(NSString *)file;
+- (NSPoint)point;
+- (void)setPoint:(NSPoint)newPoint;
 
-- (void)stopDOServer;
+- (float)x;
+- (float)y;
 
-@end
+- (NSString *)file;
+- (void)setFile:(NSString *)newFile;
 
+- (int)line;
+- (void)setLine:(int)newLine;
 
-@interface NSObject (SKPDFSynchronizerDelegate)
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
 @end
