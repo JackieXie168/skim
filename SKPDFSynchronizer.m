@@ -342,154 +342,155 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
     
-    NSString *basePath = [theFileName stringByDeletingLastPathComponent];
-    NSMutableDictionary *records = [NSMutableDictionary dictionary];
-    NSMutableArray *files = [NSMutableArray array];
     NSString *pdfsyncString = [NSString stringWithContentsOfFile:theFileName encoding:NSUTF8StringEncoding error:NULL];
-    NSString *file;
-    int recordIndex, line, pageIndex;
-    float x, y;
-    NSMutableDictionary *record;
-    NSMutableArray *array;
-    NSScanner *sc;
-    unichar ch;
+    BOOL rv = NO;
     
-    if ([pdfsyncString length] == 0)
-        return NO;
-    
-    sc = [[NSScanner alloc] initWithString:pdfsyncString];
-    [sc setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
-    
-    if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] == NO ||
-        [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO) {
-        [sc release];
-        return NO;
-    }
-    
-    file = SKTeXSourceFile(file, basePath);
-    [files addObject:file];
-    
-    array = [[NSMutableArray alloc] init];
-    [lines setObject:array forKey:file];
-    [array release];
-    
-    // we ignore the version
-    if ([sc scanString:@"version" intoString:NULL] == NO ||
-        [sc scanInt:NULL] == NO) {
-        [sc release];
-        return NO;
-    }
-    
-    [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-    
-    while ([self shouldKeepRunning] && [sc scanCharacter:&ch]) {
+    if ([pdfsyncString length]) {
         
-        if (ch == 'l') {
-            if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
-                // we ignore the column
-                [sc scanInt:NULL];
-                record = SKRecordForRecordIndex(records, recordIndex);
-                [record setObject:file forKey:SKPDFSynchronizerFileKey];
-                [record setIntValue:line forKey:SKPDFSynchronizerLineKey];
-                [[lines objectForKey:file] addObject:record];
-            }
-        } else if (ch == 'p') {
-            // we ignore * and + modifiers
-            [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
-            if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
-                record = SKRecordForRecordIndex(records, recordIndex);
-                [record setIntValue:[pages count] - 1 forKey:SKPDFSynchronizerPageKey];
-                [record setFloatValue:SYNC_TO_PDF(x) + pdfOffset.x forKey:SKPDFSynchronizerXKey];
-                [record setFloatValue:SYNC_TO_PDF(y) + pdfOffset.y forKey:SKPDFSynchronizerYKey];
-                [[pages lastObject] addObject:record];
-            }
-        } else if (ch == 's') {
-            // start of a new page, the scanned integer should always equal [pages count]+1
-            if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
-            while (pageIndex > (int)[pages count]) {
-                array = [[NSMutableArray alloc] init];
-                [pages addObject:array];
-                [array release];
-            }
-        } else if (ch == '(') {
-            // start of a new source file
-            if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
-                file = SKTeXSourceFile(file, basePath);
-                [files addObject:file];
-                if ([lines objectForKey:file] == nil) {
-                    array = [[NSMutableArray alloc] init];
-                    [lines setObject:array forKey:file];
-                    [array release];
+        NSString *basePath = [theFileName stringByDeletingLastPathComponent];
+        NSMutableDictionary *records = [NSMutableDictionary dictionary];
+        NSMutableArray *files = [NSMutableArray array];
+        NSString *file;
+        int recordIndex, line, pageIndex;
+        float x, y;
+        NSMutableDictionary *record;
+        NSMutableArray *array;
+        unichar ch;
+        NSScanner *sc = [[NSScanner alloc] initWithString:pdfsyncString];
+        
+        [sc setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
+            [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
+            
+            file = SKTeXSourceFile(file, basePath);
+            [files addObject:file];
+            
+            array = [[NSMutableArray alloc] init];
+            [lines setObject:array forKey:file];
+            [array release];
+            
+            // we ignore the version
+            if ([sc scanString:@"version" intoString:NULL] && [sc scanInt:NULL]) {
+                
+                [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+                
+                while ([self shouldKeepRunning] && [sc scanCharacter:&ch]) {
+                    
+                    if (ch == 'l') {
+                        if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
+                            // we ignore the column
+                            [sc scanInt:NULL];
+                            record = SKRecordForRecordIndex(records, recordIndex);
+                            [record setObject:file forKey:SKPDFSynchronizerFileKey];
+                            [record setIntValue:line forKey:SKPDFSynchronizerLineKey];
+                            [[lines objectForKey:file] addObject:record];
+                        }
+                    } else if (ch == 'p') {
+                        // we ignore * and + modifiers
+                        [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
+                        if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
+                            record = SKRecordForRecordIndex(records, recordIndex);
+                            [record setIntValue:[pages count] - 1 forKey:SKPDFSynchronizerPageKey];
+                            [record setFloatValue:SYNC_TO_PDF(x) + pdfOffset.x forKey:SKPDFSynchronizerXKey];
+                            [record setFloatValue:SYNC_TO_PDF(y) + pdfOffset.y forKey:SKPDFSynchronizerYKey];
+                            [[pages lastObject] addObject:record];
+                        }
+                    } else if (ch == 's') {
+                        // start of a new page, the scanned integer should always equal [pages count]+1
+                        if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
+                        while (pageIndex > (int)[pages count]) {
+                            array = [[NSMutableArray alloc] init];
+                            [pages addObject:array];
+                            [array release];
+                        }
+                    } else if (ch == '(') {
+                        // start of a new source file
+                        if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+                            file = SKTeXSourceFile(file, basePath);
+                            [files addObject:file];
+                            if ([lines objectForKey:file] == nil) {
+                                array = [[NSMutableArray alloc] init];
+                                [lines setObject:array forKey:file];
+                                [array release];
+                            }
+                        }
+                    } else if (ch == ')') {
+                        // closing of a source file
+                        if ([files count]) {
+                            [files removeLastObject];
+                            file = [files lastObject];
+                        }
+                    }
+                    
+                    [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+                    [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
                 }
-            }
-        } else if (ch == ')') {
-            // closing of a source file
-            if ([files count]) {
-                [files removeLastObject];
-                file = [files lastObject];
+                
+                NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerLineKey ascending:YES] autorelease];
+                NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerXKey ascending:YES] autorelease];
+                NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerYKey ascending:NO] autorelease];
+                
+                [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
+                                                   withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
+                [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
+                                       withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
+                
+                 rv = [self shouldKeepRunning];
             }
         }
         
-        [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
-        [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
+        [sc release];
     }
     
-    [sc release];
-    
-    NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerLineKey ascending:YES] autorelease];
-    NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerXKey ascending:YES] autorelease];
-    NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerYKey ascending:NO] autorelease];
-    
-    [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
-                                       withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
-    [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
-                           withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
-    
-    BOOL returnValue = [self shouldKeepRunning];
-
-    return returnValue;
+    return rv;
 }
 
 - (BOOL)parseSynctexFile:(NSString *)theFileName {
+    BOOL rv = NO;
 #ifdef SYNCTEX_FEATURE
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
         [self setSyncFileName:SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner))];
         isPdfsync = NO;
-        return YES;
+        rv = YES;
     }
 #endif
-    return NO;
+    return rv;
 }
 
 - (BOOL)parseSyncFileIfNeeded {
     NSString *theFileName = [self fileName];
+    BOOL rv = NO;
     
-    if (theFileName == nil)
-        return NO;
-    
-    NSString *theSyncFileName = [self syncFileName];
-    
-    if (theSyncFileName && SKFileExistsAtPath(theSyncFileName)) {
-        NSDate *modDate = SKFileModificationDateAtPath(theFileName);
-        NSDate *currentModDate = [self lastModDate];
-    
-        if (currentModDate == nil || [modDate compare:currentModDate] == NSOrderedDescending)
-            return isPdfsync ? [self parsePdfsyncFile:theSyncFileName] : [self parseSynctexFile:theFileName];
-        else
-            return YES;
+    if (theFileName) {
+        NSString *theSyncFileName = [self syncFileName];
+        
+        if (theSyncFileName && SKFileExistsAtPath(theSyncFileName)) {
+            NSDate *modDate = SKFileModificationDateAtPath(theFileName);
+            NSDate *currentModDate = [self lastModDate];
+        
+            if (currentModDate && [modDate compare:currentModDate] != NSOrderedDescending)
+                rv = YES;
+            else if (isPdfsync)
+                rv = [self parsePdfsyncFile:theSyncFileName];
+            else
+                rv = [self parseSynctexFile:theFileName];
+        } else {
+            theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
+            
+            if (SKFileExistsAtPath(theSyncFileName))
+                rv = [self parsePdfsyncFile:theSyncFileName];
+            else
+                rv = [self parseSynctexFile:theFileName];
+        }
     }
-    
-    theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
-    
-    if (SKFileExistsAtPath(theSyncFileName))
-        return [self parsePdfsyncFile:theSyncFileName];
-    else
-        return [self parseSynctexFile:theFileName];
+    return rv;
 }
 
 - (BOOL)pdfsyncFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
         NSDictionary *record = nil;
@@ -546,13 +547,14 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if (record) {
             *line = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
             *file = [record objectForKey:SKPDFSynchronizerFileKey];
-            return YES;
+            rv = YES;
         }
     }
-    return NO;
+    return rv;
 }
 
 - (BOOL)pdfsyncFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+    BOOL rv = NO;
     if ([lines objectForKey:file]) {
         
         NSDictionary *record = nil;
@@ -594,27 +596,29 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if (record) {
             *pageIndex = [[record objectForKey:SKPDFSynchronizerPageKey] unsignedIntValue];
             *point = NSMakePoint([[record objectForKey:SKPDFSynchronizerXKey] floatValue], [[record objectForKey:SKPDFSynchronizerYKey] floatValue]);
-            return YES;
+            rv = YES;
         }
     }
-    return NO;
+    return rv;
 }
 
 - (BOOL)synctexFindLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    BOOL rv = NO;
 #ifdef SYNCTEX_FEATURE
     if (synctex_edit_query(scanner, (int)pageIndex + 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             *line = synctex_node_line(node);
             *file = SKTeXSourceFile(SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))), [[self fileName] stringByDeletingLastPathComponent]);
-            return YES;
+            rv = YES;
         }
     }
 #endif
-    return NO;
+    return rv;
 }
 
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+    BOOL rv = NO;
 #ifdef SYNCTEX_FEATURE
     if (synctex_display_query(scanner, [file fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
@@ -622,11 +626,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
             unsigned int page = synctex_node_page(node);
             *pageIndex = page > 0 ? page - 1 : page;
             *point = NSMakePoint(SYNC_TO_PDF(synctex_node_h(node)), SYNC_TO_PDF(synctex_node_v(node)));
-            return YES;
+            rv = YES;
         }
     }
 #endif
-    return NO;
+    return rv;
 }
 
 - (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
