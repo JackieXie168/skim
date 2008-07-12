@@ -80,6 +80,7 @@
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
 		CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.c */; };
 		CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3363CD0E26E378005F99E6 /* libz.dylib */; };
+		CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */; };
 		CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */; };
 		CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401DF0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m */; };
 		CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */; };
@@ -500,6 +501,8 @@
 		CE33639F0E26E120005F99E6 /* synctex_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synctex_parser.c; path = vendorsrc/jeromelaurens/synctex_parser.c; sourceTree = "<group>"; };
 		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = vendorsrc/jeromelaurens/synctex_parser.h; sourceTree = "<group>"; };
 		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSyncRecord.h; sourceTree = "<group>"; };
+		CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSyncRecord.m; sourceTree = "<group>"; };
 		CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMenu_SKExtensions.h; sourceTree = "<group>"; };
 		CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenu_SKExtensions.m; sourceTree = "<group>"; };
 		CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAttributedString_SKExtensions.h; sourceTree = "<group>"; };
@@ -1346,6 +1349,8 @@
 				CE8978CC0CBFC70B00EA2D98 /* SKTag.m */,
 				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
+				CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */,
+				CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -2103,6 +2108,7 @@
 				CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */,
 				CEC3AD240E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m in Sources */,
 				CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */,
+				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

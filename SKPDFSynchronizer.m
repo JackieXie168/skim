@@ -37,6 +37,7 @@
  */
 
 #import "SKPDFSynchronizer.h"
+#import "SKPDFSyncRecord.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import <Carbon/Carbon.h>
@@ -46,12 +47,6 @@
 #define SYNC_TO_PDF(coord) ((float)coord / 65536.0)
 #define PDF_TO_SYNC(coord) (int)(coord * 65536.0)
 
-static NSString *SKPDFSynchronizerRecordIndexKey = @"recordIndex";
-static NSString *SKPDFSynchronizerPageKey = @"page";
-static NSString *SKPDFSynchronizerXKey = @"x";
-static NSString *SKPDFSynchronizerYKey = @"y";
-static NSString *SKPDFSynchronizerFileKey = @"file";
-static NSString *SKPDFSynchronizerLineKey = @"line";
 static NSString *SKPDFSynchronizerTexExtension = @"tex";
 static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
 
@@ -63,11 +58,11 @@ static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
     return file;
 }
 
-static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records, int recordIndex) {
+static SKPDFSyncRecord *SKRecordForRecordIndex(NSMutableDictionary *records, int recordIndex) {
     NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
-    NSMutableDictionary *record = [records objectForKey:recordNumber];
+    SKPDFSyncRecord *record = [records objectForKey:recordNumber];
     if (record == nil) {
-        record = [[NSMutableDictionary alloc] initWithObjectsAndKeys:recordNumber, SKPDFSynchronizerRecordIndexKey, nil];
+        record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
         [records setObject:record forKey:recordNumber];
         [record release];
     }
@@ -353,7 +348,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSString *file;
         int recordIndex, line, pageIndex;
         float x, y;
-        NSMutableDictionary *record;
+        SKPDFSyncRecord *record;
         NSMutableArray *array;
         unichar ch;
         NSScanner *sc = [[NSScanner alloc] initWithString:pdfsyncString];
@@ -382,8 +377,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
                             // we ignore the column
                             [sc scanInt:NULL];
                             record = SKRecordForRecordIndex(records, recordIndex);
-                            [record setObject:file forKey:SKPDFSynchronizerFileKey];
-                            [record setIntValue:line forKey:SKPDFSynchronizerLineKey];
+                            [record setFile:file];
+                            [record setLine:line];
                             [[lines objectForKey:file] addObject:record];
                         }
                     } else if (ch == 'p') {
@@ -391,9 +386,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
                         [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
                         if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
                             record = SKRecordForRecordIndex(records, recordIndex);
-                            [record setIntValue:[pages count] - 1 forKey:SKPDFSynchronizerPageKey];
-                            [record setFloatValue:SYNC_TO_PDF(x) + pdfOffset.x forKey:SKPDFSynchronizerXKey];
-                            [record setFloatValue:SYNC_TO_PDF(y) + pdfOffset.y forKey:SKPDFSynchronizerYKey];
+                            [record setPageIndex:[pages count] - 1];
+                            [record setPoint:NSMakePoint(SYNC_TO_PDF(x) + pdfOffset.x, SYNC_TO_PDF(y) + pdfOffset.y)];
                             [[pages lastObject] addObject:record];
                         }
                     } else if (ch == 's') {
@@ -427,9 +421,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
                     [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
                 }
                 
-                NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerLineKey ascending:YES] autorelease];
-                NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerXKey ascending:YES] autorelease];
-                NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFSynchronizerYKey ascending:NO] autorelease];
+                NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"line" ascending:YES] autorelease];
+                NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"x" ascending:YES] autorelease];
+                NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
                 
                 [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                                    withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
@@ -493,29 +487,28 @@ static NSPoint pdfOffset = {0.0, 0.0};
     BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
-        NSDictionary *record = nil;
-        NSDictionary *beforeRecord = nil;
-        NSDictionary *afterRecord = nil;
+        SKPDFSyncRecord *record = nil;
+        SKPDFSyncRecord *beforeRecord = nil;
+        SKPDFSyncRecord *afterRecord = nil;
         NSMutableDictionary *atRecords = [NSMutableDictionary dictionary];
         NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
-            if ([record objectForKey:SKPDFSynchronizerLineKey] == nil)
+            if ([record line] == -1)
                 continue;
-            float x = [[record objectForKey:SKPDFSynchronizerXKey] floatValue];
-            float y = [[record objectForKey:SKPDFSynchronizerYKey] floatValue];
-            if (y > NSMaxY(rect)) {
+            NSPoint p = [record point];
+            if (p.y > NSMaxY(rect)) {
                 beforeRecord = record;
-            } else if (y < NSMinY(rect)) {
+            } else if (p.y < NSMinY(rect)) {
                 afterRecord = record;
                 break;
-            } else if (x < NSMinX(rect)) {
+            } else if (p.x < NSMinX(rect)) {
                 beforeRecord = record;
-            } else if (x > NSMaxX(rect)) {
+            } else if (p.x > NSMaxX(rect)) {
                 afterRecord = record;
                 break;
             } else {
-                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabsf(x - point.x)]];
+                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabsf(p.x - point.x)]];
             }
         }
         
@@ -524,17 +517,15 @@ static NSPoint pdfOffset = {0.0, 0.0};
             NSNumber *nearest = [[[atRecords allKeys] sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:0];
             record = [atRecords objectForKey:nearest];
         } else if (beforeRecord && afterRecord) {
-            float beforeX = [[beforeRecord objectForKey:SKPDFSynchronizerXKey] floatValue];
-            float beforeY = [[beforeRecord objectForKey:SKPDFSynchronizerYKey] floatValue];
-            float afterX = [[afterRecord objectForKey:SKPDFSynchronizerXKey] floatValue];
-            float afterY = [[afterRecord objectForKey:SKPDFSynchronizerYKey] floatValue];
-            if (beforeY - point.y < point.y - afterY)
+            NSPoint beforePoint = [beforeRecord point];
+            NSPoint afterPoint = [afterRecord point];
+            if (beforePoint.y - point.y < point.y - afterPoint.y)
                 record = beforeRecord;
-            else if (beforeY - point.y > point.y - afterY)
+            else if (beforePoint.y - point.y > point.y - afterPoint.y)
                 record = afterRecord;
-            else if (beforeX - point.x < point.x - afterX)
+            else if (beforePoint.x - point.x < point.x - afterPoint.x)
                 record = beforeRecord;
-            else if (beforeX - point.x > point.x - afterX)
+            else if (beforePoint.x - point.x > point.x - afterPoint.x)
                 record = afterRecord;
             else
                 record = beforeRecord;
@@ -545,8 +536,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            *line = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
-            *file = [record objectForKey:SKPDFSynchronizerFileKey];
+            *line = [record line];
+            *file = [record file];
             rv = YES;
         }
     }
@@ -557,16 +548,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     BOOL rv = NO;
     if ([lines objectForKey:file]) {
         
-        NSDictionary *record = nil;
-        NSDictionary *beforeRecord = nil;
-        NSDictionary *afterRecord = nil;
-        NSDictionary *atRecord = nil;
+        SKPDFSyncRecord *record = nil;
+        SKPDFSyncRecord *beforeRecord = nil;
+        SKPDFSyncRecord *afterRecord = nil;
+        SKPDFSyncRecord *atRecord = nil;
         NSEnumerator *recordEnum = [[lines objectForKey:file] objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
-            if ([record objectForKey:SKPDFSynchronizerPageKey] == nil)
+            if ([record pageIndex] == NSNotFound)
                 continue;
-            int l = [[record objectForKey:SKPDFSynchronizerLineKey] intValue];
+            int l = [record line];
             if (l < line) {
                 beforeRecord = record;
             } else if (l > line) {
@@ -581,8 +572,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if (atRecord) {
             record = atRecord;
         } else if (beforeRecord && afterRecord) {
-            int beforeLine = [[beforeRecord objectForKey:SKPDFSynchronizerLineKey] intValue];
-            int afterLine = [[afterRecord objectForKey:SKPDFSynchronizerLineKey] intValue];
+            int beforeLine = [beforeRecord line];
+            int afterLine = [afterRecord line];
             if (beforeLine - line > line - afterLine)
                 record = afterRecord;
             else
@@ -594,8 +585,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            *pageIndex = [[record objectForKey:SKPDFSynchronizerPageKey] unsignedIntValue];
-            *point = NSMakePoint([[record objectForKey:SKPDFSynchronizerXKey] floatValue], [[record objectForKey:SKPDFSynchronizerYKey] floatValue]);
+            *pageIndex = [record pageIndex];
+            *point = [record point];
             rv = YES;
         }
     }
@@ -665,24 +656,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     if ([self shouldKeepRunning])
         [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex];
-}
-
-@end
-
-#pragma mark -
-
-@implementation NSMutableDictionary (SKExtensions)
-
-- (void)setIntValue:(int)value forKey:(id)key {
-    NSNumber *number = [[NSNumber alloc] initWithInt:value];
-    [self setValue:number forKey:key];
-    [number release];
-}
-
-- (void)setFloatValue:(float)value forKey:(id)key {
-    NSNumber *number = [[NSNumber alloc] initWithFloat:value];
-    [self setValue:number forKey:key];
-    [number release];
 }
 
 @end
