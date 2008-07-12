@@ -49,6 +49,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKUtilities.h"
+#import "PDFPage_SKExtensions.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
@@ -124,7 +125,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)updateStatusMessage {
     NSRect bounds = [note bounds];
-    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] label], (int)NSMidX(bounds), (int)NSMidY(bounds)]];
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] displayLabel], (int)NSMidX(bounds), (int)NSMidY(bounds)]];
 }
 
 - (void)windowDidLoad {

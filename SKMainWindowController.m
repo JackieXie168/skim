@@ -696,20 +696,16 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (void)updatePageLabelsAndOutline {
     PDFDocument *pdfDoc = [pdfView document];
-    int i, count = [pdfDoc pageCount];
+    unsigned int i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
     [self willChangeValueForKey:SKMainWindowPageLabelsKey];
     [pageLabels removeAllObjects];
-    for (i = 0; i < count; i++) {
-        NSString *label = [[pdfDoc pageAtIndex:i] label];
-        if (label == nil)
-            label = [NSString stringWithFormat:@"%i", i+1];
-        [pageLabels addObject:label];
-    }
+    for (i = 0; i < count; i++)
+        [pageLabels addObject:[[pdfDoc pageAtIndex:i] displayLabel]];
     [self didChangeValueForKey:SKMainWindowPageLabelsKey];
     
-    [self setPageLabel:[[pdfView currentPage] label]];
+    [self setPageLabel:[[pdfView currentPage] displayLabel]];
     
     [self updatePageColumnWidthForTableView:thumbnailTableView];
     [self updatePageColumnWidthForTableView:snapshotTableView];
@@ -913,7 +909,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (void)updatePageLabel {
-    NSString *label = [[pdfView currentPage] label];
+    NSString *label = [[pdfView currentPage] displayLabel];
     if (label != pageLabel) {
         [self willChangeValueForKey:SKMainWindowPageLabelKey];
         [pageLabel release];
@@ -928,7 +924,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (void)setPageLabel:(NSString *)label {
     unsigned int idx = [pageLabels indexOfObject:label];
-    if (idx != NSNotFound && [[[pdfView currentPage] label] isEqual:label] == NO)
+    if (idx != NSNotFound && [[[pdfView currentPage] displayLabel] isEqual:label] == NO)
         [self goToPage:[[pdfView document] pageAtIndex:idx]];
 }
 

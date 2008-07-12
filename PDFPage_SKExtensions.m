@@ -323,6 +323,17 @@ static IMP originalDealloc = NULL;
     return [[self document] indexForPage:self];
 }
 
+- (NSString *)logicalLabel {
+    return [NSString stringWithFormat:@"%u", [self pageIndex] + 1];
+}
+
+- (NSString *)displayLabel {
+    NSString *label = nil;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey] == NO)
+        label = [self label];
+    return label ? label : [self logicalLabel];
+}
+
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {

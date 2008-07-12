@@ -40,6 +40,7 @@
 #import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 
 @implementation SKSecondaryPDFView
@@ -138,9 +139,7 @@ static float SKPopUpMenuFontSize = 11.0;
     
     if (count = [pdfDoc pageCount]) {
         for (i = 0; i < count; i++) {
-            label = [[pdfDoc pageAtIndex:i] label];
-            if (label == nil)
-                label = [NSString stringWithFormat:@"%i", i + 1];
+            label = [[pdfDoc pageAtIndex:i] displayLabel];
             width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
             if (width > maxWidth) {
                 maxWidth = width;
