@@ -279,8 +279,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
     serverOnMainThread = nil;    
     
 #ifdef SYNCTEX_FEATURE
-    if (scanner)
+    if (scanner) {
         synctex_scanner_free(scanner);
+        scanner = NULL;
+    }
 #endif
 }
 
