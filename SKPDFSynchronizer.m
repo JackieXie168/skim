@@ -37,6 +37,7 @@
  */
 
 #import "SKPDFSynchronizer.h"
+#import <libkern/OSAtomic.h>
 #import "SKPDFSyncRecord.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
@@ -72,6 +73,11 @@ static SKPDFSyncRecord *SKRecordForRecordIndex(NSMutableDictionary *records, int
 
 #pragma mark -
 
+struct SKServerFlags {
+    volatile int32_t shouldKeepRunning __attribute__ ((aligned (32)));
+    volatile int32_t serverReady __attribute__ ((aligned (32)));
+};
+
 @protocol SKPDFSynchronizerServerThread
 - (oneway void)cleanup; 
 - (oneway void)serverFindFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
@@ -79,7 +85,7 @@ static SKPDFSyncRecord *SKRecordForRecordIndex(NSMutableDictionary *records, int
 @end
 
 @protocol SKPDFSynchronizerMainThread
-- (oneway void)setLocalServer:(byref id)anObject;
+- (void)setLocalServer:(byref id)anObject;
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
 - (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
 @end
@@ -121,8 +127,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         serverOnMainThread = nil;
         serverOnServerThread = nil;
        
-        shouldKeepRunning = 1;
-        serverReady = 1;
+        serverFlags = NSZoneCalloc(NSDefaultMallocZone(), 1, sizeof(struct SKServerFlags));
+        serverFlags->shouldKeepRunning = 1;
+        serverFlags->serverReady = 0;
         
         // run a background thread to connect to the remote server
         // this will connect back to the connection we just set up
@@ -132,12 +139,13 @@ static NSPoint pdfOffset = {0.0, 0.0};
         do {
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
             OSMemoryBarrier();
-        } while (serverReady == 0 && shouldKeepRunning == 1);
+        } while (serverFlags->serverReady == 0 && serverFlags->shouldKeepRunning == 1);
     }
     return self;
 }
 
 - (void)dealloc {
+    NSZoneFree(NSDefaultMallocZone(), serverFlags);
     [pages release];
     [lines release];
     [fileName release];
@@ -208,7 +216,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)shouldKeepRunning {
     OSMemoryBarrier();
-    return shouldKeepRunning == 1;
+    return serverFlags->shouldKeepRunning == 1;
 }
 
 #pragma mark API
@@ -218,7 +226,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     // this cleans up the connections, ports and proxies on both sides
     [serverOnServerThread cleanup];
     // we're in the main thread, so set the stop flag
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&shouldKeepRunning);
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
     
     // clean up the connection in the main thread; don't invalidate the ports, since they're still in use
     [mainThreadConnection setRootObject:nil];
@@ -246,7 +254,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (oneway void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
-    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
 }
 
 #pragma mark | Finding
@@ -292,7 +299,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&shouldKeepRunning);
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->shouldKeepRunning);
     
     @try {
         // we'll use this to communicate between threads on the localhost
@@ -305,6 +312,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         [serverOnMainThread setProtocolForProxy:@protocol(SKPDFSynchronizerMainThread)];
         // handshake, this sets the proxy at the other side
         [serverOnMainThread setLocalServer:self];
+        
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
         
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
         BOOL didRun;
@@ -319,9 +328,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
     @catch(id exception) {
         NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
         // reset the flag so we can start over; shouldn't be necessary
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&shouldKeepRunning);
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->shouldKeepRunning);
         // allow the main thread to continue, anyway
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverReady);
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
     
     @finally {
