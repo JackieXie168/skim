@@ -51,7 +51,7 @@
     BOOL isPdfsync;
     
     NSMutableArray *pages;
-    NSMutableDictionary *lines
+    NSMutableDictionary *lines;
     
 #ifdef SYNCTEX_FEATURE
     synctex_scanner_t scanner;
