@@ -105,12 +105,14 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (id)init {
     if (self = [super init]) {
-        pages = [[NSMutableArray alloc] init];
-        lines = [[NSMutableDictionary alloc] init];
         fileName = nil;
         syncFileName = nil;
         lastModDate = nil;
         isPdfsync = YES;
+        
+        pages = [[NSMutableArray alloc] init];
+        lines = [[NSMutableDictionary alloc] init];
+        
 #ifdef SYNCTEX_FEATURE
         scanner = NULL;
 #endif        
