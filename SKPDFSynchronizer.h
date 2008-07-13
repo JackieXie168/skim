@@ -72,8 +72,8 @@
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
-- (void)findFileLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
-- (void)findPageLocationForLine:(int)line inFile:(NSString *)file;
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file;
 
 - (void)stopDOServer;
 
