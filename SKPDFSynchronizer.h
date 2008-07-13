@@ -48,9 +48,11 @@
     NSString *fileName;
     NSString *syncFileName;
     NSDate *lastModDate;
-    NSMutableArray *pages;
-    NSMutableDictionary *lines;
     BOOL isPdfsync;
+    
+    NSMutableArray *pages;
+    NSMutableDictionary *lines
+    
 #ifdef SYNCTEX_FEATURE
     synctex_scanner_t scanner;
 #endif
@@ -61,7 +63,6 @@
     id serverOnServerThread;
     NSConnection *mainThreadConnection;
     NSConnection *localThreadConnection;
-    
     struct SKServerFlags *serverFlags;
 }
 
