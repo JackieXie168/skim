@@ -37,7 +37,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <libkern/OSAtomic.h>
 
 #define SYNCTEX_FEATURE 1
 
@@ -63,8 +62,7 @@
     NSConnection *mainThreadConnection;
     NSConnection *localThreadConnection;
     
-    volatile int32_t shouldKeepRunning __attribute__ ((aligned (32)));
-    volatile int32_t serverReady __attribute__ ((aligned (32)));
+    struct SKServerFlags *serverFlags;
 }
 
 
