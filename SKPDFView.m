@@ -3879,7 +3879,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         PDFSelection *sel = [page selectionForLineAtPoint:location];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         
-        [[document synchronizer] findFileLineForLocation:location inRect:rect atPageIndex:pageIndex];
+        [[document synchronizer] findFileAndLineForLocation:location inRect:rect atPageIndex:pageIndex];
     }
 }
 

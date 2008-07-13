@@ -1945,7 +1945,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
             source = [self fileURL];
-        [[self synchronizer] findPageLocationForLine:[location line] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
+        [[self synchronizer] findPageAndLocationForLine:[location line] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:location];
         if ([[selection pages] count]) {
@@ -2007,7 +2007,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         
-        [[self synchronizer] findFileLineForLocation:point inRect:rect atPageIndex:pageIndex];
+        [[self synchronizer] findFileAndLineForLocation:point inRect:rect atPageIndex:pageIndex];
     }
 }
 
