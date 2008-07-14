@@ -260,6 +260,7 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
     originalResetCursorRects = SKReplaceMethodImplementationWithSelector(self, @selector(resetCursorRects), @selector(replacementResetCursorRects));
     if ([self instancesRespondToSelector:@selector(passwordEntered:)])
         originalPasswordEntered = SKReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
     if ([self instancesRespondToSelector:@selector(accessibilityAttributeNames)])
         originalAccessibilityAttributeNames = SKReplaceMethodImplementationWithSelector(self, @selector(accessibilityAttributeNames), @selector(replacementAccessibilityAttributeNames));
     if ([self instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
