@@ -59,18 +59,6 @@ static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
     return file;
 }
 
-static SKPDFSyncRecord *SKRecordForRecordIndex(NSMutableDictionary *records, int recordIndex) {
-    NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
-    SKPDFSyncRecord *record = [records objectForKey:recordNumber];
-    if (record == nil) {
-        record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
-        [records setObject:record forKey:recordNumber];
-        [record release];
-    }
-    [recordNumber release];
-    return record;
-}
-
 #pragma mark -
 
 struct SKServerFlags {
@@ -152,66 +140,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     [syncFileName release];
     [lastModDate release];
     [super dealloc];
-}
-
-#pragma mark Accessors
-
-- (id)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id)newDelegate {
-    delegate = newDelegate;
-}
-
-- (NSString *)fileName {
-    NSString *file = nil;
-    @synchronized(self) {
-        file = [[fileName retain] autorelease];
-    }
-    return file;
-}
-
-- (void)setFileName:(NSString *)newFileName {
-    @synchronized(self) {
-        if (fileName != newFileName) {
-            if ([fileName isEqualToString:newFileName] == NO) {
-                [syncFileName release];
-                syncFileName = nil;
-                [lastModDate release];
-                lastModDate = nil;
-            }
-            [fileName release];
-            fileName = [newFileName retain];
-        }
-    }
-}
-
-- (NSString *)syncFileName {
-    NSString *file = nil;
-    @synchronized(self) {
-        file = [[syncFileName retain] autorelease];
-    }
-    return file;
-}
-
-- (void)setSyncFileName:(NSString *)newSyncFileName {
-    @synchronized(self) {
-        if (syncFileName != newSyncFileName) {
-            [syncFileName release];
-            syncFileName = [newSyncFileName retain];
-        }
-        [lastModDate release];
-        lastModDate = [(syncFileName ? SKFileModificationDateAtPath(syncFileName) : nil) retain];
-    }
-}
-
-- (NSDate *)lastModDate {
-    NSDate *date = nil;
-    @synchronized(self) {
-        date = [[lastModDate retain] autorelease];
-    }
-    return date;
 }
 
 #pragma mark DO server
@@ -318,6 +246,66 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark Finding and Parsing
 
+#pragma mark Accessors
+
+- (id)delegate {
+    return delegate;
+}
+
+- (void)setDelegate:(id)newDelegate {
+    delegate = newDelegate;
+}
+
+- (NSString *)fileName {
+    NSString *file = nil;
+    @synchronized(self) {
+        file = [[fileName retain] autorelease];
+    }
+    return file;
+}
+
+- (void)setFileName:(NSString *)newFileName {
+    @synchronized(self) {
+        if (fileName != newFileName) {
+            if ([fileName isEqualToString:newFileName] == NO) {
+                [syncFileName release];
+                syncFileName = nil;
+                [lastModDate release];
+                lastModDate = nil;
+            }
+            [fileName release];
+            fileName = [newFileName retain];
+        }
+    }
+}
+
+- (NSString *)syncFileName {
+    NSString *file = nil;
+    @synchronized(self) {
+        file = [[syncFileName retain] autorelease];
+    }
+    return file;
+}
+
+- (void)setSyncFileName:(NSString *)newSyncFileName {
+    @synchronized(self) {
+        if (syncFileName != newSyncFileName) {
+            [syncFileName release];
+            syncFileName = [newSyncFileName retain];
+        }
+        [lastModDate release];
+        lastModDate = [(syncFileName ? SKFileModificationDateAtPath(syncFileName) : nil) retain];
+    }
+}
+
+- (NSDate *)lastModDate {
+    NSDate *date = nil;
+    @synchronized(self) {
+        date = [[lastModDate retain] autorelease];
+    }
+    return date;
+}
+
 #pragma mark | API
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
@@ -358,8 +346,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if ([pdfsyncString length]) {
         
         NSString *basePath = [theFileName stringByDeletingLastPathComponent];
-        NSMutableDictionary *records = [NSMutableDictionary dictionary];
-        NSMutableArray *files = [NSMutableArray array];
+        SKPDFSyncRecords *records = [[SKPDFSyncRecords alloc] init];
+        NSMutableArray *files = [[NSMutableArray alloc] init];
         NSString *file;
         int recordIndex, line, pageIndex;
         float x, y;
@@ -391,7 +379,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                         if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
                             // we ignore the column
                             [sc scanInt:NULL];
-                            record = SKRecordForRecordIndex(records, recordIndex);
+                            record = [records recordForIndex:recordIndex];
                             [record setFile:file];
                             [record setLine:line];
                             [[lines objectForKey:file] addObject:record];
@@ -400,7 +388,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                         // we ignore * and + modifiers
                         [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
                         if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
-                            record = SKRecordForRecordIndex(records, recordIndex);
+                            record = [records recordForIndex:recordIndex];
                             [record setPageIndex:[pages count] - 1];
                             [record setPoint:NSMakePoint(SYNC_TO_PDF(x) + pdfOffset.x, SYNC_TO_PDF(y) + pdfOffset.y)];
                             [[pages lastObject] addObject:record];
@@ -449,6 +437,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
             }
         }
         
+        [records release];
+        [files release];
         [sc release];
     }
     

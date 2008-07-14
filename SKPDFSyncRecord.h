@@ -68,3 +68,11 @@
 - (void)setLine:(int)newLine;
 
 @end
+
+#pragma mark -
+
+@interface SKPDFSyncRecords : NSObject {
+    NSMutableDictionary *records;
+}
+- (SKPDFSyncRecord *)recordForIndex:(int)recordIndex;
+@end

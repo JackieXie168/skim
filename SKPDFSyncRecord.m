@@ -113,3 +113,33 @@
 }
 
 @end
+
+#pragma mark -
+
+@implementation SKPDFSyncRecords
+
+- (id)init {
+    if (self = [super init]) {
+        records = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [records release];
+    [super dealloc];
+}
+
+- (SKPDFSyncRecord *)recordForIndex:(int)recordIndex {
+    NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
+    SKPDFSyncRecord *record = [records objectForKey:recordNumber];
+    if (record == nil) {
+        record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
+        [records setObject:record forKey:recordNumber];
+        [record release];
+    }
+    [recordNumber release];
+    return record;
+}
+
+@end
