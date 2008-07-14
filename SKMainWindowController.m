@@ -1039,6 +1039,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)setNotes:(NSArray *)newNotes {
     NSMutableSet *old = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
     NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+#warning fixme: removed and added are leaked
     NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)old);
     NSMutableSet *added = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)new);
     
