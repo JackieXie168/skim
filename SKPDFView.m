@@ -907,7 +907,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
         
         if (preferNote) {
-            newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
+            newAnnotation = [[[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds] autorelease];
             NSMutableAttributedString *attrString = nil;
             if ([pboardType isEqualToString:NSStringPboardType])
                 attrString = [[[NSMutableAttributedString alloc] initWithString:[pboard stringForType:NSStringPboardType]] autorelease];
@@ -921,7 +921,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             }
             [(SKNPDFAnnotationNote *)newAnnotation setText:attrString];
         } else {
-            newAnnotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+            newAnnotation = [[[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds] autorelease];
             [newAnnotation setString:[pboard stringForType:NSStringPboardType]];
         }
         
