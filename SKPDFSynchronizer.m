@@ -79,7 +79,7 @@ struct SKServerFlags {
 };
 
 @protocol SKPDFSynchronizerServerThread
-- (oneway void)cleanup; 
+- (oneway void)stopRunning; 
 - (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
 - (oneway void)serverFindPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file;
 @end
@@ -225,10 +225,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | DO server
 
 - (void)stopDOServer {
-    // this cleans up the connections, ports and proxies on both sides
-    [serverOnServerThread cleanup];
-    // we're in the main thread, so set the stop flag
+    // set the stop flag so any running task may finish
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
+    // this is really only necessary to tickle the server thread's runloop so it will finish
+    [serverOnServerThread stopRunning];
     
     // clean up the connection in the main thread; don't invalidate the ports, since they're still in use
     [mainThreadConnection setRootObject:nil];
@@ -253,7 +253,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark Main thread
 #pragma mark | DO server
 
-- (oneway void)setLocalServer:(byref id)anObject {
+- (void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
 }
@@ -273,26 +273,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark Server thread
 #pragma mark | DO server
 
-- (oneway void)cleanup {   
-    // clean up the connection in the server thread
-    [localThreadConnection setRootObject:nil];
-    
-    // this frees up the CFMachPorts created in -init
-    [[localThreadConnection receivePort] invalidate];
-    [[localThreadConnection sendPort] invalidate];
-    [localThreadConnection invalidate];
-    [localThreadConnection release];
-    localThreadConnection = nil;
-    
-    [serverOnMainThread release];
-    serverOnMainThread = nil;    
-    
-#ifdef SYNCTEX_FEATURE
-    if (scanner) {
-        synctex_scanner_free(scanner);
-        scanner = NULL;
-    }
-#endif
+- (oneway void)stopRunning {log_method();
+    // not really necessary, as the main thread should already have done this
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
 }
 
 - (void)runDOServerForPorts:(NSArray *)ports {
@@ -300,8 +283,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSAssert(localThreadConnection == nil, @"server is already running");
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->shouldKeepRunning);
     
     @try {
         // we'll use this to communicate between threads on the localhost
@@ -335,7 +316,27 @@ static NSPoint pdfOffset = {0.0, 0.0};
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
     
-    @finally {
+    @finally {log_method();
+        // clean up the connection in the server thread
+        [localThreadConnection setRootObject:nil];
+        
+        // this frees up the CFMachPorts created in -init
+        [[localThreadConnection receivePort] invalidate];
+        [[localThreadConnection sendPort] invalidate];
+        [localThreadConnection invalidate];
+        [localThreadConnection release];
+        localThreadConnection = nil;
+        
+        [serverOnMainThread release];
+        serverOnMainThread = nil;    
+        
+#ifdef SYNCTEX_FEATURE
+        if (scanner) {
+            synctex_scanner_free(scanner);
+            scanner = NULL;
+        }
+#endif
+        
         [pool release];
     }
 }
