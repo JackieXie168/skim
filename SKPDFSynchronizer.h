@@ -37,12 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-
-#define SYNCTEX_FEATURE 1
-
-#ifdef SYNCTEX_FEATURE
 #import "synctex_parser.h"
-#endif
 
 @interface SKPDFSynchronizer : NSObject {
     NSString *fileName;
@@ -53,9 +48,7 @@
     NSMutableArray *pages;
     NSMutableDictionary *lines;
     
-#ifdef SYNCTEX_FEATURE
     synctex_scanner_t scanner;
-#endif
     
     id delegate;
     

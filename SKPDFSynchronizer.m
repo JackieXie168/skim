@@ -113,9 +113,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         pages = [[NSMutableArray alloc] init];
         lines = [[NSMutableDictionary alloc] init];
         
-#ifdef SYNCTEX_FEATURE
         scanner = NULL;
-#endif        
         
         NSPort *port1 = [NSPort port];
         NSPort *port2 = [NSPort port];
@@ -216,13 +214,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return date;
 }
 
+#pragma mark DO server
+
+#pragma mark | Accessor
+
 - (BOOL)shouldKeepRunning {
     OSMemoryBarrier();
     return serverFlags->shouldKeepRunning == 1;
 }
 
-#pragma mark API
-#pragma mark | DO server
+#pragma mark | API
 
 - (void)stopDOServer {
     // set the stop flag so any running task may finish
@@ -240,40 +241,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     serverOnServerThread = nil;    
 }
 
-#pragma mark | Finding
-
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    [serverOnServerThread serverFindFileAndLineForLocation:point inRect:rect atPageIndex:pageIndex];
-}
-
-- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file {
-    [serverOnServerThread serverFindPageAndLocationForLine:line inFile:file];
-}
-
-#pragma mark Main thread
-#pragma mark | DO server
+#pragma mark | Main thread
 
 - (void)setLocalServer:(byref id)anObject {
     [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
     serverOnServerThread = [anObject retain];
 }
 
-#pragma mark | Finding
+#pragma mark | Server thread
 
-- (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file {
-    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
-        [delegate synchronizer:self foundLine:line inFile:file];
-}
-
-- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
-    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
-        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
-}
-
-#pragma mark Server thread
-#pragma mark | DO server
-
-- (oneway void)stopRunning {log_method();
+- (oneway void)stopRunning {
     // not really necessary, as the main thread should already have done this
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
 }
@@ -316,7 +293,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
     
-    @finally {log_method();
+    @finally {
         // clean up the connection in the server thread
         [localThreadConnection setRootObject:nil];
         
@@ -330,18 +307,40 @@ static NSPoint pdfOffset = {0.0, 0.0};
         [serverOnMainThread release];
         serverOnMainThread = nil;    
         
-#ifdef SYNCTEX_FEATURE
         if (scanner) {
             synctex_scanner_free(scanner);
             scanner = NULL;
         }
-#endif
         
         [pool release];
     }
 }
 
-#pragma mark | Parsing and Finding
+#pragma mark Finding and Parsing
+
+#pragma mark | API
+
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    [serverOnServerThread serverFindFileAndLineForLocation:point inRect:rect atPageIndex:pageIndex];
+}
+
+- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file {
+    [serverOnServerThread serverFindPageAndLocationForLine:line inFile:file];
+}
+
+#pragma mark | Main thread
+
+- (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file {
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
+        [delegate synchronizer:self foundLine:line inFile:file];
+}
+
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
+        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
+}
+
+#pragma mark | Server thread
 
 #pragma mark || PDFSync
 
@@ -570,7 +569,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)parseSynctexFile:(NSString *)theFileName {
     BOOL rv = NO;
-#ifdef SYNCTEX_FEATURE
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
@@ -578,13 +576,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
     }
-#endif
     return rv;
 }
 
 - (BOOL)synctexFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
-#ifdef SYNCTEX_FEATURE
     if (synctex_edit_query(scanner, (int)pageIndex + 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
@@ -593,13 +589,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
             rv = YES;
         }
     }
-#endif
     return rv;
 }
 
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
-#ifdef SYNCTEX_FEATURE
     if (synctex_display_query(scanner, [file fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
@@ -609,7 +603,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
             rv = YES;
         }
     }
-#endif
     return rv;
 }
 
