@@ -139,7 +139,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         
         // wait till the server is set up
         do {
-            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
             OSMemoryBarrier();
         } while (serverFlags->serverReady == 0 && serverFlags->shouldKeepRunning == 1);
     }
