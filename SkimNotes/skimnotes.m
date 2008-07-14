@@ -221,7 +221,7 @@ int main (int argc, const char * argv[]) {
                         success = [data writeToFile:notesPath options:NSAtomicWrite error:&error];
                     } else if ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
                         success = [fm removeFileAtPath:notesPath handler:nil];
-                        if (success = NO)
+                        if (success == NO)
                             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EACCES userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Unable to remove file", NSLocalizedDescriptionKey, nil]];
                     } else {
                         success = YES;
