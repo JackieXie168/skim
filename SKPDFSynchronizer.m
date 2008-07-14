@@ -62,8 +62,8 @@ static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
 #pragma mark -
 
 struct SKServerFlags {
-    volatile int32_t shouldKeepRunning __attribute__ ((aligned (32)));
-    volatile int32_t serverReady __attribute__ ((aligned (32)));
+    volatile int32_t shouldKeepRunning;
+    volatile int32_t serverReady;
 };
 
 @protocol SKPDFSynchronizerServerThread
@@ -125,7 +125,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         
         // wait till the server is set up
         do {
-            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if (NO == [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]])
+                OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
             OSMemoryBarrier();
         } while (serverFlags->serverReady == 0 && serverFlags->shouldKeepRunning == 1);
     }
