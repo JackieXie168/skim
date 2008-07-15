@@ -38,20 +38,19 @@
 
 /*!
     @header      
-    @discussion  This file defines an <code>NSFileManager</code> category to read/write Skim notes.
+    @abstract    An <code>NSFileManager</code> category to read and write Skim notes.
+    @discussion  This header file provides API for an <code>NSFileManager</code> category to read and write Skim notes.
 */
 #import <Cocoa/Cocoa.h>
 
 
 /*!
-    @category    NSFileManager(SKNExtensions)
     @abstract    Provides methods to access Skim notes in extended attributes or PDF bundles.
     @discussion  This category is the main interface to read and write Skim notes from and to files and extended attributes of files.
 */
 @interface NSFileManager (SKNExtensions)
 
 /*!
-    @method     readSkimNotesFromExtendedAttributesAtURL:error:
     @abstract   Reads Skim notes as an array of property dictionaries from the extended attributes of a file.
     @discussion Reads the data from the extended attributes of the file and convert.
     @param      aURL The URL for the file to read the Skim notes from.
@@ -61,7 +60,6 @@
 - (NSArray *)readSkimNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimTextNotesFromExtendedAttributesAtURL:error:
     @abstract   Reads text Skim notes as a string from the extended attributes of a file.
     @discussion Reads the data from the extended attributes of the file and unarchives it using <code>NSKeyedUnarchiver</code>.
     @param      aURL The URL for the file to read the text Skim notes from.
@@ -71,7 +69,6 @@
 - (NSString *)readSkimTextNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimRTFNotesFromExtendedAttributesAtURL:error:
     @abstract   Reads rich text Skim notes as RTF data from the extended attributes of a file.
     @discussion Reads the data from the extended attributes of the file.
     @param      aURL The URL for the file to read the RTF Skim notes from.
@@ -81,7 +78,6 @@
 - (NSData *)readSkimRTFNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimNotesFromPDFBundleAtURL:error:
     @abstract   Reads Skim notes as an array of property dictionaries from the contents of a PDF bundle.
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .skim extension.
     @param      aURL The URL for the PDF bundle to read the Skim notes from.
@@ -91,7 +87,6 @@
 - (NSArray *)readSkimNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimTextNotesFromPDFBundleAtURL:error:
     @abstract   Reads text Skim notes as a string from the contents of a PDF bundle.
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .txt extension.
     @param      aURL The URL for the PDF bundle to read the text Skim notes from.
@@ -101,7 +96,6 @@
 - (NSString *)readSkimTextNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimRTFNotesFromPDFBundleAtURL:error:
     @abstract   Reads rich text Skim notes as RTF data from the contents of a PDF bundle.
     @discussion Reads the data from a bundled file in the PDF bundle with the proper .rtf extension.
     @param      aURL The URL for the PDF bundle to read the RTF Skim notes from.
@@ -111,7 +105,6 @@
 - (NSData *)readSkimRTFNotesFromPDFBundleAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     readSkimNotesFromSkimFileAtURL:error:
     @abstract   Reads Skim notes as an array of property dictionaries from the contents of a .skim file.
     @discussion Reads data from the file and unarchives it using NSKeyedUnarchiver.
     @param      aURL The URL for the .skim file to read the Skim notes from.
@@ -121,7 +114,6 @@
 - (NSArray *)readSkimNotesFromSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     writeSkimNotes:toExtendedAttributesAtURL:error:
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
     @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
@@ -132,7 +124,6 @@
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error:
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
     @discussion This writes three types of Skim notes to the extended attributes to the file located through <code>aURL</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
@@ -145,7 +136,6 @@
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     writeSkimNotes:toSkimFileAtURL:error:
     @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.
     @discussion Archives notes using NSKeyedArchiver and writes the data to the file located by <code>aURL</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
@@ -156,7 +146,6 @@
 - (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
-    @method     bundledFileWithExtension:inPDFBundleAtPath:error:
     @abstract   Returns the full path for the file of a given type inside a PDF bundle.
     @discussion If more than one bundled files with the given extension exist in the PDF bundle, this will follow the naming rules followed by Skim to find the best match.
     @param      extension The file extension for which to find a bundled file.

@@ -38,7 +38,8 @@
 
 /*!
     @header      
-    @discussion  This file defines an <code>PDFAnnotation</code> categories to manage Skim notes.
+    @abstract    An <code>PDFAnnotation</code> category to manage Skim notes.
+    @discussion  This header file provides API for an <code>PDFAnnotation</code> categories to convert Skim note dictionaries to <code>PDFAnnotations</code> and back.
 */
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
@@ -85,14 +86,14 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 
 
 /*!
-    @category    PDFAnnotation(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Methods from this category are used by the <code>PDFDocument (SKNExtensions)</code> category to add new annotations from Skim notes.
 */
 @interface PDFAnnotation (SKNExtensions)
 
 /*!
-    @method     initSkimNoteWithBounds:
+    @method     
     @abstract   Initializes a new Skim note annotation.  This is the designated initializer for a Skim note.
     @discussion This method can be implemented in subclasses to provide default properties for Skim notes.
     @param      bounds The bounding box of the annotation, in page space.
@@ -101,7 +102,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (id)initSkimNoteWithBounds:(NSRect)bounds;
 
 /*!
-    @method     initSkimNoteWithProperties:
+    @method     
     @abstract   Initializes a new Skim note annotation with the given properties.
     @discussion This method determines the proper subclass from the value for the <code>"type"</code> key in dict, initializes an instance using <code>initSkimNoteWithBounds:</code>, and sets the known properties from dict. Implementations in subclasses should call it on super and set their properties from dict if available.
     @param      dict A dictionary with Skim notes properties, as returned from properties.  This is required to contain values for <code>"type"</code> and <code>"bounds"</code>.
@@ -110,7 +111,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (id)initSkimNoteWithProperties:(NSDictionary *)dict;
 
 /*!
-    @method     SkimNoteProperties
+    @method     
     @abstract   The Skim notes properties.
     @discussion These properties can be used to initialize a new copy, and to save to extended attributes or file.
     @result     A dictionary with properties of the Skim note.  All values are standard Cocoa objects conforming to <code>NSCoding</code> and <code>NSCopying</code>.
@@ -118,7 +119,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (NSDictionary *)SkimNoteProperties;
 
 /*!
-    @method     isSkimNote
+    @method     
     @abstract   Returns whether the annotation is a Skim note.  
     @discussion An annotation initalized with initializers starting with initSkimNote will return <code>YES</code> by default.
     @result     YES if the annotation is a Skim note; otherwise NO.
@@ -126,7 +127,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (BOOL)isSkimNote;
 
 /*!
-    @method     setSkimNote:
+    @method     
     @abstract   Sets whether the receiver is to be interpreted as a Skim note.
     @discussion You normally would not use this yourself, but rely on the initializer to set the <code>isSkimNote</code> flag.
     @param      flag Set this value to <code>YES</code> if you want the annotation to be interpreted as a Skim note.
@@ -134,7 +135,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (void)setSkimNote:(BOOL)flag;
 
 /*!
-    @method     string
+    @method     
     @abstract   The string value of the annotation.
     @discussion By default, this is just the same as the contents.  However for <code>SKNPDFAnnotationNote</code> the contents will contain both string and text.
     @result     A string representing the string value associated with the annotation.
@@ -142,7 +143,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 - (NSString *)string;
 
 /*!
-    @method     setString:
+    @method     
     @abstract   Sets the string of the annotation.  By default just sets the contents.
     @discussion By default just calls <code>setContent:</code>.
     @param      newString The new string value for the annotation.
@@ -154,7 +155,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationCircle(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a circle annotation.
 */
@@ -164,7 +165,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationSquare(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a square annotation.
 */
@@ -174,7 +175,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationLine(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a line annotation.
 */
@@ -184,7 +185,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationFreeText(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a free text annotation.
 */
@@ -194,7 +195,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationMarkup(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a markup annotation.
 */
@@ -202,13 +203,13 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 @end
 
 /*!
-    @category    PDFAnnotationMarkup(SKNOptional)
+    @category    
     @abstract    An informal protocol providing a method name for an optional method that may be implemented in a category.
     @discussion  This defines an optional method that another <code>PDFAnnotationMarkup</code> category may implement to provide a default color.
 */
 @interface PDFAnnotationMarkup (SKNOptional)
 /*!
-    @method     defaultSkimNoteColorForMarkupType:
+    @method     
     @abstract   Optional method to implement to return the default color to use for markup initialized with properties that do not contain a color.
     @param      markupType The markup style for which to return the default color.
     @discussion This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.  This method is not implemented by default.
@@ -220,7 +221,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationText(SKNExtensions)
+    @category    
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a text annotation.
 */
