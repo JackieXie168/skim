@@ -37,7 +37,7 @@
  */
 
 /*!
-    @header      PDFAnnotation_SKNExtensions.h
+    @header      
     @discussion  This file defines an <code>PDFAnnotation</code> categories to manage Skim notes.
 */
 #import <Cocoa/Cocoa.h>
@@ -85,7 +85,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 
 
 /*!
-    @category    PDFAnnotation (SKNExtensions)
+    @category    PDFAnnotation(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Methods from this category are used by the <code>PDFDocument (SKNExtensions)</code> category to add new annotations from Skim notes.
 */
@@ -154,7 +154,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationCircle (SKNExtensions)
+    @category    PDFAnnotationCircle(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a circle annotation.
 */
@@ -164,7 +164,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationSquare (SKNExtensions)
+    @category    PDFAnnotationSquare(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a square annotation.
 */
@@ -174,7 +174,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationLine (SKNExtensions)
+    @category    PDFAnnotationLine(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a line annotation.
 */
@@ -184,7 +184,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationFreeText (SKNExtensions)
+    @category    PDFAnnotationFreeText(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a free text annotation.
 */
@@ -194,7 +194,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationMarkup (SKNExtensions)
+    @category    PDFAnnotationMarkup(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a markup annotation.
 */
@@ -202,7 +202,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 @end
 
 /*!
-    @category    PDFAnnotationMarkup (SKNOptional)
+    @category    PDFAnnotationMarkup(SKNOptional)
     @abstract    An informal protocol providing a method name for an optional method that may be implemented in a category.
     @discussion  This defines an optional method that another <code>PDFAnnotationMarkup</code> category may implement to provide a default color.
 */
@@ -220,7 +220,7 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
 #pragma mark -
 
 /*!
-    @category    PDFAnnotationText (SKNExtensions)
+    @category    PDFAnnotationText(SKNExtensions)
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a text annotation.
 */

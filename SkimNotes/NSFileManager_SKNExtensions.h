@@ -37,14 +37,14 @@
  */
 
 /*!
-    @header      NSFileManager_SKNExtensions.h
+    @header      
     @discussion  This file defines an <code>NSFileManager</code> category to read/write Skim notes.
 */
 #import <Cocoa/Cocoa.h>
 
 
 /*!
-    @category    NSFileManager (SKNExtensions)
+    @category    NSFileManager(SKNExtensions)
     @abstract    Provides methods to access Skim notes in extended attributes or PDF bundles.
     @discussion  This category is the main interface to read and write Skim notes from and to files and extended attributes of files.
 */

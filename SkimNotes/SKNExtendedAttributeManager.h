@@ -29,7 +29,7 @@
  */
 
 /*!
-    @header      SKNExtendedAttributeManager.h
+    @header      
     @discussion  This file defines a singleton class to read and write extended attributes in the format expected for Skim notes.
 */
 #import <Cocoa/Cocoa.h>
