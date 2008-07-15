@@ -38,12 +38,15 @@
 
 #import <SkimNotes/NSFileManager_SKNExtensions.h>
 #import <SkimNotes/SKNExtendedAttributeManager.h>
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
 
 #define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
 #define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
+
+#define NOTE_PAGE_INDEX_KEY @"pageIndex"
+#define NOTE_TYPE_KEY @"type"
+#define NOTE_CONTENTS_KEY @"contents"
+#define NOTE_TEXT_KEY @"text"
 
 @implementation NSFileManager (SKNExtensions)
 
@@ -53,10 +56,10 @@ static NSString *SKNTextNotes(NSArray *noteDicts) {
     NSDictionary *dict;
     
     while (dict = [dictEnum nextObject]) {
-        NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
-        NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
+        NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
+        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
+        NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
+        NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
         if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
             pageIndex = 0;
@@ -80,10 +83,10 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     NSDictionary *dict;
     
     while (dict = [dictEnum nextObject]) {
-        NSString *type = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
-        NSString *string = [dict objectForKey:SKNPDFAnnotationTypeKey];
-        NSAttributedString *text = [dict objectForKey:SKNPDFAnnotationTextKey];
+        NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
+        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
+        NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
+        NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
         if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
             pageIndex = 0;
