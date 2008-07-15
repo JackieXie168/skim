@@ -28,7 +28,7 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <SkimNotes/SKNExtendedAttributeManager.h>
+#import "SKNExtendedAttributeManager.h"
 #include <sys/xattr.h>
 #import <bzlib.h>
 
