@@ -38,7 +38,8 @@
 
 /*!
     @header      
-    @discussion  This file defines a concrete <code>PDFAnnotation</code> class representing a SKim anchored note.
+    @abstract    A concrete <code>PDFAnnotation</code> subclass representing a Skim anchored note.
+    @discussion  This header file declares API for a concrete <code>PDFAnnotation</code> class representing a Skim anchored note.
 */
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
@@ -49,7 +50,6 @@ extern NSString *SKNPDFAnnotationImageKey;
 extern NSSize SKNPDFAnnotationNoteSize;
 
 /*!
-    class        SKNPDFAnnotationNote
     @abstract    A concrete <code>PDFAnnotation</code> subclass, a subclass of <code>PDFAnnotationText</code>, representing a Skim anchored note.
     @discussion  This is a <code>PDFAnnotationText</code> subclass containing a separate short string value, a longer rich text property, and an image property.
 */
@@ -62,7 +62,6 @@ extern NSSize SKNPDFAnnotationNoteSize;
 }
 
 /*!
-    @method     string
     @abstract   This is overridden and different from the contents.
     @discussion This should give a short string value for the anchored note annotation. 
     @result     A string representing the string value associated with the annotation.
@@ -70,7 +69,6 @@ extern NSSize SKNPDFAnnotationNoteSize;
 - (NSString *)string;
 
 /*!
-    @method     setString:
     @abstract   This is overridden and different from the contents.
     @discussion This should set the short string value of the annotation.  This updates the contents using <code>updateContents</code>.
     @param      newString The new string value for the annotation.
@@ -78,14 +76,12 @@ extern NSSize SKNPDFAnnotationNoteSize;
 - (void)setString:(NSString *)newString;
 
 /*!
-    @method     text
     @abstract   The rich text of the annotation.
     @discussion This is the longer rich text contents of the anchored note annotation.
 */
 - (NSAttributedString *)text;
 
 /*!
-    @method     setText:
     @abstract   Sets the rich text of the annotation.
     @discussion This should set the longer rich text contents of the annotation.  This updates the contents using <code>updateContents</code>.
     @param      newText The new rich text value for the annotation.
@@ -93,14 +89,12 @@ extern NSSize SKNPDFAnnotationNoteSize;
 - (void)setText:(NSAttributedString *)newText;
 
 /*!
-    @method     image
     @abstract   The image of the annotation.
     @discussion 
 */
 - (NSImage *)image;
 
 /*!
-    @method     setImage:
     @abstract   Sets the image of the annotation.
     @discussion 
     @param      newImage The new image for the annotation.
@@ -108,7 +102,6 @@ extern NSSize SKNPDFAnnotationNoteSize;
 - (void)setImage:(NSImage *)newImage;
 
 /*!
-    @method     updateContents
     @abstract   Synchronizes the contents of the annotation with the string and text.
     @discussion This sets the contents to the string value and the text appended, separated by a double space.
 */

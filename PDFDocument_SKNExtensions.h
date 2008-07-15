@@ -38,21 +38,22 @@
 
 /*!
     @header      
-    @discussion  This file defines an <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
+    @abstract    An <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
+    @discussion  This header file provides API for an <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
 */
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
 
 /*!
-    @category    PDFDocument(SKNExtensions)
+    @category    
     @abstract    Provides methods to add Skim notes to a <code>PDFDocument</code>.
     @discussion  This category can be used to add Skim notes from their properties to a <code>PDFDocument</code> or easily load a <code>PDFDocument</code> including attached Skim notes.
 */
 @interface PDFDocument (SKNExtensions)
 
 /*!
-    @method     initWithURL:readSkimNotes:
+    @method     
     @abstract   Initializes a new <code>PDFDocument</code> from a file or PDF bundle, adding Skim notes from the extended attributes of the file or the contents of the PDF bundle.  The added Skim notes are returned by reference as an array of <code>PDFAnnotation</code>s.
     @discussion Initializes a new <code>PDFDocument</code> using <code>initWithURL:</code>, reads Skim notes from theextended attributes or the bundle, and adds new <code>PDFAnnotation</code> objects to the document initialized by the found Skim note properties.
     @param      url The URL of the PDF file or PDF bundle.
@@ -62,7 +63,7 @@
 - (id)initWithURL:(NSURL *)url readSkimNotes:(NSArray **)notes;
 
 /*!
-    @method     addSkimNotesWithProperties:
+    @method     
     @abstract   Adds new Skim notes from an array of property dictionaries to the receiver, and returns the added Skim notes as an array of <code>PDFAnnotations</code>.
     @discussion This method initializes new <code>PDFAnnotation</code> objects from the passed in properties and adds them to the appropriate pages of the <code>PDFDocument</code>.
     @param      noteDicts An array of dictionaries containing Skim note properties as returned by the properties of <code>PDFAnnotation</code> objects.

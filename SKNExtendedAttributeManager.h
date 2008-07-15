@@ -30,7 +30,8 @@
 
 /*!
     @header      
-    @discussion  This file defines a singleton class to read and write extended attributes in the format expected for Skim notes.
+    @abstract    An singleton class to read and write extended attributes.
+    @discussion  This header file declares API for a singleton class to read and write extended attributes in the format expected for Skim notes.
 */
 #import <Cocoa/Cocoa.h>
 
@@ -55,7 +56,6 @@ typedef int SKNXattrFlags;
 
 
 /*!
-    @class       SKNExtendedAttributeManager
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
     @discussion  This class is the core object to read and write extended attributes, which are used to store Skim notes with PDF files.
 */
@@ -67,7 +67,6 @@ typedef int SKNXattrFlags;
 }
 
 /*!
-    @method     sharedManager
     @abstract   Returns the shared instance.  You probably always should use this instance, and is required for Skim notes.
     @discussion This shared manager uses the default prefix and is used for reading and writing Skim notes to PDF files.  It may split attributes into fragments if the data is too long.
     @result     The default shared EA manager used for Skim notes.
@@ -75,7 +74,6 @@ typedef int SKNXattrFlags;
 + (id)sharedManager;
 
 /*!
-    @method     sharedNoSplitManager
     @abstract   Returns a shared instance with nil prefix.  This instance never splits attributes, and can also not reassemble splitted attributes.
     @discussion This manager never splits attributes into fragments.  Settting attributes is always as if <code>kSKNXattrNoSplitData</code> is passed. Also when reading it will not be able to reassemble split attributes.
                 However attributes that were set using this manager will be readable also by managers with different prefixes, such as the <code>sharedManager</code>.
@@ -84,7 +82,6 @@ typedef int SKNXattrFlags;
 + (id)sharedNoSplitManager;
 
 /*!
-    @method     initWithPrefix:
     @abstract   Initializes a new extended attribute manager with keys and attribute name prefixes used for segments determined by a prefix.
     @discussion The prefix is used in splitting large attributes.  EA managers with different prefixes are mutually incompatible,
                 i.e. attributes written with one manager cannot be safely read by a manager with a different prefix.
@@ -96,7 +93,6 @@ typedef int SKNXattrFlags;
 - (id)initWithPrefix:(NSString *)prefix;
 
 /*!
-    @method     extendedAttributeNamesAtPath:traverseLink:
     @abstract   Return a list of extended attributes for the given file.
     @discussion Calls <code>listxattr(2)</code> to determine all of the extended attributes, and returns them as
                 an array of <code>NSString</code> objects.  Returns <code>nil</code> if an error occurs.  Does not return attribute names for fragments.
@@ -108,7 +104,6 @@ typedef int SKNXattrFlags;
 - (NSArray *)extendedAttributeNamesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     extendedAttributeNamed:atPath:traverseLink:error:
     @abstract   Return the extended attribute named <code>attr</code> for a given file.
     @discussion Calls <code>getxattr(2)</code> to determine the extended attribute, and returns it as data.
     @param      attr The attribute name.
@@ -120,7 +115,6 @@ typedef int SKNXattrFlags;
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     allExtendedAttributesAtPath:traverseLink:error:
     @abstract   Returns all extended attributes for the given file, each as an <code>NSData</code> object.
     @discussion Calls <code>extendedAttributeNamesAtPath:traverseLink:error:</code> to find all attribute names and then calls <code>extendedAttributeNamed:atPath:traverseLink:error:</code> repreatedly for all attribute names.
     @param      path Path to the object in the file system.
@@ -131,7 +125,6 @@ typedef int SKNXattrFlags;
 - (NSDictionary *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     propertyListFromExtendedAttributeNamed:atPath:traverseLink:error:
     @abstract   Returns a property list using NSPropertyListSerialization.
     @discussion (comprehensive description)
     @param      attr The attribute name.
@@ -143,7 +136,6 @@ typedef int SKNXattrFlags;
 - (id)propertyListFromExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     setExtendedAttributeNamed:toValue:atPath:options:error:
     @abstract   Sets the value of attribute named <code>attr</code> to <code>value</code>, which is an <code>NSData</code> object.
     @discussion Calls <code>setxattr(2)</code> to set the attributes for the file.
                 If the options do not contain the <code>kSKNXattrNoSplitData</code> flag and the prefix is not <code>nil</code>, the data may be split into subfragments and a dictionary pointing to the fragments is saved in the attribute names <code>attr</code>.
@@ -157,7 +149,6 @@ typedef int SKNXattrFlags;
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(SKNXattrFlags)options error:(NSError **)error;
 
 /*!
-    @method     setExtendedAttributeNamed:toPropertyListValue:atPath:options:error:
     @abstract   Sets the extended attribute named <code>attr</code> to the specified property list.
     @discussion The plist is converted to <code>NSData</code> using <code>NSPropertyListSerialization</code> and set using <code>setExtendedAttributeNamed:toValue:atPath:options:error:</code>.
                 For the non-split manager without prefix, the data may be compressed using <code>bzip2</code> when the archived data is too large.
@@ -171,7 +162,6 @@ typedef int SKNXattrFlags;
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(SKNXattrFlags)options error:(NSError **)error;
 
 /*!
-    @method     removeExtendedAttribute:atPath:followLinks:error:
     @abstract   Removes the given attribute <code>attr</code> from the named file at <code>path</code>.
     @discussion Calls <code>removexattr(2)</code> to remove the given attribute from the file.
     @param      attr The attribute name.
@@ -183,7 +173,6 @@ typedef int SKNXattrFlags;
 - (BOOL)removeExtendedAttribute:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     removeAllExtendedAttributesAtPath:traverseLink:error:
     @abstract   Removes all extended attributes at the specified path.
     @discussion Calls <code>removexattr(2)</code> repeatedly to remove all attributes from the file.
     @param      path Path to the object in the file system.
