@@ -1636,7 +1636,6 @@
 				CEE1383C0BCEA63F00BF2D3E /* ShellScript */,
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				CEF82CA50C77286200A3AD51 /* ShellScript */,
-				CE4DA9060B9E17890039E89C /* ShellScript */,
 				CEF82CAD0C772A4200A3AD51 /* ShellScript */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
@@ -1860,23 +1859,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\n\necho \"*** removing .DS_Store files ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file -name \".DS_Store\" -delete\n\n#echo \"*** stripping IB files from NIBs ***\"\n#find \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file \\( -name \"classes.nib\" -or -name \"info.nib\" -or -name \"data.dependency\" \\) -delete\n";
 		};
-		CE4DA9060B9E17890039E89C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
-				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.helpindex",
-				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.helpindex",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\nHELP_NAME=\"Skim Help\"\n\necho \"*** Indexing Help ***\"\ncd \"${DERIVED_FILE_DIR}/${HELP_NAME}\"\nfor LOC_DIR in *.lproj; do\n\tLOC_TARGET=\"${LOC_DIR}/${HELP_NAME}\";\n\techo \"*** Indexing Help for ${LOC_DIR} ***\"\n\tif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\";\n\telif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\";\n\telif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\";\n\telif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\";\n\telif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\";\n\telif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\";\n\telif [ \"${LOC_DIR}\" = \"Dutch.lproj\" ]; then LANG=\"${SOURCE_ROOT}/${HELP_NAME}/stopwords-nl.txt\";\n\telse LANG=\"en\";\n\tfi;\n\tif [ \"${LOC_DIR}\" = \"Japanese.lproj\" -o \"${LOC_DIR}\" = \"zh_CN.lproj\" -o \"${LOC_DIR}\" = \"zh_TW.lproj\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\" \\\n\t\t\"${LOC_TARGET}\" \\\n\t\t-ShowProgress NO \\\n\t\t-LogStyle 2 \\\n\t\t-IndexAnchors YES \\\n\t\t-TigerIndexing YES \\\n\t\t-GenerateSummaries YES \\\n\t\t-Stopwords \"${LANG}\" \\\n\t\t-MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
-		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1931,11 +1913,13 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.helpindex",
 				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.helpindex",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "HELP_NAME=\"Skim Help\"\n\nLOC_LANGS=(English Dutch)\n\nINPUT=\"${HELP_NAME}/skim.texi\"\nTOOLS=\"${HELP_NAME}\"\nDEST=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\"\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LANG in ${LOC_LANGS[*]}; do\n\tLOC_TARGET=\"${TARGET}/${LANG}.lproj/${DEST}\";\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\";\n\techo \"*** Creating help files in ${LOC_TARGET} ***\";\n\t\"${TOOLS}/texi2html\" \"${LANG}.lproj/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html;\ndone;\n";
+			shellScript = "HELP_NAME=\"Skim Help\"\n\nLOC_LANGS=(English Dutch)\n\nINPUT=\"${HELP_NAME}/skim.texi\"\nTOOLS=\"${HELP_NAME}\"\nDEST=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\"\n\nHELP_INDEXER=\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\"\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LANG in ${LOC_LANGS[*]}; do\n\tLOC_TARGET=\"${TARGET}/${LANG}.lproj/${DEST}\";\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\";\n\t\n\techo \"*** Creating help files in ${LOC_TARGET} ***\";\n\t\"${TOOLS}/texi2html\" \"${LANG}.lproj/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html;\n\t\n\techo \"*** Indexing Help in ${LOC_TARGET} ***\"\n\tif [ \"${LANG}\" = \"French\" ]; then STOPWORDS=\"fr\";\n\telif [ \"${LANG}\" = \"German\" ]; then STOPWORDS=\"de\";\n\telif [ \"${LANG}\" = \"Hungarian\" ]; then STOPWORDS=\"hu\";\n\telif [ \"${LANG}\" = \"Italian\" ]; then STOPWORDS=\"it\";\n\telif [ \"${LANG}\" = \"Spanish\" ]; then STOPWORDS=\"es\";\n\telif [ \"${LANG}\" = \"Swedish\" ]; then STOPWORDS=\"sv\";\n\telif [ \"${LANG}\" = \"Dutch\" ]; then STOPWORDS=\"${SOURCE_ROOT}/${HELP_NAME}/stopwords-nl.txt\";\n\telse STOPWORDS=\"en\";\n\tfi;\n\tif [ \"${LANG}\" = \"Japanese\" -o \"${LANG}\" = \"zh_CN\" -o \"${LANG}\" = \"zh_TW\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${HELP_INDEXER}\" \"${LOC_TARGET}\" -ShowProgress NO -LogStyle 2 -IndexAnchors YES -TigerIndexing YES -GenerateSummaries YES -Stopwords \"${STOPWORDS}\" -MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
 		};
 		CEF82CAD0C772A4200A3AD51 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
