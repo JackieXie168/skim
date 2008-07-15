@@ -257,6 +257,7 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 }
 
 + (void)load {
+    NSAutoReleasePool *pool = [NSAutoReleasePool new];
     originalResetCursorRects = SKReplaceMethodImplementationWithSelector(self, @selector(resetCursorRects), @selector(replacementResetCursorRects));
     if ([self instancesRespondToSelector:@selector(passwordEntered:)])
         originalPasswordEntered = SKReplaceMethodImplementationWithSelector(self, @selector(passwordEntered:), @selector(replacementPasswordEntered:));
@@ -279,6 +280,7 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
         SKRegisterMethodImplementationWithSelector(self, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), @selector(replacementAccessibilityAttributedStringForRangeAttributeForParameter:));
     if ([self instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
         SKRegisterMethodImplementationWithSelector(self, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), @selector(replacementAccessibilityStyleRangeForIndexAttributeForParameter:));
+    [pool release];
 }
 
 @end
