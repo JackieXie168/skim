@@ -48,6 +48,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallBacks.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -204,7 +205,7 @@ static IMP originalDealloc = NULL;
     [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
     
     if (NSIsEmptyRect(readingBarRect) == NO) {
-        [[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKReadingBarColorKey]] setFill];
+        [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
             NSRect outRect, ignored;
             bounds.origin = NSZeroPoint;
