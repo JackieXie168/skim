@@ -315,6 +315,13 @@
 			remoteGlobalIDString = CE816AAA0D71958F008D807D;
 			remoteInfo = Leopard;
 		};
+		CEA5F5430E2CED1100F65088 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEA5F53D0E2CED0E00F65088;
+			remoteInfo = SkimNotesBase;
+		};
 		CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */;
@@ -1458,6 +1465,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7DC7320E09286500D6D76D /* SkimNotes.framework */,
+				CEA5F5440E2CED1100F65088 /* SkimNotesBase.framework */,
 				CE7DC7340E09286500D6D76D /* skimnotes */,
 			);
 			name = Products;
@@ -1754,6 +1762,13 @@
 			fileType = "compiled.mach-o.executable";
 			path = skimnotes;
 			remoteRef = CE7DC7330E09286500D6D76D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEA5F5440E2CED1100F65088 /* SkimNotesBase.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SkimNotesBase.framework;
+			remoteRef = CEA5F5430E2CED1100F65088 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */ = {
