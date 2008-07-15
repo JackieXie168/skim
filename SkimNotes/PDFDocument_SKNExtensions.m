@@ -36,10 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <SkimNotes/PDFDocument_SKNExtensions.h>
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
-#import <SkimNotes/NSFileManager_SKNExtensions.h>
+#import "PDFDocument_SKNExtensions.h"
+#import "PDFAnnotation_SKNExtensions.h"
+#import "SKNPDFAnnotationNote.h"
+#import "NSFileManager_SKNExtensions.h"
 
 
 @implementation PDFDocument (SKNExtensions)
