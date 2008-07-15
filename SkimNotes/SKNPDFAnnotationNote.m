@@ -36,8 +36,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <SkimNotes/SKNPDFAnnotationNote.h>
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import "SKNPDFAnnotationNote.h"
+#import "PDFAnnotation_SKNExtensions.h"
 
 NSString *SKNPDFAnnotationTextKey = @"text";
 NSString *SKNPDFAnnotationImageKey = @"image";

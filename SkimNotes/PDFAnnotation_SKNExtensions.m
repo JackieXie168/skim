@@ -36,8 +36,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import "PDFAnnotation_SKNExtensions.h"
+#import "SKNPDFAnnotationNote.h"
 #import <objc/objc.h>
 #import <objc/objc-class.h>
 #import <objc/objc-runtime.h>

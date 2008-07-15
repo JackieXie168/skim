@@ -36,6 +36,14 @@
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
+		CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CEA5F5500E2CEDFF00F65088 /* NSFileManager_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */; };
+		CEA5F5510E2CEE0200F65088 /* SKNExtendedAttributeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2B630E05675E0000B2E6 /* SKNExtendedAttributeManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CEA5F5520E2CEE0300F65088 /* SKNExtendedAttributeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */; };
+		CEA5F5530E2CEE0E00F65088 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
+		CEA5F5560E2CEE7C00F65088 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CEA5F5570E2CEE7E00F65088 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */; };
 		CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */; };
 		CEBA2B650E05675E0000B2E6 /* SKNExtendedAttributeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */; };
@@ -95,6 +103,9 @@
 		CE3907B80E082CAD0015B0B7 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B90E082CB00015B0B7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907BA0E082CB40015B0B7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SkimNotes.strings; sourceTree = "<group>"; };
+		CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotesBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase.h; sourceTree = "<group>"; };
+		CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase_Prefix.pch; sourceTree = "<group>"; };
 		CEBA2B550E0566B00000B2E6 /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNAgentListener.h; sourceTree = "<group>"; };
 		CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNAgentListener.m; sourceTree = "<group>"; };
@@ -129,6 +140,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEA5F53B0E2CED0E00F65088 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEA5F5560E2CEE7C00F65088 /* Cocoa.framework in Frameworks */,
+				CEA5F5570E2CEE7E00F65088 /* libbz2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEBA2B530E0566B00000B2E6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,6 +166,7 @@
 			children = (
 				8DC2EF5B0486A6940098B216 /* SkimNotes.framework */,
 				CEBA2B550E0566B00000B2E6 /* skimnotes */,
+				CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,7 +209,6 @@
 		08FB77AEFE84172EC02AAC07 /* Framework Classes */ = {
 			isa = PBXGroup;
 			children = (
-				CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */,
 				CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */,
 				CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */,
 				CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */,
@@ -197,6 +217,8 @@
 				CEBA2B700E0568430000B2E6 /* PDFAnnotation_SKNExtensions.m */,
 				CEBA2B8B0E0569010000B2E6 /* SKNPDFAnnotationNote.h */,
 				CEBA2B8C0E0569010000B2E6 /* SKNPDFAnnotationNote.m */,
+				CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */,
+				CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */,
 			);
 			name = "Framework Classes";
 			sourceTree = "<group>";
@@ -225,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				32DBCF5E0370ADEE00C91783 /* SkimNotes_Prefix.pch */,
+				CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */,
 				CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -279,6 +302,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEA5F5380E2CED0E00F65088 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */,
+				CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */,
+				CEA5F5510E2CEE0200F65088 /* SKNExtendedAttributeManager.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -299,6 +332,24 @@
 			productInstallPath = "$(HOME)/Library/Frameworks";
 			productName = SkimNotes;
 			productReference = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEA5F5470E2CED1200F65088 /* Build configuration list for PBXNativeTarget "SkimNotesBase" */;
+			buildPhases = (
+				CEA5F5380E2CED0E00F65088 /* Headers */,
+				CEA5F5390E2CED0E00F65088 /* Resources */,
+				CEA5F53A0E2CED0E00F65088 /* Sources */,
+				CEA5F53B0E2CED0E00F65088 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SkimNotesBase;
+			productName = SkimNotesBase;
+			productReference = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		CEBA2B540E0566B00000B2E6 /* skimnotes */ = {
@@ -342,6 +393,7 @@
 			projectRoot = "";
 			targets = (
 				8DC2EF4F0486A6940098B216 /* SkimNotes */,
+				CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */,
 				CEBA2B540E0566B00000B2E6 /* skimnotes */,
 				CE665A840E1C086D00D0704D /* HeaderDocs */,
 				CEBA2EA20E0673B60000B2E6 /* Archive */,
@@ -355,6 +407,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEA5F5390E2CED0E00F65088 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEA5F5530E2CEE0E00F65088 /* SkimNotes.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +459,15 @@
 				CEBA2B8E0E0569010000B2E6 /* SKNPDFAnnotationNote.m in Sources */,
 				CEBA2BD60E05826D0000B2E6 /* NSFileManager_SKNExtensions.m in Sources */,
 				CEBA2BE30E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEA5F53A0E2CED0E00F65088 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEA5F5500E2CEDFF00F65088 /* NSFileManager_SKNExtensions.m in Sources */,
+				CEA5F5520E2CEE0300F65088 /* SKNExtendedAttributeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,6 +592,33 @@
 			};
 			name = Release;
 		};
+		CEA5F53F0E2CED1100F65088 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
+			buildSettings = {
+				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
+				PRODUCT_NAME = SkimNotesBase;
+			};
+			name = Debug;
+		};
+		CEA5F5400E2CED1100F65088 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
+			buildSettings = {
+				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
+				PRODUCT_NAME = SkimNotesBase;
+			};
+			name = Release;
+		};
+		CEA5F5410E2CED1100F65088 /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
+			buildSettings = {
+				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
+				PRODUCT_NAME = SkimNotesBase;
+			};
+			name = "Release (GC dual-mode)";
+		};
 		CEBA2B570E0566B30000B2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */;
@@ -580,6 +676,16 @@
 				CE665A860E1C086F00D0704D /* Debug */,
 				CE665A870E1C086F00D0704D /* Release */,
 				CE1AB1030E22971400FBE87A /* Release (GC dual-mode) */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEA5F5470E2CED1200F65088 /* Build configuration list for PBXNativeTarget "SkimNotesBase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEA5F53F0E2CED1100F65088 /* Debug */,
+				CEA5F5400E2CED1100F65088 /* Release */,
+				CEA5F5410E2CED1100F65088 /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
