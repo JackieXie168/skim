@@ -289,7 +289,7 @@ You can also scroll pages by dragging with the mouse.
 @heading See also
 @menu
 * Selecting the page to view in a PDF document::
-* Viewing page breaks
+* Viewing page breaks::
 * Setting the default view options for a PDF document::
 @end menu
 

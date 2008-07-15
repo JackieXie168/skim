@@ -116,6 +116,7 @@ Control-Cmd-\key\
 @ifnottex
 @c DO NOT LOCALIZE THE NEXT LINE
 @node Top
+@c THIS SHOULD CORRESPOND TO THE HELP BOOK NAME IN Infoplist.strings
 @top Skim Help
 
 @box{topframe}
@@ -288,7 +289,7 @@ You can also scroll pages by dragging with the mouse.
 @heading See also
 @menu
 * Selecting the page to view in a PDF document::
-* Viewing page breaks
+* Viewing page breaks::
 * Setting the default view options for a PDF document::
 @end menu
 
