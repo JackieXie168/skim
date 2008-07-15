@@ -37,7 +37,7 @@
  */
 
 /*!
-    @header      PDFDocument_SKNExtensions.h
+    @header      
     @discussion  This file defines an <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
 */
 #import <Cocoa/Cocoa.h>
@@ -45,7 +45,7 @@
 
 
 /*!
-    @category    PDFDocument (SKNExtensions)
+    @category    PDFDocument(SKNExtensions)
     @abstract    Provides methods to add Skim notes to a <code>PDFDocument</code>.
     @discussion  This category can be used to add Skim notes from their properties to a <code>PDFDocument</code> or easily load a <code>PDFDocument</code> including attached Skim notes.
 */

@@ -26,7 +26,9 @@
 			);
 			dependencies = (
 				CEBA2EA60E0673D40000B2E6 /* PBXTargetDependency */,
+				CEA5F5B00E2CF8B100F65088 /* PBXTargetDependency */,
 				CEBA2EAC0E067F420000B2E6 /* PBXTargetDependency */,
+				CEA5F6090E2D270500F65088 /* PBXTargetDependency */,
 			);
 			name = Archive;
 			productName = Archive;
@@ -65,6 +67,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CEA5F5AF0E2CF8B100F65088 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088;
+			remoteInfo = SkimNotesBase;
+		};
+		CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE665A840E1C086D00D0704D;
+			remoteInfo = HeaderDocs;
+		};
 		CEBA2EA50E0673D40000B2E6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -107,6 +123,7 @@
 		CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase.h; sourceTree = "<group>"; };
 		CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase_Prefix.pch; sourceTree = "<group>"; };
 		CEA5F5870E2CF63000F65088 /* SKNCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNCompatibility.h; sourceTree = "<group>"; };
+		CEA5F5E40E2D0FDB00F65088 /* SkimNotes.hdoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SkimNotes.hdoc; sourceTree = "<group>"; };
 		CEBA2B550E0566B00000B2E6 /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNAgentListener.h; sourceTree = "<group>"; };
 		CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNAgentListener.m; sourceTree = "<group>"; };
@@ -166,8 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				8DC2EF5B0486A6940098B216 /* SkimNotes.framework */,
-				CEBA2B550E0566B00000B2E6 /* skimnotes */,
 				CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */,
+				CEBA2B550E0566B00000B2E6 /* skimnotes */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,6 +268,7 @@
 				CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */,
 				CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */,
 				CEA5F5870E2CF63000F65088 /* SKNCompatibility.h */,
+				CEA5F5E40E2D0FDB00F65088 /* SkimNotes.hdoc */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -429,12 +447,19 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/SkimNotes.hdoc",
+				"$(SRCROOT)/SKNExtendedAttributeManager.h",
+				"$(SRCROOT)/NSFileManager_SKNExtensions.h",
+				"$(SRCROOT)/PDFDocument_SKNExtensions.h",
+				"$(SRCROOT)/PDFAnnotation_SKNExtensions.h",
+				"$(SRCROOT)/SKNPDFAnnotationNote.h",
 			);
 			outputPaths = (
+				"$(TARGET_BUILD_DIR)/SkimNotes Documentation",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/bin/gatherheaderdoc $TARGET_BUILD_DIR/SkimNotes\\ Documentation\n/usr/bin/headerdoc2html -o $TARGET_BUILD_DIR/SkimNotes\\ Documentation $SRCROOT/*.h\nexit 0";
+			shellScript = "/usr/bin/headerdoc2html -o $TARGET_BUILD_DIR/SkimNotes\\ Documentation $SRCROOT/*.{hdoc,h}\n/usr/bin/gatherheaderdoc $TARGET_BUILD_DIR/SkimNotes\\ Documentation\nexit 0";
 		};
 		CEBA2EA10E0673B60000B2E6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -447,7 +472,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{Licence.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
+			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{Licence.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -486,6 +511,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CEA5F5B00E2CF8B100F65088 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			targetProxy = CEA5F5AF0E2CF8B100F65088 /* PBXContainerItemProxy */;
+		};
+		CEA5F6090E2D270500F65088 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE665A840E1C086D00D0704D /* HeaderDocs */;
+			targetProxy = CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */;
+		};
 		CEBA2EA60E0673D40000B2E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
