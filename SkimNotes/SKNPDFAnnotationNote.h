@@ -37,7 +37,7 @@
  */
 
 /*!
-    @header      SKNPDFAnnotationNote.h
+    @header      
     @discussion  This file defines a concrete <code>PDFAnnotation</code> class representing a SKim anchored note.
 */
 #import <Cocoa/Cocoa.h>
