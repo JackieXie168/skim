@@ -445,7 +445,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{Licence.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \"*.DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
+			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{Licence.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
