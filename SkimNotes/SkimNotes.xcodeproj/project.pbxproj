@@ -143,7 +143,7 @@
 		CEBA2C400E058C950000B2E6 /* PDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFKit.framework; path = /System/Library/Frameworks/Quartz.framework/Versions/A/Frameworks/PDFKit.framework; sourceTree = "<absolute>"; };
 		CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes.h; sourceTree = "<group>"; };
 		CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
-		CEBA303C0E06C92F0000B2E6 /* Licence.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Licence.txt; sourceTree = "<group>"; };
+		CEBA303C0E06C92F0000B2E6 /* License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = License.txt; sourceTree = "<group>"; };
 		CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = SkimNotes.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,7 +192,7 @@
 		0867D691FE84028FC02AAC07 /* SkimNotes */ = {
 			isa = PBXGroup;
 			children = (
-				CEBA303C0E06C92F0000B2E6 /* Licence.txt */,
+				CEBA303C0E06C92F0000B2E6 /* License.txt */,
 				CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */,
 				CEBA2B620E0567290000B2E6 /* Shared Classes */,
 				08FB77AEFE84172EC02AAC07 /* Framework Classes */,
