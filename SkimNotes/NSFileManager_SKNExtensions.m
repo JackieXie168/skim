@@ -162,20 +162,15 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     NSError *error = nil;
     
     if ([aURL isFileURL]) {
-
         NSData *data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
         if ([data length])
             notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        else if ([error code] == ENOATTR)
+        else if (data || [error code] == ENOATTR)
             notes = [NSArray array];
-        
-        if (notes == nil && error != nil && outError) 
-            *outError = error;
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if (notes == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return notes;
 }
 
@@ -184,18 +179,13 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     NSError *error = nil;
     
     if ([aURL isFileURL]) {
-
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
         if (string == nil && [error code] == ENOATTR)
             string = [NSString string];
-        
-        if (string == nil && error != nil && outError) 
-            *outError = error;
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if (string == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return string;
 }
 
@@ -204,18 +194,13 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     NSError *error = nil;
     
     if ([aURL isFileURL]) {
-
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
         if (data == nil && [error code] == ENOATTR)
             data = [NSData data];
-        
-        if (data == nil && error != nil && outError) 
-            *outError = error;
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if(data == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return data;
 }
 
@@ -227,16 +212,15 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
         NSString *skimFile = [self bundledFileWithExtension:@"skim" inPDFBundleAtPath:path error:&error];
+        NSData *data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
         
-        if (skimFile)
-            notes = [NSKeyedUnarchiver unarchiveObjectWithFile:skimFile];
-        
-        if (notes == nil)
+        if ([data length])
+            notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        else if (data)
             notes = [NSArray array];
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if (notes == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return notes;
 }
 
@@ -254,10 +238,9 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         
         if (string == nil)
             string = [NSString string];
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if (string == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return string;
 }
 
@@ -275,23 +258,27 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
         
         if (data == nil)
             data = [NSData data];
-    } else {
-        if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    if (data == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return data;
 }
 
 - (NSArray *)readSkimNotesFromSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSArray *notes = nil;
+    NSError *error = nil;
     NSString *path = [aURL path];
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path]) {
-        notes = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-    } else {
-        if(outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+        
+        if ([data length])
+            notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        else if (data)
+            notes = [NSArray array];
     }
+    if (notes == nil && outError) 
+        *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return notes;
 }
 
