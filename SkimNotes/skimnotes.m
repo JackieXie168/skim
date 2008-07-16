@@ -2,8 +2,8 @@
 #import "SKNExtendedAttributeManager.h"
 #import "SKNAgentListener.h"
 
-#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
-#define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
+#define SKIM_NOTES_KEY      @"net_sourceforge_skim-app_notes"
+#define SKIM_RTF_NOTES_KEY  @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
 static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes agent [SERVER_NAME]\n skimnotes protocol\n skimnotes help [VERB]\n skimnotes version";
@@ -18,6 +18,33 @@ static char *helpHelpStr = "skimnotes help: get help on the skimnotes tool\nUsag
 static char *versionHelpStr = "skimnotes version: get version of the skimnotes tool\nUsage: skimnotes version\n\nGet the version of the tool and exit.";
 
 static char *protocolStr = "@protocol SKNAgentListenerProtocol\n- (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;\n@end";
+
+#define ACTION_GET_STRING       @"get"
+#define ACTION_SET_STRING       @"set"
+#define ACTION_REMOVE_STRING    @"remove"
+#define ACTION_AGENT_STRING     @"agent"
+#define ACTION_PROTOCOL_STRING  @"protocol"
+#define ACTION_VERSION_STRING   @"version"
+#define ACTION_HELP_STRING      @"help"
+
+#define FORMAT_OPTION_STRING    @"-format"
+
+#define FORMAT_SKIM_STRING  @"skim"
+#define FORMAT_TEXT_STRING  @"text"
+#define FORMAT_TXT_STRING   @"txt"
+#define FORMAT_RTF_STRING   @"rtf"
+
+#define PDF_EXTENSION   @"pdf"
+#define SKIM_EXTENSION  @"skim"
+#define TXT_EXTENSION   @"txt"
+#define TEXT_EXTENSION  @"text"
+#define RTF_EXTENSION   @"rtf"
+
+#define STD_IN_OUT_FILE @"-"
+
+#define WRITE_OUT(msg)         fprintf(stdout, "%s\n", msg)
+#define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
+#define WRITE_ERROR            fprintf(stderr, "%s\n%s\n", usageStr, versionStr)
 
 enum {
     SKNActionUnknown,
@@ -38,26 +65,26 @@ enum {
 };
 
 static NSInteger SKNActionForName(NSString *actionString) {
-    if ([actionString caseInsensitiveCompare:@"get"] == NSOrderedSame)
+    if ([actionString caseInsensitiveCompare:ACTION_GET_STRING] == NSOrderedSame)
         return SKNActionGet;
-    else if ([actionString caseInsensitiveCompare:@"set"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_SET_STRING] == NSOrderedSame)
         return SKNActionSet;
-    else if ([actionString caseInsensitiveCompare:@"remove"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_REMOVE_STRING] == NSOrderedSame)
         return SKNActionRemove;
-    else if ([actionString caseInsensitiveCompare:@"agent"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_AGENT_STRING] == NSOrderedSame)
         return SKNActionAgent;
-    else if ([actionString caseInsensitiveCompare:@"protocol"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_PROTOCOL_STRING] == NSOrderedSame)
         return SKNActionProtocol;
-    else if ([actionString caseInsensitiveCompare:@"version"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_VERSION_STRING] == NSOrderedSame)
         return SKNActionVersion;
-    else if ([actionString caseInsensitiveCompare:@"help"] == NSOrderedSame)
+    else if ([actionString caseInsensitiveCompare:ACTION_HELP_STRING] == NSOrderedSame)
         return SKNActionHelp;
     else
         return SKNActionUnknown;
 }
 
 static inline NSString *SKNNormalizedPath(NSString *path) {
-    if ([path isEqualToString:@"-"] == NO) {
+    if ([path isEqualToString:STD_IN_OUT_FILE] == NO) {
         if ([path isAbsolutePath] == NO) {
             NSString *basePath = [[NSFileManager defaultManager] currentDirectoryPath];
             if (basePath)
@@ -74,7 +101,7 @@ int main (int argc, const char * argv[]) {
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     
     if (argc < 2) {
-        fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
+        WRITE_ERROR;
         [pool release];
         exit (1);
     }
@@ -103,7 +130,7 @@ int main (int argc, const char * argv[]) {
         
     } else if (action == SKNActionProtocol) {
         
-        fprintf (stdout, "%s\n", protocolStr);
+        WRITE_OUT(protocolStr);
         
     } else if (action == SKNActionHelp) {
         
@@ -111,40 +138,40 @@ int main (int argc, const char * argv[]) {
         
         switch (helpAction) {
             case SKNActionUnknown:
-                fprintf (stdout, "%s\n%s\n", usageStr, versionStr);
+                WRITE_OUT_VERSION(usageStr);
                 break;
             case SKNActionGet:
-                fprintf (stdout, "%s\n", getHelpStr);
+                WRITE_OUT(getHelpStr);
                 break;
             case SKNActionSet:
-                fprintf (stdout, "%s\n", setHelpStr);
+                WRITE_OUT(setHelpStr);
                 break;
             case SKNActionRemove:
-                fprintf (stdout, "%s\n", removeHelpStr);
+                WRITE_OUT(removeHelpStr);
                 break;
             case SKNActionAgent:
-                fprintf (stdout, "%s\n", agentHelpStr);
+                WRITE_OUT(agentHelpStr);
                 break;
             case SKNActionProtocol:
-                fprintf (stdout, "%s\n", protocolHelpStr);
+                WRITE_OUT(protocolHelpStr);
                 break;
             case SKNActionVersion:
-                fprintf (stdout, "%s\n", versionHelpStr);
+                WRITE_OUT(versionHelpStr);
                 break;
             case SKNActionHelp:
-                fprintf (stdout, "%s\n", helpHelpStr);
+                WRITE_OUT(helpHelpStr);
                 break;
         }
         success = YES;
         
     } else if (action == SKNActionVersion) {
         
-        fprintf (stdout, "%s\n", versionStr);
+        WRITE_OUT(versionStr);
         
     } else {
         
         if (argc < 3) {
-            fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
+            WRITE_ERROR;
             [pool release];
             exit (1);
         }
@@ -153,19 +180,19 @@ int main (int argc, const char * argv[]) {
         NSInteger format = SKNFormatAuto;
         int offset = 2;
         
-        if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
+        if ([[args objectAtIndex:2] isEqualToString:FORMAT_OPTION_STRING]) {
             if (argc < 5) {
-                fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
+                WRITE_ERROR;
                 [pool release];
                 exit (1);
             }
             offset = 4;
             formatString = [args objectAtIndex:3];
-            if ([formatString caseInsensitiveCompare:@"skim"] == NSOrderedSame)
+            if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame)
                 format = SKNFormatSkim;
-            if ([formatString caseInsensitiveCompare:@"text"] == NSOrderedSame || [formatString caseInsensitiveCompare:@"txt"] == NSOrderedSame)
+            if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
                 format = SKNFormatText;
-            if ([formatString caseInsensitiveCompare:@"rtf"] == NSOrderedSame)
+            if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
                 format = SKNFormatRTF;
         }
         
@@ -176,12 +203,12 @@ int main (int argc, const char * argv[]) {
         NSError *error = nil;
         
         if (action != SKNActionRemove && notesPath == nil) {
-            notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:format == SKNFormatText ? @"txt" : format == SKNFormatRTF ? @"rtf" : @"skim"];
+            notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:format == SKNFormatText ? TXT_EXTENSION : format == SKNFormatRTF ? RTF_EXTENSION : SKIM_EXTENSION];
         }
         
-        if ([[pdfPath pathExtension] caseInsensitiveCompare:@"pdf"] == NSOrderedSame && 
+        if ([[pdfPath pathExtension] caseInsensitiveCompare:PDF_EXTENSION] == NSOrderedSame && 
             ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir))
-            pdfPath = [pdfPath stringByAppendingPathExtension:@"pdf"];
+            pdfPath = [pdfPath stringByAppendingPathExtension:PDF_EXTENSION];
         
         if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir) {
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
@@ -189,9 +216,9 @@ int main (int argc, const char * argv[]) {
             NSData *data = nil;
             if (format == SKNFormatAuto) {
                 NSString *extension = [notesPath pathExtension];
-                if ([extension caseInsensitiveCompare:@"rtf"] == NSOrderedSame)
+                if ([extension caseInsensitiveCompare:RTF_EXTENSION] == NSOrderedSame)
                     format = SKNFormatRTF;
-                else if ([[notesPath pathExtension] caseInsensitiveCompare:@"txt"] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:@"text"] == NSOrderedSame)
+                else if ([[notesPath pathExtension] caseInsensitiveCompare:TXT_EXTENSION] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:TEXT_EXTENSION] == NSOrderedSame)
                     format = SKNFormatText;
                 else
                     format = SKNFormatSkim;
@@ -212,7 +239,7 @@ int main (int argc, const char * argv[]) {
                     data = [NSData data];
             }
             if (data) {
-                if ([notesPath isEqualToString:@"-"]) {
+                if ([notesPath isEqualToString:STD_IN_OUT_FILE]) {
                     if ([data length])
                         [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
                     success = YES;
@@ -228,9 +255,9 @@ int main (int argc, const char * argv[]) {
                     }
                 }
             }
-        } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:@"-"] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
+        } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:STD_IN_OUT_FILE] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
             NSData *data = nil;
-            if ([notesPath isEqualToString:@"-"])
+            if ([notesPath isEqualToString:STD_IN_OUT_FILE])
                 data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
             else
                 data = [NSData dataWithContentsOfFile:notesPath];
