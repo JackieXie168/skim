@@ -36,6 +36,11 @@
 #define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
 #define PREFIX                  @"net_sourceforge_skim-app"
 
+#define NAME_SEPARATOR          @"_"
+#define UNIQUE_KEY_SUFFIX       @"_unique_key"
+#define WRAPPER_KEY_SUFFIX      @"_has_wrapper"
+#define FRAGMENTS_KEY_SUFFIX    @"_number_of_fragments"
+
 static NSString *SKNErrorDomain = @"SKNErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
@@ -84,10 +89,10 @@ static id sharedNoSplitManager = nil;
 {
     if (self = [super init]) {
         if (prefix) {
-            namePrefix = [[prefix stringByAppendingString:@"_"] retain];
-            uniqueKey = [[prefix stringByAppendingString:@"_unique_key"] retain];
-            wrapperKey = [[prefix stringByAppendingString:@"_has_wrapper"] retain];
-            fragmentsKey = [[prefix stringByAppendingString:@"_number_of_fragments"] retain];
+            namePrefix = [[prefix stringByAppendingString:NAME_SEPARATOR] retain];
+            uniqueKey = [[prefix stringByAppendingString:UNIQUE_KEY_SUFFIX] retain];
+            wrapperKey = [[prefix stringByAppendingString:WRAPPER_KEY_SUFFIX] retain];
+            fragmentsKey = [[prefix stringByAppendingString:FRAGMENTS_KEY_SUFFIX] retain];
         } else if (sharedNoSplitManager) {
             [self release];
             self = [sharedNoSplitManager retain];
@@ -247,15 +252,15 @@ static id sharedNoSplitManager = nil;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
         if (success == NO)
-            NSLog(@"failed to read unique key %@ for %u fragments from property list.", uniqueKey, numberOfFragments);
+            NSLog(@"failed to read unique key %@ for %lu fragments from property list.", uniqueKey, (long)numberOfFragments);
         
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             NSError *tmpError = nil;
-            name = [NSString stringWithFormat:@"%@-%u", uniqueValue, i];
+            name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
             if (nil == subdata) {
-                NSLog(@"failed to find subattribute %@ of %u for attribute named %@. %@", name, numberOfFragments, attr, [tmpError localizedDescription]);
+                NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
                 success = NO;
             } else {
                 [buffer appendData:subdata];
@@ -338,14 +343,14 @@ static id sharedNoSplitManager = nil;
         const char *valuePtr = [value bytes];
         
         for (j = 0; success && j < numberOfFragments; j++) {
-            name = [[NSString alloc] initWithFormat:@"%@-%u", uniqueValue, j];
+            name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)j];
             
             char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
             size_t subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
             
             // could recurse here, but it's more efficient to use the variables we already have
             if (setxattr(fsPath, [name UTF8String], subdataPtr, subdataLen, 0, xopts)) {
-                NSLog(@"full data length of note named %@ was %d, subdata length was %d (failed on pass %d)", name, [value length], subdataLen, j);
+                NSLog(@"full data length of note named %@ was %lu, subdata length was %lu (failed on pass %lu)", name, (long)[value length], (long)subdataLen, (long)j);
             }
             [name release];
         }
@@ -427,7 +432,7 @@ static id sharedNoSplitManager = nil;
                 
                 // remove the sub attributes
                 for (i = 0; i < numberOfFragments; i++) {
-                    name = [NSString stringWithFormat:@"%@-%u", uniqueValue, i];
+                    name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)i];
                     const char *subAttrName = [name UTF8String];
                     status = removexattr(fsPath, subAttrName, xopts);
                     if (status == -1) {
