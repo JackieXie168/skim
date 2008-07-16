@@ -94,6 +94,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
 }
 
 + (void)load {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
 #if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [NSGarbageCollector defaultCollector])
         SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory capacity:0];
@@ -120,6 +121,7 @@ void skn_replacementDealloc(id self, SEL _cmd) {
 #endif
         SkimNotes = (NSMutableSet *)CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
     }
+    [pool release];
 }
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
