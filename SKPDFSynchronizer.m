@@ -114,10 +114,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
         localThreadConnection = nil;
         serverOnMainThread = nil;
         serverOnServerThread = nil;
-       
+        
         serverFlags = NSZoneCalloc(NSDefaultMallocZone(), 1, sizeof(struct SKServerFlags));
         serverFlags->shouldKeepRunning = 1;
         serverFlags->serverReady = 0;
+        
+        stopRunning = NO;
         
         // run a background thread to connect to the remote server
         // this will connect back to the connection we just set up
@@ -181,7 +183,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (oneway void)stopRunning {
     // not really necessary, as the main thread should already have done this
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
+    stopRunning = YES;
 }
 
 - (void)runDOServerForPorts:(NSArray *)ports {
@@ -212,7 +214,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             [pool release];
             pool = [NSAutoreleasePool new];
             didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        } while ([self shouldKeepRunning] && didRun);
+        } while (stopRunning == NO && didRun);
     }
     @catch(id exception) {
         NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
