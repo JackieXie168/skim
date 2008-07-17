@@ -218,7 +218,7 @@ int main (int argc, const char * argv[]) {
                 NSString *extension = [notesPath pathExtension];
                 if ([extension caseInsensitiveCompare:RTF_EXTENSION] == NSOrderedSame)
                     format = SKNFormatRTF;
-                else if ([[notesPath pathExtension] caseInsensitiveCompare:TXT_EXTENSION] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:TEXT_EXTENSION] == NSOrderedSame)
+                else if ([extension caseInsensitiveCompare:TXT_EXTENSION] == NSOrderedSame || [extension caseInsensitiveCompare:TEXT_EXTENSION] == NSOrderedSame)
                     format = SKNFormatText;
                 else
                     format = SKNFormatSkim;

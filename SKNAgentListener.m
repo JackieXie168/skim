@@ -84,13 +84,10 @@
     
     if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
         NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:path];
-        NSString *filename = @"notes.skim";
+        NSString *filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
         if ([files containsObject:filename] == NO) {
-            filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-            if ([files containsObject:filename] == NO) {
-                NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-                filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
-            }
+            NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+            filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
         }
         if (filename)
             filePath = [path stringByAppendingPathComponent:filename];
