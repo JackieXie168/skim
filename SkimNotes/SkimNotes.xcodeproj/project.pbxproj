@@ -64,6 +64,15 @@
 		CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D260E05A6AB0000B2E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CEDB9AF40E2E9F250057FD09 /* SKNDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9AC40E2E9D760057FD09 /* SKNDocument.m */; };
+		CEDB9AF50E2E9F260057FD09 /* SKNSkimReader.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9AC60E2E9D760057FD09 /* SKNSkimReader.m */; };
+		CEDB9AFC0E2E9F7E0057FD09 /* SKNDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDB9AFA0E2E9F7E0057FD09 /* SKNDocument.xib */; };
+		CEDB9AFF0E2E9F8A0057FD09 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDB9AFD0E2E9F8A0057FD09 /* MainMenu.xib */; };
+		CEDB9B010E2E9FF80057FD09 /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */; };
+		CEDB9B030E2EA0120057FD09 /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */; };
+		CEDB9B040E2EA0200057FD09 /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CEBA2B550E0566B00000B2E6 /* skimnotes */; };
+		CEDB9B060E2EA0450057FD09 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CEDB9B210E2EA2F30057FD09 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9B200E2EA2F30057FD09 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,7 +104,34 @@
 			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
 			remoteInfo = skimnotes;
 		};
+		CEDB9AF00E2E9F170057FD09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
+			remoteInfo = SkimNotes;
+		};
+		CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			remoteInfo = skimnotes;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CEDB9B050E2EA03E0057FD09 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEDB9B030E2EA0120057FD09 /* SkimNotes.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -145,6 +181,16 @@
 		CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		CEBA303C0E06C92F0000B2E6 /* License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = License.txt; sourceTree = "<group>"; };
 		CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = SkimNotes.rtf; sourceTree = "<group>"; };
+		CEDB9AC30E2E9D760057FD09 /* SKNDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNDocument.h; sourceTree = "<group>"; };
+		CEDB9AC40E2E9D760057FD09 /* SKNDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNDocument.m; sourceTree = "<group>"; };
+		CEDB9AC50E2E9D760057FD09 /* SKNSkimReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNSkimReader.h; sourceTree = "<group>"; };
+		CEDB9AC60E2E9D760057FD09 /* SKNSkimReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNSkimReader.m; sourceTree = "<group>"; };
+		CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkimNotesTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDB9AEB0E2E9F090057FD09 /* SkimNotesTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SkimNotesTest-Info.plist"; sourceTree = "<group>"; };
+		CEDB9AFB0E2E9F7E0057FD09 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SKNDocument.xib; sourceTree = "<group>"; };
+		CEDB9AFE0E2E9F8A0057FD09 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-App.xcconfig"; sourceTree = "<group>"; };
+		CEDB9B200E2EA2F30057FD09 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +222,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEDB9AE70E2E9F090057FD09 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEDB9B060E2EA0450057FD09 /* Cocoa.framework in Frameworks */,
+				CEDB9B010E2E9FF80057FD09 /* SkimNotes.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -185,6 +240,7 @@
 				8DC2EF5B0486A6940098B216 /* SkimNotes.framework */,
 				CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */,
 				CEBA2B550E0566B00000B2E6 /* skimnotes */,
+				CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -197,8 +253,10 @@
 				CEBA2B620E0567290000B2E6 /* Shared Classes */,
 				08FB77AEFE84172EC02AAC07 /* Framework Classes */,
 				CEBA2B610E0566E60000B2E6 /* Tool Classes */,
+				CEDB9ABF0E2E9D2D0057FD09 /* Test App Classes */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Resources */,
+				CEDB9AC20E2E9D600057FD09 /* Test App Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DFFF38A50411DB9C8B /* Products */,
 				CEBA30790E06DC4C0000B2E6 /* Configurations */,
@@ -302,8 +360,31 @@
 				CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */,
 				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
 				CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */,
+				CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */,
 			);
 			name = Configurations;
+			sourceTree = "<group>";
+		};
+		CEDB9ABF0E2E9D2D0057FD09 /* Test App Classes */ = {
+			isa = PBXGroup;
+			children = (
+				CEDB9B200E2EA2F30057FD09 /* main.m */,
+				CEDB9AC30E2E9D760057FD09 /* SKNDocument.h */,
+				CEDB9AC40E2E9D760057FD09 /* SKNDocument.m */,
+				CEDB9AC50E2E9D760057FD09 /* SKNSkimReader.h */,
+				CEDB9AC60E2E9D760057FD09 /* SKNSkimReader.m */,
+			);
+			name = "Test App Classes";
+			sourceTree = "<group>";
+		};
+		CEDB9AC20E2E9D600057FD09 /* Test App Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CEDB9AEB0E2E9F090057FD09 /* SkimNotesTest-Info.plist */,
+				CEDB9AFD0E2E9F8A0057FD09 /* MainMenu.xib */,
+				CEDB9AFA0E2E9F7E0057FD09 /* SKNDocument.xib */,
+			);
+			name = "Test App Resources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -388,6 +469,26 @@
 			productReference = CEBA2B550E0566B00000B2E6 /* skimnotes */;
 			productType = "com.apple.product-type.tool";
 		};
+		CEDB9AE80E2E9F090057FD09 /* SkimNotesTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEDB9AEF0E2E9F0E0057FD09 /* Build configuration list for PBXNativeTarget "SkimNotesTest" */;
+			buildPhases = (
+				CEDB9AE50E2E9F090057FD09 /* Resources */,
+				CEDB9AE60E2E9F090057FD09 /* Sources */,
+				CEDB9AE70E2E9F090057FD09 /* Frameworks */,
+				CEDB9B050E2EA03E0057FD09 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CEDB9AF10E2E9F170057FD09 /* PBXTargetDependency */,
+				CEDB9AF30E2E9F170057FD09 /* PBXTargetDependency */,
+			);
+			name = SkimNotesTest;
+			productName = SkimNotesTest;
+			productReference = CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -417,6 +518,7 @@
 				CEBA2B540E0566B00000B2E6 /* skimnotes */,
 				CE665A840E1C086D00D0704D /* HeaderDocs */,
 				CEBA2EA20E0673B60000B2E6 /* Archive */,
+				CEDB9AE80E2E9F090057FD09 /* SkimNotesTest */,
 			);
 		};
 /* End PBXProject section */
@@ -435,6 +537,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEA5F5530E2CEE0E00F65088 /* SkimNotes.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEDB9AE50E2E9F090057FD09 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEDB9AFC0E2E9F7E0057FD09 /* SKNDocument.xib in Resources */,
+				CEDB9AFF0E2E9F8A0057FD09 /* MainMenu.xib in Resources */,
+				CEDB9B040E2EA0200057FD09 /* skimnotes in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +620,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEDB9AE60E2E9F090057FD09 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEDB9AF40E2E9F250057FD09 /* SKNDocument.m in Sources */,
+				CEDB9AF50E2E9F260057FD09 /* SKNSkimReader.m in Sources */,
+				CEDB9B210E2EA2F30057FD09 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -531,6 +653,16 @@
 			target = CEBA2B540E0566B00000B2E6 /* skimnotes */;
 			targetProxy = CEBA2EAB0E067F420000B2E6 /* PBXContainerItemProxy */;
 		};
+		CEDB9AF10E2E9F170057FD09 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DC2EF4F0486A6940098B216 /* SkimNotes */;
+			targetProxy = CEDB9AF00E2E9F170057FD09 /* PBXContainerItemProxy */;
+		};
+		CEDB9AF30E2E9F170057FD09 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			targetProxy = CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -547,6 +679,22 @@
 				CE3907BA0E082CB40015B0B7 /* ru */,
 			);
 			name = SkimNotes.strings;
+			sourceTree = "<group>";
+		};
+		CEDB9AFA0E2E9F7E0057FD09 /* SKNDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEDB9AFB0E2E9F7E0057FD09 /* English */,
+			);
+			name = SKNDocument.xib;
+			sourceTree = "<group>";
+		};
+		CEDB9AFD0E2E9F8A0057FD09 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEDB9AFE0E2E9F8A0057FD09 /* English */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -684,6 +832,27 @@
 			};
 			name = Release;
 		};
+		CEDB9AEC0E2E9F0D0057FD09 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		CEDB9AED0E2E9F0D0057FD09 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		CEDB9AEE0E2E9F0D0057FD09 /* Release (GC dual-mode) */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */;
+			buildSettings = {
+			};
+			name = "Release (GC dual-mode)";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -743,6 +912,16 @@
 				CEBA2EA30E0673B60000B2E6 /* Debug */,
 				CEBA2EA40E0673B60000B2E6 /* Release */,
 				CE1AB1040E22971400FBE87A /* Release (GC dual-mode) */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEDB9AEF0E2E9F0E0057FD09 /* Build configuration list for PBXNativeTarget "SkimNotesTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEDB9AEC0E2E9F0D0057FD09 /* Debug */,
+				CEDB9AED0E2E9F0D0057FD09 /* Release */,
+				CEDB9AEE0E2E9F0D0057FD09 /* Release (GC dual-mode) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
