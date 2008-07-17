@@ -38,11 +38,7 @@
 #import "SKNAgentListener.h"
 #import "SKNAgentListenerProtocol.h"
 #import <AppKit/AppKit.h>
-#import "SKNExtendedAttributeManager.h"
-
-#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
-#define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
-#define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
+#import "NSFileManager_SKNToolExtensions.h"
 
 @implementation SKNAgentListener
 
@@ -79,92 +75,30 @@
     [super dealloc];
 }
 
-- (NSString *)notesFileWithExtension:(NSString *)extension atPath:(NSString *)path error:(NSError **)error {
-    NSString *filePath = nil;
-    
-    if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
-        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:path];
-        NSString *filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
-        if ([files containsObject:filename] == NO) {
-            NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-            filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
-        }
-        if (filename)
-            filePath = [path stringByAppendingPathComponent:filename];
-    } else {
-        NSString *skimFile = [self notesFileWithExtension:@"skim" atPath:path error:error];
-        if (skimFile) {
-            filePath = [[skimFile stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath] == NO)
-                filePath = nil;
-        }
-    }
-    if (filePath == nil && error) 
-        *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Notes file note found", NSLocalizedDescriptionKey, nil]];
-    return filePath;
-}
-
 - (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;
 {
-    NSError *error;
-    NSData *data = nil;
-    NSString *extension = [[aFile pathExtension] lastPathComponent];
-    
-    if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame) {
-        NSString *notePath = [self notesFileWithExtension:@"skim" atPath:aFile error:&error];
-        if (notePath)
-            data = [NSData dataWithContentsOfFile:notePath options:0 error:&error];
-        if (nil == data)
-            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
-    } else if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
-        data = [NSData dataWithContentsOfFile:aFile options:0 error:&error];
-        if (nil == data)
-            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
-    } else {
-        data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
-        if (nil == data && [error code] != ENOATTR)
-            fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
-    }
+    NSError *error = nil;
+    NSData *data = [[NSFileManager defaultManager] SkimNotesAtPath:aFile error:&error];
+    if (nil == data)
+        fprintf(stderr, "skimnotes agent pid %d: error getting Skim notes (%s)\n", getpid(), [[error description] UTF8String]);
     return data;
 }
 
 - (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;
 {
-    NSError *error;
-    NSData *data = nil;
-    NSString *extension = [[aFile pathExtension] lastPathComponent];
-    
-    if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame) {
-        NSString *notePath = [self notesFileWithExtension:@"rtf" atPath:aFile error:&error];
-        if (notePath)
-            data = [NSData dataWithContentsOfFile:notePath options:0 error:&error];
-        if (nil == data)
-            fprintf(stderr, "skimnotes agent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
-    } else {
-        data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
-        if (nil == data && [error code] != ENOATTR)
-            fprintf(stderr, "skimnotes agent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
-    }
+    NSError *error = nil;
+    NSData *data = [[NSFileManager defaultManager] SkimRTFNotesAtPath:aFile error:&error];
+    if (nil == data)
+        fprintf(stderr, "skimnotes agent pid %d: error getting RTF notes (%s)\n", getpid(), [[error description] UTF8String]);
     return data;
 }
 
 - (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;
 {
-    NSError *error;
-    NSString *string = nil;
-    NSString *extension = [[aFile pathExtension] lastPathComponent];
-    
-    if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame) {
-        NSString *notePath = [self notesFileWithExtension:@"txt" atPath:aFile error:&error];
-        if (notePath)
-            string = [NSString stringWithContentsOfFile:notePath encoding:NSUTF8StringEncoding error:&error];
-        if (nil == string)
-            fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
-    } else {
-        string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aFile stringByStandardizingPath] traverseLink:YES error:&error];
-        if (nil == string && [error code] != ENOATTR)
-            fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
-    }
+    NSError *error = nil;
+    NSString *string = [[NSFileManager defaultManager] SkimTextNotesAtPath:aFile error:&error];
+    if (nil == string)
+        fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     // Returning the string directly can fail under some conditions.  For some strings with corrupt copy-paste characters (typical for notes), -[NSString canBeConvertedToEncoding:NSUTF8StringEncoding] returns YES but the actual conversion fails.  A result seems to be that encoding the string also fails, which causes the DO client to get a timeout.  Returning NSUnicodeStringEncoding data seems to work in those cases (and is safe since we're not going over the wire between big/little-endian systems).
     return [string dataUsingEncoding:encoding];
 }
