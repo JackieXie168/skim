@@ -94,7 +94,7 @@
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error];
         if (nil == data) {
-            if ([error code] != ENOATTR)
+            if ([error code] == ENOATTR)
                 data = [NSData data];
             else if (outError)
                 *outError = error;
@@ -118,7 +118,7 @@
     } else {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error];
         if (nil == string) {
-            if ([error code] != ENOATTR)
+            if ([error code] == ENOATTR)
                 string = @"";
             else if (outError)
                 *outError = error;
@@ -142,7 +142,7 @@
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error];
         if (nil == data) {
-            if ([error code] != ENOATTR)
+            if ([error code] == ENOATTR)
                 data = [NSData data];
             else if (outError)
                 *outError = error;
