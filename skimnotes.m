@@ -206,9 +206,8 @@ int main (int argc, const char * argv[]) {
             notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:format == SKNFormatText ? TXT_EXTENSION : format == SKNFormatRTF ? RTF_EXTENSION : SKIM_EXTENSION];
         }
         
-        if ([[pdfPath pathExtension] caseInsensitiveCompare:PDF_EXTENSION] == NSOrderedSame && 
-            ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir))
-            pdfPath = [pdfPath stringByAppendingPathExtension:PDF_EXTENSION];
+        if ([[pdfPath pathExtension] caseInsensitiveCompare:PDF_EXTENSION] != NSOrderedSame)
+            pdfPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION];
         
         if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir) {
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
