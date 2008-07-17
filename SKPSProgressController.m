@@ -278,23 +278,27 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     if (dviToolPath == nil) {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
-        NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvipdfmx";
-        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
-        int i = 0, count = [paths count];
+        NSString *commandName = commandPath ? [commandPath lastPathComponent] : nil;
+        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/gwTeX/bin/powerpc-apple-darwin-current", @"/usr/local/gwTeX/bin/i386-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
+        int i = 0, iMax = [paths count];
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSSet *supportedTools = [NSSet setWithObjects:@"dvips", @"dvipdfmx", @"dvipdfm", @"dvipdf", nil];
+        NSArray *supportedTools = [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil];
+        NSEnumerator *toolEnum = [supportedTools objectEnumerator];
         
-        NSAssert1([supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
-        if ([supportedTools containsObject:commandName]) {
+        NSAssert1(commandName == nil || [supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
+        if (commandPath == nil || [supportedTools containsObject:commandName] == NO)
+            commandPath = [toolEnum nextObject];
+        do {
+            i = 0;
             while ([fm isExecutableFileAtPath:commandPath] == NO) {
-                if (i >= count) {
+                if (i >= iMax) {
                     commandPath = nil;
                     break;
                 }
                 commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
             }
-            dviToolPath = [commandPath retain];
-        }
+        } while (commandPath == nil && (commandName = [toolEnum nextObject]));
+        dviToolPath = [commandPath retain];
     }
     
     return dviToolPath;
