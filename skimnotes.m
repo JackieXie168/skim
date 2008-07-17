@@ -263,6 +263,8 @@ int main (int argc, const char * argv[]) {
             if (data) {
                 SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
                 success = [eam removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error] || [error code] == ENOATTR;
+                [eam removeExtendedAttribute:SKIM_RTF_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL];
+                [eam removeExtendedAttribute:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL];
                 if (success && [data length])
                     success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:&error];
             }
