@@ -155,10 +155,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | API
 
 - (void)stopDOServer {
-    // set the stop flag so any running task may finish
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
     // this is really only necessary to tickle the server thread's runloop so it will finish
     [serverOnServerThread stopRunning];
+    // set the stop flag so any running task may finish
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
     
     // clean up the connection in the main thread; don't invalidate the ports, since they're still in use
     [mainThreadConnection setRootObject:nil];
