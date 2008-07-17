@@ -38,73 +38,9 @@
 
 #import "NSFileManager_SKNExtensions.h"
 #import "SKNExtendedAttributeManager.h"
-
-#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
-#define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
-#define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
-
-#define NOTE_PAGE_INDEX_KEY @"pageIndex"
-#define NOTE_TYPE_KEY @"type"
-#define NOTE_CONTENTS_KEY @"contents"
-#define NOTE_TEXT_KEY @"text"
+#import "SKNUtilities.h"
 
 @implementation NSFileManager (SKNExtensions)
-
-static NSString *SKNTextNotes(NSArray *noteDicts) {
-    NSMutableString *textString = [NSMutableString string];
-    NSEnumerator *dictEnum = [noteDicts objectEnumerator];
-    NSDictionary *dict;
-    
-    while (dict = [dictEnum nextObject]) {
-        NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
-        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
-        NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
-        NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
-        
-        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
-            pageIndex = 0;
-        
-        [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
-        if ([string length]) {
-            [textString appendString:string];
-            [textString appendString:@" \n\n"];
-        }
-        if ([text length]) {
-            [textString appendString:[text string]];
-            [textString appendString:@" \n\n"];
-        }
-    }
-    return textString;
-}
-
-static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
-    NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
-    NSEnumerator *dictEnum = [noteDicts objectEnumerator];
-    NSDictionary *dict;
-    
-    while (dict = [dictEnum nextObject]) {
-        NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
-        NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntValue];
-        NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
-        NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
-        
-        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
-            pageIndex = 0;
-        
-        [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
-        if ([string length]) {
-            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:string];
-            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@" \n\n"];
-        }
-        if ([text length]) {
-            [attrString appendAttributedString:text];
-            [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@" \n\n"];
-            
-        }
-    }
-    [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
-    return attrString;
-}
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
     return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL error:outError];
@@ -135,10 +71,8 @@ static NSAttributedString *SKNRichTextNotes(NSArray *noteDicts) {
             } else {
                 if (notesString == nil)
                     notesString = SKNTextNotes(notes);
-                if (notesRTFData == nil) {
-                    NSAttributedString *notesAttrString = SKNRichTextNotes(notes);
-                    notesRTFData = [notesAttrString RTFFromRange:NSMakeRange(0, [notesAttrString length]) documentAttributes:nil];
-                }
+                if (notesRTFData == nil)
+                    notesRTFData = SKNRTFNotes(notes);
                 [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:notesString atPath:path options:0 error:NULL];
                 [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:notesRTFData atPath:path options:0 error:NULL];
             }

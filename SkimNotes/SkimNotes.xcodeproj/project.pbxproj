@@ -37,6 +37,12 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
+		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
+		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
+		CE3776950E2FC51900261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
+		CE3776960E2FC52A00261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
+		CE3776970E2FC53000261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
 		CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -147,6 +153,10 @@
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release.xcconfig"; path = "Configurations/SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
 		CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool.xcconfig"; path = "Configurations/SkimNotes-Tool.xcconfig"; sourceTree = "<group>"; };
 		CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Tool_Prefix.pch; sourceTree = "<group>"; };
+		CE3776630E2FB47500261604 /* NSFileManager_SKNToolExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKNToolExtensions.h; sourceTree = "<group>"; };
+		CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKNToolExtensions.m; sourceTree = "<group>"; };
+		CE37768A0E2FC26100261604 /* SKNUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNUtilities.h; sourceTree = "<group>"; };
+		CE37768B0E2FC26100261604 /* SKNUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNUtilities.m; sourceTree = "<group>"; };
 		CE3907AD0E082C2D0015B0B7 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B40E082C900015B0B7 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
@@ -334,10 +344,12 @@
 		CEBA2B610E0566E60000B2E6 /* Tool Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */,
+				CE3776630E2FB47500261604 /* NSFileManager_SKNToolExtensions.h */,
+				CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */,
 				CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */,
 				CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */,
 				CEBA2B5C0E0566DF0000B2E6 /* SKNAgentListenerProtocol.h */,
-				CEBA2B5D0E0566DF0000B2E6 /* skimnotes.m */,
 			);
 			name = "Tool Classes";
 			sourceTree = "<group>";
@@ -347,6 +359,8 @@
 			children = (
 				CEBA2B630E05675E0000B2E6 /* SKNExtendedAttributeManager.h */,
 				CEBA2B640E05675E0000B2E6 /* SKNExtendedAttributeManager.m */,
+				CE37768A0E2FC26100261604 /* SKNUtilities.h */,
+				CE37768B0E2FC26100261604 /* SKNUtilities.m */,
 			);
 			name = "Shared Classes";
 			sourceTree = "<group>";
@@ -400,6 +414,7 @@
 				CEBA2BD50E05826D0000B2E6 /* NSFileManager_SKNExtensions.h in Headers */,
 				CEBA2BE20E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h in Headers */,
 				CEBA2CD70E058CF00000B2E6 /* SkimNotes.h in Headers */,
+				CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +425,7 @@
 				CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */,
 				CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */,
 				CEA5F5510E2CEE0200F65088 /* SKNExtendedAttributeManager.h in Headers */,
+				CE3776970E2FC53000261604 /* SKNUtilities.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +614,7 @@
 				CEBA2B8E0E0569010000B2E6 /* SKNPDFAnnotationNote.m in Sources */,
 				CEBA2BD60E05826D0000B2E6 /* NSFileManager_SKNExtensions.m in Sources */,
 				CEBA2BE30E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m in Sources */,
+				CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,6 +624,7 @@
 			files = (
 				CEA5F5500E2CEDFF00F65088 /* NSFileManager_SKNExtensions.m in Sources */,
 				CEA5F5520E2CEE0300F65088 /* SKNExtendedAttributeManager.m in Sources */,
+				CE3776960E2FC52A00261604 /* SKNUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,6 +635,8 @@
 				CEBA2B5E0E0566DF0000B2E6 /* SKNAgentListener.m in Sources */,
 				CEBA2B5F0E0566DF0000B2E6 /* skimnotes.m in Sources */,
 				CEBA2B650E05675E0000B2E6 /* SKNExtendedAttributeManager.m in Sources */,
+				CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */,
+				CE3776950E2FC51900261604 /* SKNUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
