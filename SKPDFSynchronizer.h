@@ -56,6 +56,7 @@
     id serverOnServerThread;
     NSConnection *mainThreadConnection;
     NSConnection *localThreadConnection;
+    BOOL stopRunning;
     struct SKServerFlags *serverFlags;
 }
 
