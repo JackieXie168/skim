@@ -329,6 +329,13 @@
 			remoteGlobalIDString = 8D576316048677EA00EA77CD;
 			remoteInfo = Skim;
 		};
+		CEDB9AE30E2E9EA50057FD09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEDB9AD70E2E9E840057FD09 /* SkimNotesTest.app */;
+			remoteInfo = SkimNotesTest;
+		};
 		CEFD68680C01D3BB0027B933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
@@ -1467,6 +1474,7 @@
 				CE7DC7320E09286500D6D76D /* SkimNotes.framework */,
 				CEA5F5440E2CED1100F65088 /* SkimNotesBase.framework */,
 				CE7DC7340E09286500D6D76D /* skimnotes */,
+				CEDB9AE40E2E9EA50057FD09 /* SkimNotesTest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1776,6 +1784,13 @@
 			fileType = wrapper.cfbundle;
 			path = Skim.qlgenerator;
 			remoteRef = CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEDB9AE40E2E9EA50057FD09 /* SkimNotesTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = SkimNotesTest.app;
+			remoteRef = CEDB9AE30E2E9EA50057FD09 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */ = {
