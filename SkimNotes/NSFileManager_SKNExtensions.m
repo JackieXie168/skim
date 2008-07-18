@@ -40,6 +40,11 @@
 #import "SKNExtendedAttributeManager.h"
 #import "SKNUtilities.h"
 
+#define PDF_EXTENSION   @"pdf"
+#define SKIM_EXTENSION  @"skim"
+#define TXT_EXTENSION   @"txt"
+#define RTF_EXTENSION   @"rtf"
+
 @implementation NSFileManager (SKNExtensions)
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
@@ -145,7 +150,7 @@
     BOOL isDir;
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *skimFile = [self bundledFileWithExtension:@"skim" inPDFBundleAtPath:path error:&error];
+        NSString *skimFile = [self bundledFileWithExtension:SKIM_EXTENSION inPDFBundleAtPath:path error:&error];
         NSData *data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
         
         if ([data length])
@@ -165,7 +170,7 @@
     BOOL isDir;
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *notesFile = [self bundledFileWithExtension:@"txt" inPDFBundleAtPath:path error:&error];
+        NSString *notesFile = [self bundledFileWithExtension:TXT_EXTENSION inPDFBundleAtPath:path error:&error];
         
         if (notesFile)
             string = [NSString stringWithContentsOfFile:notesFile encoding:NSUTF8StringEncoding error:&error];
@@ -185,7 +190,7 @@
     BOOL isDir;
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        NSString *notesFile = [self bundledFileWithExtension:@"rtf" inPDFBundleAtPath:path error:&error];
+        NSString *notesFile = [self bundledFileWithExtension:RTF_EXTENSION inPDFBundleAtPath:path error:&error];
         
         if (notesFile)
             data = [NSData dataWithContentsOfFile:notesFile options:0 error:&error];
@@ -220,7 +225,7 @@
     NSString *filePath = nil;
     
     extension = [extension lowercaseString];
-    if ([extension isEqualToString:@"skim"] || [extension isEqualToString:@"pdf"]) {
+    if ([extension isEqualToString:SKIM_EXTENSION] || [extension isEqualToString:PDF_EXTENSION]) {
         NSArray *files = [self subpathsAtPath:path];
         NSString *filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
         if ([files containsObject:filename] == NO) {
@@ -233,7 +238,7 @@
         if (filename)
             filePath = [path stringByAppendingPathComponent:filename];
     } else {
-        NSString *skimFile = [self bundledFileWithExtension:@"skim" inPDFBundleAtPath:path error:outError];
+        NSString *skimFile = [self bundledFileWithExtension:SKIM_EXTENSION inPDFBundleAtPath:path error:outError];
         if (skimFile) {
             filePath = [[skimFile stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
             if ([self fileExistsAtPath:filePath] == NO)
@@ -241,7 +246,7 @@
         }
     }
     if (filePath == nil && outError) 
-        *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Notes file note found", NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Notes file note found", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return filePath;
 }
 
