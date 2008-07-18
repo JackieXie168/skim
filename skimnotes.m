@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "NSFileManager_SKNToolExtensions.h"
 #import "SKNAgentListener.h"
+#import "SKNUtilities.h"
 
 static char *usageStr = "Usage:\n skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n skimnotes agent [SERVER_NAME]\n skimnotes protocol\n skimnotes help [VERB]\n skimnotes version";
 static char *versionStr = "SkimNotes command-line client, version 2.3";
@@ -31,13 +32,6 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n- (bycopy NSData
 #define FORMAT_TEXT_STRING  @"text"
 #define FORMAT_TXT_STRING   @"txt"
 #define FORMAT_RTF_STRING   @"rtf"
-
-#define PDF_EXTENSION   @"pdf"
-#define PDFD_EXTENSION  @"pdfd"
-#define SKIM_EXTENSION  @"skim"
-#define TXT_EXTENSION   @"txt"
-#define TEXT_EXTENSION  @"text"
-#define RTF_EXTENSION   @"rtf"
 
 #define STD_IN_OUT_FILE @"-"
 
