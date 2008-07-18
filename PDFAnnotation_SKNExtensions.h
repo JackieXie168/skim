@@ -44,44 +44,143 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+/*!
+    @discussion  Global string for Free Text note type.
+*/
 extern NSString *SKNFreeTextString;
+/*!
+    @discussion  Global string for Text note type.
+*/
 extern NSString *SKNTextString;
+/*!
+    @discussion  Global string for Note note type.
+*/
 extern NSString *SKNNoteString;
+/*!
+    @discussion  Global string for Circle note type.
+*/
 extern NSString *SKNCircleString;
+/*!
+    @discussion  Global string for Square note type.
+*/
 extern NSString *SKNSquareString;
+/*!
+    @discussion  Global string for Mark Up note type.
+*/
 extern NSString *SKNMarkUpString;
+/*!
+    @discussion  Global string for Highlight note type.
+*/
 extern NSString *SKNHighlightString;
+/*!
+    @discussion  Global string for Underline note type.
+*/
 extern NSString *SKNUnderlineString;
+/*!
+    @discussion  Global string for Strike Out note type.
+*/
 extern NSString *SKNStrikeOutString;
+/*!
+    @discussion  Global string for Line note type.
+*/
 extern NSString *SKNLineString;
 
+/*!
+    @discussion  Global string for annotation type key.
+*/
 extern NSString *SKNPDFAnnotationTypeKey;
+/*!
+    @discussion  Global string for annotation bounds key.
+*/
 extern NSString *SKNPDFAnnotationBoundsKey;
+/*!
+    @discussion  Global string for annotation page key.
+*/
 extern NSString *SKNPDFAnnotationPageKey;
+/*!
+    @discussion  Global string for annotation page index key.
+*/
 extern NSString *SKNPDFAnnotationPageIndexKey;
+/*!
+    @discussion  Global string for annotation contents key.
+*/
 extern NSString *SKNPDFAnnotationContentsKey;
+/*!
+    @discussion  Global string for annotation string key.
+*/
 extern NSString *SKNPDFAnnotationStringKey;
+/*!
+    @discussion  Global string for annotation color key.
+*/
 extern NSString *SKNPDFAnnotationColorKey;
+/*!
+    @discussion  Global string for annotation border key.
+*/
 extern NSString *SKNPDFAnnotationBorderKey;
+/*!
+    @discussion  Global string for annotation line width key.
+*/
 extern NSString *SKNPDFAnnotationLineWidthKey;
+/*!
+    @discussion  Global string for annotation border style key.
+*/
 extern NSString *SKNPDFAnnotationBorderStyleKey;
+/*!
+    @discussion  Global string for annotation dash pattern key.
+*/
 extern NSString *SKNPDFAnnotationDashPatternKey;
 
+/*!
+    @discussion  Global string for annotation interior color key.
+*/
 extern NSString *SKNPDFAnnotationInteriorColorKey;
 
+/*!
+    @discussion  Global string for annotation start line style key.
+*/
 extern NSString *SKNPDFAnnotationStartLineStyleKey;
+/*!
+    @discussion  Global string for annotation end line style key.
+*/
 extern NSString *SKNPDFAnnotationEndLineStyleKey;
+/*!
+    @discussion  Global string for annotation start point key.
+*/
 extern NSString *SKNPDFAnnotationStartPointKey;
+/*!
+    @discussion  Global string for annotation end point key.
+*/
 extern NSString *SKNPDFAnnotationEndPointKey;
 
+/*!
+    @discussion  Global string for annotation font key.
+*/
 extern NSString *SKNPDFAnnotationFontKey;
+/*!
+    @discussion  Global string for annotation font color key.
+*/
 extern NSString *SKNPDFAnnotationFontColorKey;
+/*!
+    @discussion  Global string for annotation font name key.
+*/
 extern NSString *SKNPDFAnnotationFontNameKey;
+/*!
+    @discussion  Global string for annotation font size key.
+*/
 extern NSString *SKNPDFAnnotationFontSizeKey;
+/*!
+    @discussion  Global string for annotation rotation key.
+*/
 extern NSString *SKNPDFAnnotationRotationKey;
 
+/*!
+    @discussion  Global string for annotation quadrilateral points key.
+*/
 extern NSString *SKNPDFAnnotationQuadrilateralPointsKey;
 
+/*!
+    @discussion  Global string for annotation icon type key.
+*/
 extern NSString *SKNPDFAnnotationIconTypeKey;
 
 
