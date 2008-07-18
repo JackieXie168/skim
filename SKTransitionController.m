@@ -50,10 +50,10 @@
 #import "SKFullScreenWindow.h"
 
 BOOL CoreGraphicsServicesTransitionsDefined() {
-    return &_CGSDefaultConnection != kUnresolvedCFragSymbolAddress &&
-           &CGSNewTransition != kUnresolvedCFragSymbolAddress &&
-           &CGSInvokeTransition != kUnresolvedCFragSymbolAddress &&
-           &CGSReleaseTransition != kUnresolvedCFragSymbolAddress;
+    return _CGSDefaultConnection != (void *)kUnresolvedCFragSymbolAddress &&
+           CGSNewTransition != (void *)kUnresolvedCFragSymbolAddress &&
+           CGSInvokeTransition != (void *)kUnresolvedCFragSymbolAddress &&
+           CGSReleaseTransition != (void *)kUnresolvedCFragSymbolAddress;
 }
 
 @interface SKTransitionAnimation : NSAnimation {
