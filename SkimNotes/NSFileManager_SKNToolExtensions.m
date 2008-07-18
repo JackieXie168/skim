@@ -44,6 +44,7 @@
 #define SKIM_EXTENSION  @"skim"
 #define TXT_EXTENSION   @"txt"
 #define RTF_EXTENSION   @"rtf"
+#define FDF_EXTENSION   @"fdf"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -205,6 +206,8 @@
             success2 = [self removeFileAtPath:notePath handler:nil];
         if (notePath = [self notesFileWithExtension:RTF_EXTENSION atPath:path error:NULL])
             success3 = [self removeFileAtPath:notePath handler:nil];
+        if (notePath = [self notesFileWithExtension:FDF_EXTENSION atPath:path error:NULL])
+            [self removeFileAtPath:notePath handler:nil];
         if (success1 == NO || success2 == NO || success3 == NO)
             error1 = error2 = error3 = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Could not remove notes file", NSLocalizedDescriptionKey, nil]];
     } else {
