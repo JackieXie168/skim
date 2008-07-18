@@ -218,8 +218,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     }
     @catch(id exception) {
         NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
-        // reset the flag so we can start over; shouldn't be necessary
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->shouldKeepRunning);
         // allow the main thread to continue, anyway
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
