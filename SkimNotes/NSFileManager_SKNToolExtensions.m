@@ -40,12 +40,6 @@
 #import "SKNExtendedAttributeManager.h"
 #import "SKNUtilities.h"
 
-#define PDFD_EXTENSION  @"pdfd"
-#define SKIM_EXTENSION  @"skim"
-#define TXT_EXTENSION   @"txt"
-#define RTF_EXTENSION   @"rtf"
-#define FDF_EXTENSION   @"fdf"
-
 #define BUNDLE_DATA_FILENAME @"data"
 
 @implementation NSFileManager (SKNToolExtensions)
