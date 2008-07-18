@@ -44,9 +44,18 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+/*!
+    @discussion  Global string for annotation text key.
+*/
 extern NSString *SKNPDFAnnotationTextKey;
+/*!
+    @discussion  Global string for annotation image key.
+*/
 extern NSString *SKNPDFAnnotationImageKey;
 
+/*!
+    @discussion  Default size of an anchored note.
+*/
 extern NSSize SKNPDFAnnotationNoteSize;
 
 /*!
