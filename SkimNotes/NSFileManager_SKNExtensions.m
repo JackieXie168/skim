@@ -40,10 +40,6 @@
 #import "SKNExtendedAttributeManager.h"
 #import "SKNUtilities.h"
 
-#define PDF_EXTENSION   @"pdf"
-#define SKIM_EXTENSION  @"skim"
-#define TXT_EXTENSION   @"txt"
-#define RTF_EXTENSION   @"rtf"
 
 @implementation NSFileManager (SKNExtensions)
 
