@@ -91,7 +91,8 @@
     }
     if (path == nil) {
         // look for it in the Skim bundle
-        path = [[[NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.skim"] sharedSupportPath] stringByAppendingPathComponent:@"skimnotes"];
+        NSString *SkimPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Skim"];
+        path = SkimPath ? [[[NSBundle bundleWithPath:SkimPath] sharedSupportPath] stringByAppendingPathComponent:@"skimnotes"] : nil;
     }
     return path;
 }
