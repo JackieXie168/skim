@@ -75,6 +75,33 @@
     [super dealloc];
 }
 
+- (void)destroyConnection;
+{
+    [connection registerName:nil];
+    [[connection receivePort] invalidate];
+    [[connection sendPort] invalidate];
+    [connection invalidate];
+    [connection release];
+    connection = nil;
+}
+
+- (void)portDied:(NSNotification *)notification
+{
+    [self destroyConnection];
+    fprintf(stderr, "skimnotes agent pid %d dying because port %s is invalid\n", getpid(), [[[notification object] description] UTF8String]);
+    exit(0);
+}
+
+// first app to connect will be the owner of this instance of the program; when the connection dies, so do we
+- (BOOL)makeNewConnection:(NSConnection *)newConnection sender:(NSConnection *)parentConnection
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portDied:) name:NSPortDidBecomeInvalidNotification object:[newConnection sendPort]];
+    fprintf(stderr, "skimnotes agent pid %d connection registered\n", getpid());
+    return YES;
+}
+
+#pragma mark SKNAgentListenerProtocol
+
 - (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;
 {
     NSError *error = nil;
@@ -101,31 +128,6 @@
         fprintf(stderr, "skimnotes agent pid %d: error getting text notes (%s)\n", getpid(), [[error description] UTF8String]);
     // Returning the string directly can fail under some conditions.  For some strings with corrupt copy-paste characters (typical for notes), -[NSString canBeConvertedToEncoding:NSUTF8StringEncoding] returns YES but the actual conversion fails.  A result seems to be that encoding the string also fails, which causes the DO client to get a timeout.  Returning NSUnicodeStringEncoding data seems to work in those cases (and is safe since we're not going over the wire between big/little-endian systems).
     return [string dataUsingEncoding:encoding];
-}
-
-- (void)destroyConnection;
-{
-    [connection registerName:nil];
-    [[connection receivePort] invalidate];
-    [[connection sendPort] invalidate];
-    [connection invalidate];
-    [connection release];
-    connection = nil;
-}
-
-- (void)portDied:(NSNotification *)notification
-{
-    [self destroyConnection];
-    fprintf(stderr, "skimnotes agent pid %d dying because port %s is invalid\n", getpid(), [[[notification object] description] UTF8String]);
-    exit(0);
-}
-
-// first app to connect will be the owner of this instance of the program; when the connection dies, so do we
-- (BOOL)makeNewConnection:(NSConnection *)newConnection sender:(NSConnection *)parentConnection
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(portDied:) name:NSPortDidBecomeInvalidNotification object:[newConnection sendPort]];
-    fprintf(stderr, "skimnotes agent pid %d connection registered\n", getpid());
-    return YES;
 }
 
 @end
