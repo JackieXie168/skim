@@ -297,6 +297,12 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
 				PRODUCT_NAME = Skim;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wno-parentheses",
+					"-Wfloat-equal",
+					"-Winline",
+				);
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Release;
