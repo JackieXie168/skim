@@ -47,15 +47,11 @@ enum {
     SKBookmarkTypeSeparator
 };
 
-@class BDAlias;
-
 @interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
     NSUndoManager *undoManager;
 }
 
-- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
-- (id)initWithAliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
@@ -72,8 +68,6 @@ enum {
 - (NSImage *)icon;
 
 - (NSString *)path;
-- (BDAlias *)alias;
-- (NSData *)aliasData;
 - (unsigned int)pageIndex;
 - (NSNumber *)pageNumber;
 
