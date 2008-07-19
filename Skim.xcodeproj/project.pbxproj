@@ -78,7 +78,7 @@
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
-		CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.c */; };
+		CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.m */; };
 		CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3363CD0E26E378005F99E6 /* libz.dylib */; };
 		CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */; };
 		CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3400AB0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m */; };
@@ -512,7 +512,7 @@
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
-		CE33639F0E26E120005F99E6 /* synctex_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = synctex_parser.c; path = vendorsrc/jeromelaurens/synctex_parser.c; sourceTree = "<group>"; };
+		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = synctex_parser.m; path = vendorsrc/jeromelaurens/synctex_parser.m; sourceTree = "<group>"; };
 		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = vendorsrc/jeromelaurens/synctex_parser.h; sourceTree = "<group>"; };
 		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSyncRecord.h; sourceTree = "<group>"; };
@@ -1404,7 +1404,7 @@
 		CE33639E0E26E086005F99E6 /* Synctex */ = {
 			isa = PBXGroup;
 			children = (
-				CE33639F0E26E120005F99E6 /* synctex_parser.c */,
+				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
 			);
 			name = Synctex;
@@ -2121,7 +2121,7 @@
 				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,
 				CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */,
 				CEC3AD240E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m in Sources */,
-				CE3364310E2761E9005F99E6 /* synctex_parser.c in Sources */,
+				CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */,
 				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

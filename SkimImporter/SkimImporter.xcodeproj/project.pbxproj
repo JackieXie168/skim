@@ -277,6 +277,12 @@
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
 				PRODUCT_NAME = SkimImporter;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wno-parentheses",
+					"-Wfloat-equal",
+					"-Winline",
+				);
 				WRAPPER_EXTENSION = mdimporter;
 			};
 			name = Release;
