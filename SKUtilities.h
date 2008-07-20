@@ -21,8 +21,8 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, BOOL i
 IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
 IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
 void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance);
-IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
-IMP SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+void SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+void SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
 
 #define OBINITIALIZE \
     do { \
