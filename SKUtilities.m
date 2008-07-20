@@ -19,6 +19,8 @@
 
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+
 static Class SK_object_getClass(id object)
 {
     return object_getClass != NULL ? object_getClass(object) : object->isa;
@@ -67,6 +69,40 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
         class_addMethods(aClass, newMethodList);
     }
 }
+
+#else
+
+static Class SK_object_getClass(id object)
+{
+    return object_getClass(object);
+}
+
+static IMP SK_method_getImplementation(Method aMethod)
+{
+    return method_getImplementation(aMethod);
+} 
+
+static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
+{
+    return method_setImplementation(aMethod, anImp);
+} 
+
+static const char *SK_method_getTypeEncoding(Method aMethod)
+{
+    return method_getTypeEncoding(aMethod);
+}
+
+static Class SK_class_getSuperclass(Class aClass)
+{
+    return class_getSuperclass(aClass);
+}
+
+static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes)
+{
+    class_addMethod(aClass, selector, methodImp, methodTypes);
+}
+
+#endif
 
 static Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance)
 {
@@ -125,28 +161,16 @@ void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, cons
         _objc_flush_caches(realClass);
 }
 
-IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
+void SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
-    IMP imp = NULL;
     Method method = class_getInstanceMethod(aClass, impSelector);
-    
-    if (method) {
-        imp = SK_method_getImplementation(method);
-        SKRegisterMethodImplementation(aClass, aSelector, imp, SK_method_getTypeEncoding(method), YES);
-    }
-    
-    return imp;
+    if (method)
+        SKRegisterMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), YES);
 }
 
-IMP SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
+void SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
-    IMP imp = NULL;
     Method method = class_getClassMethod(aClass, impSelector);
-    
-    if (method) {
-        imp = SK_method_getImplementation(method);
-        SKRegisterMethodImplementation(aClass, aSelector, imp, SK_method_getTypeEncoding(method), NO);
-    }
-    
-    return imp;
+    if (method)
+        SKRegisterMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), NO);
 }
