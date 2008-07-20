@@ -116,7 +116,13 @@ IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, 
 void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance)
 {
     Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
+    extern void _objc_flush_caches(Class);
+    
     SK_class_addMethod(realClass, aSelector, anImp, types);
+    
+    // Flush the method cache, deprecated on 10.5
+    if (_objc_flush_caches != NULL)
+        _objc_flush_caches(realClass);
 }
 
 IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
