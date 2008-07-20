@@ -210,6 +210,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         resizeReadingBarModifiers = [resizeReadingBarModifiersNumber intValue];
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Double-click to edit.", @"Default text for new text note"), SKDefaultFreeTextNoteContentsKey, NSLocalizedString(@"New note", @"Default text for new anchored note"), SKDefaultAnchoredNoteContentsKey, nil]];
+    
+    SKSwizzlePDFDisplayViewMethods();
 }
 
 - (void)commonInitialization {

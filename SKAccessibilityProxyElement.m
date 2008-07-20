@@ -92,11 +92,11 @@ static SEL SKAttributeGetter(NSString *attribute) {
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent isRepresentedObjectFocused:object]];
+        return [NSNumber numberWithBool:[parent element:self isRepresentedObjectFocused:object]];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent screenRectForRepresentedObject:object].origin];
+        return [NSValue valueWithPoint:[parent element:self screenRectForRepresentedObject:object].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent screenRectForRepresentedObject:object].size];
+        return [NSValue valueWithSize:[parent element:self screenRectForRepresentedObject:object].size];
     } else if ([[self accessibilityAttributeNames] containsObject:attribute]) {
 		SEL getter = SKAttributeGetter(attribute);
         return [object respondsToSelector:getter] ? [object performSelector:getter] : nil;
@@ -111,7 +111,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent setFocused:[value boolValue] forRepresentedObject:object];
+        [parent element:self setFocused:[value boolValue] forRepresentedObject:object];
 }
 
 - (BOOL)accessibilityIsIgnored {
@@ -136,7 +136,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent pressRepresentedObject:object];
+        [parent element:self pressRepresentedObject:object];
 }
 
 @end
