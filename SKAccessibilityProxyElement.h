@@ -51,8 +51,8 @@
 
 // parent should implement these methods
 @interface NSObject (SKAccessibilityProxyElementParent)
-- (NSRect)screenRectForRepresentedObject:(id)object;
-- (BOOL)isRepresentedObjectFocused:(id)object;
-- (void)setFocused:(BOOL)focused forRepresentedObject:(id)object;
-- (void)pressRepresentedObject:(id)object;
+- (NSRect)element:(SKAccessibilityProxyElement *)element screenRectForRepresentedObject:(id)object;
+- (BOOL)element:(SKAccessibilityProxyElement *)element isRepresentedObjectFocused:(id)object;
+- (void)element:(SKAccessibilityProxyElement *)element setFocused:(BOOL)focused forRepresentedObject:(id)object;
+- (void)element:(SKAccessibilityProxyElement *)element pressRepresentedObject:(id)object;
 @end

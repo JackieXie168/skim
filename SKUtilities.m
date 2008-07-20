@@ -113,6 +113,12 @@ IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, 
     return SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(class_getClassMethod(aClass, impSelector)), NO);
 }
 
+void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance)
+{
+    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
+    SK_class_addMethod(realClass, aSelector, anImp, types);
+}
+
 IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector)
 {
     IMP imp = NULL;
@@ -120,7 +126,7 @@ IMP SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL 
     
     if (method) {
         imp = SK_method_getImplementation(method);
-        SK_class_addMethod(aClass, aSelector, imp, SK_method_getTypeEncoding(method));
+        SKRegisterMethodImplementation(aClass, aSelector, imp, SK_method_getTypeEncoding(method), YES);
     }
     
     return imp;
@@ -133,7 +139,7 @@ IMP SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector,
     
     if (method) {
         imp = SK_method_getImplementation(method);
-        SK_class_addMethod(SK_object_getClass(aClass), aSelector, imp, SK_method_getTypeEncoding(method));
+        SKRegisterMethodImplementation(aClass, aSelector, imp, SK_method_getTypeEncoding(method), NO);
     }
     
     return imp;
