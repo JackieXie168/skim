@@ -55,14 +55,13 @@ static SEL SKAttributeGetter(NSString *attribute) {
 - (id)initWithObject:(id)anObject parent:(id)aParent {
     if (self = [super init]) {
         object = [anObject retain];
-        parent = [aParent retain];
+        parent = aParent;
     }
     return self;
 }
 
 - (void)dealloc {
     [object release];
-    [parent release];
     [super dealloc];
 }
 
