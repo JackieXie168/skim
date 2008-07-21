@@ -39,6 +39,7 @@
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		CE1F63460E34A66F00E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
 		CE1F63470E34A67000E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		CE1F63530E34A99100E07E76 /* PDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2C400E058C950000B2E6 /* PDFKit.framework */; };
 		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
 		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
@@ -67,7 +68,6 @@
 		CEBA2BD60E05826D0000B2E6 /* NSFileManager_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */; };
 		CEBA2BE20E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEBA2BE30E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */; };
-		CEBA2BF00E058C4D0000B2E6 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2BEF0E058C4D0000B2E6 /* Quartz.framework */; };
 		CEBA2CD70E058CF00000B2E6 /* SkimNotes.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
@@ -186,7 +186,6 @@
 		CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKNExtensions.m; sourceTree = "<group>"; };
 		CEBA2BE00E0587EB0000B2E6 /* PDFDocument_SKNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_SKNExtensions.h; sourceTree = "<group>"; };
 		CEBA2BE10E0587EB0000B2E6 /* PDFDocument_SKNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_SKNExtensions.m; sourceTree = "<group>"; };
-		CEBA2BEF0E058C4D0000B2E6 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		CEBA2C400E058C950000B2E6 /* PDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFKit.framework; path = /System/Library/Frameworks/Quartz.framework/Versions/A/Frameworks/PDFKit.framework; sourceTree = "<absolute>"; };
 		CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes.h; sourceTree = "<group>"; };
 		CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
@@ -210,8 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
-				CEBA2BF00E058C4D0000B2E6 /* Quartz.framework in Frameworks */,
 				CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */,
+				CE1F63530E34A99100E07E76 /* PDFKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
-				CEBA2BEF0E058C4D0000B2E6 /* Quartz.framework */,
+				CEBA2C400E058C950000B2E6 /* PDFKit.framework */,
 				CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */,
 			);
 			name = "Linked Frameworks";
@@ -326,7 +325,6 @@
 			children = (
 				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
 				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
-				CEBA2C400E058C950000B2E6 /* PDFKit.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";
@@ -726,6 +724,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = Debug;
 		};
@@ -733,6 +736,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = Release;
 		};
@@ -761,6 +769,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = "Release (GC dual-mode)";
 		};
@@ -803,6 +816,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
@@ -812,6 +830,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
@@ -821,6 +844,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
