@@ -37,8 +37,9 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		CE1F648E0E34F9E700E07E76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		CE1F649C0E34FAC300E07E76 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1F649B0E34FAC300E07E76 /* Quartz.framework */; };
+		CE1F64E20E34FF7F00E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		CE1F64E30E34FF8000E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
 		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
 		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
@@ -228,7 +229,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */,
-				CE1F648E0E34F9E700E07E76 /* Cocoa.framework in Frameworks */,
+				CE1F64E20E34FF7F00E07E76 /* Foundation.framework in Frameworks */,
+				CE1F64E30E34FF8000E07E76 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

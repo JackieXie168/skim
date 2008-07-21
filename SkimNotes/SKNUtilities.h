@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 #define SKIM_NOTES_KEY      @"net_sourceforge_skim-app_notes"
 #define SKIM_RTF_NOTES_KEY  @"net_sourceforge_skim-app_rtf_notes"
