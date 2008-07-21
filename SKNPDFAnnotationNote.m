@@ -72,10 +72,13 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
         Class attrStringClass = [NSAttributedString class];
         Class stringClass = [NSString class];
         Class imageClass = [NSImage class];
+        Class dataClass = [NSData class];
         NSAttributedString *aText = [dict objectForKey:SKNPDFAnnotationTextKey];
         NSImage *anImage = [dict objectForKey:SKNPDFAnnotationImageKey];
         if ([anImage isKindOfClass:imageClass])
             image = [anImage retain];
+        if ([anImage isKindOfClass:dataClass])
+            image = [[NSImage alloc] initWithData:(NSData *)anImage];
         if ([aText isKindOfClass:attrStringClass])
             [self setText:aText];
         else if ([aText isKindOfClass:stringClass])
