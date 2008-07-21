@@ -99,10 +99,12 @@
     if ([aURL isFileURL]) {
         NSData *data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if ([data length])
-            notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        else if (data || [error code] == ENOATTR)
+        if ([data length]) {
+            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+            @catch (id e) {}
+        } else if (data || [error code] == ENOATTR) {
             notes = [NSArray array];
+        }
     }
     if (notes == nil && outError) 
         *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
@@ -149,10 +151,12 @@
         NSString *skimFile = [self bundledFileWithExtension:SKIM_EXTENSION inPDFBundleAtPath:path error:&error];
         NSData *data = skimFile ? [NSData dataWithContentsOfFile:skimFile options:0 error:&error] : nil;
         
-        if ([data length])
-            notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        else if (data)
+        if ([data length]) {
+            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+            @catch (id e) {}
+        } else if (data) {
             notes = [NSArray array];
+        }
     }
     if (notes == nil && outError) 
         *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a package.", @"Error description"), NSLocalizedDescriptionKey, nil]];
@@ -207,10 +211,12 @@
     if ([aURL isFileURL] && [self fileExistsAtPath:path]) {
         NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
         
-        if ([data length])
-            notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        else if (data)
+        if ([data length]) {
+            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+            @catch (id e) {}
+        } else if (data) {
             notes = [NSArray array];
+        }
     }
     if (notes == nil && outError) 
         *outError = error ? error : [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
