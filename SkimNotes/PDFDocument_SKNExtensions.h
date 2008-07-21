@@ -42,7 +42,7 @@
     @discussion  This header file provides API for an <code>PDFDocument</code> category to add Skim note annotations to a <code>PDFDocument</code>.
 */
 #import <Cocoa/Cocoa.h>
-#import <PDFKit/PDFKit.h>
+#import <Quartz/Quartz.h>
 
 
 /*!
