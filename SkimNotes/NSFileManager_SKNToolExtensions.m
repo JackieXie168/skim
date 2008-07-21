@@ -174,7 +174,7 @@
                 [textNotesData writeToFile:notePath options:0 error:NULL];
             }
             if (rtfNotesData) {
-                notePath = [[path stringByAppendingPathComponent:name] stringByAppendingPathExtension:TXT_EXTENSION];
+                notePath = [[path stringByAppendingPathComponent:name] stringByAppendingPathExtension:RTF_EXTENSION];
                 [rtfNotesData writeToFile:notePath options:0 error:NULL];
             }
         } else {
