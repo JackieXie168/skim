@@ -37,9 +37,8 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		CE1F63460E34A66F00E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
-		CE1F63470E34A67000E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
-		CE1F63530E34A99100E07E76 /* PDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2C400E058C950000B2E6 /* PDFKit.framework */; };
+		CE1F648E0E34F9E700E07E76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE1F649C0E34FAC300E07E76 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1F649B0E34FAC300E07E76 /* Quartz.framework */; };
 		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
 		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
@@ -154,6 +153,7 @@
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Release.xcconfig"; path = "Configurations/SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
 		CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Tool.xcconfig"; path = "Configurations/SkimNotes-Tool.xcconfig"; sourceTree = "<group>"; };
 		CE17F1BB0E25861700DE06EA /* SkimNotes_Tool_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotes_Tool_Prefix.pch; sourceTree = "<group>"; };
+		CE1F649B0E34FAC300E07E76 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		CE3776630E2FB47500261604 /* NSFileManager_SKNToolExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKNToolExtensions.h; sourceTree = "<group>"; };
 		CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKNToolExtensions.m; sourceTree = "<group>"; };
 		CE37768A0E2FC26100261604 /* SKNUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNUtilities.h; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			files = (
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
 				CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */,
-				CE1F63530E34A99100E07E76 /* PDFKit.framework in Frameworks */,
+				CE1F649C0E34FAC300E07E76 /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,8 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */,
-				CE1F63460E34A66F00E07E76 /* AppKit.framework in Frameworks */,
-				CE1F63470E34A67000E07E76 /* Foundation.framework in Frameworks */,
+				CE1F648E0E34F9E700E07E76 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
-				CEBA2C400E058C950000B2E6 /* PDFKit.framework */,
+				CE1F649B0E34FAC300E07E76 /* Quartz.framework */,
 				CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */,
 			);
 			name = "Linked Frameworks";
@@ -325,6 +324,7 @@
 			children = (
 				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
 				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+				CEBA2C400E058C950000B2E6 /* PDFKit.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";

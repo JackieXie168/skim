@@ -42,7 +42,7 @@
     @discussion  This header file declares API for a concrete <code>PDFAnnotation</code> class representing a Skim anchored note.
 */
 #import <Cocoa/Cocoa.h>
-#import <PDFKit/PDFKit.h>
+#import <Quartz/Quartz.h>
 
 /*!
     @discussion  Global string for annotation text key.
