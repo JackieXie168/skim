@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import "NSFileManager_SKNToolExtensions.h"
 #import "SKNAgentListener.h"
 #import "SKNUtilities.h"
