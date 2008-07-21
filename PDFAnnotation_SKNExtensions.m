@@ -88,7 +88,7 @@ static id SkimNotes = nil;
 
 static IMP originalDealloc = NULL;
 
-void skn_replacementDealloc(id self, SEL _cmd) {
+static void replacementDealloc(id self, SEL _cmd) {
     [SkimNotes removeObject:self];
     originalDealloc(self, _cmd);
 }
@@ -103,16 +103,16 @@ void skn_replacementDealloc(id self, SEL _cmd) {
     {
         Method deallocMethod = class_getInstanceMethod(self, @selector(dealloc));
 #if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
-        originalDealloc = method_setImplementation(deallocMethod, (IMP)skn_replacementDealloc);
+        originalDealloc = method_setImplementation(deallocMethod, (IMP)replacementDealloc);
 #else
 #if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
         if (method_setImplementation != NULL)
-            originalDealloc = method_setImplementation(deallocMethod, (IMP)skn_replacementDealloc);
+            originalDealloc = method_setImplementation(deallocMethod, (IMP)replacementDealloc);
         else
 #endif
         {
             originalDealloc = deallocMethod->method_imp;
-            deallocMethod->method_imp = (IMP)skn_replacementDealloc;
+            deallocMethod->method_imp = (IMP)replacementDealloc;
             // Flush the method cache
             extern void _objc_flush_caches(Class);
             if (_objc_flush_caches != NULL)
