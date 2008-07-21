@@ -3,11 +3,11 @@
 #import "SKNAgentListener.h"
 #import "SKNUtilities.h"
 
-static char *usageStr = "Usage:\n skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n skimnotes agent [SERVER_NAME]\n skimnotes protocol\n skimnotes help [VERB]\n skimnotes version";
+static char *usageStr = "Usage:\n skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n skimnotes set PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n skimnotes remove PDF_FILE\n skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n skimnotes agent [SERVER_NAME]\n skimnotes protocol\n skimnotes help [VERB]\n skimnotes version";
 static char *versionStr = "SkimNotes command-line client, version 2.3";
 
 static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\nUsage: skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n\nReads Skim, Text, or RTF notes from extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE and writes to NOTES_FILE or standard output.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\nReads Skim notes when no format is provided.";
-static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\nUsage: skimnotes set PDF_FILE [SKIM_FILE|-]\n\nWrites notes to extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE from SKIM_FILE or standard input.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.";
+static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\nUsage: skimnotes set PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n\nWrites notes to extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE from SKIM_FILE or standard input.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided. Writes a default form for the text formats based on the contents of SKIM_FILE if TEXT_FILE and/or RTF_FILE are not provided.";
 static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\nUsage: skimnotes remove PDF_FILE\n\nRemoves the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\nUsage: skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n\nConverts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\nUses a file with same base name as IN_PDF_FILE if OUT_PDF_FILE is not provided.";
 static char *agentHelpStr = "skimnotes agent: run the Skim Notes agent\nUsage: skimnotes agent [SERVER_NAME]\n\nRuns a Skim Notes agent server with server name SERVER_NAME, to which a Cocoa application can connect using DO.\nWhen SERVER_NAME is not provided, a unique name is generated and returned on standard output.\nThe DO server conforms to the following formal protocol.\n\n@protocol SKNAgentListenerProtocol\n- (bycopy NSData *)SkimNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)RTFNotesAtPath:(in bycopy NSString *)aFile;\n- (bycopy NSData *)textNotesAtPath:(in bycopy NSString *)aFile encoding:(NSStringEncoding)encoding;\n@end";
@@ -254,12 +254,26 @@ int main (int argc, const char * argv[]) {
         } else if (action == SKNActionSet) {
             if (notesPath && ([notesPath isEqualToString:STD_IN_OUT_FILE] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
                 NSData *data = nil;
+                NSString *textString = nil;
+                NSData *rtfData = nil;
                 if ([notesPath isEqualToString:STD_IN_OUT_FILE])
                     data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
                 else
                     data = [NSData dataWithContentsOfFile:notesPath];
+                if (argc > offset + 2) {
+                    NSString *notesPath2 = SKNNormalizedPath([args objectAtIndex:offset + 2]);
+                    NSString *notesPath3 = argc < offset + 4 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 3]);
+                    if ([[notesPath2 pathExtension] caseInsensitiveCompare:TXT_EXTENSION] == NSOrderedSame || [[notesPath2 pathExtension] caseInsensitiveCompare:TEXT_EXTENSION] == NSOrderedSame)
+                        textString = [NSString stringWithContentsOfFile:notesPath2 encoding:NSUTF8StringEncoding error:NULL];
+                    else if ([[notesPath3 pathExtension] caseInsensitiveCompare:TXT_EXTENSION] == NSOrderedSame || [[notesPath3 pathExtension] caseInsensitiveCompare:TEXT_EXTENSION] == NSOrderedSame)
+                        textString = [NSString stringWithContentsOfFile:notesPath3 encoding:NSUTF8StringEncoding error:NULL];
+                    if ([[notesPath3 pathExtension] caseInsensitiveCompare:RTF_EXTENSION] == NSOrderedSame)
+                        rtfData = [NSData dataWithContentsOfFile:notesPath3];
+                    else if ([[notesPath2 pathExtension] caseInsensitiveCompare:RTF_EXTENSION] == NSOrderedSame)
+                        rtfData = [NSData dataWithContentsOfFile:notesPath2];
+                }
                 if ([data length])
-                    success = [fm writeSkimNotes:data textNotes:nil RTFNotes:nil atPath:pdfPath error:&error];
+                    success = [fm writeSkimNotes:data textNotes:textString RTFNotes:rtfData atPath:pdfPath error:&error];
                 else if (data)
                     success = [fm removeSkimNotesAtPath:pdfPath error:&error];
             } else {
