@@ -37,7 +37,6 @@
 
 #import "SKNAgentListener.h"
 #import "SKNAgentListenerProtocol.h"
-#import <AppKit/AppKit.h>
 #import "NSFileManager_SKNToolExtensions.h"
 
 @implementation SKNAgentListener
