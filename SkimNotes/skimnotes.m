@@ -99,7 +99,7 @@ int main (int argc, const char * argv[]) {
     if (argc < 2) {
         WRITE_ERROR;
         [pool release];
-        exit (1);
+        exit(EXIT_FAILURE);
     }
     
     NSInteger action = SKNActionForName([args objectAtIndex:1]);
@@ -172,7 +172,7 @@ int main (int argc, const char * argv[]) {
         if (argc < 3) {
             WRITE_ERROR;
             [pool release];
-            exit (1);
+            exit(EXIT_FAILURE);
         }
         
         NSString *formatString = nil;
@@ -183,7 +183,7 @@ int main (int argc, const char * argv[]) {
             if (argc < 5) {
                 WRITE_ERROR;
                 [pool release];
-                exit (1);
+                exit(EXIT_FAILURE);
             }
             offset = 4;
             formatString = [args objectAtIndex:3];
@@ -216,7 +216,7 @@ int main (int argc, const char * argv[]) {
         }
         
         if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isBundle != isDir) {
-            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
         } else if (action == SKNActionGet) {
             NSData *data = nil;
             if (format == SKNFormatAuto) {
@@ -251,16 +251,20 @@ int main (int argc, const char * argv[]) {
                     }
                 }
             }
-        } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:STD_IN_OUT_FILE] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
-            NSData *data = nil;
-            if ([notesPath isEqualToString:STD_IN_OUT_FILE])
-                data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
-            else
-                data = [NSData dataWithContentsOfFile:notesPath];
-            if ([data length])
-                success = [fm writeSkimNotes:data textNotes:nil RTFNotes:nil atPath:pdfPath error:&error];
-            else if (data)
-                success = [fm removeSkimNotesAtPath:pdfPath error:&error];
+        } else if (action == SKNActionSet) {
+            if (notesPath && ([notesPath isEqualToString:STD_IN_OUT_FILE] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
+                NSData *data = nil;
+                if ([notesPath isEqualToString:STD_IN_OUT_FILE])
+                    data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
+                else
+                    data = [NSData dataWithContentsOfFile:notesPath];
+                if ([data length])
+                    success = [fm writeSkimNotes:data textNotes:nil RTFNotes:nil atPath:pdfPath error:&error];
+                else if (data)
+                    success = [fm removeSkimNotesAtPath:pdfPath error:&error];
+            } else {
+                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Notes file does not exist", NSLocalizedDescriptionKey, nil]];
+            }
         } else if (action == SKNActionRemove) {
             success = [fm removeSkimNotesAtPath:pdfPath error:&error];
         } else if (action == SKNActionConvert) {
@@ -294,5 +298,5 @@ int main (int argc, const char * argv[]) {
     
     [pool release];
     
-    return success ? 0 : 1;
+    return success ? EXIT_SUCCESS : EXIT_FAILURE;
 }
