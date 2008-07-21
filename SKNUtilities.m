@@ -37,7 +37,6 @@
  */
 
 #import "SKNUtilities.h"
-#import <AppKit/AppKit.h>
 
 #define NOTE_PAGE_INDEX_KEY @"pageIndex"
 #define NOTE_TYPE_KEY @"type"
