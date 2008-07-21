@@ -60,7 +60,7 @@
 
 #pragma mark -
 
-id SKGetPDFView(id self) {
+static id SKGetPDFView(id self) {
     id pdfView = nil;
     @try { pdfView = [self valueForKey:@"pdfView"]; }
     @catch (id exception) {}
@@ -78,14 +78,14 @@ static IMP originalAccessibilityFocusedUIElement = NULL;
 
 #pragma mark Skim support
 
-void replacementResetCursorRects(id self, SEL _cmd) {
+static void replacementResetCursorRects(id self, SEL _cmd) {
 	originalResetCursorRects(self, _cmd);
     id pdfView = SKGetPDFView(self);
     if ([pdfView respondsToSelector:@selector(resetHoverRects)])
         [pdfView resetHoverRects];
 }
 
-void replacementPasswordEntered(id self, SEL _cmd, id sender) {
+static void replacementPasswordEntered(id self, SEL _cmd, id sender) {
     SKPDFDocument *document = [[[self window] windowController] document];
     originalPasswordEntered(self, _cmd, sender);
     if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
@@ -94,7 +94,7 @@ void replacementPasswordEntered(id self, SEL _cmd, id sender) {
 
 #pragma mark Accessibility
 
-NSArray *replacementAccessibilityAttributeNames(id self, SEL _cmd) {
+static NSArray *replacementAccessibilityAttributeNames(id self, SEL _cmd) {
     if ([SKGetPDFView(self) respondsToSelector:@selector(accessibilityChildren)]) {
         static NSArray *attributes = nil;
         if (attributes == nil)
@@ -105,14 +105,14 @@ NSArray *replacementAccessibilityAttributeNames(id self, SEL _cmd) {
     }
 }
 
-NSArray *replacementAccessibilityParameterizedAttributeNames(id self, SEL _cmd) {
+static NSArray *replacementAccessibilityParameterizedAttributeNames(id self, SEL _cmd) {
     static NSArray *attributes = nil;
     if (attributes == nil)
         attributes = [[originalAccessibilityParameterizedAttributeNames(self, _cmd) arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:NSAccessibilityRangeForPositionParameterizedAttribute, NSAccessibilityRTFForRangeParameterizedAttribute, NSAccessibilityAttributedStringForRangeParameterizedAttribute, nil]] retain];
     return attributes;
 }
 
-id replacementAccessibilityAttributeValue(id self, SEL _cmd, NSString *attribute) {
+static id replacementAccessibilityAttributeValue(id self, SEL _cmd, NSString *attribute) {
     if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
         return NSAccessibilityTextAreaRole;
     } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
@@ -123,7 +123,7 @@ id replacementAccessibilityAttributeValue(id self, SEL _cmd, NSString *attribute
     }
 }
 
-id replacementAccessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id replacementAccessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
         NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
@@ -143,7 +143,7 @@ id replacementAccessibilityRangeForPositionAttributeForParameter(id self, SEL _c
     return nil;
 }
 
-id replacementAccessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id replacementAccessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         @try {
@@ -157,7 +157,7 @@ id replacementAccessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, i
     return nil;
 }
 
-id replacementAccessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id replacementAccessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         @try {
@@ -171,7 +171,7 @@ id replacementAccessibilityAttributedStringForRangeAttributeForParameter(id self
     return nil;
 }
 
-id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
+static id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         @try {
@@ -203,7 +203,7 @@ id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id self, SEL 
     return nil;
 }
 
-id replacementAccessibilityHitTest(id self, SEL _cmd, NSPoint point) {
+static id replacementAccessibilityHitTest(id self, SEL _cmd, NSPoint point) {
     id pdfView = SKGetPDFView(self);
     id element = nil;
     if ([pdfView respondsToSelector:@selector(accessibilityChildAtPoint:)])
@@ -211,7 +211,7 @@ id replacementAccessibilityHitTest(id self, SEL _cmd, NSPoint point) {
     return element ? element : originalAccessibilityHitTest(self, _cmd, point);
 }
 
-id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
+static id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
     id pdfView = SKGetPDFView(self);
     id element = nil;
     if ([pdfView respondsToSelector:@selector(accessibilityFocusedChild)])
@@ -221,34 +221,36 @@ id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
 
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
+static IMP SKConditionallyReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
+    if ([aClass instancesRespondToSelector:aSelector])
+        return SKReplaceMethodImplementation(aClass, aSelector, anImp, YES);
+    else
+        return NULL;
+}
+
+static void SKConditionallyRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
+    if ([aClass instancesRespondToSelector:aSelector] == NO)
+        SKRegisterMethodImplementation(aClass, aSelector, anImp, types, YES);
+}
+
 void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass) {
-        originalResetCursorRects = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacementResetCursorRects, YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(passwordEntered:)])
-            originalPasswordEntered = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacementPasswordEntered, YES);
+        originalResetCursorRects = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacementResetCursorRects);
+        originalPasswordEntered = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacementPasswordEntered);
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeNames)])
-            originalAccessibilityAttributeNames = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacementAccessibilityAttributeNames, YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
-            originalAccessibilityParameterizedAttributeNames = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames, YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
-            originalAccessibilityAttributeValue = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacementAccessibilityAttributeValue, YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityHitTest:)])
-            originalAccessibilityHitTest = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityHitTest:), (IMP)replacementAccessibilityHitTest, YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
-            originalAccessibilityFocusedUIElement = SKReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityFocusedUIElement), (IMP)replacementAccessibilityFocusedUIElement, YES);
+        originalAccessibilityAttributeNames = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacementAccessibilityAttributeNames);
+        originalAccessibilityParameterizedAttributeNames = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames);
+        originalAccessibilityAttributeValue = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacementAccessibilityAttributeValue);
+        originalAccessibilityHitTest = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityHitTest:), (IMP)replacementAccessibilityHitTest);
+        originalAccessibilityFocusedUIElement = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityFocusedUIElement), (IMP)replacementAccessibilityFocusedUIElement);
         
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)] == NO)
-            SKRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacementAccessibilityRangeForPositionAttributeForParameter, "@@:@", YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)] == NO)
-            SKRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacementAccessibilityRTFForRangeAttributeForParameter, "@@:@", YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributedStringForRangeAttributeForParameter:)] == NO)
-            SKRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacementAccessibilityAttributedStringForRangeAttributeForParameter, "@@:@", YES);
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
-            SKRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)replacementAccessibilityStyleRangeForIndexAttributeForParameter, "@@:@", YES);
+        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacementAccessibilityRangeForPositionAttributeForParameter, "@@:@");
+        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacementAccessibilityRTFForRangeAttributeForParameter, "@@:@");
+        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacementAccessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
+        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)replacementAccessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
     }
 }
 
