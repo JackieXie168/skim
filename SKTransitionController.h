@@ -39,75 +39,21 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
-#pragma mark Private Core Graphics types and functions
-
-typedef int CGSConnection;
-typedef int CGSWindow;
-
-typedef enum _CGSTransitionType {
-    CGSNone,
-    CGSFade,
-    CGSZoom,
-    CGSReveal,
-    CGSSlide,
-    CGSWarpFade,
-    CGSSwap,
-    CGSCube,
-    CGSWarpSwitch,
-    CGSFlip
-} CGSTransitionType;
-
-typedef enum _CGSTransitionOption {
-    CGSDown,
-    CGSLeft,
-    CGSRight,
-    CGSInRight,
-    CGSBottomLeft = 5,
-    CGSBottomRight,
-    CGSDownTopRight,
-    CGSUp,
-    CGSTopLeft,
-    CGSTopRight,
-    CGSUpBottomRight,
-    CGSInBottom,
-    CGSLeftBottomRight,
-    CGSRightBottomLeft,
-    CGSInBottomRight,
-    CGSInOut
-} CGSTransitionOption;
-
-typedef struct _CGSTransitionSpec {
-    uint32_t unknown1;
-    CGSTransitionType type;
-    CGSTransitionOption option;
-    CGSWindow wid; // Can be 0 for full-screen
-    float *backColour; // Null for black otherwise pointer to 3 float array with RGB value
-} CGSTransitionSpec;
-
-extern CGSConnection _CGSDefaultConnection(void);
-
-extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, int *pTransitionHandle);
-extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration);
-extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle);
-
-#pragma mark Check whether the above functions are actually defined at run time
-
-extern BOOL CoreGraphicsServicesTransitionsDefined();
-
 #pragma mark SKTransitionController
 
+// this corresponds to the CGSTransitionType enum
 typedef enum _SKAnimationTransitionStyle {
-	SKNoTransition = CGSNone,
+	SKNoTransition,
     // Core Graphics transitions
-	SKFadeTransition = CGSFade,
-	SKZoomTransition = CGSZoom,
-	SKRevealTransition = CGSReveal,
-	SKSlideTransition = CGSSlide,
-	SKWarpFadeTransition = CGSWarpFade,
-	SKSwapTransition = CGSSwap,
-	SKCubeTransition = CGSCube,
-	SKWarpSwitchTransition = CGSWarpSwitch,
-	SKWarpFlipTransition = CGSFlip,
+	SKFadeTransition,
+	SKZoomTransition,
+	SKRevealTransition,
+	SKSlideTransition,
+	SKWarpFadeTransition,
+	SKSwapTransition,
+	SKCubeTransition,
+	SKWarpSwitchTransition,
+	SKWarpFlipTransition,
     // Core Image transitions
     SKCoreImageTransition
 } SKAnimationTransitionStyle;
