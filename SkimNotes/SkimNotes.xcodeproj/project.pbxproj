@@ -37,6 +37,8 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		CE1F63460E34A66F00E07E76 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
+		CE1F63470E34A67000E07E76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
 		CE37766F0E2FBB7300261604 /* NSFileManager_SKNToolExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3776640E2FB47500261604 /* NSFileManager_SKNToolExtensions.m */; };
 		CE37768C0E2FC26100261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE37768D0E2FC26100261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
@@ -69,7 +71,6 @@
 		CEBA2CD70E058CF00000B2E6 /* SkimNotes.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2CD60E058CF00000B2E6 /* SkimNotes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
 		CEBA2D1C0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBA2D1A0E05A61F0000B2E6 /* libbz2.dylib */; };
-		CEBA2D260E05A6AB0000B2E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		CEDB9AF40E2E9F250057FD09 /* SKNDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9AC40E2E9D760057FD09 /* SKNDocument.m */; };
 		CEDB9AF50E2E9F260057FD09 /* SKNSkimReader.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB9AC60E2E9D760057FD09 /* SKNSkimReader.m */; };
 		CEDB9AFC0E2E9F7E0057FD09 /* SKNDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEDB9AFA0E2E9F7E0057FD09 /* SKNDocument.xib */; };
@@ -227,8 +228,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEBA2D260E05A6AB0000B2E6 /* Cocoa.framework in Frameworks */,
 				CEBA2D1B0E05A61F0000B2E6 /* libbz2.dylib in Frameworks */,
+				CE1F63460E34A66F00E07E76 /* AppKit.framework in Frameworks */,
+				CE1F63470E34A67000E07E76 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
