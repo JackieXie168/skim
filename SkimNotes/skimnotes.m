@@ -106,7 +106,13 @@ int main (int argc, const char * argv[]) {
     
     BOOL success = NO;
     
-    if (action == SKNActionAgent) {
+    if (action == SKNActionUnknown) {
+        
+        WRITE_ERROR;
+        [pool release];
+        exit(EXIT_FAILURE);
+        
+    } else if (action == SKNActionAgent) {
         
         NSString *serverName = [args count] > 2 ? [args lastObject] : nil;
         SKNAgentListener *listener = [[SKNAgentListener alloc] initWithServerName:serverName];
@@ -216,8 +222,11 @@ int main (int argc, const char * argv[]) {
         }
         
         if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isBundle != isDir) {
+            
             error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
+            
         } else if (action == SKNActionGet) {
+            
             NSData *data = nil;
             if (format == SKNFormatAuto) {
                 NSString *extension = [notesPath pathExtension];
@@ -251,7 +260,9 @@ int main (int argc, const char * argv[]) {
                     }
                 }
             }
+            
         } else if (action == SKNActionSet) {
+            
             if (notesPath && ([notesPath isEqualToString:STD_IN_OUT_FILE] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
                 NSData *data = nil;
                 NSString *textString = nil;
@@ -279,9 +290,13 @@ int main (int argc, const char * argv[]) {
             } else {
                 error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Notes file does not exist", NSLocalizedDescriptionKey, nil]];
             }
+            
         } else if (action == SKNActionRemove) {
+            
             success = [fm removeSkimNotesAtPath:pdfPath error:&error];
+            
         } else if (action == SKNActionConvert) {
+            
             if (isBundle) {
                 success = [fm createDirectoryAtPath:notesPath attributes:nil];
             } else {
