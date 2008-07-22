@@ -37,7 +37,7 @@
  */
 
 #import "NSCharacterSet_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 
 @implementation NSCharacterSet (SKExtensions)

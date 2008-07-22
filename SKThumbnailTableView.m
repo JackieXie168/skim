@@ -37,7 +37,7 @@
  */
 
 #import "SKThumbnailTableView.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 

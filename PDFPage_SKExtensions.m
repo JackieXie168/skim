@@ -42,7 +42,7 @@
 #import "SKPDFDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSCharacterSet_SKExtensions.h"

@@ -38,7 +38,7 @@
 
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 
 @interface PDFDocument (SKPrivateDeclarations)
