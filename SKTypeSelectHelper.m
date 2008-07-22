@@ -428,7 +428,7 @@ static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))[self replaceInstanceMethodForSelector:@selector(makeFirstResponder:) withInstanceMethodFromSelector:@selector(replacementMakeFirstResponder:)];
+    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))[self setInstanceMethodFromSelector:@selector(replacementMakeFirstResponder:) forSelector:@selector(makeFirstResponder:)];
 }
 
 @end

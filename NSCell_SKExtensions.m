@@ -54,7 +54,7 @@ static IMP originalHighlightColorWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalHighlightColorWithFrameInView = [self replaceInstanceMethodForSelector:@selector(highlightColorWithFrame:inView:) withInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:)];
+    originalHighlightColorWithFrameInView = [self setInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:) forSelector:@selector(highlightColorWithFrame:inView:)];
 }
 
 @end

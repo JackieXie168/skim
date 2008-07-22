@@ -74,7 +74,7 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
 + (void)load {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        originalGetPrintOperationForPrintInfo = [self replaceInstanceMethodForSelector:@selector(getPrintOperationForPrintInfo:autoRotate:) withInstanceMethodFromSelector:@selector(replacementGetPrintOperationForPrintInfo:autoRotate:)];
+        originalGetPrintOperationForPrintInfo = [self setInstanceMethodFromSelector:@selector(replacementGetPrintOperationForPrintInfo:autoRotate:) forSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)];
     [pool release];
 }
 

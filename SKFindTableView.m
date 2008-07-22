@@ -172,7 +172,7 @@ static IMP originalDrawWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalDrawWithFrameInView = [self replaceInstanceMethodForSelector:@selector(drawWithFrame:inView:) withInstanceMethodFromSelector:@selector(replacementDrawWithFrame:inView:)];
+    originalDrawWithFrameInView = [self setInstanceMethodFromSelector:@selector(replacementDrawWithFrame:inView:) forSelector:@selector(drawWithFrame:inView:)];
 }
 
 @end

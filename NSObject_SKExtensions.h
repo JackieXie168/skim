@@ -50,17 +50,12 @@
 
 @interface NSObject (SKExtensions)
 
-+ (IMP)replaceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp;
-+ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp;
-+ (IMP)replaceMethodForSelector:(SEL)aSelector withMethodFromSelector:(SEL)impSelector;
-+ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withInstanceMethodFromSelector:(SEL)impSelector;
++ (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
+- (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
++ (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
 
-+ (void)exchangeMethodForSelector:(SEL)aSelector withMethodForSelector:(SEL)otherSelector;
-+ (void)exchangeInstanceMethodForSelector:(SEL)aSelector withInstanceMethodForSelector:(SEL)otherSelector;
-
-+ (void)addMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
-+ (void)addInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
-+ (void)addMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
-+ (void)addInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
++ (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
+- (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
++ (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
 
 @end
