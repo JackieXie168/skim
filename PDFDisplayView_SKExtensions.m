@@ -225,22 +225,22 @@ void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass) {
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(resetCursorRects)])
-            originalResetCursorRects = [PDFDisplayViewClass setMethod:(IMP)replacementResetCursorRects typeEncoding:NULL forSelector:@selector(resetCursorRects)];
+            originalResetCursorRects = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementResetCursorRects typeEncoding:"v@:" forSelector:@selector(resetCursorRects)];
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(passwordEntered:)])
-            originalPasswordEntered = [PDFDisplayViewClass setMethod:(IMP)replacementPasswordEntered typeEncoding:NULL forSelector:@selector(passwordEntered:)];
+            originalPasswordEntered = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementPasswordEntered typeEncoding:"v@:@" forSelector:@selector(passwordEntered:)];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeNames)])
-            originalAccessibilityAttributeNames = [PDFDisplayViewClass setMethod:(IMP)replacementAccessibilityAttributeNames typeEncoding:NULL forSelector:@selector(accessibilityAttributeNames)];
+            originalAccessibilityAttributeNames = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityAttributeNames typeEncoding:"@@:" forSelector:@selector(accessibilityAttributeNames)];
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
-            originalAccessibilityParameterizedAttributeNames = [PDFDisplayViewClass setMethod:(IMP)replacementAccessibilityParameterizedAttributeNames typeEncoding:NULL forSelector:@selector(accessibilityParameterizedAttributeNames)];
+            originalAccessibilityParameterizedAttributeNames = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityParameterizedAttributeNames typeEncoding:"@@:" forSelector:@selector(accessibilityParameterizedAttributeNames)];
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
-            originalAccessibilityAttributeValue = [PDFDisplayViewClass setMethod:(IMP)replacementAccessibilityAttributeValue typeEncoding:NULL forSelector:@selector(accessibilityAttributeValue:)];
+            originalAccessibilityAttributeValue = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityAttributeValue typeEncoding:"@@:@" forSelector:@selector(accessibilityAttributeValue:)];
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityHitTest:)])
-            originalAccessibilityHitTest = [PDFDisplayViewClass setMethod:(IMP)replacementAccessibilityHitTest typeEncoding:NULL forSelector:@selector(accessibilityHitTest:)];
+            originalAccessibilityHitTest = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityHitTest typeEncoding:"@@:{_NSPoint=ff}" forSelector:@selector(accessibilityHitTest:)];
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
-            originalAccessibilityFocusedUIElement = [PDFDisplayViewClass setMethod:(IMP)replacementAccessibilityFocusedUIElement typeEncoding:NULL forSelector:@selector(accessibilityFocusedUIElement)];
+            originalAccessibilityFocusedUIElement = [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityFocusedUIElement typeEncoding:"@@:" forSelector:@selector(accessibilityFocusedUIElement)];
             
         if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)] == NO)
             [PDFDisplayViewClass setInstanceMethod:(IMP)replacementAccessibilityRangeForPositionAttributeForParameter typeEncoding:"@@:@" forSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)];
