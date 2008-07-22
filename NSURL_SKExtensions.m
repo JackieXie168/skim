@@ -55,8 +55,8 @@ static IMP originalInitWithString = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = SKReplaceMethodImplementationWithSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:));
-    originalInitWithString = SKReplaceMethodImplementationWithSelector(self, @selector(initWithString:), @selector(replacementInitWithString:));
+    originalInitFileURLWithPath = [self replaceInstanceMethodForSelector:@selector(initFileURLWithPath:) withInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:)];
+    originalInitWithString = [self replaceInstanceMethodForSelector:@selector(initWithString:) withInstanceMethodFromSelector:@selector(replacementInitWithString:)];
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

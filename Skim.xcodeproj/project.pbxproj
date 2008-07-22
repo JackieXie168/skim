@@ -1033,6 +1033,7 @@
 				45B113BF0B329A7E00DE0660 /* LICENSE */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				453DC2740B4F23E500A72509 /* Third Party Sources */,
+				CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
@@ -1058,7 +1059,6 @@
 				CE070EC10B89063400733CC8 /* Foundation Categories */,
 				CEE1776D0DBDF54000E6C317 /* AppKit Categories */,
 				CEE177700DBDF60500E6C317 /* PDFKit Categories */,
-				CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */,
 			);
 			name = Classes;
 			sourceTree = "<group>";

@@ -103,10 +103,10 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
 }
 
 + (void)load{
-    originalSetHasHorizontalScroller = SKReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
-    originalSetAutohidesScrollers = SKReplaceMethodImplementationWithSelector(self, @selector(setAutohidesScrollers:), @selector(replacementSetAutohidesScrollers:));
-    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    originalTile = SKReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(replacementTile));
+    originalSetHasHorizontalScroller = [self replaceInstanceMethodForSelector:@selector(setHasHorizontalScroller:) withInstanceMethodFromSelector:@selector(replacementSetHasHorizontalScroller:)];
+    originalSetAutohidesScrollers = [self replaceInstanceMethodForSelector:@selector(setAutohidesScrollers:) withInstanceMethodFromSelector:@selector(replacementSetAutohidesScrollers:)];
+    originalDealloc = [self replaceInstanceMethodForSelector:@selector(dealloc) withInstanceMethodFromSelector:@selector(replacementDealloc)];
+    originalTile = [self replaceInstanceMethodForSelector:@selector(tile) withInstanceMethodFromSelector:@selector(replacementTile)];
     
     // dictionary doesn't retain keys, so no retain cycles; pointer equality used to compare views
     scrollViewPlacards = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);

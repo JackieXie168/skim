@@ -70,7 +70,7 @@
 
 + (void)load {
     if ([self respondsToSelector:@selector(newlineCharacterSet)] == NO)
-        SKRegisterClassMethodImplementationWithSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet));
+        [self addMethodFromSelector:@selector(replacementNewlineCharacterSet) forSelector:@selector(newlineCharacterSet)];
 }
 
 @end

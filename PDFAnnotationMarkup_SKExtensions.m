@@ -123,9 +123,9 @@ static IMP originalDrawWithBoxInContext = NULL;
 }
 
 + (void)load {
-    originalDealloc = SKReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    originalDealloc = [self replaceInstanceMethodForSelector:@selector(dealloc) withInstanceMethodFromSelector:@selector(replacementDealloc)];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        originalDrawWithBoxInContext = SKReplaceMethodImplementationWithSelector(self, @selector(drawWithBox:inContext:), @selector(replacementDrawWithBox:inContext:));
+        originalDrawWithBoxInContext = [self replaceInstanceMethodForSelector:@selector(drawWithBox:inContext:) withInstanceMethodFromSelector:@selector(replacementDrawWithBox:inContext:)];
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
