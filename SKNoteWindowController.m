@@ -48,7 +48,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";

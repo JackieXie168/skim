@@ -42,7 +42,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
 #import "SKPDFDocument.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "SKAccessibilityProxyElement.h"
 
 @interface NSView (SKPDFDisplayViewprivateDeclarations)

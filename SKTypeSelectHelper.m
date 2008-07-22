@@ -37,7 +37,7 @@
  */
 
 #import "SKTypeSelectHelper.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChangeFirstResponderNotification";
 

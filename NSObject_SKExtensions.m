@@ -1,10 +1,10 @@
 //
-//  SKUtilities.m
+//  NSObject_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.
 
-/* Some of the following functions are inspired by OmniBase/SKUtilities.h and subject to the following copyright */
+/* Some of the following functions are inspired by OmniBase/NSObject_SKExtensions.h and subject to the following copyright */
 
 // Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
 //
@@ -13,7 +13,7 @@
 // distributed with this project and can also be found at
 // <http://www.omnigroup.com/developer/sourcecode/sourcelicense/>.
 
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import <Foundation/Foundation.h>
 #import <objc/objc.h>
 #import <objc/objc-class.h>

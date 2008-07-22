@@ -1,5 +1,5 @@
 //
-//  SKUtilities.h
+//  NSObject_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.

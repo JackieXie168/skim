@@ -65,7 +65,7 @@
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "NSView_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationLine_SKExtensions.h"

@@ -37,7 +37,7 @@
  */
 
 #import "PDFAnnotationLink_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 
 @interface PDFAnnotationLink (SKLeopardPrivate)

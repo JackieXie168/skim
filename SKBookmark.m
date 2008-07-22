@@ -39,7 +39,7 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
 NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";

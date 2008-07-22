@@ -37,7 +37,7 @@
  */
 
 #import "SKColorSwatch.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import <Carbon/Carbon.h>
 

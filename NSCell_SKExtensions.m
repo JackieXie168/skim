@@ -39,7 +39,7 @@
  */
 
 #import "NSCell_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 
 @implementation NSCell (SKExtensions)

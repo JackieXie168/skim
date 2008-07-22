@@ -50,7 +50,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 

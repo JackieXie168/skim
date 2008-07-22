@@ -43,7 +43,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 #import "SKApplicationController.h"
 
 static NSString *SKAutosaveIntervalKey = @"SKAutosaveInterval";

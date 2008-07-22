@@ -46,7 +46,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallbacks.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";

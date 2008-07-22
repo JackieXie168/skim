@@ -40,7 +40,7 @@
 #import "SKTag.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKUtilities.h"
+#import "NSObject_SKExtensions.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
 #define END_TAG_OPEN_DELIM              @"</$"
