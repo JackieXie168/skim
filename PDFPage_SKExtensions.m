@@ -74,7 +74,7 @@ static IMP originalDealloc = NULL;
 }
 
 + (void)load {
-    originalDealloc = [self replaceInstanceMethodForSelector:@selector(dealloc) withInstanceMethodFromSelector:@selector(replacementDealloc)];
+    originalDealloc = [self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
 }
 

@@ -62,9 +62,9 @@ static IMP originalToolTipNoLabel = NULL;
 
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
-        originalToolTip = [self replaceInstanceMethodForSelector:@selector(toolTip) withInstanceMethodFromSelector:@selector(replacementToolTip)];
+        originalToolTip = [self setInstanceMethodFromSelector:@selector(replacementToolTip) forSelector:@selector(toolTip)];
     if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
-        originalToolTipNoLabel = [self replaceInstanceMethodForSelector:@selector(toolTip) withInstanceMethodFromSelector:@selector(replacementToolTipNoLabel)];
+        originalToolTipNoLabel = [self setInstanceMethodFromSelector:@selector(replacementToolTipNoLabel) forSelector:@selector(toolTip)];
 }
 
 - (BOOL)isLink { return YES; }

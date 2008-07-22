@@ -58,7 +58,7 @@ static IMP originalTrackKnob = NULL;
 }
 
 + (void)load {
-    originalTrackKnob = [self replaceInstanceMethodForSelector:@selector(trackKnob:) withInstanceMethodFromSelector:@selector(replacementTrackKnob:)];
+    originalTrackKnob = [self setInstanceMethodFromSelector:@selector(replacementTrackKnob:) forSelector:@selector(trackKnob:)];
 }
 
 @end

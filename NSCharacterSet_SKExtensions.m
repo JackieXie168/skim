@@ -70,7 +70,7 @@
 
 + (void)load {
     if ([self respondsToSelector:@selector(newlineCharacterSet)] == NO)
-        [self addMethodFromSelector:@selector(replacementNewlineCharacterSet) forSelector:@selector(newlineCharacterSet)];
+        [self setMethodFromSelector:@selector(replacementNewlineCharacterSet) forSelector:@selector(newlineCharacterSet)];
 }
 
 @end

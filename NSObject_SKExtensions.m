@@ -117,7 +117,7 @@ static Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance)
     return isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
 }
 
-static IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, BOOL isInstance)
+static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance)
 {
     Method superMethod = NULL;
     Method localMethod = SK_class_getMethod(aClass, aSelector, isInstance);
@@ -139,66 +139,43 @@ static IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp,
             // We don't need to flush the method cach because the cache contains pointers to the Methods, so the cache is automatically updated
             // See <http://kevin.sb.org/2006/11/16/objective-c-caching-and-method-swizzling/>
         }
+    } else if (types != NULL) {
+        SK_class_addMethod(realClass, aSelector, anImp, types);
     }
     
     return oldImp;
 }
 
-static void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance)
+static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstance)
 {
-    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
-    SK_class_addMethod(realClass, aSelector, anImp, types);
-}
-
-static void SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance)
-{
-    Method method = SK_class_getMethod(aClass, impSelector, isInstance);
-    if (method)
-        SKRegisterMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance);
+    Method method = SK_class_getMethod(aClass, aSelector, isInstance);
+    return method ? SK_method_getTypeEncoding(method) : NULL;
 }
 
 @implementation NSObject (SKExtensions)
 
-+ (IMP)replaceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp {
-	return SKReplaceMethodImplementation(self, aSelector, anImp, NO);
++ (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
+	return SKSetMethodImplementation(self, aSelector, anImp, types, NO);
 }
 
-+ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp {
-	return SKReplaceMethodImplementation(self, aSelector, anImp, YES);
+- (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
+	return [[self class] setInstanceMethod:anImp typeEncoding:types forSelector:aSelector];
 }
 
-+ (IMP)replaceMethodForSelector:(SEL)aSelector withMethodFromSelector:(SEL)impSelector {
-	return [self replaceMethodForSelector:aSelector withMethod:[self methodForSelector:impSelector]];
++ (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
+	return SKSetMethodImplementation(self, aSelector, anImp, types, YES);
 }
 
-+ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withInstanceMethodFromSelector:(SEL)impSelector {
-	return [self replaceInstanceMethodForSelector:aSelector withMethod:[self instanceMethodForSelector:impSelector]];
++ (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
+	return SKSetMethodImplementation(self, aSelector, [self methodForSelector:impSelector], SKGetTypeEncoding(self, impSelector, NO), NO);
 }
 
-+ (void)exchangeMethodForSelector:(SEL)aSelector withMethodForSelector:(SEL)otherSelector {
-	IMP imp = [self replaceMethodForSelector:aSelector withMethodFromSelector:otherSelector];
-	[self replaceMethodForSelector:otherSelector withMethod:imp];
+- (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
+    return [[self class] setInstanceMethodFromSelector:impSelector forSelector:aSelector];
 }
 
-+ (void)exchangeInstanceMethodForSelector:(SEL)aSelector withInstanceMethodForSelector:(SEL)otherSelector {
-	IMP imp = [self replaceInstanceMethodForSelector:aSelector withInstanceMethodFromSelector:otherSelector];
-	[self replaceInstanceMethodForSelector:otherSelector withMethod:imp];
-}
-
-+ (void)addMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-	SKRegisterMethodImplementation(self, aSelector, anImp, types, NO);
-}
-
-+ (void)addInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-	SKRegisterMethodImplementation(self, aSelector, anImp, types, YES);
-}
-
-+ (void)addMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-    SKRegisterMethodImplementationWithSelector(self, aSelector, impSelector, NO);
-}
-
-+ (void)addInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-    SKRegisterMethodImplementationWithSelector(self, aSelector, impSelector, YES);
++ (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
+	return SKSetMethodImplementation(self, aSelector, [self instanceMethodForSelector:impSelector], SKGetTypeEncoding(self, impSelector, YES), YES);
 }
 
 @end

@@ -55,8 +55,8 @@ static IMP originalInitWithString = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = [self replaceInstanceMethodForSelector:@selector(initFileURLWithPath:) withInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:)];
-    originalInitWithString = [self replaceInstanceMethodForSelector:@selector(initWithString:) withInstanceMethodFromSelector:@selector(replacementInitWithString:)];
+    originalInitFileURLWithPath = [self setInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:) forSelector:@selector(initFileURLWithPath:)];
+    originalInitWithString = [self setInstanceMethodFromSelector:@selector(replacementInitWithString:) forSelector:@selector(initWithString:)];
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {
