@@ -37,7 +37,6 @@
  */
 
 #import "CIImage_BDSKExtensions.h"
-#import "SKUtilities.h"
 
 
 @implementation CIImage (BDSKExtensions)

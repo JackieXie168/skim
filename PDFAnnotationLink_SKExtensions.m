@@ -62,9 +62,9 @@ static IMP originalToolTipNoLabel = NULL;
 
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
-        originalToolTip = SKReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTip));
+        originalToolTip = [self replaceInstanceMethodForSelector:@selector(toolTip) withInstanceMethodFromSelector:@selector(replacementToolTip)];
     if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
-        originalToolTipNoLabel = SKReplaceMethodImplementationWithSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel));
+        originalToolTipNoLabel = [self replaceInstanceMethodForSelector:@selector(toolTip) withInstanceMethodFromSelector:@selector(replacementToolTipNoLabel)];
 }
 
 - (BOOL)isLink { return YES; }

@@ -54,7 +54,7 @@ static IMP originalHighlightColorWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalHighlightColorWithFrameInView = SKReplaceMethodImplementationWithSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:));
+    originalHighlightColorWithFrameInView = [self replaceInstanceMethodForSelector:@selector(highlightColorWithFrame:inView:) withInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:)];
 }
 
 @end

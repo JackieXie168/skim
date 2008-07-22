@@ -221,36 +221,35 @@ static id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
 
 #pragma mark SKSwizzlePDFDisplayViewMethods
 
-static IMP SKConditionallyReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
-    if ([aClass instancesRespondToSelector:aSelector])
-        return SKReplaceMethodImplementation(aClass, aSelector, anImp, YES);
-    else
-        return NULL;
-}
-
-static void SKConditionallyRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
-    if ([aClass instancesRespondToSelector:aSelector] == NO)
-        SKRegisterMethodImplementation(aClass, aSelector, anImp, types, YES);
-}
-
 void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass) {
-        originalResetCursorRects = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacementResetCursorRects);
-        originalPasswordEntered = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacementPasswordEntered);
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(resetCursorRects)])
+            originalResetCursorRects = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(resetCursorRects) withMethod:(IMP)replacementResetCursorRects];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(passwordEntered:)])
+            originalPasswordEntered = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(passwordEntered:) withMethod:(IMP)replacementPasswordEntered];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
-        originalAccessibilityAttributeNames = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacementAccessibilityAttributeNames);
-        originalAccessibilityParameterizedAttributeNames = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames);
-        originalAccessibilityAttributeValue = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacementAccessibilityAttributeValue);
-        originalAccessibilityHitTest = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityHitTest:), (IMP)replacementAccessibilityHitTest);
-        originalAccessibilityFocusedUIElement = SKConditionallyReplaceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityFocusedUIElement), (IMP)replacementAccessibilityFocusedUIElement);
-        
-        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacementAccessibilityRangeForPositionAttributeForParameter, "@@:@");
-        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacementAccessibilityRTFForRangeAttributeForParameter, "@@:@");
-        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacementAccessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
-        SKConditionallyRegisterMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)replacementAccessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeNames)])
+            originalAccessibilityAttributeNames = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(accessibilityAttributeNames) withMethod:(IMP)replacementAccessibilityAttributeNames];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityParameterizedAttributeNames)])
+            originalAccessibilityParameterizedAttributeNames = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(accessibilityParameterizedAttributeNames) withMethod:(IMP)replacementAccessibilityParameterizedAttributeNames];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributeValue:)])
+            originalAccessibilityAttributeValue = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(accessibilityAttributeValue:) withMethod:(IMP)replacementAccessibilityAttributeValue];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityHitTest:)])
+            originalAccessibilityHitTest = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(accessibilityHitTest:) withMethod:(IMP)replacementAccessibilityHitTest];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityFocusedUIElement)])
+            originalAccessibilityFocusedUIElement = [PDFDisplayViewClass replaceInstanceMethodForSelector:@selector(accessibilityFocusedUIElement) withMethod:(IMP)replacementAccessibilityFocusedUIElement];
+            
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)] == NO)
+            [PDFDisplayViewClass addInstanceMethod:(IMP)replacementAccessibilityRangeForPositionAttributeForParameter typeEncoding:"@@:@" forSelector:@selector(accessibilityRangeForPositionAttributeForParameter:)];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)] == NO)
+            [PDFDisplayViewClass addInstanceMethod:(IMP)replacementAccessibilityRTFForRangeAttributeForParameter typeEncoding:"@@:@" forSelector:@selector(accessibilityRTFForRangeAttributeForParameter:)];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityAttributedStringForRangeAttributeForParameter:)] == NO)
+            [PDFDisplayViewClass addInstanceMethod:(IMP)replacementAccessibilityAttributedStringForRangeAttributeForParameter typeEncoding:"@@:@" forSelector:@selector(accessibilityAttributedStringForRangeAttributeForParameter:)];
+        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)] == NO)
+            [PDFDisplayViewClass addInstanceMethod:(IMP)replacementAccessibilityStyleRangeForIndexAttributeForParameter typeEncoding:"@@:@" forSelector:@selector(accessibilityStyleRangeForIndexAttributeForParameter:)];
     }
 }
 

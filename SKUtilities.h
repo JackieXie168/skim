@@ -3,26 +3,40 @@
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.
+/*
+ This software is Copyright (c) 2008
+ Christiaan Hofman. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 
+ - Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 
+ - Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
+ distribution.
+ 
+ - Neither the name of Christiaan Hofman nor the names of any
+ contributors may be used to endorse or promote products derived
+ from this software without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
-/* Some of the following functions are inspired by OmniBase/SKUtilities.h and subject to the following copyright */
-
-// Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
-//
-// This software may only be used and reproduced according to the
-// terms in the file OmniSourceLicense.html, which should be
-// distributed with this project and can also be found at
-// <http://www.omnigroup.com/developer/sourcecode/sourcelicense/>.
-
-#import <objc/objc.h>
-#import <objc/objc-class.h>
-#import <objc/objc-runtime.h>
-
-IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, BOOL isInstance);
-IMP SKReplaceMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
-IMP SKReplaceClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
-void SKRegisterMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance);
-void SKRegisterMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
-void SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector, SEL impSelector);
+#import <Cocoa/Cocoa.h>
 
 #define OBINITIALIZE \
     do { \
@@ -32,3 +46,21 @@ void SKRegisterClassMethodImplementationWithSelector(Class aClass, SEL aSelector
             return; \
         hasBeenInitialized = YES;\
     } while (0);
+
+
+@interface NSObject (SKExtensions)
+
++ (IMP)replaceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp;
++ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withMethod:(IMP)anImp;
++ (IMP)replaceMethodForSelector:(SEL)aSelector withMethodFromSelector:(SEL)impSelector;
++ (IMP)replaceInstanceMethodForSelector:(SEL)aSelector withInstanceMethodFromSelector:(SEL)impSelector;
+
++ (void)exchangeMethodForSelector:(SEL)aSelector withMethodForSelector:(SEL)otherSelector;
++ (void)exchangeInstanceMethodForSelector:(SEL)aSelector withInstanceMethodForSelector:(SEL)otherSelector;
+
++ (void)addMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
++ (void)addInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector;
++ (void)addMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
++ (void)addInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
+
+@end

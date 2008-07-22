@@ -54,7 +54,6 @@
 #import "SKPDFView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKUtilities.h"
 
 
 FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {
