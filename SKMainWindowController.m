@@ -3312,7 +3312,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, nil]
+                                  SKTableFontSizeKey, SKLogicalPageNumberingKey, nil]
         context:SKMainWindowDefaultsObservationContext];
 }
 
@@ -3322,7 +3322,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, nil]];
+                                  SKTableFontSizeKey, SKLogicalPageNumberingKey, nil]];
 }
 
 #pragma mark Undo
@@ -3429,6 +3429,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [findTableView setFont:font];
             [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
+        } else if ([key isEqualToString:SKLogicalPageNumberingKey]) {
+            [self updatePageLabelsAndOutline];
         }
         
     } else if (context == SKNPDFAnnotationPropertiesObservationContext) {
