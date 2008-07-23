@@ -58,4 +58,8 @@
 - (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
 + (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector;
 
++ (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2;
+- (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2;
++ (void)exchangeInstanceMethodForSelector:(SEL)aSelector1 withInstanceMethodForSelector:(SEL)aSelector2;
+
 @end

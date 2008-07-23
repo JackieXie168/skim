@@ -20,24 +20,24 @@
 #import <objc/objc-runtime.h>
 
 
+#pragma mark Runtime compatibility
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
+#pragma mark 10.4 + 10.5
+
 extern void _objc_flush_caches(Class);
 
-static Class SK_object_getClass(id object)
-{
+static inline Class SK_object_getClass(id object) {
     return object_getClass != NULL ? object_getClass(object) : object->isa;
 }
 
-static IMP SK_method_getImplementation(Method aMethod)
-{
+static inline IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 } 
 
-static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
-{
+static inline IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
     if (method_setImplementation != NULL) {
         return method_setImplementation(aMethod, anImp);
     } else {
@@ -47,24 +47,29 @@ static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
     }
 } 
 
-static const char *SK_method_getTypeEncoding(Method aMethod)
-{
+static inline void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
+    if (method_exchangeImplementations != NULL) {
+        method_exchangeImplementations(aMethod1, aMethod2);
+    } else {
+        IMP imp = aMethod1->method_imp;
+        aMethod1->method_imp = aMethod2->method_imp;
+        aMethod2->method_imp = imp;
+    }
+}
+
+static inline const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
 }
 
-static Class SK_class_getSuperclass(Class aClass)
-{
+static inline Class SK_class_getSuperclass(Class aClass) {
     return class_getSuperclass != NULL ? class_getSuperclass(aClass) : aClass->super_class;
 }
 
-static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes)
-{
+static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
     if (class_addMethod != NULL) {
         class_addMethod(aClass, selector, methodImp, methodTypes);
     } else {
-        struct objc_method_list *newMethodList;
-        
-        newMethodList = (struct objc_method_list *) NSZoneMalloc(NSDefaultMallocZone(), sizeof(struct objc_method_list));
+        struct objc_method_list *newMethodList = (struct objc_method_list *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(struct objc_method_list));
         
         newMethodList->method_count = 1;
         newMethodList->method_list[0].method_name = selector;
@@ -80,47 +85,47 @@ static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const 
 
 #else
 
-static Class SK_object_getClass(id object)
-{
+#pragma mark 10.5
+
+static inline Class SK_object_getClass(id object) {
     return object_getClass(object);
 }
 
-static IMP SK_method_getImplementation(Method aMethod)
-{
+static inline IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation(aMethod);
 } 
 
-static IMP SK_method_setImplementation(Method aMethod, IMP anImp)
-{
+static inline IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
     return method_setImplementation(aMethod, anImp);
 } 
 
-static const char *SK_method_getTypeEncoding(Method aMethod)
-{
+static inline void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
+    method_exchangeImplementations(aMethod1, aMethod2);
+}
+
+static inline const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding(aMethod);
 }
 
-static Class SK_class_getSuperclass(Class aClass)
-{
+static inline Class SK_class_getSuperclass(Class aClass) {
     return class_getSuperclass(aClass);
 }
 
-static void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes)
-{
+static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
     class_addMethod(aClass, selector, methodImp, methodTypes);
 }
 
 #endif
 
-static Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance)
-{
+static inline Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance) {
     return isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
 }
 
-static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance)
-{
-    Method superMethod = NULL;
+#pragma mark Basic functions
+
+static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
     Method localMethod = SK_class_getMethod(aClass, aSelector, isInstance);
+    Method superMethod = NULL;
     IMP oldImp = NULL;
     Class superCls = Nil;
     Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
@@ -146,11 +151,43 @@ static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, con
     return oldImp;
 }
 
-static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstance)
-{
+static void SKExchangeMethodImplementations(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
+    Method localMethod1 = SK_class_getMethod(aClass, aSelector1, isInstance);
+    Method localMethod2 = SK_class_getMethod(aClass, aSelector2, isInstance);
+    Method superMethod1 = NULL;
+    Method superMethod2 = NULL;
+    Class superCls = Nil;
+    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
+    
+    if (localMethod1 && localMethod2) {
+        if (superCls = SK_class_getSuperclass(aClass)) {
+            superMethod1 = SK_class_getMethod(superCls, aSelector1, isInstance);
+            superMethod2 = SK_class_getMethod(superCls, aSelector2, isInstance);
+        }
+        if (superMethod1 != localMethod1 && superMethod2 != localMethod2) {
+            SK_method_exchangeImplementations(localMethod1, localMethod2);
+        } else {
+            IMP imp1 = SK_method_getImplementation(localMethod1);
+            IMP imp2 = SK_method_getImplementation(localMethod2);
+            const char *types = SK_method_getTypeEncoding(localMethod1);
+            if (superMethod1 == localMethod1)
+                SK_class_addMethod(realClass, aSelector1, imp2, types);
+            else
+                SK_method_setImplementation(localMethod1, imp2);
+            if (superMethod2 == localMethod2)
+                SK_class_addMethod(realClass, aSelector2, imp1, types);
+            else
+                SK_method_setImplementation(localMethod2, imp1);
+        }
+    }
+}
+
+static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstance) {
     Method method = SK_class_getMethod(aClass, aSelector, isInstance);
     return method ? SK_method_getTypeEncoding(method) : NULL;
 }
+
+#pragma mark API
 
 @implementation NSObject (SKExtensions)
 
@@ -176,6 +213,18 @@ static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstanc
 
 + (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
 	return SKSetMethodImplementation(self, aSelector, [self instanceMethodForSelector:impSelector], SKGetTypeEncoding(self, impSelector, YES), YES);
+}
+
++ (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
+    SKExchangeMethodImplementations(self, aSelector1, aSelector2, NO);
+}
+
+- (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
+    [[self class] exchangeInstanceMethodForSelector:aSelector1 withInstanceMethodForSelector:aSelector2];
+}
+
++ (void)exchangeInstanceMethodForSelector:(SEL)aSelector1 withInstanceMethodForSelector:(SEL)aSelector2 {
+    SKExchangeMethodImplementations(self, aSelector1, aSelector2, YES);
 }
 
 @end
