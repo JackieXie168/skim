@@ -123,6 +123,25 @@ static id replacementAccessibilityAttributeValue(id self, SEL _cmd, NSString *at
     }
 }
 
+static inline void generateAccessibilityTableIfNeeded(id pdfDisplayView) {
+    @try {
+        if ([[pdfDisplayView valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 &&
+            [pdfDisplayView respondsToSelector:@selector(generateAccessibilityTable)])
+            [pdfDisplayView generateAccessibilityTable];
+    }
+    @catch (id exception) {}
+}
+
+static inline NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range) {
+    NSAttributedString *attributedString = nil;
+    if ([pdfDisplayView respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
+        PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
+        if ([selection respondsToSelector:@selector(attributedString)])
+            attributedString = [selection attributedString];
+    }
+    return attributedString;
+}
+
 static id replacementAccessibilityRangeForPositionAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView && [self respondsToSelector:@selector(accessibilityRangeForSelection:)]) {
@@ -131,11 +150,7 @@ static id replacementAccessibilityRangeForPositionAttributeForParameter(id self,
         if (page) {
             int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
             if (i != -1) {
-                @try {
-                    if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                        [self generateAccessibilityTable];
-                }
-                @catch (id exception) {}
+                generateAccessibilityTableIfNeeded(self);
                 return [NSValue valueWithRange:[self accessibilityRangeForSelection:[page selectionForRange:NSMakeRange(i, 1)]]];
             }
         }
@@ -145,13 +160,9 @@ static id replacementAccessibilityRangeForPositionAttributeForParameter(id self,
 
 static id replacementAccessibilityRTFForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
-    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
-        @try {
-            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                [self generateAccessibilityTable];
-        }
-        @catch (id exception) {}
-        NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
+    if (pdfView) {
+        generateAccessibilityTableIfNeeded(self);
+        NSAttributedString *attributedString = attributedStringForAccessibilityRange(self, [parameter rangeValue]);
         return [attributedString RTFFromRange:NSMakeRange(0, [attributedString length]) documentAttributes:NULL];
     }
     return nil;
@@ -159,26 +170,17 @@ static id replacementAccessibilityRTFForRangeAttributeForParameter(id self, SEL 
 
 static id replacementAccessibilityAttributedStringForRangeAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
-    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
-        @try {
-            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                [self generateAccessibilityTable];
-        }
-        @catch (id exception) {}
-        NSAttributedString *attributedString = [[self selectionForAccessibilityRange:[parameter rangeValue]] attributedString];
-        return [attributedString accessibilityAttributedString];
+    if (pdfView) {
+        generateAccessibilityTableIfNeeded(self);
+        return [attributedStringForAccessibilityRange(self, [parameter rangeValue]) accessibilityAttributedString];
     }
     return nil;
 }
 
 static id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
-    if (pdfView && [self respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
-        @try {
-            if ([[self valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 && [self respondsToSelector:@selector(generateAccessibilityTable)])
-                [self generateAccessibilityTable];
-        }
-        @catch (id exception) {}
+    if (pdfView) {
+        generateAccessibilityTableIfNeeded(self);
         int i = [parameter unsignedIntValue];
         int n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
         int start = MAX(0, i - 25), end = MIN(n, i + 25);
@@ -186,7 +188,7 @@ static id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id sel
         NSRange r = NSMakeRange(start, end - start);
         BOOL foundRange = NO;
         while (foundRange == NO) {
-            [[[self selectionForAccessibilityRange:r] attributedString] attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
+            [attributedStringForAccessibilityRange(self, r) attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
             foundRange = YES;
             if (range.location == r.location && r.location > 0) {
                 start = MAX(0, (int)r.location - 25);
