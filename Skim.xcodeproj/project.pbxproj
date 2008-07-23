@@ -479,6 +479,7 @@
 		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
+		CE1F67FD0E37552400E07E76 /* SKRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRuntime.h; sourceTree = "<group>"; };
 		CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKGradientView.h; sourceTree = "<group>"; };
 		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
@@ -1170,6 +1171,7 @@
 				CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
+				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
 			);
 			name = "Foundation Categories";
 			sourceTree = "<group>";
