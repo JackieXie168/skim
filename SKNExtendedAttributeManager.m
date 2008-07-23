@@ -547,8 +547,8 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)bzipData:(NSData *)data;
 {
-	NSInteger compression = 5;
-    NSInteger bzret, buffer_size = 1000000;
+	int compression = 5;
+    int bzret, buffer_size = 1000000;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = [data length];
@@ -581,7 +581,7 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)bunzipData:(NSData *)data;
 {
-	NSInteger bzret;
+	int bzret;
 	bz_stream stream = { 0 };
 	stream.next_in = (char *)[data bytes];
 	stream.avail_in = [data length];
