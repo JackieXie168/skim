@@ -123,7 +123,7 @@ static id replacementAccessibilityAttributeValue(id self, SEL _cmd, NSString *at
     }
 }
 
-static inline void generateAccessibilityTableIfNeeded(id pdfDisplayView) {
+static void generateAccessibilityTableIfNeeded(id pdfDisplayView) {
     @try {
         if ([[pdfDisplayView valueForKey:@"numAccessibilityLines"] unsignedIntValue] == 0 &&
             [pdfDisplayView respondsToSelector:@selector(generateAccessibilityTable)])
@@ -132,7 +132,7 @@ static inline void generateAccessibilityTableIfNeeded(id pdfDisplayView) {
     @catch (id exception) {}
 }
 
-static inline NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range) {
+static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range) {
     NSAttributedString *attributedString = nil;
     if ([pdfDisplayView respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
