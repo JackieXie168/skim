@@ -43,7 +43,12 @@
 @implementation NSObject (SKExtensions)
 
 + (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-    return SK_class_replaceMethod(SK_object_getClass(self), aSelector, anImp, types);
+    Method method = class_getClassMethod(self, aSelector);
+    IMP imp = SK_method_getImplementation(method);
+    if (method && types == NULL)
+        types = SK_method_getTypeEncoding(method);
+    SK_class_replaceMethod(SK_object_getClass(self), aSelector, anImp, types);
+    return imp;
 }
 
 - (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
@@ -51,12 +56,17 @@
 }
 
 + (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-    return SK_class_replaceMethod(self, aSelector, anImp, types);
+    Method method = class_getInstanceMethod(self, aSelector);
+    IMP imp = SK_method_getImplementation(method);
+    if (method && types == NULL)
+        types = SK_method_getTypeEncoding(method);
+    SK_class_replaceMethod(self, aSelector, anImp, types);
+    return imp;
 }
 
 + (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-    Method method = class_getClassMethod(self, aSelector);
-    return method ? SK_class_replaceMethod(SK_object_getClass(self), aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method)) : NULL;
+    Method method = class_getClassMethod(self, impSelector);
+    return method ? [self setMethod:SK_method_getImplementation(method) typeEncoding:SK_method_getTypeEncoding(method) forSelector:aSelector] : NULL;
 }
 
 - (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
@@ -64,8 +74,8 @@
 }
 
 + (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-    Method method = class_getInstanceMethod(self, aSelector);
-    return method ? SK_class_replaceMethod(self, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method)) : NULL;
+    Method method = class_getInstanceMethod(self, impSelector);
+    return method ? [self setInstanceMethod:SK_method_getImplementation(method) typeEncoding:SK_method_getTypeEncoding(method) forSelector:aSelector] : NULL;
 }
 
 + (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
