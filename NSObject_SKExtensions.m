@@ -2,94 +2,48 @@
 //  NSObject_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/15/07.
+//  Created by Christiaan Hofman on 7/22/08.
+/*
+ This software is Copyright (c) 2008
+ Christiaan Hofman. All rights reserved.
 
-/* Some of the following functions are inspired by OmniBase/NSObject_SKExtensions.h and subject to the following copyright */
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
 
-// Copyright 1997-2008 Omni Development, Inc.  All rights reserved.
-//
-// This software may only be used and reproduced according to the
-// terms in the file OmniSourceLicense.html, which should be
-// distributed with this project and can also be found at
-// <http://www.omnigroup.com/developer/sourcecode/sourcelicense/>.
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+ - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+ - Neither the name of Christiaan Hofman nor the names of any
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #import "NSObject_SKExtensions.h"
 #import "SKRuntime.h"
 
 
-#pragma mark Basic functions
-
-static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
-    Method method = SK_class_getMethod(aClass, aSelector, isInstance);
-    BOOL inherited = NO;
-    IMP oldImp = NULL;
-    Class superCls = Nil;
-    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
-    
-    if (method) {
-        if (superCls = SK_class_getSuperclass(aClass))
-            inherited = (method == SK_class_getMethod(superCls, aSelector, isInstance));
-        if (inherited) {
-            // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
-            oldImp = SK_method_getImplementation(method);
-            SK_class_addMethod(realClass, aSelector, anImp, SK_method_getTypeEncoding(method));
-        } else {
-            // Replace the method in place
-            oldImp = SK_method_setImplementation(method, anImp);
-            // We don't need to flush the method cach because the cache contains pointers to the Methods, so the cache is automatically updated
-            // See <http://kevin.sb.org/2006/11/16/objective-c-caching-and-method-swizzling/>
-        }
-    } else if (types != NULL) {
-        SK_class_addMethod(realClass, aSelector, anImp, types);
-    }
-    
-    return oldImp;
-}
-
-static void SKExchangeMethodImplementations(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
-    Method method1 = SK_class_getMethod(aClass, aSelector1, isInstance);
-    Method method2 = SK_class_getMethod(aClass, aSelector2, isInstance);
-    BOOL inherited1 = NO;
-    BOOL inherited2 = NO;
-    Class superCls = Nil;
-    Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
-    
-    if (method1 && method2) {
-        if (superCls = SK_class_getSuperclass(aClass)) {
-            inherited1 = (method1 == SK_class_getMethod(superCls, aSelector1, isInstance));
-            inherited2 = (method2 == SK_class_getMethod(superCls, aSelector2, isInstance));
-        }
-        if (inherited1 || inherited2) {
-            IMP imp1 = SK_method_getImplementation(method1);
-            IMP imp2 = SK_method_getImplementation(method2);
-            const char *types = SK_method_getTypeEncoding(method1);
-            
-            if (inherited1)
-                SK_class_addMethod(realClass, aSelector1, imp2, types);
-            else
-                SK_method_setImplementation(method1, imp2);
-            
-            if (inherited2)
-                SK_class_addMethod(realClass, aSelector2, imp1, types);
-            else
-                SK_method_setImplementation(method2, imp1);
-        } else {
-            SK_method_exchangeImplementations(method1, method2);
-        }
-    }
-}
-
-static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstance) {
-    Method method = SK_class_getMethod(aClass, aSelector, isInstance);
-    return method ? SK_method_getTypeEncoding(method) : NULL;
-}
-
-#pragma mark API
-
 @implementation NSObject (SKExtensions)
 
 + (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-	return SKSetMethodImplementation(self, aSelector, anImp, types, NO);
+    return SK_class_replaceMethod(SK_object_getClass(self), aSelector, anImp, types);
 }
 
 - (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
@@ -97,11 +51,12 @@ static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstanc
 }
 
 + (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-	return SKSetMethodImplementation(self, aSelector, anImp, types, YES);
+    return SK_class_replaceMethod(self, aSelector, anImp, types);
 }
 
 + (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-	return SKSetMethodImplementation(self, aSelector, [self methodForSelector:impSelector], SKGetTypeEncoding(self, impSelector, NO), NO);
+    Method method = class_getClassMethod(self, aSelector);
+    return method ? SK_class_replaceMethod(SK_object_getClass(self), aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method)) : NULL;
 }
 
 - (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
@@ -109,11 +64,19 @@ static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstanc
 }
 
 + (IMP)setInstanceMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
-	return SKSetMethodImplementation(self, aSelector, [self instanceMethodForSelector:impSelector], SKGetTypeEncoding(self, impSelector, YES), YES);
+    Method method = class_getInstanceMethod(self, aSelector);
+    return method ? SK_class_replaceMethod(self, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method)) : NULL;
 }
 
 + (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
-    SKExchangeMethodImplementations(self, aSelector1, aSelector2, NO);
+    Method method1 = class_getClassMethod(self, aSelector1);
+    Method method2 = class_getClassMethod(self, aSelector2);
+    if (method1 && method2) {
+        Class metaClass = SK_object_getClass(self);
+        IMP imp = SK_method_getImplementation(method2);
+        imp = SK_class_replaceMethod(metaClass, aSelector1, imp, SK_method_getTypeEncoding(method1));
+        SK_class_replaceMethod(metaClass, aSelector2, imp, SK_method_getTypeEncoding(method2));
+    }
 }
 
 - (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
@@ -121,7 +84,13 @@ static const char *SKGetTypeEncoding(Class aClass, SEL aSelector, BOOL isInstanc
 }
 
 + (void)exchangeInstanceMethodForSelector:(SEL)aSelector1 withInstanceMethodForSelector:(SEL)aSelector2 {
-    SKExchangeMethodImplementations(self, aSelector1, aSelector2, YES);
+    Method method1 = class_getInstanceMethod(self, aSelector1);
+    Method method2 = class_getInstanceMethod(self, aSelector2);
+    if (method1 && method2) {
+        IMP imp = SK_method_getImplementation(method2);
+        imp = SK_class_replaceMethod(self, aSelector1, imp, SK_method_getTypeEncoding(method1));
+        SK_class_replaceMethod(self, aSelector2, imp, SK_method_getTypeEncoding(method2));
+    }
 }
 
 @end

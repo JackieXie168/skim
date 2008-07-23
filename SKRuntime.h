@@ -1,8 +1,8 @@
-/*
- *  SKRuntime.h
- *  Skim
- *
- *  Created by Christiaan Hofman on 7/23/08.
+//
+//  SKRuntime.h
+//  Skim
+//
+//  Created by Christiaan Hofman on 7/23/08.
 /*
  This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
@@ -82,22 +82,54 @@ static inline Class SK_class_getSuperclass(Class aClass) {
     return class_getSuperclass != NULL ? class_getSuperclass(aClass) : aClass->super_class;
 }
 
-static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_addMethod != NULL) {
-        class_addMethod(aClass, selector, methodImp, methodTypes);
+// generic implementation for SK_class_addMethod/SK_class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
+static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
+    IMP imp = NULL;
+    void *iterator = NULL;
+    struct objc_method_list *mlist;
+    Method m, method = NULL;
+    int i;
+    while (method == NULL && (mlist = class_nextMethodList(aClass, &iterator))) {
+        for (i = 0; i < mlist->method_count; i++) {
+            m = &mlist->method_list[i];
+            if (m->method_name == selector) {
+                method = m;
+                break;
+            }
+        }
+    }
+    if (method) {
+        imp = method->method_imp;
+        if (replace)
+            method->method_imp = methodImp;
     } else {
-        struct objc_method_list *newMethodList = (struct objc_method_list *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(struct objc_method_list));
+        mlist = (struct objc_method_list *)NSZoneCalloc(NSDefaultMallocZone(), 1, sizeof(struct objc_method_list));
         
-        newMethodList->method_count = 1;
-        newMethodList->method_list[0].method_name = selector;
-        newMethodList->method_list[0].method_imp = methodImp;
-        newMethodList->method_list[0].method_types = (char *)methodTypes;
+        mlist->method_count = 1;
+        mlist->method_list[0].method_name = selector;
+        mlist->method_list[0].method_imp = methodImp;
+        mlist->method_list[0].method_types = strdup(methodTypes);
         
-        class_addMethods(aClass, newMethodList);
+        class_addMethods(aClass, mlist);
         
         // Flush the method cache
         _objc_flush_caches(aClass);
     }
+    return imp;
+}
+
+static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+    if (class_addMethod != NULL)
+        class_addMethod(aClass, selector, methodImp, methodTypes);
+    else
+        _SK_class_addMethod(aClass, selector, methodImp, methodTypes, NO);
+}
+
+static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+    if (class_replaceMethod != NULL)
+        return class_replaceMethod(aClass, selector, methodImp, methodTypes);
+    else
+        return _SK_class_addMethod(aClass, selector, methodImp, methodTypes, YES);
 }
 
 #else
@@ -132,10 +164,12 @@ static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
     class_addMethod(aClass, selector, methodImp, methodTypes);
 }
 
-#endif
-
-#pragma mark Convenience
-
-static inline Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance) {
-    return isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
+static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+    return class_addMethod(aClass, selector, methodImp, methodTypes);
 }
+
+static inline void SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+    return class_replaceMethod(aClass, selector, methodImp, methodTypes);
+}
+
+#endif
