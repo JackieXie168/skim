@@ -134,6 +134,8 @@ static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
 
 #endif
 
+#pragma mark Convenience
+
 static inline Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInstance) {
     return isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
 }
