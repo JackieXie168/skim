@@ -124,23 +124,22 @@ static inline Method SK_class_getMethod(Class aClass, SEL aSelector, BOOL isInst
 #pragma mark Basic functions
 
 static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
-    Method localMethod = SK_class_getMethod(aClass, aSelector, isInstance);
-    Method superMethod = NULL;
+    Method method = SK_class_getMethod(aClass, aSelector, isInstance);
+    BOOL inherited = NO;
     IMP oldImp = NULL;
     Class superCls = Nil;
     Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
     
-    if (localMethod) {
+    if (method) {
         if (superCls = SK_class_getSuperclass(aClass))
-            superMethod = SK_class_getMethod(superCls, aSelector, isInstance);
-        
-        if (superMethod == localMethod) {
+            inherited = (method == SK_class_getMethod(superCls, aSelector, isInstance));
+        if (inherited) {
             // We are inheriting this method from the superclass.  We do *not* want to clobber the superclass's Method structure as that would replace the implementation on a greater scope than the caller wanted.  In this case, install a new method at this class and return the superclass's implementation as the old implementation (which it is).
-            oldImp = SK_method_getImplementation(localMethod);
-            SK_class_addMethod(realClass, aSelector, anImp, SK_method_getTypeEncoding(localMethod));
+            oldImp = SK_method_getImplementation(method);
+            SK_class_addMethod(realClass, aSelector, anImp, SK_method_getTypeEncoding(method));
         } else {
             // Replace the method in place
-            oldImp = SK_method_setImplementation(localMethod, anImp);
+            oldImp = SK_method_setImplementation(method, anImp);
             // We don't need to flush the method cach because the cache contains pointers to the Methods, so the cache is automatically updated
             // See <http://kevin.sb.org/2006/11/16/objective-c-caching-and-method-swizzling/>
         }
@@ -152,32 +151,34 @@ static IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, con
 }
 
 static void SKExchangeMethodImplementations(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
-    Method localMethod1 = SK_class_getMethod(aClass, aSelector1, isInstance);
-    Method localMethod2 = SK_class_getMethod(aClass, aSelector2, isInstance);
-    Method superMethod1 = NULL;
-    Method superMethod2 = NULL;
+    Method method1 = SK_class_getMethod(aClass, aSelector1, isInstance);
+    Method method2 = SK_class_getMethod(aClass, aSelector2, isInstance);
+    BOOL inherited1 = NO;
+    BOOL inherited2 = NO;
     Class superCls = Nil;
     Class realClass = isInstance ? aClass : SK_object_getClass(aClass);
     
-    if (localMethod1 && localMethod2) {
+    if (method1 && method2) {
         if (superCls = SK_class_getSuperclass(aClass)) {
-            superMethod1 = SK_class_getMethod(superCls, aSelector1, isInstance);
-            superMethod2 = SK_class_getMethod(superCls, aSelector2, isInstance);
+            inherited1 = (method1 == SK_class_getMethod(superCls, aSelector1, isInstance));
+            inherited2 = (method2 == SK_class_getMethod(superCls, aSelector2, isInstance));
         }
-        if (superMethod1 != localMethod1 && superMethod2 != localMethod2) {
-            SK_method_exchangeImplementations(localMethod1, localMethod2);
-        } else {
-            IMP imp1 = SK_method_getImplementation(localMethod1);
-            IMP imp2 = SK_method_getImplementation(localMethod2);
-            const char *types = SK_method_getTypeEncoding(localMethod1);
-            if (superMethod1 == localMethod1)
+        if (inherited1 || inherited2) {
+            IMP imp1 = SK_method_getImplementation(method1);
+            IMP imp2 = SK_method_getImplementation(method2);
+            const char *types = SK_method_getTypeEncoding(method1);
+            
+            if (inherited1)
                 SK_class_addMethod(realClass, aSelector1, imp2, types);
             else
-                SK_method_setImplementation(localMethod1, imp2);
-            if (superMethod2 == localMethod2)
+                SK_method_setImplementation(method1, imp2);
+            
+            if (inherited2)
                 SK_class_addMethod(realClass, aSelector2, imp1, types);
             else
-                SK_method_setImplementation(localMethod2, imp1);
+                SK_method_setImplementation(method2, imp1);
+        } else {
+            SK_method_exchangeImplementations(method1, method2);
         }
     }
 }
