@@ -44,7 +44,7 @@
 
 + (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
     Method method = class_getClassMethod(self, aSelector);
-    IMP imp = SK_method_getImplementation(method);
+    IMP imp = method ? SK_method_getImplementation(method) : NULL;
     if (method && types == NULL)
         types = SK_method_getTypeEncoding(method);
     SK_class_replaceMethod(SK_object_getClass(self), aSelector, anImp, types);
@@ -57,7 +57,7 @@
 
 + (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
     Method method = class_getInstanceMethod(self, aSelector);
-    IMP imp = SK_method_getImplementation(method);
+    IMP imp = method ? SK_method_getImplementation(method) : NULL;
     if (method && types == NULL)
         types = SK_method_getTypeEncoding(method);
     SK_class_replaceMethod(self, aSelector, anImp, types);
