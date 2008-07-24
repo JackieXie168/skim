@@ -45,10 +45,15 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"
 
-#define WINDOW_OFFSET   20.0
-#define TEXT_MARGIN_X   2.0
-#define TEXT_MARGIN_Y   2.0
-#define ALPHA_VALUE     0.95
+#define WINDOW_OFFSET           20.0
+#define TEXT_MARGIN_X           2.0
+#define TEXT_MARGIN_Y           2.0
+#define ALPHA_VALUE             0.95
+#define CRITICAL_ALPHA_VALUE    0.9
+#define AUTO_HIDE_TIME_INTERVAL 7.0
+#define DEFAULT_SHOW_DELAY      1.0
+#define ALT_SHOW_DELAY          0.1
+
 
 NSString *SKToolTipWidthKey = @"SKToolTipWidth";
 NSString *SKToolTipHeightKey = @"SKToolTipHeight";
@@ -163,9 +168,9 @@ static SKPDFHoverWindow *sharedHoverWindow = nil;
     [self orderOut:self];
 }
 
-- (float)defaultAlphaValue { return 0.95; }
+- (float)defaultAlphaValue { return ALPHA_VALUE; }
 
-- (NSTimeInterval)autoHideTimeInterval { return 7.0; }
+- (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)willClose {
     [annotation release];
@@ -338,7 +343,7 @@ static SKPDFHoverWindow *sharedHoverWindow = nil;
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
         [self stopAnimation];
-        if ([self isVisible] && [self alphaValue] > 0.9)
+        if ([self isVisible] && [self alphaValue] > CRITICAL_ALPHA_VALUE)
             [self orderFront:self];
         else
             [self fadeIn];
@@ -364,7 +369,7 @@ static SKPDFHoverWindow *sharedHoverWindow = nil;
         [annotation release];
         annotation = [note retain];
         
-        [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? 0.1 : 1.0];
+        [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? ALT_SHOW_DELAY : DEFAULT_SHOW_DELAY];
     }
 }
 

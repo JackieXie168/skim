@@ -95,6 +95,8 @@
 #import "NSImage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
 
+#define MULTIPLICATION_SIGN_CHARACTER 0x00d7
+
 NSString *SKMainWindowPageLabelsKey = @"pageLabels";
 NSString *SKMainWindowSearchResultsKey = @"searchResults";
 NSString *SKMainWindowGroupedSearchResultsKey = @"groupedSearchResults";
@@ -661,7 +663,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     if (NSEqualRects(selRect, NSZeroRect)) {
         float magnification = [pdfView currentMagnification];
         if (magnification > 0.0001)
-            message = [NSString stringWithFormat:@"%.2f %C", magnification, 0xD7];
+            message = [NSString stringWithFormat:@"%.2f %C", magnification, MULTIPLICATION_SIGN_CHARACTER];
         else
            message = @"";
     } else {
@@ -669,9 +671,9 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
             float factor = useMetric ? 0.035277778 : 0.013888889;
-            message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, 0xD7, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
+            message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (int)NSWidth(selRect), 0xD7, (int)NSHeight(selRect), (int)NSMinX(selRect), (int)NSMinY(selRect)];
+            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (int)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (int)NSHeight(selRect), (int)NSMinX(selRect), (int)NSMinY(selRect)];
         }
     }
     [statusBar setRightStringValue:message];

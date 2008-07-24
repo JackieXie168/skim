@@ -175,7 +175,7 @@
     unichar ch = [theEvent firstCharacter];
 	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
     
-    if (ch == 0x1B && modifierFlags == 0) {
+    if (ch == SKEscapeCharacter && modifierFlags == 0) {
         if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
             [controller closeSideWindow:self];
         else

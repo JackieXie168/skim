@@ -41,6 +41,8 @@
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKStringConstants.h"
 
+#define ALPHA_VALUE 0.95
+#define WINDOW_SIZE 60.0
 
 @interface SKRemoteStateView : NSView {
     int remoteState;
@@ -64,7 +66,7 @@ static id sharedRemoteStateWindow = nil;
 
 - (id)init {
     if (sharedRemoteStateWindow == nil) {
-        NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(60.0));
+        NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
         if (self = [super initWithContentRect:contentRect]) {
             sharedRemoteStateWindow = self;
             [self setIgnoresMouseEvents:YES];
@@ -84,7 +86,7 @@ static id sharedRemoteStateWindow = nil;
 
 - (unsigned)retainCount { return UINT_MAX; }
 
-- (float)defaultAlphaValue { return 0.95; }
+- (float)defaultAlphaValue { return ALPHA_VALUE; }
 
 - (NSTimeInterval)autoHideTimeInterval {
     return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];

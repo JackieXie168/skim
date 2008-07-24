@@ -76,7 +76,7 @@
     
     if (modifierFlags == 0) {
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if (ch == 0x1B) {
+        if (ch == SKEscapeCharacter) {
             [wc exitFullScreen:self];
         } else {
             [super keyDown:theEvent];
