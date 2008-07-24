@@ -40,136 +40,14 @@
 
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+extern Class SK_object_getClass(id object);
 
-#pragma mark 10.4 + 10.5
+extern SEL SK_method_getName(Method aMethod);
+extern IMP SK_method_getImplementation(Method aMethod);
+extern const char *SK_method_getTypeEncoding(Method aMethod);
+extern IMP SK_method_setImplementation(Method aMethod, IMP anImp);
+extern void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2);
 
-extern void _objc_flush_caches(Class);
-
-static inline Class SK_object_getClass(id object) {
-    return object_getClass != NULL ? object_getClass(object) : object->isa;
-}
-
-static inline IMP SK_method_getImplementation(Method aMethod) {
-    return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
-} 
-
-static inline IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
-    if (method_setImplementation != NULL) {
-        return method_setImplementation(aMethod, anImp);
-    } else {
-        IMP oldImp = aMethod->method_imp;
-        aMethod->method_imp = anImp;
-        return oldImp;
-    }
-} 
-
-static inline void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
-    if (method_exchangeImplementations != NULL) {
-        method_exchangeImplementations(aMethod1, aMethod2);
-    } else {
-        IMP imp = aMethod1->method_imp;
-        aMethod1->method_imp = aMethod2->method_imp;
-        aMethod2->method_imp = imp;
-    }
-}
-
-static inline const char *SK_method_getTypeEncoding(Method aMethod) {
-    return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
-}
-
-static inline Class SK_class_getSuperclass(Class aClass) {
-    return class_getSuperclass != NULL ? class_getSuperclass(aClass) : aClass->super_class;
-}
-
-// generic implementation for SK_class_addMethod/SK_class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
-static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
-    IMP imp = NULL;
-    void *iterator = NULL;
-    struct objc_method_list *mlist;
-    Method m, method = NULL;
-    int i;
-    while (method == NULL && (mlist = class_nextMethodList(aClass, &iterator))) {
-        for (i = 0; i < mlist->method_count; i++) {
-            m = &mlist->method_list[i];
-            if (m->method_name == selector) {
-                method = m;
-                break;
-            }
-        }
-    }
-    if (method) {
-        imp = method->method_imp;
-        if (replace)
-            method->method_imp = methodImp;
-    } else {
-        mlist = (struct objc_method_list *)NSZoneCalloc(NSDefaultMallocZone(), 1, sizeof(struct objc_method_list));
-        
-        mlist->method_count = 1;
-        mlist->method_list[0].method_name = selector;
-        mlist->method_list[0].method_imp = methodImp;
-        mlist->method_list[0].method_types = strdup(methodTypes);
-        
-        class_addMethods(aClass, mlist);
-        
-        // Flush the method cache
-        _objc_flush_caches(aClass);
-    }
-    return imp;
-}
-
-static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_addMethod != NULL)
-        class_addMethod(aClass, selector, methodImp, methodTypes);
-    else
-        _SK_class_addMethod(aClass, selector, methodImp, methodTypes, NO);
-}
-
-static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_replaceMethod != NULL)
-        return class_replaceMethod(aClass, selector, methodImp, methodTypes);
-    else
-        return _SK_class_addMethod(aClass, selector, methodImp, methodTypes, YES);
-}
-
-#else
-
-#pragma mark 10.5
-
-static inline Class SK_object_getClass(id object) {
-    return object_getClass(object);
-}
-
-static inline IMP SK_method_getImplementation(Method aMethod) {
-    return method_getImplementation(aMethod);
-} 
-
-static inline IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
-    return method_setImplementation(aMethod, anImp);
-} 
-
-static inline void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
-    method_exchangeImplementations(aMethod1, aMethod2);
-}
-
-static inline const char *SK_method_getTypeEncoding(Method aMethod) {
-    return method_getTypeEncoding(aMethod);
-}
-
-static inline Class SK_class_getSuperclass(Class aClass) {
-    return class_getSuperclass(aClass);
-}
-
-static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    class_addMethod(aClass, selector, methodImp, methodTypes);
-}
-
-static inline void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    return class_addMethod(aClass, selector, methodImp, methodTypes);
-}
-
-static inline void SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    return class_replaceMethod(aClass, selector, methodImp, methodTypes);
-}
-
-#endif
+extern Class SK_class_getSuperclass(Class aClass);
+extern void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes);
+extern IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes);
