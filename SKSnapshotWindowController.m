@@ -52,6 +52,8 @@
 #import "SKSnapshotPageCell.h"
 #import "NSObject_SKExtensions.h"
 
+#define EM_DASH_CHARACTER 0x2014
+
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
 static NSString *SKSnapshotPageKey = @"page";
@@ -105,7 +107,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, 0x2014, [[pdfView currentPage] displayLabel]];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, EM_DASH_CHARACTER, [[pdfView currentPage] displayLabel]];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {

@@ -42,6 +42,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
 
+#define ELLIPSIS_CHARACTER 0x2026
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
 - (int)numberOfRangesOnPage:(PDFPage *)page;
@@ -63,7 +64,7 @@
 	NSString *searchString = [[self string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
 	NSString *sample;
     NSMutableString *attributedString;
-	NSString *ellipse = [NSString stringWithFormat:@"%C", 0x2026];
+	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
 	NSRange foundRange;
     NSDictionary *attributes;
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];

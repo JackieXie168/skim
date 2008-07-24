@@ -38,6 +38,7 @@
 
 #import "NSNumber_SKExtensions.h"
 
+#define ALPHA_CHARACTER 0x03b1
 
 @implementation NSNumber (SKExtensions)
 
@@ -98,7 +99,7 @@ inline static NSString *romanNumeralForDigit(unsigned digit, NSString *i, NSStri
     while (number > 0) {
         letter = number % 24;
         number /= 24;
-        [string insertString:[NSString stringWithFormat:@"%C", 0x03b1 + letter - 1] atIndex:0];
+        [string insertString:[NSString stringWithFormat:@"%C", ALPHA_CHARACTER + letter - 1] atIndex:0];
     }
     return string;
 }

@@ -44,6 +44,7 @@
 #import <SkimNotes/PDFAnnotation_SKNExtensions.h>
 #import <Carbon/Carbon.h>
 
+#define ELLIPSIS_CHARACTER 0x2026
 
 #pragma mark CFString extensions
 
@@ -142,7 +143,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 - (NSString *)stringByAppendingEllipsis;
 {
-    return [self stringByAppendingFormat:@"%C", 0x2026];
+    return [self stringByAppendingFormat:@"%C", ELLIPSIS_CHARACTER];
 }
 
 - (NSString *)stringByReplacingPathExtension:(NSString *)ext;

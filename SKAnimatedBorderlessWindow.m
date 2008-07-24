@@ -38,6 +38,11 @@
 
 #import "SKAnimatedBorderlessWindow.h"
 
+#define ALPHA_VALUE 1.0
+#define FADE_IN_DURATION 0.3
+#define FADE_OUT_DURATION 1.0
+#define AUTO_HIDE_TIME_INTERVAL 0.0
+
 
 @implementation SKAnimatedBorderlessWindow
 
@@ -68,13 +73,13 @@
 
 - (void)willClose {}
 
-- (float)defaultAlphaValue { return 1.0; }
+- (float)defaultAlphaValue { return ALPHA_VALUE; }
 
-- (NSTimeInterval)fadeInDuration { return 0.3; }
+- (NSTimeInterval)fadeInDuration { return FADE_IN_DURATION; }
 
-- (NSTimeInterval)fadeOutDuration { return 1.0; }
+- (NSTimeInterval)fadeOutDuration { return FADE_OUT_DURATION; }
 
-- (NSTimeInterval)autoHideTimeInterval { return 0.0; }
+- (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)stopAnimation {
     [self cancelDelayedAnimations];

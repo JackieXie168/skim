@@ -1023,7 +1023,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                    (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
             [self selectNextActiveAnnotation:self];
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
-                   (eventChar == 0x1B) && (modifiers == NSAlternateKeyMask)) {
+                   (eventChar == SKEscapeCharacter) && (modifiers == NSAlternateKeyMask)) {
             [self setActiveAnnotation:nil];
         // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
