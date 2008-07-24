@@ -86,7 +86,7 @@ Class SK_class_getSuperclass(Class aClass) {
 }
 
 // generic implementation for SK_class_addMethod/SK_class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
-IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
+static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
     IMP imp = NULL;
     void *iterator = NULL;
     struct objc_method_list *mlist;
