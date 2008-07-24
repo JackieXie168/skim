@@ -49,40 +49,12 @@ Class SK_object_getClass(id object) {
     return object_getClass != NULL ? object_getClass(object) : object->isa;
 }
 
-SEL SK_method_getName(Method aMethod) {
-    return method_getName != NULL ? method_getName(aMethod) : aMethod->method_name;
-}
-
 IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 } 
 
 const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
-}
-
-IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
-    if (method_setImplementation != NULL) {
-        return method_setImplementation(aMethod, anImp);
-    } else {
-        IMP oldImp = aMethod->method_imp;
-        aMethod->method_imp = anImp;
-        return oldImp;
-    }
-} 
-
-void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
-    if (method_exchangeImplementations != NULL) {
-        method_exchangeImplementations(aMethod1, aMethod2);
-    } else {
-        IMP imp = aMethod1->method_imp;
-        aMethod1->method_imp = aMethod2->method_imp;
-        aMethod2->method_imp = imp;
-    }
-}
-
-Class SK_class_getSuperclass(Class aClass) {
-    return class_getSuperclass != NULL ? class_getSuperclass(aClass) : aClass->super_class;
 }
 
 // generic implementation for SK_class_addMethod/SK_class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
@@ -121,13 +93,6 @@ static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
     return imp;
 }
 
-void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_addMethod != NULL)
-        class_addMethod(aClass, selector, methodImp, methodTypes);
-    else
-        _SK_class_addMethod(aClass, selector, methodImp, methodTypes, NO);
-}
-
 IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
     if (class_replaceMethod != NULL)
         return class_replaceMethod(aClass, selector, methodImp, methodTypes);
@@ -143,32 +108,12 @@ Class SK_object_getClass(id object) {
     return object_getClass(object);
 }
 
-SEL SK_method_getName(Method aMethod) {
-    return method_getName(aMethod);
-}
-
 IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation(aMethod);
 } 
 
 const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding(aMethod);
-}
-
-IMP SK_method_setImplementation(Method aMethod, IMP anImp) {
-    return method_setImplementation(aMethod, anImp);
-} 
-
-void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2) {
-    method_exchangeImplementations(aMethod1, aMethod2);
-}
-
-Class SK_class_getSuperclass(Class aClass) {
-    return class_getSuperclass(aClass);
-}
-
-void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    class_addMethod(aClass, selector, methodImp, methodTypes);
 }
 
 IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {

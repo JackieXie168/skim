@@ -42,12 +42,7 @@
 
 extern Class SK_object_getClass(id object);
 
-extern SEL SK_method_getName(Method aMethod);
 extern IMP SK_method_getImplementation(Method aMethod);
 extern const char *SK_method_getTypeEncoding(Method aMethod);
-extern IMP SK_method_setImplementation(Method aMethod, IMP anImp);
-extern void SK_method_exchangeImplementations(Method aMethod1, Method aMethod2);
 
-extern Class SK_class_getSuperclass(Class aClass);
-extern void SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes);
 extern IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes);
