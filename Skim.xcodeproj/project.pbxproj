@@ -47,6 +47,7 @@
 		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
+		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
 		CE0ECCD90DE71868006EEDDB /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
@@ -458,6 +459,7 @@
 		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDocument.icns; path = Images/PDFDocument.icns; sourceTree = "<group>"; };
 		CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotPageCell.h; sourceTree = "<group>"; };
 		CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotPageCell.m; sourceTree = "<group>"; };
+		CE09FC3B0E3886C100BDF413 /* SKRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRuntime.m; sourceTree = "<group>"; };
 		CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSInvocation_SKExtensions.h; sourceTree = "<group>"; };
 		CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSInvocation_SKExtensions.m; sourceTree = "<group>"; };
 		CE0ECCD40DE71868006EEDDB /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -1172,6 +1174,7 @@
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
 				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
+				CE09FC3B0E3886C100BDF413 /* SKRuntime.m */,
 			);
 			name = "Foundation Categories";
 			sourceTree = "<group>";
@@ -2125,6 +2128,7 @@
 				CEC3AD240E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m in Sources */,
 				CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */,
 				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
+				CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
