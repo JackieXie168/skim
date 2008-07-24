@@ -79,14 +79,7 @@
 }
 
 + (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
-    Method method1 = class_getClassMethod(self, aSelector1);
-    Method method2 = class_getClassMethod(self, aSelector2);
-    if (method1 && method2) {
-        Class metaClass = SK_object_getClass(self);
-        IMP imp = SK_method_getImplementation(method2);
-        imp = SK_class_replaceMethod(metaClass, aSelector1, imp, SK_method_getTypeEncoding(method1));
-        SK_class_replaceMethod(metaClass, aSelector2, imp, SK_method_getTypeEncoding(method2));
-    }
+    [self setMethod:[self setMethodFromSelector:aSelector2 forSelector:aSelector1] typeEncoding:NULL forSelector:aSelector2];
 }
 
 - (void)exchangeMethodForSelector:(SEL)aSelector1 withMethodForSelector:(SEL)aSelector2 {
@@ -94,13 +87,7 @@
 }
 
 + (void)exchangeInstanceMethodForSelector:(SEL)aSelector1 withInstanceMethodForSelector:(SEL)aSelector2 {
-    Method method1 = class_getInstanceMethod(self, aSelector1);
-    Method method2 = class_getInstanceMethod(self, aSelector2);
-    if (method1 && method2) {
-        IMP imp = SK_method_getImplementation(method2);
-        imp = SK_class_replaceMethod(self, aSelector1, imp, SK_method_getTypeEncoding(method1));
-        SK_class_replaceMethod(self, aSelector2, imp, SK_method_getTypeEncoding(method2));
-    }
+    [self setInstanceMethod:[self setInstanceMethodFromSelector:aSelector2 forSelector:aSelector1] typeEncoding:NULL forSelector:aSelector2];
 }
 
 @end
