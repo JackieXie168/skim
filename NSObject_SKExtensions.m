@@ -42,13 +42,23 @@
 
 @implementation NSObject (SKExtensions)
 
-+ (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-    Method method = class_getClassMethod(self, aSelector);
-    IMP imp = method ? SK_method_getImplementation(method) : NULL;
-    if (method && types == NULL)
-        types = SK_method_getTypeEncoding(method);
-    SK_class_replaceMethod(SK_object_getClass(self), aSelector, anImp, types);
+static inline IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
+    IMP imp = NULL;
+    if (anImp) {
+        Method method = isInstance ? class_getClassMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
+        if (method) {
+            imp = SK_method_getImplementation(method);
+            if (types == NULL)
+                types = SK_method_getTypeEncoding(method);
+        }
+        if (types)
+            SK_class_replaceMethod(isInstance ? aClass : SK_object_getClass(aClass), aSelector, anImp, types);
+    }
     return imp;
+}
+
++ (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
+    return SKReplaceMethodImplementation(self, aSelector, anImp, types, NO);
 }
 
 - (IMP)setMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
@@ -56,12 +66,7 @@
 }
 
 + (IMP)setInstanceMethod:(IMP)anImp typeEncoding:(const char *)types forSelector:(SEL)aSelector {
-    Method method = class_getInstanceMethod(self, aSelector);
-    IMP imp = method ? SK_method_getImplementation(method) : NULL;
-    if (method && types == NULL)
-        types = SK_method_getTypeEncoding(method);
-    SK_class_replaceMethod(self, aSelector, anImp, types);
-    return imp;
+    return SKReplaceMethodImplementation(self, aSelector, anImp, types, YES);
 }
 
 + (IMP)setMethodFromSelector:(SEL)impSelector forSelector:(SEL)aSelector {
