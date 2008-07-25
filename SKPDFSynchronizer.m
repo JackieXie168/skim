@@ -157,7 +157,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | API
 
 - (void)stopDOServer {
-    // this is really only necessary to tickle the server thread's runloop so it will finish
+    // tell the server thread to stop running, this is also necessary to tickle the server thread so the runloop can finish
     [serverOnServerThread stopRunning];
     // set the stop flag so any running task may finish
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&serverFlags->shouldKeepRunning);
@@ -182,7 +182,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | Server thread
 
 - (oneway void)stopRunning {
-    // not really necessary, as the main thread should already have done this
     stopRunning = YES;
 }
 
