@@ -106,8 +106,8 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 
 static CFMutableDictionaryRef lineRectsDict = NULL;
 
-static IMP originalDealloc = NULL;
-static IMP originalDrawWithBoxInContext = NULL;
+static void (*originalDealloc)(id, SEL) = NULL;
+static void (*originalDrawWithBoxInContext)(id, SEL, CGPDFBox, CGContextRef) = NULL;
 
 - (void)replacementDealloc {
     CFDictionaryRemoveValue(lineRectsDict, self);
@@ -123,9 +123,9 @@ static IMP originalDrawWithBoxInContext = NULL;
 }
 
 + (void)load {
-    originalDealloc = [self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
+    originalDealloc = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        originalDrawWithBoxInContext = [self setInstanceMethodFromSelector:@selector(replacementDrawWithBox:inContext:) forSelector:@selector(drawWithBox:inContext:)];
+        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))[self setInstanceMethodFromSelector:@selector(replacementDrawWithBox:inContext:) forSelector:@selector(drawWithBox:inContext:)];
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 

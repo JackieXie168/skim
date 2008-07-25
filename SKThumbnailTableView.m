@@ -49,7 +49,7 @@ static NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotifica
 
 @implementation NSScroller (SKExtensions)
 
-static IMP originalTrackKnob = NULL;
+static void (*originalTrackKnob)(id, SEL, id) = NULL;
 
 - (void)replacementTrackKnob:(NSEvent *)theEvent {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerWillScrollNotification object:self];
@@ -58,7 +58,7 @@ static IMP originalTrackKnob = NULL;
 }
 
 + (void)load {
-    originalTrackKnob = [self setInstanceMethodFromSelector:@selector(replacementTrackKnob:) forSelector:@selector(trackKnob:)];
+    originalTrackKnob = (void (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementTrackKnob:) forSelector:@selector(trackKnob:)];
 }
 
 @end
