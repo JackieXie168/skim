@@ -61,12 +61,6 @@
     return recordIndex;
 }
 
-- (void)setRecordIndex:(int)newRecordIndex {
-    if (recordIndex != newRecordIndex) {
-        recordIndex = newRecordIndex;
-    }
-}
-
 - (int)pageIndex {
     return pageIndex;
 }
