@@ -51,7 +51,7 @@ Class SK_object_getClass(id object) {
 
 IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
-} 
+}
 
 const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
@@ -110,7 +110,7 @@ Class SK_object_getClass(id object) {
 
 IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation(aMethod);
-} 
+}
 
 const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding(aMethod);
