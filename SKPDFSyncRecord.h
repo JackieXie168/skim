@@ -50,7 +50,6 @@
 - (id)initWithRecordIndex:(int)aRecordIndex;
 
 - (int)recordIndex;
-- (void)setRecordIndex:(int)newRecordIndex;
 
 - (int)pageIndex;
 - (void)setPageIndex:(int)newPageIndex;
