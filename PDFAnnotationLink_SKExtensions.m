@@ -49,8 +49,8 @@
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
 
-static IMP originalToolTip = NULL;
-static IMP originalToolTipNoLabel = NULL;
+static id (*originalToolTip)(id, SEL) = NULL;
+static id (*originalToolTipNoLabel)(id, SEL) = NULL;
 
 - (NSString *)replacementToolTip {
     return ([self URL] || [self destination] || originalToolTip == NULL) ? nil : originalToolTip(self, _cmd);
@@ -62,9 +62,9 @@ static IMP originalToolTipNoLabel = NULL;
 
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
-        originalToolTip = [self setInstanceMethodFromSelector:@selector(replacementToolTip) forSelector:@selector(toolTip)];
+        originalToolTip = (id (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementToolTip) forSelector:@selector(toolTip)];
     if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
-        originalToolTipNoLabel = [self setInstanceMethodFromSelector:@selector(replacementToolTipNoLabel) forSelector:@selector(toolTip)];
+        originalToolTipNoLabel = (id (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementToolTipNoLabel) forSelector:@selector(toolTip)];
 }
 
 - (BOOL)isLink { return YES; }

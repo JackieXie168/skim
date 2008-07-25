@@ -43,10 +43,10 @@
 
 @implementation NSScrollView (SKExtensions)
 
-static IMP originalSetHasHorizontalScroller = NULL;
-static IMP originalSetAutohidesScrollers = NULL;
-static IMP originalDealloc = NULL;
-static IMP originalTile = NULL;
+static void (*originalSetHasHorizontalScroller)(id, SEL, BOOL) = NULL;
+static void (*originalSetAutohidesScrollers)(id, SEL, BOOL) = NULL;
+static void (*originalDealloc)(id, SEL) = NULL;
+static void (*originalTile)(id, SEL) = NULL;
 
 static CFMutableDictionaryRef scrollViewPlacards = NULL;
 
@@ -103,10 +103,10 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
 }
 
 + (void)load{
-    originalSetHasHorizontalScroller = [self setInstanceMethodFromSelector:@selector(replacementSetHasHorizontalScroller:) forSelector:@selector(setHasHorizontalScroller:)];
-    originalSetAutohidesScrollers = [self setInstanceMethodFromSelector:@selector(replacementSetAutohidesScrollers:) forSelector:@selector(setAutohidesScrollers:)];
-    originalDealloc = [self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
-    originalTile = [self setInstanceMethodFromSelector:@selector(replacementTile) forSelector:@selector(tile)];
+    originalSetHasHorizontalScroller = (void (*)(id, SEL, BOOL))[self setInstanceMethodFromSelector:@selector(replacementSetHasHorizontalScroller:) forSelector:@selector(setHasHorizontalScroller:)];
+    originalSetAutohidesScrollers = (void (*)(id, SEL, BOOL))[self setInstanceMethodFromSelector:@selector(replacementSetAutohidesScrollers:) forSelector:@selector(setAutohidesScrollers:)];
+    originalDealloc = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
+    originalTile = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementTile) forSelector:@selector(tile)];
     
     // dictionary doesn't retain keys, so no retain cycles; pointer equality used to compare views
     scrollViewPlacards = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);

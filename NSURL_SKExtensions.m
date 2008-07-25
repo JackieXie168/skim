@@ -43,8 +43,8 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 @implementation NSURL (SKExtensions)
 
-static IMP originalInitFileURLWithPath = NULL;
-static IMP originalInitWithString = NULL;
+static id (*originalInitFileURLWithPath)(id, SEL, id) = NULL;
+static id (*originalInitWithString)(id, SEL, id) = NULL;
 
 - (id)replacementInitFileURLWithPath:(NSString *)path {
     return path == nil ? nil : originalInitFileURLWithPath(self, _cmd, path);
@@ -55,8 +55,8 @@ static IMP originalInitWithString = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = [self setInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:) forSelector:@selector(initFileURLWithPath:)];
-    originalInitWithString = [self setInstanceMethodFromSelector:@selector(replacementInitWithString:) forSelector:@selector(initWithString:)];
+    originalInitFileURLWithPath = (id (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:) forSelector:@selector(initFileURLWithPath:)];
+    originalInitWithString = (id (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementInitWithString:) forSelector:@selector(initWithString:)];
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

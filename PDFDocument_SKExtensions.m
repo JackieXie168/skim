@@ -48,7 +48,7 @@
 
 @implementation PDFDocument (SKExtensions)
 
-static IMP originalGetPrintOperationForPrintInfo = NULL;
+static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
 
 - (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
     NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
@@ -74,7 +74,7 @@ static IMP originalGetPrintOperationForPrintInfo = NULL;
 + (void)load {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        originalGetPrintOperationForPrintInfo = [self setInstanceMethodFromSelector:@selector(replacementGetPrintOperationForPrintInfo:autoRotate:) forSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)];
+        originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))[self setInstanceMethodFromSelector:@selector(replacementGetPrintOperationForPrintInfo:autoRotate:) forSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)];
     [pool release];
 }
 

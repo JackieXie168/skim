@@ -155,7 +155,7 @@
 
 @implementation NSLevelIndicatorCell (SKExtensions)
 
-static IMP originalDrawWithFrameInView = NULL;
+static void (*originalDrawWithFrameInView)(id, SEL, NSRect, id) = NULL;
 
 // Drawing does not restrict the clip, while in discrete style it heavily uses gaussian blur, leading to unacceptable slow drawing
 // see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
@@ -172,7 +172,7 @@ static IMP originalDrawWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalDrawWithFrameInView = [self setInstanceMethodFromSelector:@selector(replacementDrawWithFrame:inView:) forSelector:@selector(drawWithFrame:inView:)];
+    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))[self setInstanceMethodFromSelector:@selector(replacementDrawWithFrame:inView:) forSelector:@selector(drawWithFrame:inView:)];
 }
 
 @end

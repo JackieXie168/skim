@@ -44,7 +44,7 @@
 
 @implementation NSCell (SKExtensions)
 
-static IMP originalHighlightColorWithFrameInView = NULL;
+static id (*originalHighlightColorWithFrameInView)(id, SEL, NSRect, id) = NULL;
 
 - (NSColor *)replacementHighlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     if ([controlView respondsToSelector:@selector(highlightColor)])
@@ -54,7 +54,7 @@ static IMP originalHighlightColorWithFrameInView = NULL;
 }
 
 + (void)load {
-    originalHighlightColorWithFrameInView = [self setInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:) forSelector:@selector(highlightColorWithFrame:inView:)];
+    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))[self setInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:) forSelector:@selector(highlightColorWithFrame:inView:)];
 }
 
 @end
