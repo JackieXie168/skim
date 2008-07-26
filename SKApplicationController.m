@@ -87,7 +87,12 @@
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
+static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
+
 static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
+static NSString *SKSpotlightLastImporterVersionKey = @"lastImporterVersion";
+static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
+
 
 @implementation SKApplicationController
 
@@ -421,10 +426,10 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
         if ([versionInfo count] == 0) {
             runImporter = YES;
         } else {
-            NSString *lastImporterVersion = [versionInfo objectForKey:@"lastImporterVersion"];
+            NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
             SKVersionNumber *lastImporterVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:lastImporterVersion] autorelease];
             
-            long lastSysVersion = [[versionInfo objectForKey:@"lastSysVersion"] longValue];
+            long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
             
             runImporter = noErr == err ? ([lastImporterVersionNumber compareToVersionNumber:importerVersionNumber] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
@@ -433,8 +438,8 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
             if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
                 [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
                 
-                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], @"lastSysVersion", importerVersion, @"lastImporterVersion", nil];
-                [[NSUserDefaults standardUserDefaults] setObject:info forKey:@"SKSpotlightVersionInfo"];
+                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
+                [[NSUserDefaults standardUserDefaults] setObject:info forKey:SKSpotlightVersionInfoKey];
                 
             } else NSLog(@"%@ not found!", mdimportPath);
         }
@@ -442,7 +447,7 @@ static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
 }
 
 - (void)saveCurrentOpenDocuments:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
