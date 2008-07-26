@@ -300,7 +300,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return transitionFilter;
 }
 
-- (CIImage *)createCurrentImage {
+- (CIImage *)newCurrentImage {
     NSRect bounds = [view bounds];
     NSBitmapImageRep *contentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
     
@@ -329,14 +329,14 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         if (CoreGraphicsServicesTransitionsDefined()) {
             if (shouldRestrict) {
                 [initialImage release];
-                initialImage = [self createCurrentImage];
+                initialImage = [self newCurrentImage];
             }
             // We don't want the window to draw the next state before the animation is run
             [[view window] disableFlushWindow];
         }
     } else {
         [initialImage release];
-        initialImage = [self createCurrentImage];
+        initialImage = [self newCurrentImage];
         
         // We don't want the window to draw the next state before the animation is run
         [[view window] disableFlushWindow];
@@ -359,7 +359,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
                 NSRect bounds = [view bounds];
                 imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
                 
-                finalImage = [self createCurrentImage];
+                finalImage = [self newCurrentImage];
                 
                 float dx = NSMinX(bounds) - NSMinX(imageRect);
                 float dy = NSMinY(bounds) - NSMinY(imageRect);
@@ -425,7 +425,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         NSRect bounds = [view bounds];
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
         
-        CIImage *finalImage = [self createCurrentImage];
+        CIImage *finalImage = [self newCurrentImage];
         
         CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
         
