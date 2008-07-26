@@ -983,7 +983,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
         unichar firstChar = [self characterAtIndex:firstCharRange.location];
         unsigned int rangeEnd = NSMaxRange(firstCharRange);
         if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
-            if (firstChar == '\r' && rangeEnd < NSMaxRange(range) && [self characterAtIndex:rangeEnd] == '\n')
+            if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [self characterAtIndex:rangeEnd] == NSNewlineCharacter)
                 wsRange = NSMakeRange(start, rangeEnd + 1 - start);
             else 
                 wsRange = NSMakeRange(start, rangeEnd - start);
