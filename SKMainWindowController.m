@@ -2052,6 +2052,28 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
           contextInfo:NULL];
 }
 
+- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *path = [[self document] fileName];
+        NSString *label = [controller stringValue];
+        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
+        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addBookmark:(id)sender {
+    if (bookmarkSheetController == nil)
+        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    
+	[bookmarkSheetController setStringValue:[[self document] displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self window]
+        modalDelegate:self 
+       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
 - (IBAction)toggleReadingBar:(id)sender {
     [pdfView toggleReadingBar];
 }
@@ -3131,7 +3153,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self registerDestinationHistory:dest];
 }
 
-#pragma mark Sub- and note- windows
+#pragma mark Subwindows
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits {
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
@@ -3280,30 +3302,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
         [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
     }
-}
-
-#pragma mark Bookmarks
-
-- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn) {
-        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
-        NSString *path = [[self document] fileName];
-        NSString *label = [controller stringValue];
-        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
-        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:[controller selectedFolder]];
-    }
-}
-
-- (IBAction)addBookmark:(id)sender {
-    if (bookmarkSheetController == nil)
-        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
-    
-	[bookmarkSheetController setStringValue:[[self document] displayName]];
-    
-    [bookmarkSheetController beginSheetModalForWindow: [self window]
-        modalDelegate:self 
-       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
 }
 
 #pragma mark Observer registration
