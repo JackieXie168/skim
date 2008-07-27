@@ -471,9 +471,9 @@
 			productReference = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CEBA2B540E0566B00000B2E6 /* skimnotes */ = {
+		CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEBA2B600E0566DF0000B2E6 /* Build configuration list for PBXNativeTarget "skimnotes" */;
+			buildConfigurationList = CEBA2B600E0566DF0000B2E6 /* Build configuration list for PBXNativeTarget "SkimNotes Tool" */;
 			buildPhases = (
 				CEBA2B520E0566B00000B2E6 /* Sources */,
 				CEBA2B530E0566B00000B2E6 /* Frameworks */,
@@ -482,7 +482,7 @@
 			);
 			dependencies = (
 			);
-			name = skimnotes;
+			name = "SkimNotes Tool";
 			productName = skimnotes;
 			productReference = CEBA2B550E0566B00000B2E6 /* skimnotes */;
 			productType = "com.apple.product-type.tool";
@@ -533,7 +533,7 @@
 			targets = (
 				8DC2EF4F0486A6940098B216 /* SkimNotes */,
 				CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */,
-				CEBA2B540E0566B00000B2E6 /* skimnotes */,
+				CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */,
 				CE665A840E1C086D00D0704D /* HeaderDocs */,
 				CEBA2EA20E0673B60000B2E6 /* Archive */,
 				CEDB9AE80E2E9F090057FD09 /* SkimNotesTest */,
@@ -672,7 +672,7 @@
 		};
 		CEBA2EAC0E067F420000B2E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
 			targetProxy = CEBA2EAB0E067F420000B2E6 /* PBXContainerItemProxy */;
 		};
 		CEDB9AF10E2E9F170057FD09 /* PBXTargetDependency */ = {
@@ -682,7 +682,7 @@
 		};
 		CEDB9AF30E2E9F170057FD09 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CEBA2B540E0566B00000B2E6 /* skimnotes */;
+			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
 			targetProxy = CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -948,7 +948,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEBA2B600E0566DF0000B2E6 /* Build configuration list for PBXNativeTarget "skimnotes" */ = {
+		CEBA2B600E0566DF0000B2E6 /* Build configuration list for PBXNativeTarget "SkimNotes Tool" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEBA2B570E0566B30000B2E6 /* Debug */,
