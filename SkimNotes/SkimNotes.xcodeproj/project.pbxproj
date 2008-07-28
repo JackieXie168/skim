@@ -26,7 +26,6 @@
 			);
 			dependencies = (
 				CEBA2EA60E0673D40000B2E6 /* PBXTargetDependency */,
-				CEA5F5B00E2CF8B100F65088 /* PBXTargetDependency */,
 				CEBA2EAC0E067F420000B2E6 /* PBXTargetDependency */,
 				CEA5F6090E2D270500F65088 /* PBXTargetDependency */,
 			);
@@ -83,13 +82,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CEA5F5AF0E2CF8B100F65088 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088;
-			remoteInfo = SkimNotesBase;
-		};
 		CEA5F6080E2D270500F65088 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -655,11 +647,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CEA5F5B00E2CF8B100F65088 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
-			targetProxy = CEA5F5AF0E2CF8B100F65088 /* PBXContainerItemProxy */;
-		};
 		CEA5F6090E2D270500F65088 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CE665A840E1C086D00D0704D /* HeaderDocs */;
