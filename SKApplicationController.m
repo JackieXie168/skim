@@ -147,7 +147,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 
 #pragma mark NSApplication delegate
 
-- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{log_method();
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
@@ -208,6 +208,11 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
     if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
         [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
     remoteControl = container;
+}
+
+// we don't want to reopen last open files when re-activating the app
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
+    return NO;
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
