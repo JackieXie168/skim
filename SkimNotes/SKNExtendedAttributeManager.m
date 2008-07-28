@@ -36,6 +36,7 @@
 #define UNIQUE_VALUE            [[NSProcessInfo processInfo] globallyUniqueString]
 #define PREFIX                  @"net_sourceforge_skim-app"
 
+#define FRAGMENT_NAME_SEPARATOR @"-"
 #define NAME_SEPARATOR          @"_"
 #define UNIQUE_KEY_SUFFIX       @"_unique_key"
 #define WRAPPER_KEY_SUFFIX      @"_has_wrapper"
@@ -257,7 +258,7 @@ static id sharedNoSplitManager = nil;
         // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             NSError *tmpError = nil;
-            name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)i];
+            name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
             if (nil == subdata) {
                 NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
@@ -343,7 +344,7 @@ static id sharedNoSplitManager = nil;
         const char *valuePtr = [value bytes];
         
         for (j = 0; success && j < numberOfFragments; j++) {
-            name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)j];
+            name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)j];
             
             char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
             size_t subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
@@ -432,7 +433,7 @@ static id sharedNoSplitManager = nil;
                 
                 // remove the sub attributes
                 for (i = 0; i < numberOfFragments; i++) {
-                    name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, NAME_SEPARATOR, (long)i];
+                    name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
                     const char *subAttrName = [name UTF8String];
                     status = removexattr(fsPath, subAttrName, xopts);
                     if (status == -1) {
