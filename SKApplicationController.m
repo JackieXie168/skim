@@ -147,7 +147,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 
 #pragma mark NSApplication delegate
 
-- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{log_method();
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
