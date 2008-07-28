@@ -2631,6 +2631,7 @@
 		CE592C600B9239C600C113DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				PRODUCT_NAME = DiskImage;
 			};
 			name = Release;
 		};
