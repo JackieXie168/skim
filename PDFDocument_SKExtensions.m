@@ -63,7 +63,7 @@ static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
         
         Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
         if (printAccessoryControllerClass == Nil)
-            printAccessoryControllerClass = [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] classNamed:@"SKPrintAccessoryController"];
+            printAccessoryControllerClass = [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] principalClass];
         id printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
         if (printAccessoryViewController)
             [printPanel addAccessoryController:printAccessoryViewController];
