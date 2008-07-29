@@ -200,10 +200,7 @@
 }
 
 - (BOOL)isVisible {
-	BOOL isVisible = ([self superview] != nil);
-	if (isVisible && [self respondsToSelector:@selector(isHidden)])
-		isVisible = ([self isHidden] == NO);
-	return isVisible;
+	return [self superview] && [self isHidden] == NO;
 }
 
 - (void)toggleBelowView:(NSView *)view offset:(float)offset {
