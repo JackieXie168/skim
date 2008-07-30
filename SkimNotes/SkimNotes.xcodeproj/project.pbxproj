@@ -713,11 +713,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = Debug;
 		};
@@ -725,11 +720,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = Release;
 		};
@@ -758,11 +748,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 			};
 			name = "Release (GC dual-mode)";
 		};
@@ -805,11 +790,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
@@ -819,11 +799,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
@@ -833,11 +808,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Versions/A/Frameworks\"";
 				GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch;
 				PRODUCT_NAME = SkimNotesBase;
 			};
