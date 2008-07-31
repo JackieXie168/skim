@@ -317,9 +317,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     } else {
         BOOL wasRunning = NO;
         @synchronized(self) {
-            wasRunning = [[self task] isRunning];
+            wasRunning = [task isRunning];
             if (wasRunning)
-                [[self task] terminate];
+                [task terminate];
         }
         if (wasRunning == NO)
             [self converterWasStopped];
