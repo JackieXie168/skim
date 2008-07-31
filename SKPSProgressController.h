@@ -37,7 +37,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <libkern/OSAtomic.h>
 
 @interface SKConversionProgressController : NSWindowController {
     IBOutlet NSButton *cancelButton;
@@ -58,7 +57,7 @@
 
 @interface SKDVIProgressController : SKPSProgressController {
     NSTask *task;
-    volatile int32_t convertingPS __attribute__ ((aligned (32)));
+    volatile int32_t convertingPS;
 }
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 @end

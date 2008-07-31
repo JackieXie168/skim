@@ -41,6 +41,7 @@
 #import "NSTask_SKExtensions.h"
 #import "Files_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import <libkern/OSAtomic.h>
 
 static NSString *SKPSProgressProviderKey = @"provider";
 static NSString *SKPSProgressConsumerKey = @"consumer";
@@ -61,6 +62,7 @@ enum {
 - (void)stopModalOnMainThread:(BOOL)success;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
+- (void)converterWasStopped;
 - (NSString *)fileType;
 @end
 
@@ -169,6 +171,13 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 }
 
+- (void)converterWasStopped {
+    NSBeep();
+    [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
+    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
+    [cancelButton setAction:@selector(close:)];
+}
+
 - (NSString *)fileType { return @""; }
 
 - (void)conversionCompleted:(BOOL)didComplete;
@@ -199,12 +208,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender
 {
-    if (CGPSConverterAbort(converter) == false) {
-        NSBeep();
-        [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
-        [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
-        [cancelButton setAction:@selector(close:)];
-    }
+    if (CGPSConverterAbort(converter) == false)
+        [self converterWasStopped];
 }
 
 - (NSData *)PDFDataWithPostScriptData:(NSData *)psData
@@ -306,15 +311,18 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender
 {
+    OSMemoryBarrier();
     if (convertingPS) {
         [super cancel:sender];
-    } else if ([task isRunning]) {
-        [task terminate];
     } else {
-        NSBeep();
-        [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
-        [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
-        [cancelButton setAction:@selector(close:)];
+        BOOL wasRunning = NO;
+        @synchronized(self) {
+            wasRunning = [[self task] isRunning];
+            if (wasRunning)
+                [[self task] terminate];
+        }
+        if (wasRunning == NO)
+            [self converterWasStopped];
     }
 }
 
@@ -361,7 +369,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     if (success) {
         
-        task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
+        @synchronized(self) {
+            task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
+        }
         
         invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
@@ -373,8 +383,10 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         }
     }
     
-    [task release];
-    task = nil;
+    @synchronized(self) {
+        [task release];
+        task = nil;
+    }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
     NSMutableData *pdfData = [info objectForKey:SKPSProgressPdfDataKey];
