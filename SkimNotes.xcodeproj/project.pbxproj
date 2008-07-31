@@ -46,6 +46,7 @@
 		CE3776960E2FC52A00261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
 		CE3776970E2FC53000261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
+		CE5280B20E41C137000F9CAC /* SkimNotes-Common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */; };
 		CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEA5F5500E2CEDFF00F65088 /* NSFileManager_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */; };
@@ -159,6 +160,7 @@
 		CE3907B80E082CAD0015B0B7 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B90E082CB00015B0B7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907BA0E082CB40015B0B7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SkimNotes.strings; sourceTree = "<group>"; };
+		CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-Common.xcconfig"; path = "Configurations/SkimNotes-Common.xcconfig"; sourceTree = "<group>"; };
 		CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotesBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase.h; sourceTree = "<group>"; };
 		CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase_Prefix.pch; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 		CEBA30790E06DC4C0000B2E6 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
+				CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */,
 				CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */,
 				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
 				CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */,
@@ -539,6 +542,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
+				CE5280B20E41C137000F9CAC /* SkimNotes-Common.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
