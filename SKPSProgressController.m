@@ -286,8 +286,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSEnumerator *toolEnum = [supportedTools objectEnumerator];
         
         NSAssert1(commandName == nil || [supportedTools containsObject:commandName], @"DVI converter %@ is not supported", commandName);
-        if (commandPath == nil || [supportedTools containsObject:commandName] == NO)
-            commandPath = [toolEnum nextObject];
+        if (commandName == nil || [supportedTools containsObject:commandName] == NO)
+            commandName = [toolEnum nextObject];
         do {
             i = 0;
             while ([fm isExecutableFileAtPath:commandPath] == NO) {
