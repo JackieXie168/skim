@@ -96,7 +96,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (id)initWithNote:(PDFAnnotation *)aNote {
     if (self = [super init]) {
         note = [aNote retain];
-        editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
@@ -113,7 +112,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    CFRelease(editors);
     [textViewUndoManager release];
     [note release];
     [super dealloc];
@@ -159,7 +157,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
-    [self commitEditing];
+    [ownerController commitEditing];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
 }
@@ -219,29 +217,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [pdfView setActiveAnnotation:note];
 }
 
-- (void)objectDidBeginEditing:(id)editor {
-    if (CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor) == -1)
-		CFArrayAppendValue((CFMutableArrayRef)editors, editor);		
-}
-
-- (void)objectDidEndEditing:(id)editor {
-    CFIndex idx = CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor);
-    if (idx != -1)
-		CFArrayRemoveValueAtIndex((CFMutableArrayRef)editors, idx);		
-}
-
-- (BOOL)commitEditing {
-    CFIndex idx = CFArrayGetCount(editors);
-    
-	while (idx--)
-		if([(NSObject *)(CFArrayGetValueAtIndex(editors, idx)) commitEditing] == NO)
-			return NO;
-    
-    return YES;
-}
-
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
-    [self commitEditing];
+    [ownerController commitEditing];
 }
 
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {

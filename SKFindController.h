@@ -43,11 +43,11 @@
 @interface SKFindController : NSWindowController {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
+    IBOutlet NSObjectController *ownerController;
     NSString *findString;
     int lastChangeCount;
     BOOL ignoreCase;
     BDSKFindFieldEditor *fieldEditor;
-    CFArrayRef editors;
 }
 
 + (id)sharedFindController;
@@ -68,8 +68,6 @@
 
 - (id)target;
 - (id)selectionSource;
-
-- (BOOL)commitEditing;
 
 @end
 
