@@ -46,6 +46,7 @@
     IBOutlet BDSKDragImageView *imageView;
     IBOutlet SKStatusBar *statusBar;
     IBOutlet NSPopUpButton *iconTypePopUpButton;
+    IBOutlet NSObjectController *ownerController;
     
     PDFAnnotation *note;
     
@@ -53,8 +54,6 @@
     BOOL forceOnTop;
     
     NSUndoManager *textViewUndoManager;
-    
-    CFArrayRef editors;
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
@@ -72,7 +71,6 @@
 
 - (void)statusBarClicked:(id)sender;
 
-- (BOOL)commitEditing;
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
 
 @end
