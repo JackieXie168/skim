@@ -156,3 +156,20 @@
 - (NSString *)bundledFileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path error:(NSError **)outError;
 
 @end
+
+
+/*!
+    @abstract   Returns a string representation of Skim notes.
+    @discussion This is used to write a default Skim text notes representation when not provided for writing.
+    @param      noteDicts An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+    @result     A string representation of the notes.
+*/
+extern NSString *SKNSkimTextNotes(NSArray *noteDicts);
+
+/*!
+    @abstract   Returns an RTF data representation of Skim notes.
+    @discussion This is used to write a default Skim RTF notes representation when not provided for writing.
+    @param      noteDicts An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+    @result     An RTF data representation of the notes.
+*/
+extern NSData *SKNSkimRTFNotes(NSArray *noteDicts);
