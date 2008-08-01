@@ -44,7 +44,7 @@
 #define NOTE_CONTENTS_KEY @"contents"
 #define NOTE_TEXT_KEY @"text"
 
-NSString *SKNTextNotes(NSArray *noteDicts) {
+NSString *SKNSkimTextNotes(NSArray *noteDicts) {
     NSMutableString *textString = [NSMutableString string];
     NSEnumerator *dictEnum = [noteDicts objectEnumerator];
     NSDictionary *dict;
@@ -71,7 +71,7 @@ NSString *SKNTextNotes(NSArray *noteDicts) {
     return textString;
 }
 
-NSData *SKNRTFNotes(NSArray *noteDicts) {
+NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     NSEnumerator *dictEnum = [noteDicts objectEnumerator];
     NSDictionary *dict;
