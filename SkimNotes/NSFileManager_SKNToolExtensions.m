@@ -159,9 +159,9 @@
             @catch (id e) {}
             if ([notes count]) {
                 if (textNotes == nil)
-                    textNotes = SKNTextNotes(notes);
+                    textNotes = SKNSkimTextNotes(notes);
                 if (rtfNotesData == nil)
-                    rtfNotesData = SKNRTFNotes(notes);
+                    rtfNotesData = SKNSkimRTFNotes(notes);
             }
         }
         NSData *textNotesData = [textNotes dataUsingEncoding:NSUTF8StringEncoding];

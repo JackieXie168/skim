@@ -50,5 +50,5 @@
 #define RTF_EXTENSION   @"rtf"
 #define FDF_EXTENSION   @"fdf"
 
-extern NSString *SKNTextNotes(NSArray *noteDicts);
-extern NSData *SKNRTFNotes(NSArray *noteDicts);
+extern NSString *SKNSkimTextNotes(NSArray *noteDicts);
+extern NSData *SKNSkimRTFNotes(NSArray *noteDicts);
