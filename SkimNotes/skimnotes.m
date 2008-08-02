@@ -309,7 +309,10 @@ int main (int argc, const char * argv[]) {
                     pdfFilePath = [pdfPath stringByAppendingPathComponent:filename];
                 success = [fm copyPath:pdfFilePath toPath:notesPath handler:nil];
             } else {
-                success = [fm createDirectoryAtPath:notesPath attributes:nil];
+                if (success = [fm createDirectoryAtPath:notesPath attributes:nil]) {
+                    NSString *pdfFilePath = [notesPath stringByAppendingPathComponent:[[[notesPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDFD_EXTENSION]];
+                    success = [fm copyPath:pdfPath toPath:pdfFilePath handler:nil];
+                }
             }
             if (success) {
                 NSData *notesData = [fm SkimNotesAtPath:pdfPath error:&error];
