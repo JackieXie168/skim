@@ -298,8 +298,6 @@ int main (int argc, const char * argv[]) {
         } else if (action == SKNActionConvert) {
             
             if (isBundle) {
-                success = [fm createDirectoryAtPath:notesPath attributes:nil];
-            } else {
                 NSString *pdfFilePath = nil;
                 NSArray *files = [fm subpathsAtPath:pdfPath];
                 NSString *filename = [[[pdfPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION];
@@ -310,6 +308,8 @@ int main (int argc, const char * argv[]) {
                 if (filename)
                     pdfFilePath = [pdfPath stringByAppendingPathComponent:filename];
                 success = [fm copyPath:pdfFilePath toPath:notesPath handler:nil];
+            } else {
+                success = [fm createDirectoryAtPath:notesPath attributes:nil];
             }
             if (success) {
                 NSData *notesData = [fm SkimNotesAtPath:pdfPath error:&error];
