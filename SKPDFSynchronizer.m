@@ -101,6 +101,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         pages = [[NSMutableArray alloc] init];
         lines = [[NSMutableDictionary alloc] init];
         
+        filenames = [[NSMutableDictionary alloc] init];
         scanner = NULL;
         
         NSPort *port1 = [NSPort port];
@@ -139,6 +140,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSZoneFree(NSDefaultMallocZone(), serverFlags);
     [pages release];
     [lines release];
+    [filenames release];
     [fileName release];
     [syncFileName release];
     [lastModDate release];
@@ -563,6 +565,15 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
         [self setSyncFileName:SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner))];
+        [filenames removeAllObjects];
+        NSString *theFileName = [self fileName];
+        NSString *file, *filename;
+        synctex_node_t node = synctex_scanner_input(scanner);
+        do {
+            filename = SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node)));
+            file = SKTeXSourceFile(filename, [theFileName stringByDeletingLastPathComponent]);
+            [filenames setObject:filename forKey:file];
+        } while (node = synctex_node_next(node));
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
     }
@@ -584,7 +595,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
-    if (synctex_display_query(scanner, [[file lastPathComponent] fileSystemRepresentation], line, 0) > 0) {
+    NSString *filename = [filenames objectForKey:file];
+    if (filename == nil)
+        filename = [file lastPathComponent];
+    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             unsigned int page = synctex_node_page(node);

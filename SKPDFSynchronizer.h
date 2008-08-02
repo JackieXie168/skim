@@ -48,6 +48,7 @@
     NSMutableArray *pages;
     NSMutableDictionary *lines;
     
+    NSMutableDictionary *filenames;
     synctex_scanner_t scanner;
     
     id delegate;
