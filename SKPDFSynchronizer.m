@@ -54,9 +54,9 @@ static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
     if ([[file pathExtension] caseInsensitiveCompare:SKPDFSynchronizerTexExtension] != NSOrderedSame)
         file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
-    if ([file hasPrefix:@"/"] == NO)
+    if ([file isAbsolutePath] == NO)
         file = [base stringByAppendingPathComponent:file];
-    return file;
+    return SKRealPath(file);
 }
 
 #pragma mark -
@@ -584,7 +584,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
-    if (synctex_display_query(scanner, [file fileSystemRepresentation], line, 0) > 0) {
+    if (synctex_display_query(scanner, [[file lastPathComponent] fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             unsigned int page = synctex_node_page(node);
@@ -648,6 +648,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         unsigned int foundPageIndex = NSNotFound;
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
+        
+        file = SKRealPath(file);
         
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];

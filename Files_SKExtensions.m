@@ -124,6 +124,18 @@ NSString *SKPathFromFileSystemRepresentation(const char *path) {
     return thePath;
 }
 
+NSString *SKRealPath(NSString *path) {
+    FSRef fileRef;
+    NSURL *url = nil;
+    if (CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
+        url = (NSURL*)CFURLCreateFromFSRef(NULL, &fileRef);
+    if (url) {
+        path = [url path];
+        [url release];
+    }
+    return path;
+}
+
 NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
