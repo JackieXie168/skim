@@ -75,7 +75,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
 
 + (void)load {
     originalDealloc = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
-    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &SKNSRectDictionaryValueCallbacks);
+    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 
 // mainly useful for drawing the box in a PDFView while debugging

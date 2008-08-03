@@ -45,7 +45,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKCFCallbacks.h"
+#import "SKCFCallBacks.h"
 #import "NSObject_SKExtensions.h"
 
 
@@ -132,7 +132,7 @@ static void (*originalDrawWithBoxInContext)(id, SEL, CGPDFBox, CGContextRef) = N
 - (CFMutableArrayRef)lineRects {
     CFMutableArrayRef lineRects = (CFMutableArrayRef)CFDictionaryGetValue(lineRectsDict, self);
     if (lineRects == NULL) {
-        lineRects = CFArrayCreateMutable(NULL, 0, &SKNSRectArrayCallbacks);
+        lineRects = CFArrayCreateMutable(NULL, 0, &kSKNSRectArrayCallBacks);
         CFDictionaryAddValue(lineRectsDict, self, lineRects);
         CFRelease(lineRects);
     }

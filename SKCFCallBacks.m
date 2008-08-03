@@ -179,7 +179,7 @@ Boolean	SKNSRectEqual(const void *value1, const void *value2) {
     return NSEqualRects(*(NSRect *)value1, *(NSRect *)value2);
 }
 
-const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks = {
+const CFDictionaryKeyCallBacks kSKPointerEqualObjectDictionaryKeyCallBacks = {
     0,   // version
     SKNSObjectRetain,
     SKNSObjectRelease,
@@ -188,7 +188,7 @@ const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks = {
     NULL // hash
 };
 
-const CFDictionaryKeyCallBacks SKCaseInsensitiveDictionaryKeyCallbacks = {
+const CFDictionaryKeyCallBacks kSKCaseInsensitiveStringDictionaryKeyCallBacks = {
     0,   // version
     SKNSObjectRetain,
     SKNSObjectRelease,
@@ -197,7 +197,7 @@ const CFDictionaryKeyCallBacks SKCaseInsensitiveDictionaryKeyCallbacks = {
     SKCaseInsensitiveStringHash
 };
 
-const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks = {
+const CFDictionaryValueCallBacks kSKFloatDictionaryValueCallBacks = {
     0, // version
     SKFloatRetain,
     SKFloatRelease,
@@ -205,7 +205,7 @@ const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks = {
     SKFloatEqual
 };
 
-const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks = {
+const CFDictionaryValueCallBacks kSKNSRectDictionaryValueCallBacks = {
     0, // version
     SKNSRectRetain,
     SKNSRectRelease,
@@ -213,7 +213,7 @@ const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks = {
     SKNSRectEqual
 };
 
-const CFArrayCallBacks SKNSRectArrayCallbacks = {
+const CFArrayCallBacks kSKNSRectArrayCallBacks = {
     0, // version
     SKNSRectRetain,
     SKNSRectRelease,
@@ -221,7 +221,7 @@ const CFArrayCallBacks SKNSRectArrayCallbacks = {
     SKNSRectEqual
 };
 
-const CFSetCallBacks SKPointerEqualObjectSetCallbacks = {
+const CFSetCallBacks kSKPointerEqualObjectSetCallBacks = {
     0,   // version
     SKNSObjectRetain,
     SKNSObjectRelease,
