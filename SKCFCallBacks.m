@@ -60,6 +60,7 @@ CFHashCode SKCaseInsensitiveStringHash(const void *value)
 {
     if(value == NULL) return 0;
     
+    uint32_t hash = 0;
     CFAllocatorRef allocator = CFGetAllocator(value);
     CFIndex len = CFStringGetLength(value);
     
@@ -75,69 +76,7 @@ CFHashCode SKCaseInsensitiveStringHash(const void *value)
     // If we create the string with external characters, CFStringGetCharactersPtr is guaranteed to succeed; since we're going to call CFStringGetCharacters anyway in fastHash if CFStringGetCharactsPtr fails, let's do it now when we lowercase the string
     CFMutableStringRef mutableString = CFStringCreateMutableWithExternalCharactersNoCopy(allocator, buffer, len, len + 10, (buffer != stackBuffer ? allocator : kCFAllocatorNull));
     CFStringLowercase(mutableString, NULL);
-    
-    // Golden ratio - arbitrary start value to avoid mapping all 0's to all 0's
-    // or anything like that.
-    static const uint32_t PHI = 0x9e3779b9U;
-    
-    // Paul Hsieh's SuperFastHash
-    // http://www.azillionmonkeys.com/qed/hash.html
-    // Implementation from Apple's WebCore/khtml/xml/dom_stringimpl.cpp, designed
-    // to hash UTF-16 characters.
-    
-    unsigned l = CFStringGetLength(mutableString);
-    uint32_t hash = PHI;
-    uint32_t tmp;
-    
-    const UniChar *s = CFStringGetCharactersPtr(mutableString);
-    UniChar *buf = NULL, stackBuf[STACK_BUFFER_SIZE];
-    
-    if (s == NULL) {
-        
-        if (l > STACK_BUFFER_SIZE) {
-            buf = (UniChar *)CFAllocatorAllocate(allocator, l * sizeof(UniChar), 0);
-            NSCAssert(buf != NULL, @"unable to allocate memory");
-        } else {
-            buf = stackBuf;
-        }
-        CFStringGetCharacters(mutableString, CFRangeMake(0, l), buf);
-        s = buf;
-    }
-    
-    int rem = l & 1;
-    l >>= 1;
-    
-    // Main loop
-    for (; l > 0; l--) {
-        hash += s[0];
-        tmp = (s[1] << 11) ^ hash;
-        hash = (hash << 16) ^ tmp;
-        s += 2;
-        hash += hash >> 11;
-    }
-    
-    // Handle end case
-    if (rem) {
-        hash += s[0];
-        hash ^= hash << 11;
-        hash += hash >> 17;
-    }
-    
-    if (buf != stackBuf) CFAllocatorDeallocate(allocator, buf);
-    
-    // Force "avalanching" of final 127 bits
-    hash ^= hash << 3;
-    hash += hash >> 5;
-    hash ^= hash << 2;
-    hash += hash >> 15;
-    hash ^= hash << 10;
-    
-    // this avoids ever returning a hash code of 0, since that is used to
-    // signal "hash not computed yet", using a value that is likely to be
-    // effectively the same as 0 when the low bits are masked
-    if (hash == 0)
-        hash = 0x80000000;
-    
+    hash = CFHash(mutableString);
     // if we used the allocator, this should free the buffer for us
     CFRelease(mutableString);
     return hash;
