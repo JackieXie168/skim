@@ -44,6 +44,7 @@
 #import <Carbon/Carbon.h>
 #import "Files_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKCFCallBacks.h"
 
 #define SYNC_TO_PDF(coord) ((float)coord / 65536.0)
 #define PDF_TO_SYNC(coord) (int)(coord * 65536.0)
@@ -56,7 +57,7 @@ static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
         file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
     if ([file isAbsolutePath] == NO)
         file = [base stringByAppendingPathComponent:file];
-    return SKRealPath(file);
+    return file;
 }
 
 #pragma mark -
@@ -99,9 +100,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         isPdfsync = YES;
         
         pages = [[NSMutableArray alloc] init];
-        lines = [[NSMutableDictionary alloc] init];
+        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &SKCaseInsensitiveDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
         
-        filenames = [[NSMutableDictionary alloc] init];
+        filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &SKCaseInsensitiveDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
         scanner = NULL;
         
         NSPort *port1 = [NSPort port];
@@ -662,8 +663,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
         unsigned int foundPageIndex = NSNotFound;
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
-        
-        file = SKRealPath(file);
         
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
