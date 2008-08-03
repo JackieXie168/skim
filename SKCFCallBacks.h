@@ -68,18 +68,18 @@ extern CFStringRef SKNSRectCopyDescription(const void *value);
 extern Boolean SKNSRectEqual(const void *value1, const void *value2);
 
 
-extern const CFDictionaryKeyCallBacks SKPointerEqualObjectDictionaryKeyCallbacks;
+extern const CFDictionaryKeyCallBacks kSKPointerEqualObjectDictionaryKeyCallBacks;
 
-extern const CFDictionaryKeyCallBacks SKCaseInsensitiveDictionaryKeyCallbacks;
+extern const CFDictionaryKeyCallBacks kSKCaseInsensitiveStringDictionaryKeyCallBacks;
 
-extern const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks;
+extern const CFDictionaryValueCallBacks kSKFloatDictionaryValueCallBacks;
 
-extern const CFDictionaryValueCallBacks SKFloatDictionaryValueCallbacks;
+extern const CFDictionaryValueCallBacks kSKFloatDictionaryValueCallBacks;
 
-extern const CFDictionaryValueCallBacks SKNSRectDictionaryValueCallbacks;
-
-
-extern const CFArrayCallBacks SKNSRectArrayCallbacks;
+extern const CFDictionaryValueCallBacks kSKNSRectDictionaryValueCallBacks;
 
 
-extern const CFSetCallBacks SKPointerEqualObjectSetCallbacks;
+extern const CFArrayCallBacks kSKNSRectArrayCallBacks;
+
+
+extern const CFSetCallBacks kSKPointerEqualObjectSetCallBacks;

@@ -100,9 +100,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         isPdfsync = YES;
         
         pages = [[NSMutableArray alloc] init];
-        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &SKCaseInsensitiveDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
+        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
         
-        filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &SKCaseInsensitiveDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
+        filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
         scanner = NULL;
         
         NSPort *port1 = [NSPort port];

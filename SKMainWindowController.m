@@ -90,7 +90,7 @@
 #import "SKColorSwatch.h"
 #import "NSObject_SKExtensions.h"
 #import "SKApplicationController.h"
-#import "SKCFCallbacks.h"
+#import "SKCFCallBacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
@@ -236,7 +236,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
         lastViewedPages = [[NSMutableArray alloc] init];
         // @@ remove or set to nil for Leopard?
         pdfOutlineItems = [[NSMutableArray alloc] init];
-        rowHeights = CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &SKFloatDictionaryValueCallbacks);
+        rowHeights = CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kSKFloatDictionaryValueCallBacks);
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         leftSidePaneState = SKThumbnailSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
@@ -1039,8 +1039,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (void)setNotes:(NSArray *)newNotes {
-    NSMutableSet *old = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
-    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    NSMutableSet *old = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
+    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
     NSMutableSet *removed;
     NSMutableSet *added;
     
@@ -1163,8 +1163,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (void)setSnapshots:(NSArray *)newSnapshots {
-    NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
-    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &SKPointerEqualObjectSetCallbacks);
+    NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
+    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
     
     [new addObjectsFromArray:newSnapshots];
     [removed addObjectsFromArray:snapshots];
@@ -3452,7 +3452,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSUndoManager *undoManager = [[self document] undoManager];
             if (undoGroupOldPropertiesPerNote == nil) {
                 // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
-                undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &SKPointerEqualObjectDictionaryKeyCallbacks, &kCFTypeDictionaryValueCallBacks);
+                undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
                 // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
                 [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
             }
