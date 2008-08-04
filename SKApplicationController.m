@@ -186,10 +186,10 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     [NSApp setServicesProvider:self];
     
-    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    SKVersionNumber *versionNumber = versionString ? [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease] : nil;
+    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+    SKVersionNumber *versionNumber = versionString ? [SKVersionNumber versionNumberWithVersionString:versionString] : nil;
     NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
-    SKVersionNumber *lastVersionNumber = lastVersionString ? [[[SKVersionNumber alloc] initWithVersionString:lastVersionString] autorelease] : nil;
+    SKVersionNumber *lastVersionNumber = lastVersionString ? [SKVersionNumber versionNumberWithVersionString:lastVersionString] : nil;
     if(lastVersionNumber == nil || [lastVersionNumber compareToVersionNumber:versionNumber] == NSOrderedAscending) {
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
@@ -421,7 +421,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
     NSBundle *importerBundle = [NSBundle bundleWithPath:importerPath];
     NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     if (importerVersion) {
-        SKVersionNumber *importerVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:importerVersion] autorelease];
+        SKVersionNumber *importerVersionNumber = [SKVersionNumber versionNumberWithVersionString:importerVersion];
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
         long sysVersion;
@@ -432,7 +432,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
             runImporter = YES;
         } else {
             NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
-            SKVersionNumber *lastImporterVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:lastImporterVersion] autorelease];
+            SKVersionNumber *lastImporterVersionNumber = [SKVersionNumber versionNumberWithVersionString:lastImporterVersion];
             
             long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
             
