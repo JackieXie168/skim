@@ -97,6 +97,8 @@
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
+#define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
+
 NSString *SKMainWindowPageLabelsKey = @"pageLabels";
 NSString *SKMainWindowSearchResultsKey = @"searchResults";
 NSString *SKMainWindowGroupedSearchResultsKey = @"groupedSearchResults";
@@ -2301,7 +2303,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
         savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
         [leftSideWindow setLevel:[[self window] level] + 1];
-        [leftSideWindow setAlphaValue:0.95];
+        [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
         [leftSideWindow makeFirstResponder:thumbnailTableView];
         [leftSideWindow expand];
@@ -2327,15 +2329,14 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     }
     
     if ([self isPresentation]) {
-        [rightSideWindow expand];
         [leftSideWindow setLevel:[[self window] level] + 1];
-        [leftSideWindow setAlphaValue:0.95];
+        [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setEnabled:NO];
+        [rightSideWindow expand];
     } else {
         [rightSideWindow collapse];
+        [rightSideWindow orderFront:self];
     }
-    
-    [rightSideWindow orderFront:self];
 }
 
 - (void)hideLeftSideWindow {
