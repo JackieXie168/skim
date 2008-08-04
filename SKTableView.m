@@ -39,6 +39,7 @@
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSLayoutManager_SKExtensions.h"
 
 
 @implementation SKTableView
@@ -162,19 +163,13 @@
 }
 
 - (void)setFont:(NSFont *)font {
-    static NSLayoutManager *layoutManager = nil;
-    if (layoutManager == nil) {
-        layoutManager = [[NSLayoutManager alloc] init];
-        [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
-    }
-    
     NSEnumerator *tcEnum = [[self tableColumns] objectEnumerator];
     NSTableColumn *tc;
     
     while (tc = [tcEnum nextObject])
         [[tc dataCell] setFont:font];
     
-    [self setRowHeight:[layoutManager defaultLineHeightForFont:font]];
+    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
