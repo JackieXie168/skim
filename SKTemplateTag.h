@@ -1,5 +1,5 @@
 //
-//  SKTag.h
+//  SKTemplateTag.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 10/12/07.
@@ -39,20 +39,30 @@
 #import <Cocoa/Cocoa.h>
 
 enum {
-    SKValueTagType,
-    SKCollectionTagType,
-    SKConditionTagType,
-    SKTextTagType
+    SKValueTemplateTagType,
+    SKCollectionTemplateTagType,
+    SKConditionTemplateTagType,
+    SKTextTemplateTagType
 };
+typedef NSInteger SKTemplateTagType;
 
-@interface SKTag : NSObject {
+enum {
+    SKTemplateTagMatchOther,
+    SKTemplateTagMatchEqual,
+    SKTemplateTagMatchContain,
+    SKTemplateTagMatchSmaller,
+    SKTemplateTagMatchSmallerOrEqual,
+};
+typedef NSInteger SKTemplateTagMatchType;
+
+@interface SKTemplateTag : NSObject {
 }
-- (int)type;
+- (SKTemplateTagType)type;
 @end
 
 #pragma mark -
 
-@interface SKValueTag : SKTag {
+@interface SKValueTemplateTag : SKTemplateTag {
     NSString *keyPath;
 }
 
@@ -64,7 +74,7 @@ enum {
 
 #pragma mark -
 
-@interface SKRichValueTag : SKValueTag {
+@interface SKRichValueTemplateTag : SKValueTemplateTag {
     NSDictionary *attributes;
 }
 
@@ -76,7 +86,7 @@ enum {
 
 #pragma mark -
 
-@interface SKCollectionTag : SKValueTag {
+@interface SKCollectionTemplateTag : SKValueTemplateTag {
     NSString *itemTemplateString;
     NSString *separatorTemplateString;
     NSMutableArray *itemTemplate;
@@ -92,7 +102,7 @@ enum {
 
 #pragma mark -
 
-@interface SKRichCollectionTag : SKValueTag {
+@interface SKRichCollectionTemplateTag : SKValueTemplateTag {
     NSAttributedString *itemTemplateAttributedString;
     NSAttributedString *separatorTemplateAttributedString;
     NSMutableArray *itemTemplate;
@@ -108,15 +118,15 @@ enum {
 
 #pragma mark -
 
-@interface SKConditionTag : SKValueTag {
-    int matchType;
+@interface SKConditionTemplateTag : SKValueTemplateTag {
+    SKTemplateTagMatchType matchType;
     NSMutableArray *subtemplates;
     NSArray *matchStrings;
 }
 
-- (id)initWithKeyPath:(NSString *)aKeyPath matchType:(int)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates;
+- (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates;
 
-- (int)matchType;
+- (SKTemplateTagMatchType)matchType;
 - (NSArray *)matchStrings;
 - (NSArray *)subtemplates;
 - (NSArray *)subtemplateAtIndex:(unsigned)index;
@@ -125,12 +135,12 @@ enum {
 
 #pragma mark -
 
-@interface SKRichConditionTag : SKConditionTag
+@interface SKRichConditionTemplateTag : SKConditionTemplateTag
 @end
 
 #pragma mark -
 
-@interface SKTextTag : SKTag {
+@interface SKTextTemplateTag : SKTemplateTag {
     NSString *text;
 }
 
@@ -143,7 +153,7 @@ enum {
 
 #pragma mark -
 
-@interface SKRichTextTag : SKTag {
+@interface SKRichTextTemplateTag : SKTemplateTag {
     NSAttributedString *attributedText;
 }
 

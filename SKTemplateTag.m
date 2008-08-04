@@ -1,5 +1,5 @@
 //
-//  SKTag.m
+//  SKTemplateTag.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 10/12/07.
@@ -36,17 +36,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKTag.h"
+#import "SKTemplateTag.h"
 #import "SKTemplateParser.h"
 
 
-@implementation SKTag
-- (int)type { return -1; }
+@implementation SKTemplateTag
+- (SKTemplateTagType)type { return -1; }
 @end
 
 #pragma mark -
 
-@implementation SKValueTag
+@implementation SKValueTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath {
     if (self = [super init]) {
@@ -60,7 +60,7 @@
     [super dealloc];
 }
 
-- (int)type { return SKValueTagType; }
+- (SKTemplateTagType)type { return SKValueTemplateTagType; }
 
 - (NSString *)keyPath {
     return keyPath;
@@ -70,7 +70,7 @@
 
 #pragma mark -
 
-@implementation SKRichValueTag
+@implementation SKRichValueTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath attributes:(NSDictionary *)anAttributes {
     if (self = [super initWithKeyPath:aKeyPath]) {
@@ -92,7 +92,7 @@
 
 #pragma mark -
 
-@implementation SKCollectionTag
+@implementation SKCollectionTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString {
     if (self = [super initWithKeyPath:aKeyPath]) {
@@ -112,7 +112,7 @@
     [super dealloc];
 }
 
-- (int)type { return SKCollectionTagType; }
+- (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateString)
@@ -130,7 +130,7 @@
 
 #pragma mark -
 
-@implementation SKRichCollectionTag
+@implementation SKRichCollectionTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateString {
     if (self = [super initWithKeyPath:aKeyPath]) {
@@ -150,7 +150,7 @@
     [super dealloc];
 }
 
-- (int)type { return SKCollectionTagType; }
+- (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateAttributedString)
@@ -168,9 +168,9 @@
 
 #pragma mark -
 
-@implementation SKConditionTag
+@implementation SKConditionTemplateTag
 
-- (id)initWithKeyPath:(NSString *)aKeyPath matchType:(int)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates {
+- (id)initWithKeyPath:(NSString *)aKeyPath matchType:(SKTemplateTagMatchType)aMatchType matchStrings:(NSArray *)aMatchStrings subtemplates:(NSArray *)aSubtemplates {
     if (self = [super initWithKeyPath:aKeyPath]) {
         matchType = aMatchType;
         matchStrings = [aMatchStrings copy];
@@ -185,9 +185,9 @@
     [super dealloc];
 }
 
-- (int)type { return SKConditionTagType; }
+- (SKTemplateTagType)type { return SKConditionTemplateTagType; }
 
-- (int)matchType {
+- (SKTemplateTagMatchType)matchType {
     return matchType;
 }
 
@@ -212,7 +212,7 @@
 
 #pragma mark -
 
-@implementation SKRichConditionTag
+@implementation SKRichConditionTemplateTag
 
 - (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
@@ -227,7 +227,7 @@
 
 #pragma mark -
 
-@implementation SKTextTag
+@implementation SKTextTemplateTag
 
 - (id)initWithText:(NSString *)aText {
     if (self = [super init]) {
@@ -241,7 +241,7 @@
     [super dealloc];
 }
 
-- (int)type { return SKTextTagType; }
+- (SKTemplateTagType)type { return SKTextTemplateTagType; }
 
 - (NSString *)text {
     return text;
@@ -258,7 +258,7 @@
 
 #pragma mark -
 
-@implementation SKRichTextTag
+@implementation SKRichTextTemplateTag
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText {
     if (self = [super init]) {
@@ -272,7 +272,7 @@
     [super dealloc];
 }
 
-- (int)type { return SKTextTagType; }
+- (SKTemplateTagType)type { return SKTextTemplateTagType; }
 
 - (NSAttributedString *)attributedText {
     return attributedText;

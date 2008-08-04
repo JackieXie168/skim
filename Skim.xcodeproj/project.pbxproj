@@ -155,7 +155,7 @@
 		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
 		CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
-		CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTag.m */; };
+		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
@@ -722,8 +722,8 @@
 		CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask_SKExtensions.h; sourceTree = "<group>"; };
 		CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTask_SKExtensions.m; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
-		CE8978CB0CBFC70B00EA2D98 /* SKTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTag.h; sourceTree = "<group>"; };
-		CE8978CC0CBFC70B00EA2D98 /* SKTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTag.m; sourceTree = "<group>"; };
+		CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateTag.h; sourceTree = "<group>"; };
+		CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateTag.m; sourceTree = "<group>"; };
 		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDDocument.icns; path = Images/PDFDDocument.icns; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
@@ -1362,8 +1362,8 @@
 				CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */,
 				CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */,
 				CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */,
-				CE8978CB0CBFC70B00EA2D98 /* SKTag.h */,
-				CE8978CC0CBFC70B00EA2D98 /* SKTag.m */,
+				CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */,
+				CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */,
 				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
 				CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */,
@@ -2074,7 +2074,7 @@
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
 				CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */,
-				CE8978CE0CBFC70B00EA2D98 /* SKTag.m in Sources */,
+				CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */,
 				CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,
 				CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */,
