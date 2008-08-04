@@ -310,8 +310,8 @@ int main (int argc, const char * argv[]) {
                 success = [fm copyPath:pdfFilePath toPath:notesPath handler:nil];
             } else {
                 if (success = [fm createDirectoryAtPath:notesPath attributes:nil]) {
-                    NSString *pdfFilePath = [notesPath stringByAppendingPathComponent:[[[notesPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDFD_EXTENSION]];
-                    success = [fm copyPath:pdfPath toPath:pdfFilePath handler:nil];
+                    NSString *pdfFilePath = [notesPath stringByAppendingPathComponent:[[[notesPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION]];
+                    success = [[NSData dataWithContentsOfFile:pdfPath options:0 error:&error] writeToFile:pdfFilePath options:0 error:&error];
                 }
             }
             if (success) {
