@@ -175,6 +175,7 @@
         [[tc dataCell] setFont:font];
     
     [self setRowHeight:[layoutManager defaultLineHeightForFont:font]];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 @end
