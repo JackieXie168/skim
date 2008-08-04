@@ -76,31 +76,16 @@ static id sharedNoSplitManager = nil;
 
 - (id)init;
 {
-    self = [self initWithPrefix:PREFIX];
-    if (sharedManager) {
-        [self release];
-        self = [sharedManager retain];
-    } else {
-        sharedManager = [self retain]; // we don't care about overretaining a shared object, but we care about overreleasing
-    }
-    return self;
+    return [self initWithPrefix:PREFIX];
 }
 
 - (id)initWithPrefix:(NSString *)prefix;
 {
     if (self = [super init]) {
-        if (prefix) {
-            namePrefix = [[prefix stringByAppendingString:NAME_SEPARATOR] retain];
-            uniqueKey = [[prefix stringByAppendingString:UNIQUE_KEY_SUFFIX] retain];
-            wrapperKey = [[prefix stringByAppendingString:WRAPPER_KEY_SUFFIX] retain];
-            fragmentsKey = [[prefix stringByAppendingString:FRAGMENTS_KEY_SUFFIX] retain];
-        } else if (sharedNoSplitManager) {
-            [self release];
-            self = [sharedNoSplitManager retain];
-        } else {
-            namePrefix = uniqueKey = wrapperKey = fragmentsKey = nil;
-            sharedNoSplitManager = [self retain]; // we don't care about overretaining a shared object, but we care about overreleasing
-        }
+        namePrefix = [[prefix stringByAppendingString:NAME_SEPARATOR] retain];
+        uniqueKey = [[prefix stringByAppendingString:UNIQUE_KEY_SUFFIX] retain];
+        wrapperKey = [[prefix stringByAppendingString:WRAPPER_KEY_SUFFIX] retain];
+        fragmentsKey = [[prefix stringByAppendingString:FRAGMENTS_KEY_SUFFIX] retain];
     }
     return self;
 }
