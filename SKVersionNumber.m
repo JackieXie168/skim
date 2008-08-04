@@ -18,6 +18,11 @@
 
 @implementation SKVersionNumber
 
++ (id)versionNumberWithVersionString:(NSString *)versionString;
+{
+    return [[[[self class] alloc] initWithVersionString:versionString] autorelease];
+}
+
 // Initializes the receiver from a string representation of a version number.  The input string may have an optional leading 'v' or 'V' followed by a sequence of positive integers separated by '.'s.  Any trailing component of the input string that doesn't match this pattern is ignored.  If no portion of this string matches the pattern, nil is returned.
 - (id)initWithVersionString:(NSString *)versionString;
 {
