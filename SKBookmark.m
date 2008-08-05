@@ -41,9 +41,6 @@
 #import "NSImage_SKExtensions.h"
 #import "NSObject_SKExtensions.h"
 
-NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
-NSString *SKBookmarkWillBeRemovedNotification = @"SKBookmarkWillBeRemovedNotification";
-
 static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
 static NSString *SKBookmarkTypeFolderString = @"folder";
 static NSString *SKBookmarkTypeSeparatorString = @"separator";
@@ -143,7 +140,6 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [undoManager release];
     if (self != defaultPlaceholderBookmark)
         [super dealloc];
 }
@@ -162,9 +158,10 @@ static Class SKBookmarkClass = Nil;
 - (NSNumber *)pageNumber { return nil; }
 
 - (NSArray *)children { return nil; }
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)anIndex {}
-- (void)addChild:(SKBookmark *)child {}
-- (void)removeChild:(SKBookmark *)child {}
+- (unsigned int)countOfChildren { return 0; }
+- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex { return nil; }
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex {}
+- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex {}
 
 - (SKBookmark *)parent {
     return parent;
@@ -195,17 +192,6 @@ static Class SKBookmarkClass = Nil;
     return NO;
 }
 
-- (NSUndoManager *)undoManager {
-    return undoManager ? undoManager : [parent undoManager];
-}
-
-- (void)setUndoManager:(NSUndoManager *)newUndoManager {
-    if (undoManager != newUndoManager) {
-        [undoManager release];
-        undoManager = [newUndoManager retain];
-    }
-}
-
 @end
 
 #pragma mark -
@@ -232,7 +218,6 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [[self undoManager] removeAllActionsWithTarget:self];
     [alias release];
     [aliasData release];
     [label release];
@@ -307,10 +292,8 @@ static Class SKBookmarkClass = Nil;
 
 - (void)setLabel:(NSString *)newLabel {
     if (label != newLabel) {
-        [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] setLabel:label];
         [label release];
         label = [newLabel retain];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
     }
 }
 
@@ -334,7 +317,6 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [[self undoManager] removeAllActionsWithTarget:self];
     [label release];
     [children release];
     [super dealloc];
@@ -362,34 +344,31 @@ static Class SKBookmarkClass = Nil;
 
 - (void)setLabel:(NSString *)newLabel {
     if (label != newLabel) {
-        [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] setLabel:label];
         [label release];
         label = [newLabel retain];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
     }
 }
 
 - (NSArray *)children {
-    return children;
+    return [[children copy] autorelease];
 }
 
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)anIndex {
-    [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] removeChild:child];
+- (unsigned int)countOfChildren {
+    return [children count];
+}
+
+- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex {
+    return [children objectAtIndex:anIndex];
+}
+
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex {
     [children insertObject:child atIndex:anIndex];
     [child setParent:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
 }
 
-- (void)addChild:(SKBookmark *)child {
-    [self insertChild:child atIndex:[children count]];
-}
-
-- (void)removeChild:(SKBookmark *)child {
-    [(SKBookmark *)[[self undoManager] prepareWithInvocationTarget:self] insertChild:child atIndex:[[self children] indexOfObject:child]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkWillBeRemovedNotification object:self];
-    [child setParent:nil];
-    [children removeObject:child];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
+- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex {
+    [[children objectAtIndex:anIndex] setParent:nil];
+    [children removeObjectAtIndex:anIndex];
 }
 
 @end

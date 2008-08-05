@@ -38,9 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKBookmarkChangedNotification;
-extern NSString *SKBookmarkWillBeRemovedNotification;
-
 enum {
     SKBookmarkTypeBookmark,
     SKBookmarkTypeFolder,
@@ -49,7 +46,6 @@ enum {
 
 @interface SKBookmark : NSObject <NSCopying> {
     SKBookmark *parent;
-    NSUndoManager *undoManager;
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
@@ -72,15 +68,13 @@ enum {
 - (NSNumber *)pageNumber;
 
 - (NSArray *)children;
-- (void)insertChild:(SKBookmark *)child atIndex:(unsigned int)index;
-- (void)addChild:(SKBookmark *)child;
-- (void)removeChild:(SKBookmark *)child;
+- (unsigned int)countOfChildren;
+- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex;
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex;
+- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex;
 
 - (SKBookmark *)parent;
 - (void)setParent:(SKBookmark *)newParent;
-
-- (NSUndoManager *)undoManager;
-- (void)setUndoManager:(NSUndoManager *)newUndoManager;
 
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;

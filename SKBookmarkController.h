@@ -55,10 +55,6 @@
 - (SKBookmark *)bookmarkRoot;
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
-- (void)handleBookmarkChangedNotification:(NSNotification *)notification;
-- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification;
-- (NSString *)bookmarksFilePath;
 - (void)openBookmarks:(NSArray *)items;
 
 - (IBAction)doubleClickBookmark:(id)sender;
@@ -73,7 +69,5 @@
 - (NSArray *)snapshotsAtPath:(NSString *)path;
 
 - (NSUndoManager *)undoManager;
-
-- (void)setupToolbar;
 
 @end
