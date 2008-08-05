@@ -71,6 +71,20 @@ static NSString *SKRecentDocumentAliasKey = @"alias";
 static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
 static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 
+static NSString *SKBookmarkChildrenKey = @"children";
+static NSString *SKBookmarkLabelKey = @"label";
+
+static NSString *SKBookmarkPropertiesObservationContext = @"SKBookmarkPropertiesObservationContext";
+
+
+@interface SKBookmarkController (SKPrivate)
+- (void)setupToolbar;
+- (NSString *)bookmarksFilePath;
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
+- (void)endEditing;
+- (void)startObservingBookmarks:(NSArray *)newBookmarks;
+- (void)stopObservingBookmarks:(NSArray *)oldBookmarks;
+@end
 
 @implementation SKBookmarkController
 
@@ -127,25 +141,18 @@ static SKBookmarkController *sharedBookmarkController = nil;
         }
         
         bookmarkRoot = [[SKBookmark alloc] initFolderWithChildren:bookmarks label:nil];
-        [bookmarkRoot setUndoManager:[self undoManager]];
+        [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
         
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification
                                                    object:NSApp];
-		[[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleBookmarkChangedNotification:)
-                                                     name:SKBookmarkChangedNotification
-                                                   object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleBookmarkWillBeRemovedNotification:)
-                                                     name:SKBookmarkWillBeRemovedNotification
-                                                   object:nil];
     }
     return sharedBookmarkController;
 }
 
 - (void)dealloc {
+    [self stopObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [bookmarkRoot release];
     [recentDocuments release];
@@ -191,7 +198,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
         if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
             message = [bookmark path];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
-            int count = [[bookmark children] count];
+            int count = [bookmark countOfChildren];
             message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         }
     }
@@ -220,9 +227,10 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder {
+    if (folder == nil) folder = bookmarkRoot;
     SKBookmark *bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:pageIndex label:label];
     if (bookmark) {
-        [(folder ? folder : bookmarkRoot) addChild:bookmark];
+        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
         [bookmark release];
     }
 }
@@ -354,19 +362,19 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *folder = [[[SKBookmark alloc] initFolderWithLabel:NSLocalizedString(@"Folder", @"default folder name")] autorelease];
     int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = bookmarkRoot;
-    unsigned int idx = [[bookmarkRoot children] count];
+    unsigned int idx = [bookmarkRoot countOfChildren];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
         if ([outlineView isItemExpanded:selectedItem]) {
             item = selectedItem;
-            idx = [[item children] count];
+            idx = [item countOfChildren];
         } else {
             item = [selectedItem parent];
             idx = [[item children] indexOfObject:selectedItem] + 1;
         }
     }
-    [item insertChild:folder atIndex:idx];
+    [item insertObject:folder inChildrenAtIndex:idx];
     
     int row = [outlineView rowForItem:folder];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -377,19 +385,19 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *separator = [[[SKBookmark alloc] initSeparator] autorelease];
     int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = bookmarkRoot;
-    unsigned int idx = [[bookmarkRoot children] count];
+    unsigned int idx = [bookmarkRoot countOfChildren];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
         if ([outlineView isItemExpanded:selectedItem]) {
             item = selectedItem;
-            idx = [[item children] count];
+            idx = [item countOfChildren];
         } else {
             item = [selectedItem parent];
             idx = [[item children] indexOfObject:selectedItem] + 1;
         }
     }
-    [item insertChild:separator atIndex:idx];
+    [item insertObject:separator inChildrenAtIndex:idx];
     
     int row = [outlineView rowForItem:separator];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -416,6 +424,96 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return [self undoManager];
 }
 
+- (void)startObservingBookmarks:(NSArray *)newBookmarks {
+    NSEnumerator *bmEnum = [newBookmarks objectEnumerator];
+    SKBookmark *bm;
+    while (bm = [bmEnum nextObject]) {
+        if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
+            [bm addObserver:self forKeyPath:SKBookmarkLabelKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKBookmarkPropertiesObservationContext];
+            if ([bm bookmarkType] == SKBookmarkTypeFolder) {
+                [bm addObserver:self forKeyPath:SKBookmarkChildrenKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKBookmarkPropertiesObservationContext];
+                [self startObservingBookmarks:[bm children]];
+            }
+        }
+    }
+}
+
+- (void)stopObservingBookmarks:(NSArray *)oldBookmarks {
+    NSEnumerator *bmEnum = [oldBookmarks objectEnumerator];
+    SKBookmark *bm;
+    while (bm = [bmEnum nextObject]) {
+        if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
+            [bm removeObserver:self forKeyPath:SKBookmarkLabelKey];
+            if ([bm bookmarkType] == SKBookmarkTypeFolder) {
+                [bm removeObserver:self forKeyPath:SKBookmarkChildrenKey];
+                [self stopObservingBookmarks:[bm children]];
+            }
+        }
+    }
+}
+
+- (void)insertObjects:(NSArray *)newChildren inChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
+    [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] insertObjects:newChildren atIndexes:indexes];
+}
+
+- (void)removeObjectsFromChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
+    [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] removeObjectsAtIndexes:indexes];
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == SKBookmarkPropertiesObservationContext) {
+        SKBookmark *bookmark = (SKBookmark *)object;
+        id newValue = [change objectForKey:NSKeyValueChangeNewKey];
+        id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+        NSIndexSet *indexes = [change objectForKey:NSKeyValueChangeIndexesKey];
+        
+        if ([newValue isEqual:[NSNull null]]) newValue = nil;
+        if ([oldValue isEqual:[NSNull null]]) oldValue = nil;
+        
+        switch ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntValue]) {
+            case NSKeyValueChangeSetting:
+                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                    NSMutableArray *old = [NSMutableArray arrayWithArray:oldValue];
+                    NSMutableArray *new = [NSMutableArray arrayWithArray:newValue];
+                    [old removeObjectsInArray:newValue];
+                    [new removeObjectsInArray:oldValue];
+                    [self stopObservingBookmarks:old];
+                    [self startObservingBookmarks:new];
+                    [[[self undoManager] prepareWithInvocationTarget:bookmark] setChildren:oldValue];
+                } else if ([keyPath isEqualToString:SKBookmarkLabelKey]) {
+                    [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
+                }
+                break;
+            case NSKeyValueChangeInsertion:
+                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                    [self startObservingBookmarks:newValue];
+                    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
+                }
+                break;
+            case NSKeyValueChangeRemoval:
+                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                    [self stopObservingBookmarks:oldValue];
+                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:oldValue inChildrenOfBookmark:bookmark atIndexes:indexes];
+                }
+                break;
+            case NSKeyValueChangeReplacement:
+                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                    [self stopObservingBookmarks:oldValue];
+                    [self startObservingBookmarks:newValue];
+                    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:oldValue inChildrenOfBookmark:bookmark atIndexes:indexes];
+                }
+                break;
+        }
+        
+        [outlineView reloadData];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark Notification handlers
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
@@ -433,20 +531,16 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
 }
 
-- (void)handleBookmarkWillBeRemovedNotification:(NSNotification *)notification  {
+- (void)endEditing {
     if ([outlineView editedRow] && [[self window] makeFirstResponder:outlineView] == NO)
         [[self window] endEditingFor:nil];
-}
-
-- (void)handleBookmarkChangedNotification:(NSNotification *)notification {
-    [outlineView reloadData];
 }
 
 #pragma mark NSOutlineView datasource methods
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil) item = bookmarkRoot;
-    return [[item children] count];
+    return [item countOfChildren];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
@@ -455,7 +549,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
     if (item == nil) item = bookmarkRoot;
-    return [[item children]  objectAtIndex:anIndex];
+    return [item  objectInChildrenAtIndex:anIndex];
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
@@ -464,7 +558,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
         return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
     } else if ([tcID isEqualToString:@"file"]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder) {
-            int count = [[item children] count];
+            int count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         } else {
             return [item path];
@@ -503,7 +597,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
             } else if (item) {
                 [ov setDropItem:(SKBookmark *)[item parent] == bookmarkRoot ? nil : [item parent] dropChildIndex:[[[item parent] children] indexOfObject:item] + 1];
             } else {
-                [ov setDropItem:nil dropChildIndex:[[bookmarkRoot children] count]];
+                [ov setDropItem:nil dropChildIndex:[bookmarkRoot countOfChildren]];
             }
         }
         return [item isDescendantOfArray:[self draggedBookmarks]] ? NSDragOperationNone : NSDragOperationMove;
@@ -521,16 +615,18 @@ static SKBookmarkController *sharedBookmarkController = nil;
         
         if (item == nil) item = bookmarkRoot;
         
+        [self endEditing];
 		while (bookmark = [bmEnum nextObject]) {
-            int bookmarkIndex = [[[bookmark parent] children] indexOfObject:bookmark];
-            if (item == [bookmark parent]) {
+            SKBookmark *parent = [bookmark parent];
+            int bookmarkIndex = [[parent children] indexOfObject:bookmark];
+            if (item == parent) {
                 if (anIndex > bookmarkIndex)
                     anIndex--;
                 if (anIndex == bookmarkIndex)
                     continue;
             }
-            [[bookmark parent] removeChild:bookmark];
-            [(SKBookmark *)item insertChild:bookmark atIndex:anIndex++];
+            [parent removeObjectFromChildrenAtIndex:bookmarkIndex];
+            [(SKBookmark *)item insertObject:bookmark inChildrenAtIndex:anIndex++];
 		}
         return YES;
     }
@@ -576,8 +672,13 @@ static SKBookmarkController *sharedBookmarkController = nil;
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
     NSEnumerator *itemEnum = [[self minimumCoverForBookmarks:items] reverseObjectEnumerator];
     SKBookmark *item;
-    while (item = [itemEnum  nextObject])
-        [[item parent] removeChild:item];
+    [self endEditing];
+    while (item = [itemEnum  nextObject]) {
+        SKBookmark *parent = [item parent];
+        unsigned int itemIndex = [[parent children] indexOfObject:item];
+        if (itemIndex != NSNotFound)
+            [parent removeObjectFromChildrenAtIndex:itemIndex];
+    }
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items {
