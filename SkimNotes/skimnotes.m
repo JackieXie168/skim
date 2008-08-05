@@ -4,7 +4,7 @@
 #import "SKNUtilities.h"
 
 static char *usageStr = "Usage:\n skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n skimnotes set PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n skimnotes remove PDF_FILE\n skimnotes convert IN_PDF_FILE [OUT_PDF_FILE]\n skimnotes agent [SERVER_NAME]\n skimnotes protocol\n skimnotes help [VERB]\n skimnotes version";
-static char *versionStr = "SkimNotes command-line client, version 2.3.1";
+static char *versionStr = "SkimNotes command-line client, version 2.3.2";
 
 static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\nUsage: skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n\nReads Skim, Text, or RTF notes from extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE and writes to NOTES_FILE or standard output.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\nReads Skim notes when no format is provided.";
 static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\nUsage: skimnotes set PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n\nWrites notes to extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE from SKIM_FILE or standard input.\nUses notes file with same base name as PDF_FILE if SKIM_FILE is not provided. Writes a default form for the text formats based on the contents of SKIM_FILE if TEXT_FILE and/or RTF_FILE are not provided.";
