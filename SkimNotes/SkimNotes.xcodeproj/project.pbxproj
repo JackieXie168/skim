@@ -194,7 +194,7 @@
 		CEDB9AEB0E2E9F090057FD09 /* SkimNotesTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SkimNotesTest-Info.plist"; sourceTree = "<group>"; };
 		CEDB9AFB0E2E9F7E0057FD09 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SKNDocument.xib; sourceTree = "<group>"; };
 		CEDB9AFE0E2E9F8A0057FD09 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-App.xcconfig"; sourceTree = "<group>"; };
+		CEDB9B0D0E2EA1380057FD09 /* SkimNotes-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "SkimNotes-App.xcconfig"; path = "Configurations/SkimNotes-App.xcconfig"; sourceTree = "<group>"; };
 		CEDB9B200E2EA2F30057FD09 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
