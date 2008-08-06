@@ -127,7 +127,7 @@ static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodI
 #pragma mark API
 
 // this is essentially class_replaceMethod, but handles instance/class methods, returns any inherited implementation, and can get the types from an inherited implementation
-IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options) {
+IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options) {
     IMP imp = NULL;
     if (anImp) {
         Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
@@ -142,11 +142,39 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const 
     return imp;
 }
 
-IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options) {
+IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options) {
     Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
-    return method ? SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance, options) : NULL;
+    return method ? SKSetMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance, options) : NULL;
 }
 
-void SKExchangeMethodImplementationsForSelectors(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
-    SKReplaceMethodImplementation(aClass, aSelector2, SKReplaceMethodImplementationFromSelector(aClass, aSelector1, aSelector2, isInstance, SKReplaceOnly), NULL, isInstance, SKReplaceOnly);
+extern IMP SKAddInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
+    return SKSetMethodImplementation(aClass, aSelector, anImp, types, YES, SKSetOnly);
+}
+
+extern IMP SKReplaceInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
+    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, YES, SKReplaceOnly);
+}
+
+extern IMP SKAddInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
+    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, YES, SKSetOnly);
+}
+
+extern IMP SKReplaceInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
+    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, YES, SKReplaceOnly);
+}
+
+extern IMP SKAddClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types) {
+    return SKSetMethodImplementation(aClass, aSelector, anImp, types, NO, SKSetOnly);
+}
+
+extern IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
+    return SKSetMethodImplementation(aClass, aSelector, anImp, NULL, NO, SKReplaceOnly);
+}
+
+extern IMP SKAddClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
+    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, NO, SKSetOnly);
+}
+
+extern IMP SKReplaceClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector) {
+    return SKSetMethodImplementationFromSelector(aClass, aSelector, impSelector, NO, SKReplaceOnly);
 }

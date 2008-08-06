@@ -55,8 +55,8 @@ static id (*originalInitWithString)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:), YES, SKReplaceOnly);
-    originalInitWithString = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacementInitWithString:), YES, SKReplaceOnly);
+    originalInitFileURLWithPath = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:));
+    originalInitWithString = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacementInitWithString:));
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

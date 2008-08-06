@@ -74,7 +74,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES, SKReplaceOnly);
+    originalDealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc));
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 

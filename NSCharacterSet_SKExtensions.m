@@ -69,7 +69,7 @@
 }
 
 + (void)load {
-    SKReplaceMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet), NO, SKSetOnly);
+    SKAddClassMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet));
 }
 
 @end

@@ -1167,8 +1167,6 @@
 				CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
-				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
-				CE09FC3B0E3886C100BDF413 /* SKRuntime.m */,
 			);
 			name = "Foundation Categories";
 			sourceTree = "<group>";
@@ -1375,6 +1373,8 @@
 			children = (
 				CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */,
 				CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */,
+				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
+				CE09FC3B0E3886C100BDF413 /* SKRuntime.m */,
 				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
 				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
 				CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */,

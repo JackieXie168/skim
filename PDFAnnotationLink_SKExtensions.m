@@ -61,8 +61,8 @@ static id (*originalToolTipNoLabel)(id, SEL) = NULL;
 }
 
 + (void)load {
-    originalToolTip = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTip), YES, SKReplaceOnly);
-    originalToolTipNoLabel = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel), YES, SKReplaceOnly);
+    originalToolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTip));
+    originalToolTipNoLabel = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel));
 }
 
 - (BOOL)isLink { return YES; }

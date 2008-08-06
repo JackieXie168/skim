@@ -54,7 +54,7 @@ static id (*originalHighlightColorWithFrameInView)(id, SEL, NSRect, id) = NULL;
 }
 
 + (void)load {
-    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))SKReplaceMethodImplementationFromSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:), YES, SKReplaceOnly);
+    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:));
 }
 
 @end
