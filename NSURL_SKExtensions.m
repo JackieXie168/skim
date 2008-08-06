@@ -55,8 +55,10 @@ static id (*originalInitWithString)(id, SEL, id) = NULL;
 }
 
 + (void)load {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     originalInitFileURLWithPath = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:), YES);
     originalInitWithString = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacementInitWithString:), YES);
+    [pool release];
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

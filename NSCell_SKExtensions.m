@@ -54,7 +54,9 @@ static id (*originalHighlightColorWithFrameInView)(id, SEL, NSRect, id) = NULL;
 }
 
 + (void)load {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))SKReplaceMethodImplementationFromSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:), YES);
+    [pool release];
 }
 
 @end
