@@ -58,7 +58,7 @@ static void (*originalTrackKnob)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalTrackKnob = (void (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:), YES, SKReplaceOnly);
+    originalTrackKnob = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:));
 }
 
 @end

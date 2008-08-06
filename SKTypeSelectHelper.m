@@ -428,7 +428,7 @@ static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))SKReplaceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:), YES, SKReplaceOnly);
+    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:));
 }
 
 @end

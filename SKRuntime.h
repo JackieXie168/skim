@@ -54,6 +54,15 @@ enum {
     SKSetOnly
 };
 
-extern IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options);
-extern IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options);
-extern void SKExchangeMethodImplementations(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance);
+extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options);
+extern IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options);
+
+extern IMP SKAddInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types);
+extern IMP SKReplaceInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp);
+extern IMP SKAddInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector);
+extern IMP SKReplaceInstanceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector);
+
+extern IMP SKAddClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types);
+extern IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp);
+extern IMP SKAddClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector);
+extern IMP SKReplaceClassMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector);

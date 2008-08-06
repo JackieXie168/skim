@@ -173,7 +173,7 @@ static void (*originalDrawWithFrameInView)(id, SEL, NSRect, id) = NULL;
 
 + (void)load {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))SKReplaceMethodImplementationFromSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:), YES, SKReplaceOnly);
+    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
     [pool release];
 }
 

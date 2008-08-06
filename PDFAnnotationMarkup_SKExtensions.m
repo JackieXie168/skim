@@ -123,9 +123,9 @@ static void (*originalDrawWithBoxInContext)(id, SEL, CGPDFBox, CGContextRef) = N
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES, SKReplaceOnly);
+    originalDealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc));
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacementDrawWithBox:inContext:), YES, SKReplaceOnly);
+        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacementDrawWithBox:inContext:));
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
