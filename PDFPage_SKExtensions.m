@@ -42,7 +42,7 @@
 #import "SKPDFDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSCharacterSet_SKExtensions.h"
@@ -74,7 +74,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
+    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES);
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 

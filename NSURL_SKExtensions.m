@@ -37,7 +37,7 @@
  */
 
 #import "NSURL_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
@@ -55,8 +55,8 @@ static id (*originalInitWithString)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalInitFileURLWithPath = (id (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementInitFileURLWithPath:) forSelector:@selector(initFileURLWithPath:)];
-    originalInitWithString = (id (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementInitWithString:) forSelector:@selector(initWithString:)];
+    originalInitFileURLWithPath = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:), YES);
+    originalInitWithString = (id (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacementInitWithString:), YES);
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

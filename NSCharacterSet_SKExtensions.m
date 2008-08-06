@@ -37,7 +37,7 @@
  */
 
 #import "NSCharacterSet_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation NSCharacterSet (SKExtensions)
@@ -70,7 +70,7 @@
 
 + (void)load {
     if ([self respondsToSelector:@selector(newlineCharacterSet)] == NO)
-        [self setMethodFromSelector:@selector(replacementNewlineCharacterSet) forSelector:@selector(newlineCharacterSet)];
+        SKReplaceMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet), NO);
 }
 
 @end

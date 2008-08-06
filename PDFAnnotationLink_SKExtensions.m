@@ -37,7 +37,7 @@
  */
 
 #import "PDFAnnotationLink_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @interface PDFAnnotationLink (SKLeopardPrivate)
@@ -62,9 +62,9 @@ static id (*originalToolTipNoLabel)(id, SEL) = NULL;
 
 + (void)load {
     if ([self instancesRespondToSelector:@selector(toolTip)])
-        originalToolTip = (id (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementToolTip) forSelector:@selector(toolTip)];
+        originalToolTip = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTip), YES);
     if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
-        originalToolTipNoLabel = (id (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementToolTipNoLabel) forSelector:@selector(toolTip)];
+        originalToolTipNoLabel = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel), YES);
 }
 
 - (BOOL)isLink { return YES; }

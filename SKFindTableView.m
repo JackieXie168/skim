@@ -38,7 +38,7 @@
 
 #import "SKFindTableView.h"
 #import "SKStringConstants.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation SKFindTableView
@@ -172,7 +172,7 @@ static void (*originalDrawWithFrameInView)(id, SEL, NSRect, id) = NULL;
 }
 
 + (void)load {
-    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))[self setInstanceMethodFromSelector:@selector(replacementDrawWithFrame:inView:) forSelector:@selector(drawWithFrame:inView:)];
+    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))SKReplaceMethodImplementationFromSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:), YES);
 }
 
 @end

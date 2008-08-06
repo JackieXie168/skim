@@ -37,7 +37,7 @@
  */
 
 #import "SKFontWell.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 static NSString *SKNSFontPanelDescriptorsPboardType = @"NSFontPanelDescriptorsPboardType";
 static NSString *SKNSFontPanelFamiliesPboardType = @"NSFontPanelFamiliesPboardType";

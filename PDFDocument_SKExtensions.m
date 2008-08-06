@@ -38,7 +38,7 @@
 
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @interface PDFDocument (SKPrivateDeclarations)
@@ -74,7 +74,7 @@ static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
 + (void)load {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))[self setInstanceMethodFromSelector:@selector(replacementGetPrintOperationForPrintInfo:autoRotate:) forSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)];
+        originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:), YES);
     [pool release];
 }
 

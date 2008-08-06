@@ -39,7 +39,7 @@
 #import "SKInfoWindowController.h"
 #import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
 
