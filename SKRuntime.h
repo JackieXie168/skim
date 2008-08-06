@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-// wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
 #define OBINITIALIZE \
     do { \
@@ -52,3 +51,4 @@
 
 extern IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance);
 extern IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance);
+extern void SKExchangeMethodImplementations(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance);

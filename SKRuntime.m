@@ -39,6 +39,7 @@
 #import "SKRuntime.h"
 #import <objc/objc-runtime.h>
 
+// wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 
@@ -58,7 +59,7 @@ static inline const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
 }
 
-// generic implementation for SK_class_addMethod/SK_class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
+// generic implementation for class_addMethod/class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
 static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
     IMP imp = NULL;
     void *iterator = NULL;
@@ -123,6 +124,9 @@ static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodI
 
 #endif
 
+#pragma mark API
+
+// this is essentially class_replaceMethod, but handles instance/class methods, returns any inherited implementation, and can get the types from an inherited implementation
 IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
     IMP imp = NULL;
     if (anImp) {
@@ -141,4 +145,8 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const 
 IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance) {
     Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
     return method ? SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance) : NULL;
+}
+
+void SKExchangeMethodImplementationsForSelectors(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
+    SKReplaceMethodImplementation(aClass, aSelector2, SKReplaceMethodImplementationFromSelector(aClass, aSelector1, aSelector2, isInstance), NULL, isInstance);
 }
