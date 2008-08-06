@@ -127,7 +127,7 @@ static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodI
 #pragma mark API
 
 // this is essentially class_replaceMethod, but handles instance/class methods, returns any inherited implementation, and can get the types from an inherited implementation
-IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options) {
     IMP imp = NULL;
     if (anImp) {
         Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
@@ -136,17 +136,17 @@ IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const 
             if (types == NULL)
                 types = SK_method_getTypeEncoding(method);
         }
-        if (types)
+        if (types != NULL && (options != SKSetOnly || imp == NULL) && (options != SKReplaceOnly || imp != NULL))
             SK_class_replaceMethod(isInstance ? aClass : SK_object_getClass(aClass), aSelector, anImp, types);
     }
     return imp;
 }
 
-IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance) {
+IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options) {
     Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
-    return method ? SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance) : NULL;
+    return method ? SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance, options) : NULL;
 }
 
 void SKExchangeMethodImplementationsForSelectors(Class aClass, SEL aSelector1, SEL aSelector2, BOOL isInstance) {
-    SKReplaceMethodImplementation(aClass, aSelector2, SKReplaceMethodImplementationFromSelector(aClass, aSelector1, aSelector2, isInstance), NULL, isInstance);
+    SKReplaceMethodImplementation(aClass, aSelector2, SKReplaceMethodImplementationFromSelector(aClass, aSelector1, aSelector2, isInstance, SKReplaceOnly), NULL, isInstance, SKReplaceOnly);
 }

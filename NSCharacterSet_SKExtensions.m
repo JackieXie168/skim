@@ -69,10 +69,7 @@
 }
 
 + (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    if ([self respondsToSelector:@selector(newlineCharacterSet)] == NO)
-        SKReplaceMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet), NO);
-    [pool release];
+    SKReplaceMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet), NO, SKSetOnly);
 }
 
 @end

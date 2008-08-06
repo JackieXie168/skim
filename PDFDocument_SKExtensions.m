@@ -72,10 +72,7 @@ static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
 }
 
 + (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    if ([self instancesRespondToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:), YES);
-    [pool release];
+    originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:), YES, SKReplaceOnly);
 }
 
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {

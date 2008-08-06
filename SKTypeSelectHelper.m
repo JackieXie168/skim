@@ -428,9 +428,7 @@ static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))SKReplaceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:), YES);
-    [pool release];
+    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))SKReplaceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:), YES, SKReplaceOnly);
 }
 
 @end

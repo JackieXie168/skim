@@ -58,9 +58,7 @@ static void (*originalTrackKnob)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    originalTrackKnob = (void (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:), YES);
-    [pool release];
+    originalTrackKnob = (void (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:), YES, SKReplaceOnly);
 }
 
 @end
