@@ -94,6 +94,7 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
+#import "SKUnarchiveFromDataArrayTransformer.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -206,6 +207,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 + (void)initialize {
     OBINITIALIZE;
+    
+    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
     
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         segmentedControlHeight = 25.0;

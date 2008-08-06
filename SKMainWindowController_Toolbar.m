@@ -89,12 +89,6 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 
 @implementation SKMainWindowController (Toolbar)
 
-+ (void)load {
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
-    [pool release];
-}
-
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
     NSToolbarItem *toolbarItem = [toolbarItems objectForKey:SKDocumentToolbarColorSwatchItemIdentifier];
     NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
