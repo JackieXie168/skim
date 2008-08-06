@@ -103,15 +103,13 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
 }
 
 + (void)load{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    originalSetHasHorizontalScroller = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:), YES);
-    originalSetAutohidesScrollers = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setAutohidesScrollers:), @selector(replacementSetAutohidesScrollers:), YES);
-    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES);
-    originalTile = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(tile), @selector(replacementTile), YES);
+    originalSetHasHorizontalScroller = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:), YES, SKReplaceOnly);
+    originalSetAutohidesScrollers = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setAutohidesScrollers:), @selector(replacementSetAutohidesScrollers:), YES, SKReplaceOnly);
+    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES, SKReplaceOnly);
+    originalTile = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(tile), @selector(replacementTile), YES, SKReplaceOnly);
     
     // dictionary doesn't retain keys, so no retain cycles; pointer equality used to compare views
     scrollViewPlacards = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
-    [pool release];
 }
 
 - (NSArray *)placards {
