@@ -74,8 +74,10 @@ static void (*originalDealloc)(id, SEL) = NULL;
 }
 
 + (void)load {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES);
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
+    [pool release];
 }
 
 // mainly useful for drawing the box in a PDFView while debugging

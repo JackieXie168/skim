@@ -103,6 +103,7 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
 }
 
 + (void)load{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     originalSetHasHorizontalScroller = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:), YES);
     originalSetAutohidesScrollers = (void (*)(id, SEL, BOOL))SKReplaceMethodImplementationFromSelector(self, @selector(setAutohidesScrollers:), @selector(replacementSetAutohidesScrollers:), YES);
     originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES);
@@ -110,6 +111,7 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
     
     // dictionary doesn't retain keys, so no retain cycles; pointer equality used to compare views
     scrollViewPlacards = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    [pool release];
 }
 
 - (NSArray *)placards {

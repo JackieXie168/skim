@@ -61,10 +61,12 @@ static id (*originalToolTipNoLabel)(id, SEL) = NULL;
 }
 
 + (void)load {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if ([self instancesRespondToSelector:@selector(toolTip)])
         originalToolTip = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTip), YES);
     if ([self instancesRespondToSelector:@selector(toolTipNoLabel)])
         originalToolTipNoLabel = (id (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel), YES);
+    [pool release];
 }
 
 - (BOOL)isLink { return YES; }
