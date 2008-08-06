@@ -283,8 +283,13 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         FSRef ref;
         NSURL *url = nil;
-        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &ref, NULL))
-            url = [(NSURL *)CFURLCreateFromFSRef(NULL, &ref) autorelease];
+        Boolean isFolder, wasAliased;
+        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &ref, NULL)) {
+            CFStringRef theUTI = NULL;
+            if (noErr == LSCopyItemAttribute(&ref, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
+                FSResolveAliasFileWithMountFlags(&ref, TRUE, &isFolder, &wasAliased, kARMNoUI);
+           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &ref) autorelease];
+        }
         if (url == nil)
             url = [NSURL fileURLWithPath:path];
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error])
