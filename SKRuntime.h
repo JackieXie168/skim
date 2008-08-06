@@ -49,9 +49,9 @@
     } while (0);
 
 enum {
-    SKSetOrReplace,
+    SKAddOrReplace,
     SKReplaceOnly,
-    SKSetOnly
+    SKAddOnly
 };
 
 extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options);
