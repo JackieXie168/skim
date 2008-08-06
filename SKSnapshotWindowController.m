@@ -50,7 +50,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 #define EM_DASH_CHARACTER 0x2014
 

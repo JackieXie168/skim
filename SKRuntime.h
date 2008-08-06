@@ -36,13 +36,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <objc/objc-runtime.h>
+#import <Cocoa/Cocoa.h>
 
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
-extern Class SK_object_getClass(id object);
+#define OBINITIALIZE \
+    do { \
+        static BOOL hasBeenInitialized = NO; \
+        [super initialize]; \
+        if (hasBeenInitialized) \
+            return; \
+        hasBeenInitialized = YES;\
+    } while (0);
 
-extern IMP SK_method_getImplementation(Method aMethod);
-extern const char *SK_method_getTypeEncoding(Method aMethod);
 
-extern IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes);
+extern IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance);
+extern IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance);

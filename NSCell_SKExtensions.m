@@ -39,7 +39,7 @@
  */
 
 #import "NSCell_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 @implementation NSCell (SKExtensions)
@@ -54,7 +54,7 @@ static id (*originalHighlightColorWithFrameInView)(id, SEL, NSRect, id) = NULL;
 }
 
 + (void)load {
-    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))[self setInstanceMethodFromSelector:@selector(replacementHighlightColorWithFrame:inView:) forSelector:@selector(highlightColorWithFrame:inView:)];
+    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))SKReplaceMethodImplementationFromSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:), YES);
 }
 
 @end

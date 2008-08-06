@@ -37,7 +37,7 @@
  */
 
 #import "SKThumbnailTableView.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 
@@ -58,7 +58,7 @@ static void (*originalTrackKnob)(id, SEL, id) = NULL;
 }
 
 + (void)load {
-    originalTrackKnob = (void (*)(id, SEL, id))[self setInstanceMethodFromSelector:@selector(replacementTrackKnob:) forSelector:@selector(trackKnob:)];
+    originalTrackKnob = (void (*)(id, SEL, id))SKReplaceMethodImplementationFromSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:), YES);
 }
 
 @end

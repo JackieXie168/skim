@@ -50,7 +50,7 @@
 #import "SKToolbarItem.h"
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 

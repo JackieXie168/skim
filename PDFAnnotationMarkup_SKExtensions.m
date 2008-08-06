@@ -46,7 +46,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallBacks.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -123,9 +123,9 @@ static void (*originalDrawWithBoxInContext)(id, SEL, CGPDFBox, CGContextRef) = N
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))[self setInstanceMethodFromSelector:@selector(replacementDealloc) forSelector:@selector(dealloc)];
+    originalDealloc = (void (*)(id, SEL))SKReplaceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc), YES);
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))[self setInstanceMethodFromSelector:@selector(replacementDrawWithBox:inContext:) forSelector:@selector(drawWithBox:inContext:)];
+        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacementDrawWithBox:inContext:), YES);
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 

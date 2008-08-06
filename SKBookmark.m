@@ -39,7 +39,7 @@
 #import "SKBookmark.h"
 #import "BDAlias.h"
 #import "NSImage_SKExtensions.h"
-#import "NSObject_SKExtensions.h"
+#import "SKRuntime.h"
 
 static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
 static NSString *SKBookmarkTypeFolderString = @"folder";

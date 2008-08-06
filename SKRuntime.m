@@ -37,6 +37,7 @@
  */
 
 #import "SKRuntime.h"
+#import <objc/objc-runtime.h>
 
 
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
@@ -45,15 +46,15 @@
 
 extern void _objc_flush_caches(Class);
 
-Class SK_object_getClass(id object) {
+static inline Class SK_object_getClass(id object) {
     return object_getClass != NULL ? object_getClass(object) : object->isa;
 }
 
-IMP SK_method_getImplementation(Method aMethod) {
+static inline IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation != NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 }
 
-const char *SK_method_getTypeEncoding(Method aMethod) {
+static inline const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding != NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
 }
 
@@ -93,7 +94,7 @@ static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
     return imp;
 }
 
-IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
     if (class_replaceMethod != NULL)
         return class_replaceMethod(aClass, selector, methodImp, methodTypes);
     else
@@ -104,20 +105,40 @@ IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char
 
 #pragma mark 10.5
 
-Class SK_object_getClass(id object) {
+static inline Class SK_object_getClass(id object) {
     return object_getClass(object);
 }
 
-IMP SK_method_getImplementation(Method aMethod) {
+static inline IMP SK_method_getImplementation(Method aMethod) {
     return method_getImplementation(aMethod);
 }
 
-const char *SK_method_getTypeEncoding(Method aMethod) {
+static inline const char *SK_method_getTypeEncoding(Method aMethod) {
     return method_getTypeEncoding(aMethod);
 }
 
-IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
+static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
     return class_replaceMethod(aClass, selector, methodImp, methodTypes);
 }
 
 #endif
+
+IMP SKReplaceMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance) {
+    IMP imp = NULL;
+    if (anImp) {
+        Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
+        if (method) {
+            imp = SK_method_getImplementation(method);
+            if (types == NULL)
+                types = SK_method_getTypeEncoding(method);
+        }
+        if (types)
+            SK_class_replaceMethod(isInstance ? aClass : SK_object_getClass(aClass), aSelector, anImp, types);
+    }
+    return imp;
+}
+
+IMP SKReplaceMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance) {
+    Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
+    return method ? SKReplaceMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance) : NULL;
+}
