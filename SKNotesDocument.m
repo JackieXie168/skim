@@ -55,6 +55,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "Files_SKExtensions.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -281,18 +282,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        FSRef ref;
-        NSURL *url = nil;
-        Boolean isFolder, wasAliased;
-        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &ref, NULL)) {
-            CFStringRef theUTI = NULL;
-            if (noErr == LSCopyItemAttribute(&ref, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
-                FSResolveAliasFileWithMountFlags(&ref, TRUE, &isFolder, &wasAliased, kARMNoUI);
-           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &ref) autorelease];
-        }
-        if (url == nil)
-            url = [NSURL fileURLWithPath:path];
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error])
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:SKResolvedURLFromPath(path) display:YES error:&error])
             [NSApp presentError:error];
     } else NSBeep();
 }
