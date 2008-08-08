@@ -124,16 +124,17 @@ NSString *SKPathFromFileSystemRepresentation(const char *path) {
     return thePath;
 }
 
-NSString *SKRealPath(NSString *path) {
-    FSRef fileRef;
+extern NSURL *SKResolvedURLFromPath(NSString *path) {
     NSURL *url = nil;
-    if (CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
-        url = (NSURL*)CFURLCreateFromFSRef(NULL, &fileRef);
-    if (url) {
-        path = [url path];
-        [url release];
+    FSRef fileRef;
+    Boolean isFolder, isAlias;
+    if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &fileRef, NULL)) {
+        CFStringRef theUTI = NULL;
+        if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
+            FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kARMNoUI);
+       url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
     }
-    return path;
+    return url ? url : [NSURL fileURLWithPath:path];
 }
 
 NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
