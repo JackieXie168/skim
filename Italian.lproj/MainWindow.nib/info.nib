@@ -2,48 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>IBDocumentLocation</key>
-	<string>58 91 549 371 0 0 1440 938 </string>
-	<key>IBEditorPositions</key>
-	<dict>
-		<key>168</key>
-		<string>536 427 368 387 0 0 1440 938 </string>
-		<key>224</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>256</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>314</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>502</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>511</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>676</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>677</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>773</key>
-		<string>610 386 220 442 0 0 1440 938 </string>
-		<key>791</key>
-		<string>662 641 115 102 0 0 1440 938 </string>
-		<key>815</key>
-		<string>626 560 188 210 0 0 1440 938 </string>
-		<key>916</key>
-		<string>58 467 229 76 0 0 1440 938 </string>
-	</dict>
 	<key>IBFramework Version</key>
-	<string>489.0</string>
-	<key>IBLockedObjects</key>
-	<array/>
+	<string>670</string>
+	<key>IBLastKnownRelativeProjectPath</key>
+	<string>../Skim.xcodeproj</string>
+	<key>IBOldestOS</key>
+	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>677</integer>
-		<integer>791</integer>
-		<integer>676</integer>
-		<integer>773</integer>
+		<integer>503</integer>
+		<integer>774</integer>
+		<integer>721</integer>
+		<integer>257</integer>
 		<integer>168</integer>
+		<integer>225</integer>
+		<integer>513</integer>
+		<integer>722</integer>
+		<integer>791</integer>
+		<integer>315</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>9D34</string>
+	<string>9E17</string>
+	<key>targetFramework</key>
+	<string>IBCocoaFramework</string>
 </dict>
 </plist>
