@@ -165,7 +165,7 @@
 				<string>NSPopUpButton</string>
 				<key>imageView</key>
 				<string>BDSKDragImageView</string>
-				<key>ownerController</key>
+				<key>noteController</key>
 				<string>NSObjectController</string>
 				<key>statusBar</key>
 				<string>SKStatusBar</string>
