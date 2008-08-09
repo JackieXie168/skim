@@ -157,7 +157,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
-    [ownerController commitEditing];
+    [noteController commitEditing];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
 }
@@ -218,7 +218,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
-    [ownerController commitEditing];
+    [noteController commitEditing];
 }
 
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {
