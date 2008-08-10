@@ -373,6 +373,20 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
 
+- (NSArray *)searchResults;
+- (void)setSearchResults:(NSArray *)newSearchResults;
+- (unsigned)countOfSearchResults;
+- (id)objectInSearchResultsAtIndex:(unsigned)theIndex;
+- (void)insertObject:(id)obj inSearchResultsAtIndex:(unsigned)theIndex;
+- (void)removeObjectFromSearchResultsAtIndex:(unsigned)theIndex;
+
+- (NSArray *)groupedSearchResults;
+- (void)setGroupedSearchResults:(NSArray *)newGroupedSearchResults;
+- (unsigned)countOfGroupedSearchResults;
+- (id)objectInGroupedSearchResultsAtIndex:(unsigned)theIndex;
+- (void)insertObject:(id)obj inGroupedSearchResultsAtIndex:(unsigned)theIndex;
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned)theIndex;
+
 - (NSArray *)selectedNotes;
 
 - (unsigned int)pageNumber;

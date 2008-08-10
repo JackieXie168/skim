@@ -783,14 +783,14 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
             [pdfView setActiveAnnotation:nil];
             
             // these will be invalid. If needed, the document will restore them
-            [[self mutableArrayValueForKey:SKMainWindowSearchResultsKey] removeAllObjects];
-            [[self mutableArrayValueForKey:SKMainWindowGroupedSearchResultsKey] removeAllObjects];
-            [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeAllObjects];
+            [self setSearchResults:nil];
+            [self setGroupedSearchResults:nil];
+            [self setNotes:nil];
             [[self mutableArrayValueForKey:SKMainWindowThumbnailsKey] removeAllObjects];
             
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
-            [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeAllObjects];
+            [self setSnapshots:nil];
             
             [pdfOutline release];
             pdfOutline = nil;
@@ -884,7 +884,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     }
     
     if (undoable == NO)
-        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeAllObjects];
+        [self setNotes:nil];
     
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
@@ -1040,7 +1040,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (NSArray *)notes {
-    return notes;
+    return [[notes copy] autorelease];
 }
 
 - (void)setNotes:(NSArray *)newNotes {
@@ -1164,7 +1164,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (NSArray *)snapshots {
-    return snapshots;
+    return [[snapshots copy] autorelease];
 }
 
 - (void)setSnapshots:(NSArray *)newSnapshots {
@@ -1214,6 +1214,54 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
         row = [rowIndexes indexGreaterThanIndex:row];
     }
     return selectedNotes;
+}
+
+- (NSArray *)searchResults {
+    return [[searchResults copy] autorelease];
+}
+
+- (void)setSearchResults:(NSArray *)newSearchResults {
+    [searchResults setArray:newSearchResults];
+}
+
+- (unsigned)countOfSearchResults {
+    return [searchResults count];
+}
+
+- (id)objectInSearchResultsAtIndex:(unsigned)theIndex {
+    return [searchResults objectAtIndex:theIndex];
+}
+
+- (void)insertObject:(id)obj inSearchResultsAtIndex:(unsigned)theIndex {
+    [searchResults insertObject:obj atIndex:theIndex];
+}
+
+- (void)removeObjectFromSearchResultsAtIndex:(unsigned)theIndex {
+    [searchResults removeObjectAtIndex:theIndex];
+}
+
+- (NSArray *)groupedSearchResults {
+    return [[groupedSearchResults copy] autorelease];
+}
+
+- (void)setGroupedSearchResults:(NSArray *)newGroupedSearchResults {
+    [groupedSearchResults setArray:newGroupedSearchResults];
+}
+
+- (unsigned)countOfGroupedSearchResults {
+    return [groupedSearchResults count];
+}
+
+- (id)objectInGroupedSearchResultsAtIndex:(unsigned)theIndex {
+    return [groupedSearchResults objectAtIndex:theIndex];
+}
+
+- (void)insertObject:(id)obj inGroupedSearchResultsAtIndex:(unsigned)theIndex {
+    [groupedSearchResults insertObject:obj atIndex:theIndex];
+}
+
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned)theIndex {
+    [groupedSearchResults removeObjectAtIndex:theIndex];
 }
 
 #pragma mark Actions
