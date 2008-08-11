@@ -58,14 +58,14 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
+		CE1F52C40E50C07100183FDA /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
+		CE1F52C50E50C07100183FDA /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
+		CE1F52C60E50C08200183FDA /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
+		CE1F52C70E50C08200183FDA /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
-		CE2BB7D00E0DAFD30090E848 /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
-		CE2BB7D10E0DAFDE0090E848 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
-		CE2BB7DF0E0DB0460090E848 /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
-		CE2BB7E20E0DB0520090E848 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4C60B85D78200D0DA12 /* SKMiniaturizeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */; };
@@ -368,8 +368,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE2BB7DF0E0DB0460090E848 /* SkimNotes.framework in CopyFiles */,
-				CE2BB7E20E0DB0520090E848 /* Sparkle.framework in CopyFiles */,
+				CE1F52C60E50C08200183FDA /* SkimNotes.framework in CopyFiles */,
+				CE1F52C70E50C08200183FDA /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -976,8 +976,8 @@
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
-				CE2BB7D00E0DAFD30090E848 /* SkimNotes.framework in Frameworks */,
-				CE2BB7D10E0DAFDE0090E848 /* Sparkle.framework in Frameworks */,
+				CE1F52C40E50C07100183FDA /* SkimNotes.framework in Frameworks */,
+				CE1F52C50E50C07100183FDA /* Sparkle.framework in Frameworks */,
 				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
