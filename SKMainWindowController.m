@@ -395,12 +395,8 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
     
-    NSNumber *leftWidth = [savedNormalSetup objectForKey:SKMainWindowLeftSidePaneWidthKey];
-    NSNumber *rightWidth = [savedNormalSetup objectForKey:SKMainWindowRightSidePaneWidthKey];
-    if (leftWidth == nil)
-        leftWidth = [sud objectForKey:SKLeftSidePaneWidthKey];
-    if (rightWidth == nil)
-        rightWidth = [sud objectForKey:SKRightSidePaneWidthKey];
+    NSNumber *leftWidth = [savedNormalSetup objectForKey:SKMainWindowLeftSidePaneWidthKey] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
+    NSNumber *rightWidth = [savedNormalSetup objectForKey:SKMainWindowRightSidePaneWidthKey] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
     if (leftWidth && rightWidth) {
         float width = [leftWidth floatValue];
@@ -625,9 +621,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
                 accessoryView = colorAccessoryView;
             }
             if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
-                color = [(id)annotation interiorColor];
-                if (color == nil)
-                    color = [NSColor clearColor];
+                color = [(id)annotation interiorColor] ?: [NSColor clearColor];
             } else {
                 color = [annotation color];
             }
@@ -1270,9 +1264,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if (updatingColor == NO && [annotation isSkimNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        NSColor *color = isFill ? [(id)annotation interiorColor] : [annotation color];
-        if (color == nil)
-            color = [NSColor clearColor];
+        NSColor *color = (isFill ? [(id)annotation interiorColor] : [annotation color]) ?: [NSColor clearColor];
         if ([color isEqual:[sender color]] == NO) {
             updatingColor = YES;
             if (isFill)
@@ -1823,11 +1815,9 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 
 - (IBAction)crop:(id)sender {
     NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
-    PDFPage *page = [pdfView currentSelectionPage];
+    PDFPage *page = [pdfView currentSelectionPage] ?: [pdfView currentPage];
     if (NSIsEmptyRect(rect))
         rect = [[pdfView currentSelectionPage] foregroundBox];
-    if (page == nil)
-        page = [pdfView currentPage];
     [self cropPageAtIndex:[page pageIndex] toRect:rect];
 }
 
@@ -2449,12 +2439,9 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 }
 
 - (void)goFullScreen {
-    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     
-    if (screen == nil) // @@ screen: can this ever happen?
-        screen = [NSScreen mainScreen];
-        
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
@@ -2609,9 +2596,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     if ([self isFullScreen])
         return;
     
-    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
-    if (screen == nil) // @@ screen: can this ever happen?
-        screen = [NSScreen mainScreen];
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
@@ -2638,9 +2623,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
     
     [self enterPresentationMode];
     
-    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
-    if (screen == nil) // @@ screen: can this ever happen?
-        screen = [NSScreen mainScreen];
+    NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, 0);
     
@@ -2805,10 +2788,7 @@ static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     NSArray *pages = [sel pages];
     int i, iMax = [pages count];
-    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey];
-    
-    if (color == nil)
-        color = [NSColor redColor];
+    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey] ?: [NSColor redColor];
     
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [pages objectAtIndex:i];
@@ -3492,11 +3472,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         // Ignore changes that aren't really changes.
         // How much processor time does this memory optimization cost? We don't know, because we haven't measured it. The use of NSKeyValueObservingOptionNew in -startObservingNotes:, which makes NSKeyValueChangeNewKey entries appear in change dictionaries, definitely costs something when KVO notifications are sent (it costs virtually nothing at observer registration time). Regardless, it's probably a good idea to do simple memory optimizations like this as they're discovered and debug just enough to confirm that they're saving the expected memory (and not introducing bugs). Later on it will be easier to test for good responsiveness and sample to hunt down processor time problems than it will be to figure out where all the darn memory went when your app turns out to be notably RAM-hungry (and therefore slowing down _other_ apps on your user's computers too, if the problem is bad enough to cause paging).
         // Is this a premature optimization? No. Leaving out this very simple check, because we're worried about the processor time cost of using NSKeyValueChangeNewKey, would be a premature optimization.
-        id newValue = [change objectForKey:NSKeyValueChangeNewKey];
-        id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
         // We should be adding undo for nil values also. I'm not sure if KVO does this automatically. Note that -setValuesForKeysWithDictionary: converts NSNull back to nil.
-        if (newValue == nil) newValue = [NSNull null];
-        if (oldValue == nil) oldValue = [NSNull null];
+        id newValue = [change objectForKey:NSKeyValueChangeNewKey] ?: [NSNull null];
+        id oldValue = [change objectForKey:NSKeyValueChangeOldKey] ?: [NSNull null];
         // All values are suppsed to be true value objects that should be compared with isEqual:
         if ([newValue isEqual:oldValue] == NO) {
             

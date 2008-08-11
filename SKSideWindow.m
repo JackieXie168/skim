@@ -54,9 +54,7 @@
 @implementation SKSideWindow
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
-    NSScreen *screen = [[aController window] screen];
-    if (screen == nil)
-        screen = [NSScreen mainScreen];
+    NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
     NSRect contentRect = [screen frame];
     if (anEdge == NSMaxXEdge)
         contentRect.origin.x = NSMaxX(contentRect) - DEFAULT_WINDOW_WIDTH;
