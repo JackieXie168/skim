@@ -604,9 +604,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     if (context == nil) {
         [[self openGLContext] makeCurrentContext];
         
-        NSOpenGLPixelFormat *pf = [self pixelFormat];
-        if (pf == nil)
-            pf = [[self class] defaultPixelFormat];
+        NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
         
         context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
     }

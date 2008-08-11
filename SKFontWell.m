@@ -347,10 +347,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 }
 
 - (NSDictionary *)infoForBinding:(NSString *)bindingName {
-	NSDictionary *info = [bindingInfo objectForKey:bindingName];
-	if (info == nil)
-		info = [super infoForBinding:bindingName];
-	return info;
+	return [bindingInfo objectForKey:bindingName] ?: [super infoForBinding:bindingName];
 }
 
 #pragma mark NSDraggingDestination protocol 
@@ -390,9 +387,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
                 NSArray *fontDescriptors = [dict objectForKey:SKNSFontCollectionFontDescriptors];
                 NSFontDescriptor *fontDescriptor = ([fontDescriptors isKindOfClass:[NSArray class]] && [fontDescriptors count]) ? [fontDescriptors objectAtIndex:0] : nil;
                 if ([fontDescriptor isKindOfClass:[NSFontDescriptor class]]) {
-                    NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute];
-                    if (size == nil)
-                        size = [dict objectForKey:NSFontSizeAttribute];
+                    NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute] ?: [dict objectForKey:NSFontSizeAttribute];
                     float fontSize = [size respondsToSelector:@selector(floatValue)] ? [size floatValue] : [self fontSize];
                     droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
                 }

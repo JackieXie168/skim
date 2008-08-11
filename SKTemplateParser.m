@@ -465,9 +465,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 for (i = 0; i < count; i++) {
                     matchString = [matchStrings objectAtIndex:i];
                     if ([matchString hasPrefix:@"$"]) {
-                        matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue];
-                        if (matchString == nil)
-                            matchString = @"";
+                        matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue] ?: @"";
                     }
                     switch ([tag matchType]) {
                         case SKTemplateTagMatchEqual:
@@ -784,9 +782,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 for (i = 0; i < count; i++) {
                     matchString = [matchStrings objectAtIndex:i];
                     if ([matchString hasPrefix:@"$"]) {
-                        matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue];
-                        if (matchString == nil)
-                            matchString = @"";
+                        matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue] ?: @"";
                     }
                     switch ([tag matchType]) {
                         case SKTemplateTagMatchEqual:

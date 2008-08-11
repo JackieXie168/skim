@@ -43,7 +43,7 @@
 @implementation NSAttributedString (SKExtensions)
 
 - (NSAttributedString *)accessibilityAttributedString {
-    NSTextFieldCell *cell = nil;
+    static NSTextFieldCell *cell = nil;
     if (cell == nil)
         cell = [[NSTextFieldCell alloc] init];
     [cell setAttributedStringValue:self];

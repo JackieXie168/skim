@@ -426,10 +426,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 }
 
 - (NSDictionary *)infoForBinding:(NSString *)bindingName {
-	NSDictionary *info = [bindingInfo objectForKey:bindingName];
-	if (info == nil)
-		info = [super infoForBinding:bindingName];
-	return info;
+	return [bindingInfo objectForKey:bindingName] ?: [super infoForBinding:bindingName];
 }
 
 #pragma mark NSDraggingSource protocol 

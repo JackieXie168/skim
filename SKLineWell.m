@@ -735,10 +735,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 }
 
 - (NSDictionary *)infoForBinding:(NSString *)bindingName {
-	NSDictionary *info = [bindingInfo objectForKey:bindingName];
-	if (info == nil)
-		info = [super infoForBinding:bindingName];
-	return info;
+	return [bindingInfo objectForKey:bindingName] ?: [super infoForBinding:bindingName];
 }
 
 #pragma mark NSDraggingSource protocol 
@@ -801,7 +798,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
-	attributes = [[NSArray alloc] initWithObjects:
+        attributes = [[NSArray alloc] initWithObjects:
 	    NSAccessibilityRoleAttribute,
 	    NSAccessibilityRoleDescriptionAttribute,
         NSAccessibilityValueAttribute,

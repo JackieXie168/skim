@@ -596,9 +596,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
-    NSString *filename = [filenames objectForKey:file];
-    if (filename == nil)
-        filename = [file lastPathComponent];
+    NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
     if (synctex_display_query(scanner, [filename fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {

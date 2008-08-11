@@ -136,10 +136,7 @@
 }
 
 - (NSString *)fileName {
-    NSString *fileName = [[self filePath] lastPathComponent];
-    if (fileName == nil)
-        fileName = [[[self URL] path] lastPathComponent];
-    return fileName;
+    return [([self filePath] ?: [[self URL] path]) lastPathComponent];
 }
 
 - (NSImage *)fileIcon {

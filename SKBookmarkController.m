@@ -539,8 +539,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 #pragma mark NSOutlineView datasource methods
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
-    if (item == nil) item = bookmarkRoot;
-    return [item countOfChildren];
+    return [(item ?: bookmarkRoot) countOfChildren];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
@@ -548,8 +547,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
-    if (item == nil) item = bookmarkRoot;
-    return [item  objectInChildrenAtIndex:anIndex];
+    return [(item ?: bookmarkRoot) objectInChildrenAtIndex:anIndex];
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
