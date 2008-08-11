@@ -570,12 +570,15 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
-        [self setSyncFileName:SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner))];
+        NSString *theSyncFilename = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
+        if ([theSyncFilename isAbsolutePath] == NO)
+            theSyncFilename = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:theSyncFilename];
+        [self setSyncFileName:theSyncFilename];
         if (filenames)
             [filenames removeAllObjects];
         else
             filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        NSString *basePath = [[self fileName] stringByDeletingLastPathComponent];
+        NSString *basePath = [theSyncFilename stringByDeletingLastPathComponent];
         NSString *file, *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
@@ -595,7 +598,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             *line = synctex_node_line(node) - 1;
-            *file = SKTeXSourceFile(SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))), [[self fileName] stringByDeletingLastPathComponent]);
+            *file = SKTeXSourceFile(SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))), [[self syncFileName] stringByDeletingLastPathComponent]);
             rv = YES;
         }
     }
