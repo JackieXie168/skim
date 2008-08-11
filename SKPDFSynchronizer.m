@@ -570,15 +570,15 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
-        NSString *theSyncFilename = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
-        if ([theSyncFilename isAbsolutePath] == NO)
-            theSyncFilename = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:theSyncFilename];
-        [self setSyncFileName:theSyncFilename];
+        NSString *theSyncFileName = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
+        if ([theSyncFileName isAbsolutePath] == NO)
+            theSyncFileName = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:theSyncFileName];
+        [self setSyncFileName:[theSyncFileName stringByStandardizingPath]];
         if (filenames)
             [filenames removeAllObjects];
         else
             filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        NSString *basePath = [theSyncFilename stringByDeletingLastPathComponent];
+        NSString *basePath = [theSyncFileName stringByDeletingLastPathComponent];
         NSString *file, *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
