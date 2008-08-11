@@ -41,11 +41,16 @@
 
 @implementation SKPrintAccessoryController
 
-+ (void)initialize {
-    [self setKeys:[NSArray arrayWithObjects:@"autoRotate", @"printScalingMode", nil] triggerChangeNotificationsForDependentKey:@"localizedSummaryItems"];
-    [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"autoRotate"];
-    [self setKeys:[NSArray arrayWithObjects:@"representedObject", nil] triggerChangeNotificationsForDependentKey:@"printScalingMode"];
-    [super initialize];
++ (NSSet *)keyPathsForValuesAffectingLocalizedSummaryItems {
+    return [NSSet setWithObjects:@"autoRotate", @"printScalingMode", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingAutoRotate {
+    return [NSSet setWithObjects:@"representedObject", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingPrintScalingMode {
+    return [NSSet setWithObjects:@"representedObject", nil];
 }
 
 - (NSString *)nibName {
