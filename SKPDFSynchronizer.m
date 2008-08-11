@@ -98,10 +98,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
         lastModDate = nil;
         isPdfsync = YES;
         
-        pages = [[NSMutableArray alloc] init];
-        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        pages = nil;
+        lines = nil;
         
-        filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        filenames = nil;
         scanner = NULL;
         
         NSPort *port1 = [NSPort port];
@@ -336,8 +336,14 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (BOOL)parsePdfsyncFile:(NSString *)theFileName {
 
-    [pages removeAllObjects];
-    [lines removeAllObjects];
+    if (pages)
+        [pages removeAllObjects];
+    else
+        pages = [[NSMutableArray alloc] init];
+    if (lines)
+        [lines removeAllObjects];
+    else
+        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
@@ -565,7 +571,10 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
         [self setSyncFileName:SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner))];
-        [filenames removeAllObjects];
+        if (filenames)
+            [filenames removeAllObjects];
+        else
+            filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
         NSString *basePath = [[self fileName] stringByDeletingLastPathComponent];
         NSString *file, *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
