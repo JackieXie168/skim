@@ -1494,9 +1494,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX {
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped {
     PDFPage *page = [[self pdfDocument] pageAtIndex:pageIndex];
-    if (isSyncTeX)
+    if (isFlipped)
         point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
         [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
