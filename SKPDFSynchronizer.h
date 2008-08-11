@@ -68,7 +68,7 @@
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
 - (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file;
 
 - (void)stopDOServer;
@@ -78,5 +78,5 @@
 
 @interface NSObject (SKPDFSynchronizerDelegate)
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX;
 @end

@@ -69,14 +69,14 @@ struct SKServerFlags {
 
 @protocol SKPDFSynchronizerServerThread
 - (oneway void)stopRunning; 
-- (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
 - (oneway void)serverFindPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file;
 @end
 
 @protocol SKPDFSynchronizerMainThread
 - (void)setLocalServer:(byref id)anObject;
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
-- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX;
 @end
 
 #pragma mark -
@@ -311,8 +311,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark | API
 
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    [serverOnServerThread serverFindFileAndLineForLocation:point inRect:rect atPageIndex:pageIndex];
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+    [serverOnServerThread serverFindFileAndLineForLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
 }
 
 - (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file {
@@ -326,9 +326,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
-- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
-    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
-        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX {
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:isSyncTeX:)])
+        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex isSyncTeX:isSyncTeX];
 }
 
 #pragma mark | Server thread
@@ -448,7 +448,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)pdfsyncFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (BOOL)pdfsyncFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
@@ -581,12 +581,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)synctexFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (BOOL)synctexFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
-    if (synctex_edit_query(scanner, (int)pageIndex + 1, PDF_TO_SYNC(point.x), PDF_TO_SYNC(point.y)) > 0) {
+    if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
-            *line = synctex_node_line(node);
+            *line = synctex_node_line(node) - 1;
             *file = SKTeXSourceFile(SKPathFromFileSystemRepresentation(synctex_scanner_get_name(scanner, synctex_node_tag(node))), [[self fileName] stringByDeletingLastPathComponent]);
             rv = YES;
         }
@@ -597,12 +597,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
     NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
-    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line, 0) > 0) {
+    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             unsigned int page = synctex_node_page(node);
             *pageIndex = page > 0 ? page - 1 : page;
-            *point = NSMakePoint(SYNC_TO_PDF(synctex_node_h(node)), SYNC_TO_PDF(synctex_node_v(node)));
+            *point = NSMakePoint(synctex_node_visible_h(node), synctex_node_visible_v(node));
             rv = YES;
         }
     }
@@ -640,16 +640,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
         int foundLine = -1;
         NSString *foundFile = nil;
         BOOL success = NO;
         
         if (isPdfsync)
-            success = [self pdfsyncFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+            success = [self pdfsyncFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
         else
-            success = [self synctexFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect atPageIndex:pageIndex];
+            success = [self synctexFindFileLine:&foundLine file:&foundFile forLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
         
         if (success && [self shouldKeepRunning])
             [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
@@ -670,7 +670,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             success = [self synctexFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         
         if (success && [self shouldKeepRunning])
-            [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex];
+            [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex isSyncTeX:isPdfsync == NO];
     }
 }
 
