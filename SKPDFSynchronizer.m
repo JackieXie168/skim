@@ -76,7 +76,7 @@ struct SKServerFlags {
 @protocol SKPDFSynchronizerMainThread
 - (void)setLocalServer:(byref id)anObject;
 - (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
-- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX;
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped;
 @end
 
 #pragma mark -
@@ -326,9 +326,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
-- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX {
-    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:isSyncTeX:)])
-        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex isSyncTeX:isSyncTeX];
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped {
+    if ([self shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:isFlipped:)])
+        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex isFlipped:isFlipped];
 }
 
 #pragma mark | Server thread
@@ -670,7 +670,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
             success = [self synctexFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         
         if (success && [self shouldKeepRunning])
-            [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex isSyncTeX:isPdfsync == NO];
+            [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex isFlipped:isPdfsync == NO];
     }
 }
 
