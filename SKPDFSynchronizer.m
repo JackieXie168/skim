@@ -46,8 +46,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKCFCallBacks.h"
 
-#define SYNC_TO_PDF(coord) ((float)coord / 65536.0)
-#define PDF_TO_SYNC(coord) (int)(coord * 65536.0)
+#define PDFSYNC_TO_PDF(coord) ((float)coord / 65536.0)
 
 static NSString *SKPDFSynchronizerTexExtension = @"tex";
 static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
@@ -393,7 +392,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                         if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
                             record = [records recordForIndex:recordIndex];
                             [record setPageIndex:[pages count] - 1];
-                            [record setPoint:NSMakePoint(SYNC_TO_PDF(x) + pdfOffset.x, SYNC_TO_PDF(y) + pdfOffset.y)];
+                            [record setPoint:NSMakePoint(PDFSYNC_TO_PDF(x) + pdfOffset.x, PDFSYNC_TO_PDF(y) + pdfOffset.y)];
                             [[pages lastObject] addObject:record];
                         }
                     } else if (ch == 's') {
