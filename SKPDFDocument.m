@@ -1494,9 +1494,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isSyncTeX:(BOOL)isSyncTeX {
+    PDFPage *page = [[self pdfDocument] pageAtIndex:pageIndex];
+    if (isSyncTeX)
+        point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
-        [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:[[self pdfDocument] pageAtIndex:pageIndex]];
+        [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
     [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
 }
 
@@ -2007,7 +2010,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         
-        [[self synchronizer] findFileAndLineForLocation:point inRect:rect atPageIndex:pageIndex];
+        [[self synchronizer] findFileAndLineForLocation:point inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }
 }
 
