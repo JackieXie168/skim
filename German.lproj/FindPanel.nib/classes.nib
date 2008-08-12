@@ -7,6 +7,49 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>changeDashPattern</key>
+				<string>id</string>
+				<key>changeEndLineStyle</key>
+				<string>id</string>
+				<key>changeLineStyle</key>
+				<string>id</string>
+				<key>changeLineWidth</key>
+				<string>id</string>
+				<key>changeStartLineStyle</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
 				<key>findNext</key>
 				<string>id</string>
 				<key>findNextAndOrderOutFindPanel</key>
@@ -14,6 +57,8 @@
 				<key>findPrevious</key>
 				<string>id</string>
 				<key>performFindPanelAction</key>
+				<string>id</string>
+				<key>pickFindString</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
@@ -26,9 +71,35 @@
 				<string>NSTextField</string>
 				<key>ignoreCaseCheckbox</key>
 				<string>NSButton</string>
+				<key>ownerController</key>
+				<string>NSObjectController</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
