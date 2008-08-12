@@ -32,19 +32,42 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKAnnotationTypeImageCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSImageCell</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>editBookmarks</key>
+				<string>id</string>
+				<key>openBookmark</key>
+				<string>id</string>
+				<key>orderFrontLineInspector</key>
+				<string>id</string>
+				<key>orderFrontNotesPanel</key>
+				<string>id</string>
+				<key>saveCurrentOpenDocuments</key>
+				<string>id</string>
+				<key>showDownloads</key>
+				<string>id</string>
+				<key>showPreferencePanel</key>
+				<string>id</string>
+				<key>showReleaseNotes</key>
+				<string>id</string>
+				<key>visitWebSite</key>
+				<string>id</string>
+				<key>visitWiki</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKApplicationController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -53,6 +76,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>BDSKContainerView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKAnnotationTypeImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSImageCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -77,6 +108,22 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSTextFieldCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenuItem</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -193,6 +240,8 @@
 				<string>id</string>
 				<key>doZoomToFit</key>
 				<string>id</string>
+				<key>doZoomToPhysicalSize</key>
+				<string>id</string>
 				<key>doZoomToSelection</key>
 				<string>id</string>
 				<key>editNote</key>
@@ -261,7 +310,11 @@
 				<string>id</string>
 				<key>togglePresentation</key>
 				<string>id</string>
+				<key>toggleReadingBar</key>
+				<string>id</string>
 				<key>toggleRightSidePane</key>
+				<string>id</string>
+				<key>toggleSplitPDF</key>
 				<string>id</string>
 				<key>toggleStatusBar</key>
 				<string>id</string>
@@ -433,6 +486,22 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>orderFrontFontPanel</key>
@@ -450,6 +519,16 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>changeDashPattern</key>
+				<string>id</string>
+				<key>changeEndLineStyle</key>
+				<string>id</string>
+				<key>changeLineStyle</key>
+				<string>id</string>
+				<key>changeLineWidth</key>
+				<string>id</string>
+				<key>changeStartLineStyle</key>
+				<string>id</string>
 				<key>splitViewDoubleClick</key>
 				<string>id</string>
 			</dict>
@@ -475,6 +554,47 @@
 			<string>SKThumbnailTableView</string>
 		</dict>
 		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>addAnnotation</key>
+				<string>id</string>
+				<key>alternatePaste</key>
+				<string>id</string>
+				<key>autoSelectContent</key>
+				<string>id</string>
+				<key>changeAnnotationMode</key>
+				<string>id</string>
+				<key>changeToolMode</key>
+				<string>id</string>
+				<key>copy</key>
+				<string>id</string>
+				<key>cut</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>deselectAll</key>
+				<string>id</string>
+				<key>editActiveAnnotation</key>
+				<string>id</string>
+				<key>editThisAnnotation</key>
+				<string>id</string>
+				<key>endAnnotationEdit</key>
+				<string>id</string>
+				<key>paste</key>
+				<string>id</string>
+				<key>pasteAsPlainText</key>
+				<string>id</string>
+				<key>removeActiveAnnotation</key>
+				<string>id</string>
+				<key>removeThisAnnotation</key>
+				<string>id</string>
+				<key>selectNextActiveAnnotation</key>
+				<string>id</string>
+				<key>selectPreviousActiveAnnotation</key>
+				<string>id</string>
+				<key>takeSnapshot</key>
+				<string>id</string>
+			</dict>
 			<key>CLASS</key>
 			<string>SKPDFView</string>
 			<key>LANGUAGE</key>
@@ -505,6 +625,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKCenteredTextFieldCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -512,6 +640,33 @@
 			<string>NSTextFieldCell</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>copy</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>scrollToBeginningOfDocument</key>
+				<string>id</string>
+				<key>scrollToEndOfDocument</key>
+				<string>id</string>
+			</dict>
 			<key>CLASS</key>
 			<string>SKTableView</string>
 			<key>LANGUAGE</key>
@@ -524,16 +679,40 @@
 			<string>SKColorSwatch</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>target</key>
+				<string>id</string>
+			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSControl</string>
 		</dict>
 		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>copy</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>scrollToBeginningOfDocument</key>
+				<string>id</string>
+				<key>scrollToEndOfDocument</key>
+				<string>id</string>
+			</dict>
 			<key>CLASS</key>
 			<string>SKOutlineView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 	</array>
 	<key>IBVersion</key>

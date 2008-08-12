@@ -1,110 +1,189 @@
-{
-    IBClasses =     (
-                {
-            ACTIONS =             {
-                "" = id;
-            };
-            CLASS = FirstResponder;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = NSCell;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = NSMenu;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = NSMenuItem;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                changeDashPattern = id;
-                changeEndLineStyle = id;
-                changeLineStyle = id;
-                changeLineWidth = id;
-                changeStartLineStyle = id;
-            };
-            CLASS = NSObject;
-            LANGUAGE = ObjC;
-        },
-                {
-            CLASS = NSResponder;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = NSUserDefaultsController;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSController;
-        },
-                {
-            CLASS = NSView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSResponder;
-        },
-                {
-            CLASS = NSWindow;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSResponder;
-        },
-                {
-            CLASS = NSWindowController;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSResponder;
-        },
-                {
-            CLASS = SKFontWell;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                target = id;
-            };
-            SUPERCLASS = NSButton;
-        },
-                {
-            CLASS = SKLineWell;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                target = id;
-                titleUIElement = id;
-            };
-            SUPERCLASS = NSControl;
-        },
-                {
-            ACTIONS =             {
-                changeDiscreteThumbnailSizes = id;
-                changeFont = id;
-                changeTeXEditorPreset = id;
-                changeUpdateInterval = id;
-                resetAll = id;
-                resetCurrent = id;
-                revertFullScreenPDFViewSettings = id;
-                revertPDFViewSettings = id;
-            };
-            CLASS = SKPreferenceController;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                anchoredNoteFontWell = SKFontWell;
-                boxLineWell = SKLineWell;
-                circleLineWell = SKLineWell;
-                lineLineWell = SKLineWell;
-                revertFullScreenPDFSettingsButton = NSButton;
-                revertPDFSettingsButton = NSButton;
-                snapshotSizeSlider = NSSlider;
-                tabView = NSTabView;
-                texEditorPopUpButton = NSPopUpButton;
-                textLineWell = SKLineWell;
-                textNoteFontWell = SKFontWell;
-                thumbnailSizeSlider = NSSlider;
-            };
-            SUPERCLASS = NSWindowController;
-        }
-    );
-    IBVersion = 1;
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>NSUserDefaultsController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>changeDiscreteThumbnailSizes</key>
+				<string>id</string>
+				<key>changeFont</key>
+				<string>id</string>
+				<key>changeTeXEditorPreset</key>
+				<string>id</string>
+				<key>changeUpdateInterval</key>
+				<string>id</string>
+				<key>resetAll</key>
+				<string>id</string>
+				<key>resetCurrent</key>
+				<string>id</string>
+				<key>revertFullScreenPDFViewSettings</key>
+				<string>id</string>
+				<key>revertPDFViewSettings</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKPreferenceController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>anchoredNoteFontWell</key>
+				<string>SKFontWell</string>
+				<key>boxLineWell</key>
+				<string>SKLineWell</string>
+				<key>circleLineWell</key>
+				<string>SKLineWell</string>
+				<key>lineLineWell</key>
+				<string>SKLineWell</string>
+				<key>revertFullScreenPDFSettingsButton</key>
+				<string>NSButton</string>
+				<key>revertPDFSettingsButton</key>
+				<string>NSButton</string>
+				<key>snapshotSizeSlider</key>
+				<string>NSSlider</string>
+				<key>tabView</key>
+				<string>NSTabView</string>
+				<key>texEditorPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>textLineWell</key>
+				<string>SKLineWell</string>
+				<key>textNoteFontWell</key>
+				<string>SKFontWell</string>
+				<key>thumbnailSizeSlider</key>
+				<string>NSSlider</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>changeDashPattern</key>
+				<string>id</string>
+				<key>changeEndLineStyle</key>
+				<string>id</string>
+				<key>changeLineStyle</key>
+				<string>id</string>
+				<key>changeLineWidth</key>
+				<string>id</string>
+				<key>changeStartLineStyle</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKFontWell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>target</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSButton</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenuItem</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKLineWell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>target</key>
+				<string>id</string>
+				<key>titleUIElement</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
