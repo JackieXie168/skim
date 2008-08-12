@@ -389,7 +389,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                             [sc scanInt:NULL];
                             record = [records recordForIndex:recordIndex];
                             [record setFile:file];
-                            [record setLine:line];
+                            [record setLine:line + 1];
                             [[lines objectForKey:file] addObject:record];
                         }
                     } else if (ch == 'p') {
@@ -464,7 +464,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
-            if ([record line] == -1)
+            if ([record line] == 0)
                 continue;
             NSPoint p = [record point];
             if (p.y > NSMaxY(rect)) {
@@ -597,7 +597,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
-            *line = synctex_node_line(node) - 1;
+            *line = synctex_node_line(node);
             *file = SKTeXSourceFile([(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease], [[self syncFileName] stringByDeletingLastPathComponent]);
             rv = YES;
         }
@@ -608,7 +608,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
     NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
-    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line + 1, 0) > 0) {
+    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             unsigned int page = synctex_node_page(node);
@@ -653,7 +653,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
-        int foundLine = -1;
+        int foundLine = 0;
         NSString *foundFile = nil;
         BOOL success = NO;
         
