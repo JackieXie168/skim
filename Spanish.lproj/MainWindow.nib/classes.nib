@@ -24,14 +24,6 @@
             SUPERCLASS = NSView;
         },
                 {
-            CLASS = BDSKImagePopUpButton;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                delegate = id;
-            };
-            SUPERCLASS = NSPopUpButton;
-        },
-                {
             ACTIONS =             {
                 orderFrontFontPanel = id;
                 orderFrontLineInspector = id;
@@ -41,11 +33,41 @@
             SUPERCLASS = NSObject;
         },
                 {
+            CLASS = NSCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenu;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenuItem;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
             ACTIONS =             {
+                changeDashPattern = id;
+                changeEndLineStyle = id;
+                changeLineStyle = id;
+                changeLineWidth = id;
+                changeStartLineStyle = id;
                 splitViewDoubleClick = id;
             };
             CLASS = NSObject;
             LANGUAGE = ObjC;
+        },
+                {
+            CLASS = NSResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSScrollView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
         },
                 {
             CLASS = NSSegmentedControl;
@@ -53,14 +75,41 @@
             SUPERCLASS = NSControl;
         },
                 {
-            CLASS = NSUserDefaultsController;
+            CLASS = NSView;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSController;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindowController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
         },
                 {
             CLASS = SKAnnotationTypeImageCell;
             LANGUAGE = ObjC;
             SUPERCLASS = NSImageCell;
+        },
+                {
+            ACTIONS =             {
+                editBookmarks = id;
+                openBookmark = id;
+                orderFrontLineInspector = id;
+                orderFrontNotesPanel = id;
+                saveCurrentOpenDocuments = id;
+                showDownloads = id;
+                showPreferencePanel = id;
+                showReleaseNotes = id;
+                visitWebSite = id;
+                visitWiki = id;
+            };
+            CLASS = SKApplicationController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
         },
                 {
             CLASS = SKCenteredTextFieldCell;
@@ -70,17 +119,15 @@
                 {
             CLASS = SKColorSwatch;
             LANGUAGE = ObjC;
+            OUTLETS =             {
+                target = id;
+            };
             SUPERCLASS = NSControl;
         },
                 {
             CLASS = SKFindTableView;
             LANGUAGE = ObjC;
             SUPERCLASS = SKTableView;
-        },
-                {
-            CLASS = SKFullScreenWindow;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSWindow;
         },
                 {
             CLASS = SKMainWindow;
@@ -133,6 +180,7 @@
                 doZoomOut = id;
                 doZoomToActualSize = id;
                 doZoomToFit = id;
+                doZoomToPhysicalSize = id;
                 doZoomToSelection = id;
                 editNote = id;
                 enterFullScreen = id;
@@ -167,7 +215,9 @@
                 toggleHideNotes = id;
                 toggleLeftSidePane = id;
                 togglePresentation = id;
+                toggleReadingBar = id;
                 toggleRightSidePane = id;
+                toggleSplitPDF = id;
                 toggleStatusBar = id;
                 toggleWholeWordSearch = id;
                 zoomInActualOut = id;
@@ -270,21 +320,39 @@
             SUPERCLASS = SKOutlineView;
         },
                 {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
             CLASS = SKOutlineView;
             LANGUAGE = ObjC;
             SUPERCLASS = NSOutlineView;
         },
                 {
-            CLASS = SKPDFView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = PDFView;
-        },
-                {
             ACTIONS =             {
-                pagePopUpAction = id;
-                scalePopUpAction = id;
+                addAnnotation = id;
+                alternatePaste = id;
+                autoSelectContent = id;
+                changeAnnotationMode = id;
+                changeToolMode = id;
+                copy = id;
+                cut = id;
+                delete = id;
+                deselectAll = id;
+                editActiveAnnotation = id;
+                editThisAnnotation = id;
+                endAnnotationEdit = id;
+                paste = id;
+                pasteAsPlainText = id;
+                removeActiveAnnotation = id;
+                removeThisAnnotation = id;
+                selectNextActiveAnnotation = id;
+                selectPreviousActiveAnnotation = id;
+                takeSnapshot = id;
             };
-            CLASS = SKSecondaryPDFView;
+            CLASS = SKPDFView;
             LANGUAGE = ObjC;
             SUPERCLASS = PDFView;
         },
@@ -304,17 +372,15 @@
             SUPERCLASS = NSSplitView;
         },
                 {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
             CLASS = SKTableView;
             LANGUAGE = ObjC;
             SUPERCLASS = NSTableView;
-        },
-                {
-            CLASS = SKThumbnail;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                controller = id;
-            };
-            SUPERCLASS = NSObject;
         },
                 {
             CLASS = SKThumbnailTableView;
@@ -325,11 +391,6 @@
             CLASS = SKTocOutlineView;
             LANGUAGE = ObjC;
             SUPERCLASS = SKOutlineView;
-        },
-                {
-            CLASS = SkimDocument;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSDocument;
         }
     );
     IBVersion = 1;
