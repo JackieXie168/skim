@@ -25,8 +25,55 @@
             SUPERCLASS = NSObject;
         },
                 {
+            CLASS = NSCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenu;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenuItem;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                changeDashPattern = id;
+                changeEndLineStyle = id;
+                changeLineStyle = id;
+                changeLineWidth = id;
+                changeStartLineStyle = id;
+            };
             CLASS = NSObject;
             LANGUAGE = ObjC;
+        },
+                {
+            CLASS = NSResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSScrollView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = NSView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindowController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
         },
                 {
             ACTIONS =             {
@@ -37,6 +84,7 @@
             OUTLETS =             {
                 iconTypePopUpButton = NSPopUpButton;
                 imageView = BDSKDragImageView;
+                noteController = NSObjectController;
                 statusBar = SKStatusBar;
                 textView = NSTextView;
             };
