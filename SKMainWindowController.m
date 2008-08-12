@@ -143,6 +143,7 @@ NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
+static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
 
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
@@ -2922,7 +2923,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self addAnnotationsForSelection:selection];
             temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
         }
-        if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)])
+        if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO)
             [pdfView setCurrentSelection:selection animate:YES];
 	} else {
 		NSBeep();
@@ -2963,14 +2964,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (highlightTimer)
         [self removeHighlightedSelections:highlightTimer];
-    if ([pdfView respondsToSelector:@selector(setHighlightedSelections:)] && [currentSel respondsToSelector:@selector(setColor:)] && [findResults count] > 1) {
+    if ([pdfView respondsToSelector:@selector(setHighlightedSelections:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [currentSel respondsToSelector:@selector(setColor:)] && [findResults count] > 1) {
         PDFSelection *tmpSel = [[currentSel copy] autorelease];
         [tmpSel setColor:[NSColor yellowColor]];
         [pdfView setHighlightedSelections:[NSArray arrayWithObject:tmpSel]];
         highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
-    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && firstSel)
+    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && firstSel)
         [pdfView setCurrentSelection:firstSel animate:YES];
     
     if (currentSel)
