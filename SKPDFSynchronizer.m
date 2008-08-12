@@ -52,7 +52,7 @@ static NSString *SKPDFSynchronizerTexExtension = @"tex";
 static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
-    if ([[file pathExtension] caseInsensitiveCompare:SKPDFSynchronizerTexExtension] != NSOrderedSame)
+    if ([[file pathExtension] length] == 0)
         file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
     if ([file isAbsolutePath] == NO)
         file = [base stringByAppendingPathComponent:file];
