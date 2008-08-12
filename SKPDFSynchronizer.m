@@ -573,7 +573,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSString *theSyncFileName = SKPathFromFileSystemRepresentation(synctex_scanner_get_synctex(scanner));
         if ([theSyncFileName isAbsolutePath] == NO)
             theSyncFileName = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:theSyncFileName];
-        [self setSyncFileName:[theSyncFileName stringByStandardizingPath]];
+        theSyncFileName = [theSyncFileName stringByStandardizingPath];
+        [self setSyncFileName:theSyncFileName];
         if (filenames)
             [filenames removeAllObjects];
         else
