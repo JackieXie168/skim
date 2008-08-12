@@ -47,7 +47,6 @@ NSString *SKDownloadDirectory();
 extern BOOL SKFileIsInTrash(NSURL *fileURL);
 extern BOOL SKFileExistsAtPath(NSString *path);
 extern NSDate *SKFileModificationDateAtPath(NSString *path);
-extern NSString *SKPathFromFileSystemRepresentation(const char *path);
 extern NSURL *SKResolvedURLFromPath(NSString *path);
 
 extern NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create);
