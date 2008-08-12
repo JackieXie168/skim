@@ -112,18 +112,6 @@ NSDate *SKFileModificationDateAtPath(NSString *path) {
         return nil;
 }
 
-NSString *SKPathFromFileSystemRepresentation(const char *path) {
-    NSString *thePath = nil;
-    if (path != NULL) {
-        CFURLRef theURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)path, strlen(path), NO);
-        if (theURL != NULL) {
-            thePath = [(NSURL *)theURL path];
-            CFRelease(theURL);
-        }
-    }
-    return thePath;
-}
-
 extern NSURL *SKResolvedURLFromPath(NSString *path) {
     NSURL *url = nil;
     FSRef fileRef;
