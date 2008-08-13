@@ -51,14 +51,6 @@
 static NSString *SKPDFSynchronizerTexExtension = @"tex";
 static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
 
-static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
-    if ([[file pathExtension] length] == 0)
-        file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
-    if ([file isAbsolutePath] == NO)
-        file = [base stringByAppendingPathComponent:file];
-    return [file stringByStandardizingPath];
-}
-
 #pragma mark -
 
 struct SKServerFlags {
@@ -332,6 +324,19 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark | Server thread
 
+- (NSString *)sourceFileForFileName:(NSString *)file defaultExtension:(NSString *)extension {
+    if (extension && [[file pathExtension] length] == 0)
+        file = [file stringByAppendingPathExtension:extension];
+    if ([file isAbsolutePath] == NO)
+        file = [[[self fileName] stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
+    return [file stringByStandardizingPath];
+}
+
+- (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep defaultExtension:(NSString *)extension {
+    NSString *file = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
+    return [self sourceFileForFileName:[file autorelease] defaultExtension:extension];
+}
+
 #pragma mark || PDFSync
 
 - (BOOL)parsePdfsyncFile:(NSString *)theFileName {
@@ -353,7 +358,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     if ([pdfsyncString length]) {
         
-        NSString *basePath = [theFileName stringByDeletingLastPathComponent];
         SKPDFSyncRecords *records = [[SKPDFSyncRecords alloc] init];
         NSMutableArray *files = [[NSMutableArray alloc] init];
         NSString *file;
@@ -369,7 +373,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
             [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
             
-            file = SKTeXSourceFile(file, basePath);
+            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
             [files addObject:file];
             
             array = [[NSMutableArray alloc] init];
@@ -412,7 +416,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                     } else if (ch == '(') {
                         // start of a new source file
                         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
-                            file = SKTeXSourceFile(file, basePath);
+                            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
                             [files addObject:file];
                             if ([lines objectForKey:file] == nil) {
                                 array = [[NSMutableArray alloc] init];
@@ -570,23 +574,19 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (scanner)
         synctex_scanner_free(scanner);
     if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
-        NSString *theSyncFileName = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_synctex(scanner)) autorelease];
-        if ([theSyncFileName isAbsolutePath] == NO)
-            theSyncFileName = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:theSyncFileName];
-        theSyncFileName = [theSyncFileName stringByStandardizingPath];
-        [self setSyncFileName:theSyncFileName];
+        [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) defaultExtension:nil]];
         if (filenames)
             [filenames removeAllObjects];
         else
             filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        NSString *basePath = [theSyncFileName stringByDeletingLastPathComponent];
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             filename = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease];
-            [filenames setObject:filename forKey:SKTeXSourceFile(filename, basePath)];
+            [filenames setObject:filename forKey:[self sourceFileForFileName:filename defaultExtension:SKPDFSynchronizerTexExtension]];
         } while (node = synctex_node_next(node));
         isPdfsync = NO;
+        NSLog(@"%@",filenames);
         rv = [self shouldKeepRunning];
     }
     return rv;
@@ -598,7 +598,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             *line = synctex_node_line(node);
-            *file = SKTeXSourceFile([(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease], [[self syncFileName] stringByDeletingLastPathComponent]);
+            *file = [self sourceFileForFileSystemRepresentation:synctex_scanner_get_name(scanner, synctex_node_tag(node)) defaultExtension:SKPDFSynchronizerTexExtension];
             rv = YES;
         }
     }
@@ -673,7 +673,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
         
-        file = SKTeXSourceFile(file, [[self fileName] stringByDeletingLastPathComponent]);
+        file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
         
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
