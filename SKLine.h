@@ -44,4 +44,5 @@
 }
 - (id)initWithLine:(int)aLine;
 - (int)line;
+- (int)index;
 @end

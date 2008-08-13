@@ -47,7 +47,7 @@
         pageIndex = NSNotFound;
         point = NSZeroPoint;
         file = nil;
-        line = 0;
+        line = -1;
     }
     return self;
 }

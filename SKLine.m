@@ -57,4 +57,8 @@
     return line;
 }
 
+- (int)index {
+    return line + 1;
+}
+
 @end

@@ -117,7 +117,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 [self presentError:error];
             
             if ([[NSFileManager defaultManager] fileExistsAtPath:source] && [document respondsToSelector:@selector(synchronizer)])
-                [[document synchronizer] findPageAndLocationForLine:[lineNumber intValue] inFile:source];
+                [[document synchronizer] findPageAndLocationForLine:MAX(0, [lineNumber intValue] - 1) inFile:source];
             
         } else {
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
