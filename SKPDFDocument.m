@@ -1459,7 +1459,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 break;
             nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
             if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
-                NSString *lineString = [NSString stringWithFormat:@"%d", line];
+                NSString *lineString = [NSString stringWithFormat:@"%d", line + 1];
                 [cmdString replaceCharactersInRange:range withString:lineString];
                 range.length = [lineString length];
             }

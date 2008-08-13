@@ -393,7 +393,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                             [sc scanInt:NULL];
                             record = [records recordForIndex:recordIndex];
                             [record setFile:file];
-                            [record setLine:line + 1];
+                            [record setLine:line];
                             [[lines objectForKey:file] addObject:record];
                         }
                     } else if (ch == 'p') {
@@ -457,7 +457,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)pdfsyncFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (BOOL)pdfsyncFindFileLine:(int *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
@@ -510,15 +510,15 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            *line = [record line];
-            *file = [record file];
+            *linePtr = [record line];
+            *filePtr = [record file];
             rv = YES;
         }
     }
     return rv;
 }
 
-- (BOOL)pdfsyncFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+- (BOOL)pdfsyncFindPage:(unsigned int *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
     if ([lines objectForKey:file]) {
         
@@ -559,8 +559,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         }
         
         if (record) {
-            *pageIndex = [record pageIndex];
-            *point = [record point];
+            *pageIndexPtr = [record pageIndex];
+            *pointPtr = [record point];
             rv = YES;
         }
     }
@@ -591,28 +591,28 @@ static NSPoint pdfOffset = {0.0, 0.0};
     return rv;
 }
 
-- (BOOL)synctexFindFileLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (BOOL)synctexFindFileLine:(int *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
     BOOL rv = NO;
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
-            *line = synctex_node_line(node);
-            *file = [self sourceFileForFileSystemRepresentation:synctex_scanner_get_name(scanner, synctex_node_tag(node)) defaultExtension:SKPDFSynchronizerTexExtension];
+            *linePtr = MAX(synctex_node_line(node), 1) - 1;
+            *filePtr = [self sourceFileForFileSystemRepresentation:synctex_scanner_get_name(scanner, synctex_node_tag(node)) defaultExtension:SKPDFSynchronizerTexExtension];
             rv = YES;
         }
     }
     return rv;
 }
 
-- (BOOL)synctexFindPage:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+- (BOOL)synctexFindPage:(unsigned int *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(int)line inFile:(NSString *)file {
     BOOL rv = NO;
     NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
-    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line, 0) > 0) {
+    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
             unsigned int page = synctex_node_page(node);
-            *pageIndex = page > 0 ? page - 1 : page;
-            *point = NSMakePoint(synctex_node_visible_h(node), synctex_node_visible_v(node));
+            *pageIndexPtr = MAX(page, 1u) - 1;
+            *pointPtr = NSMakePoint(synctex_node_visible_h(node), synctex_node_visible_v(node));
             rv = YES;
         }
     }

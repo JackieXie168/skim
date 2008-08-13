@@ -749,7 +749,7 @@
             <cocoa class="SKLine"/>
             <property name="index" code="pidx" type="integer" access="r"
                 description="the line number.">
-                <cocoa key="line"/>
+                <cocoa key="index"/>
             </property>
         </class>
 
