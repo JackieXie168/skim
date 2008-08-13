@@ -586,7 +586,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
             [filenames setObject:filename forKey:[self sourceFileForFileName:filename defaultExtension:SKPDFSynchronizerTexExtension]];
         } while (node = synctex_node_next(node));
         isPdfsync = NO;
-        NSLog(@"%@",filenames);
         rv = [self shouldKeepRunning];
     }
     return rv;
