@@ -78,7 +78,6 @@ NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnno
 NSString *SKPDFViewDidAddAnnotationNotification = @"SKPDFViewDidAddAnnotationNotification";
 NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
 NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationNotification";
-NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
@@ -1917,9 +1916,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
         [self setActiveAnnotation:newAnnotation];
         [newAnnotation release];
-        if (annotationType == SKAnchoredNote)
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
+        if (annotationType == SKAnchoredNote && [[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
+            [[self delegate] PDFView:self editAnnotation:activeAnnotation];
     } else NSBeep();
 }
 
@@ -2050,8 +2048,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
+        if ([[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
+            [[self delegate] PDFView:self editAnnotation:activeAnnotation];
         
     }
     

@@ -47,7 +47,6 @@ extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
 extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
 extern NSString *SKPDFViewDidMoveAnnotationNotification;
-extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 extern NSString *SKPDFViewReadingBarDidChangeNotification;
 extern NSString *SKPDFViewSelectionChangedNotification;
 extern NSString *SKPDFViewMagnificationChangedNotification;
@@ -215,4 +214,10 @@ typedef NSInteger SKInteractionMode;
 
 - (NSUndoManager *)undoManager;
 
+@end
+
+#pragma mark -
+
+@interface NSObject (SKPDFViewDelegate)
+- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;
 @end

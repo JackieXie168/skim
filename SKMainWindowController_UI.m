@@ -926,6 +926,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
+#pragma mark SKPDFView delegate protocol
+
+- (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
+    [self showNote:annotation];
+}
+
 #pragma mark SKSplitView delegate protocol
 
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
@@ -1452,12 +1458,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [noteOutlineView reloadData];
 }
 
-- (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
-    
-    [self showNote:annotation];
-}
-
 - (void)handleReadingBarDidChangeNotification:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     PDFPage *oldPage = [userInfo objectForKey:SKPDFViewOldPageKey];
@@ -1509,8 +1509,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                              name:SKPDFViewDidMoveAnnotationNotification object:pdfView];
-    [nc addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
-                             name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleReadingBarDidChangeNotification:) 
                              name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
