@@ -1414,26 +1414,33 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([editorPreset isEqualToString:@""] == NO) {
             NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
             if (appPath) {
+                NSFileManager *fm = [NSFileManager defaultManager];
                 NSBundle *appBundle = [NSBundle bundleWithPath:appPath];
-                NSString *toolPath = [appBundle pathForResource:editorCmd ofType:nil];
-                if (toolPath && [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                NSString *toolPath;
+                if ((toolPath = [@"/usr/bin" stringByAppendingPathComponent:editorCmd]) &&
+                           [fm isExecutableFileAtPath:toolPath]) {
                    editorCmd = toolPath;
+                } else if ((toolPath = [@"/usr/local/bin" stringByAppendingPathComponent:editorCmd]) &&
+                           [fm isExecutableFileAtPath:toolPath]) {
+                   editorCmd = toolPath;
+                } else if (toolPath = [appBundle pathForResource:editorCmd ofType:nil]) {
+                    editorCmd = toolPath;
                 } else if (toolPath = [appBundle pathForAuxiliaryExecutable:editorCmd]) {
                     editorCmd = toolPath;
                 } else if (toolPath = [appBundle pathForAuxiliaryExecutable:[@"bin" stringByAppendingPathComponent:editorCmd]]) {
                     // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
                     editorCmd = toolPath;
                 } else if ((toolPath = [[appBundle sharedSupportPath] stringByAppendingPathComponent:editorCmd]) &&
-                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                           [fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                 } else if ((toolPath = [[[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
-                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                           [fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                 } else if ((toolPath = [[appBundle resourcePath] stringByAppendingPathComponent:editorCmd]) &&
-                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                           [fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                 } else if ((toolPath = [[[appBundle resourcePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
-                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                           [fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                 }
             }
