@@ -207,7 +207,7 @@ enum {
 
 - (BOOL)isMovable { return NO; }
 
-- (BOOL)isEditable { return NO; }
+- (BOOL)isEditable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return NO; }
 
