@@ -1076,7 +1076,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     }
     [removed release];
     
-    [notes setArray:notes];
+    [notes setArray:newNotes];
     
     // Start observing the added notes so that, when they're changed, we can record undo operations.
     if ([added count])
