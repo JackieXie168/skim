@@ -185,14 +185,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         frame.size.width += 64.0;
         [textField setFrame:frame];
         
-        NSSize minSize = [[self window] minSize];
-        NSSize maxSize = [[self window] maxSize];
+        NSSize minimumSize = [[self window] minSize];
+        NSSize maximumSize = [[self window] maxSize];
         frame = [[[self window] contentView] frame];
         frame.size.height = NSHeight([statusBar frame]) + NSHeight([gradientView frame]);
         frame = [[self window] frameRectForContentRect:frame];
-        minSize.height = maxSize.height = NSHeight(frame);
-        [[self window] setMinSize:minSize];
-        [[self window] setMaxSize:maxSize];
+        minimumSize.height = maximumSize.height = NSHeight(frame);
+        [[self window] setMinSize:minimumSize];
+        [[self window] setMaxSize:maximumSize];
         [[self window] setFrame:frame display:NO];
     }
     
