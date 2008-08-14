@@ -396,6 +396,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
     
+    [pdfView setDelegate:self];
+    
     NSNumber *leftWidth = [savedNormalSetup objectForKey:SKMainWindowLeftSidePaneWidthKey] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
     NSNumber *rightWidth = [savedNormalSetup objectForKey:SKMainWindowRightSidePaneWidthKey] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
