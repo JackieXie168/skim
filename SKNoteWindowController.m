@@ -52,6 +52,7 @@
 #import "PDFPage_SKExtensions.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
+static NSString *SKGenericNoteWindowFrameAutosaveName = @"SKGenericNoteWindow";
 
 static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
@@ -102,7 +103,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         
         [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
         [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
+        if ([self isNoteType])
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
@@ -110,7 +112,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (void)dealloc {
     [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
     [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
+    if ([self isNoteType])
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [textViewUndoManager release];
     [note release];
@@ -131,18 +134,66 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
-    if ([self isNoteType] && [[textView string] length] == 0) {
-        NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-        float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
-        NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
-        if (font)
-            [textView setFont:font];
-    }
-    
-    unsigned i, count = [iconTypePopUpButton numberOfItems];
-    for (i = 0; i < count; i++) {
-        NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
-        [item setImage:noteIcons[[item tag]]];
+    if ([self isNoteType]) {
+        if ([[textView string] length] == 0) {
+            NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
+            float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+            NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
+            if (font)
+                [textView setFont:font];
+        }
+        
+        unsigned i, count = [iconTypePopUpButton numberOfItems];
+        for (i = 0; i < count; i++) {
+            NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
+            [item setImage:noteIcons[[item tag]]];
+        }
+    } else {
+        NSView *gradientView = [imageView superview];
+        NSTextField *textField = nil;
+        NSTextField *promptField = nil; 
+        NSEnumerator *viewEnum = [[gradientView subviews] objectEnumerator];
+        id view;
+        
+        while (view = [viewEnum nextObject]) {
+            if ([view isKindOfClass:[NSTextField class]]) {
+                if ([view isEditable])
+                    textField = view;
+                else
+                    promptField = view;
+            }
+        }
+        
+        [imageView unbind:@"value"];
+        [iconTypePopUpButton unbind:@"selectedTag"];
+        [textView unbind:@"attributedString"];
+        [textView unbind:@"editable"];
+        
+        [[textView enclosingScrollView] removeFromSuperview];
+        [imageView removeFromSuperview];
+        [iconTypePopUpButton removeFromSuperview];
+        [promptField removeFromSuperview];
+        
+        NSRect frame;
+        
+        frame = [gradientView frame];
+        frame.size.height -= 32.0;
+        frame.origin.y += 32.0;
+        [gradientView setFrame:frame];
+        
+        frame = [textField frame];
+        frame.size.width += 64.0;
+        [textField setFrame:frame];
+        
+        NSSize minSize = [[self window] minSize];
+        NSSize maxSize = [[self window] maxSize];
+        frame = [[[self window] contentView] frame];
+        frame.size.height = NSHeight([statusBar frame]) + NSHeight([gradientView frame]);
+        frame = [[self window] frameRectForContentRect:frame];
+        minSize.height = maxSize.height = NSHeight(frame);
+        [[self window] setMinSize:minSize];
+        [[self window] setMaxSize:maxSize];
+        [[self window] setFrame:frame display:NO];
     }
     
     [statusBar setLeftAction:@selector(statusBarClicked:)];
@@ -150,7 +201,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     
     [self updateStatusMessage];
     
-    [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
+    [self setWindowFrameAutosaveNameOrCascade:[self isNoteType] ? SKNoteWindowFrameAutosaveName : SKGenericNoteWindowFrameAutosaveName];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
                                                  name:SKPDFDocumentWillSaveNotification object:[self document]];

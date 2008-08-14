@@ -2025,13 +2025,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [[NSWorkspace sharedWorkspace] openURL:[(PDFAnnotationLink *)activeAnnotation URL]];
         [self setActiveAnnotation:nil];
         
-    } else if ([type isEqualToString:SKNNoteString]) {
-        
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
-        
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
-        
     } else if ([type isEqualToString:SKNFreeTextString]) {
         
         NSRect editBounds = [activeAnnotation bounds];
@@ -2052,6 +2045,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [editField selectText:self];
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
+        
+    } else if ([activeAnnotation isEditable]) {
+        
+        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, SKPDFViewAnnotationKey, nil]];
+        
     }
     
 }
@@ -2988,7 +2989,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (newActiveAnnotation) {
         
-        if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:SKNFreeTextString] || [[activeAnnotation type] isEqualToString:SKNNoteString])) {
+        if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
             [self editActiveAnnotation:self];
         } else { 
             // Old (current) annotation location.
