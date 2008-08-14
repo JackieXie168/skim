@@ -1078,7 +1078,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
-        return [self isPresentation] == NO && [annotation isSkimNote] && ([[annotation type] isEqualToString:SKNFreeTextString] || [[annotation type] isEqualToString:SKNNoteString]);
+        return [self isPresentation] == NO && [annotation isSkimNote] && ([[annotation type] isEditable]);
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];

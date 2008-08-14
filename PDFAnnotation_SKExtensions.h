@@ -81,6 +81,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)pattern;
 
+- (PDFTextAnnotationIconType)iconType;
 - (NSImage *)image;
 - (NSAttributedString *)text;
 

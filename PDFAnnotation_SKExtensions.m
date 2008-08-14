@@ -189,6 +189,8 @@ enum {
     [border release];
 }
 
+- (PDFTextAnnotationIconType)iconType { return kPDFTextAnnotationIconNote; }
+
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
