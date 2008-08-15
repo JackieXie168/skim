@@ -1409,54 +1409,30 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
         NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
         NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
+        NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
+        NSString *appSupportPath;
         NSMutableDictionary *environment = [[[[NSProcessInfo processInfo] environment] mutableCopy] autorelease];
+        NSMutableArray *paths = [NSMutableArray arrayWithArray:[[environment objectForKey:@"PATH"] componentsSeparatedByString:@":"]];
         
+        if ([paths containsObject:@"/usr/bin"] == NO)
+            [paths addObject:@"/usr/bin"];
+        if ([paths containsObject:@"/usr/local/bin"] == NO)
+            [paths addObject:@"/usr/local/bin"];
         if ([editorPreset isEqualToString:@""] == NO) {
             NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
             if (appPath) {
-                NSFileManager *fm = [NSFileManager defaultManager];
                 NSBundle *appBundle = [NSBundle bundleWithPath:appPath];
-                NSString *toolPath;
-                if ((toolPath = [@"/usr/bin" stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                   editorCmd = toolPath;
-                } else if ((toolPath = [@"/usr/local/bin" stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                   editorCmd = toolPath;
-                } else if (toolPath = [appBundle pathForResource:editorCmd ofType:nil]) {
-                    editorCmd = toolPath;
-                } else if (toolPath = [appBundle pathForAuxiliaryExecutable:editorCmd]) {
-                    editorCmd = toolPath;
-                } else if (toolPath = [appBundle pathForAuxiliaryExecutable:[@"bin" stringByAppendingPathComponent:editorCmd]]) {
-                    // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
-                    editorCmd = toolPath;
-                } else if ((toolPath = [[appBundle sharedSupportPath] stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                    editorCmd = toolPath;
-                } else if ((toolPath = [[[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                    editorCmd = toolPath;
-                } else if ((toolPath = [[appBundle resourcePath] stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                    editorCmd = toolPath;
-                } else if ((toolPath = [[[appBundle resourcePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
-                           [fm isExecutableFileAtPath:toolPath]) {
-                    editorCmd = toolPath;
-                }
+                [paths addObjectsFromArray:[NSArray arrayWithObjects:
+                    [appBundle resourcePath], [[appBundle resourcePath] stringByAppendingPathComponent:@"bin"],
+                    [appBundle sharedSupportPath], [[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"],
+                    [[[appBundle executablePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bin"], nil]];
             }
-        } else {
-            NSString *path = [environment objectForKey:@"PATH"];
-            NSMutableArray *paths = [NSMutableArray arrayWithObjects:@"/usr/local/bin", nil];
-            NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
-            NSString *appSupportPath;
-            if ([path length]) 
-                [paths insertObject:path atIndex:0];
-            while (appSupportPath = [pathEnum nextObject]) {
-                [paths addObject:appSupportPath];
-                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
-            }
-            [environment setObject:[paths componentsJoinedByString:@":"] forKey:@"PATH"];
         }
+        while (appSupportPath = [pathEnum nextObject]) {
+            [paths addObject:appSupportPath];
+            [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
+        }
+        [environment setObject:[paths componentsJoinedByString:@":"] forKey:@"PATH"];
         
         NSRange range = NSMakeRange(0, 0);
         unichar prevChar, nextChar;
@@ -1497,7 +1473,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         }
         
-        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent]];
+        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent] environment:environment];
     }
 }
 
