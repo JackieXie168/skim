@@ -139,6 +139,9 @@ extern NSString *SKImageNameZoomOutCursor;
 + (NSImage *)smallMissingFileImage;
 + (NSImage *)tinyMissingFileImage;
 
++ (NSImage *)smallMultipleFilesImage;
++ (NSImage *)tinyMultipleFilesImage;
+
 - (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
 - (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta;
 

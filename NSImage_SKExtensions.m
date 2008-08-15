@@ -2211,6 +2211,34 @@ static NSSize tinyImageSize = {16.0, 16.0};
     return image;
 }
 
++ (NSImage *)smallMultipleFilesImage {
+    static NSImage *image = nil;
+    if(image == nil) {
+        image = [[NSImage alloc] initWithSize:smallImageSize];
+        NSImage *multipleFilesImage = [[NSWorkspace sharedWorkspace] iconForFiles:[NSArray arrayWithObjects:@"", @"", nil]];
+        NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
+        NSRect targetRect = {NSZeroPoint, smallImageSize};
+        [image lockFocus];
+        [multipleFilesImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
+    return image;
+}
+
++ (NSImage *)tinyMultipleFilesImage {
+    static NSImage *image = nil;
+    if(image == nil) {
+        image = [[NSImage alloc] initWithSize:tinyImageSize];
+        NSImage *multipleFilesImage = [[NSWorkspace sharedWorkspace] iconForFiles:[NSArray arrayWithObjects:@"", @"", nil]];
+        NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
+        NSRect targetRect = {NSZeroPoint, tinyImageSize};
+        [image lockFocus];
+        [multipleFilesImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
+    return image;
+}
+
 - (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
     [NSGraphicsContext saveGraphicsState];
     NSAffineTransform *transform = [NSAffineTransform transform];
