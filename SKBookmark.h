@@ -50,6 +50,7 @@ enum {
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;

@@ -2124,15 +2124,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *label = [controller stringValue];
-        NSEnumerator *docEnum = [[NSApp orderedDocuments] objectEnumerator];
-        SKPDFDocument *doc;
-        NSMutableArray *paths = [NSMutableArray array];
-        NSMutableArray *pageIndexes = [NSMutableArray array];
-        while (doc = [docEnum nextObject]) {
-            [paths addObject:[doc fileName]];
-            [pageIndexes addObject:[NSNumber numberWithUnsignedInt:[[[doc pdfView] currentPage] pageIndex]]];
-        }
-        [bmController addBookmarkForPaths:paths pageIndexes:pageIndexes label:label toFolder:[controller selectedFolder]];
+        NSArray *setups = [[NSApp orderedDocuments] valueForKey:@"currentDocumentSetup"];
+        [bmController addBookmarkForSetups:setups label:label toFolder:[controller selectedFolder]];
     }
 }
 

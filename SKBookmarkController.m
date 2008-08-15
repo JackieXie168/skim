@@ -235,6 +235,15 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
 }
 
+- (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder {
+    if (folder == nil) folder = bookmarkRoot;
+    SKBookmark *bookmark = [[SKBookmark alloc] initWithSetup:setupDict label:label];
+    if (bookmark) {
+        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
+        [bookmark release];
+    }
+}
+
 - (void)addBookmarkForPaths:(NSArray *)paths pageIndexes:(NSArray *)pageIndexes label:(NSString *)label toFolder:(SKBookmark *)folder {
     NSEnumerator *pathEnum = [paths objectEnumerator];
     NSEnumerator *pageEnum = [pageIndexes objectEnumerator];
@@ -244,6 +253,25 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *bookmark;
     while ((path = [pathEnum nextObject]) && (page = [pageEnum nextObject])) {
         bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:[page unsignedIntValue] label:[path lastPathComponent]];
+        if (bookmark) {
+            [children addObject:bookmark];
+            [bookmark release];
+        }
+    }
+    if (folder == nil) folder = bookmarkRoot;
+    if (bookmark = [[SKBookmark alloc] initSessionWithChildren:children label:label]) {
+        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
+        [bookmark release];
+    }
+}
+
+- (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder {
+    NSEnumerator *setupEnum = [setupDicts objectEnumerator];
+    NSDictionary *setup;
+    NSMutableArray *children = [NSMutableArray array];
+    SKBookmark *bookmark;
+    while (setup = [setupEnum nextObject]) {
+        bookmark = [[SKBookmark alloc] initWithSetup:setup label:@""];
         if (bookmark) {
             [children addObject:bookmark];
             [bookmark release];
@@ -359,8 +387,17 @@ static SKBookmarkController *sharedBookmarkController = nil;
     NSError *error;
     
     if (fileURL && NO == SKFileIsInTrash(fileURL)) {
-        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-            [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
+        NSDictionary *dict = [bookmark properties];
+        BOOL display = [dict objectForKey:@"windowFrame"] == nil;
+        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:display error:&error]) {
+            if (display) {
+                [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
+            } else {
+                [document makeWindowControllers];
+                if ([document respondsToSelector:@selector(mainWindowController)])
+                    [[document mainWindowController] setInitialSetup:dict];
+                [document showWindows];
+            }
         } else {
             [NSApp presentError:error];
         }
