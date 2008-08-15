@@ -59,6 +59,7 @@ static NSString *SKBookmarkTypeKey = @"type";
     NSData *aliasData;
     NSString *label;
     unsigned int pageIndex;
+    NSDictionary *setup;
 }
 - (BDAlias *)alias;
 - (NSData *)aliasData;
@@ -105,6 +106,12 @@ static Class SKBookmarkClass = Nil;
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     return [self initWithAlias:[BDAlias aliasWithPath:aPath] pageIndex:aPageIndex label:aLabel];
+}
+
+- (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
+    if (self != defaultPlaceholderBookmark)
+        [self release];
+    return [[SKFileBookmark alloc] initWithSetup:aSetupDict label:aLabel];
 }
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
@@ -224,10 +231,18 @@ static Class SKBookmarkClass = Nil;
             aliasData = [[alias aliasData] retain];
             pageIndex = aPageIndex;
             label = [aLabel copy];
+            setup = nil;
         } else {
             [self release];
             self = nil;
         }
+    }
+    return self;
+}
+
+- (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
+    if (self = [self initWithAlias:[BDAlias aliasWithData:[aSetupDict objectForKey:SKBookmarkAliasDataKey]] pageIndex:[[aSetupDict objectForKey:SKBookmarkPageIndexKey] unsignedIntValue] label:aLabel]) {
+        setup = [aSetupDict copy];
     }
     return self;
 }
@@ -240,6 +255,7 @@ static Class SKBookmarkClass = Nil;
     [alias release];
     [aliasData release];
     [label release];
+    [setup release];
     [super dealloc];
 }
 
@@ -248,7 +264,9 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSDictionary *)properties {
-    return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, SKBookmarkTypeKey, [self aliasData], SKBookmarkAliasDataKey, [NSNumber numberWithUnsignedInt:pageIndex], SKBookmarkPageIndexKey, label, SKBookmarkLabelKey, nil];
+    NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:setup];
+    [properties addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeBookmarkString, SKBookmarkTypeKey, [self aliasData], SKBookmarkAliasDataKey, [NSNumber numberWithUnsignedInt:pageIndex], SKBookmarkPageIndexKey, label, SKBookmarkLabelKey, nil]];
+    return properties;
 }
 
 - (int)bookmarkType {
