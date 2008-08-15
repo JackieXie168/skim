@@ -740,7 +740,8 @@ You can bookmark a page in a PDF document so you can quickly return to it, much 
 
 @box{taskbox}
 @itemize
-@item To add a bookmark, choose Bookmarks > Add Bookmark, and enter a name.
+@item To add a bookmark for a file, choose Bookmarks > Add Bookmark, and enter a name.
+@item To add a bookmark for the current session, choose Bookmarks > Add Session Bookmark, and enter a name.
 @item To rename a bookmark, choose Bookmarks > Edit Bookmarks, and double-click its name.
 @item To delete a bookmark, choose Bookmarks > Edit Bookmarks, select it, and click Remove.
 @item To go to a bookmark, choose its name from the Bookmarks menu.

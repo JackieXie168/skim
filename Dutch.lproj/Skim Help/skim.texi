@@ -742,7 +742,8 @@ U kunt een bladwijzer toevoegen aan een pagina in een PDF-document. Hiermee kunt
 
 @box{taskbox}
 @itemize
-@item Om een bladwijzer toe te voegen, kiest u Bladwijzers > 'Bladwijzer toevoegen' en voert u een naam in.
+@item Om een bladwijzer voor een archief toe te voegen, kiest u Bladwijzers > 'Bladwijzer toevoegen' en voert u een naam in.
+@item Om een bladwijzer voor de huidige sessie toe te voegen, kiest u Bladwijzers > 'Sessie bladwijzer toevoegen' en voert u een naam in.
 @item Om de naam van een bladwijzer te wijzigen, kiest u Bladwijzers > 'Wijzig bladwijzers' en klikt u dubbel op de betreffende naam.
 @item Om een bladwijzer te verwijderen, kiest u Bladwijzers > 'Wijzig bladwijzers', selecteert u de betreffende bladwijzer, en klikt u op Verwijder.
 @item Om naar een bladwijzer te gaan, kiest u de gewenste naam uit het Bladwijzers-menu.
