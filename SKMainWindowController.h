@@ -447,6 +447,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
 
+- (IBAction)addSessionBookmark:(id)sender;
 - (IBAction)addBookmark:(id)sender;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;

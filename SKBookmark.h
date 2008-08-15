@@ -41,6 +41,7 @@
 enum {
     SKBookmarkTypeBookmark,
     SKBookmarkTypeFolder,
+    SKBookmarkTypeSession,
     SKBookmarkTypeSeparator
 };
 
@@ -50,6 +51,7 @@ enum {
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
+- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
 - (id)initSeparator;
 - (id)initWithProperties:(NSDictionary *)dictionary;

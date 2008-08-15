@@ -235,6 +235,27 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
 }
 
+- (void)addBookmarkForPaths:(NSArray *)paths pageIndexes:(NSArray *)pageIndexes label:(NSString *)label toFolder:(SKBookmark *)folder {
+    NSEnumerator *pathEnum = [paths objectEnumerator];
+    NSEnumerator *pageEnum = [pageIndexes objectEnumerator];
+    NSString *path;
+    NSNumber *page;
+    NSMutableArray *children = [NSMutableArray array];
+    SKBookmark *bookmark;
+    while ((path = [pathEnum nextObject]) && (page = [pageEnum nextObject])) {
+        bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:[page unsignedIntValue] label:[path lastPathComponent]];
+        if (bookmark) {
+            [children addObject:bookmark];
+            [bookmark release];
+        }
+    }
+    if (folder == nil) folder = bookmarkRoot;
+    if (bookmark = [[SKBookmark alloc] initSessionWithChildren:children label:label]) {
+        [folder insertObject:bookmark inChildrenAtIndex:[folder countOfChildren]];
+        [bookmark release];
+    }
+}
+
 - (NSArray *)draggedBookmarks {
     return draggedBookmarks;
 }
@@ -331,22 +352,32 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return bookmarksPath;
 }
 
+- (void)openBookmark:(SKBookmark *)bookmark {
+    id document = nil;
+    NSString *path = [bookmark path];
+    NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
+    NSError *error;
+    
+    if (fileURL && NO == SKFileIsInTrash(fileURL)) {
+        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+            [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
+        } else {
+            [NSApp presentError:error];
+        }
+    }
+}
+
 - (void)openBookmarks:(NSArray *)items {
     NSEnumerator *bmEnum = [items objectEnumerator];
     SKBookmark *bm;
     
     while (bm = [bmEnum nextObject]) {
-        id document = nil;
-        NSString *path = [bm path];
-        NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
-        NSError *error;
-        
-        if (fileURL && NO == SKFileIsInTrash(fileURL)) {
-            if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-                [[document mainWindowController] setPageNumber:[bm pageIndex] + 1];
-            } else {
-                [NSApp presentError:error];
-            }
+        if ([bm bookmarkType] == SKBookmarkTypeSession) {
+            int i = [bm countOfChildren];
+            while (i--)
+                [self openBookmark:[bm objectInChildrenAtIndex:i]];
+        } else if ([bm bookmarkType] == SKBookmarkTypeBookmark) {
+            [self openBookmark:bm];
         }
     }
 }
@@ -539,7 +570,8 @@ static SKBookmarkController *sharedBookmarkController = nil;
 #pragma mark NSOutlineView datasource methods
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
-    return [(item ?: bookmarkRoot) countOfChildren];
+    if (item == nil) item = bookmarkRoot;
+    return [item bookmarkType] == SKBookmarkTypeFolder ? [item countOfChildren] : 0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item {
@@ -555,7 +587,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     if ([tcID isEqualToString:@"label"]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
     } else if ([tcID isEqualToString:@"file"]) {
-        if ([item bookmarkType] == SKBookmarkTypeFolder) {
+        if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
             int count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         } else {
@@ -639,7 +671,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     if ([[tableColumn identifier] isEqualToString:@"file"]) {
-        if ([item bookmarkType] == SKBookmarkTypeFolder)
+        if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession)
             [cell setTextColor:[NSColor disabledControlTextColor]];
         else
             [cell setTextColor:[NSColor controlTextColor]];

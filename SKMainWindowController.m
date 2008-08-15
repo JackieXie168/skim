@@ -2120,6 +2120,34 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
           contextInfo:NULL];
 }
 
+- (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *label = [controller stringValue];
+        NSEnumerator *docEnum = [[NSApp orderedDocuments] objectEnumerator];
+        SKPDFDocument *doc;
+        NSMutableArray *paths = [NSMutableArray array];
+        NSMutableArray *pageIndexes = [NSMutableArray array];
+        while (doc = [docEnum nextObject]) {
+            [paths addObject:[doc fileName]];
+            [pageIndexes addObject:[NSNumber numberWithUnsignedInt:[[[doc pdfView] currentPage] pageIndex]]];
+        }
+        [bmController addBookmarkForPaths:paths pageIndexes:pageIndexes label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSessionBookmark:(id)sender {
+    if (bookmarkSheetController == nil)
+        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    
+	[bookmarkSheetController setStringValue:[[self document] displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self window]
+        modalDelegate:self 
+       didEndSelector:@selector(sessionBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
 - (IBAction)toggleReadingBar:(id)sender {
     [pdfView toggleReadingBar];
 }
