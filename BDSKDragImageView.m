@@ -68,7 +68,9 @@
 - (IBAction)show:(id)sender {
     NSImage *image = [self image];
     
-    if (image == nil) {
+    if ([self isEditable] == NO) {
+        return;
+    } else if (image == nil || [self isEditable] == NO) {
         NSBeep();
         return;
     }
@@ -88,9 +90,9 @@
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(cut:) || action == @selector(copy:) || action == @selector(delete:) || action == @selector(show:))
-        return [self image] != nil;
+        return [self image] != nil && [self isEditable];
     else if (action == @selector(paste:))
-        return YES;
+        return [self isEditable];
     else if ([[BDSKDragImageView superclass] instancesRespondToSelector:_cmd])
         [super validateMenuItem:menuItem];
     return YES;
@@ -111,7 +113,7 @@
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender{
     NSDragOperation dragOp = NSDragOperationNone;
-	if ([delegate respondsToSelector:@selector(dragImageView:validateDrop:)])
+	if ([self isEditable] && [delegate respondsToSelector:@selector(dragImageView:validateDrop:)])
 		dragOp = [delegate dragImageView:self validateDrop:sender];
 	if (dragOp != NSDragOperationNone) {
 		highlight = YES;
@@ -137,7 +139,9 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] == 2) {
+    if ([self isEditable] == NO) {
+        return;
+    } else if ([theEvent clickCount] == 2) {
         [self show:self];
         return;
     }
@@ -205,7 +209,7 @@
 }    
 
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
-    return isLocal ? NSDragOperationNone : NSDragOperationCopy; 
+    return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
 }
 
 - (void)drawRect:(NSRect)aRect {

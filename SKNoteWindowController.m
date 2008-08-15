@@ -50,6 +50,9 @@
 #import "SKStringConstants.h"
 #import "SKRuntime.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKAnnotationTypeImageCell.h"
+
+#define SIZE_OFFSET 32.0
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 static NSString *SKGenericNoteWindowFrameAutosaveName = @"SKGenericNoteWindow";
@@ -151,39 +154,29 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     } else {
         NSView *gradientView = [imageView superview];
         NSTextField *textField = nil;
-        NSTextField *promptField = nil; 
         NSEnumerator *viewEnum = [[gradientView subviews] objectEnumerator];
         id view;
         
         while (view = [viewEnum nextObject]) {
-            if ([view isKindOfClass:[NSTextField class]]) {
-                if ([view isEditable])
-                    textField = view;
-                else
-                    promptField = view;
+            if ([view isKindOfClass:[NSTextField class]] && [view isEditable]) {
+                textField = view;
+                break;
             }
         }
         
-        [imageView unbind:@"value"];
-        [iconTypePopUpButton unbind:@"selectedTag"];
-        [textView unbind:@"attributedString"];
-        [textView unbind:@"editable"];
-        
-        [[textView enclosingScrollView] removeFromSuperview];
-        [imageView removeFromSuperview];
-        [iconTypePopUpButton removeFromSuperview];
-        [promptField removeFromSuperview];
-        
-        NSRect frame;
-        
-        frame = [gradientView frame];
-        frame.size.height -= 32.0;
-        frame.origin.y += 32.0;
+        NSRect frame, ignored;
+        NSDivideRect([gradientView frame], &ignored, &frame, SIZE_OFFSET, NSMinYEdge);
         [gradientView setFrame:frame];
-        
-        frame = [textField frame];
-        frame.size.width += 64.0;
+        NSDivideRect([textField frame], &ignored, &frame, -SIZE_OFFSET, NSMaxXEdge);
         [textField setFrame:frame];
+        NSDivideRect([imageView frame], &ignored, &frame, SIZE_OFFSET, NSMinXEdge);
+        NSDivideRect(frame, &ignored, &frame, SIZE_OFFSET, NSMinYEdge);
+        [imageView setFrame:frame];
+        
+        SKAnnotationTypeImageCell *cell = [[[SKAnnotationTypeImageCell alloc] init] autorelease];
+        [cell setObjectValue:[NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil]];
+        [imageView unbind:@"value"];
+        [imageView setCell:cell];
         
         NSSize minimumSize = [[self window] minSize];
         NSSize maximumSize = [[self window] maxSize];
