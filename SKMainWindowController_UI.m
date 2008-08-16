@@ -1300,7 +1300,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if (beforeMarkedPageIndex != NSNotFound && [[pdfView currentPage] pageIndex] != markedPageIndex)
         beforeMarkedPageIndex = NSNotFound;
     
-    [mainWindow setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+    [self synchronizeWindowTitleWithDocumentName];
     [self updateLeftStatus];
 }
 

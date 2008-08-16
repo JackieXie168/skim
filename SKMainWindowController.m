@@ -822,7 +822,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         }
         
         // the number of pages may have changed
-        [mainWindow setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+        [self synchronizeWindowTitleWithDocumentName];
         [self updateLeftStatus];
         [self updateRightStatus];
     }
