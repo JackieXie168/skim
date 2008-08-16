@@ -107,7 +107,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, EM_DASH_CHARACTER, [self pageLabel];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, EM_DASH_CHARACTER, [self pageLabel]];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
