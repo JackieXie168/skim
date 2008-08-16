@@ -51,8 +51,10 @@
 #import "SKRuntime.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKAnnotationTypeImageCell.h"
+#import "NSString_SKExtensions.h"
 
 #define SIZE_OFFSET 32.0
+#define EM_DASH_CHARACTER 0x2014
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 static NSString *SKGenericNoteWindowFrameAutosaveName = @"SKGenericNoteWindow";
@@ -62,6 +64,7 @@ static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 static void *SKNoteWindowPageObservationContext = (void *)@"SKNoteWindowPageObservationContext";
 static void *SKNoteWindowBoundsObservationContext = (void *)@"SKNoteWindowBoundsObservationContext";
 static void *SKNoteWindowDefaultsObservationContext = (void *)@"SKNoteWindowDefaultsObservationContext";
+static void *SKNoteWindowStringObservationContext = (void *)@"SKNoteWindowStringObservationContext";
 
 @implementation SKNoteWindowController
 
@@ -106,6 +109,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         
         [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
         [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:SKNoteWindowStringObservationContext];
         if ([self isNoteType])
             [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
     }
@@ -115,6 +119,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 - (void)dealloc {
     [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
     [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
+    [note removeObserver:self forKeyPath:SKNPDFAnnotationStringKey];
     if ([self isNoteType])
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -213,7 +218,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    return [[self note] string];
+    return [NSString stringWithFormat:@"%@ %C %@", [[[self note] type] typeName], EM_DASH_CHARACTER, [[self note] string]];
 }
 
 - (PDFAnnotation *)note {
@@ -337,6 +342,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         }
     } else if (context == SKNoteWindowBoundsObservationContext || context == SKNoteWindowPageObservationContext) {
         [self updateStatusMessage];
+    } else if (context == SKNoteWindowStringObservationContext) {
+        [self synchronizeWindowTitleWithDocumentName];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
