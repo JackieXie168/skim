@@ -142,11 +142,9 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [self setPageLabel:[[pdfView currentPage] displayLabel]];
-    [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
-    [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
     [self setPageLabel:[[pdfView currentPage] displayLabel]];
 }
 
@@ -324,6 +322,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     if (pageLabel != newPageLabel) {
         [pageLabel release];
         pageLabel = [newPageLabel retain];
+        [self synchronizeWindowTitleWithDocumentName];
     }
 }
 
