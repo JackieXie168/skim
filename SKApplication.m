@@ -96,16 +96,20 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         
         if ([windowController document] == nil) {
             int anIndex = numberOfItems;
-            while (anIndex-- && anIndex >= 0 && [[windowsMenu itemAtIndex:anIndex] isSeparatorItem] == NO && 
-                   [[[[windowsMenu itemAtIndex:anIndex] target] windowController] document] == nil) {
-                    if ([[[windowsMenu itemAtIndex:anIndex] title] caseInsensitiveCompare:title] == NSOrderedAscending)
-                        break;
+            while (anIndex--) {
+                NSMenuItem *anItem = [windowsMenu itemAtIndex:anIndex];
+                if ([anItem isSeparatorItem] ||
+                    [[[anItem target] windowController] document] != nil ||
+                    [[anItem title] caseInsensitiveCompare:title] == NSOrderedAscending)
+                    break;
             }
             ++anIndex;
             if (itemIndex != anIndex) {
+                if (itemIndex < anIndex)
+                    anIndex--;
                 [item retain];
                 [windowsMenu removeItem:item];
-                [windowsMenu insertItem:item atIndex:itemIndex < anIndex ? --anIndex : anIndex];
+                [windowsMenu insertItem:item atIndex:anIndex];
                 [item release];
             }
             if (anIndex > 0 && [[windowsMenu itemAtIndex:anIndex - 1] isSeparatorItem] == NO && [[[[windowsMenu itemAtIndex:anIndex - 1] target] windowController] document] != nil)
@@ -171,14 +175,17 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [item setIndentationLevel:1];
             
             if (anIndex >= 0) {
-                while (++anIndex < numberOfItems && [[windowsMenu itemAtIndex:anIndex] isSeparatorItem] == NO) {
-                    if ([[[windowsMenu itemAtIndex:anIndex] title] caseInsensitiveCompare:title] == NSOrderedDescending)
+                while (++anIndex < numberOfItems) {
+                    NSMenuItem *anItem = [windowsMenu itemAtIndex:anIndex];
+                    if ([anItem isSeparatorItem] || [[anItem title] caseInsensitiveCompare:title] == NSOrderedDescending)
                         break;
                 }
                 if (itemIndex != anIndex - 1) {
+                    if (itemIndex < anIndex)
+                        anIndex--;
                     [item retain];
                     [windowsMenu removeItem:item];
-                    [windowsMenu insertItem:item atIndex:itemIndex < anIndex ? --anIndex : anIndex];
+                    [windowsMenu insertItem:item atIndex:anIndex];
                     [item release];
                 }
             }
