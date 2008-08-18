@@ -135,6 +135,8 @@
 				<string>id</string>
 				<key>addSessionBookmark</key>
 				<string>id</string>
+				<key>addSetupBookmark</key>
+				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>
 				<key>allGoToLastPage</key>
@@ -487,19 +489,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSnapshotTableView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKThumbnailTableView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKSplitView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSSplitView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKSnapshotTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKThumbnailTableView</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -612,6 +614,14 @@
 			<string>SKOutlineView</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>editBookmarks</key>
@@ -644,14 +654,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>BDSKCollapsibleView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -680,6 +682,8 @@
 				<key>addBookmark</key>
 				<string>id</string>
 				<key>addSessionBookmark</key>
+				<string>id</string>
+				<key>addSetupBookmark</key>
 				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>

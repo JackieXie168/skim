@@ -2120,6 +2120,27 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
           contextInfo:NULL];
 }
 
+- (void)setupBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSDictionary *setup = [[self document] currentDocumentSetup];
+        NSString *label = [controller stringValue];
+        [bmController addBookmarkForSetup:setup label:label toFolder:[controller selectedFolder]];
+    }
+}
+
+- (IBAction)addSetupBookmark:(id)sender {
+    if (bookmarkSheetController == nil)
+        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    
+	[bookmarkSheetController setStringValue:[[self document] displayName]];
+    
+    [bookmarkSheetController beginSheetModalForWindow: [self window]
+        modalDelegate:self 
+       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
 - (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
