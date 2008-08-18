@@ -64,6 +64,7 @@ static NSString *SKBookmarkTypeKey = @"type";
     unsigned int pageIndex;
     NSDictionary *setup;
 }
+- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (BDAlias *)alias;
 - (NSData *)aliasData;
 @end
@@ -202,7 +203,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
-    return [self initWithAlias:[BDAlias aliasWithPath:aPath] pageIndex:aPageIndex label:aLabel];
+    return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithPath:aPath] pageIndex:aPageIndex label:aLabel];
 }
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
@@ -214,11 +215,11 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initFolderWithLabel:(NSString *)aLabel {
-    return [self initFolderWithChildren:[NSArray array] label:aLabel];
+    return [self initFolderWithChildren:nil label:aLabel];
 }
 
 - (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[SKSessionBookmark alloc] initSessionWithChildren:aChildren label:aLabel];
+    return [[SKSessionBookmark alloc] initFolderWithChildren:aChildren label:aLabel];
 }
 
 - (id)initSeparator {
@@ -227,24 +228,18 @@ static Class SKBookmarkClass = Nil;
 
 - (id)initWithProperties:(NSDictionary *)dictionary {
     NSString *type = [dictionary objectForKey:SKBookmarkTypeKey];
-    if ([type isEqualToString:SKBookmarkTypeFolderString]) {
+    if ([type isEqualToString:SKBookmarkTypeSeparatorString]) {
+        return [[SKSeparatorBookmark alloc] init];
+    } else if ([type isEqualToString:SKBookmarkTypeFolderString] || [type isEqualToString:SKBookmarkTypeSessionString]) {
+        Class bookmarkClass = [type isEqualToString:SKBookmarkTypeFolderString] ? [SKFolderBookmark class] : [SKSessionBookmark class];
         NSEnumerator *dictEnum = [[dictionary objectForKey:SKBookmarkChildrenKey] objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
         while (dict = [dictEnum nextObject])
-            [newChildren addObject:[[[[self class] alloc] initWithProperties:dict] autorelease]];
-        return [self initFolderWithChildren:newChildren label:[dictionary objectForKey:SKBookmarkLabelKey]];
-    } else if ([type isEqualToString:SKBookmarkTypeSeparatorString]) {
-        return [self initSeparator];
-    } else if ([type isEqualToString:SKBookmarkTypeSessionString]) {
-        NSEnumerator *dictEnum = [[dictionary objectForKey:SKBookmarkChildrenKey] objectEnumerator];
-        NSDictionary *dict;
-        NSMutableArray *newChildren = [NSMutableArray array];
-        while (dict = [dictEnum nextObject])
-            [newChildren addObject:[[[[self class] alloc] initWithProperties:dict] autorelease]];
-        return [self initSessionWithChildren:newChildren label:[dictionary objectForKey:SKBookmarkLabelKey]];
+            [newChildren addObject:[[[SKBookmark alloc] initWithProperties:dict] autorelease]];
+        return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:SKBookmarkLabelKey]];
     } else {
-        return [self initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:SKBookmarkAliasDataKey]] pageIndex:[[dictionary objectForKey:SKBookmarkPageIndexKey] unsignedIntValue] label:[dictionary objectForKey:SKBookmarkLabelKey]];
+        return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:SKBookmarkAliasDataKey]] pageIndex:[[dictionary objectForKey:SKBookmarkPageIndexKey] unsignedIntValue] label:[dictionary objectForKey:SKBookmarkLabelKey]];
     }
 }
 
@@ -381,7 +376,7 @@ static Class SKBookmarkClass = Nil;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
     if (self = [super init]) {
         label = [aLabel copy];
-        children = [aChildren mutableCopy];
+        children = [[NSMutableArray alloc] initWithArray:aChildren];
         [children makeObjectsPerformSelector:@selector(setParent:) withObject:self];
     }
     return self;
@@ -451,10 +446,6 @@ static Class SKBookmarkClass = Nil;
 #pragma mark -
 
 @implementation SKSessionBookmark
-
-- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [super initFolderWithChildren:aChildren label:aLabel];
-}
 
 - (NSDictionary *)properties {
     return [NSDictionary dictionaryWithObjectsAndKeys:SKBookmarkTypeSessionString, SKBookmarkTypeKey, [children valueForKey:SKBookmarkPropertiesKey], SKBookmarkChildrenKey, label, SKBookmarkLabelKey, nil];
