@@ -113,27 +113,13 @@
 			<string>SKOutlineView</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addBookmark</key>
 				<string>id</string>
 				<key>addSessionBookmark</key>
+				<string>id</string>
+				<key>addSetupBookmark</key>
 				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>
@@ -467,6 +453,22 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -605,19 +607,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKBookmarkOutlineView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKOutlineView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKBookmarkOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -680,6 +682,8 @@
 				<key>addBookmark</key>
 				<string>id</string>
 				<key>addSessionBookmark</key>
+				<string>id</string>
+				<key>addSetupBookmark</key>
 				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>
