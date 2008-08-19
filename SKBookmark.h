@@ -51,9 +51,9 @@ enum {
 
 + (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
-+ (id)bookmarktFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
-+ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
++ (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel;
++ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 + (id)bookmarkSeparator;
 + (id)bookmarkWithProperties:(NSDictionary *)dictionary;
 
