@@ -98,6 +98,34 @@ static Class SKBookmarkClass = Nil;
     return SKBookmarkClass == self ? defaultPlaceholderBookmark : [super allocWithZone:aZone];
 }
 
++ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+    return [[[[self class] alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel] autorelease];
+}
+
++ (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
+    return [[[[self class] alloc] initWithSetup:aSetupDict label:aLabel] autorelease];
+}
+
++ (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
+    return [[[[self class] alloc] initFolderWithChildren:aChildren label:aLabel] autorelease];
+}
+
++ (id)bookmarkFolderWithLabel:(NSString *)aLabel {
+    return [[[[self class] alloc] initFolderWithLabel:aLabel] autorelease];
+}
+
++ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
+    return [[[[self class] alloc] initSessionWithChildren:aChildren label:aLabel] autorelease];
+}
+
++ (id)bookmarkSeparator {
+    return [[[[self class] alloc] initSeparator] autorelease];
+}
+
++ (id)bookmarkWithProperties:(NSDictionary *)dictionary {
+    return [[[[self class] alloc] initWithProperties:dictionary] autorelease];
+}
+
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
@@ -236,7 +264,7 @@ static Class SKBookmarkClass = Nil;
         NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
         while (dict = [dictEnum nextObject])
-            [newChildren addObject:[[[SKBookmark alloc] initWithProperties:dict] autorelease]];
+            [newChildren addObject:[SKBookmark bookmarkWithProperties:dict]];
         return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:SKBookmarkLabelKey]];
     } else {
         return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:SKBookmarkAliasDataKey]] pageIndex:[[dictionary objectForKey:SKBookmarkPageIndexKey] unsignedIntValue] label:[dictionary objectForKey:SKBookmarkLabelKey]];

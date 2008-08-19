@@ -49,11 +49,19 @@ enum {
     SKBookmark *parent;
 }
 
++ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
++ (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
++ (id)bookmarktFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
++ (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
++ (id)bookmarkFolderWithLabel:(NSString *)aLabel;
++ (id)bookmarkSeparator;
++ (id)bookmarkWithProperties:(NSDictionary *)dictionary;
+
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
-- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
+- (id)initSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initSeparator;
 - (id)initWithProperties:(NSDictionary *)dictionary;
 
