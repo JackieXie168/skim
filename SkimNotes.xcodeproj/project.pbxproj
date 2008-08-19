@@ -154,7 +154,6 @@
 		CE3907AD0E082C2D0015B0B7 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B40E082C900015B0B7 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
-		CE3907B60E082C970015B0B7 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B70E082C9A0015B0B7 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B80E082CAD0015B0B7 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B90E082CB00015B0B7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/SkimNotes.strings; sourceTree = "<group>"; };
@@ -685,7 +684,6 @@
 				CE3907AD0E082C2D0015B0B7 /* English */,
 				CE3907B40E082C900015B0B7 /* Dutch */,
 				CE3907B50E082C930015B0B7 /* French */,
-				CE3907B60E082C970015B0B7 /* Italian */,
 				CE3907B70E082C9A0015B0B7 /* German */,
 				CE3907B80E082CAD0015B0B7 /* Spanish */,
 				CE3907B90E082CB00015B0B7 /* cs */,
