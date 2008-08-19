@@ -45,9 +45,7 @@
 		CEFD60CE0C01D0E40027B933 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		CEFD60D20C01D1040027B933 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		CEFD6C620C01EF770027B933 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/schema.strings; sourceTree = "<group>"; };
-		CEFD6C630C01EF7A0027B933 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/schema.strings; sourceTree = "<group>"; };
 		CEFD6C660C01EF820027B933 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CEFD6C670C01EF850027B933 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F915705F0C020DDF008B68E9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -231,7 +229,6 @@
 			children = (
 				089C167EFE841241C02AAC07 /* English */,
 				CEFD6C660C01EF820027B933 /* Dutch */,
-				CEFD6C670C01EF850027B933 /* Italian */,
 				CECD97A50C57A40C0026AAEC /* French */,
 				CEC4BE4B0CA90A9700299397 /* Spanish */,
 				CE68C6A10CEF8A4300B082F1 /* German */,
@@ -246,7 +243,6 @@
 			children = (
 				C88FB7DB0674470F006EBB30 /* English */,
 				CEFD6C620C01EF770027B933 /* Dutch */,
-				CEFD6C630C01EF7A0027B933 /* Italian */,
 				CECD97A20C57A4050026AAEC /* French */,
 				CEC4BE480CA90A9000299397 /* Spanish */,
 				CE68C69E0CEF8A3C00B082F1 /* German */,

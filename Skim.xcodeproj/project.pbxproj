@@ -427,20 +427,6 @@
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
-		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
-		A489FDC30BC8E8EE00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteWindow.nib; sourceTree = "<group>"; };
-		A489FDC60BC8E8F400BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
-		A489FDC90BC8E8FA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
-		A489FDCC0BC8E90100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/FindPanel.nib; sourceTree = "<group>"; };
-		A489FDCF0BC8E90700BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
-		A489FDD20BC8E90C00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
-		A489FDD80BC8E91700BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
-		A489FDDB0BC8E91B00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Italian; path = Italian.lproj/Credits.rtf; sourceTree = "<group>"; };
-		A489FDE10BC8E93100BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A489FDE40BC8E93D00BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A489FDE70BC8E94200BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScrollView_SKExtensions.h; sourceTree = "<group>"; };
@@ -469,7 +455,6 @@
 		CE1ADEBE0C4C341100071840 /* SKTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTransitionController.m; sourceTree = "<group>"; };
 		CE1E25670BDA61E80011D9DD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE1E259E0BDA6E4D0011D9DD /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
-		CE1E259F0BDA6E570011D9DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizer.h; sourceTree = "<group>"; };
 		CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizer.m; sourceTree = "<group>"; };
 		CE1E2F120BDB86A10011D9DD /* displayline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = displayline; sourceTree = "<group>"; };
@@ -510,7 +495,6 @@
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
-		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = synctex_parser.m; path = vendorsrc/jeromelaurens/synctex_parser.m; sourceTree = "<group>"; };
 		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = vendorsrc/jeromelaurens/synctex_parser.h; sourceTree = "<group>"; };
 		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
@@ -691,7 +675,6 @@
 		CE6C96B00CD925550022D69F /* SKNotesPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesPanelController.m; sourceTree = "<group>"; };
 		CE6C970E0CD929450022D69F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesPanel.nib; sourceTree = "<group>"; };
 		CE6C970F0CD9294A0022D69F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/NotesPanel.nib; sourceTree = "<group>"; };
-		CE6C97100CD9294E0022D69F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesPanel.nib; sourceTree = "<group>"; };
 		CE6C97110CD929510022D69F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/NotesPanel.nib; sourceTree = "<group>"; };
 		CE6DC7760D687252003A072F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_SKExtensions.h; sourceTree = "<group>"; };
@@ -699,7 +682,6 @@
 		CE6DC8220D68B2F9003A072F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8230D68B30E003A072F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8240D68B324003A072F /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
-		CE6DC8250D68B33B003A072F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8260D68B354003A072F /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8270D68B36E003A072F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarMoveTool.tiff; path = Images/ToolbarMoveTool.tiff; sourceTree = "<group>"; };
@@ -727,10 +709,8 @@
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
 		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
 		CE8B46F30C29CA4A005CE7F1 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/LineInspector.nib; sourceTree = "<group>"; };
-		CE8B46F40C29CA50005CE7F1 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/LineInspector.nib; sourceTree = "<group>"; };
 		CE9A878E0C0C9E9A004F1F97 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87960C0C9EA3004F1F97 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
-		CE9A87970C0C9EA7004F1F97 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
 		CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRemoteStateWindow.m; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
@@ -758,7 +738,6 @@
 		CEAA55F00C6DE5AE006BD633 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA565E0C6DE967006BD633 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA565F0C6DE96A006BD633 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
-		CEAA56600C6DE96F006BD633 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cancel.tiff; path = Images/Cancel.tiff; sourceTree = "<group>"; };
 		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
 		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
@@ -769,7 +748,6 @@
 		CEAE38C30CA4399B00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAE38CA0CA439F600849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAE38CB0CA439FD00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
-		CEAE38CC0CA43A0200849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEAE39040CA43E7300849B0F /* SKSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSheetController.h; sourceTree = "<group>"; };
 		CEAE39050CA43E7300849B0F /* SKSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSheetController.m; sourceTree = "<group>"; };
 		CEAE392B0CA441F700849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PageSheet.nib; sourceTree = "<group>"; };
@@ -778,16 +756,12 @@
 		CEAE39340CA4429A00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
 		CEAE39380CA442B900849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PageSheet.nib; sourceTree = "<group>"; };
 		CEAE39390CA442BC00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PageSheet.nib; sourceTree = "<group>"; };
-		CEAE393A0CA442C300849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PageSheet.nib; sourceTree = "<group>"; };
 		CEAE393D0CA442CE00849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
 		CEAE393E0CA442D100849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
-		CEAE393F0CA442D600849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
 		CEAE39450CA442E400849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
 		CEAE39460CA442E800849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
-		CEAE39470CA442F000849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
 		CEAE394B0CA442FB00849B0F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
 		CEAE394C0CA442FE00849B0F /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
-		CEAE394D0CA4430300849B0F /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -877,7 +851,6 @@
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
-		CEE11EF50BCC262800BF2D3E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDisplayView_SKExtensions.h; sourceTree = "<group>"; };
 		CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDisplayView_SKExtensions.m; sourceTree = "<group>"; };
 		CEE177940DBE140900E6C317 /* SKAccessibilityProxyElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAccessibilityProxyElement.h; sourceTree = "<group>"; };
@@ -1964,7 +1937,6 @@
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/Skim Help/Skim Help.html",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/Skim Help/Skim Help.html",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/Skim Help",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/French.lproj/Skim Help",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/German.lproj/Skim Help",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Spanish.lproj/Skim Help",
@@ -2182,7 +2154,6 @@
 			children = (
 				089C1660FE840EACC02AAC07 /* English */,
 				CE485B960BC442BA00FA7109 /* Dutch */,
-				A489FDE10BC8E93100BA14DD /* Italian */,
 				CECD97500C57A3C10026AAEC /* French */,
 				CEC4C3420CA90CA200299397 /* Spanish */,
 				CE68C6740CEF89E100B082F1 /* German */,
@@ -2197,7 +2168,6 @@
 			children = (
 				2A37F4B7FDCFA73011CA2CEA /* English */,
 				CE485B7B0BC4427100FA7109 /* Dutch */,
-				A489FDBD0BC8E8DA00BA14DD /* Italian */,
 				CECD97230C57A32F0026AAEC /* French */,
 				CEC4C3460CA90CA200299397 /* Spanish */,
 				CE68C6320CEF892400B082F1 /* German */,
@@ -2212,7 +2182,6 @@
 			children = (
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 				CE485BF00BC4443B00FA7109 /* Dutch */,
-				A489FDDB0BC8E91B00BA14DD /* Italian */,
 				CECD974D0C57A3B70026AAEC /* French */,
 				CEC4C33F0CA90CA200299397 /* Spanish */,
 				CE68C6710CEF89D200B082F1 /* German */,
@@ -2227,7 +2196,6 @@
 			children = (
 				4530D81C0B27ACAC007C59F4 /* English */,
 				CE485B7E0BC4427A00FA7109 /* Dutch */,
-				A489FDC00BC8E8DF00BA14DD /* Italian */,
 				CECD97260C57A3390026AAEC /* French */,
 				CEC4C3470CA90CA200299397 /* Spanish */,
 				CE68C6350CEF892C00B082F1 /* German */,
@@ -2242,7 +2210,6 @@
 			children = (
 				CE1E25670BDA61E80011D9DD /* English */,
 				CE1E259E0BDA6E4D0011D9DD /* Dutch */,
-				CE1E259F0BDA6E570011D9DD /* Italian */,
 				CECD973B0C57A3810026AAEC /* French */,
 				CEC4C34F0CA90CA200299397 /* Spanish */,
 				CE68C64D0CEF898200B082F1 /* German */,
@@ -2257,7 +2224,6 @@
 			children = (
 				CE2DEB910B86206400D0DA12 /* English */,
 				CE485B8A0BC4429700FA7109 /* Dutch */,
-				A489FDCC0BC8E90100BA14DD /* Italian */,
 				CECD97380C57A3750026AAEC /* French */,
 				CEC4C3410CA90CA200299397 /* Spanish */,
 				CE68C64A0CEF897500B082F1 /* German */,
@@ -2272,7 +2238,6 @@
 			children = (
 				CE327A450C11BF6700DB4BEB /* English */,
 				CE327A490C11BF8B00DB4BEB /* Dutch */,
-				CE327A4A0C11BF9000DB4BEB /* Italian */,
 				CECD97440C57A39C0026AAEC /* French */,
 				CEC4C3490CA90CA200299397 /* Spanish */,
 				CE68C6560CEF899600B082F1 /* German */,
@@ -2287,7 +2252,6 @@
 			children = (
 				CE4A65CB0BAB1E2E004AD07D /* English */,
 				CE485B9C0BC442CB00FA7109 /* Dutch */,
-				A489FDD80BC8E91700BA14DD /* Italian */,
 				CECD974A0C57A3AE0026AAEC /* French */,
 				CEC4C33D0CA90CA100299397 /* Spanish */,
 				CE68C65C0CEF89A200B082F1 /* German */,
@@ -2311,7 +2275,6 @@
 			children = (
 				CE4F9DED0BC1BE3A005BE0A1 /* English */,
 				CE485B990BC442C000FA7109 /* Dutch */,
-				A489FDE40BC8E93D00BA14DD /* Italian */,
 				CECD97530C57A3C90026AAEC /* French */,
 				CEC4C3450CA90CA200299397 /* Spanish */,
 				CE68C6770CEF89ED00B082F1 /* German */,
@@ -2326,7 +2289,6 @@
 			children = (
 				CE5470020B32D96500F8AFB6 /* English */,
 				CE485B810BC4428200FA7109 /* Dutch */,
-				A489FDC30BC8E8EE00BA14DD /* Italian */,
 				CECD97290C57A3430026AAEC /* French */,
 				CEC4C34A0CA90CA200299397 /* Spanish */,
 				CE68C6380CEF894900B082F1 /* German */,
@@ -2341,7 +2303,6 @@
 			children = (
 				CE54898B0B35D4EF00F8AFB6 /* English */,
 				CE485B780BC4426800FA7109 /* Dutch */,
-				A489FDBA0BC8E8D100BA14DD /* Italian */,
 				CECD97200C57A3230026AAEC /* French */,
 				CEC4C3430CA90CA200299397 /* Spanish */,
 				CE68C62F0CEF891B00B082F1 /* German */,
@@ -2356,7 +2317,6 @@
 			children = (
 				CE67BB250BC44AC9007B6929 /* English */,
 				CE67BB290BC44AD5007B6929 /* Dutch */,
-				A489FDE70BC8E94200BA14DD /* Italian */,
 				CECD97560C57A3D20026AAEC /* French */,
 				CEC4C3540CA90CA200299397 /* Spanish */,
 				CE68C67A0CEF89F300B082F1 /* German */,
@@ -2372,7 +2332,6 @@
 				CE6C96A80CD924C70022D69F /* English */,
 				CE6C970E0CD929450022D69F /* Dutch */,
 				CE6C970F0CD9294A0022D69F /* French */,
-				CE6C97100CD9294E0022D69F /* Italian */,
 				CE6C97110CD929510022D69F /* Spanish */,
 				CE68C6470CEF896E00B082F1 /* German */,
 				CE4F96C70CFB4A1900DBEA14 /* ru */,
@@ -2388,7 +2347,6 @@
 				CE6DC8220D68B2F9003A072F /* Dutch */,
 				CE6DC8230D68B30E003A072F /* French */,
 				CE6DC8240D68B324003A072F /* German */,
-				CE6DC8250D68B33B003A072F /* Italian */,
 				CE6DC8260D68B354003A072F /* ru */,
 				CE6DC8270D68B36E003A072F /* Spanish */,
 				CEE54D250DA2AA990037169F /* cs */,
@@ -2401,7 +2359,6 @@
 			children = (
 				CE8B46EB0C29CA3D005CE7F1 /* English */,
 				CE8B46F30C29CA4A005CE7F1 /* Dutch */,
-				CE8B46F40C29CA50005CE7F1 /* Italian */,
 				CECD97350C57A36D0026AAEC /* French */,
 				CEC4C3440CA90CA200299397 /* Spanish */,
 				CE68C6440CEF896800B082F1 /* German */,
@@ -2416,7 +2373,6 @@
 			children = (
 				CE9A878E0C0C9E9A004F1F97 /* English */,
 				CE9A87960C0C9EA3004F1F97 /* Dutch */,
-				CE9A87970C0C9EA7004F1F97 /* Italian */,
 				CECD97470C57A3A70026AAEC /* French */,
 				CEC4C34E0CA90CA200299397 /* Spanish */,
 				CE68C6590CEF899C00B082F1 /* German */,
@@ -2431,7 +2387,6 @@
 			children = (
 				CE9C42370B8B5633004AD8CF /* English */,
 				CE485B870BC4429100FA7109 /* Dutch */,
-				A489FDC90BC8E8FA00BA14DD /* Italian */,
 				CECD97320C57A3610026AAEC /* French */,
 				CEC4C34D0CA90CA200299397 /* Spanish */,
 				CE68C6410CEF896100B082F1 /* German */,
@@ -2447,7 +2402,6 @@
 				CEAA55F00C6DE5AE006BD633 /* English */,
 				CEAA565E0C6DE967006BD633 /* Dutch */,
 				CEAA565F0C6DE96A006BD633 /* French */,
-				CEAA56600C6DE96F006BD633 /* Italian */,
 				CEC4C3400CA90CA200299397 /* Spanish */,
 				CE68C65F0CEF89A900B082F1 /* German */,
 				CE4F96DF0CFB4A7800DBEA14 /* ru */,
@@ -2462,7 +2416,6 @@
 				CEAE38C30CA4399B00849B0F /* English */,
 				CEAE38CA0CA439F600849B0F /* Dutch */,
 				CEAE38CB0CA439FD00849B0F /* French */,
-				CEAE38CC0CA43A0200849B0F /* Italian */,
 				CEC4C3530CA90CA200299397 /* Spanish */,
 				CE68C6620CEF89B100B082F1 /* German */,
 				CE4F96E20CFB4A8400DBEA14 /* ru */,
@@ -2477,7 +2430,6 @@
 				CEAE392B0CA441F700849B0F /* English */,
 				CEAE39380CA442B900849B0F /* Dutch */,
 				CEAE39390CA442BC00849B0F /* French */,
-				CEAE393A0CA442C300849B0F /* Italian */,
 				CEC4C34B0CA90CA200299397 /* Spanish */,
 				CE68C6650CEF89B800B082F1 /* German */,
 				CE4F96E50CFB4A9700DBEA14 /* ru */,
@@ -2492,7 +2444,6 @@
 				CEAE392E0CA4423A00849B0F /* English */,
 				CEAE393D0CA442CE00849B0F /* Dutch */,
 				CEAE393E0CA442D100849B0F /* French */,
-				CEAE393F0CA442D600849B0F /* Italian */,
 				CEC4C3510CA90CA200299397 /* Spanish */,
 				CE68C6680CEF89BF00B082F1 /* German */,
 				CE4F96E80CFB4AA000DBEA14 /* ru */,
@@ -2507,7 +2458,6 @@
 				CEAE39310CA4426B00849B0F /* English */,
 				CEAE39450CA442E400849B0F /* Dutch */,
 				CEAE39460CA442E800849B0F /* French */,
-				CEAE39470CA442F000849B0F /* Italian */,
 				CEC4C34C0CA90CA200299397 /* Spanish */,
 				CE68C66B0CEF89C500B082F1 /* German */,
 				CE4F96EB0CFB4AAB00DBEA14 /* ru */,
@@ -2522,7 +2472,6 @@
 				CEAE39340CA4429A00849B0F /* English */,
 				CEAE394B0CA442FB00849B0F /* Dutch */,
 				CEAE394C0CA442FE00849B0F /* French */,
-				CEAE394D0CA4430300849B0F /* Italian */,
 				CEC4C33C0CA90CA100299397 /* Spanish */,
 				CE68C66E0CEF89CC00B082F1 /* German */,
 				CE4F96EE0CFB4AB300DBEA14 /* ru */,
@@ -2536,7 +2485,6 @@
 			children = (
 				CEE106590BCBBE1200BF2D3E /* English */,
 				CEE107380BCBCA3200BF2D3E /* Dutch */,
-				CEE11EF50BCC262800BF2D3E /* Italian */,
 				CECD972C0C57A34D0026AAEC /* French */,
 				CEC4C3480CA90CA200299397 /* Spanish */,
 				CE68C63B0CEF895400B082F1 /* German */,
@@ -2551,7 +2499,6 @@
 			children = (
 				CEF7071E0B8F8EFC003A2771 /* English */,
 				CE485B840BC4428900FA7109 /* Dutch */,
-				A489FDC60BC8E8F400BA14DD /* Italian */,
 				CECD972F0C57A3570026AAEC /* French */,
 				CEC4C3520CA90CA200299397 /* Spanish */,
 				CE68C63E0CEF895C00B082F1 /* German */,
@@ -2566,7 +2513,6 @@
 			children = (
 				CEF717570B90DEEF003A2771 /* English */,
 				CE485B8D0BC4429C00FA7109 /* Dutch */,
-				A489FDCF0BC8E90700BA14DD /* Italian */,
 				CECD973E0C57A3890026AAEC /* French */,
 				CEC4C3500CA90CA200299397 /* Spanish */,
 				CE68C6500CEF898900B082F1 /* German */,
@@ -2581,7 +2527,6 @@
 			children = (
 				F977515F0B37460100DF673B /* English */,
 				CE485B900BC442A200FA7109 /* Dutch */,
-				A489FDD20BC8E90C00BA14DD /* Italian */,
 				CECD97410C57A3950026AAEC /* French */,
 				CEC4C33E0CA90CA100299397 /* Spanish */,
 				CE68C6530CEF898E00B082F1 /* German */,
