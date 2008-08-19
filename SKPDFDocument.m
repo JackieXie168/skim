@@ -1426,6 +1426,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     [appBundle resourcePath], [[appBundle resourcePath] stringByAppendingPathComponent:@"bin"],
                     [appBundle sharedSupportPath], [[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"],
                     [[[appBundle executablePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bin"], nil]];
+                if ([editorPreset caseInsensitiveCompare:[[appBundle executablePath] lastPathComponent]] != NSorderedSame)
+                    [paths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
             }
         }
         while (appSupportPath = [pathEnum nextObject]) {
