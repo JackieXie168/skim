@@ -99,31 +99,31 @@ static Class SKBookmarkClass = Nil;
 }
 
 + (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
-    return [[[[self class] alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel] autorelease];
+    return [[[self alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel] autorelease];
 }
 
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
-    return [[[[self class] alloc] initWithSetup:aSetupDict label:aLabel] autorelease];
+    return [[[self alloc] initWithSetup:aSetupDict label:aLabel] autorelease];
 }
 
 + (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[[[self class] alloc] initFolderWithChildren:aChildren label:aLabel] autorelease];
+    return [[[self alloc] initFolderWithChildren:aChildren label:aLabel] autorelease];
 }
 
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel {
-    return [[[[self class] alloc] initFolderWithLabel:aLabel] autorelease];
+    return [[[self alloc] initFolderWithLabel:aLabel] autorelease];
 }
 
 + (id)bookmarkSessionWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
-    return [[[[self class] alloc] initSessionWithChildren:aChildren label:aLabel] autorelease];
+    return [[[self alloc] initSessionWithChildren:aChildren label:aLabel] autorelease];
 }
 
 + (id)bookmarkSeparator {
-    return [[[[self class] alloc] initSeparator] autorelease];
+    return [[[self alloc] initSeparator] autorelease];
 }
 
 + (id)bookmarkWithProperties:(NSDictionary *)dictionary {
-    return [[[[self class] alloc] initWithProperties:dictionary] autorelease];
+    return [[[self alloc] initWithProperties:dictionary] autorelease];
 }
 
 - (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
