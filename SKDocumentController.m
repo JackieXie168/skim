@@ -45,6 +45,9 @@
 #import "SKStringConstants.h"
 #import "SKRuntime.h"
 #import "SKApplicationController.h"
+#import "Files_SKExtensions.h"
+#import "BDAlias.h"
+#import "SKMainWindowController.h"
 
 static NSString *SKAutosaveIntervalKey = @"SKAutosaveInterval";
 
@@ -153,6 +156,10 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
     else
         return SKPDFDocumentType;
 }
+
+
+NSString *SKDocumentSetupAliasKey = @"_BDAlias";
+NSString *SKDocumentSetupFileNameKey = @"fileName";
 
 @implementation SKDocumentController
 
@@ -347,6 +354,25 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     if (document == nil && error)
         [NSApp presentError:error];
+}
+
+- (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError {
+    id document = nil;
+    NSError *error = nil;
+    NSURL *fileURL = [[BDAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
+    if(fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
+        fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
+    if(fileURL && NO == SKFileIsInTrash(fileURL)) {
+        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
+            [document makeWindowControllers];
+            if ([document respondsToSelector:@selector(mainWindowController)])
+                [[document mainWindowController] setInitialSetup:setup];
+            [document showWindows];
+        } else if (outError) {
+            *outError = error;
+        }
+    }
+    return document;
 }
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {

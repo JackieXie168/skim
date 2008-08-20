@@ -51,6 +51,7 @@
 #import "NSImage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKRuntime.h"
+#import "SKDocumentController.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 
@@ -367,26 +368,18 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (void)openBookmark:(SKBookmark *)bookmark {
     id document = nil;
-    NSString *path = [bookmark path];
-    NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
-    NSError *error;
-    
-    if (fileURL && NO == SKFileIsInTrash(fileURL)) {
-        NSDictionary *dict = [bookmark properties];
-        BOOL display = [dict objectForKey:@"windowFrame"] == nil;
-        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:display error:&error]) {
-            if (display) {
-                [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
-            } else {
-                [document makeWindowControllers];
-                if ([document respondsToSelector:@selector(mainWindowController)])
-                    [[document mainWindowController] setInitialSetup:dict];
-                [document showWindows];
-            }
-        } else {
-            [NSApp presentError:error];
-        }
+    NSError *error = nil;
+    NSDictionary *dict = [bookmark properties];
+    if ([dict objectForKey:@"windowFrame"]) {
+        document = [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error];
+    } else {
+        NSString *path = [bookmark path];
+        NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
+        if (fileURL && NO == SKFileIsInTrash(fileURL))
+            document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error];
     }
+    if (document == nil && error)
+        [NSApp presentError:error];
 }
 
 - (void)openBookmarks:(NSArray *)items {

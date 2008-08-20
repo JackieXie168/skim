@@ -84,9 +84,6 @@
 #define VIEW_MENU_INDEX 4
 #define BOOKMARKS_MENU_INDEX 8
 
-NSString *SKDocumentSetupAliasKey = @"_BDAlias";
-NSString *SKDocumentSetupFileNameKey = @"fileName";
-
 static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
 
 static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
@@ -153,24 +150,12 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
-        NSURL *fileURL = nil;
-        SKPDFDocument *document;
         NSError *error;
         
-        while (dict = [fileEnum nextObject]){ 
-            fileURL = [[BDAlias aliasWithData:[dict objectForKey:SKDocumentSetupAliasKey]] fileURL];
-            if(fileURL == nil && [dict objectForKey:SKDocumentSetupFileNameKey])
-                fileURL = [NSURL fileURLWithPath:[dict objectForKey:SKDocumentSetupFileNameKey]];
-            if(fileURL && NO == SKFileIsInTrash(fileURL)) {
-                if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
-                    [document makeWindowControllers];
-                    if ([document respondsToSelector:@selector(mainWindowController)])
-                        [[document mainWindowController] setInitialSetup:dict];
-                    [document showWindows];
-                } else {
-                    [NSApp presentError:error];
-                }
-            }
+        while (dict = [fileEnum nextObject]) {
+            error = nil;
+            if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error)
+                [NSApp presentError:error];
         }
     }
     

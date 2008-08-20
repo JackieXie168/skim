@@ -40,9 +40,6 @@
 
 @class SUUpdater, SKLine, SKDownloadController;
 
-extern NSString *SKDocumentSetupAliasKey;
-extern NSString *SKDocumentSetupFileNameKey;
-
 @class RemoteControl;
 
 @interface SKApplicationController : NSObject {
