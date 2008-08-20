@@ -50,10 +50,6 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
-		CE1F52C40E50C07100183FDA /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
-		CE1F52C50E50C07100183FDA /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
-		CE1F52C60E50C08200183FDA /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7440E0928A700D6D76D /* SkimNotes.framework */; };
-		CE1F52C70E50C08200183FDA /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
@@ -155,12 +151,6 @@
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
-		CED1F3380E5AF1A7007A7B26 /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CED1F3370E5AF1A7007A7B26 /* skimnotes */; };
-		CED1F3390E5AF1BB007A7B26 /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CED1F3370E5AF1A7007A7B26 /* skimnotes */; };
-		CED1F3CE0E5AF20B007A7B26 /* Skim.qlgenerator in Resources */ = {isa = PBXBuildFile; fileRef = CED1F37F0E5AF20B007A7B26 /* Skim.qlgenerator */; };
-		CED1F3CF0E5AF20B007A7B26 /* SkimImporter.mdimporter in Resources */ = {isa = PBXBuildFile; fileRef = CED1F3A70E5AF20B007A7B26 /* SkimImporter.mdimporter */; };
-		CED1F3D00E5AF22F007A7B26 /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CED1F37F0E5AF20B007A7B26 /* Skim.qlgenerator */; };
-		CED1F3D10E5AF245007A7B26 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CED1F3A70E5AF20B007A7B26 /* SkimImporter.mdimporter */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
 		CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */; };
@@ -176,6 +166,13 @@
 		CEE54F6C0DA3FB060037169F /* SKMainWindowController_Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6B0DA3FB060037169F /* SKMainWindowController_Toolbar.m */; };
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */; };
+		CEE8DCBE0E5C3E2000EFA97F /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
+		CEE8DCD40E5C3E2E00EFA97F /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CEE8DCE60E5C3E4400EFA97F /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
+		CEE8DD110E5C3E7B00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
+		CEE8DD120E5C3E7B00EFA97F /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CEE8DD150E5C3E8B00EFA97F /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
+		CEE8DD3D0E5C3E9F00EFA97F /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
@@ -308,7 +305,7 @@
 			dstPath = Contents/Library/QuickLook;
 			dstSubfolderSpec = 1;
 			files = (
-				CED1F3D00E5AF22F007A7B26 /* Skim.qlgenerator in CopyFiles */,
+				CEE8DD150E5C3E8B00EFA97F /* Skim.qlgenerator in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,8 +315,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE1F52C60E50C08200183FDA /* SkimNotes.framework in CopyFiles */,
-				CE1F52C70E50C08200183FDA /* Sparkle.framework in CopyFiles */,
+				CEE8DCBE0E5C3E2000EFA97F /* SkimNotes.framework in CopyFiles */,
+				CEE8DCD40E5C3E2E00EFA97F /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,7 +326,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 12;
 			files = (
-				CED1F3390E5AF1BB007A7B26 /* skimnotes in CopyFiles */,
+				CEE8DD3D0E5C3E9F00EFA97F /* skimnotes in CopyFiles */,
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */,
@@ -342,7 +339,7 @@
 			dstPath = Contents/Library/Spotlight;
 			dstSubfolderSpec = 1;
 			files = (
-				CED1F3D10E5AF245007A7B26 /* SkimImporter.mdimporter in CopyFiles */,
+				CEE8DCE60E5C3E4400EFA97F /* SkimImporter.mdimporter in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,9 +607,6 @@
 		CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindTableView.m; sourceTree = "<group>"; };
 		CECF61FD0DB258D600587D96 /* SKFontWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFontWell.h; sourceTree = "<group>"; };
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
-		CED1F3370E5AF1A7007A7B26 /* skimnotes */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
-		CED1F37F0E5AF20B007A7B26 /* Skim.qlgenerator */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Skim.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
-		CED1F3A70E5AF20B007A7B26 /* SkimImporter.mdimporter */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SkimImporter.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "Configurations/Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "Configurations/Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "Configurations/Skim-Release.xcconfig"; sourceTree = "<group>"; };
@@ -685,8 +679,8 @@
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
-				CE1F52C40E50C07100183FDA /* SkimNotes.framework in Frameworks */,
-				CE1F52C50E50C07100183FDA /* Sparkle.framework in Frameworks */,
+				CEE8DD110E5C3E7B00EFA97F /* SkimNotes.framework in Frameworks */,
+				CEE8DD120E5C3E7B00EFA97F /* Sparkle.framework in Frameworks */,
 				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -744,7 +738,6 @@
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
-				CED1F33B0E5AF1D5007A7B26 /* Library */,
 				CE2BD8160BD4123D00A5F4DB /* Subprojects */,
 				CE816AA10D718C5B008D807D /* Leopard */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
@@ -853,8 +846,8 @@
 			isa = PBXGroup;
 			children = (
 				CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */,
-				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */,
+				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */,
 			);
 			name = Subprojects;
@@ -1177,15 +1170,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CED1F33B0E5AF1D5007A7B26 /* Library */ = {
-			isa = PBXGroup;
-			children = (
-				CED1F37F0E5AF20B007A7B26 /* Skim.qlgenerator */,
-				CED1F3A70E5AF20B007A7B26 /* SkimImporter.mdimporter */,
-			);
-			name = Library;
-			sourceTree = "<group>";
-		};
 		CED8D4050D744D520028E3E2 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1277,7 +1261,6 @@
 		CEE22EA20BFB8631002B746B /* Shared Support */ = {
 			isa = PBXGroup;
 			children = (
-				CED1F3370E5AF1A7007A7B26 /* skimnotes */,
 				CE0ECCD40DE71868006EEDDB /* Templates */,
 				CE1E2F120BDB86A10011D9DD /* displayline */,
 				CE2A11660CE3B51600A0499B /* archivedmg.sh */,
@@ -1461,9 +1444,6 @@
 				45B113C00B329A7E00DE0660 /* LICENSE in Resources */,
 				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
 				CE0ECCD90DE71868006EEDDB /* Templates in Resources */,
-				CED1F3380E5AF1A7007A7B26 /* skimnotes in Resources */,
-				CED1F3CE0E5AF20B007A7B26 /* Skim.qlgenerator in Resources */,
-				CED1F3CF0E5AF20B007A7B26 /* SkimImporter.mdimporter in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
