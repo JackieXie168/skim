@@ -708,7 +708,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [pageLabels addObject:[[pdfDoc pageAtIndex:i] displayLabel]];
     [self didChangeValueForKey:SKMainWindowPageLabelsKey];
     
-    [self setPageLabel:[[pdfView currentPage] displayLabel]];
+    [self updatePageLabel];
     
     [self updatePageColumnWidthForTableView:thumbnailTableView];
     [self updatePageColumnWidthForTableView:snapshotTableView];
