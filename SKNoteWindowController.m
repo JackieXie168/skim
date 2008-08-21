@@ -39,8 +39,7 @@
 #import "SKNoteWindowController.h"
 #import <Quartz/Quartz.h>
 #import "BDSKDragImageView.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStatusBar.h"
 #import "SKPDFDocument.h"

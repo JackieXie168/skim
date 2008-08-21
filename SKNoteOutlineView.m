@@ -39,7 +39,7 @@
 #import "SKNoteOutlineView.h"
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 #import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"

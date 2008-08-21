@@ -38,7 +38,7 @@
 
 #import "SKLineInspector.h"
 #import "SKLineWell.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
 

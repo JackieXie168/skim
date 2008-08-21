@@ -43,8 +43,7 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"

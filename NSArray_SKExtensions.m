@@ -39,7 +39,7 @@
 #import "NSArray_SKExtensions.h"
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 
 @implementation NSArray (SKExtensions)
 
