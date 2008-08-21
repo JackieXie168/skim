@@ -157,6 +157,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 
 - (void)setupToolbar;
 
+- (void)updatePageLabel;
 - (void)updatePageLabelsAndOutline;
 
 - (SKProgressController *)progressController;
