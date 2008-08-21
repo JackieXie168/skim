@@ -42,8 +42,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import <SkimNotes/SkimNotes.h>
 
 SKFDFString SKFDFFDFKey = "FDF";
 SKFDFString SKFDFAnnotationsKey = "Annots";

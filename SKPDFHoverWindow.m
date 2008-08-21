@@ -38,7 +38,7 @@
 
 #import "SKPDFHoverWindow.h"
 #import "PDFPage_SKExtensions.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"

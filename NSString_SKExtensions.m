@@ -41,7 +41,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 #import <Carbon/Carbon.h>
 
 #define ELLIPSIS_CHARACTER 0x2026

@@ -42,7 +42,7 @@
 #import "SKMiniaturizeWindow.h"
 #import <Quartz/Quartz.h>
 #import "BDSKZoomablePDFView.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
+#import <SkimNotes/SkimNotes.h>
 #import "SKPDFView.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKStringConstants.h"

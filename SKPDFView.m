@@ -40,8 +40,7 @@
 #import "SKNavigationWindow.h"
 #import "SKPDFHoverWindow.h"
 #import "SKMainWindowController.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"

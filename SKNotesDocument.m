@@ -45,8 +45,7 @@
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import <SkimNotes/PDFAnnotation_SKNExtensions.h>
-#import <SkimNotes/SKNPDFAnnotationNote.h>
+#import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
