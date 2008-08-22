@@ -53,12 +53,6 @@ static NSString *SKLineWellActiveKey = @"active";
 static NSString *SKLineWellActionKey = @"action";
 static NSString *SKLineWellTargetKey = @"target";
 
-static NSString *SKLineWellLineWidthObservationContext = @"SKLineWellLineWidthObservationContext";
-static NSString *SKLineWellStyleObservationContext = @"SKLineWellStyleObservationContexty";
-static NSString *SKLineWellDashPatternObservationContext = @"SKLineWellDashPatternObservationContext";
-static NSString *SKLineWellStartLineStyleObservationContext = @"SKLineWellStartLineStyleObservationContext";
-static NSString *SKLineWellEndLineStyleObservationContext = @"SKLineWellEndLineStyleObservationContext";
-
 static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecomeActiveNotification";
 static NSString *SKLineWellExclusiveKey = @"exclusive";
 
@@ -82,11 +76,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 }
 
 - (void)commonInit {
-    bindingInfo = [[NSMutableDictionary alloc] init];
-    
     existsActiveLineWell = NO;
-    updatingFromLineInspector = NO;
-    updatingFromBinding = NO;
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
 }
@@ -169,7 +159,6 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     [self unbind:SKLineWellDashPatternKey];
     [self unbind:SKLineWellStartLineStyleKey];
     [self unbind:SKLineWellEndLineStyleKey];
-    [bindingInfo release];
     if (active)
         [self deactivate];
     [dashPattern release];
@@ -347,6 +336,18 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
     return dragImage;
 }
 
+- (void)changedValueForKey:(NSString *)key {
+    if ([self isActive])
+        [[SKLineInspector sharedLineInspector] setValue:[self valueForKey:key] forKey:key];
+    [self setNeedsDisplay:YES];
+}
+
+- (void)takeValueForKey:(NSString *)key from:(id)object {
+    [self setValue:[object valueForKey:key] forKey:key];
+    NSDictionary *info = [self infoForBinding:key];
+    [[info objectForKey:NSObservedObjectKey] setValue:[self valueForKey:key] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
+}
+
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self isEnabled]) {
         [self setHighlighted:YES];
@@ -433,15 +434,13 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], SKLineWellExclusiveKey, nil]];
         
         if (existsActiveLineWell) {
-            updatingFromLineInspector = YES;
-            [self setLineWidth:[inspector lineWidth]];
-            [self setDashPattern:[inspector dashPattern]];
-            [self setStyle:[inspector style]];
+            [self takeValueForKey:SKLineWellLineWidthKey from:inspector];
+            [self takeValueForKey:SKLineWellDashPatternKey from:inspector];
+            [self takeValueForKey:SKLineWellStyleKey from:inspector];
             if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                [self setStartLineStyle:[inspector startLineStyle]];
-                [self setEndLineStyle:[inspector endLineStyle]];
+                [self takeValueForKey:SKLineWellStartLineStyleKey from:inspector];
+                [self takeValueForKey:SKLineWellEndLineStyleKey from:inspector];
             }
-            updatingFromLineInspector = NO;
         } else {
             [inspector setLineWidth:[self lineWidth]];
             [inspector setDashPattern:[self dashPattern]];
@@ -484,16 +483,6 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
     }
-}
-
-- (void)updateValue:(id)value forKey:(NSString *)key {
-    if (updatingFromBinding == NO) {
-        NSDictionary *info = [self infoForBinding:key];
-		[[info objectForKey:NSObservedObjectKey] setValue:value forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-    }
-    if ([self isActive] && updatingFromLineInspector == NO)
-        [[SKLineInspector sharedLineInspector] setValue:value forKey:key];
-    [self setNeedsDisplay:YES];
 }
 
 #pragma mark Accessors
@@ -575,7 +564,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (void)setLineWidth:(float)width {
     if (fabsf(lineWidth - width) > 0.00001) {
         lineWidth = width;
-        [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:SKLineWellLineWidthKey];
+        [self changedValueForKey:SKLineWellLineWidthKey];
     }
 }
 
@@ -586,7 +575,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
-        [self updateValue:[NSNumber numberWithInt:newStyle] forKey:SKLineWellStyleKey];
+        [self changedValueForKey:SKLineWellStyleKey];
     }
 }
 
@@ -595,10 +584,11 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
+    if (NSIsControllerMarker(pattern)) pattern = nil;
     if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
-        [self updateValue:dashPattern forKey:SKLineWellDashPatternKey];
+        [self changedValueForKey:SKLineWellDashPatternKey];
     }
 }
 
@@ -609,7 +599,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
-        [self updateValue:[NSNumber numberWithInt:startLineStyle] forKey:SKLineWellStartLineStyleKey];
+        [self changedValueForKey:SKLineWellStartLineStyleKey];
     }
 }
 
@@ -620,7 +610,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != endLineStyle) {
         endLineStyle = newStyle;
-        [self updateValue:[NSNumber numberWithInt:endLineStyle] forKey:SKLineWellEndLineStyleKey];
+        [self changedValueForKey:SKLineWellEndLineStyleKey];
     }
 }
 
@@ -636,11 +626,8 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 #pragma mark Notification handlers
 
 - (void)lineInspectorChangedValueForKey:(NSString *)key {
-    BOOL savedUpdatingFromLineInspector = updatingFromLineInspector;
-    updatingFromLineInspector = YES;
-    [self setValue:[[SKLineInspector sharedLineInspector] valueForKey:key] forKey:key];
+    [self takeValueForKey:key from:[SKLineInspector sharedLineInspector]];
     [self sendAction:[self action] to:[self target]];
-    updatingFromLineInspector = savedUpdatingFromLineInspector;
 }
 
 - (void)lineInspectorLineWidthChanged:(NSNotification *)notification {
@@ -661,81 +648,6 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 
 - (void)lineInspectorEndLineStyleChanged:(NSNotification *)notification {
     [self lineInspectorChangedValueForKey:SKLineWellEndLineStyleKey];
-}
-
-#pragma mark Binding support
-
-- (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if ([bindingName isEqualToString:SKLineWellLineWidthKey] || [bindingName isEqualToString:SKLineWellStyleKey] || [bindingName isEqualToString:SKLineWellDashPatternKey] || 
-        [bindingName isEqualToString:SKLineWellStartLineStyleKey] || [bindingName isEqualToString:SKLineWellEndLineStyleKey]) {
-        
-        if ([bindingInfo objectForKey:bindingName])
-            [self unbind:bindingName];
-		
-        NSDictionary *bindingsData = [NSDictionary dictionaryWithObjectsAndKeys:observableController, NSObservedObjectKey, [[keyPath copy] autorelease], NSObservedKeyPathKey, [[options copy] autorelease], NSOptionsKey, nil];
-		[bindingInfo setObject:bindingsData forKey:bindingName];
-       
-        void *context = NULL;
-        if ([bindingName isEqualToString:SKLineWellLineWidthKey])
-            context = SKLineWellLineWidthObservationContext;
-        else if ([bindingName isEqualToString:SKLineWellStyleKey])
-            context = SKLineWellStyleObservationContext;
-        else if ([bindingName isEqualToString:SKLineWellDashPatternKey])
-            context = SKLineWellDashPatternObservationContext;
-        else if ([bindingName isEqualToString:SKLineWellStartLineStyleKey])
-            context = SKLineWellStartLineStyleObservationContext;
-        else if ([bindingName isEqualToString:SKLineWellEndLineStyleKey])
-            context = SKLineWellEndLineStyleObservationContext;
-        
-        [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
-        [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
-    } else {
-        [super bind:bindingName toObject:observableController withKeyPath:keyPath options:options];
-    }
-	[self setNeedsDisplay:YES];
-}
-
-- (void)unbind:(NSString *)bindingName {
-    if ([bindingName isEqualToString:SKLineWellLineWidthKey] || [bindingName isEqualToString:SKLineWellStyleKey] || [bindingName isEqualToString:SKLineWellDashPatternKey] || 
-        [bindingName isEqualToString:SKLineWellStartLineStyleKey] || [bindingName isEqualToString:SKLineWellEndLineStyleKey]) {
-        
-        NSDictionary *info = [self infoForBinding:bindingName];
-        [[info objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		[bindingInfo removeObjectForKey:bindingName];
-    } else {
-        [super unbind:bindingName];
-    }
-    [self setNeedsDisplay:YES];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSString *key = nil;
-    if (context == SKLineWellLineWidthObservationContext)
-        key = SKLineWellLineWidthKey;
-    else if (context == SKLineWellStyleObservationContext)
-        key = SKLineWellStyleKey;
-    else if (context == SKLineWellDashPatternObservationContext)
-        key = SKLineWellDashPatternKey;
-    else if (context == SKLineWellStartLineStyleObservationContext)
-        key = SKLineWellStartLineStyleKey;
-    else if (context == SKLineWellEndLineStyleObservationContext)
-        key = SKLineWellEndLineStyleKey;
-    
-    if (key) {
-        NSDictionary *info = [self infoForBinding:key];
-		id value = [[info objectForKey:NSObservedObjectKey] valueForKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		if (NSIsControllerMarker(value) == NO) {
-            updatingFromBinding = YES;
-            [self setValue:value forKey:key];
-            updatingFromBinding = NO;
-		}
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-- (NSDictionary *)infoForBinding:(NSString *)bindingName {
-	return [bindingInfo objectForKey:bindingName] ?: [super infoForBinding:bindingName];
 }
 
 #pragma mark NSDraggingSource protocol 
@@ -771,18 +683,17 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
-    NSNumber *number;
     
-    if (number = [dict objectForKey:SKLineWellLineWidthKey])
-        [self setLineWidth:[number floatValue]];
-    if (number = [dict objectForKey:SKLineWellStyleKey])
-        [self setStyle:[number intValue]];
-    [self setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
+    if ([dict objectForKey:SKLineWellLineWidthKey])
+        [self takeValueForKey:SKLineWellLineWidthKey from:dict];
+    if ([dict objectForKey:SKLineWellStyleKey])
+        [self takeValueForKey:SKLineWellStyleKey from:dict];
+    [self takeValueForKey:SKLineWellDashPatternKey from:dict];
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-        if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
-            [self setStartLineStyle:[number intValue]];
-        if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
-            [self setEndLineStyle:[number intValue]];
+        if ([dict objectForKey:SKLineWellStartLineStyleKey])
+            [self takeValueForKey:SKLineWellStartLineStyleKey from:dict];
+        if ([dict objectForKey:SKLineWellEndLineStyleKey])
+            [self takeValueForKey:SKLineWellEndLineStyleKey from:dict];
     }
     [self sendAction:[self action] to:[self target]];
     
