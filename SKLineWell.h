@@ -69,11 +69,6 @@ typedef NSInteger SKLineWellDisplayStyle;
     id target;
     SEL action;
     
-    NSMutableDictionary *bindingInfo;
-    
-    BOOL updatingFromLineInspector;
-    BOOL updatingFromBinding;
-    
     id titleUIElement;
 }
 

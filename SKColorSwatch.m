@@ -49,8 +49,6 @@ static NSString *SKColorSwatchTargetKey = @"target";
 static NSString *SKColorSwatchActionKey = @"action";
 static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
 
-static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsObservationContext";
-
 
 @interface SKAccessibilityColorSwatchElement : NSObject {
     int index;
@@ -84,7 +82,6 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     clickedIndex = -1;
     draggedIndex = -1;
     
-    bindingInfo = [[NSMutableDictionary alloc] init];
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, nil]];
 }
 
@@ -134,9 +131,9 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
 }
 
 - (void)dealloc {
-    [self unbind:SKColorSwatchColorsKey];
+    if ([self infoForBinding:SKColorSwatchColorsKey])
+        [self unbind:SKColorSwatchColorsKey];
     [colors release];
-    [bindingInfo release];
     [super dealloc];
 }
 
@@ -327,6 +324,22 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     return count;
 }
 
+- (void)notifyColorsChanged {
+    NSDictionary *info = [self infoForBinding:SKColorSwatchColorsKey];
+    id observedObject = [info objectForKey:NSObservedObjectKey];
+    NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
+    if (observedObject && observedKeyPath) {
+        id value = [[colors copy] autorelease];
+        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+        if (transformerName) {
+            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
+            value = [valueTransformer reverseTransformedValue:value]; 
+        }
+        [observedObject setValue:value forKeyPath:observedKeyPath];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
+}
+
 #pragma mark Accessors
 
 - (NSArray *)colors {
@@ -377,58 +390,6 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
     }
 }
 
-#pragma mark Binding support
-
-- (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if ([bindingName isEqualToString:SKColorSwatchColorsKey]) {
-        
-        if ([bindingInfo objectForKey:bindingName])
-            [self unbind:bindingName];
-		
-        NSDictionary *bindingsData = [NSDictionary dictionaryWithObjectsAndKeys:observableController, NSObservedObjectKey, [[keyPath copy] autorelease], NSObservedKeyPathKey, [[options copy] autorelease], NSOptionsKey, nil];
-		[bindingInfo setObject:bindingsData forKey:bindingName];
-        
-        [observableController addObserver:self forKeyPath:keyPath options:0 context:SKColorSwatchColorsObservationContext];
-        [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:SKColorSwatchColorsObservationContext];
-    } else {
-        [super bind:bindingName toObject:observableController withKeyPath:keyPath options:options];
-    }
-	[self setNeedsDisplay:YES];
-}
-
-- (void)unbind:(NSString *)bindingName {
-    if ([bindingName isEqualToString:SKColorSwatchColorsKey]) {
-        
-        NSDictionary *info = [self infoForBinding:bindingName];
-        [[info objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		[bindingInfo removeObjectForKey:bindingName];
-    } else {
-        [super unbind:bindingName];
-    }
-    [self setNeedsDisplay:YES];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKColorSwatchColorsObservationContext) {
-        NSDictionary *info = [self infoForBinding:SKColorSwatchColorsKey];
-		id value = [[info objectForKey:NSObservedObjectKey] valueForKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		if (NSIsControllerMarker(value) == NO) {
-            NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-            if (transformerName) {
-                NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-                value = [valueTransformer transformedValue:value]; 
-            }
-            [self setValue:value forKey:SKColorSwatchColorsKey];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-- (NSDictionary *)infoForBinding:(NSString *)bindingName {
-	return [bindingInfo objectForKey:bindingName] ?: [super infoForBinding:bindingName];
-}
-
 #pragma mark NSDraggingSource protocol 
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
@@ -443,22 +404,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
             if (autoResizes)
                 [self sizeToFit];
             [self didChangeValueForKey:SKColorSwatchColorsKey];
-            
-            NSDictionary *info = [self infoForBinding:SKColorSwatchColorsKey];
-            id observedObject = [info objectForKey:NSObservedObjectKey];
-            NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
-            if (observedObject && observedKeyPath) {
-                id value = [[colors copy] autorelease];
-                NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-                if (transformerName) {
-                    NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-                    value = [valueTransformer reverseTransformedValue:value]; 
-                }
-                [observedObject setValue:value forKeyPath:observedKeyPath];
-            }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
-            
+            [self notifyColorsChanged];
             [self setNeedsDisplay:YES];
         }
     }
@@ -517,21 +463,7 @@ static NSString *SKColorSwatchColorsObservationContext = @"SKColorSwatchColorsOb
             [colors replaceObjectAtIndex:i withObject:color];
         }
         [self didChangeValueForKey:SKColorSwatchColorsKey];
-        
-        NSDictionary *info = [self infoForBinding:SKColorSwatchColorsKey];
-        id observedObject = [info objectForKey:NSObservedObjectKey];
-        NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
-		if (observedObject && observedKeyPath) {
-            id value = [[colors copy] autorelease];
-            NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-            if (transformerName) {
-                NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-                value = [valueTransformer reverseTransformedValue:value]; 
-            }
-            [observedObject setValue:value forKeyPath:observedKeyPath];
-        }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
+        [self notifyColorsChanged];
     }
     
     highlightedIndex = -1;

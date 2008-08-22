@@ -54,8 +54,6 @@ extern NSString *SKColorSwatchColorsKey;
     id target;
     
     BOOL autoResizes;
-    
-    NSMutableDictionary *bindingInfo;
 }
 
 - (NSArray *)colors;
