@@ -219,7 +219,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 - (void)fontChanged {
     if ([self isActive])
         [[NSFontManager sharedFontManager] setSelectedFont:[self font] isMultiple:NO];
-    [self setTitle:[NSString stringWithFormat:@"%@ %i", [self fontName], (int)[self fontSize]]];
+    [self setTitle:[NSString stringWithFormat:@"%@ %i", [[self font] displayName], (int)[self fontSize]]];
     [self setNeedsDisplay:YES];
 }
 
