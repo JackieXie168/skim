@@ -58,7 +58,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 
 @interface SKFontWell (SKPrivate)
 - (void)changeActive:(id)sender;
-- (void)updateTitle;
+- (void)fontChanged;
 @end
 
 
@@ -90,12 +90,9 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 - (void)commonInit {
     if ([self font] == nil)
         [self setFont:[NSFont systemFontOfSize:0.0]];
-    else
-        [self updateTitle];
+    [self fontChanged];
     [super setAction:@selector(changeActive:)];
     [super setTarget:self];
-    updatingFromFontPanel = NO;
-    updatingFromBinding = NO;
     bindingInfo = [[NSMutableDictionary alloc] init];
     [self registerForDraggedTypes:[NSArray arrayWithObjects:SKNSFontPanelDescriptorsPboardType, SKNSFontPanelFamiliesPboardType, nil]];
 }
@@ -168,23 +165,28 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     [self deactivate];
 }
 
+- (void)notifyBinding {
+    NSDictionary *info = [self infoForBinding:SKFontWellFontNameKey];
+    [[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
+    info = [self infoForBinding:SKFontWellFontSizeKey];
+    [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
+}
+
+- (void)changeFontFromFontManager {
+    if ([self isActive]) {
+        NSFontManager *fm = [NSFontManager sharedFontManager];
+        [self setFont:[fm convertFont:[self font]]];
+        [self notifyBinding];
+        [self sendAction:[self action] to:[self target]];
+    }
+}
+
 - (void)changeActive:(id)sender {
     if ([self isEnabled]) {
         if ([self isActive])
             [self activate];
         else
             [self deactivate];
-    }
-}
-
-- (void)changeFontFromFontManager {
-    if ([self isActive]) {
-        NSFontManager *fm = [NSFontManager sharedFontManager];
-        BOOL savedUpdatingFromFontPanel = updatingFromFontPanel;
-        updatingFromFontPanel = YES;
-        [self setFont:[fm convertFont:[self font]]];
-        [self sendAction:[self action] to:[self target]];
-        updatingFromFontPanel = savedUpdatingFromFontPanel;
     }
 }
 
@@ -214,19 +216,10 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     [self setNeedsDisplay:YES];
 }
 
-- (void)updateTitle {
-    [self setTitle:[[[self font] displayName] stringByAppendingFormat:@" %i", (int)[[self font] pointSize]]];
-}
-
-- (void)updateFont {
-    if (updatingFromBinding == NO) {
-        NSDictionary *info = [self infoForBinding:SKFontWellFontNameKey];
-		[[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		info = [self infoForBinding:SKFontWellFontSizeKey];
-        [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-    }
-    if ([self isActive] && updatingFromFontPanel == NO)
+- (void)fontChanged {
+    if ([self isActive])
         [[NSFontManager sharedFontManager] setSelectedFont:[self font] isMultiple:NO];
+    [self setTitle:[NSString stringWithFormat:@"%@ %i", [self fontName], (int)[self fontSize]]];
     [self setNeedsDisplay:YES];
 }
 
@@ -259,10 +252,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 - (void)setFont:(NSFont *)newFont {
     BOOL didChange = [[self font] isEqual:newFont] == NO;
     [super setFont:newFont];
-    if (didChange) {
-        [self updateTitle];
-        [self updateFont];
-    }
+    if (didChange)
+        [self fontChanged];
 }
 
 - (NSString *)fontName {
@@ -271,10 +262,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 
 - (void)setFontName:(NSString *)fontName {
     NSFont *newFont = [NSFont fontWithName:fontName size:[[self font] pointSize]];
-    if (newFont) {
+    if (newFont)
         [self setFont:newFont];
-        [self updateFont];
-    }
 }
 
 - (float)fontSize {
@@ -283,10 +272,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 
 - (void)setFontSize:(float)pointSize {
     NSFont *newFont = [NSFont fontWithName:[[self font] fontName] size:pointSize];
-    if (newFont) {
+    if (newFont)
         [self setFont:newFont];
-        [self updateFont];
-    }
 }
 
 #pragma mark Binding support
@@ -336,11 +323,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     if (key) {
         NSDictionary *info = [self infoForBinding:key];
 		id value = [[info objectForKey:NSObservedObjectKey] valueForKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-		if (NSIsControllerMarker(value) == NO) {
-            updatingFromBinding = YES;
+		if (NSIsControllerMarker(value) == NO)
             [self setValue:value forKey:key];
-            updatingFromBinding = NO;
-		}
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -405,6 +389,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     
     if (droppedFont) {
         [self setFont:droppedFont];
+        [self notifyBinding];
         [self sendAction:[self action] to:[self target]];
     }
     

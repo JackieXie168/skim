@@ -50,9 +50,6 @@ extern NSString *SKFontWellTargetKey;
     SEL action;
     
     NSMutableDictionary *bindingInfo;
-    
-    BOOL updatingFromFontPanel;
-    BOOL updatingFromBinding;
 }
 
 - (void)activate;
