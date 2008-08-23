@@ -61,7 +61,7 @@ static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
-    return sharedLineInspector ? sharedLineInspector : [[self alloc] init];
+    return sharedLineInspector ?: [[self alloc] init];
 }
 
 + (BOOL)sharedLineInspectorExists {
@@ -69,7 +69,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedLineInspector ? sharedLineInspector : [super allocWithZone:zone];
+    return sharedLineInspector ?: [super allocWithZone:zone];
 }
 
 - (id)init {

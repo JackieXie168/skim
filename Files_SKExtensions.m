@@ -122,7 +122,7 @@ extern NSURL *SKResolvedURLFromPath(NSString *path) {
             FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kARMNoUI);
        url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
     }
-    return url ? url : [NSURL fileURLWithPath:path];
+    return url ?: [NSURL fileURLWithPath:path];
 }
 
 NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {

@@ -102,11 +102,11 @@ static unsigned int maxRecentDocumentsCount = 0;
 static SKBookmarkController *sharedBookmarkController = nil;
 
 + (id)sharedBookmarkController {
-    return sharedBookmarkController ? sharedBookmarkController : [[self alloc] init];
+    return sharedBookmarkController ?: [[self alloc] init];
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedBookmarkController ? sharedBookmarkController : [super allocWithZone:zone];
+    return sharedBookmarkController ?: [super allocWithZone:zone];
 }
 
 - (id)init {
@@ -202,7 +202,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
             message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         }
     }
-    [statusBar setLeftStringValue:message ? message : @""];
+    [statusBar setLeftStringValue:message ?: @""];
 }
 
 #pragma mark Bookmarks
@@ -741,7 +741,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     NSMutableArray *labels = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         NSString *label = [[outlineView itemAtRow:i] label];
-        [labels addObject:label ? label : @""];
+        [labels addObject:label ?: @""];
     }
     return labels;
 }

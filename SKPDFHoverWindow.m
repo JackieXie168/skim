@@ -68,11 +68,11 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 static SKPDFHoverWindow *sharedHoverWindow = nil;
 
 + (id)sharedHoverWindow {
-    return sharedHoverWindow ? sharedHoverWindow : [[self alloc] init];
+    return sharedHoverWindow ?: [[self alloc] init];
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedHoverWindow ? sharedHoverWindow : [super allocWithZone:zone];
+    return sharedHoverWindow ?: [super allocWithZone:zone];
 }
 
 - (id)init {

@@ -68,7 +68,7 @@
         attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return textStorage ? textStorage : attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
+    return textStorage ?: attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
 }
 
 @end

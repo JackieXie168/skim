@@ -597,7 +597,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (CIImage *)currentImage {
-    return image ? image : [animation currentImage];
+    return image ?: [animation currentImage];
 }
 
 - (CIContext *)ciContext {

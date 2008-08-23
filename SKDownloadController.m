@@ -60,11 +60,11 @@ static NSString *SKDownloadFileNameKey = @"fileName";
 static SKDownloadController *sharedDownloadController = nil;
 
 + (id)sharedDownloadController {
-    return sharedDownloadController ? sharedDownloadController : [[self alloc] init];
+    return sharedDownloadController ?: [[self alloc] init];
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedDownloadController ? sharedDownloadController : [super allocWithZone:zone];
+    return sharedDownloadController ?: [super allocWithZone:zone];
 }
 
 - (id)init {

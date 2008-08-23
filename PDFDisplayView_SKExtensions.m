@@ -210,7 +210,7 @@ static id replacementAccessibilityHitTest(id self, SEL _cmd, NSPoint point) {
     id element = nil;
     if ([pdfView respondsToSelector:@selector(accessibilityChildAtPoint:)])
         element = [pdfView accessibilityChildAtPoint:point];
-    return element ? element : originalAccessibilityHitTest(self, _cmd, point);
+    return element ?: originalAccessibilityHitTest(self, _cmd, point);
 }
 
 static id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
@@ -218,7 +218,7 @@ static id replacementAccessibilityFocusedUIElement(id self, SEL _cmd) {
     id element = nil;
     if ([pdfView respondsToSelector:@selector(accessibilityFocusedChild)])
         element = [pdfView accessibilityFocusedChild];
-    return element ? element : originalAccessibilityFocusedUIElement(self, _cmd);
+    return element ?: originalAccessibilityFocusedUIElement(self, _cmd);
 }
 
 #pragma mark SKSwizzlePDFDisplayViewMethods

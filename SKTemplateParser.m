@@ -355,14 +355,14 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                             subTemplate = [subTemplate substringToIndex:wsRange.location];
                         
                         subTemplates = [[NSMutableArray alloc] init];
-                        matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ? matchString : @"", nil];
+                        matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ?: @"", nil];
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
                             altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
-                                [matchStrings addObject:matchString ? matchString : @""];
+                                [matchStrings addObject:matchString ?: @""];
                                 subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
                                 altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             }
@@ -663,14 +663,14 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         subTemplate = [template attributedSubstringFromRange:NSMakeRange(start, [subTemplateString length] - wsRange.length)];
                         
                         subTemplates = [[NSMutableArray alloc] init];
-                        matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ? matchString : @"", nil];
+                        matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ?: @"", nil];
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
                             altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
-                                [matchStrings addObject:matchString ? matchString : @""];
+                                [matchStrings addObject:matchString ?: @""];
                                 subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
                                 altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             }
@@ -866,7 +866,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
         description = [self performSelector:@selector(stringValue)];
     if ([self respondsToSelector:@selector(string)])
         description = [self performSelector:@selector(string)];
-    return description ? description : [self description];
+    return description ?: [self description];
 }
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
