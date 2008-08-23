@@ -70,7 +70,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (id)init {
-    if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super init])) {
+    if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super initWithWindowNibName:@"PreferenceWindow"])) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
         
@@ -94,10 +94,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
-
-- (NSString *)windowNibName {
-    return @"PreferenceWindow";
-}
 
 - (void)updateRevertButtons {
     NSDictionary *initialValues = [sudc initialValues];

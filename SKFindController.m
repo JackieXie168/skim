@@ -56,7 +56,7 @@ static SKFindController *sharedFindController = nil;
 }
 
 - (id)init {
-    if (sharedFindController == nil && (sharedFindController = self = [super init])) {
+    if (sharedFindController == nil && (sharedFindController = self = [super initWithWindowNibName:@"FindPanel"])) {
         ignoreCase = YES;
     }
     return sharedFindController;
@@ -74,8 +74,6 @@ static SKFindController *sharedFindController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
-
-- (NSString *)windowNibName { return @"FindPanel"; }
 
 - (void)awakeFromNib {
     if (self == sharedFindController)

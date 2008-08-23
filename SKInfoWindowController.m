@@ -78,7 +78,7 @@ static SKInfoWindowController *sharedInstance = nil;
 }
 
 - (id)init {
-    if (sharedInstance == nil && (sharedInstance = self = [super init])) {
+    if (sharedInstance == nil && (sharedInstance = self = [super initWithWindowNibName:@"InfoWindow"])) {
         info = [[NSMutableDictionary alloc] init];
     }
     return sharedInstance;
@@ -97,10 +97,6 @@ static SKInfoWindowController *sharedInstance = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
-
-- (NSString *)windowNibName {
-    return @"InfoWindow";
-}
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];

@@ -110,7 +110,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (id)init {
-    if (sharedBookmarkController == nil && (sharedBookmarkController = self = [super init])) {
+    if (sharedBookmarkController == nil && (sharedBookmarkController = self = [super initWithWindowNibName:@"BookmarksWindow"])) {
         recentDocuments = [[NSMutableArray alloc] init];
         
         NSMutableArray *bookmarks = [NSMutableArray array];
@@ -169,8 +169,6 @@ static SKBookmarkController *sharedBookmarkController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
-
-- (NSString *)windowNibName { return @"BookmarksWindow"; }
 
 - (void)windowDidLoad {
     [self setupToolbar];

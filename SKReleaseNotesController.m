@@ -53,7 +53,7 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 - (id)init {
     if (sharedReleaseNotesController == nil) {
-        sharedReleaseNotesController = [super init];
+        sharedReleaseNotesController = [super initWithWindowNibName:@"ReleaseNotes"];
     }
     return sharedReleaseNotesController;
 }
@@ -65,10 +65,6 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
-
-- (NSString *)windowNibName {
-    return @"ReleaseNotes";
-}
 
 - (void)windowDidLoad {
     [textView setString:@""];
