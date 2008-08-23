@@ -62,11 +62,11 @@ static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferen
 static SKPreferenceController *sharedPrefenceController = nil;
 
 + (id)sharedPrefenceController {
-    return sharedPrefenceController ? sharedPrefenceController : [[self alloc] init];
+    return sharedPrefenceController ?: [[self alloc] init];
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedPrefenceController ? sharedPrefenceController : [super allocWithZone:zone];
+    return sharedPrefenceController ?: [super allocWithZone:zone];
 }
 
 - (id)init {

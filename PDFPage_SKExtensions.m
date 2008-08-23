@@ -332,7 +332,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
     NSString *label = nil;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey] == NO)
         label = [self label];
-    return label ? label : [self logicalLabel];
+    return label ?: [self logicalLabel];
 }
 
 #pragma mark Scripting support

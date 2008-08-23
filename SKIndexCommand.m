@@ -61,7 +61,7 @@
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         idx = [dPO pageIndex];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
-        idx = [[(page ? (id)page : (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
+        idx = [[((id)page ?: (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];

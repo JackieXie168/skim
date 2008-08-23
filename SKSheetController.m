@@ -135,7 +135,7 @@
         SKBookmark *bm = [bookmarks objectAtIndex:i];
         if ([bm bookmarkType] == SKBookmarkTypeFolder) {
             NSString *label = [bm label];
-            NSMenuItem *item = [menu addItemWithTitle:label ? label : @"" action:NULL keyEquivalent:@""];
+            NSMenuItem *item = [menu addItemWithTitle:label ?: @"" action:NULL keyEquivalent:@""];
             [item setImage:[bm icon]];
             [item setIndentationLevel:level];
             [item setRepresentedObject:bm];

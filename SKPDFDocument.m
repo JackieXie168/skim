@@ -393,7 +393,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
     
     if (success == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return success;
 }
@@ -483,7 +483,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
     
     if (didWrite == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didWrite;
 }
@@ -607,7 +607,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
     
     if (didRead == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
 }
@@ -723,7 +723,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
     
     if (didRead == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
 }
@@ -1808,7 +1808,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (id)selectionPage {
     PDFPage *page = [[self pdfView] currentSelectionPage];
-    return page ? (id)page : (id)[NSNull null];
+    return (id)page ?: (id)[NSNull null];
 }
 
 - (void)setSelectionPage:(PDFPage *)page {
@@ -1971,7 +1971,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             specifier = [selection objectSpecifier];
     }
     
-    return specifier ? specifier : [NSArray array];
+    return specifier ?: [NSArray array];
 }
 
 - (void)handleShowTeXScriptCommand:(NSScriptCommand *)command {

@@ -858,7 +858,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         for (i = 0; i < count; i++) {
             id item = [noteOutlineView itemAtRow:i];
             NSString *string = [item string];
-            [texts addObject:string ? string : @""];
+            [texts addObject:string ?: @""];
         }
         return texts;
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {

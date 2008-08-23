@@ -316,7 +316,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
-        [cell setObjectValue:[item valueForKey:SKNPDFAnnotationTypeKey] ? [item valueForKey:SKNPDFAnnotationStringKey] : [item valueForKey:SKNPDFAnnotationTextKey]];
+        [cell setObjectValue:[item valueForKey:([item valueForKey:SKNPDFAnnotationTypeKey] ? SKNPDFAnnotationStringKey : SKNPDFAnnotationTextKey)]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)] forKey:SKNotesDocumentRowHeightKey];
@@ -378,7 +378,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
-        return [item valueForKey:SKNPDFAnnotationTypeKey] ? [item valueForKey:SKNPDFAnnotationStringKey] : [item valueForKey:SKNPDFAnnotationTextKey];
+        return [item valueForKey:[item valueForKey:([item valueForKey:SKNPDFAnnotationTypeKey] ? SKNPDFAnnotationStringKey : SKNPDFAnnotationTextKey)]];
     } else if([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:SKNPDFAnnotationTypeKey], SKNPDFAnnotationTypeKey, nil];
     } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
@@ -521,7 +521,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     for (i = 0; i < count; i++) {
         id item = [outlineView itemAtRow:i];
         NSString *string = [item valueForKey:SKNPDFAnnotationStringKey];
-        [texts addObject:string ? string : @""];
+        [texts addObject:string ?: @""];
     }
     return texts;
 }
