@@ -85,29 +85,29 @@
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     id value = [[[self objectValue] retain] autorelease];
     NSProgressIndicator *progressIndicator = [self progressIndicator];
-    NSRect textRect, ignored;
+    NSRect rect, ignored, insetRect;
+    
+    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &ignored, &insetRect, MARGIN_Y, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
     
     [self setObjectValue:[self fileName]];
-    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &textRect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
-    [super drawWithFrame:textRect inView:controlView];
+    NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge);
+    [super drawWithFrame:rect inView:controlView];
     [self setObjectValue:value];
     
     if (progressIndicator) {
-        NSRect barRect = NSInsetRect(cellFrame, MARGIN_X, 0.0);
-        barRect.size.height = NSHeight([progressIndicator frame]);
-        if ([controlView isFlipped])
-            barRect.origin.y += MARGIN_Y;
-        else
-            barRect.origin.y = NSMaxY(cellFrame) - NSHeight(barRect) - MARGIN_Y;
-        [progressIndicator setFrame:barRect];
+        NSDivideRect(insetRect, &rect, &ignored, NSHeight([progressIndicator frame]), [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        [progressIndicator setFrame:rect];
         
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
+        NSFont *font = [[[self font] retain] autorelease];
+        [self setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:10.0]];
         [self setObjectValue:[self statusDescription]];
-        NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &textRect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge);
-        [super drawWithFrame:textRect inView:controlView];
+        NSDivideRect(insetRect, &rect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        [super drawWithFrame:rect inView:controlView];
         [self setObjectValue:value];
+        [self setFont:font];
     }
 }
 
