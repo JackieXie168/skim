@@ -93,7 +93,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self cancelDownload];
+    [self cancel];
     [URL release];
     [URLDownload release];
     [filePath release];
@@ -103,7 +103,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    [self cancelDownload];
+    [self cancel];
 }
 
 #pragma mark Accessors
@@ -230,7 +230,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 #pragma mark Actions
 
-- (void)startDownload {
+- (void)start {
     if (URLDownload || URL == nil) {
         NSBeep();
         return;
@@ -245,7 +245,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         [delegate downloadDidUpdate:self];
 }
 
-- (void)cancelDownload {
+- (void)cancel {
     if ([self canCancel]) {
         
         [URLDownload cancel];
@@ -255,7 +255,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     }
 }
 
-- (void)resumeDownload {
+- (void)resume {
     if ([self canResume]) {
         
         NSData *resumeData = nil;
@@ -273,18 +273,18 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
             
         } else {
             
-            [self cleanupDownload];
+            [self cleanup];
             [self setFilePath:nil];
             [URLDownload release];
             URLDownload = nil;
-            [self startDownload];
+            [self start];
             
         }
     }
 }
 
-- (void)cleanupDownload {
-    [self cancelDownload];
+- (void)cleanup {
+    [self cancel];
     if (filePath)
         [[NSFileManager defaultManager] removeFileAtPath:[filePath stringByDeletingLastPathComponent] handler:nil];
 }

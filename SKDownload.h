@@ -84,10 +84,10 @@ enum {
 
 - (NSDictionary *)info;
 
-- (void)startDownload;
-- (void)cancelDownload;
-- (void)resumeDownload;
-- (void)cleanupDownload;
+- (void)start;
+- (void)cancel;
+- (void)resume;
+- (void)cleanup;
 
 - (BOOL)canCancel;
 - (BOOL)canResume;
