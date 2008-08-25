@@ -39,6 +39,11 @@
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import "Files_SKExtensions.h"
+#import "SKRuntime.h"
+
+NSString *SKDownloadFileNameKey = @"fileName";
+NSString *SKDownloadStatusKey = @"status";
+NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @interface SKDownload (Private)
 - (void)setStatus:(int)newStatus;
@@ -50,6 +55,19 @@
 
 
 @implementation SKDownload
+
++ (NSArray *)infoKeys {
+    return [NSArray arrayWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
+}
+
++ (void)intialize {
+    [self setKeys:[NSArray arrayWithObjects:@"filePath", nil] triggerChangeNotificationsForDependentKey:@"fileName"];
+    [self setKeys:[NSArray arrayWithObjects:@"filePath", nil] triggerChangeNotificationsForDependentKey:@"fileIcon"];
+    [self setKeys:[NSArray arrayWithObjects:SKDownloadStatusKey, nil] triggerChangeNotificationsForDependentKey:@"canCancel"];
+    [self setKeys:[NSArray arrayWithObjects:SKDownloadStatusKey, nil] triggerChangeNotificationsForDependentKey:@"canResume"];
+    [self setKeys:[self infoKeys] triggerChangeNotificationsForDependentKey:@"info"];
+    OBINITIALIZE;
+}
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id)aDelegate {
     if (self = [super init]) {
@@ -195,6 +213,19 @@
         [progressIndicator startAnimation:self];
     }
     return progressIndicator;
+}
+
+- (NSDictionary *)info {
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    NSEnumerator *keyEnum = [[[self class] infoKeys] objectEnumerator];
+    NSString *key;
+    while (key = [keyEnum nextObject])
+        [info setValue:[self valueForKey:key] forKey:key];
+    return info;
+}
+
+- (void)removeProgressIndicatorFromSuperview {
+    [progressIndicator removeFromSuperview];
 }
 
 #pragma mark Actions

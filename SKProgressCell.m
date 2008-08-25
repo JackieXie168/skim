@@ -45,46 +45,52 @@
 
 @implementation SKProgressCell
 
-- (void)dealloc {
-    [progressIndicator release];
-    [super dealloc];
-}
-
-- (id)copyWithZone:(NSZone *)aZone {
-    SKProgressCell *copy = [super copyWithZone:aZone];
-    copy->progressIndicator = [progressIndicator retain];
-    copy->status = status;
-    return copy;
+- (id)objectValueForKey:(NSString *)key {
+    id value = nil;
+    NSDictionary *info = [self objectValue];
+    if ([info respondsToSelector:@selector(objectForKey:)])
+        value = [info objectForKey:key];
+    return value;
 }
 
 - (NSProgressIndicator *)progressIndicator {
-    return progressIndicator;
+    return [self objectValueForKey:SKDownloadProgressIndicatorKey];
 }
 
-- (void)setProgressIndicator:(NSProgressIndicator *)newProgressIndicator {
-    if (progressIndicator != newProgressIndicator) {
-        [progressIndicator release];
-        progressIndicator = [newProgressIndicator retain];
-    }
+- (NSString *)fileName {
+    return [self objectValueForKey:SKDownloadFileNameKey];
 }
 
 - (int)status {
-    return status;
+    return [[self objectValueForKey:SKDownloadStatusKey] intValue];
 }
 
-- (void)setStatus:(int)newStatus {
-    if (status != newStatus) {
-        status = newStatus;
+- (NSString *)statusDescription {
+    switch ([self status]) {
+        case SKDownloadStatusStarting:
+            return [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
+        case SKDownloadStatusDownloading:
+            return [NSLocalizedString(@"Downloading", @"Download status message") stringByAppendingEllipsis];
+        case SKDownloadStatusFinished:
+            return NSLocalizedString(@"Finished", @"Download status message");
+        case SKDownloadStatusFailed:
+            return NSLocalizedString(@"Failed", @"Download status message");
+        case SKDownloadStatusCanceled:
+            return NSLocalizedString(@"Canceled", @"Download status message");
+        default:
+            return nil;
     }
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSRect textRect = NSInsetRect(cellFrame, MARGIN_X, 0.0);
+    id value = [[[self objectValue] retain] autorelease];
+    NSProgressIndicator *progressIndicator = [self progressIndicator];
+    NSRect textRect, ignored;
     
-    textRect.size.height = [self cellSize].height;
-    if ([controlView isFlipped])
-        textRect.origin.y = NSMaxY(cellFrame) - NSHeight(textRect);
+    [self setObjectValue:[self fileName]];
+    NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &textRect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
     [super drawWithFrame:textRect inView:controlView];
+    [self setObjectValue:value];
     
     if (progressIndicator) {
         NSRect barRect = NSInsetRect(cellFrame, MARGIN_X, 0.0);
@@ -98,53 +104,20 @@
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        if ([controlView isFlipped])
-            textRect.origin.y = NSMinY(cellFrame);
-        else
-            textRect.origin.y = NSMaxY(cellFrame) - NSHeight(textRect);
-        id value = [[[self objectValue] retain] autorelease];
-        NSString *string = nil;
-        switch (status) {
-            case SKDownloadStatusStarting:
-                string = [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
-                break;
-            case SKDownloadStatusFinished:
-                string = NSLocalizedString(@"Finished", @"Download status message");
-                break;
-            case SKDownloadStatusFailed:
-                string = NSLocalizedString(@"Failed", @"Download status message");
-                break;
-            case SKDownloadStatusCanceled:
-                string = NSLocalizedString(@"Canceled", @"Download status message");
-                break;
-        }
-        [self setObjectValue:string];
+        [self setObjectValue:[self statusDescription]];
+        NSDivideRect(NSInsetRect(cellFrame, MARGIN_X, 0.0), &textRect, &ignored, [self cellSize].height, [controlView isFlipped] ? NSMinYEdge : NSMaxYEdge);
         [super drawWithFrame:textRect inView:controlView];
         [self setObjectValue:value];
     }
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityValueAttribute] && progressIndicator == nil) {
-        NSString *string = nil;
-        switch (status) {
-            case SKDownloadStatusStarting:
-                string = [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
-                break;
-            case SKDownloadStatusFinished:
-                string = NSLocalizedString(@"Finished", @"Download status message");
-                break;
-            case SKDownloadStatusFailed:
-                string = NSLocalizedString(@"Failed", @"Download status message");
-                break;
-            case SKDownloadStatusCanceled:
-                string = NSLocalizedString(@"Canceled", @"Download status message");
-                break;
-        }
-        return [[super accessibilityAttributeValue:attribute] stringByAppendingFormat:@"\n%@", string];
-    } else {
-        return [super accessibilityAttributeValue:attribute];
+    if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+        NSString *statusDescription = [self statusDescription];
+        if (statusDescription)
+            return [[super accessibilityAttributeValue:attribute] stringByAppendingFormat:@"\n%@", statusDescription];
     }
+    return [super accessibilityAttributeValue:attribute];
 }
 
 @end
