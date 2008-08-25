@@ -41,6 +41,7 @@
 @class SKTableView;
 
 @interface SKDownloadController : NSWindowController {
+    IBOutlet NSArrayController *arrayController;
     IBOutlet SKTableView *tableView;
     IBOutlet NSButton *clearButton;
     IBOutlet NSWindow *preferencesSheet;
@@ -57,5 +58,11 @@
 
 - (IBAction)showDownloadPreferences:(id)sender;
 - (IBAction)dismissDownloadsPreferences:(id)sender;
+
+- (NSArray *)downloads;
+- (unsigned)countOfDownloads;
+- (id)objectInDownloadsAtIndex:(unsigned)anIndex;
+- (void)insertObject:(id)obj inDownloadsAtIndex:(unsigned)anIndex;
+- (void)removeObjectFromDownloadsAtIndex:(unsigned)anIndex;
 
 @end

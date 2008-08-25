@@ -38,6 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKDownloadFileNameKey;
+extern NSString *SKDownloadStatusKey;
+extern NSString *SKDownloadProgressIndicatorKey;
+
 enum {
     SKDownloadStatusUndefined,
     SKDownloadStatusStarting,
@@ -78,6 +82,8 @@ enum {
 
 - (NSProgressIndicator *)progressIndicator;
 
+- (NSDictionary *)info;
+
 - (void)startDownload;
 - (void)cancelDownload;
 - (void)resumeDownload;
@@ -85,6 +91,8 @@ enum {
 
 - (BOOL)canCancel;
 - (BOOL)canResume;
+
+- (void)removeProgressIndicatorFromSuperview;
 
 @end
 

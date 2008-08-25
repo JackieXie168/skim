@@ -39,15 +39,14 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKProgressCell : NSTextFieldCell {
-    NSProgressIndicator *progressIndicator;
-    int status;
-}
+@interface SKProgressCell : NSTextFieldCell
 
 - (NSProgressIndicator *)progressIndicator;
-- (void)setProgressIndicator:(NSProgressIndicator *)newProgressIndicator;
+
+- (NSString *)fileName;
 
 - (int)status;
-- (void)setStatus:(int)newStatus;
+
+- (NSString *)statusDescription;
 
 @end
