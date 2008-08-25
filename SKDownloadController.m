@@ -104,16 +104,6 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (void)removeInvisibleProgressIndicators {
-    NSRect visibleRect = [tableView visibleRect];
-    int i = [self countOfDownloads];
-    while (i-- > 0) {
-        NSProgressIndicator *progressIndicator = [[self objectInDownloadsAtIndex:i] progressIndicator];
-        if ([progressIndicator superview] && NO == NSIntersectsRect([tableView rectOfRow:i], visibleRect))
-            [progressIndicator removeFromSuperview];
-    }
-}
-
 #pragma mark Accessors
 
 - (NSArray *)downloads {
@@ -130,7 +120,8 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)insertObject:(id)obj inDownloadsAtIndex:(unsigned)anIndex {
     [downloads insertObject:obj atIndex:anIndex];
-    [self removeInvisibleProgressIndicators];
+    [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
+    [tableView reloadData];
 }
 
 - (void)removeObjectFromDownloadsAtIndex:(unsigned)anIndex {
@@ -138,7 +129,8 @@ static SKDownloadController *sharedDownloadController = nil;
     [download setDelegate:nil];
     [download cancelDownload];
     [downloads removeObjectAtIndex:anIndex];
-    [self removeInvisibleProgressIndicators];
+    [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
+    [tableView reloadData];
 }
 
 #pragma mark Actions
