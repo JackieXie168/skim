@@ -98,7 +98,7 @@ static SKDownloadController *sharedDownloadController = nil;
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
         int row = [self countOfDownloads];
         [[self mutableArrayValueForKey:@"downloads"] addObject:download];
-        [download startDownload];
+        [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
     }
@@ -127,7 +127,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)removeObjectFromDownloadsAtIndex:(unsigned)anIndex {
     SKDownload *download = [downloads objectAtIndex:anIndex];
     [download setDelegate:nil];
-    [download cancelDownload];
+    [download cancel];
     [downloads removeObjectAtIndex:anIndex];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView reloadData];
@@ -154,7 +154,7 @@ static SKDownloadController *sharedDownloadController = nil;
             download = [self objectInDownloadsAtIndex:row];
     }
     if (download && [download status] == SKDownloadStatusDownloading)
-        [download cancelDownload];
+        [download cancel];
 }
 
 - (IBAction)resumeDownload:(id)sender {
@@ -166,7 +166,7 @@ static SKDownloadController *sharedDownloadController = nil;
             download = [self objectInDownloadsAtIndex:row];
     }
     if (download && [download status] == SKDownloadStatusCanceled)
-        [download resumeDownload];
+        [download resume];
 }
 
 - (IBAction)removeDownload:(id)sender {
@@ -355,7 +355,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDownload *download = [self objectInDownloadsAtIndex:row];
     
     if ([download canCancel])
-        [download cancelDownload];
+        [download cancel];
     else
         [self removeObjectFromDownloadsAtIndex:row];
 }
