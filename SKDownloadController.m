@@ -344,8 +344,6 @@ static SKDownloadController *sharedDownloadController = nil;
     } else if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
         if ([[self objectInDownloadsAtIndex:row] canResume])
             toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
-    } else {
-        toolTip = [[self objectInDownloadsAtIndex:row] filePath];
     }
     return toolTip;
 }
