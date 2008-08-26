@@ -710,12 +710,12 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             // these will be invalid. If needed, the document will restore them
             [self setSearchResults:nil];
             [self setGroupedSearchResults:nil];
-            [self setNotes:nil];
-            [[self mutableArrayValueForKey:SKMainWindowThumbnailsKey] removeAllObjects];
+            [self removeAllObjectsFromNotes];
+            [self removeAllObjectsFromThumbnails];
             
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
-            [self setSnapshots:nil];
+            [self removeAllObjectsFromSnapshots];
             
             [pdfOutline release];
             pdfOutline = nil;
@@ -809,7 +809,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     }
     
     if (undoable == NO)
-        [self setNotes:nil];
+        [self removeAllObjectsFromNotes];
     
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
@@ -967,54 +967,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (NSArray *)notes {
     return [[notes copy] autorelease];
 }
-
-- (void)setNotes:(NSArray *)newNotes {
-    NSMutableSet *old = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
-    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
-    NSMutableSet *removed;
-    NSMutableSet *added;
-    
-    [old addObjectsFromArray:notes];
-    [new addObjectsFromArray:newNotes];
-    removed = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)old);
-    [removed minusSet:new];
-    added = (NSMutableSet *)CFSetCreateMutableCopy(NULL, 0, (CFSetRef)new);
-    [added minusSet:old];
-    [old release];
-    [new release];
-    
-    if ([removed count]) {
-        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-        NSWindowController *wc = [wcEnum nextObject];
-        
-        while (wc = [wcEnum nextObject]) {
-            if ([wc isKindOfClass:[SKNoteWindowController class]] && [removed containsObject:[(SKNoteWindowController *)wc note]])
-                [[wc window] orderOut:self];
-        }
-        
-        NSEnumerator *noteEnum = [removed objectEnumerator];
-        PDFAnnotation *note;
-        
-        while (note = [noteEnum nextObject]) {
-            if ([[note texts] count])
-                CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
-            CFDictionaryRemoveValue(rowHeights, (const void *)note);
-        }
-        
-        // Stop observing the removed notes so that
-        [self stopObservingNotes:[removed allObjects]];
-    }
-    [removed release];
-    
-    [notes setArray:newNotes];
-    
-    // Start observing the added notes so that, when they're changed, we can record undo operations.
-    if ([added count])
-        [self startObservingNotes:[added allObjects]];
-    [added release];
-    
-    [noteOutlineView reloadData];
-}
 	 
 - (unsigned int)countOfNotes {
     return [notes count];
@@ -1053,6 +1005,29 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [notes removeObjectAtIndex:theIndex];
 }
 
+- (void)removeAllObjectsFromNotes {
+    if ([notes count]) {
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [notes count])];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowNotesKey];
+        
+        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+        NSWindowController *wc = [wcEnum nextObject];
+        while (wc = [wcEnum nextObject]) {
+            if ([wc isKindOfClass:[SKNoteWindowController class]])
+                [[wc window] orderOut:self];
+        }
+        
+        CFDictionaryRemoveAllValues(rowHeights);
+        
+        [self stopObservingNotes:notes];
+
+        [notes removeAllObjects];
+        
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowNotesKey];
+        [noteOutlineView reloadData];
+    }
+}
+
 - (unsigned int)countOfThumbnails {
     return [thumbnails count];
 }
@@ -1088,24 +1063,17 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
-- (NSArray *)snapshots {
-    return [[snapshots copy] autorelease];
+- (void)removeAllObjectsFromThumbnails {
+    if ([thumbnails count]) {
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowThumbnailsKey];
+        [thumbnails removeAllObjects];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowThumbnailsKey];
+    }
 }
 
-- (void)setSnapshots:(NSArray *)newSnapshots {
-    NSMutableSet *removed = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
-    NSMutableSet *new = (NSMutableSet *)CFSetCreateMutable(NULL, 0, &kSKPointerEqualObjectSetCallBacks);
-    
-    [new addObjectsFromArray:newSnapshots];
-    [removed addObjectsFromArray:snapshots];
-    [removed minusSet:new];
-    [new release];
-    
-    if ([removed count])
-        [dirtySnapshots removeObjectsInArray:[removed allObjects]];
-    [removed release];
-    
-    [snapshots setArray:snapshots];
+- (NSArray *)snapshots {
+    return [[snapshots copy] autorelease];
 }
 
 - (unsigned int)countOfSnapshots {
@@ -1123,6 +1091,19 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex {
     [dirtySnapshots removeObject:[snapshots objectAtIndex:theIndex]];
     [snapshots removeObjectAtIndex:theIndex];
+}
+
+- (void)removeAllObjectsFromSnapshots {
+    if ([snapshots count]) {
+        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [snapshots count])];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowSnapshotsKey];
+        
+        [dirtySnapshots removeAllObjects];
+        
+        [snapshots removeAllObjects];
+        
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowSnapshotsKey];
+    }
 }
 
 - (NSArray *)selectedNotes {
