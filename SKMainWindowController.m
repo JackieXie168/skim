@@ -175,13 +175,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)exitPresentationMode;
 - (void)activityTimerFired:(NSTimer *)timer;
 
-- (void)goToSelectedOutlineItem;
-
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll;
 - (void)goToFindResults:(NSArray *)findResults;
 - (void)updateFindResultHighlights:(BOOL)scroll;
-
-- (void)showHoverWindowForDestination:(PDFDestination *)dest;
 
 - (void)updateNoteFilterPredicate;
 
@@ -584,74 +580,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 #pragma mark UI updating
-
-- (void)updateFontPanel {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    
-    if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote]) {
-            if ([annotation respondsToSelector:@selector(font)]) {
-                updatingFont = YES;
-                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-                updatingFont = NO;
-            }
-            if ([annotation respondsToSelector:@selector(fontColor)]) {
-                updatingFontAttributes = YES;
-                [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
-                updatingFontAttributes = NO;
-            }
-        }
-    }
-}
-
-- (void)updateColorPanel {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSColor *color = nil;
-    NSView *accessoryView = nil;
-    
-    if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote]) {
-            if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
-                if (colorAccessoryView == nil) {
-                    colorAccessoryView = [[NSButton alloc] init];
-                    [colorAccessoryView setButtonType:NSSwitchButton];
-                    [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Button title")];
-                    [[colorAccessoryView cell] setControlSize:NSSmallControlSize];
-                    [colorAccessoryView setTarget:self];
-                    [colorAccessoryView setAction:@selector(changeColorFill:)];
-                    [colorAccessoryView sizeToFit];
-                }
-                accessoryView = colorAccessoryView;
-            }
-            if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
-                color = [(id)annotation interiorColor] ?: [NSColor clearColor];
-            } else {
-                color = [annotation color];
-            }
-        }
-        if ([[NSColorPanel sharedColorPanel] accessoryView] != accessoryView)
-            [[NSColorPanel sharedColorPanel] setAccessoryView:accessoryView];
-    }
-    
-    if (color) {
-        updatingColor = YES;
-        [[NSColorPanel sharedColorPanel] setColor:color];
-        updatingColor = NO;
-    }
-}
-
-- (void)updateLineInspector {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    
-    if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKNLineString])) {
-            updatingLine = YES;
-            [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
-            updatingLine = NO;
-        }
-    }
-}
 
 - (void)updateLeftStatus {
     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Page %i of %i", @"Status message"), [self pageNumber], [[pdfView document] pageCount]];
@@ -1279,10 +1207,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     }
 }
 
-- (IBAction)changeColorFill:(id)sender{
-   [self updateColorPanel];
-}
-
 - (IBAction)selectColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isSkimNote]) {
@@ -1418,17 +1342,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     } else NSBeep();
 }
 
-- (void)selectSelectedNote{
-    if ([pdfView hideNotes] == NO) {
-        NSArray *selectedNotes = [self selectedNotes];
-        if ([selectedNotes count] == 1) {
-            PDFAnnotation *annotation = [selectedNotes lastObject];
-            [pdfView scrollAnnotationToVisible:annotation];
-            [pdfView setActiveAnnotation:annotation];
-        }
-    } else NSBeep();
-}
-
 - (IBAction)toggleHideNotes:(id)sender{
     BOOL wasHidden = [pdfView hideNotes];
     NSEnumerator *noteEnum = [notes objectEnumerator];
@@ -1438,17 +1351,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [note setShouldPrint:wasHidden];
     }
     [pdfView setHideNotes:wasHidden == NO];
-}
-
-- (void)goToSelectedOutlineItem {
-    PDFOutline *outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
-    PDFDestination *dest = [outlineItem destination];
-    updatingOutlineSelection = YES;
-    if (dest)
-        [self goToDestination:dest];
-    else if ([outlineItem respondsToSelector:@selector(action)] && [outlineItem action])
-        [pdfView performAction:[outlineItem action]];
-    updatingOutlineSelection = NO;
 }
 
 - (IBAction)takeSnapshot:(id)sender{
@@ -3352,33 +3254,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [wc release];
     }
     [wc showWindow:self];
-}
-
-- (void)showHoverWindowForDestination:(PDFDestination *)dest {
-    if ([NSApp isActive]) { 
-        PDFAnnotationLink *annotation = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
-        NSPoint point = [dest point];
-        switch ([[dest page] rotation]) {
-            case 0:
-                point.x -= 50.0;
-                point.y += 20.0;
-                break;
-            case 90:
-                point.x -= 20.0;
-                point.y -= 50.0;
-                break;
-            case 180:
-                point.x += 50.0;
-                point.y -= 20.0;
-                break;
-            case 270:
-                point.x += 20.0;
-                point.y += 50.0;
-                break;
-        }
-        [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
-    }
 }
 
 #pragma mark Observer registration
