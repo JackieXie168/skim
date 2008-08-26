@@ -112,21 +112,21 @@ static SKDownloadController *sharedDownloadController = nil;
     return [[downloads copy] autorelease];
 }
 
-- (unsigned)countOfDownloads {
+- (unsigned int)countOfDownloads {
     return [downloads count];
 }
 
-- (id)objectInDownloadsAtIndex:(unsigned)anIndex {
+- (SKDownload *)objectInDownloadsAtIndex:(unsigned int)anIndex {
     return [downloads objectAtIndex:anIndex];
 }
 
-- (void)insertObject:(id)obj inDownloadsAtIndex:(unsigned)anIndex {
-    [downloads insertObject:obj atIndex:anIndex];
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex {
+    [downloads insertObject:download atIndex:anIndex];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView reloadData];
 }
 
-- (void)removeObjectFromDownloadsAtIndex:(unsigned)anIndex {
+- (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex {
     SKDownload *download = [downloads objectAtIndex:anIndex];
     [download setDelegate:nil];
     [download cancel];

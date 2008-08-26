@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKTableView;
+@class SKTableView, SKDownload;
 
 @interface SKDownloadController : NSWindowController {
     IBOutlet NSArrayController *arrayController;
@@ -60,9 +60,9 @@
 - (IBAction)dismissDownloadsPreferences:(id)sender;
 
 - (NSArray *)downloads;
-- (unsigned)countOfDownloads;
-- (id)objectInDownloadsAtIndex:(unsigned)anIndex;
-- (void)insertObject:(id)obj inDownloadsAtIndex:(unsigned)anIndex;
-- (void)removeObjectFromDownloadsAtIndex:(unsigned)anIndex;
+- (unsigned int)countOfDownloads;
+- (SKDownload *)objectInDownloadsAtIndex:(unsigned int)anIndex;
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex;
+- (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex;
 
 @end

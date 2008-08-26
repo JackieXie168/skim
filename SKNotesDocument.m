@@ -337,19 +337,19 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [notes setArray:notes];
 }
 
-- (unsigned)countOfNotes {
+- (unsigned int)countOfNotes {
     return [notes count];
 }
 
-- (id)objectInNotesAtIndex:(unsigned)theIndex {
+- (NSDictionary *)objectInNotesAtIndex:(unsigned int)theIndex {
     return [notes objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
-    [notes insertObject:obj atIndex:theIndex];
+- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)theIndex {
+    [notes insertObject:note atIndex:theIndex];
 }
 
-- (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex {
     [notes removeObjectAtIndex:theIndex];
 }
 

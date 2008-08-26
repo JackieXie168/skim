@@ -1730,7 +1730,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self mainWindowController] notes];
 }
 
-- (void)insertInNotes:(id)newNote {
+- (void)insertInNotes:(PDFAnnotation *)newNote {
     PDFPage *page = [newNote page];
     if (page && [[page annotations] containsObject:newNote] == NO) {
         SKPDFView *pdfView = [self pdfView];
@@ -1740,11 +1740,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)anIndex {
+- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeFromNotesAtIndex:(unsigned int)anIndex {
+- (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex {
     PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
     
     [[self pdfView] removeAnnotation:note];

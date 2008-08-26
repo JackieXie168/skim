@@ -83,7 +83,7 @@ extern NSString *SKRightSidePaneWidthKey;
 
 extern NSString *SKMainWindowPageColumnIdentifer;
 
-@class PDFOutline, SKThumbnail;
+@class PDFAnnotation, PDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
@@ -355,36 +355,36 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
-- (unsigned)countOfNotes;
-- (id)objectInNotesAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned)index;
+- (unsigned int)countOfNotes;
+- (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex;
+- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(unsigned int)theIndex;
+- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex;
 
-- (unsigned)countOfThumbnails;
-- (id)objectInThumbnailsAtIndex:(unsigned)theIndex;
-- (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex;
-- (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex;
+- (unsigned int)countOfThumbnails;
+- (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex;
+- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex;
+- (void)removeObjectFromThumbnailsAtIndex:(unsigned int)theIndex;
 
 - (NSArray *)snapshots;
 - (void)setSnapshots:(NSArray *)newSnapshots;
-- (unsigned)countOfSnapshots;
-- (id)objectInSnapshotsAtIndex:(unsigned)theIndex;
-- (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
-- (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
+- (unsigned int)countOfSnapshots;
+- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(unsigned int)theIndex;
+- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(unsigned int)theIndex;
+- (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex;
 
 - (NSArray *)searchResults;
 - (void)setSearchResults:(NSArray *)newSearchResults;
-- (unsigned)countOfSearchResults;
-- (id)objectInSearchResultsAtIndex:(unsigned)theIndex;
-- (void)insertObject:(id)obj inSearchResultsAtIndex:(unsigned)theIndex;
-- (void)removeObjectFromSearchResultsAtIndex:(unsigned)theIndex;
+- (unsigned int)countOfSearchResults;
+- (PDFSelection *)objectInSearchResultsAtIndex:(unsigned int)theIndex;
+- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(unsigned int)theIndex;
+- (void)removeObjectFromSearchResultsAtIndex:(unsigned int)theIndex;
 
 - (NSArray *)groupedSearchResults;
 - (void)setGroupedSearchResults:(NSArray *)newGroupedSearchResults;
-- (unsigned)countOfGroupedSearchResults;
-- (id)objectInGroupedSearchResultsAtIndex:(unsigned)theIndex;
-- (void)insertObject:(id)obj inGroupedSearchResultsAtIndex:(unsigned)theIndex;
-- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned)theIndex;
+- (unsigned int)countOfGroupedSearchResults;
+- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(unsigned int)theIndex;
+- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(unsigned int)theIndex;
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex;
 
 - (NSArray *)selectedNotes;
 

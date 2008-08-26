@@ -52,9 +52,9 @@
 
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
-- (unsigned)countOfNotes;
-- (id)objectInNotesAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned)index;
+- (unsigned int)countOfNotes;
+- (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;
+- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)index;
+- (void)removeObjectFromNotesAtIndex:(unsigned int)index;
 
 @end
