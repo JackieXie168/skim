@@ -62,8 +62,6 @@
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
 
-- (void)doSpotlightImportIfNeeded;
-
 - (void)saveCurrentOpenDocuments:(id)sender;
 
 - (NSArray *)applicationSupportDirectories;
