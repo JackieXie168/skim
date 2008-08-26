@@ -48,6 +48,8 @@
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
+static NSString *SKDownloadControllerDownloadsKey = @"downloads";
+
 static NSString *SKDownloadsWindowCancelColumnIdentifier = @"cancel";
 static NSString *SKDownloadsWindowResumeColumnIdentifier = @"resume";
 
@@ -97,7 +99,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (aURL) {
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
         int row = [self countOfDownloads];
-        [[self mutableArrayValueForKey:@"downloads"] addObject:download];
+        [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] addObject:download];
         [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
@@ -179,7 +181,7 @@ static SKDownloadController *sharedDownloadController = nil;
     }
     
     if (download)
-        [[self mutableArrayValueForKey:@"downloads"] removeObject:download];
+        [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] removeObject:download];
 }
 
 - (IBAction)paste:(id)sender {
@@ -261,7 +263,7 @@ static SKDownloadController *sharedDownloadController = nil;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
             [[download retain] autorelease];
-            [[self mutableArrayValueForKey:@"downloads"] removeObject:download];
+            [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] removeObject:download];
             // for the document to note that the file has been deleted
             [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
