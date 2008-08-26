@@ -259,7 +259,6 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 }
 
 - (IBAction)changeColor:(id)sender;
-- (IBAction)changeColorFill:(id)sender;
 - (IBAction)selectColor:(id)sender;
 - (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
