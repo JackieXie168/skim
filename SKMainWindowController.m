@@ -1016,22 +1016,22 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [noteOutlineView reloadData];
 }
 	 
-- (unsigned)countOfNotes {
+- (unsigned int)countOfNotes {
     return [notes count];
 }
 
-- (id)objectInNotesAtIndex:(unsigned)theIndex {
+- (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex {
     return [notes objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
-    [notes insertObject:obj atIndex:theIndex];
+- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(unsigned int)theIndex {
+    [notes insertObject:note atIndex:theIndex];
 
     // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
-    [self startObservingNotes:[NSArray arrayWithObject:obj]];
+    [self startObservingNotes:[NSArray arrayWithObject:note]];
 }
 
-- (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex {
     PDFAnnotation *note = [notes objectAtIndex:theIndex];
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
@@ -1053,11 +1053,11 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [notes removeObjectAtIndex:theIndex];
 }
 
-- (unsigned)countOfThumbnails {
+- (unsigned int)countOfThumbnails {
     return [thumbnails count];
 }
 
-- (id)objectInThumbnailsAtIndex:(unsigned)theIndex {
+- (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex {
     SKThumbnail *thumbnail = [thumbnails objectAtIndex:theIndex];
     
     if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
@@ -1080,11 +1080,11 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     return thumbnail;
 }
 
-- (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex {
-    [thumbnails insertObject:obj atIndex:theIndex];
+- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex {
+    [thumbnails insertObject:thumbnail atIndex:theIndex];
 }
 
-- (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromThumbnailsAtIndex:(unsigned int)theIndex {
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
@@ -1108,19 +1108,19 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [snapshots setArray:snapshots];
 }
 
-- (unsigned)countOfSnapshots {
+- (unsigned int)countOfSnapshots {
     return [snapshots count];
 }
 
-- (id)objectInSnapshotsAtIndex:(unsigned)theIndex {
+- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(unsigned int)theIndex {
     return [snapshots objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex {
-    [snapshots insertObject:obj atIndex:theIndex];
+- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(unsigned int)theIndex {
+    [snapshots insertObject:snapshot atIndex:theIndex];
 }
 
-- (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex {
     [dirtySnapshots removeObject:[snapshots objectAtIndex:theIndex]];
     [snapshots removeObjectAtIndex:theIndex];
 }
@@ -1149,19 +1149,19 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [searchResults setArray:newSearchResults];
 }
 
-- (unsigned)countOfSearchResults {
+- (unsigned int)countOfSearchResults {
     return [searchResults count];
 }
 
-- (id)objectInSearchResultsAtIndex:(unsigned)theIndex {
+- (PDFSelection *)objectInSearchResultsAtIndex:(unsigned int)theIndex {
     return [searchResults objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inSearchResultsAtIndex:(unsigned)theIndex {
-    [searchResults insertObject:obj atIndex:theIndex];
+- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(unsigned int)theIndex {
+    [searchResults insertObject:searchResult atIndex:theIndex];
 }
 
-- (void)removeObjectFromSearchResultsAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromSearchResultsAtIndex:(unsigned int)theIndex {
     [searchResults removeObjectAtIndex:theIndex];
 }
 
@@ -1173,19 +1173,19 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [groupedSearchResults setArray:newGroupedSearchResults];
 }
 
-- (unsigned)countOfGroupedSearchResults {
+- (unsigned int)countOfGroupedSearchResults {
     return [groupedSearchResults count];
 }
 
-- (id)objectInGroupedSearchResultsAtIndex:(unsigned)theIndex {
+- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(unsigned int)theIndex {
     return [groupedSearchResults objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inGroupedSearchResultsAtIndex:(unsigned)theIndex {
-    [groupedSearchResults insertObject:obj atIndex:theIndex];
+- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(unsigned int)theIndex {
+    [groupedSearchResults insertObject:groupedSearchResult atIndex:theIndex];
 }
 
-- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned)theIndex {
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex {
     [groupedSearchResults removeObjectAtIndex:theIndex];
 }
 

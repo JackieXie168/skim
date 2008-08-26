@@ -120,11 +120,11 @@ enum {
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
 - (NSArray *)notes;
-- (void)insertInNotes:(id)newNote;
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
-- (void)removeFromNotesAtIndex:(unsigned int)index;
+- (void)insertInNotes:(PDFAnnotation *)newNote;
+- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex;
+- (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex;
 - (unsigned int)countOfLines;
-- (SKLine *)objectInLinesAtIndex:(unsigned int)index;
+- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
