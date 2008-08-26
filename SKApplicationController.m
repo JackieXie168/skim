@@ -176,8 +176,6 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
     
-    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
-    
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     RemoteControlContainer *container = [[RemoteControlContainer alloc] initWithDelegate:self];
     if ([sud boolForKey:SKEnableAppleRemoteKey])
@@ -203,10 +201,8 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
-    [currentDocumentsTimer invalidate];
-    [currentDocumentsTimer release];
-    currentDocumentsTimer = nil;
-    [self saveCurrentOpenDocuments:nil];
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
+    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -374,7 +370,7 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
             else 
                 [controller doGoToPreviousPage:nil];
             break;
-        case kRemoteButtonPlay:
+        case kRemoteButtonPlay:        
             [controller togglePresentation:nil];
             break;
 		case kRemoteButtonMenu:
@@ -389,11 +385,6 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
         default:
             break;
     }
-}
-
-- (void)saveCurrentOpenDocuments:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
-    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
 - (NSArray *)applicationSupportDirectories {
