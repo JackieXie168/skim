@@ -86,10 +86,6 @@
 
 static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
 
-static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
-static NSString *SKSpotlightLastImporterVersionKey = @"lastImporterVersion";
-static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
-
 
 @implementation SKApplicationController
 
@@ -179,8 +175,6 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
-	
-    [self doSpotlightImportIfNeeded];
     
     currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
     
@@ -394,45 +388,6 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
             break;
         default:
             break;
-    }
-}
-
-- (void)doSpotlightImportIfNeeded {
-    
-    // This code finds the spotlight importer and re-runs it if the importer or app version has changed since the last time we launched.
-    NSArray *pathComponents = [NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], @"Contents", @"Library", @"Spotlight", @"SkimImporter", nil];
-    NSString *importerPath = [[NSString pathWithComponents:pathComponents] stringByAppendingPathExtension:@"mdimporter"];
-    
-    NSBundle *importerBundle = [NSBundle bundleWithPath:importerPath];
-    NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-    if (importerVersion) {
-        SKVersionNumber *importerVersionNumber = [SKVersionNumber versionNumberWithVersionString:importerVersion];
-        NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
-        
-        long sysVersion;
-        OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
-        
-        BOOL runImporter = NO;
-        if ([versionInfo count] == 0) {
-            runImporter = YES;
-        } else {
-            NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
-            SKVersionNumber *lastImporterVersionNumber = [SKVersionNumber versionNumberWithVersionString:lastImporterVersion];
-            
-            long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
-            
-            runImporter = noErr == err ? ([lastImporterVersionNumber compareToVersionNumber:importerVersionNumber] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
-        }
-        if (runImporter) {
-            NSString *mdimportPath = @"/usr/bin/mdimport";
-            if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
-                [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
-                
-                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
-                [[NSUserDefaults standardUserDefaults] setObject:info forKey:SKSpotlightVersionInfoKey];
-                
-            } else NSLog(@"%@ not found!", mdimportPath);
-        }
     }
 }
 
