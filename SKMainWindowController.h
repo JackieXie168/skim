@@ -354,23 +354,24 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (void)setPdfDocument:(PDFDocument *)document;
 
 - (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
 - (unsigned int)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex;
 - (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(unsigned int)theIndex;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex;
+- (void)removeAllObjectsFromNotes;
 
 - (unsigned int)countOfThumbnails;
 - (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex;
 - (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex;
 - (void)removeObjectFromThumbnailsAtIndex:(unsigned int)theIndex;
+- (void)removeAllObjectsFromThumbnails;
 
 - (NSArray *)snapshots;
-- (void)setSnapshots:(NSArray *)newSnapshots;
 - (unsigned int)countOfSnapshots;
 - (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(unsigned int)theIndex;
 - (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(unsigned int)theIndex;
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex;
+- (void)removeAllObjectsFromSnapshots;
 
 - (NSArray *)searchResults;
 - (void)setSearchResults:(NSArray *)newSearchResults;
