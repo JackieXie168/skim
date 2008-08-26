@@ -247,10 +247,12 @@
             </responds-to>
         </class>
 
-        <command name="open" code="aevtodoc" description="Open a document.">
-            <direct-parameter description="The file(s) to be opened.">
-            <type type="file" list="yes"/>
-            </direct-parameter>
+        <command name="open" code="aevtodoc"
+            description="Open a document.">
+			<direct-parameter description="The file(s) to be opened.">
+				<type type="file"/>
+				<type type="file" list="yes"/>
+			</direct-parameter>
             <parameter name="at TeX line" code="Line" type="integer" optional="yes" hidden="yes"
                 description="Go to a location in the PDF corresponding to the line in a TeX source file.">
                 <cocoa key="line"/>
@@ -259,11 +261,11 @@
 				description="The TeX source file. By default this is derived from the file."> 
 				<cocoa key="source"/> 
 			</parameter>
-              <!--
-                According to TN2106, 'open' should return the resulting document
-                object.  However, the Cocoa implementation does not do this yet.
-              <result type="specifier"/>
-              -->
+			<!--
+				According to TN2106, 'open' should return the resulting document
+				object.  However, the Cocoa implementation does not do this yet.
+			<result type="specifier"/>
+			-->
         </command>
 
         <enumeration name="save options" code="savo">
@@ -600,7 +602,7 @@
 
         <cocoa name="SkimSuite"/>
 
-        <class name="page" plural="pages" code="Page" inherits="item"
+        <class name="page" plural="pages" code="Page"
             description="A page.">
             <cocoa class="PDFPage"/>
             <element type="note"
@@ -649,7 +651,7 @@
 			</responds-to>
         </class>
 
-        <class name="note" plural="notes" code="Note" inherits="item"
+        <class name="note" plural="notes" code="Note"
             description="A note.">
             <cocoa class="PDFAnnotation"/>
             <property name="type" code="NTyp" type="note type" access="r"
@@ -744,7 +746,7 @@
 			</responds-to>
         </class>
 
-        <class name="TeX line" plural="TeX lines" code="Line" inherits="item"
+        <class name="TeX line" plural="TeX lines" code="Line"
             description="A line in a TeX source document.">
             <cocoa class="SKLine"/>
             <property name="index" code="pidx" type="integer" access="r"
