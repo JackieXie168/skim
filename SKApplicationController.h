@@ -43,7 +43,6 @@
 @class RemoteControl;
 
 @interface SKApplicationController : NSObject {
-    NSTimer *currentDocumentsTimer;
     RemoteControl *remoteControl;
     BOOL remoteScrolling;
 }
@@ -61,8 +60,6 @@
 
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
-
-- (void)saveCurrentOpenDocuments:(id)sender;
 
 - (NSArray *)applicationSupportDirectories;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
