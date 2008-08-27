@@ -167,23 +167,30 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     [NSApp setServicesProvider:self];
     
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
     SKVersionNumber *versionNumber = versionString ? [SKVersionNumber versionNumberWithVersionString:versionString] : nil;
-    NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
+    NSString *lastVersionString = [sud stringForKey:SKLastVersionLaunchedKey];
     SKVersionNumber *lastVersionNumber = lastVersionString ? [SKVersionNumber versionNumberWithVersionString:lastVersionString] : nil;
     if(lastVersionNumber == nil || [lastVersionNumber compareToVersionNumber:versionNumber] == NSOrderedAscending) {
         [self showReleaseNotes:nil];
-        [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
+        [sud setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
     
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    RemoteControlContainer *container = [[RemoteControlContainer alloc] initWithDelegate:self];
-    if ([sud boolForKey:SKEnableAppleRemoteKey])
+    RemoteControlContainer *container = nil;
+    if ([sud boolForKey:SKEnableAppleRemoteKey]) {
+        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
         [container instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
-    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey])
+    }
+    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey]) {
+        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
         [container instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
-    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
+    }
+    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey]) {
+        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
         [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
+    }
     remoteControl = container;
 }
 
