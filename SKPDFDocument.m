@@ -1355,6 +1355,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([window isEqual:[[window windowController] window]]) {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
         [self stopCheckingFileUpdates];
+        [self saveRecentDocumentInfo];
     }
 }
 
