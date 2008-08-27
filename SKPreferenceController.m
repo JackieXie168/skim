@@ -163,11 +163,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [[self window] endEditingFor:nil];
 }
 
-- (unsigned)countOfSizes {
+- (unsigned int)countOfSizes {
     return sizeof(SKDefaultFontSizes) / sizeof(float);
 }
 
-- (id)objectInSizesAtIndex:(unsigned)anIndex {
+- (NSNumber *)objectInSizesAtIndex:(unsigned int)anIndex {
     return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
 }
 
