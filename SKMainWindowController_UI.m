@@ -865,7 +865,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)selectNote:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
+    [pdfView scrollAnnotationToVisible:annotation];
     [pdfView setActiveAnnotation:annotation];
+}
+
+- (void)revealNote:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    [pdfView scrollAnnotationToVisible:annotation];
 }
 
 - (void)deselectNote:(id)sender {
@@ -946,6 +952,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
                     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
                 else
                     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
+                [menuItem setRepresentedObject:annotation];
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
                 [menuItem setRepresentedObject:annotation];
             }
         }
