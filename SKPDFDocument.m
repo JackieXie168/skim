@@ -180,6 +180,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         [@"" isEqualToString:searchString] == NO) {
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
 }
 
 - (SKProgressController *)progressController {

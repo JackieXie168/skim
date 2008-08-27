@@ -87,6 +87,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return @"NotesDocument";
 }
 
+- (void)showWindows{
+    [super showWindows];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
+}
+
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [aController setShouldCloseDocument:YES];
     
