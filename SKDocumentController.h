@@ -69,6 +69,10 @@ extern NSString *SKDVIDocumentType;
 extern NSString *SKDocumentSetupAliasKey;
 extern NSString *SKDocumentSetupFileNameKey;
 
+extern NSString *SKDocumentControllerDidAddDocumentNotification;
+extern NSString *SKDocumentControllerDidRemoveDocumentNotification;
+extern NSString *SKDocumentDidShowNotification;
+
 @interface SKDocumentController : NSDocumentController {
     NSArray *customExportTemplateFiles;
 }

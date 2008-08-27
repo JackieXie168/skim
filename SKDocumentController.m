@@ -161,6 +161,10 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 
+NSString *SKDocumentControllerDidAddDocumentNotification = @"SKDocumentControllerDidAddDocumentNotification";
+NSString *SKDocumentControllerDidRemoveDocumentNotification = @"SKDocumentControllerDidRemoveDocumentNotification";
+NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
+
 @implementation SKDocumentController
 
 + (void)initialize {
@@ -214,6 +218,18 @@ NSString *SKDocumentSetupFileNameKey = @"fileName";
         type = SKPDFDocumentType;
     }
 	return type;
+}
+
+- (void)addDocument:(NSDocument *)document {
+    [super addDocument:document];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidAddDocumentNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
+}
+
+- (void)removeDocument:(NSDocument *)document {
+    [super removeDocument:[[document retain] autorelease]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidRemoveDocumentNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
 }
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {

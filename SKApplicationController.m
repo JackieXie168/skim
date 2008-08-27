@@ -138,6 +138,11 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
+- (void)registerCurrentDocuments:(NSNotification *)aNotification {
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
+    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+}
+
 #pragma mark NSApplication delegate
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
@@ -192,6 +197,13 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
         [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
     }
     remoteControl = container;
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
+                             name:SKDocumentDidShowNotification object:nil];
+    [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
+                             name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
+    [self registerCurrentDocuments:nil];
 }
 
 // we don't want to reopen last open files when re-activating the app
@@ -208,8 +220,10 @@ static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
-    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+    [self registerCurrentDocuments:aNotification];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:SKDocumentDidShowNotification object:nil];
+    [nc removeObserver:self name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
