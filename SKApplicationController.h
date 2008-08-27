@@ -61,6 +61,8 @@
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
 
+- (void)doSpotlightImportIfNeeded;
+
 - (NSArray *)applicationSupportDirectories;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath;
