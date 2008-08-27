@@ -61,8 +61,8 @@
 
 + (id)sharedPrefenceController;
 
-- (unsigned)countOfSizes;
-- (id)objectInSizesAtIndex:(unsigned)anIndex;
+- (unsigned int)countOfSizes;
+- (NSNumber *)objectInSizesAtIndex:(unsigned int)anIndex;
 
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
