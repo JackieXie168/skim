@@ -144,6 +144,8 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
 
+BOOL SKUsesLogicalPageNumbering = YES;
+
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
 @end
