@@ -211,6 +211,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         segmentedControlHeight = 25.0;
         segmentedControlOffset = 0.0;
     }
+
+    SKUsesLogicalPageNumbering = [[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey];
 }
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
@@ -3363,6 +3365,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
         } else if ([key isEqualToString:SKLogicalPageNumberingKey]) {
+            SKUsesLogicalPageNumbering = [[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey];
             [self updatePageLabelsAndOutline];
         }
         
