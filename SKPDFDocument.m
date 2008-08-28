@@ -131,7 +131,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 }
 
 - (void)makeWindowControllers{
-    SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] initWithWindowNibName:@"MainWindow"] autorelease];
+    SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] init] autorelease];
     [mainWindowController setShouldCloseDocument:YES];
     [self addWindowController:mainWindowController];
 }

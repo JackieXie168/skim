@@ -224,10 +224,8 @@ BOOL SKUsesLogicalPageNumbering = NO;
         return [super automaticallyNotifiesObserversForKey:key];
 }
 
-- (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
-    self = [super initWithWindowNibName:windowNibName owner:owner];
-    if(self){
-        [self setShouldCloseDocument:YES];
+- (id)init {
+    if (self = [super initWithWindowNibName:@"MainWindow"]) {
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
         findPanelFind = NO;
