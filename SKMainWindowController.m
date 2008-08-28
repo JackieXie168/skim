@@ -92,6 +92,7 @@
 #import "SKCFCallBacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSMenu_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
 #import "SKUnarchiveFromDataArrayTransformer.h"
 
@@ -107,6 +108,7 @@ NSString *SKMainWindowThumbnailsKey = @"thumbnails";
 NSString *SKMainWindowSnapshotsKey = @"snapshots";
 
 NSString *SKMainWindowPageColumnIdentifer = @"page";
+NSString *SKMainWindowNoteColumnIdentifer = @"note";
 
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
@@ -338,6 +340,18 @@ BOOL SKUsesLogicalPageNumbering = NO;
     [leftSideContentView addSubview:leftSideView];
     [rightSideView setFrame:[rightSideContentView bounds]];
     [rightSideContentView addSubview:rightSideView];
+    
+    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    [menu addItemWithTitle:NSLocalizedString(@"Whole Words Only", @"Menu item title") action:@selector(toggleWholeWordSearch:) target:self];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
+    [[searchField cell] setSearchMenuTemplate:menu];
+    [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
+    [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
+    
+    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[findTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     
