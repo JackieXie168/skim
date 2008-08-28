@@ -62,6 +62,10 @@ static NSString *SKBookmarksDeleteToolbarItemIdentifier = @"SKBookmarksDeleteToo
 
 static NSString *SKBookmarksWindowFrameAutosaveName = @"SKBookmarksWindow";
 
+static NSString *SKBookmarksWindowLabelColumnIdentifer = @"label";
+static NSString *SKBookmarksWindowFileColumnIdentifer = @"file";
+static NSString *SKBookmarksWindowPageColumnIdentifer = @"page";
+
 static NSString *SKMaximumDocumentPageHistoryCountKey = @"SKMaximumDocumentPageHistoryCount";
 
 static NSString *SKBookmarkControllerBookmarksKey = @"bookmarks";
@@ -178,6 +182,12 @@ static SKBookmarkController *sharedBookmarkController = nil;
     [statusBar retain];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowBookmarkStatusBarKey] == NO)
         [self toggleStatusBar:nil];
+    
+    [[self window] setTitle:NSLocalizedString(@"Bookmarks", @"window title")];
+    
+    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowLabelColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Label", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowFileColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setDataSource:self];
