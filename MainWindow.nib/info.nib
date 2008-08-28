@@ -3,23 +3,22 @@
 <plist version="1.0">
 <dict>
 	<key>IBFramework Version</key>
-	<string>670</string>
+	<string>672</string>
 	<key>IBLastKnownRelativeProjectPath</key>
-	<string>../Skim.xcodeproj</string>
+	<string>Skim.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>513</integer>
-		<integer>168</integer>
+		<integer>257</integer>
+		<integer>514</integer>
 		<integer>687</integer>
+		<integer>830</integer>
+		<integer>798</integer>
+		<integer>168</integer>
+		<integer>226</integer>
 		<integer>315</integer>
 		<integer>735</integer>
-		<integer>830</integer>
-		<integer>225</integer>
-		<integer>796</integer>
-		<integer>942</integer>
-		<integer>257</integer>
 		<integer>503</integer>
 	</array>
 	<key>IBSystem Version</key>
