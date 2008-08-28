@@ -56,6 +56,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKTocOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKMainWindow</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -63,9 +71,21 @@
 			<string>NSWindow</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addBookmark</key>
+				<string>id</string>
+				<key>addSessionBookmark</key>
+				<string>id</string>
+				<key>addSetupBookmark</key>
 				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>
@@ -407,22 +427,6 @@
 			<string>NSResponder</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>SKTocOutlineView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKOutlineView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -445,19 +449,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSnapshotTableView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKThumbnailTableView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKSplitView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSSplitView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKSnapshotTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKThumbnailTableView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -506,14 +510,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKAnnotationTypeImageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -522,11 +518,11 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>BDSKCollapsibleView</string>
+			<string>NSSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
-			<string>BDSKContainerView</string>
+			<string>NSControl</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -561,6 +557,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>BDSKCollapsibleView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>BDSKContainerView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKSnapshotPageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -576,14 +580,6 @@
 			<string>NSResponder</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>NSMenuItem</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>orderFrontFontPanel</key>
@@ -597,6 +593,19 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>BDSKContainerView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>contentView</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -646,19 +655,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>PDFView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>BDSKContainerView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>contentView</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
