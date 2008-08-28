@@ -49,6 +49,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKCFCallBacks.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "SKMainWindowController.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -330,7 +331,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
 
 - (NSString *)displayLabel {
     NSString *label = nil;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey] == NO)
+    if (SKUsesLogicalPageNumbering == NO)
         label = [self label];
     return label ?: [self logicalLabel];
 }

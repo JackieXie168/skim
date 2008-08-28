@@ -83,6 +83,8 @@ extern NSString *SKRightSidePaneWidthKey;
 
 extern NSString *SKMainWindowPageColumnIdentifer;
 
+extern BOOL SKUsesLogicalPageNumbering;
+
 @class PDFAnnotation, PDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
