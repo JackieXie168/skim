@@ -108,7 +108,7 @@ NSString *SKMainWindowThumbnailsKey = @"thumbnails";
 NSString *SKMainWindowSnapshotsKey = @"snapshots";
 
 NSString *SKMainWindowPageColumnIdentifer = @"page";
-NSString *SKMainWindowNoteColumnIdentifer = @"note";
+static NSString *SKMainWindowNoteColumnIdentifer = @"note";
 
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
 static NSString *SKMainWindowResultsColumnIdentifer = @"results";
