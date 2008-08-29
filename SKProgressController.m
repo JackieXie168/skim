@@ -72,71 +72,59 @@
 }
 
 - (void)setIndeterminate:(BOOL)flag {
-    [self window];
-    [progressBar setIndeterminate:flag];
+    [[self progressBar] setIndeterminate:flag];
 }
 
 - (double)minValue {
-    [self window];
-    return [progressBar minValue];
+    return [[self progressBar] minValue];
 }
 
 - (void)setMinValue:(double)newMinimum {
-    [self window];
-    [progressBar setMinValue:newMinimum];
+    [[self progressBar] setMinValue:newMinimum];
 }
 
 - (double)maxValue {
-    [self window];
-    return [progressBar maxValue];
+    return [[self progressBar] maxValue];
 }
 
 - (void)setMaxValue:(double)newMaximum {
-    [self window];
-    [progressBar setMaxValue:newMaximum];
+    [[self progressBar] setMaxValue:newMaximum];
 }
 
 - (double)doubleValue {
-    [self window];
-    return [progressBar doubleValue];
+    return [[self progressBar] doubleValue];
 }
 
 - (void)setDoubleValue:(double)doubleValue {
-    [self window];
-    [progressBar setDoubleValue:doubleValue];
-    [progressBar displayIfNeeded];
+    [[self progressBar] setDoubleValue:doubleValue];
+    [[self progressBar] displayIfNeeded];
 }
 
 - (void)incrementBy:(double)delta {
-    [self window];
-    [progressBar incrementBy:delta];
-    [progressBar displayIfNeeded];
+    [[self progressBar] incrementBy:delta];
+    [[self progressBar] displayIfNeeded];
 }
 
 - (void)beginSheetModalForWindow:(NSWindow *)window {
-    [self window];
-    [progressBar startAnimation:self];
+    [[self progressBar] startAnimation:self];
     [(SKApplication *)NSApp setUserAttentionDisabled:YES];
     [NSApp beginSheet:[self window] modalForWindow:window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     [(SKApplication *)NSApp setUserAttentionDisabled:NO];
 }
 
 - (void)endSheet {
-    [self window];
-    [progressBar stopAnimation:self];
+    [[self progressBar] stopAnimation:self];
     [NSApp endSheet:[self window]];
     [[self window] orderOut:self];
 }
 
 - (void)show {
-    [self window];
-    [progressBar startAnimation:self];
+    [[self progressBar] startAnimation:self];
     [[self window] orderFront:self];
 }
 
 - (void)hide {
-    [self window];
-    [progressBar stopAnimation:self];
+    [[self progressBar] stopAnimation:self];
     [[self window] orderOut:self];
 }
 
