@@ -1269,13 +1269,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     } else if (action == @selector(doGoToLastPage:)) {
         return [pdfView canGoToLastPage];
     } else if (action == @selector(allGoToNextPage:)) {
-        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToNextPage"] containsObject:[NSNumber numberWithBool:NO]];
+        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToNextPage"] boolValue];
     } else if (action == @selector(allGoToPreviousPage:)) {
-        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToPreviousPage"] containsObject:[NSNumber numberWithBool:NO]];
+        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToPreviousPage"] boolValue];
     } else if (action == @selector(allGoToFirstPage:)) {
-        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToFirstPage"] containsObject:[NSNumber numberWithBool:NO]];
+        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToFirstPage"] boolValue];
     } else if (action == @selector(allGoToLastPage:)) {
-        return NO == [[NSApp valueForKeyPath:@"orderedDocuments.pdfView.canGoToLastPage"] containsObject:[NSNumber numberWithBool:NO]];
+        return [[NSApp valueForKeyPath:@"orderedDocuments.@min.pdfView.canGoToLastPage"] boolValue];
     } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];
     } else if (action == @selector(doGoForward:)) {
