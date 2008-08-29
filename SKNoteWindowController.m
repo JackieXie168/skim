@@ -100,7 +100,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote {
-    if (self = [super init]) {
+    if (self = [super initWithWindowNibName:@"NoteWindow"]) {
         note = [aNote retain];
         
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
@@ -125,10 +125,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [textViewUndoManager release];
     [note release];
     [super dealloc];
-}
-
-- (NSString *)windowNibName {
-    return @"NoteWindow";
 }
 
 - (void)updateStatusMessage {
