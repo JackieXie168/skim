@@ -37,6 +37,7 @@
  */
 
 #import "SKApplicationController.h"
+#import "SKApplication.h"
 #import "SKLineInspector.h"
 #import "SKNotesPanelController.h"
 #import "SKPreferenceController.h"
@@ -143,7 +144,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 }
 
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[(SKApplication *)NSApp allOrderedDocuments] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
@@ -153,7 +154,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
-        NSEnumerator *fileEnum = [files objectEnumerator];
+        NSEnumerator *fileEnum = [files reverseObjectEnumerator];
         NSDictionary *dict;
         NSError *error;
         
