@@ -21,6 +21,7 @@ enum {
     SKReleaseVersionType,
     SKReleaseCandidateVersionType,
     SKBetaVersionType,
+    SKDevelopmentVersionType,
     SKAlphaVersionType,
 };
 
@@ -47,6 +48,7 @@ enum {
 - (int)releaseType;
 - (BOOL)isRelease;
 - (BOOL)isReleaseCandidate;
+- (BOOL)isDevelopment;
 - (BOOL)isBeta;
 - (BOOL)isAlpha;
 
