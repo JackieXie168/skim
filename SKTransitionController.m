@@ -137,7 +137,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (id)initWithView:(NSView *)aView {
-    if (self = [super init]) {
+    if (self = [super initWithWindowNibName:@"TransitionSheet"]) {
         view = aView; // don't retain as it may retain us
         transitionStyle = SKNoTransition;
         duration = 1.0;
@@ -151,8 +151,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     [filters release];
     [super dealloc];
 }
-
-- (NSString *)windowNibName { return @"TransitionSheet"; }
 
 - (void)windowDidLoad {
     NSArray *filterNames = [[self class] transitionFilterNames];
