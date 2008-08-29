@@ -219,6 +219,10 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 #pragma mark Scripting support
 
+- (NSArray *)allOrderedDocuments {
+    return [super orderedDocuments];
+}
+
 - (NSArray *)orderedDocuments {
     NSMutableArray *orderedDocuments = [[[super orderedDocuments] mutableCopy] autorelease];
     int i = [orderedDocuments count];
