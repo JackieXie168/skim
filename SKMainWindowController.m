@@ -3452,7 +3452,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetHoverRects];
             
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey]) {
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
                 [noteArrayController rearrangeObjects];
                 [noteOutlineView reloadData];
             }
