@@ -59,12 +59,11 @@
         [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
 }
 
-- (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
+- (void)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
     id item = [self itemAtRow:row];
     NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
 	BOOL keepGoing = YES;
-    BOOL dragged = NO;
 	
     [[NSCursor resizeUpDownCursor] push];
     
@@ -79,8 +78,6 @@
                 [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
                 [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
                 
-                dragged = YES;
-                
                 break;
 			}
             
@@ -93,20 +90,20 @@
         }
     }
     [NSCursor pop];
-    
-    return dragged;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
+    if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         int row = [self rowAtPoint:mouseLoc];
         
         if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
-            NSRect ignored, rect = [self rectOfRow:row];
-            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
-            if (NSPointInRect(mouseLoc, rect) && [self resizeRow:row withEvent:theEvent])
+            NSRect ignored, rect;
+            NSDivideRect([self rectOfRow:row], &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            if (NSPointInRect(mouseLoc, rect) && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+                [self resizeRow:row withEvent:theEvent];
                 return;
+            }
         }
     }
     [super mouseDown:theEvent];
