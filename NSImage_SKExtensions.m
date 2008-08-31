@@ -175,6 +175,8 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
+    [shadow1 release];
+    
     return image;
 }
 
