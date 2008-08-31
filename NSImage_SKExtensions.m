@@ -1100,6 +1100,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [redShadow setShadowOffset:NSZeroSize];
     [redShadow setShadowColor:[NSColor colorWithCalibratedRed:0.7 green:0.0 blue:0.0 alpha:1.0]];
     [redShadow set];
+    [redShadow release];
     [fgColor setFill];
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(8.5, 5.0)];
