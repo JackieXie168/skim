@@ -89,6 +89,7 @@ NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
 }
 
 - (void)dealloc {
+    [string release];
     [textStorage release];
     [text release];
     [image release];
