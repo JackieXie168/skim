@@ -72,7 +72,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 @implementation SKNotesDocument
 
 - (id)init {
-    if (self = [super initWithWindowNibName:@"NotesDocument"]) {
+    if (self = [super init]) {
         notes = [[NSMutableArray alloc] initWithCapacity:10];
     }
     return self;
@@ -81,6 +81,10 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (void)dealloc {
     [notes release];
     [super dealloc];
+}
+
+- (NSString *)windowNibname {
+    return @"NotesDocument";
 }
 
 - (void)showWindows{
