@@ -196,7 +196,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
         [container instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
     }
     if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey]) {
-        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
         [container instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
     }
     if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey]) {
