@@ -41,6 +41,10 @@
 
 @implementation NSMenu (SKExtensions)
 
++ (NSMenu *)menu {
+    return [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+}
+
 - (NSMenuItem *)supermenuItem {
     NSMenu *supermenu = [self supermenu];
     NSInteger idx = [supermenu indexOfItemWithSubmenu:self];
