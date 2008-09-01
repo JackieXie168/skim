@@ -190,17 +190,16 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 	
     [self doSpotlightImportIfNeeded];
     
-    if ([sud boolForKey:SKEnableAppleRemoteKey]) {
-        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+    remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+    if ([sud boolForKey:SKEnableAppleRemoteKey])
         [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
-    }
-    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey]) {
-        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+    if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey])
         [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
-    }
-    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey]) {
-        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+    if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey])
         [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
+    if ([remoteControl count] == 0) {
+        [remoteControl release];
+        remoteControl = nil;
     }
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
