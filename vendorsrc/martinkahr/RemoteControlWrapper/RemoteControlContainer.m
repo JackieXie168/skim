@@ -27,12 +27,14 @@
 
 #import "RemoteControlContainer.h"
 
+NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObservationContext";
 
 @implementation RemoteControlContainer
 
 - (id) initWithDelegate: (id) _remoteControlDelegate {
 	if (self = [super initWithDelegate:_remoteControlDelegate]) {
 		remoteControls = [[NSMutableArray alloc] init];
+		listeningToRemote = NO;
 	}
 	return self;
 }
@@ -47,13 +49,27 @@
 	[super dealloc];
 }
 
+- (void) reset {
+	[self willChangeValueForKey:@"listeningToRemote"];
+    listeningToRemote = NO;
+    unsigned int i;
+	for(i=0; i < [remoteControls count]; i++) {
+		if ([[remoteControls objectAtIndex: i] isListeningToRemote]) {
+			listeningToRemote = YES;
+			break;
+		}
+	}
+	[self didChangeValueForKey:@"listeningToRemote"];
+}
+
 - (BOOL) instantiateAndAddRemoteControlDeviceWithClass: (Class) clazz {
 	RemoteControl* remoteControl = [[clazz alloc] initWithDelegate: delegate];
 	if (remoteControl) {
 		[remoteControls addObject: remoteControl];
-		[remoteControl addObserver: self forKeyPath:@"listeningToRemote" options:NSKeyValueObservingOptionNew context:nil];
+		[remoteControl addObserver: self forKeyPath:@"listeningToRemote" options:0 context:RemoteControlContainerObservationContext];
         [remoteControl release];
-		return YES;		
+		[self reset];
+		return YES;
 	}
 	return NO;	
 }
@@ -62,13 +78,12 @@
 	return [remoteControls count];
 }
 
-- (void) reset {
-	[self willChangeValueForKey:@"listeningToRemote"];
-	[self didChangeValueForKey:@"listeningToRemote"];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	[self reset];
+	if (context == RemoteControlContainerObservationContext) {
+		[self reset];
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
 }
 
 - (void) setListeningToRemote: (BOOL) value {
@@ -79,13 +94,7 @@
 	if (value && value != [self isListeningToRemote]) [self performSelector:@selector(reset) withObject:nil afterDelay:0.01];
 }
 - (BOOL) isListeningToRemote {
-	unsigned int i;
-	for(i=0; i < [remoteControls count]; i++) {
-		if ([[remoteControls objectAtIndex: i] isListeningToRemote]) {
-			return YES;
-		}
-	}
-	return NO;
+	return listeningToRemote;
 }
 
 - (IBAction) startListening: (id) sender {
