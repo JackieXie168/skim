@@ -60,6 +60,17 @@
     [self setMaxSize:[view bounds].size];
 }
 
+- (void)setSegmentedControl:(NSSegmentedControl *)segmentedControl {
+    NSRect frame = [segmentedControl frame];
+    if ([segmentedControl respondsToSelector:@selector(setSegmentStyle:)]) {
+        [segmentedControl setSegmentStyle:NSSegmentStyleCapsule];
+        frame.size.height = 23.0;
+    } else {
+        frame.size.height = 25.0;
+    }
+    [segmentedControl setFrame:frame];
+    [self setViewWithSizes:segmentedControl];
+}
 
 - (void)setImageNamed:(NSString *)name {
     [self setImage:[NSImage imageNamed:name]];

@@ -43,6 +43,7 @@
 
 - (void)setLabels:(NSString *)label;
 - (void)setViewWithSizes:(NSView *)view;
+- (void)setSegmentedControl:(NSSegmentedControl *)segmentedControl;
 - (void)setImageNamed:(NSString *)name;
 
 @end

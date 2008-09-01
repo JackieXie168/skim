@@ -41,17 +41,6 @@
 
 @implementation NSSegmentedControl (SKExtensions)
 
-- (void)makeCapsule {
-    NSRect frame = [self frame];
-    if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
-        [self setSegmentStyle:NSSegmentStyleCapsule];
-        frame.size.height = 23.0;
-    } else {
-        frame.size.height = 25.0;
-    }
-    [self setFrame:frame];
-}
-
 - (void)makeTexturedRounded {
     NSRect frame = [self frame];
     frame.size.height = 25.0;

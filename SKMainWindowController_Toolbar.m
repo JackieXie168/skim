@@ -135,8 +135,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Previous/Next", @"Tool tip message")];
             [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:0];
             [previousNextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:1];
-            [previousNextPageButton makeCapsule];
-            [item setViewWithSizes:previousNextPageButton];
+            [item setSegmentedControl:previousNextPageButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPreviousItemIdentifier]) {
@@ -149,8 +148,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
             [previousPageButton setToolTip:NSLocalizedString(@"Go To First page", @"Tool tip message") forSegment:0];
             [previousPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
-            [previousPageButton makeCapsule];
-            [item setViewWithSizes:previousPageButton];
+            [item setSegmentedControl:previousPageButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNextItemIdentifier]) {
@@ -164,8 +162,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
             [nextPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:0];
             [nextPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:1];
-            [nextPageButton makeCapsule];
-            [item setViewWithSizes:nextPageButton];
+            [item setSegmentedControl:nextPageButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPreviousNextFirstLastItemIdentifier]) {
@@ -183,8 +180,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message") forSegment:1];
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message") forSegment:2];
             [previousNextFirstLastPageButton setToolTip:NSLocalizedString(@"Go To Last page", @"Tool tip message") forSegment:3];
-            [previousNextFirstLastPageButton makeCapsule];
-            [item setViewWithSizes:previousNextFirstLastPageButton];
+            [item setSegmentedControl:previousNextFirstLastPageButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarBackForwardItemIdentifier]) {
@@ -198,8 +194,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
             [backForwardButton setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
             [backForwardButton setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
-            [backForwardButton makeCapsule];
-            [item setViewWithSizes:backForwardButton];
+            [item setSegmentedControl:backForwardButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPageNumberItemIdentifier]) {
@@ -226,8 +221,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
-            [zoomActualButton makeCapsule];
-            [item setViewWithSizes:zoomActualButton];
+            [item setSegmentedControl:zoomActualButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
@@ -236,8 +230,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
-            [zoomFitButton makeCapsule];
-            [item setViewWithSizes:zoomFitButton];
+            [item setSegmentedControl:zoomFitButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
@@ -246,8 +239,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Zoom To Selection", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Zoom To Selection", @"Tool tip message")];
-            [zoomSelectionButton makeCapsule];
-            [item setViewWithSizes:zoomSelectionButton];
+            [item setSegmentedControl:zoomSelectionButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomInOutItemIdentifier]) {
@@ -261,8 +253,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
             [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
             [zoomInOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:1];
-            [zoomInOutButton makeCapsule];
-            [item setViewWithSizes:zoomInOutButton];
+            [item setSegmentedControl:zoomInOutButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomInActualOutItemIdentifier]) {
@@ -278,8 +269,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message") forSegment:0];
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message") forSegment:1];
             [zoomInActualOutButton setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message") forSegment:2];
-            [zoomInActualOutButton makeCapsule];
-            [item setViewWithSizes:zoomInActualOutButton];
+            [item setSegmentedControl:zoomInActualOutButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarRotateRightItemIdentifier]) {
@@ -288,8 +278,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
-            [rotateRightButton makeCapsule];
-            [item setViewWithSizes:rotateRightButton];
+            [item setSegmentedControl:rotateRightButton];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarRotateLeftItemIdentifier]) {
             
@@ -297,8 +286,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Left", @"Tool tip message")];
-            [rotateLeftButton makeCapsule];
-            [item setViewWithSizes:rotateLeftButton];
+            [item setSegmentedControl:rotateLeftButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarRotateLeftRightItemIdentifier]) {
@@ -307,8 +295,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Rotate", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Rotate Left or Right", @"Tool tip message")];
-            [rotateLeftRightButton makeCapsule];
-            [item setViewWithSizes:rotateLeftRightButton];
+            [item setSegmentedControl:rotateLeftRightButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
@@ -317,8 +304,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Crop", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Crop", @"Tool tip message")];
-            [cropButton makeCapsule];
-            [item setViewWithSizes:cropButton];
+            [item setSegmentedControl:cropButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
@@ -327,8 +313,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
-            [fullScreenButton makeCapsule];
-            [item setViewWithSizes:fullScreenButton];
+            [item setSegmentedControl:fullScreenButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
@@ -337,8 +322,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Presentation", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
-            [presentationButton makeCapsule];
-            [item setViewWithSizes:presentationButton];
+            [item setSegmentedControl:presentationButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier]) {
@@ -355,8 +339,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
-            [textNoteButton makeCapsule];
-            [item setViewWithSizes:textNoteButton];
+            [item setSegmentedControl:textNoteButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier]) {
@@ -373,8 +356,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Add Shape", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Circle or Box", @"Tool tip message")];
-            [circleNoteButton makeCapsule];
-            [item setViewWithSizes:circleNoteButton];
+            [item setSegmentedControl:circleNoteButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
@@ -393,8 +375,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Markup", @"Tool tip message")];
-            [markupNoteButton makeCapsule];
-            [item setViewWithSizes:markupNoteButton];
+            [item setSegmentedControl:markupNoteButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
@@ -404,8 +385,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
             [item setTag:SKLineNote];
-            [lineNoteButton makeCapsule];
-            [item setViewWithSizes:lineNoteButton];
+            [item setSegmentedControl:lineNoteButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier]) {
@@ -431,8 +411,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [noteButton setToolTip:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
             [noteButton setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
             [noteButton setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
-            [noteButton makeCapsule];
-            [item setViewWithSizes:noteButton];
+            [item setSegmentedControl:noteButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarToolModeItemIdentifier]) {
@@ -471,8 +450,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [toolModeButton setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
             [toolModeButton setToolTip:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
             [toolModeButton setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
-            [toolModeButton makeCapsule];
-            [item setViewWithSizes:toolModeButton];
+            [item setSegmentedControl:toolModeButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarSingleTwoUpItemIdentifier]) {
@@ -486,8 +464,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Single/Two Pages", @"Tool tip message")];
             [singleTwoUpButton setToolTip:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:0];
             [singleTwoUpButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:1];
-            [singleTwoUpButton makeCapsule];
-            [item setViewWithSizes:singleTwoUpButton];
+            [item setSegmentedControl:singleTwoUpButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarContinuousItemIdentifier]) {
@@ -501,8 +478,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message")];
             [continuousButton setToolTip:NSLocalizedString(@"Non Continuous", @"Tool tip message") forSegment:0];
             [continuousButton setToolTip:NSLocalizedString(@"Continuous", @"Tool tip message") forSegment:1];
-            [continuousButton makeCapsule];
-            [item setViewWithSizes:continuousButton];
+            [item setSegmentedControl:continuousButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarDisplayModeItemIdentifier]) {
@@ -520,8 +496,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [displayModeButton setToolTip:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
             [displayModeButton setToolTip:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
             [displayModeButton setToolTip:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
-            [displayModeButton makeCapsule];
-            [item setViewWithSizes:displayModeButton];
+            [item setSegmentedControl:displayModeButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier]) {
@@ -533,8 +508,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Display Box", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Display Box", @"Tool tip message")];
-            [displayBoxButton makeCapsule];
-            [item setViewWithSizes:displayBoxButton];
+            [item setSegmentedControl:displayBoxButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
@@ -560,8 +534,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
-            [colorsButton makeCapsule];
-            [item setViewWithSizes:colorsButton];
+            [item setSegmentedControl:colorsButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarFontsItemIdentifier]) {
@@ -571,10 +544,9 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setLabels:NSLocalizedString(@"Fonts", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
             [item setImageNamed:@"ToolbarFonts"];
-            [fontsButton makeCapsule];
+            [item setSegmentedControl:fontsButton];
             if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
                 [fontsButton setImage:[NSImage imageNamed:@"ToolbarFontsBlack"] forSegment:0];
-            [item setViewWithSizes:fontsButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarLinesItemIdentifier]) {
@@ -583,8 +555,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Lines", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Lines", @"Tool tip message")];
-            [linesButton makeCapsule];
-            [item setViewWithSizes:linesButton];
+            [item setSegmentedControl:linesButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
@@ -593,8 +564,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Info", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
-            [infoButton makeCapsule];
-            [item setViewWithSizes:infoButton];
+            [item setSegmentedControl:infoButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarContentsPaneItemIdentifier]) {
@@ -603,8 +573,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
-            [leftPaneButton makeCapsule];
-            [item setViewWithSizes:leftPaneButton];
+            [item setSegmentedControl:leftPaneButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNotesPaneItemIdentifier]) {
@@ -613,8 +582,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
-            [rightPaneButton makeCapsule];
-            [item setViewWithSizes:rightPaneButton];
+            [item setSegmentedControl:rightPaneButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPrintItemIdentifier]) {
@@ -623,8 +591,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Print", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Print Document", @"Tool tip message")];
-            [printButton makeCapsule];
-            [item setViewWithSizes:printButton];
+            [item setSegmentedControl:printButton];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarCustomizeItemIdentifier]) {
@@ -633,8 +600,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
             [item setLabels:NSLocalizedString(@"Customize", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Customize Toolbar", @"Tool tip message")];
-            [customizeButton makeCapsule];
-            [item setViewWithSizes:customizeButton];
+            [item setSegmentedControl:customizeButton];
             [item setMenuFormRepresentation:menuItem];
             
         }
