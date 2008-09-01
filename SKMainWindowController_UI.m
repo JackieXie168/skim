@@ -585,9 +585,6 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             return [(PDFOutline *)item label];
         }else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]){
             return [[[(PDFOutline *)item destination] page] displayLabel];
-        }else{
-            [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
-            return nil;
         }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
