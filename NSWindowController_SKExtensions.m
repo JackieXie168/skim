@@ -59,4 +59,9 @@
     [nextWindowLocations setObject:[NSValue valueWithPoint:point] forKey:name];
 }
 
+
+- (BOOL)isNoteWindowController { return NO; }
+
+- (BOOL)isSnapshotWindowController { return NO; }
+
 @end

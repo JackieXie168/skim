@@ -110,6 +110,8 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     return [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @"Window title format: [filename] - Page [number]"), displayName, EM_DASH_CHARACTER, [self pageLabel]];
 }
 
+- (BOOL)isSnapshotWindowController { return YES; }
+
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [pdfView convertRect:rect fromPage:page];
     float scale = [pdfView scaleFactor];

@@ -46,6 +46,7 @@
 #import "SKStatusBar.h"
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
+#import "SKWindowController_SKExtensions.h"
 #import "SKSideWindow.h"
 #import "SKProgressController.h"
 #import "SKAnnotationTypeImageCell.h"
@@ -1538,7 +1539,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
         
         while (wc = [wcEnum nextObject]) {
-            if ([wc isKindOfClass:[SKNoteWindowController class]] && [(SKNoteWindowController *)wc note] == annotation) {
+            if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation) {
                 [wc close];
                 break;
             }
