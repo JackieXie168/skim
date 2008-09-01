@@ -233,7 +233,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 }
 
 - (NSDictionary *)info {
-    return info;
+    return [[info copy] autorelease];
 }
 
 - (void)setInfo:(NSDictionary *)newInfo {
