@@ -41,7 +41,6 @@
 
 @interface NSSegmentedControl (SKExtensions)
 
-- (void)makeCapsule;
 - (void)makeTexturedRounded;
 - (NSInteger)selectedTag;
 - (void)setEnabledForAllSegments:(BOOL)enabled;
