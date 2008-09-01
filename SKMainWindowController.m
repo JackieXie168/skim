@@ -264,7 +264,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)dealloc {
     [self stopObservingNotes:[self notes]];
     [undoGroupOldPropertiesPerNote release];
-    [colorSwatch unbind:SKColorSwatchColorsKey];
+    @try { [colorSwatch unbind:SKColorSwatchColorsKey]; }
+    @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [(id)temporaryAnnotations release];
