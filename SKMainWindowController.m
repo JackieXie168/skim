@@ -146,7 +146,6 @@ static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 static NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";
 static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
 
-BOOL SKUsesLogicalPageNumbering = NO;
 
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
@@ -216,7 +215,7 @@ BOOL SKUsesLogicalPageNumbering = NO;
         segmentedControlOffset = 0.0;
     }
 
-    SKUsesLogicalPageNumbering = [[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey];
+    [PDFPage setUsesLogicalPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey]];
 }
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
@@ -3379,7 +3378,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
         } else if ([key isEqualToString:SKLogicalPageNumberingKey]) {
-            SKUsesLogicalPageNumbering = [[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey];
+            [PDFPage setUsesLogicalPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey]];
             [self updatePageLabelsAndOutline];
         }
         

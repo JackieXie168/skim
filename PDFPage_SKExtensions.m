@@ -79,6 +79,16 @@ static void (*originalDealloc)(id, SEL) = NULL;
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 
+static BOOL usesLogicalPageNumbering = NO;
+
++ (BOOL)usesLogicalPageNumbering {
+    return usesLogicalPageNumbering;
+}
+
++ (void)setUsesLogicalPageNumbering:(BOOL)flag {
+    usesLogicalPageNumbering = flag;
+}
+
 // mainly useful for drawing the box in a PDFView while debugging
 - (NSRect)foregroundBox {
     
@@ -331,7 +341,7 @@ static void (*originalDealloc)(id, SEL) = NULL;
 
 - (NSString *)displayLabel {
     NSString *label = nil;
-    if (SKUsesLogicalPageNumbering == NO)
+    if ([[self class] usesLogicalPageNumbering] == NO)
         label = [self label];
     return label ?: [self logicalLabel];
 }
