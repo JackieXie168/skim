@@ -335,11 +335,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 #pragma mark Accessors
 
 - (NSArray *)notes {
-    return notes;
-}
-
-- (void)setNotes:(NSArray *)newNotes {
-    [notes setArray:notes];
+    return [[notes copy] autorelease];
 }
 
 - (unsigned int)countOfNotes {

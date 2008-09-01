@@ -51,7 +51,6 @@
 - (IBAction)openPDF:(id)sender;
 
 - (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
 - (unsigned int)countOfNotes;
 - (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;
 - (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)index;
