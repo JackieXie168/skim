@@ -40,10 +40,10 @@
 
 @class SUUpdater, SKLine, SKDownloadController;
 
-@class RemoteControl;
+@class RemoteControlContainer;
 
 @interface SKApplicationController : NSObject {
-    RemoteControl *remoteControl;
+    RemoteControlContainer *remoteControl;
     BOOL remoteScrolling;
 }
 

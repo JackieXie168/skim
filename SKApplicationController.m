@@ -190,20 +190,18 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 	
     [self doSpotlightImportIfNeeded];
     
-    RemoteControlContainer *container = nil;
     if ([sud boolForKey:SKEnableAppleRemoteKey]) {
-        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
-        [container instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
+        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[AppleRemote class]];	
     }
     if ([sud boolForKey:SKEnableKeyspanFrontRowControlKey]) {
-        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
-        [container instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
+        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[KeyspanFrontRowControl class]];
     }
     if ([sud boolForKey:SKEnableKeyboardRemoteSimulationKey]) {
-        if (container == nil) container = [[RemoteControlContainer alloc] initWithDelegate:self];
-        [container instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
+        if (remoteControl == nil) remoteControl = [[RemoteControlContainer alloc] initWithDelegate:self];
+        [remoteControl instantiateAndAddRemoteControlDeviceWithClass:[GlobalKeyboardDevice class]];	
     }
-    remoteControl = container;
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
