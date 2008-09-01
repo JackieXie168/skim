@@ -68,7 +68,10 @@
 }
 
 - (id) initWithDelegate: (id) _remoteControlDelegate {	
-	if ([[self class] isRemoteAvailable] == NO) return nil;
+	if ([[self class] isRemoteAvailable] == NO) {
+		[self release];
+		return nil;
+	}
 	
 	if ( self = [super initWithDelegate: _remoteControlDelegate] ) {
 		openInExclusiveMode = YES;
