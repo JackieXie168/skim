@@ -50,6 +50,7 @@
 		CEC7BCE00CF7639E008CCD63 /* Underline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Underline.png; sourceTree = "<group>"; };
 		CEC7BCE10CF7639E008CCD63 /* Highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Highlight.png; sourceTree = "<group>"; };
 		CECB02690DC5EB2D0000B16B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECB026A0DC5EB320000B16B /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CECB026B0DC5EB370000B16B /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CECB026C0DC5EB3B0000B16B /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CECB026D0DC5EB3E0000B16B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -268,6 +269,7 @@
 				089C167EFE841241C02AAC07 /* English */,
 				CEE54D3D0DA2AB280037169F /* cs */,
 				CECB02690DC5EB2D0000B16B /* Dutch */,
+				CECB026A0DC5EB320000B16B /* Italian */,
 				CECB026B0DC5EB370000B16B /* French */,
 				CECB026C0DC5EB3B0000B16B /* German */,
 				CECB026D0DC5EB3E0000B16B /* ru */,
