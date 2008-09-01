@@ -1005,7 +1005,7 @@ BOOL SKUsesLogicalPageNumbering = NO;
     NSWindowController *wc = [wcEnum nextObject];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
+        if ([wc isNoteWindowController] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
             [[wc window] orderOut:self];
             break;
         }
@@ -1029,7 +1029,7 @@ BOOL SKUsesLogicalPageNumbering = NO;
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
         NSWindowController *wc = [wcEnum nextObject];
         while (wc = [wcEnum nextObject]) {
-            if ([wc isKindOfClass:[SKNoteWindowController class]])
+            if ([wc isNoteWindowController])
                 [[wc window] orderOut:self];
         }
         
@@ -2407,7 +2407,7 @@ BOOL SKUsesLogicalPageNumbering = NO;
     NSWindowController *wc = [wcEnum nextObject];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
+        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:YES];
     }
         
@@ -2450,7 +2450,7 @@ BOOL SKUsesLogicalPageNumbering = NO;
     NSWindowController *wc = [wcEnum nextObject];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
+        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:NO];
     }
     
@@ -3241,7 +3241,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] && [(SKNoteWindowController *)wc note] == annotation)
+        if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation)
             break;
     }
     if (wc == nil) {

@@ -216,6 +216,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return [NSString stringWithFormat:@"%@ %C %@", [[[self note] type] typeName], EM_DASH_CHARACTER, [[self note] string]];
 }
 
+- (BOOL)isNoteWindowController { return YES; }
+
 - (PDFAnnotation *)note {
     return note;
 }

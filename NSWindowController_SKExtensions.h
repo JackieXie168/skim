@@ -43,4 +43,7 @@
 
 - (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name;
 
+- (BOOL)isNoteWindowController;
+- (BOOL)isSnapshotWindowController;
+
 @end
