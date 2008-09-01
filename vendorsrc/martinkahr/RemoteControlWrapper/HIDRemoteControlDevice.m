@@ -169,6 +169,9 @@
 	io_object_t hidDevice = [[self class] findRemoteDevice];
 	if (hidDevice == 0) return;
 	
+	// be KVO friendly
+	[self willChangeValueForKey:@"listeningToRemote"];
+    
 	if ([self createInterfaceForDevice:hidDevice] == NULL) {
 		goto error;
 	}
@@ -180,16 +183,15 @@
 	if ([self openDevice]==NO) {
 		goto error;
 	}
-	// be KVO friendly
-	[self willChangeValueForKey:@"listeningToRemote"];
-	[self didChangeValueForKey:@"listeningToRemote"];
 	goto cleanup;
 	
 error:
+	[self didChangeValueForKey:@"listeningToRemote"];
 	[self stopListening:self];
 	DisableSecureEventInput();
 	
 cleanup:	
+	[self didChangeValueForKey:@"listeningToRemote"];
 	IOObjectRelease(hidDevice);	
 }
 
@@ -197,6 +199,9 @@ cleanup:
 	if ([self isListeningToRemote]==NO) return;
 	
 	BOOL sendNotification = NO;
+	
+    // be KVO friendly
+	[self willChangeValueForKey:@"listeningToRemote"];
 	
 	if (eventSource != NULL) {
 		CFRunLoopRemoveSource(CFRunLoopGetCurrent(), eventSource, kCFRunLoopDefaultMode);
@@ -237,8 +242,7 @@ cleanup:
 	if ([self isOpenInExclusiveMode] && sendNotification) {
 		[[self class] sendFinishedNotifcationForAppIdentifier: nil];		
 	}
-	// be KVO friendly
-	[self willChangeValueForKey:@"listeningToRemote"];
+    
 	[self didChangeValueForKey:@"listeningToRemote"];	
 }
 

@@ -30,6 +30,7 @@
 
 @interface RemoteControlContainer : RemoteControl {
 	NSMutableArray* remoteControls;
+	BOOL listeningToRemote;
 }
 
 - (BOOL) instantiateAndAddRemoteControlDeviceWithClass: (Class) clazz;
