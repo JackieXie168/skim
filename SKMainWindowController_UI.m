@@ -46,7 +46,7 @@
 #import "SKStatusBar.h"
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
-#import "SKWindowController_SKExtensions.h"
+#import "NSWindowController_SKExtensions.h"
 #import "SKSideWindow.h"
 #import "SKProgressController.h"
 #import "SKAnnotationTypeImageCell.h"
