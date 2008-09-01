@@ -2952,7 +2952,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                    annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote &&
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
-            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
                 NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
                 NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
                 [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
@@ -2961,7 +2961,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 clickDelta.x = pagePoint.x - NSMinX(bounds);
                 clickDelta.y = pagePoint.y - NSMinY(bounds);
             }
-        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
         } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkup]) {
