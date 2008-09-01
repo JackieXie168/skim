@@ -126,7 +126,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     
         if ([identifier isEqualToString:SKDocumentToolbarPreviousNextItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoToNextPage:) target:self];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Previous/Next", @"Toolbar item label") submenu:menu] autorelease];
@@ -141,7 +141,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPreviousItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) target:self];
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"First", @"Menu item title") action:@selector(doGoToFirstPage:) target:self];
             
@@ -155,7 +155,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNextItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoToNextPage:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Last", @"Menu item title") action:@selector(doGoToLastPage:) target:self];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Page", @"Toolbar item label") submenu:menu] autorelease];
@@ -170,7 +170,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarPreviousNextFirstLastItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Previous", @"Menu item title") action:@selector(doGoToPreviousPage:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title") action:@selector(doGoToNextPage:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"First", @"Menu item title") action:@selector(doGoToFirstPage:) target:self];
@@ -189,7 +189,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarBackForwardItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Back", @"Menu item title") action:@selector(doGoBack:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Forward", @"Menu item title") action:@selector(doGoForward:) target:self];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Back/Forward", @"Toolbar item label") submenu:menu] autorelease];
@@ -252,7 +252,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomInOutItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom In", @"Menu item title") action:@selector(doZoomIn:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom Out", @"Menu item title") action:@selector(doZoomOut:) target:self];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Zoom", @"Toolbar item label") submenu:menu] autorelease];
@@ -267,7 +267,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomInActualOutItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom In", @"Menu item title") action:@selector(doZoomIn:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Zoom Out", @"Menu item title") action:@selector(doZoomOut:) target:self];
             [menu addItemWithTitle:NSLocalizedString(@"Actual Size", @"Menu item title") action:@selector(doZoomToActualSize:) target:self];
@@ -343,12 +343,12 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewTextNote:) target:self tag:SKFreeTextNote];
             [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewTextNote:) target:self tag:SKAnchoredNote];
             [textNoteButton setMenu:menu forSegment:0];
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
             [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") submenu:menu] autorelease];
@@ -361,12 +361,12 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewCircleNote:) target:self tag:SKCircleNote];
             [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarAddSquareNote action:@selector(createNewCircleNote:) target:self tag:SKSquareNote];
             [circleNoteButton setMenu:menu forSegment:0];
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewNote:) target:self tag:SKCircleNote];
             [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") imageNamed:SKImageNameToolbarAddSquareNote action:@selector(createNewNote:) target:self tag:SKSquareNote];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Shape", @"Toolbar item label") submenu:menu] autorelease];
@@ -379,13 +379,13 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarAddHighlightNote action:@selector(createNewMarkupNote:) target:self tag:SKHighlightNote];
             [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarAddUnderlineNote action:@selector(createNewMarkupNote:) target:self tag:SKUnderlineNote];
             [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarAddStrikeOutNote action:@selector(createNewMarkupNote:) target:self tag:SKStrikeOutNote];
             [markupNoteButton setMenu:menu forSegment:0];
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") imageNamed:SKImageNameToolbarAddHighlightNote action:@selector(createNewNote:) target:self tag:SKHighlightNote];
             [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarAddUnderlineNote action:@selector(createNewNote:) target:self tag:SKUnderlineNote];
             [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarAddStrikeOutNote action:@selector(createNewNote:) target:self tag:SKStrikeOutNote];
@@ -410,7 +410,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarAddTextNote action:@selector(createNewNote:) target:self tag:SKFreeTextNote];
             [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAddAnchoredNote action:@selector(createNewNote:) target:self tag:SKAnchoredNote];
             [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarAddCircleNote action:@selector(createNewNote:) target:self tag:SKCircleNote];
@@ -437,7 +437,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarToolModeItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") imageNamed:SKImageNameToolbarTextNote action:@selector(changeAnnotationMode:) target:self tag:SKFreeTextNote];
             [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") imageNamed:SKImageNameToolbarAnchoredNote action:@selector(changeAnnotationMode:) target:self tag:SKAnchoredNote];
             [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") imageNamed:SKImageNameToolbarCircleNote action:@selector(changeAnnotationMode:) target:self tag:SKCircleNote];
@@ -448,7 +448,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") imageNamed:SKImageNameToolbarLineNote action:@selector(changeAnnotationMode:) target:self tag:SKLineNote];
             [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:SKTextToolMode];
             [menu addItemWithTitle:NSLocalizedString(@"Scroll Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:SKMoveToolMode];
             [menu addItemWithTitle:NSLocalizedString(@"Magnify Tool", @"Menu item title") action:@selector(changeToolMode:) target:self tag:SKMagnifyToolMode];
@@ -477,7 +477,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarSingleTwoUpItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Single Page", @"Menu item title") action:@selector(changeDisplaySinglePages:) target:self tag:kPDFDisplaySinglePage];
             [menu addItemWithTitle:NSLocalizedString(@"Two Pages", @"Menu item title") action:@selector(changeDisplaySinglePages:) target:self tag:kPDFDisplayTwoUp];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Single/Two Pages", @"Toolbar item label") submenu:menu] autorelease];
@@ -492,7 +492,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarContinuousItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Non Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) target:self tag:kPDFDisplaySinglePage];
             [menu addItemWithTitle:NSLocalizedString(@"Continuous", @"Menu item title") action:@selector(changeDisplayContinuous:) target:self tag:kPDFDisplaySinglePageContinuous];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Continuous", @"Toolbar item label") submenu:menu] autorelease];
@@ -507,7 +507,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarDisplayModeItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Single Page", @"Menu item title") action:@selector(changeDisplayMode:) target:self tag:kPDFDisplaySinglePage];
             [menu addItemWithTitle:NSLocalizedString(@"Single Page Continuous", @"Menu item title") action:@selector(changeDisplayMode:) target:self tag:kPDFDisplaySinglePageContinuous];
             [menu addItemWithTitle:NSLocalizedString(@"Two Pages", @"Menu item title") action:@selector(changeDisplayMode:) target:self tag:kPDFDisplayTwoUp];
@@ -526,7 +526,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             
         } else if ([identifier isEqualToString:SKDocumentToolbarDisplayBoxItemIdentifier]) {
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             [menu addItemWithTitle:NSLocalizedString(@"Media Box", @"Menu item title") action:@selector(changeDisplayBox:) target:self tag:kPDFDisplayBoxMediaBox];
             [menu addItemWithTitle:NSLocalizedString(@"Crop Box", @"Menu item title") action:@selector(changeDisplayBox:) target:self tag:kPDFDisplayBoxCropBox];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Display Box", @"Toolbar item label") submenu:menu] autorelease];
@@ -545,7 +545,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:) 
                                                          name:SKColorSwatchColorsChangedNotification object:colorSwatch];
             
-            menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+            menu = [NSMenu menu];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Colors", @"Toolbar item label") submenu:menu] autorelease];
             
             [item setLabels:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
