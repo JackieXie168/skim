@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>8</key>
+	<dict>
+		<key>attributedStringAsHTML</key>
+		<string>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;meta http-equiv="Content-Style-Type" content="text/css"&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;meta name="Generator" content="Cocoa HTML Writer"&gt;
+&lt;meta name="CocoaVersion" content="949.33"&gt;
+&lt;style type="text/css"&gt;
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</string>
+	</dict>
+</dict>
+</plist>
