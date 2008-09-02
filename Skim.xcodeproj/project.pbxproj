@@ -516,7 +516,7 @@
 		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
-		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
+		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; explicitFileType = text.sdef; fileEncoding = 4; path = Skim.sdef; sourceTree = "<group>"; };
 		CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSArray_SKExtensions.h; sourceTree = "<group>"; };
 		CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSArray_SKExtensions.m; sourceTree = "<group>"; };
 		CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSValue_SKExtensions.h; sourceTree = "<group>"; };
