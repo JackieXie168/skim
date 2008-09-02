@@ -639,6 +639,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
+    [tableColumn setWidth:labelWidth];
     [tv sizeToFit];
 }
 
