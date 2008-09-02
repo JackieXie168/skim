@@ -2604,8 +2604,17 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 
 #pragma mark Swapping tables
 
-- (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
+- (void)replaceSideView:(NSView *)newView atLeft:(BOOL)left animate:(BOOL)animate {
     if ([newView window] == nil) {
+        NSView *oldView = nil;
+        if (left) {
+            oldView = currentLeftSideView;
+            currentLeftSideView = newView;
+        } else {
+            oldView = currentRightSideView;
+            currentRightSideView = newView;
+        }
+        
         NSResponder *oldFirstResponder = [[oldView window] firstResponder];
         BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
         BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
@@ -2669,57 +2678,47 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (void)displayOutlineView {
-    [self  replaceSideView:currentLeftSideView withView:tocView animate:NO];
-    currentLeftSideView = tocView;
+    [self replaceSideView:tocView atLeft:YES animate:NO];
     [self updateOutlineSelection];
 }
 
 - (void)fadeInOutlineView {
-    [self  replaceSideView:currentLeftSideView withView:tocView animate:YES];
-    currentLeftSideView = tocView;
+    [self replaceSideView:tocView atLeft:YES animate:YES];
     [self updateOutlineSelection];
 }
 
 - (void)displayThumbnailView {
-    [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:NO];
-    currentLeftSideView = thumbnailView;
+    [self replaceSideView:thumbnailView atLeft:YES animate:NO];
     [self updateThumbnailSelection];
 }
 
 - (void)fadeInThumbnailView {
-    [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:YES];
-    currentLeftSideView = thumbnailView;
+    [self replaceSideView:thumbnailView atLeft:YES animate:YES];
     [self updateThumbnailSelection];
 }
 
 - (void)displaySearchView {
-    [self  replaceSideView:currentLeftSideView withView:findView animate:NO];
-    currentLeftSideView = findView;
+    [self replaceSideView:findView atLeft:YES animate:NO];
 }
 
 - (void)fadeInSearchView {
-    [self  replaceSideView:currentLeftSideView withView:findView animate:YES];
-    currentLeftSideView = findView;
+    [self replaceSideView:findView atLeft:YES animate:YES];
 }
 
 - (void)displayGroupedSearchView {
-    [self  replaceSideView:currentLeftSideView withView:groupedFindView animate:NO];
-    currentLeftSideView = groupedFindView;
+    [self replaceSideView:groupedFindView atLeft:YES animate:NO];
 }
 
 - (void)fadeInGroupedSearchView {
-    [self  replaceSideView:currentLeftSideView withView:groupedFindView animate:YES];
-    currentLeftSideView = groupedFindView;
+    [self replaceSideView:groupedFindView atLeft:YES animate:YES];
 }
 
 - (void)displayNoteView {
-    [self  replaceSideView:currentRightSideView withView:noteView animate:NO];
-    currentRightSideView = noteView;
+    [self replaceSideView:noteView atLeft:NO animate:NO];
 }
 
 - (void)displaySnapshotView {
-    [self  replaceSideView:currentRightSideView withView:snapshotView animate:NO];
-    currentRightSideView = snapshotView;
+    [self replaceSideView:snapshotView atLeft:NO animate:NO];
     [self updateSnapshotsIfNeeded];
 }
 
