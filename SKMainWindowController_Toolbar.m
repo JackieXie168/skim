@@ -111,7 +111,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
     [[self window] setToolbar:toolbar];
 }
 
-- (NSToolbarItem *)toolbarItemForIdentifier:(NSString *)identifier {
+- (NSToolbarItem *)toolbarItemForItemIdentifier:(NSString *)identifier {
     SKToolbarItem *item = [toolbarItems objectForKey:identifier];
     NSMenu *menu;
     NSMenuItem *menuItem;
@@ -611,10 +611,9 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
 
-    NSToolbarItem *item = [self toolbarItemForIdentifier:itemIdent];
+    NSToolbarItem *item = [self toolbarItemForItemIdentifier:itemIdent];
     
     if (willBeInserted == NO) {
-        
         item = [[item copy] autorelease];
         [item setEnabled:YES];
         if ([[item view] respondsToSelector:@selector(setEnabled:)])
@@ -705,7 +704,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
-    NSToolbarItem *toolbarItem = [self toolbarItemForIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
+    NSToolbarItem *toolbarItem = [self toolbarItemForItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
     NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
     
     NSEnumerator *colorEnum = [[colorSwatch colors] objectEnumerator];
