@@ -1,8 +1,33 @@
 {
     IBClasses =     (
                 {
+            CLASS = BDSKCollapsibleView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = BDSKContainerView;
+        },
+                {
+            CLASS = BDSKContainerView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                contentView = id;
+            };
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = BDSKEdgeView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = BDSKContainerView;
+        },
+                {
+            CLASS = BDSKGradientView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
             ACTIONS =             {
                 addBookmark = id;
+                addSessionBookmark = id;
+                addSetupBookmark = id;
                 allGoToFirstPage = id;
                 allGoToLastPage = id;
                 allGoToNextPage = id;
@@ -80,7 +105,53 @@
             SUPERCLASS = NSObject;
         },
                 {
+            CLASS = NSDocument;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenu;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenuItem;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                changeDashPattern = id;
+                changeEndLineStyle = id;
+                changeLineStyle = id;
+                changeLineWidth = id;
+                changeStartLineStyle = id;
+            };
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            CLASS = NSResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSSegmentedControl;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSControl;
+        },
+                {
             CLASS = NSView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindowController;
             LANGUAGE = ObjC;
             SUPERCLASS = NSResponder;
         },
@@ -88,6 +159,8 @@
             ACTIONS =             {
                 editBookmarks = id;
                 openBookmark = id;
+                orderFrontLineInspector = id;
+                orderFrontNotesPanel = id;
                 saveCurrentOpenDocuments = id;
                 showDownloads = id;
                 showPreferencePanel = id;
@@ -100,22 +173,343 @@
             SUPERCLASS = NSObject;
         },
                 {
+            ACTIONS =             {
+                deleteBookmark = id;
+                doubleClickBookmark = id;
+                insertBookmarkFolder = id;
+                insertBookmarkSeparator = id;
+                toggleStatusBar = id;
+            };
+            CLASS = SKBookmarkController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                outlineView = SKBookmarkOutlineView;
+                statusBar = SKStatusBar;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = SKBookmarkOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKOutlineView;
+        },
+                {
+            CLASS = SKColorSwatch;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                target = id;
+            };
+            SUPERCLASS = NSControl;
+        },
+                {
+            ACTIONS =             {
+                newDocumentFromClipboard = id;
+            };
             CLASS = SKDocumentController;
             LANGUAGE = ObjC;
             SUPERCLASS = NSDocumentController;
         },
                 {
-            CLASS = SKSplashContentView;
+            ACTIONS =             {
+                findNext = id;
+                findNextAndOrderOutFindPanel = id;
+                findPrevious = id;
+                performFindPanelAction = id;
+                pickFindString = id;
+            };
+            CLASS = SKFindController;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSView;
+            OUTLETS =             {
+                findField = NSTextField;
+                ignoreCaseCheckbox = NSButton;
+                ownerController = NSObjectController;
+            };
+            SUPERCLASS = NSWindowController;
         },
                 {
             ACTIONS =             {
-                fadeOut = id;
+                addBookmark = id;
+                addSessionBookmark = id;
+                addSetupBookmark = id;
+                allGoToFirstPage = id;
+                allGoToLastPage = id;
+                allGoToNextPage = id;
+                allGoToPreviousPage = id;
+                alternateZoomToFit = id;
+                autoCropAll = id;
+                autoSelectContent = id;
+                changeAnnotationMode = id;
+                changeColor = id;
+                changeColorFill = id;
+                changeDisplayBox = id;
+                changeDisplayContinuous = id;
+                changeDisplayMode = id;
+                changeDisplaySinglePages = id;
+                changeFindPaneState = id;
+                changeFont = id;
+                changeLeftSidePaneState = id;
+                changeRightSidePaneState = id;
+                changeScaleFactor = id;
+                changeToolMode = id;
+                chooseScale = id;
+                chooseTransition = id;
+                createNewCircleNote = id;
+                createNewLineNote = id;
+                createNewMarkupNote = id;
+                createNewNote = id;
+                createNewTextNote = id;
+                crop = id;
+                cropAll = id;
+                displayFacingPages = id;
+                displaySinglePages = id;
+                doAutoScale = id;
+                doGoBack = id;
+                doGoForward = id;
+                doGoToFirstPage = id;
+                doGoToLastPage = id;
+                doGoToNextPage = id;
+                doGoToPage = id;
+                doGoToPreviousPage = id;
+                doZoomIn = id;
+                doZoomOut = id;
+                doZoomToActualSize = id;
+                doZoomToFit = id;
+                doZoomToPhysicalSize = id;
+                doZoomToSelection = id;
+                editNote = id;
+                enterFullScreen = id;
+                enterPresentation = id;
+                exitFullScreen = id;
+                getInfo = id;
+                goBackOrForward = id;
+                goToMarkedPage = id;
+                goToPreviousNextFirstLastPage = id;
+                markPage = id;
+                password = id;
+                performFit = id;
+                rotateAllLeft = id;
+                rotateAllLeftRight = id;
+                rotateAllRight = id;
+                rotateLeft = id;
+                rotateRight = id;
+                savePDFSettingToDefaults = id;
+                search = id;
+                searchNotes = id;
+                searchPDF = id;
+                selectColor = id;
+                smartAutoCropAll = id;
+                takeSnapshot = id;
+                toggleAutoActualSize = id;
+                toggleAutoScale = id;
+                toggleCaseInsensitiveSearch = id;
+                toggleDisplayAsBook = id;
+                toggleDisplayContinuous = id;
+                toggleDisplayPageBreaks = id;
+                toggleFullScreen = id;
+                toggleHideNotes = id;
+                toggleLeftSidePane = id;
+                togglePresentation = id;
+                toggleReadingBar = id;
+                toggleRightSidePane = id;
+                toggleSplitPDF = id;
+                toggleStatusBar = id;
+                toggleWholeWordSearch = id;
+                zoomInActualOut = id;
             };
-            CLASS = SKSplashWindow;
+            CLASS = SKMainWindowController;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSWindow;
+            OUTLETS =             {
+                backForwardButton = NSSegmentedControl;
+                circleNoteButton = NSSegmentedControl;
+                colorSwatch = SKColorSwatch;
+                colorsButton = NSSegmentedControl;
+                continuousButton = NSSegmentedControl;
+                cropButton = NSSegmentedControl;
+                currentLeftSideView = NSView;
+                currentRightSideView = NSView;
+                customizeButton = NSSegmentedControl;
+                displayBoxButton = NSSegmentedControl;
+                displayModeButton = NSSegmentedControl;
+                findArrayController = NSArrayController;
+                findButton = NSSegmentedControl;
+                findTableView = NSTableView;
+                findView = NSView;
+                fontsButton = NSSegmentedControl;
+                fullScreenButton = NSSegmentedControl;
+                groupedFindArrayController = NSArrayController;
+                groupedFindTableView = NSTableView;
+                groupedFindView = NSView;
+                infoButton = NSSegmentedControl;
+                leftPaneButton = NSSegmentedControl;
+                leftSideButton = NSSegmentedControl;
+                leftSideCollapsibleView = BDSKCollapsibleView;
+                leftSideContentView = NSView;
+                leftSideEdgeView = BDSKEdgeView;
+                leftSideGradientView = BDSKGradientView;
+                leftSideView = NSView;
+                lineNoteButton = NSSegmentedControl;
+                linesButton = NSSegmentedControl;
+                markupNoteButton = NSSegmentedControl;
+                nextPageButton = NSSegmentedControl;
+                noteArrayController = NSArrayController;
+                noteButton = NSSegmentedControl;
+                noteOutlineView = SKNoteOutlineView;
+                noteSearchField = NSSearchField;
+                noteView = NSView;
+                outlineView = SKTocOutlineView;
+                ownerController = NSObjectController;
+                pageNumberField = NSTextField;
+                pdfEdgeView = BDSKEdgeView;
+                pdfSplitView = SKSplitView;
+                pdfView = SKPDFView;
+                presentationButton = NSSegmentedControl;
+                previousNextFirstLastPageButton = NSSegmentedControl;
+                previousNextPageButton = NSSegmentedControl;
+                previousPageButton = NSSegmentedControl;
+                printButton = NSSegmentedControl;
+                rightPaneButton = NSSegmentedControl;
+                rightSideButton = NSSegmentedControl;
+                rightSideCollapsibleView = BDSKCollapsibleView;
+                rightSideContentView = NSView;
+                rightSideEdgeView = BDSKEdgeView;
+                rightSideGradientView = BDSKGradientView;
+                rightSideView = NSView;
+                rotateLeftButton = NSSegmentedControl;
+                rotateLeftRightButton = NSSegmentedControl;
+                rotateRightButton = NSSegmentedControl;
+                scaleField = NSTextField;
+                searchField = NSSearchField;
+                singleTwoUpButton = NSSegmentedControl;
+                snapshotArrayController = NSArrayController;
+                snapshotTableView = SKSnapshotTableView;
+                snapshotView = NSView;
+                splitView = SKSplitView;
+                textNoteButton = NSSegmentedControl;
+                thumbnailArrayController = NSArrayController;
+                thumbnailTableView = SKThumbnailTableView;
+                thumbnailView = NSView;
+                tocView = NSView;
+                toolModeButton = NSSegmentedControl;
+                zoomActualButton = NSSegmentedControl;
+                zoomFitButton = NSSegmentedControl;
+                zoomInActualOutButton = NSSegmentedControl;
+                zoomInOutButton = NSSegmentedControl;
+                zoomSelectionButton = NSSegmentedControl;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            ACTIONS =             {
+                dismissNoteTypeSheet = id;
+                displayAllNoteTypes = id;
+                selectNoteTypes = id;
+                toggleDisplayNoteType = id;
+            };
+            CLASS = SKNoteOutlineView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                noteTypeMatrix = NSMatrix;
+                noteTypeSheet = NSWindow;
+            };
+            SUPERCLASS = SKOutlineView;
+        },
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
+            CLASS = SKOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSOutlineView;
+        },
+                {
+            ACTIONS =             {
+                convertNotes = id;
+                emailArchive = id;
+                emailDiskImage = id;
+                readNotes = id;
+                saveArchive = id;
+                saveDiskImage = id;
+            };
+            CLASS = SKPDFDocument;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                readNotesAccessoryView = NSView;
+                replaceNotesCheckButton = NSButton;
+            };
+            SUPERCLASS = NSDocument;
+        },
+                {
+            ACTIONS =             {
+                addAnnotation = id;
+                alternatePaste = id;
+                autoSelectContent = id;
+                changeAnnotationMode = id;
+                changeToolMode = id;
+                copy = id;
+                cut = id;
+                delete = id;
+                deselectAll = id;
+                editActiveAnnotation = id;
+                editThisAnnotation = id;
+                endAnnotationEdit = id;
+                paste = id;
+                pasteAsPlainText = id;
+                removeActiveAnnotation = id;
+                removeThisAnnotation = id;
+                selectNextActiveAnnotation = id;
+                selectPreviousActiveAnnotation = id;
+                takeSnapshot = id;
+            };
+            CLASS = SKPDFView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = PDFView;
+        },
+                {
+            CLASS = SKSnapshotTableView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKThumbnailTableView;
+        },
+                {
+            CLASS = SKSplitView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSSplitView;
+        },
+                {
+            ACTIONS =             {
+                startAnimation = id;
+                stopAnimation = id;
+            };
+            CLASS = SKStatusBar;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                leftCell = id;
+                rightCell = id;
+            };
+            SUPERCLASS = NSControl;
+        },
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                scrollToBeginningOfDocument = id;
+                scrollToEndOfDocument = id;
+            };
+            CLASS = SKTableView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSTableView;
+        },
+                {
+            CLASS = SKThumbnailTableView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKTableView;
+        },
+                {
+            CLASS = SKTocOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = SKOutlineView;
         },
                 {
             ACTIONS =             {

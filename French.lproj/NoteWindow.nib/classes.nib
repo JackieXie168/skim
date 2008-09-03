@@ -1,182 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>IBClasses</key>
-	<array>
-		<dict>
-			<key>CLASS</key>
-			<string>BDSKGradientView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>copy</key>
-				<string>id</string>
-				<key>delete</key>
-				<string>id</string>
-				<key>paste</key>
-				<string>id</string>
-				<key>show</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>BDSKDragImageView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>delegate</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSImageView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenuItem</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>changeDashPattern</key>
-				<string>id</string>
-				<key>changeEndLineStyle</key>
-				<string>id</string>
-				<key>changeLineStyle</key>
-				<string>id</string>
-				<key>changeLineWidth</key>
-				<string>id</string>
-				<key>changeStartLineStyle</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>NSObject</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>startAnimation</key>
-				<string>id</string>
-				<key>stopAnimation</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKStatusBar</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>leftCell</key>
-				<string>id</string>
-				<key>rightCell</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindow</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSScrollView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>statusBarClicked</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKNoteWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>iconTypePopUpButton</key>
-				<string>NSPopUpButton</string>
-				<key>imageView</key>
-				<string>BDSKDragImageView</string>
-				<key>noteController</key>
-				<string>NSObjectController</string>
-				<key>statusBar</key>
-				<string>SKStatusBar</string>
-				<key>textView</key>
-				<string>NSTextView</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
-		</dict>
-	</array>
-	<key>IBVersion</key>
-	<string>1</string>
-</dict>
-</plist>
+{
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                copy = id;
+                delete = id;
+                paste = id;
+                show = id;
+            };
+            CLASS = BDSKDragImageView;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                delegate = id;
+            };
+            SUPERCLASS = NSImageView;
+        },
+                {
+            CLASS = BDSKGradientView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenu;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSMenuItem;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                changeDashPattern = id;
+                changeEndLineStyle = id;
+                changeLineStyle = id;
+                changeLineWidth = id;
+                changeStartLineStyle = id;
+            };
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            CLASS = NSResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSScrollView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = NSView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindow;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSWindowController;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            ACTIONS =             {
+                statusBarClicked = id;
+            };
+            CLASS = SKNoteWindowController;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                iconTypePopUpButton = NSPopUpButton;
+                imageView = BDSKDragImageView;
+                noteController = NSObjectController;
+                statusBar = SKStatusBar;
+                textView = NSTextView;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            ACTIONS =             {
+                startAnimation = id;
+                stopAnimation = id;
+            };
+            CLASS = SKStatusBar;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                leftCell = id;
+                rightCell = id;
+            };
+            SUPERCLASS = NSControl;
+        }
+    );
+    IBVersion = 1;
+}
