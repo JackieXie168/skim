@@ -73,6 +73,11 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         }
     } else if ([anEvent type] == NSApplicationDefined && [anEvent subtype] == SKRemoteButtonEvent) {
         id target = [self targetForAction:@selector(remoteButtonPressed:)];
+        if (target == nil) {
+            target = [[NSDocumentController sharedDocumentController] currentDocument];
+            if ([target respondsToSelector:@selector(remoteButtonPressed:)] == NO)
+                target = nil;
+        }
         if (target) {
             [target performSelector:@selector(remoteButtonPressed:) withObject:anEvent];
             return;
