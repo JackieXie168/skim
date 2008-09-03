@@ -248,7 +248,7 @@
         }
     }
     if (filePath == nil && outError) 
-        *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Notes file note found", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Notes file not found", @"Error description"), NSLocalizedDescriptionKey, nil]];
     return filePath;
 }
 
