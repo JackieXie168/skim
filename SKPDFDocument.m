@@ -72,6 +72,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKSnapshotWindowController.h"
 #import "NSDocument_SKExtensions.h"
+#import "SKApplication.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -1136,6 +1137,11 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
     return [super validateUserInterfaceItem:anItem];
 }
+
+- (void)remoteButtonPressed:(NSEvent *)theEvent {
+    [[self mainWindowController] remoteButtonPressed:theEvent];
+}
+
 
 #pragma mark File update checking
 

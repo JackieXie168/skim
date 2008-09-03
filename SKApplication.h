@@ -57,6 +57,11 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 @end
 
 
+enum {
+    SKRemoteButtonEvent = 1
+};
+
 @interface NSResponder (SKMagnifyWheel)
 - (void)magnifyWheel:(NSEvent *)theEvent;
+- (void)remoteButtonPressed:(NSEvent *)theEvent;
 @end
