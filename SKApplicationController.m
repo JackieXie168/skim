@@ -375,7 +375,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
                                                     subtype:SKRemoteButtonEvent
                                                       data1:event
                                                       data2:remoteScrolling];
-            [NSApp sendEvent:theEvent];
+            [NSApp postEvent:theEvent atStart:YES];
         }
     }
 }
