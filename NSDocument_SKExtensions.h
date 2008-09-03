@@ -51,5 +51,6 @@ extern NSString *SKDocumentErrorDomain;
 - (NSFileWrapper *)notesRTFDFileWrapper;
 
 - (void)saveRecentDocumentInfo;
+- (void)setInitialSetup:(NSDictionary *)setup;
 
 @end

@@ -112,6 +112,8 @@ enum {
 
 - (NSDictionary *)currentDocumentSetup;
 
+- (void)setInitialSetup:(NSDictionary *)setup;
+
 - (SKPDFSynchronizer *)synchronizer;
 
 - (NSArray *)snapshots;
