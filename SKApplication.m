@@ -71,6 +71,12 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
             return;
         }
+    } else if ([anEvent type] == NSApplicationDefined && [anEvent subtype] == SKRemoteButtonEvent) {
+        id target = [self targetForAction:@selector(remoteButtonPressed:)];
+        if (target) {
+            [target performSelector:@selector(remoteButtonPressed:) withObject:anEvent];
+            return;
+        }
     }
     [super sendEvent:anEvent];
 }

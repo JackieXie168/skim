@@ -65,7 +65,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
-#import "NSView_SKExtensions.h"
 #import "SKRuntime.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
@@ -357,58 +356,27 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 }
 
 - (void)sendRemoteButtonEvent:(RemoteControlEventIdentifier)event pressedDown:(BOOL)pressedDown remoteControl:(RemoteControl *)remoteControl {
-    NSArray *docs = [NSApp orderedDocuments];
-    id document = [docs count] ? [docs objectAtIndex:0] : nil;
-    SKMainWindowController *controller = [document respondsToSelector:@selector(mainWindowController)]? [document mainWindowController] : nil;
-    
-    if (controller == nil || pressedDown == NO)
-        return;
-    
-    switch (event) {
-        case kRemoteButtonPlus:
-            if (remoteScrolling)
-                [[[controller pdfView] documentView] scrollLineUp];
-            else if ([controller isPresentation])
-                [controller doAutoScale:nil];
-            else
-                [controller doZoomIn:nil];
-            break;
-        case kRemoteButtonMinus:
-            if (remoteScrolling)
-                [[[controller pdfView] documentView] scrollLineDown];
-            else if ([controller isPresentation])
-                [controller doZoomToActualSize:nil];
-            else
-                [controller doZoomOut:nil];
-            break;
-        case kRemoteButtonRight_Hold:
-        case kRemoteButtonRight:
-            if (remoteScrolling)
-                [[[controller pdfView] documentView] scrollLineRight];
-            else 
-                [controller doGoToNextPage:nil];
-            break;
-        case kRemoteButtonLeft_Hold:
-        case kRemoteButtonLeft:
-            if (remoteScrolling)
-                [[[controller pdfView] documentView] scrollLineLeft];
-            else 
-                [controller doGoToPreviousPage:nil];
-            break;
-        case kRemoteButtonPlay:        
-            [controller togglePresentation:nil];
-            break;
-		case kRemoteButtonMenu:
+    if (pressedDown) {
+        if (event == kRemoteButtonMenu) {
             remoteScrolling = !remoteScrolling;
             if ([[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey] > 0.0) {
-                NSRect rect = [[controller window] frame];
+                NSRect rect = [[NSScreen mainScreen] frame];
                 NSPoint point = NSMakePoint(NSMidX(rect), NSMidY(rect));
                 int type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
                 [SKRemoteStateWindow showWithType:type atPoint:point];
             }
-            break;
-        default:
-            break;
+        } else {
+            NSEvent *theEvent = [NSEvent otherEventWithType:NSApplicationDefined
+                                                   location:NSZeroPoint
+                                              modifierFlags:0
+                                                  timestamp:GetCurrentEventTime()
+                                               windowNumber:0
+                                                    context:nil
+                                                    subtype:SKRemoteButtonEvent
+                                                      data1:event
+                                                      data2:remoteScrolling];
+            [NSApp sendEvent:theEvent];
+        }
     }
 }
 

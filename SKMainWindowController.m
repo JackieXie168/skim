@@ -95,6 +95,8 @@
 #import "NSMenu_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
 #import "SKUnarchiveFromDataArrayTransformer.h"
+#import "RemoteControl.h"
+#import "NSView_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -3749,6 +3751,51 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [snapshotTimer invalidate];
         [snapshotTimer release];
         snapshotTimer = nil;
+    }
+}
+
+#pragma mark Remote Control
+
+- (void)remoteButtonPressed:(NSEvent *)theEvent {
+    RemoteControlEventIdentifier remoteButton = (RemoteControlEventIdentifier)[theEvent data1];
+    BOOL remoteScrolling = (BOOL)[theEvent data2];
+    
+    switch (remoteButton) {
+        case kRemoteButtonPlus:
+            if (remoteScrolling)
+                [[[self pdfView] documentView] scrollLineUp];
+            else if ([self isPresentation])
+                [self doAutoScale:nil];
+            else
+                [self doZoomIn:nil];
+            break;
+        case kRemoteButtonMinus:
+            if (remoteScrolling)
+                [[[self pdfView] documentView] scrollLineDown];
+            else if ([self isPresentation])
+                [self doZoomToActualSize:nil];
+            else
+                [self doZoomOut:nil];
+            break;
+        case kRemoteButtonRight_Hold:
+        case kRemoteButtonRight:
+            if (remoteScrolling)
+                [[[self pdfView] documentView] scrollLineRight];
+            else 
+                [self doGoToNextPage:nil];
+            break;
+        case kRemoteButtonLeft_Hold:
+        case kRemoteButtonLeft:
+            if (remoteScrolling)
+                [[[self pdfView] documentView] scrollLineLeft];
+            else 
+                [self doGoToPreviousPage:nil];
+            break;
+        case kRemoteButtonPlay:        
+            [self togglePresentation:nil];
+            break;
+        default:
+            break;
     }
 }
 
