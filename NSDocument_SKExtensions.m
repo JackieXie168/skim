@@ -104,4 +104,6 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 - (void)saveRecentDocumentInfo {}
 
+- (void)setInitialSetup:(NSDictionary *)setup {}
+
 @end
