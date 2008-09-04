@@ -1259,6 +1259,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         // check for attached sheet, since reloading the document while an alert is up looks a bit strange
         if ([[self windowForSheet] attachedSheet]) {
+            receivedFileUpdateNotification = YES;
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
             return;
