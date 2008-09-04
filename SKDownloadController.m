@@ -85,8 +85,14 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (unsigned)retainCount { return UINT_MAX; }
 
+- (void)updateClearButton {
+    [clearButton setEnabled:[downloads count] > 0 && [[downloads valueForKeyPath:@"@min.canCancel"] boolValue] == NO];
+}
+
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
+    
+    [self updateClearButton];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setDataSource:self];
@@ -247,6 +253,7 @@ static SKDownloadController *sharedDownloadController = nil;
     unsigned int row = [downloads indexOfObject:download];
     if (row != NSNotFound)
         [tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
+    [self updateClearButton];
 }
 
 - (void)downloadDidStart:(SKDownload *)download {
