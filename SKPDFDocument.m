@@ -1277,6 +1277,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)fileUpdated {
     NSString *fileName = [self fileName];
     
+    // should never happen
+    if (isUpdatingFile)
+        NSLog(@"*** already busy updating file %@", fileName);
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         
