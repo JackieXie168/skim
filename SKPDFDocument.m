@@ -1266,12 +1266,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSData *trailerData = [fh readDataToEndOfFile];
     NSRange range = NSMakeRange(0, [trailerData length]);
     const char *pattern = "%%EOF";
-    unsigned patternLength = strlen(pattern);
     
     if (isDVI) {
         pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
-        patternLength = strlen(pattern);
-        range = NSMakeRange(patternLength, [trailerData length] - patternLength);
+        range = NSMakeRange(strlen(pattern), [trailerData length] - strlen(pattern));
     }
     return NSNotFound != [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
 }
@@ -1326,7 +1324,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
     NSString *path = [[notification userInfo] objectForKey:@"path"];
     
-    if ([watchedFile isEqualToString:path]) {
+    if ([watchedFile isEqualToString:path] || notification == nil) {
         // should never happen
         if (notification && [path isEqualToString:[self fileName]] == NO)
             NSLog(@"*** received change notice for %@", path);
