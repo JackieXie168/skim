@@ -339,7 +339,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark || PDFSync
 
-- (BOOL)parsePdfsyncFile:(NSString *)theFileName {
+- (BOOL)loadPdfsyncFile:(NSString *)theFileName {
 
     if (pages)
         [pages removeAllObjects];
@@ -569,7 +569,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark || SyncTeX
 
-- (BOOL)parseSynctexFile:(NSString *)theFileName {
+- (BOOL)loadSynctexFile:(NSString *)theFileName {
     BOOL rv = NO;
     if (scanner)
         synctex_scanner_free(scanner);
@@ -621,7 +621,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark || Generic
 
-- (BOOL)parseSyncFileIfNeeded {
+- (BOOL)loadSyncFileIfNeeded {
     NSString *theFileName = [self fileName];
     BOOL rv = NO;
     
@@ -635,23 +635,23 @@ static NSPoint pdfOffset = {0.0, 0.0};
             if (currentModDate && [modDate compare:currentModDate] != NSOrderedDescending)
                 rv = YES;
             else if (isPdfsync)
-                rv = [self parsePdfsyncFile:theSyncFileName];
+                rv = [self loadPdfsyncFile:theSyncFileName];
             else
-                rv = [self parseSynctexFile:theFileName];
+                rv = [self loadSynctexFile:theFileName];
         } else {
             theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
             
             if (SKFileExistsAtPath(theSyncFileName))
-                rv = [self parsePdfsyncFile:theSyncFileName];
+                rv = [self loadPdfsyncFile:theSyncFileName];
             else
-                rv = [self parseSynctexFile:theFileName];
+                rv = [self loadSynctexFile:theFileName];
         }
     }
     return rv;
 }
 
 - (oneway void)serverFindFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
-    if ([self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
+    if ([self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
         int foundLine = 0;
         NSString *foundFile = nil;
         BOOL success = NO;
@@ -667,7 +667,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (oneway void)serverFindPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file {
-    if (file && [self shouldKeepRunning] && [self parseSyncFileIfNeeded]) {
+    if (file && [self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
         unsigned int foundPageIndex = NSNotFound;
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
