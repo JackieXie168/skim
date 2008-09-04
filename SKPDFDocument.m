@@ -1224,8 +1224,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (returnCode == NSAlertOtherReturn) {
         autoUpdate = NO;
         disableAutoReload = YES;
-        receivedFileUpdateNotification = NO;
-        isUpdatingFile = NO;
     } else {
         NSError *error = nil;
         
@@ -1238,10 +1236,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
         disableAutoReload = NO;
-        isUpdatingFile = NO;
         if (receivedFileUpdateNotification)
             [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
     }
+    isUpdatingFile = NO;
+    receivedFileUpdateNotification = NO;
 }
 
 - (BOOL)canUpdateFromFile:(NSString *)fileName {
@@ -1278,21 +1277,18 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)fileUpdated {
-    receivedFileUpdateNotification = NO;
-    isUpdatingFile = NO;
-    
     NSString *fileName = [self fileName];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         
-        isUpdatingFile = YES;
-        
         fileChangedOnDisk = YES;
+        
+        isUpdatingFile = YES;
+        receivedFileUpdateNotification = NO;
         
         // check for attached sheet, since reloading the document while an alert is up looks a bit strange
         if ([[self windowForSheet] attachedSheet]) {
-            receivedFileUpdateNotification = YES;
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
         } else if ([self canUpdateFromFile:fileName]) {
@@ -1321,6 +1317,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             isUpdatingFile = NO;
             receivedFileUpdateNotification = NO;
         }
+    } else {
+        isUpdatingFile = NO;
+        receivedFileUpdateNotification = NO;
     }
 }
 
@@ -1365,10 +1364,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     // This is only called to delay a file update handling
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
     // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
-    if (receivedFileUpdateNotification)
-        [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
-    else
-        isUpdatingFile = NO;
+    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
 }
 
 #pragma mark Notification observation
