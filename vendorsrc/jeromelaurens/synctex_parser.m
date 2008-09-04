@@ -3,7 +3,7 @@ Copyright (c) 2008 jerome DOT laurens AT u-bourgogne DOT fr
 
 This file is part of the SyncTeX package.
 
-Version: 1.2
+Version: 1.3
 See synctex_parser.readme for more details
 
 License:
@@ -53,7 +53,9 @@ authorization from the copyright holder.
 #       define HAVE_LOCALE_H 1
 #       define HAVE_SETLOCALE 1
 #       if defined(_MSC_VER) 
-#          define inline __inline
+#          define SYNCTEX_INLINE __inline
+#       else
+#          define SYNCTEX_INLINE inline
 #       endif
 #   endif
 
@@ -770,11 +772,11 @@ void synctex_node_display(synctex_node_t node) {
 void _synctex_log_sheet(synctex_node_t sheet) {
 	if(sheet) {
 		printf("%s:%i\n",synctex_node_isa(sheet),SYNCTEX_PAGE(sheet));
-		printf("SELF:%p",sheet);
-		printf(" SYNCTEX_PARENT:%p",SYNCTEX_PARENT(sheet));
-		printf(" SYNCTEX_CHILD:%p",SYNCTEX_CHILD(sheet));
-		printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(sheet));
-		printf(" SYNCTEX_FRIEND:%p\n",SYNCTEX_FRIEND(sheet));
+		printf("SELF:%p",(void *)sheet);
+		printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(sheet));
+		printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(sheet));
+		printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(sheet));
+		printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(sheet));
 	}
 }
 
@@ -786,11 +788,11 @@ void _synctex_log_medium_node(synctex_node_t node) {
 		SYNCTEX_HORIZ(node),
 		SYNCTEX_VERT(node),
 		SYNCTEX_WIDTH(node));
-	printf("SELF:%p",node);
-	printf(" SYNCTEX_PARENT:%p",SYNCTEX_PARENT(node));
-	printf(" SYNCTEX_CHILD:%p",SYNCTEX_CHILD(node));
-	printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(node));
-	printf(" SYNCTEX_FRIEND:%p\n",SYNCTEX_FRIEND(node));
+	printf("SELF:%p",(void *)node);
+	printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(node));
+	printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(node));
 }
 
 void _synctex_log_void_box(synctex_node_t node) {
@@ -803,11 +805,11 @@ void _synctex_log_void_box(synctex_node_t node) {
 	printf(":%i",SYNCTEX_WIDTH(node));
 	printf(",%i",SYNCTEX_HEIGHT(node));
 	printf(",%i",SYNCTEX_DEPTH(node));
-	printf("\nSELF:%p",node);
-	printf(" SYNCTEX_PARENT:%p",SYNCTEX_PARENT(node));
-	printf(" SYNCTEX_CHILD:%p",SYNCTEX_CHILD(node));
-	printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(node));
-	printf(" SYNCTEX_FRIEND:%p\n",SYNCTEX_FRIEND(node));
+	printf("\nSELF:%p",(void *)node);
+	printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(node));
+	printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(node));
 }
 
 void _synctex_log_box(synctex_node_t node) {
@@ -820,11 +822,11 @@ void _synctex_log_box(synctex_node_t node) {
 	printf(":%i",SYNCTEX_WIDTH(node));
 	printf(",%i",SYNCTEX_HEIGHT(node));
 	printf(",%i",SYNCTEX_DEPTH(node));
-	printf("\nSELF:%p",node);
-	printf(" SYNCTEX_PARENT:%p",SYNCTEX_PARENT(node));
-	printf(" SYNCTEX_CHILD:%p",SYNCTEX_CHILD(node));
-	printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(node));
-	printf(" SYNCTEX_FRIEND:%p\n",SYNCTEX_FRIEND(node));
+	printf("\nSELF:%p",(void *)node);
+	printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(node));
+	printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(node));
 }
 
 void _synctex_log_horiz_box(synctex_node_t node) {
@@ -842,18 +844,18 @@ void _synctex_log_horiz_box(synctex_node_t node) {
 	printf(":%i",SYNCTEX_WIDTH_V(node));
 	printf(",%i",SYNCTEX_HEIGHT_V(node));
 	printf(",%i",SYNCTEX_DEPTH_V(node));
-	printf("\nSELF:%p",node);
-	printf(" SYNCTEX_PARENT:%p",SYNCTEX_PARENT(node));
-	printf(" SYNCTEX_CHILD:%p",SYNCTEX_CHILD(node));
-	printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(node));
-	printf(" SYNCTEX_FRIEND:%p\n",SYNCTEX_FRIEND(node));
+	printf("\nSELF:%p",(void *)node);
+	printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(node));
+	printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(node));
 }
 
 void _synctex_log_input(synctex_node_t node) {
 	printf("%s",synctex_node_isa(node));
 	printf(":%i",SYNCTEX_TAG(node));
 	printf(",%s",SYNCTEX_NAME(node));
-	printf(" SYNCTEX_SIBLING:%p",SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
 }
 
 void _synctex_display_sheet(synctex_node_t sheet) {
@@ -990,8 +992,8 @@ typedef int synctex_status_t;
 
 #include <stdarg.h>
 
-static int _synctex_error(char * reason,...);
-static int _synctex_error(char * reason,...) {
+SYNCTEX_INLINE static int _synctex_error(char * reason,...);
+SYNCTEX_INLINE static int _synctex_error(char * reason,...) {
 	va_list arg;
 	int result;
 	result = fprintf(stderr,"SyncTeX ERROR: ");
@@ -1061,27 +1063,27 @@ synctex_status_t _synctex_buffer_get_available_size(synctex_scanner_t scanner, s
 	if(SYNCTEX_FILE) {
 		/* Copy the remaining part of the buffer to the beginning,
 		 * then read the next part of the file */
-		int rd = 0;
+		int already_read = 0;
 		if(available) {
 			memmove(SYNCTEX_START, SYNCTEX_CUR, available);
 		}
 		SYNCTEX_CUR = SYNCTEX_START + available; /* the next character after the move, will change. */
 		/* Fill the buffer up to its end */
-		rd = gzread(SYNCTEX_FILE,(void *)SYNCTEX_CUR,SYNCTEX_BUFFER_SIZE - available);
-		if(rd>0) {
-			/*  We assume that 0<rd<=SYNCTEX_BUFFER_SIZE - available, such that
-			 *  SYNCTEX_CUR + rd = SYNCTEX_START + available  + rd <= SYNCTEX_START + SYNCTEX_BUFFER_SIZE */
-			SYNCTEX_END = SYNCTEX_CUR + rd;
+		already_read = gzread(SYNCTEX_FILE,(void *)SYNCTEX_CUR,SYNCTEX_BUFFER_SIZE - available);
+		if(already_read>0) {
+			/*  We assume that 0<already_read<=SYNCTEX_BUFFER_SIZE - available, such that
+			 *  SYNCTEX_CUR + already_read = SYNCTEX_START + available  + already_read <= SYNCTEX_START + SYNCTEX_BUFFER_SIZE */
+			SYNCTEX_END = SYNCTEX_CUR + already_read;
 			/*  If the end of the file was reached, all the required SYNCTEX_BUFFER_SIZE - available
 			 *  may not be filled with values from the file.
-			 *  In that case, the buffer should stop properly after read characters. */
+			 *  In that case, the buffer should stop properly after already_read characters. */
 			* SYNCTEX_END = '\0';
 			SYNCTEX_CUR = SYNCTEX_START;
-			size = SYNCTEX_END - SYNCTEX_CUR; /* == old available + rd*/
+			size = SYNCTEX_END - SYNCTEX_CUR; /* == old available + already_read*/
 			return SYNCTEX_STATUS_OK; /* May be available is less than size, the caller will have to test. */
-		} else if(rd<0) {
+		} else if(already_read<0) {
 			/*There is an error */
-			_synctex_error("gzread error (1:%i)",rd);
+			_synctex_error("gzread error (1:%i)",already_read);
 			return SYNCTEX_STATUS_ERROR;
 		} else {
 			/*  Nothing was read, we are at the end of the file. */
@@ -3142,7 +3144,7 @@ typedef struct {
  *  This comparison is used when there are 2 overlapping boxes that contain the hit point.
  *  For ConTeXt, the problem appears at each page.
  *  The chosen box is the one with the smallest height, then the smallest width. */
-inline static synctex_node_t _synctex_smallest_container(synctex_node_t node, synctex_node_t other_node);
+SYNCTEX_INLINE static synctex_node_t _synctex_smallest_container(synctex_node_t node, synctex_node_t other_node);
 
 /*  Returns the distance between the hit point hitPoint=(H,V) and the given node. */
 synctex_bool_t _synctex_point_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_bool_t visible);
@@ -3153,20 +3155,15 @@ int _synctex_node_distance_to_point(synctex_point_t hitPoint, synctex_node_t nod
  *  _synctex_box_child_deepest starts with node's children, if any
  *  if node is not a box, or a void box, NULL is returned.
  *  We traverse the node tree in a deep first manner and stop as soon as a result is found. */
-inline static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
+SYNCTEX_INLINE static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
 
 /*  Once a best container is found, the closest children are the closest nodes to the left or right of the hit point.
  *  Only horizontal and vertical offsets are used to compare the positions of the nodes. */
-inline static int _synctex_eq_get_closest_children_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible);
-
-/*  Once a best container is found, the best children are the closest nodes to the left or right of the hit point,
- *  where the distance is the vertical distance in vertical boxes.
- *  Only horizontal and vertical offsets are used to compare the positions of the nodes. */
-//inline static int _synctex_eq_get_best_children_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible);
+SYNCTEX_INLINE static int _synctex_eq_get_closest_children_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible);
 
 /*  The closest container is the box that is the one closest to the given point.
  *  The "visible" version takes into account the visible dimensions instead of the real ones given by TeX. */
-inline static synctex_node_t _synctex_eq_closest_child(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
+SYNCTEX_INLINE static synctex_node_t _synctex_eq_closest_child(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
 
 #define SYNCTEX_MASK_LEFT 1
 #define SYNCTEX_MASK_RIGHT 2
@@ -3261,10 +3258,6 @@ end:
 	/*  We are not lucky */
 	if((node = SYNCTEX_CHILD(sheet))) {
 		goto end;
-		if((bestContainer = _synctex_eq_deepest_container(hitPoint,node,synctex_YES))) {
-			node = bestContainer;
-		}
-		//_synctex_eq_get_best_children_in_box(hitPoint,node,&bestNodes,&bestDistances,synctex_YES);
 	}
 	return 0;
 }
@@ -3444,7 +3437,7 @@ int _synctex_point_v_distance(synctex_point_t hitPoint, synctex_node_t node,sync
 	return INT_MAX;/* We always assume that the node is faraway to the top*/
 }
 
-inline static synctex_node_t _synctex_smallest_container(synctex_node_t node, synctex_node_t other_node) {
+SYNCTEX_INLINE static synctex_node_t _synctex_smallest_container(synctex_node_t node, synctex_node_t other_node) {
 	float height, other_height;
 	if(SYNCTEX_WIDTH(node)<SYNCTEX_WIDTH(other_node)) {
 		return node;
@@ -3593,7 +3586,7 @@ int _synctex_node_distance_to_point(synctex_point_t hitPoint, synctex_node_t nod
 	return result;
 }
 
-inline static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
+SYNCTEX_INLINE static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
 	if(node) {
 		switch(node->class->type) {
 			synctex_node_t result = NULL;
@@ -3631,8 +3624,8 @@ inline static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPo
 
 /*  Compares the locations of the hitPoint with the locations of the various nodes contained in the box.
  *  As it is an horizontal box, we only compare horizontal coordinates. */
-inline static int __synctex_eq_get_closest_children_in_hbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible);
-inline static int __synctex_eq_get_closest_children_in_hbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible) {
+SYNCTEX_INLINE static int __synctex_eq_get_closest_children_in_hbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible);
+SYNCTEX_INLINE static int __synctex_eq_get_closest_children_in_hbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef, synctex_bool_t visible) {
 	int result = 0;
 	if((node = SYNCTEX_CHILD(node))) {
 		do {
@@ -3698,8 +3691,8 @@ inline static int __synctex_eq_get_closest_children_in_hbox(synctex_point_t hitP
 	}
 	return result;
 }
-inline static int __synctex_eq_get_closest_children_in_vbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible);
-inline static int __synctex_eq_get_closest_children_in_vbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible) {
+SYNCTEX_INLINE static int __synctex_eq_get_closest_children_in_vbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible);
+SYNCTEX_INLINE static int __synctex_eq_get_closest_children_in_vbox(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible) {
 	int result = 0;
 	if((node = SYNCTEX_CHILD(node))) {
 		do {
@@ -3765,7 +3758,7 @@ inline static int __synctex_eq_get_closest_children_in_vbox(synctex_point_t hitP
 	}
 	return result;
 }
-inline static int _synctex_eq_get_closest_children_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible) {
+SYNCTEX_INLINE static int _synctex_eq_get_closest_children_in_box(synctex_point_t hitPoint, synctex_node_t node, synctex_node_set_t* bestNodesRef,synctex_distances_t* bestDistancesRef,synctex_bool_t visible) {
 	if(node) {
 		switch(node->class->type) {
 			case synctex_node_type_hbox:
@@ -3777,8 +3770,8 @@ inline static int _synctex_eq_get_closest_children_in_box(synctex_point_t hitPoi
 	return 0;
 }
 
-inline static synctex_node_t __synctex_eq_closest_child(synctex_point_t hitPoint, synctex_node_t node,int* distanceRef, synctex_bool_t visible);
-inline static synctex_node_t __synctex_eq_closest_child(synctex_point_t hitPoint, synctex_node_t node,int* distanceRef, synctex_bool_t visible) {
+SYNCTEX_INLINE static synctex_node_t __synctex_eq_closest_child(synctex_point_t hitPoint, synctex_node_t node,int* distanceRef, synctex_bool_t visible);
+SYNCTEX_INLINE static synctex_node_t __synctex_eq_closest_child(synctex_point_t hitPoint, synctex_node_t node,int* distanceRef, synctex_bool_t visible) {
 	synctex_node_t best_node = NULL;
 	if((node = SYNCTEX_CHILD(node))) {
 		do {
@@ -3799,7 +3792,7 @@ inline static synctex_node_t __synctex_eq_closest_child(synctex_point_t hitPoint
 	}
 	return best_node;
 }
-inline static synctex_node_t _synctex_eq_closest_child(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
+SYNCTEX_INLINE static synctex_node_t _synctex_eq_closest_child(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
 	if(node) {
 		switch(node->class->type) {
 			case synctex_node_type_hbox:
