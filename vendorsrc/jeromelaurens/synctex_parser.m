@@ -3179,7 +3179,7 @@ int synctex_edit_query(synctex_scanner_t scanner,int page,float h,float v) {
 	synctex_node_set_t bestNodes = {NULL,NULL}; /* holds the best node */
 	synctex_distances_t bestDistances = {INT_MAX,INT_MAX};
 	synctex_node_t bestContainer = NULL; /* placeholder */
-	if(NULL == scanner || 0 == scanner->unit) {
+	if(NULL == scanner || 0 >= scanner->unit) {
 		return 0;
 	}
 	/* Convert the given point to scanner integer coordinates */
