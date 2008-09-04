@@ -1367,6 +1367,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
     if (receivedFileUpdateNotification)
         [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
+    else
+        isUpdatingFile = NO;
 }
 
 #pragma mark Notification observation
