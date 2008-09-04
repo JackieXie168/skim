@@ -1244,6 +1244,39 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
+- (BOOL)canUpdateFromFile:(NSString *)fileName {
+    NSString *extension = [fileName pathExtension];
+    BOOL isDVI = NO;
+    if (extension) {
+        NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
+        if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
+            fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
+            if (fileName == nil)
+                return NO;
+        } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
+            isDVI = YES;
+        }
+    }
+    
+    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+    
+    // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
+    unsigned long long fileEnd = [fh seekToEndOfFile];
+    unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
+    [fh seekToFileOffset:startPos];
+    NSData *trailerData = [fh readDataToEndOfFile];
+    NSRange range = NSMakeRange(0, [trailerData length]);
+    const char *pattern = "%%EOF";
+    unsigned patternLength = strlen(pattern);
+    
+    if (isDVI) {
+        pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
+        patternLength = strlen(pattern);
+        range = NSMakeRange(patternLength, [trailerData length] - patternLength);
+    }
+    return NSNotFound != [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
+}
+
 - (void)fileUpdated {
     receivedFileUpdateNotification = NO;
     isUpdatingFile = NO;
@@ -1262,48 +1295,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             receivedFileUpdateNotification = YES;
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
-            return;
-        }
-        
-        NSString *extension = [fileName pathExtension];
-        BOOL isDVI = NO;
-        if (extension) {
-            NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-            if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
-                fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
-                if (fileName == nil) {
-                    isUpdatingFile = NO;
-                    receivedFileUpdateNotification = NO;
-                    return;
-                }
-            } else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame) {
-                isDVI = YES;
-            }
-        }
-        
-        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-        
-        // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
-        unsigned long long fileEnd = [fh seekToEndOfFile];
-        unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
-        [fh seekToFileOffset:startPos];
-        NSData *trailerData = [fh readDataToEndOfFile];
-        NSRange range = NSMakeRange(0, [trailerData length]);
-        const char *pattern = "%%EOF";
-        unsigned patternLength = strlen(pattern);
-        unsigned trailerIndex;
-        
-        if (isDVI) {
-            pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] cStringUsingEncoding:NSMacOSRomanStringEncoding];
-            patternLength = strlen(pattern);
-            range = NSMakeRange(patternLength, [trailerData length] - patternLength);
-        }
-        trailerIndex = [trailerData indexOfBytes:pattern length:strlen(pattern) options:NSBackwardsSearch range:range];
-        
-        if (trailerIndex == NSNotFound) {
-            isUpdatingFile = NO;
-            receivedFileUpdateNotification = NO;
-        } else {
+        } else if ([self canUpdateFromFile:fileName]) {
             BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
             if (disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
@@ -1325,6 +1317,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                                  didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
                                     contextInfo:NULL];
             }
+        } else {
+            isUpdatingFile = NO;
+            receivedFileUpdateNotification = NO;
         }
     }
 }
