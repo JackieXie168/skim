@@ -21,7 +21,7 @@
 "No space left on file system." = "Er is geen plaats meer op het bestandssysteem.";
 
 /* Error description */
-"Notes fil note found" = "Het notitiebestand kon niet worden gevonden.";
+"Notes file not found" = "Het notitiebestand kon niet worden gevonden.";
 
 /* Error description */
 "Options contained XATTR_CREATE but the named attribute exists." = "De opties bevatten XATTR_CREATE maar de een attribuut met de gegeven naam bestaat reeds.";
