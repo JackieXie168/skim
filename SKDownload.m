@@ -60,10 +60,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     return [NSArray arrayWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
 }
 
-+ (void)intialize {
++ (void)initialize {
     [self setKeys:[NSArray arrayWithObjects:@"filePath", nil] triggerChangeNotificationsForDependentKey:@"fileName"];
     [self setKeys:[NSArray arrayWithObjects:@"filePath", nil] triggerChangeNotificationsForDependentKey:@"fileIcon"];
     [self setKeys:[NSArray arrayWithObjects:SKDownloadStatusKey, nil] triggerChangeNotificationsForDependentKey:@"canCancel"];
+    [self setKeys:[NSArray arrayWithObjects:SKDownloadStatusKey, nil] triggerChangeNotificationsForDependentKey:@"canRemove"];
     [self setKeys:[NSArray arrayWithObjects:SKDownloadStatusKey, nil] triggerChangeNotificationsForDependentKey:@"canResume"];
     [self setKeys:[self infoKeys] triggerChangeNotificationsForDependentKey:@"info"];
     OBINITIALIZE;
@@ -291,6 +292,10 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 - (BOOL)canCancel {
     return [self status] == SKDownloadStatusStarting || [self status] == SKDownloadStatusDownloading;
+}
+
+- (BOOL)canRemove {
+    return [self status] == SKDownloadStatusFinished || [self status] == SKDownloadStatusFailed || [self status] == SKDownloadStatusCanceled;
 }
 
 - (BOOL)canResume {

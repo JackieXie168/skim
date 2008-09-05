@@ -90,6 +90,7 @@ enum {
 - (void)cleanup;
 
 - (BOOL)canCancel;
+- (BOOL)canRemove;
 - (BOOL)canResume;
 
 - (void)removeProgressIndicatorFromSuperview;

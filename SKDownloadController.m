@@ -85,14 +85,8 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (unsigned)retainCount { return UINT_MAX; }
 
-- (void)updateClearButton {
-    [clearButton setEnabled:[downloads count] > 0 && [[downloads valueForKeyPath:@"@min.canCancel"] boolValue] == NO];
-}
-
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
-    
-    [self updateClearButton];
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setDataSource:self];
@@ -253,7 +247,6 @@ static SKDownloadController *sharedDownloadController = nil;
     unsigned int row = [downloads indexOfObject:download];
     if (row != NSNotFound)
         [tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
-    [self updateClearButton];
 }
 
 - (void)downloadDidStart:(SKDownload *)download {
@@ -325,10 +318,14 @@ static SKDownloadController *sharedDownloadController = nil;
             [cell setImage:[NSImage imageNamed:@"Cancel"]];
             [cell setAction:@selector(cancelDownload:)];
             [cell setTarget:self];
-        } else {
+        } else if ([download canRemove]) {
             [cell setImage:[NSImage imageNamed:@"Delete"]];
             [cell setAction:@selector(removeDownload:)];
             [cell setTarget:self];
+        } else {
+            [cell setImage:nil];
+            [cell setAction:NULL];
+            [cell setTarget:nil];
         }
     } else if ([identifier isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
         if ([download canResume]) {
@@ -348,7 +345,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowCancelColumnIdentifier]) {
         if ([[self objectInDownloadsAtIndex:row] canCancel])
             toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");
-        else
+        else if ([[self objectInDownloadsAtIndex:row] canRemove])
             toolTip = NSLocalizedString(@"Remove download", @"Tool tip message");
     } else if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
         if ([[self objectInDownloadsAtIndex:row] canResume])
@@ -363,7 +360,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     if ([download canCancel])
         [download cancel];
-    else
+    else if ([download canRemove])
         [self removeObjectFromDownloadsAtIndex:row];
 }
 
@@ -381,7 +378,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if ([download canCancel]) {
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
         [menuItem setRepresentedObject:download];
-    } else {
+    } else if ([download canRemove]) {
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
         [menuItem setRepresentedObject:download];
     }
