@@ -276,8 +276,8 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
             URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[self filePath]];
             [URLDownload setDeletesFileUponFailure:NO];
             [self setStatus:SKDownloadStatusDownloading];
-            if ([delegate respondsToSelector:@selector(downloadDidBeginDownloading:)])
-                [delegate downloadDidBeginDownloading:self];
+            if ([delegate respondsToSelector:@selector(downloadDidStart:)])
+                [delegate downloadDidStart:self];
             
         } else {
             
