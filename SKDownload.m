@@ -107,6 +107,16 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     [self cancel];
 }
 
+- (void)resetProgressIndicator {
+    if (expectedContentLength > 0) {
+        [progressIndicator setIndeterminate:NO];
+        [progressIndicator setMaxValue:(double)expectedContentLength];
+    } else {
+        [progressIndicator setIndeterminate:YES];
+        [progressIndicator setMaxValue:1.0];
+    }
+}
+
 #pragma mark Accessors
 
 - (id)delegate {
@@ -178,13 +188,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 - (void)setExpectedContentLength:(long long)newExpectedContentLength {
     if (expectedContentLength != newExpectedContentLength) {
         expectedContentLength = newExpectedContentLength;
-        if (expectedContentLength > 0) {
-            [progressIndicator setIndeterminate:NO];
-            [progressIndicator setMaxValue:(double)expectedContentLength];
-        } else {
-            [progressIndicator setIndeterminate:YES];
-            [progressIndicator setMaxValue:1.0];
-        }
+        [self resetProgressIndicator];
     }
 }
 
@@ -210,14 +214,8 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         [progressIndicator setControlSize:NSSmallControlSize];
         [progressIndicator setUsesThreadedAnimation:YES];
         [progressIndicator sizeToFit];
-        if (expectedContentLength > 0) {
-            [progressIndicator setIndeterminate:NO];
-            [progressIndicator setMaxValue:(double)expectedContentLength];
-            [progressIndicator setDoubleValue:(double)receivedContentLength];
-        } else {
-            [progressIndicator setIndeterminate:YES];
-            [progressIndicator setMaxValue:1.0];
-        }
+        [self resetProgressIndicator];
+        [progressIndicator setDoubleValue:(double)receivedContentLength];
         [progressIndicator startAnimation:self];
     }
     return progressIndicator;
