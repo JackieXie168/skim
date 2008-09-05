@@ -100,6 +100,7 @@ enum {
 
 @interface NSObject (SKDownloadDelegate)
 - (void)downloadDidStart:(SKDownload *)download;
+- (void)downloadDidBeginDownloading:(SKDownload *)download;
 - (void)downloadDidUpdate:(SKDownload *)download;
 - (void)downloadDidEnd:(SKDownload *)download;
 @end
