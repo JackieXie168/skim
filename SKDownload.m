@@ -167,7 +167,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 - (void)setFileIcon:(NSImage *)newFileIcon {
     if (fileIcon != newFileIcon) {
         [fileIcon release];
-        filePath = [newFileIcon retain];
+        fileIcon = [newFileIcon retain];
     }
 }
 
