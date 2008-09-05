@@ -217,7 +217,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         segmentedControlOffset = 0.0;
     }
 
-    [PDFPage setUsesLogicalPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey]];
+    [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
 }
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
@@ -3263,7 +3263,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, SKLogicalPageNumberingKey, nil]
+                                  SKTableFontSizeKey, SKSequentialPageNumberingKey, nil]
         context:SKMainWindowDefaultsObservationContext];
 }
 
@@ -3273,7 +3273,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, SKLogicalPageNumberingKey, nil]];
+                                  SKTableFontSizeKey, SKSequentialPageNumberingKey, nil]];
 }
 
 #pragma mark Undo
@@ -3380,8 +3380,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [findTableView setFont:font];
             [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
-        } else if ([key isEqualToString:SKLogicalPageNumberingKey]) {
-            [PDFPage setUsesLogicalPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKLogicalPageNumberingKey]];
+        } else if ([key isEqualToString:SKSequentialPageNumberingKey]) {
+            [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
             [self updatePageLabelsAndOutline];
         }
         

@@ -51,8 +51,8 @@ extern NSString *SKPDFPageActionRotate;
 
 @interface PDFPage (SKExtensions)
 
-+ (BOOL)usesLogicalPageNumbering;
-+ (void)setUsesLogicalPageNumbering:(BOOL)flag;
++ (BOOL)usesSequentialPageNumbering;
++ (void)setUsesSequentialPageNumbering:(BOOL)flag;
 
 - (NSRect)foregroundBox;
 - (NSImage *)image;

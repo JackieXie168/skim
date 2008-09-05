@@ -115,4 +115,4 @@ NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
 NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
 NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
 NSString *SKTableFontSizeKey = @"SKTableFontSize";
-NSString *SKLogicalPageNumberingKey = @"SKLogicalPageNumbering";
+NSString *SKSequentialPageNumberingKey = @"SKSequentialPageNumbering";

@@ -79,14 +79,14 @@ static void (*originalDealloc)(id, SEL) = NULL;
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 
-static BOOL usesLogicalPageNumbering = NO;
+static BOOL usesSequentialPageNumbering = NO;
 
-+ (BOOL)usesLogicalPageNumbering {
-    return usesLogicalPageNumbering;
++ (BOOL)usesSequentialPageNumbering {
+    return usesSequentialPageNumbering;
 }
 
-+ (void)setUsesLogicalPageNumbering:(BOOL)flag {
-    usesLogicalPageNumbering = flag;
++ (void)setUsesSequentialPageNumbering:(BOOL)flag {
+    usesSequentialPageNumbering = flag;
 }
 
 // mainly useful for drawing the box in a PDFView while debugging
@@ -341,7 +341,7 @@ static BOOL usesLogicalPageNumbering = NO;
 
 - (NSString *)displayLabel {
     NSString *label = nil;
-    if ([[self class] usesLogicalPageNumbering] == NO)
+    if ([[self class] usesSequentialPageNumbering] == NO)
         label = [self label];
     return label ?: [self logicalLabel];
 }
