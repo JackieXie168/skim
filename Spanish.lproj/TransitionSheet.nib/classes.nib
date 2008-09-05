@@ -1,36 +1,63 @@
-{
-    IBClasses =     (
-                {
-            CLASS = FirstResponder;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                dismissTransitionSheet = id;
-            };
-            CLASS = SKTransitionController;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                transitionDurationField = NSTextField;
-                transitionDurationSlider = NSSlider;
-                transitionExtentMatrix = NSMatrix;
-                transitionStylePopUpButton = NSPopUpButton;
-                transitionView = SKTransitionView;
-                transitionWindow = SKTransitionWindow;
-            };
-            SUPERCLASS = NSWindowController;
-        },
-                {
-            CLASS = SKTransitionView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSOpenGLView;
-        },
-                {
-            CLASS = SKTransitionWindow;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSWindow;
-        }
-    );
-    IBVersion = 1;
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKTransitionWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindow</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>dismissTransitionSheet</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKTransitionController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>transitionDurationField</key>
+				<string>NSTextField</string>
+				<key>transitionDurationSlider</key>
+				<string>NSSlider</string>
+				<key>transitionExtentMatrix</key>
+				<string>NSMatrix</string>
+				<key>transitionStylePopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>transitionView</key>
+				<string>SKTransitionView</string>
+				<key>transitionWindow</key>
+				<string>SKTransitionWindow</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKTransitionView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSOpenGLView</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
