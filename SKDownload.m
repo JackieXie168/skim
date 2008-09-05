@@ -164,6 +164,13 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     return fileIcon;
 }
 
+- (void)setFileIcon:(NSImage *)newFileIcon {
+    if (fileIcon != newFileIcon) {
+        [fileIcon release];
+        filePath = [newFileIcon retain];
+    }
+}
+
 - (long long)expectedContentLength {
     return expectedContentLength;
 }
@@ -317,8 +324,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     if (UTI) {
         CFStringRef type = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassFilenameExtension);
         if (type) {
-            [fileIcon release];
-            fileIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:(NSString *)type] retain];
+            [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:(NSString *)type]];
             CFRelease(type);
         }
         CFRelease(UTI);
