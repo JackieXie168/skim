@@ -46,8 +46,9 @@
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 
-#define RESUME_COLUMN 2
-#define CANCEL_COLUMN 3
+#define PROGRESS_COLUMN 1
+#define RESUME_COLUMN   2
+#define CANCEL_COLUMN   3
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
@@ -126,7 +127,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex {
     [downloads insertObject:download atIndex:anIndex];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
-    [tableView reloadData];
+    [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }
 
 - (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex {
@@ -135,7 +136,7 @@ static SKDownloadController *sharedDownloadController = nil;
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
-    [tableView reloadData];
+    [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }
 
 #pragma mark Actions
