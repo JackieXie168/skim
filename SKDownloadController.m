@@ -46,6 +46,9 @@
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 
+#define RESUME_COLUMN 2
+#define CANCEL_COLUMN 3
+
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
 static NSString *SKDownloadControllerDownloadsKey = @"downloads";
@@ -244,13 +247,16 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark SKDownloadDelegate
 
 - (void)downloadDidUpdate:(SKDownload *)download {
-    unsigned int row = [downloads indexOfObject:download];
-    if (row != NSNotFound)
-        [tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
 }
 
 - (void)downloadDidStart:(SKDownload *)download {
-    [self downloadDidUpdate:download];
+    unsigned int row = [downloads indexOfObject:download];
+    if (row != NSNotFound)
+        [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
+}
+
+- (void)downloadDidBeginDownloading:(SKDownload *)download {
+    [self downloadDidStart:download];
 }
 
 - (void)downloadDidEnd:(SKDownload *)download {
@@ -269,10 +275,10 @@ static SKDownloadController *sharedDownloadController = nil;
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
                 [[self window] close];
         } else {
-            [self downloadDidUpdate:download];
+            [self downloadDidStart:download];
         }
     } else {
-        [self downloadDidUpdate:download];
+        [self downloadDidStart:download];
     }
 }
 
