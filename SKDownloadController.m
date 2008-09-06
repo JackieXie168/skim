@@ -52,10 +52,17 @@
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
+static NSString *SKDownloadPropertiesObservationContext = @"SKDownloadPropertiesObservationContext";
+
 static NSString *SKDownloadControllerDownloadsKey = @"downloads";
 
 static NSString *SKDownloadsWindowCancelColumnIdentifier = @"cancel";
 static NSString *SKDownloadsWindowResumeColumnIdentifier = @"resume";
+
+@interface SKDownloadController (SKPrivate)
+- (void)startObservingDownloads:(NSArray *)newDownloads;
+- (void)endObservingDownloads:(NSArray *)oldDownloads;
+@end
 
 @implementation SKDownloadController
 
@@ -77,6 +84,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)dealloc {
+    [self endObservingDownloads:downloads];
     [downloads release];
     [super dealloc];
 }
@@ -126,12 +134,14 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex {
     [downloads insertObject:download atIndex:anIndex];
+    [self startObservingDownloads:[NSArray arrayWithObject:download]];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }
 
 - (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex {
     SKDownload *download = [downloads objectAtIndex:anIndex];
+    [self endObservingDownloads:[NSArray arrayWithObject:download]];
     [download setDelegate:nil];
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
@@ -247,19 +257,6 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark SKDownloadDelegate
 
-- (void)downloadDidUpdate:(SKDownload *)download {
-}
-
-- (void)downloadDidStart:(SKDownload *)download {
-    unsigned int row = [downloads indexOfObject:download];
-    if (row != NSNotFound)
-        [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
-}
-
-- (void)downloadDidBeginDownloading:(SKDownload *)download {
-    [self downloadDidStart:download];
-}
-
 - (void)downloadDidEnd:(SKDownload *)download {
     if ([download status] == SKDownloadStatusFinished) {
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
@@ -275,11 +272,7 @@ static SKDownloadController *sharedDownloadController = nil;
             [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
                 [[self window] close];
-        } else {
-            [self downloadDidStart:download];
         }
-    } else {
-        [self downloadDidStart:download];
     }
 }
 
@@ -420,6 +413,34 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
     [tableView scrollRowToVisible:itemIndex];
+}
+
+#pragma mark KVO
+
+- (void)startObservingDownloads:(NSArray *)newDownloads {
+    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newDownloads count])];
+    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadFileNameKey options:0 context:SKDownloadPropertiesObservationContext];
+    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadStatusKey options:0 context:SKDownloadPropertiesObservationContext];
+}
+
+- (void)endObservingDownloads:(NSArray *)oldDownloads {
+    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [oldDownloads count])];
+    [oldDownloads removeObserver:self fromObjectsAtIndexes:indexes forKeyPath:SKDownloadFileNameKey];
+    [oldDownloads removeObserver:self fromObjectsAtIndexes:indexes forKeyPath:SKDownloadStatusKey];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == SKDownloadPropertiesObservationContext) {
+        if ([keyPath isEqualToString:SKDownloadFileNameKey]) {
+            [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
+        } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
+            unsigned int row = [downloads indexOfObject:object];
+            if (row != NSNotFound)
+                [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end
