@@ -3176,7 +3176,7 @@ int _synctex_node_distance_to_point(synctex_point_t hitPoint, synctex_node_t nod
  *  _synctex_box_child_deepest starts with node's children, if any
  *  if node is not a box, or a void box, NULL is returned.
  *  We traverse the node tree in a deep first manner and stop as soon as a result is found. */
-SYNCTEX_INLINE static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
+static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible);
 
 /*  Once a best container is found, the closest children are the closest nodes to the left or right of the hit point.
  *  Only horizontal and vertical offsets are used to compare the positions of the nodes. */
@@ -3607,7 +3607,7 @@ int _synctex_node_distance_to_point(synctex_point_t hitPoint, synctex_node_t nod
 	return result;
 }
 
-SYNCTEX_INLINE static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
+static synctex_node_t _synctex_eq_deepest_container(synctex_point_t hitPoint,synctex_node_t node, synctex_bool_t visible) {
 	if(node) {
 		switch(node->class->type) {
 			synctex_node_t result = NULL;
