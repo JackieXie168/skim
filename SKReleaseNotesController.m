@@ -44,7 +44,9 @@
 static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 + (id)sharedReleaseNotesController {
-    return sharedReleaseNotesController ?: [[self alloc] init];
+    if (sharedReleaseNotesController == nil)
+        [[self alloc] init];
+    return sharedReleaseNotesController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {

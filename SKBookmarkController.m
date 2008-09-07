@@ -110,7 +110,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedBookmarkController ?: [super allocWithZone:zone];
+    if (sharedBookmarkController == nil)
+        [super allocWithZone:zone];
+    return sharedBookmarkController;
 }
 
 - (id)init {

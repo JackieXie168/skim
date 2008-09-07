@@ -48,7 +48,9 @@ static NSString *SKFindPanelFrameAutosaveName = @"SKFindPanel";
 static SKFindController *sharedFindController = nil;
 
 + (id)sharedFindController {
-    return sharedFindController ?: [[self alloc] init];
+    if (sharedFindController == nil)
+        [[self alloc] init];
+    return sharedFindController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
