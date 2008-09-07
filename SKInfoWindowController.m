@@ -70,7 +70,9 @@ static SKInfoWindowController *sharedInstance = nil;
 }
 
 + (id)sharedInstance {
-    return sharedInstance ?: [[self alloc] init];
+    if (sharedInstance == nil)
+        [[self alloc] init];
+    return sharedInstance;
 }
 
 + (id)allocWithZone:(NSZone *)zone {

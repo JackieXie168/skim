@@ -69,7 +69,9 @@ static NSString *SKDownloadsWindowResumeColumnIdentifier = @"resume";
 static SKDownloadController *sharedDownloadController = nil;
 
 + (id)sharedDownloadController {
-    return sharedDownloadController ?: [[self alloc] init];
+    if (sharedDownloadController == nil)
+        [[self alloc] init];
+    return sharedDownloadController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {

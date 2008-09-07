@@ -61,7 +61,9 @@ static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
 static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
-    return sharedLineInspector ?: [[self alloc] init];
+    if (sharedLineInspector == nil)
+        [[self alloc] init];
+    return sharedLineInspector;
 }
 
 + (BOOL)sharedLineInspectorExists {
