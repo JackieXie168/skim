@@ -47,7 +47,7 @@
     BOOL remoteScrolling;
 }
 
-+ (void)setupDefaults;
++ (id)sharedApplicationController;
 
 - (IBAction)orderFrontLineInspector:(id)sender;
 - (IBAction)orderFrontNotesPanel:(id)sender;

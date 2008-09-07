@@ -418,7 +418,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templateFiles = [NSMutableArray array];
-        NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
+        NSEnumerator *pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
         NSString *appSupportPath;
         
         while (appSupportPath = [pathEnum nextObject]) {

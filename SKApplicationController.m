@@ -96,10 +96,6 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 + (void)initialize{
     OBINITIALIZE;
     
-    [self setupDefaults];
-}
-   
-+ (void)setupDefaults{
     // load the default values for the user defaults
     NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIAL_USER_DEFAULTS_FILENAME ofType:@"plist"];
     NSDictionary *initialUserDefaultsDict = [NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath];
@@ -119,6 +115,32 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
+
+static id sharedApplicationController = nil;
+
++ (id)sharedApplicationController {
+    if (sharedApplicationController == nil)
+        [[self alloc] init];
+    return sharedApplicationController;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return sharedApplicationController ?: [super allocWithZone:zone];
+}
+
+- (id)init {
+    if (sharedApplicationController == nil)
+        sharedApplicationController = [super init];
+    return sharedApplicationController;
+}
+
+- (id)retain { return self; }
+
+- (id)autorelease { return self; }
+
+- (void)release {}
+
+- (unsigned)retainCount { return UINT_MAX; }
 
 - (void)awakeFromNib {
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];

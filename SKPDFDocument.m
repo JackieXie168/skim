@@ -1413,7 +1413,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
         NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
         NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
-        NSEnumerator *pathEnum = [[[NSApp delegate] applicationSupportDirectories] objectEnumerator];
+        NSEnumerator *pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
         NSString *appSupportPath;
         NSMutableDictionary *environment = [[[[NSProcessInfo processInfo] environment] mutableCopy] autorelease];
         NSMutableArray *paths = [NSMutableArray arrayWithArray:[[environment objectForKey:@"PATH"] componentsSeparatedByString:@":"]];

@@ -45,7 +45,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 @implementation NSDocument (SKExtensions)
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+    NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
     NSError *error = nil;
     NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
     NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
@@ -64,7 +64,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
     if ([richTextTypes containsObject:fileType]) {
-        NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -80,7 +80,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
-        NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
