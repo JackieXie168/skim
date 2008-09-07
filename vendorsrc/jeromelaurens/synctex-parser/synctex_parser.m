@@ -992,8 +992,8 @@ typedef int synctex_status_t;
 
 #include <stdarg.h>
 
-SYNCTEX_INLINE static int _synctex_error(char * reason,...);
-SYNCTEX_INLINE static int _synctex_error(char * reason,...) {
+static int _synctex_error(char * reason,...);
+static int _synctex_error(char * reason,...) {
 	va_list arg;
 	int result;
 	result = fprintf(stderr,"SyncTeX ERROR: ");
