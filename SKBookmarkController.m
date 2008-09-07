@@ -106,13 +106,13 @@ static unsigned int maxRecentDocumentsCount = 0;
 static SKBookmarkController *sharedBookmarkController = nil;
 
 + (id)sharedBookmarkController {
-    return sharedBookmarkController ?: [[self alloc] init];
+    if (sharedBookmarkController == nil)
+        [[self alloc] init];
+    return sharedBookmarkController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    if (sharedBookmarkController == nil)
-        [super allocWithZone:zone];
-    return sharedBookmarkController;
+    return sharedBookmarkController ?: [super allocWithZone:zone];
 }
 
 - (id)init {
