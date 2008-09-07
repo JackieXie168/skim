@@ -57,7 +57,9 @@
 static id sharedRemoteStateWindow = nil;
 
 + (id)sharedRemoteStateWindow {
-    return sharedRemoteStateWindow ? sharedRemoteStateWindow : [[self alloc] init];
+    if (sharedRemoteStateWindow == nil)
+        [[self alloc] init];
+    return sharedRemoteStateWindow;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
