@@ -385,8 +385,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
     } else {
         NSString *path = [bookmark path];
         NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
-        if (fileURL && NO == SKFileIsInTrash(fileURL))
-            document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error];
+        if (fileURL && NO == SKFileIsInTrash(fileURL) && 
+            (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]))
+            [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }
     if (document == nil && error)
         [NSApp presentError:error];
