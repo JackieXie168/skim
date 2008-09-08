@@ -446,8 +446,8 @@
 		CE0ECCD40DE71868006EEDDB /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		CE0ECD1A0DE73604006EEDDB /* NSDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDocument_SKExtensions.m; sourceTree = "<group>"; };
-		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-App.xcconfig"; path = "Configurations/Skim-App.xcconfig"; sourceTree = "<group>"; };
-		CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Leopard.xcconfig"; path = "Configurations/Skim-Leopard.xcconfig"; sourceTree = "<group>"; };
+		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
+		CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Leopard.xcconfig"; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -843,9 +843,9 @@
 		CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindTableView.m; sourceTree = "<group>"; };
 		CECF61FD0DB258D600587D96 /* SKFontWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFontWell.h; sourceTree = "<group>"; };
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
-		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "Configurations/Skim-Common.xcconfig"; sourceTree = "<group>"; };
-		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "Configurations/Skim-Debug.xcconfig"; sourceTree = "<group>"; };
-		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "Configurations/Skim-Release.xcconfig"; sourceTree = "<group>"; };
+		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
+		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
+		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
@@ -1511,7 +1511,7 @@
 				CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */,
 				CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */,
 			);
-			name = Configurations;
+			path = Configurations;
 			sourceTree = "<group>";
 		};
 		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
