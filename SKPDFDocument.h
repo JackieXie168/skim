@@ -54,6 +54,10 @@ enum {
 };
 
 
+extern NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settings);
+extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings);
+
+
 @class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController;
 
 @interface SKPDFDocument : NSDocument
@@ -148,10 +152,4 @@ enum {
 
 @interface NSWindow (SKScriptingExtensions)
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
-@end
-
-
-@interface NSDictionary (SKScriptingExtensions)
-- (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
-- (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
 @end

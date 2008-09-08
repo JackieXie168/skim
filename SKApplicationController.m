@@ -488,7 +488,7 @@ static id sharedApplicationController = nil;
 }
 
 - (NSDictionary *)defaultPdfViewSettings {
-    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey] AppleScriptPDFViewSettingsFromPDFViewSettings];
+    return SKScriptingPDFViewSettingsFromPDFViewSettings([[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]);
 }
 
 - (void)setDefaultPdfViewSettings:(NSDictionary *)settings {
@@ -496,12 +496,12 @@ static id sharedApplicationController = nil;
         return;
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
-    [setup addEntriesFromDictionary:[settings PDFViewSettingsFromAppleScriptPDFViewSettings]];
+    [setup addEntriesFromDictionary:SKPDFViewSettingsFromScriptingPDFViewSettings(settings)];
     [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (NSDictionary *)defaultFullScreenPdfViewSettings {
-    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] AppleScriptPDFViewSettingsFromPDFViewSettings];
+    return SKScriptingPDFViewSettingsFromPDFViewSettings([[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]);
 }
 
 - (void)setDefaultFullScreenPdfViewSettings:(NSDictionary *)settings {
@@ -511,7 +511,7 @@ static id sharedApplicationController = nil;
     if ([settings count]) {
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
         [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]];
-        [setup addEntriesFromDictionary:[settings PDFViewSettingsFromAppleScriptPDFViewSettings]];
+        [setup addEntriesFromDictionary:SKPDFViewSettingsFromScriptingPDFViewSettings(settings)];
     }
     [[NSUserDefaults standardUserDefaults] setObject:setup forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
