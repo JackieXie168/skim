@@ -2039,7 +2039,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     [bookmarkSheetController beginSheetModalForWindow: [self window]
         modalDelegate:self 
-       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+       didEndSelector:@selector(setupBookmarkSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
 }
 
