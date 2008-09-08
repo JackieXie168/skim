@@ -1825,11 +1825,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSDictionary *)pdfViewSettings {
-    return [[[self mainWindowController] currentPDFSettings] AppleScriptPDFViewSettingsFromPDFViewSettings];
+    return SKScriptingPDFViewSettingsFromPDFViewSettings([[self mainWindowController] currentPDFSettings]);
 }
 
 - (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings {
-    [[self mainWindowController] applyPDFSettings:[pdfViewSettings PDFViewSettingsFromAppleScriptPDFViewSettings]];
+    [[self mainWindowController] applyPDFSettings:SKPDFViewSettingsFromScriptingPDFViewSettings(pdfViewSettings)];
 }
 
 - (NSDictionary *)documentAttributes {
@@ -2024,10 +2024,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 @end
 
 
-@implementation NSDictionary (SKScriptingExtensions)
-
-- (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings {
-    NSMutableDictionary *setup = [[self mutableCopy] autorelease];
+NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settings) {
+    NSMutableDictionary *setup = [[settings mutableCopy] autorelease];
     
     FourCharCode displayMode = 0;
     switch ([[setup objectForKey:@"displayMode"] intValue]) {
@@ -2048,8 +2046,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return setup;
 }
 
-- (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings {
-    NSMutableDictionary *setup = [[self mutableCopy] autorelease];
+NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings) {
+    NSMutableDictionary *setup = [[settings mutableCopy] autorelease];
     NSNumber *number;
     
     if (number = [setup objectForKey:@"displayMode"]) {
@@ -2074,5 +2072,3 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     return setup;
 }
-
-@end
