@@ -337,8 +337,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
-        if (thumbSize.height < 1.0)
-            return 1.0;
+        if (thumbSize.height < [tv rowHeight])
+            return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
@@ -347,8 +347,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
                                      fminf(thumbSize.height, roundedSnapshotThumbnailSize));
-        if (thumbSize.height < 1.0)
-            return 1.0;
+        if (thumbSize.height < [tv rowHeight])
+            return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
@@ -706,15 +706,15 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 }
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
-    float rowHeight = 0.0;
     if ([ov isEqual:noteOutlineView]) {
+        float rowHeight = 0.0;
         if (CFDictionaryContainsKey(rowHeights, (const void *)item))
             rowHeight = *(float *)CFDictionaryGetValue(rowHeights, (const void *)item);
         else if ([item type] == nil)
             rowHeight = 85.0;
         return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
     }
-    return rowHeight > 0.0 ? rowHeight : [ov rowHeight];
+    return [ov rowHeight];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
