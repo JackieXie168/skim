@@ -1488,6 +1488,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
     [pdfView endAnnotationEdit:self];
+    if ([noteOutlineView editedRow] != -1)
+        [[noteOutlineView window] makeFirstResponder:noteOutlineView];
 }
 
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
