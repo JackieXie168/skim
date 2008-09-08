@@ -417,8 +417,8 @@
 		4530D8C80B27B04D007C59F4 /* SKApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplicationController.m; sourceTree = "<group>"; };
 		4530DCF50B27CACE007C59F4 /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
 		4530DCF60B27CACE007C59F4 /* SKPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFView.m; sourceTree = "<group>"; };
-		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BDAlias.m; path = vendorsrc/BDistributed/BDAlias/BDAlias.m; sourceTree = "<group>"; };
-		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BDAlias.h; path = vendorsrc/BDistributed/BDAlias/BDAlias.h; sourceTree = "<group>"; };
+		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
+		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
 		455989F70B2662FF00E5419B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		45A3BD060B4F0770002B297F /* SKStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStringConstants.h; sourceTree = "<group>"; };
 		45A3BD070B4F0770002B297F /* SKStringConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStringConstants.m; sourceTree = "<group>"; };
@@ -436,8 +436,8 @@
 		CE0710140B89BDD600733CC8 /* BDSKContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKContainerView.m; sourceTree = "<group>"; };
 		CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKEdgeView.h; sourceTree = "<group>"; };
 		CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKEdgeView.m; sourceTree = "<group>"; };
-		CE0715890B8A3D6300733CC8 /* NoteDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NoteDocument.icns; path = Images/NoteDocument.icns; sourceTree = "<group>"; };
-		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDocument.icns; path = Images/PDFDocument.icns; sourceTree = "<group>"; };
+		CE0715890B8A3D6300733CC8 /* NoteDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = NoteDocument.icns; sourceTree = "<group>"; };
+		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDocument.icns; sourceTree = "<group>"; };
 		CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotPageCell.h; sourceTree = "<group>"; };
 		CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotPageCell.m; sourceTree = "<group>"; };
 		CE09FC3B0E3886C100BDF413 /* SKRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRuntime.m; sourceTree = "<group>"; };
@@ -469,8 +469,8 @@
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
-		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteControl.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.h; sourceTree = "<group>"; };
-		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteControl.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControl.m; sourceTree = "<group>"; };
+		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
+		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -494,8 +494,8 @@
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
-		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = synctex_parser.m; path = "vendorsrc/jeromelaurens/synctex-parser/synctex_parser.m"; sourceTree = "<group>"; };
-		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synctex_parser.h; path = "vendorsrc/jeromelaurens/synctex-parser/synctex_parser.h"; sourceTree = "<group>"; };
+		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser.m; sourceTree = "<group>"; };
+		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser.h; sourceTree = "<group>"; };
 		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSyncRecord.h; sourceTree = "<group>"; };
 		CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSyncRecord.m; sourceTree = "<group>"; };
@@ -507,7 +507,7 @@
 		CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSNumber_SKExtensions.m; sourceTree = "<group>"; };
 		CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSEvent_SKExtensions.h; sourceTree = "<group>"; };
 		CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSEvent_SKExtensions.m; sourceTree = "<group>"; };
-		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
+		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CameraCursor.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNPDFAnnotationNote_SKExtensions.h; sourceTree = "<group>"; };
@@ -523,7 +523,7 @@
 		CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSValue_SKExtensions.m; sourceTree = "<group>"; };
 		CE4294A10BBD29120016FDC2 /* SKReadingBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKReadingBar.h; sourceTree = "<group>"; };
 		CE4294A20BBD29120016FDC2 /* SKReadingBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKReadingBar.m; sourceTree = "<group>"; };
-		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PSDocument.icns; path = Images/PSDocument.icns; sourceTree = "<group>"; };
+		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PSDocument.icns; sourceTree = "<group>"; };
 		CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKExtensions.h; sourceTree = "<group>"; };
 		CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationText_SKExtensions.m; sourceTree = "<group>"; };
 		CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKJoinCommand.h; sourceTree = "<group>"; };
@@ -562,7 +562,7 @@
 		CE4A8BA10BB15980004AD07D /* NSWindowController_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSWindowController_SKExtensions.m; sourceTree = "<group>"; };
 		CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLineWell.h; sourceTree = "<group>"; };
 		CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLineWell.m; sourceTree = "<group>"; };
-		CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DVIDocument.icns; path = Images/DVIDocument.icns; sourceTree = "<group>"; };
+		CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DVIDocument.icns; sourceTree = "<group>"; };
 		CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorSwatch.h; sourceTree = "<group>"; };
 		CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorSwatch.m; sourceTree = "<group>"; };
 		CE4DA8D00B9E15AD0039E89C /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "Skim Help/applehelp.init"; sourceTree = "<group>"; };
@@ -644,7 +644,7 @@
 		CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCell_SKExtensions.m; sourceTree = "<group>"; };
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
-		CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFontsBlack.tiff; path = Images/ToolbarFontsBlack.tiff; sourceTree = "<group>"; };
+		CE64E8190D92BB97000AD050 /* ToolbarFontsBlack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarFontsBlack.tiff; sourceTree = "<group>"; };
 		CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFCallBacks.h; sourceTree = "<group>"; };
 		CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCFCallBacks.m; sourceTree = "<group>"; };
 		CE665A120E1BF43700D0704D /* SKBookmarkOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkOutlineView.h; sourceTree = "<group>"; };
@@ -672,8 +672,8 @@
 		CE68C6740CEF89E100B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE68C6770CEF89ED00B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE68C67A0CEF89F300B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/ZoomValues.strings; sourceTree = "<group>"; };
-		CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCustomize.tiff; path = Images/ToolbarCustomize.tiff; sourceTree = "<group>"; };
-		CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPrint.tiff; path = Images/ToolbarPrint.tiff; sourceTree = "<group>"; };
+		CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarCustomize.tiff; sourceTree = "<group>"; };
+		CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarPrint.tiff; sourceTree = "<group>"; };
 		CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSParagraphStyle_SKExtensions.h; sourceTree = "<group>"; };
 		CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSParagraphStyle_SKExtensions.m; sourceTree = "<group>"; };
 		CE6C96A80CD924C70022D69F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesPanel.nib; sourceTree = "<group>"; };
@@ -690,11 +690,11 @@
 		CE6DC8240D68B324003A072F /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8260D68B354003A072F /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
 		CE6DC8270D68B36E003A072F /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
-		CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarMoveTool.tiff; path = Images/ToolbarMoveTool.tiff; sourceTree = "<group>"; };
-		CE6DC9930D699F21003A072F /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
-		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
-		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
-		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallMenu.tiff; path = Images/SmallMenu.tiff; sourceTree = "<group>"; };
+		CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarMoveTool.tiff; sourceTree = "<group>"; };
+		CE6DC9930D699F21003A072F /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TransitionMask.jpg; sourceTree = "<group>"; };
+		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarInfo.tiff; sourceTree = "<group>"; };
+		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Skim.icns; sourceTree = "<group>"; };
+		CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallMenu.tiff; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimNotes.xcodeproj; path = SkimNotes/SkimNotes.xcodeproj; sourceTree = "<group>"; };
@@ -710,7 +710,7 @@
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
 		CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateTag.h; sourceTree = "<group>"; };
 		CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateTag.m; sourceTree = "<group>"; };
-		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDDocument.icns; path = Images/PDFDDocument.icns; sourceTree = "<group>"; };
+		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDDocument.icns; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
 		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
@@ -742,11 +742,11 @@
 		CEAA55F00C6DE5AE006BD633 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA565E0C6DE967006BD633 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA565F0C6DE96A006BD633 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
-		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cancel.tiff; path = Images/Cancel.tiff; sourceTree = "<group>"; };
-		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
+		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cancel.tiff; sourceTree = "<group>"; };
+		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Delete.tiff; sourceTree = "<group>"; };
 		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
 		CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURL_SKExtensions.m; sourceTree = "<group>"; };
-		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Resume.tiff; path = Images/Resume.tiff; sourceTree = "<group>"; };
+		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Resume.tiff; sourceTree = "<group>"; };
 		CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSecondaryPDFView.h; sourceTree = "<group>"; };
 		CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSecondaryPDFView.m; sourceTree = "<group>"; };
 		CEAE38C30CA4399B00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
@@ -775,11 +775,11 @@
 		CEAF36B50E6724F400491E3B /* SnapshotWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SnapshotWindow.nib; sourceTree = "<group>"; };
 		CEAF36D60E672BB900491E3B /* MainWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainWindow.nib; sourceTree = "<group>"; };
 		CEAF37190E676EC300491E3B /* BookmarksWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = BookmarksWindow.nib; sourceTree = "<group>"; };
-		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarColors.tiff; path = Images/ToolbarColors.tiff; sourceTree = "<group>"; };
-		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFonts.tiff; path = Images/ToolbarFonts.tiff; sourceTree = "<group>"; };
-		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLines.tiff; path = Images/ToolbarLines.tiff; sourceTree = "<group>"; };
+		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarColors.tiff; sourceTree = "<group>"; };
+		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarFonts.tiff; sourceTree = "<group>"; };
+		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarLines.tiff; sourceTree = "<group>"; };
 		CEB72B890C4A189D000350F9 /* SKTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionController.h; sourceTree = "<group>"; };
-		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
+		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TransitionShading.tiff; sourceTree = "<group>"; };
 		CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmark.h; sourceTree = "<group>"; };
 		CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmark.m; sourceTree = "<group>"; };
 		CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAffineTransform_SKExtensions.h; sourceTree = "<group>"; };
@@ -806,18 +806,18 @@
 		CEC4C3510CA90CA200299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
 		CEC4C3530CA90CA200299397 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Spanish; path = Spanish.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
 		CEC4C3540CA90CA200299397 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/ZoomValues.strings; sourceTree = "<group>"; };
-		CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/RemoteControlWrapper/AppleRemote.h; sourceTree = "<group>"; };
-		CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/RemoteControlWrapper/AppleRemote.m; sourceTree = "<group>"; };
-		CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlobalKeyboardDevice.h; path = vendorsrc/martinkahr/RemoteControlWrapper/GlobalKeyboardDevice.h; sourceTree = "<group>"; };
-		CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GlobalKeyboardDevice.m; path = vendorsrc/martinkahr/RemoteControlWrapper/GlobalKeyboardDevice.m; sourceTree = "<group>"; };
-		CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HIDRemoteControlDevice.h; path = vendorsrc/martinkahr/RemoteControlWrapper/HIDRemoteControlDevice.h; sourceTree = "<group>"; };
-		CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HIDRemoteControlDevice.m; path = vendorsrc/martinkahr/RemoteControlWrapper/HIDRemoteControlDevice.m; sourceTree = "<group>"; };
-		CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyspanFrontRowControl.h; path = vendorsrc/martinkahr/RemoteControlWrapper/KeyspanFrontRowControl.h; sourceTree = "<group>"; };
-		CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeyspanFrontRowControl.m; path = vendorsrc/martinkahr/RemoteControlWrapper/KeyspanFrontRowControl.m; sourceTree = "<group>"; };
-		CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MultiClickRemoteBehavior.h; path = vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.h; sourceTree = "<group>"; };
-		CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MultiClickRemoteBehavior.m; path = vendorsrc/martinkahr/RemoteControlWrapper/MultiClickRemoteBehavior.m; sourceTree = "<group>"; };
-		CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteControlContainer.h; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.h; sourceTree = "<group>"; };
-		CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteControlContainer.m; path = vendorsrc/martinkahr/RemoteControlWrapper/RemoteControlContainer.m; sourceTree = "<group>"; };
+		CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
+		CEC7B38E0CF5F2D2008CCD63 /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
+		CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalKeyboardDevice.h; sourceTree = "<group>"; };
+		CEC7B3900CF5F2D2008CCD63 /* GlobalKeyboardDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalKeyboardDevice.m; sourceTree = "<group>"; };
+		CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemoteControlDevice.h; sourceTree = "<group>"; };
+		CEC7B3920CF5F2D2008CCD63 /* HIDRemoteControlDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemoteControlDevice.m; sourceTree = "<group>"; };
+		CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyspanFrontRowControl.h; sourceTree = "<group>"; };
+		CEC7B3940CF5F2D2008CCD63 /* KeyspanFrontRowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyspanFrontRowControl.m; sourceTree = "<group>"; };
+		CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiClickRemoteBehavior.h; sourceTree = "<group>"; };
+		CEC7B3960CF5F2D2008CCD63 /* MultiClickRemoteBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiClickRemoteBehavior.m; sourceTree = "<group>"; };
+		CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControlContainer.h; sourceTree = "<group>"; };
+		CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControlContainer.m; sourceTree = "<group>"; };
 		CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "QuickLook-Skim.xcodeproj"; path = "QuickLook-Skim/QuickLook-Skim.xcodeproj"; sourceTree = "<group>"; };
 		CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKGroupedSearchResult.h; sourceTree = "<group>"; };
 		CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKGroupedSearchResult.m; sourceTree = "<group>"; };
@@ -908,7 +908,7 @@
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
-		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallPreferences.tiff; path = Images/SmallPreferences.tiff; sourceTree = "<group>"; };
+		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPreferences.tiff; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -924,10 +924,10 @@
 		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
 		F97751620B37461000DF673B /* SKPSProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPSProgressController.m; sourceTree = "<group>"; };
 		F98E24BE0B702D9400914AF0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		F9F220840C14BD9C00041284 /* UKFileWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKFileWatcher.h; path = vendorsrc/ulikusterer/UKFileWatcher.h; sourceTree = "<group>"; };
-		F9F220860C14BDFF00041284 /* UKFileWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKFileWatcher.m; path = vendorsrc/ulikusterer/UKFileWatcher.m; sourceTree = "<group>"; };
-		F9F220870C14BDFF00041284 /* UKKQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKKQueue.h; path = vendorsrc/ulikusterer/UKKQueue.h; sourceTree = "<group>"; };
-		F9F220880C14BDFF00041284 /* UKKQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKKQueue.m; path = vendorsrc/ulikusterer/UKKQueue.m; sourceTree = "<group>"; };
+		F9F220840C14BD9C00041284 /* UKFileWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UKFileWatcher.h; sourceTree = "<group>"; };
+		F9F220860C14BDFF00041284 /* UKFileWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UKFileWatcher.m; sourceTree = "<group>"; };
+		F9F220870C14BDFF00041284 /* UKKQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UKKQueue.h; sourceTree = "<group>"; };
+		F9F220880C14BDFF00041284 /* UKKQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UKKQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1092,9 +1092,10 @@
 				CE9BD6FB0D096F0500EB1A6C /* BDAlias */,
 				CE9BD6FA0D096EE300EB1A6C /* RemoteControl */,
 				CE9BD6FC0D096F1800EB1A6C /* UKKQueue */,
-				CE33639E0E26E086005F99E6 /* Synctex */,
+				CE33639E0E26E086005F99E6 /* SyncTeX */,
 			);
 			name = "Third Party Sources";
+			path = vendorsrc;
 			sourceTree = "<group>";
 		};
 		CE070EC10B89063400733CC8 /* Foundation Categories */ = {
@@ -1365,13 +1366,14 @@
 			name = Parsers;
 			sourceTree = "<group>";
 		};
-		CE33639E0E26E086005F99E6 /* Synctex */ = {
+		CE33639E0E26E086005F99E6 /* SyncTeX */ = {
 			isa = PBXGroup;
 			children = (
 				CE33639F0E26E120005F99E6 /* synctex_parser.m */,
 				CE3363A00E26E120005F99E6 /* synctex_parser.h */,
 			);
-			name = Synctex;
+			name = SyncTeX;
+			path = "jeromelaurens/synctex-parser";
 			sourceTree = "<group>";
 		};
 		CE4643F10DF6BADC00CFD8D2 /* Commands */ = {
@@ -1429,7 +1431,7 @@
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
 			);
-			name = Images;
+			path = Images;
 			sourceTree = "<group>";
 		};
 		CE7DC7290E09286500D6D76D /* Products */ = {
@@ -1472,6 +1474,7 @@
 				CEC7B3980CF5F2D2008CCD63 /* RemoteControlContainer.m */,
 			);
 			name = RemoteControl;
+			path = martinkahr/RemoteControlWrapper;
 			sourceTree = "<group>";
 		};
 		CE9BD6FB0D096F0500EB1A6C /* BDAlias */ = {
@@ -1481,6 +1484,7 @@
 				453DC2760B4F242200A72509 /* BDAlias.h */,
 			);
 			name = BDAlias;
+			path = BDistributed/BDAlias;
 			sourceTree = "<group>";
 		};
 		CE9BD6FC0D096F1800EB1A6C /* UKKQueue */ = {
@@ -1492,6 +1496,7 @@
 				F9F220880C14BDFF00041284 /* UKKQueue.m */,
 			);
 			name = UKKQueue;
+			path = ulikusterer;
 			sourceTree = "<group>";
 		};
 		CEC7B4E70CF607CA008CCD63 /* Products */ = {
