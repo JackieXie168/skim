@@ -615,6 +615,13 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     return didRead;
 }
 
+static BOOL isIgnorablePOSIXError(NSError *error) {
+    if ([[error domain] isEqualToString:NSPOSIXErrorDomain])
+        return [error code] == ENOATTR || [error code] == ENOTSUP || [error code] == EINVAL || [error code] == EPERM || [error code] == EACCES;
+    else
+        return NO;
+}
+
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     NSData *data = nil;
@@ -633,7 +640,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 [self setNoteDicts:array];
             } else {
                 // we found no notes, see if we had an error finding notes. if EAs were not supported we ignore the error, as we may assume there won't be any notes
-                if (array == nil && [error code] != ENOTSUP && [error code] != ENOATTR && [error code] != EINVAL) {
+                if (array == nil && isIgnorablePOSIXError(error) == NO) {
                     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
                                                      defaultButton:NSLocalizedString(@"No", @"Button title")
                                                    alternateButton:NSLocalizedString(@"Yes", @"Button title")
