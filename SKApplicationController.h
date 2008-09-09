@@ -89,7 +89,5 @@
 - (void)setDefaultEndLineStyle:(FourCharCode)style;
 - (FourCharCode)defaultIconType;
 - (void)setDefaultIconType:(FourCharCode)type;
-- (unsigned int)countOfLines;
-- (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 
 @end

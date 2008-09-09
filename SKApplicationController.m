@@ -483,7 +483,7 @@ static id sharedApplicationController = nil;
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", 
-            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultIconType", @"lines", nil];
+            @"defaultNoteColors", @"defaultLineWidths", @"defaultLineStyles", @"defaultDashPatterns", @"defaultStartLineStyle", @"defaultEndLineStyle", @"defaultIconType", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
@@ -664,14 +664,6 @@ static id sharedApplicationController = nil;
 
 - (void)setDefaultIconType:(FourCharCode)type {
     return [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
-}
-
-- (unsigned int)countOfLines {
-    return UINT_MAX;
-}
-
-- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
-    return [[[SKLine alloc] initWithLine:anIndex] autorelease];
 }
 
 @end

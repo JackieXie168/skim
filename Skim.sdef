@@ -187,6 +187,10 @@
         <class name="window" code="cwin"
             description="A window.">
             <cocoa class="NSWindow"/>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The full title of the window.">
                 <cocoa key="title"/>
@@ -609,6 +613,10 @@
                 description="Notes in the page">
                 <cocoa key="notes"/>
             </element>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
             <contents name="text" code="ctxt" type="rich text" access="r"
                 description="The text of the page.">
                 <cocoa key="richText"/>
@@ -654,6 +662,10 @@
         <class name="note" plural="notes" code="Note"
             description="A note.">
             <cocoa class="PDFAnnotation"/>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
             <property name="type" code="NTyp" type="note type" access="r"
                 description="The type of note.">
                 <cocoa key="scriptingNoteType"/>
@@ -751,7 +763,7 @@
             <cocoa class="SKLine"/>
             <property name="index" code="pidx" type="integer" access="r"
                 description="the line number.">
-                <cocoa key="index"/>
+                <cocoa key="scriptingIndex"/>
             </property>
         </class>
 
