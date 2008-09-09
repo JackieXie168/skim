@@ -323,10 +323,12 @@ static SKBookmarkController *sharedBookmarkController = nil;
         [recentDocuments removeObjectAtIndex:idx];
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], SKRecentDocumentPageIndexKey, [alias aliasData], SKRecentDocumentAliasDataKey, alias, SKRecentDocumentAliasKey, [setups count] ? setups : nil, SKRecentDocumentSnapshotsKey, nil];
-    [recentDocuments insertObject:bm atIndex:0];
-    if ([recentDocuments count] > maxRecentDocumentsCount)
-        [recentDocuments removeLastObject];
+    if (alias) {
+        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], SKRecentDocumentPageIndexKey, [alias aliasData], SKRecentDocumentAliasDataKey, alias, SKRecentDocumentAliasKey, [setups count] ? setups : nil, SKRecentDocumentSnapshotsKey, nil];
+        [recentDocuments insertObject:bm atIndex:0];
+        if ([recentDocuments count] > maxRecentDocumentsCount)
+            [recentDocuments removeLastObject];
+    }
 }
 
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
