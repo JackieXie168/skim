@@ -129,8 +129,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex;
-- (unsigned int)countOfLines;
-- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;

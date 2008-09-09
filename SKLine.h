@@ -40,9 +40,15 @@
 
 
 @interface SKLine : NSObject {
-    int line;
+    int index;
 }
-- (id)initWithLine:(int)aLine;
-- (int)line;
+- (id)initWithIndex:(int)anIndex;
 - (int)index;
+- (int)scriptingIndex;
+@end
+
+
+@interface NSObject (SKLine)
+- (unsigned int)countOfLines;
+- (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 @end

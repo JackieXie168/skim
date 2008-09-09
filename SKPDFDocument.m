@@ -1767,14 +1767,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
 }
 
-- (unsigned int)countOfLines {
-    return UINT_MAX;
-}
-
-- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
-    return [[[SKLine alloc] initWithLine:anIndex] autorelease];
-}
-
 - (PDFPage *)currentPage {
     return [[self pdfView] currentPage];
 }
@@ -1948,7 +1940,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
             source = [self fileURL];
-        [[self synchronizer] findPageAndLocationForLine:[location line] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
+        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:location];
         if ([[selection pages] count]) {

@@ -41,24 +41,37 @@
 
 @implementation SKLine
 
-- (id)initWithLine:(int)aLine {
+- (id)initWithIndex:(int)anIndex {
     if (self = [super init]) {
-        line = aLine;
+        index = anIndex;
     }
     return self;
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     NSScriptClassDescription *containerClassDescription = (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApp class]];
-    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:line] autorelease];
-}
-
-- (int)line {
-    return line;
+    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:index] autorelease];
 }
 
 - (int)index {
-    return line + 1;
+    return index;
+}
+
+- (int)scriptingIndex {
+    return index + 1;
+}
+
+@end
+
+
+@implementation NSObject (SKLine)
+
+- (unsigned int)countOfLines {
+    return UINT_MAX;
+}
+
+- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
+    return [[[SKLine alloc] initWithIndex:anIndex] autorelease];
 }
 
 @end
