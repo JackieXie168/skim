@@ -45,7 +45,7 @@
 - (id)initWithPage:(PDFPage *)aPage {
     if (self = [super init]) {
         numberOfLines = 1;
-        lineBounds = nil;
+        lineRects = nil;
         currentLine = -1;
         [self setPage:aPage];
     }
@@ -58,7 +58,7 @@
 
 - (void)dealloc {
     [page release];
-    [lineBounds release];
+    [lineRects release];
     [super dealloc];
 }
 
@@ -70,8 +70,8 @@
     if (page != newPage) {
         [page release];
         page = [newPage retain];
-        [lineBounds release];
-        lineBounds = [[page lineBounds] retain];
+        [lineRects release];
+        lineRects = [[page lineRects] retain];
         currentLine = -1;
     } 
 }
@@ -85,7 +85,7 @@
 }
 
 - (int)currentLastLine {
-    return MIN([lineBounds count], currentLine + numberOfLines) - 1;
+    return MIN([lineRects count], currentLine + numberOfLines) - 1;
 }
 
 - (unsigned int)numberOfLines {
@@ -102,7 +102,7 @@
     NSRect rect = NSZeroRect;
     int i, lastLine = [self currentLastLine];
     for (i = currentLine; i <= lastLine; i++)
-        rect = NSUnionRect(rect, [[lineBounds objectAtIndex:i] rectValue]);
+        rect = NSUnionRect(rect, [[lineRects objectAtIndex:i] rectValue]);
     return rect;
 }
 
@@ -118,7 +118,7 @@
 
 - (BOOL)goToNextLine {
     BOOL didMove = NO;
-    if (currentLine < (int)[lineBounds count] - (int)numberOfLines) {
+    if (currentLine < (int)[lineRects count] - (int)numberOfLines) {
         ++currentLine;
         didMove = YES;
     } else if ([self goToNextPage]) {
@@ -129,13 +129,13 @@
 
 - (BOOL)goToPreviousLine {
     BOOL didMove = NO;
-    if (currentLine == -1 && [lineBounds count])
-        currentLine = [lineBounds count];
+    if (currentLine == -1 && [lineRects count])
+        currentLine = [lineRects count];
     if (currentLine > 0) {
         --currentLine;
         didMove =  YES;
     } else if ([self goToPreviousPage]) {
-        currentLine = MAX(0, (int)[lineBounds count] - (int)numberOfLines);
+        currentLine = MAX(0, (int)[lineRects count] - (int)numberOfLines);
         didMove = YES;
     }
     return didMove;
@@ -148,12 +148,12 @@
     
     while (++i < iMax) {
         PDFPage *nextPage = [doc pageAtIndex:i];
-        NSArray *lines = [nextPage lineBounds];
+        NSArray *lines = [nextPage lineRects];
         if ([lines count]) {
             [page release];
             page = [nextPage retain];
-            [lineBounds release];
-            lineBounds = [lines retain];
+            [lineRects release];
+            lineRects = [lines retain];
             currentLine = 0;
             didMove = YES;
             break;
@@ -169,12 +169,12 @@
     
     while (i-- > 0) {
         PDFPage *prevPage = [doc pageAtIndex:i];
-        NSArray *lines = [prevPage lineBounds];
+        NSArray *lines = [prevPage lineRects];
         if ([lines count]) {
             [page release];
             page = [prevPage retain];
-            [lineBounds release];
-            lineBounds = [lines retain];
+            [lineRects release];
+            lineRects = [lines retain];
             currentLine = 0;
             didMove = YES;
             break;

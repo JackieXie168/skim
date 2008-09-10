@@ -3505,12 +3505,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
-    NSArray *lineBounds = [page lineBounds];
+    NSArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     
     NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
-    int lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineBounds, YES) - [readingBar currentLine];
+    int lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineRects, YES) - [readingBar currentLine];
     NSDate *lastPageChangeDate = [NSDate distantPast];
     
     lastMouseLoc = [self convertPoint:lastMouseLoc toView:[self documentView]];
@@ -3553,14 +3553,14 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         if ([currentPage isEqual:page] == NO) {
             page = currentPage;
-            lineBounds = [page lineBounds];
+            lineRects = [page lineRects];
         }
         
-        if ([lineBounds count] == 0)
+        if ([lineRects count] == 0)
             continue;
         
-        currentLine = SKIndexOfRectAtYInOrderedRects(mouseLocInPage.y, lineBounds, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
-        currentLine = MIN((int)[lineBounds count] - (int)[readingBar numberOfLines], currentLine);
+        currentLine = SKIndexOfRectAtYInOrderedRects(mouseLocInPage.y, lineRects, mouseLocInDocument.y < lastMouseLoc.y) - lineOffset;
+        currentLine = MIN((int)[lineRects count] - (int)[readingBar numberOfLines], currentLine);
         currentLine = MAX(0, currentLine);
         
         if ([page isEqual:[readingBar page]] == NO || currentLine != [readingBar currentLine]) {
@@ -3583,7 +3583,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     int firstLine = [readingBar currentLine];
-    NSArray *lineBounds = [page lineBounds];
+    NSArray *lineRects = [page lineRects];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil];
     
     [[NSCursor resizeUpDownCursor] push];
@@ -3600,7 +3600,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             continue;
         
         mouseLoc = [self convertPoint:mouseLoc toPage:page];
-        int numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(mouseLoc.y, lineBounds, YES)) - firstLine + 1;
+        int numberOfLines = MAX(0, SKIndexOfRectAtYInOrderedRects(mouseLoc.y, lineRects, YES)) - firstLine + 1;
         
         if (numberOfLines > 0 && numberOfLines != (int)[readingBar numberOfLines]) {
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
