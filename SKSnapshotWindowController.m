@@ -39,7 +39,7 @@
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
 #import "SKPDFDocument.h"
-#import "SKMiniaturizeWindow.h"
+#import "SKBorderlessImageWindow.h"
 #import <Quartz/Quartz.h>
 #import "BDSKZoomablePDFView.h"
 #import <SkimNotes/SkimNotes.h>
@@ -532,7 +532,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
         [self getMiniRect:&endRect maxiRect:&startRect forDockingRect:dockRect];
         
         NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        SKBorderlessImageWindow *miniaturizeWindow = [[SKBorderlessImageWindow alloc] initWithContentRect:startRect image:image];
         
         [miniaturizeWindow orderFront:self];
         [[self window] orderOut:self];
@@ -553,7 +553,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
         [self getMiniRect:&startRect maxiRect:&endRect forDockingRect:dockRect];
         
         NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        SKBorderlessImageWindow *miniaturizeWindow = [[SKBorderlessImageWindow alloc] initWithContentRect:startRect image:image];
         
         [miniaturizeWindow orderFront:self];
         [miniaturizeWindow setFrame:endRect display:YES animate:YES];
