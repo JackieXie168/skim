@@ -273,7 +273,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return [self thumbnailAttachmentWithSize:32.0];
 }
 
-- (NSArray *)lineBounds {
+- (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     unsigned i, iMax = [sel safeNumberOfRangesOnPage:self];
