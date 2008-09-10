@@ -81,8 +81,8 @@ static id (*originalAccessibilityFocusedUIElement)(id, SEL) = NULL;
 static void replacementResetCursorRects(id self, SEL _cmd) {
 	originalResetCursorRects(self, _cmd);
     id pdfView = SKGetPDFView(self);
-    if ([pdfView respondsToSelector:@selector(resetHoverRects)])
-        [pdfView resetHoverRects];
+    if ([pdfView respondsToSelector:@selector(resetPDFToolTipRects)])
+        [pdfView resetPDFToolTipRects];
 }
 
 static void replacementPasswordEntered(id self, SEL _cmd, id sender) {

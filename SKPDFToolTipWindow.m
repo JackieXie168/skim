@@ -1,5 +1,5 @@
 //
-//  SKPDFHoverWindow.m
+//  SKPDFToolTipWindow.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/16/07.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFHoverWindow.h"
+#import "SKPDFToolTipWindow.h"
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
@@ -63,22 +63,22 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 @end
 
 
-@implementation SKPDFHoverWindow
+@implementation SKPDFToolTipWindow
 
-static SKPDFHoverWindow *sharedHoverWindow = nil;
+static SKPDFToolTipWindow *sharedToolTipWindow = nil;
 
-+ (id)sharedHoverWindow {
-    if (sharedHoverWindow == nil)
++ (id)sharedToolTipWindow {
+    if (sharedToolTipWindow == nil)
         [[self alloc] init];
-    return sharedHoverWindow;
+    return sharedToolTipWindow;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedHoverWindow ?: [super allocWithZone:zone];
+    return sharedToolTipWindow ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedHoverWindow == nil && (sharedHoverWindow = self = [super initWithContentRect:NSZeroRect])) {
+    if (sharedToolTipWindow == nil && (sharedToolTipWindow = self = [super initWithContentRect:NSZeroRect])) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
 		[self setOpaque:YES];
@@ -102,7 +102,7 @@ static SKPDFHoverWindow *sharedHoverWindow = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
     }
-    return sharedHoverWindow;
+    return sharedToolTipWindow;
 }
 
 - (void)dealloc {

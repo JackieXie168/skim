@@ -54,7 +54,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
-#import "SKPDFHoverWindow.h"
+#import "SKPDFToolTipWindow.h"
 #import "SKPDFDocument.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
@@ -105,7 +105,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 #pragma mark Support
 
-- (void)showHoverWindowForDestination:(PDFDestination *)dest {
+- (void)showToolTipForDestination:(PDFDestination *)dest {
     if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
         PDFAnnotationLink *annotation = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
         NSPoint point = [dest point];
@@ -128,7 +128,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
                 break;
         }
         [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
     }
 }
 
@@ -442,18 +442,18 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-        [self showHoverWindowForDestination:dest];
+        [self showToolTipForDestination:dest];
     } else if ([tv isEqual:groupedFindTableView]) {
         PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
-        [self showHoverWindowForDestination:dest];
+        [self showToolTipForDestination:dest];
     }
 }
 
 - (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     } else if ([tv isEqual:groupedFindTableView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     }
 }
 
@@ -843,13 +843,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)outlineView:(NSOutlineView *)ov mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:outlineView]) {
-        [self showHoverWindowForDestination:[item destination]];
+        [self showToolTipForDestination:[item destination]];
     }
 }
 
 - (void)outlineView:(NSOutlineView *)ov mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     if ([ov isEqual:outlineView]) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     }
 }
 

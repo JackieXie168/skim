@@ -65,7 +65,7 @@
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4C60B85D78200D0DA12 /* SKBorderlessImageWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4C50B85D78200D0DA12 /* SKBorderlessImageWindow.m */; };
 		CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */; };
-		CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */; };
+		CE2DE4FD0B85DBD400D0DA12 /* SKPDFToolTipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4FC0B85DBD400D0DA12 /* SKPDFToolTipWindow.m */; };
 		CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */; };
 		CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */; };
 		CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEB900B86206400D0DA12 /* FindPanel.nib */; };
@@ -481,8 +481,8 @@
 		CE2DE4C50B85D78200D0DA12 /* SKBorderlessImageWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBorderlessImageWindow.m; sourceTree = "<group>"; };
 		CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCursor_SKExtensions.h; sourceTree = "<group>"; };
 		CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCursor_SKExtensions.m; sourceTree = "<group>"; };
-		CE2DE4FB0B85DBD400D0DA12 /* SKPDFHoverWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFHoverWindow.h; sourceTree = "<group>"; };
-		CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFHoverWindow.m; sourceTree = "<group>"; };
+		CE2DE4FB0B85DBD400D0DA12 /* SKPDFToolTipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFToolTipWindow.h; sourceTree = "<group>"; };
+		CE2DE4FC0B85DBD400D0DA12 /* SKPDFToolTipWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFToolTipWindow.m; sourceTree = "<group>"; };
 		CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage_SKExtensions.h; sourceTree = "<group>"; };
 		CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage_SKExtensions.m; sourceTree = "<group>"; };
 		CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFindController.h; sourceTree = "<group>"; };
@@ -1236,8 +1236,8 @@
 				CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */,
 				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
-				CE2DE4FB0B85DBD400D0DA12 /* SKPDFHoverWindow.h */,
-				CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */,
+				CE2DE4FB0B85DBD400D0DA12 /* SKPDFToolTipWindow.h */,
+				CE2DE4FC0B85DBD400D0DA12 /* SKPDFToolTipWindow.m */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -1981,7 +1981,7 @@
 				CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */,
 				CE2DE4C60B85D78200D0DA12 /* SKBorderlessImageWindow.m in Sources */,
 				CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */,
-				CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */,
+				CE2DE4FD0B85DBD400D0DA12 /* SKPDFToolTipWindow.m in Sources */,
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
 				CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */,

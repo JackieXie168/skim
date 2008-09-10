@@ -72,7 +72,7 @@
 #import "SKFindTableView.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSWindowController_SKExtensions.h"
-#import "SKPDFHoverWindow.h"
+#import "SKPDFToolTipWindow.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "NSValue_SKExtensions.h"
@@ -723,7 +723,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             CFSetRemoveAllValues(temporaryAnnotations);
             
             // make sure these will not be activated, or they can lead to a crash
-            [pdfView removeHoverRects];
+            [pdfView removePDFToolTipRects];
             [pdfView setActiveAnnotation:nil];
             
             // these will be invalid. If needed, the document will restore them
@@ -807,14 +807,14 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [self observeUndoManagerCheckpoint:nil];
     [noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
-    [pdfView resetHoverRects];
+    [pdfView resetPDFToolTipRects];
 }
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
     NSEnumerator *e = [[[notes copy] autorelease] objectEnumerator];
     PDFAnnotation *annotation;
     
-    [pdfView removeHoverRects];
+    [pdfView removePDFToolTipRects];
     
     // remove the current annotations
     [pdfView setActiveAnnotation:nil];
@@ -2093,7 +2093,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
         if ([self leftSidePaneIsOpen])
             [leftSideWindow collapse];
         else
@@ -2106,7 +2106,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     } else if (usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
-                [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+                [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
             [leftSideDrawer close];
         } else {
             [leftSideDrawer openOnEdge:NSMinXEdge];
@@ -2117,7 +2117,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         
         if ([self leftSidePaneIsOpen]) {
             if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
-                [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+                [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
             lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastLeftSidePaneWidth;
             sideFrame.size.width = 0.0;
@@ -2626,7 +2626,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         NSView *containerView = [newButton superview];
         
         if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
-            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         
         if (wasFind != isFind) {
             [newButton setFrame:[oldButton frame]];
@@ -3452,7 +3452,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
             }
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
-                [pdfView resetHoverRects];
+                [pdfView resetPDFToolTipRects];
             
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
                 [noteArrayController rearrangeObjects];

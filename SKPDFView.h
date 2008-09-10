@@ -126,8 +126,8 @@ typedef NSInteger SKInteractionMode;
     int dragMask;
     
     int trackingRect;
-    CFMutableArrayRef hoverRects;
-    int hoverRect;
+    CFMutableArrayRef PDFToolTipRects;
+    int PDFToolTipRect;
     
     int spellingTag;
 }
@@ -205,8 +205,8 @@ typedef NSInteger SKInteractionMode;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
-- (void)resetHoverRects;
-- (void)removeHoverRects;
+- (void)resetPDFToolTipRects;
+- (void)removePDFToolTipRects;
 
 - (NSArray *)accessibilityChildren;
 - (id)accessibilityChildAtPoint:(NSPoint)point;
