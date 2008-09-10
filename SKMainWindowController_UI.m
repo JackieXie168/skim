@@ -514,21 +514,14 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
     if ([ov isEqual:outlineView]) {
-        if (item == nil){
-            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-                return [pdfOutline numberOfChildren];
-            }else{
-                return 0;
-            }
-        }else{
-            return [(PDFOutline *)item numberOfChildren];
-        }
+        if (item == nil && [[pdfView document] isLocked] == NO)
+            item = pdfOutline;
+        return [(PDFOutline *)item numberOfChildren];
     } else if ([ov isEqual:noteOutlineView]) {
-        if (item == nil) {
+        if (item == nil)
             return [[noteArrayController arrangedObjects] count];
-        } else {
+        else
             return [[item texts] count];
-        }
     }
     return 0;
 }
@@ -538,31 +531,27 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
         PDFOutline *obj = [(PDFOutline *)item childAtIndex:anIndex];
+        BOOL shouldExpand = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [pdfOutlineItems containsObject:obj] == NO && [obj numberOfChildren] > 0 && [obj isOpen];
         // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
         if (obj)
             [pdfOutlineItems addObject:obj];
+        if (shouldExpand)
+            [outlineView performSelector:@selector(expandItem:) withObject:obj afterDelay:0.0];
         return obj;
     } else if ([ov isEqual:noteOutlineView]) {
-        if (item == nil) {
+        if (item == nil)
             return [[noteArrayController arrangedObjects] objectAtIndex:anIndex];
-        } else {
+        else
             return [[item texts] lastObject];
-        }
     }
     return nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item{
     if ([ov isEqual:outlineView]) {
-        if (item == nil){
-            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-                return ([pdfOutline numberOfChildren] > 0);
-            }else{
-                return NO;
-            }
-        }else{
-            return ([(PDFOutline *)item numberOfChildren] > 0);
-        }
+        if (item == nil && [[pdfView document] isLocked] == NO)
+            item = pdfOutline;
+        return ([(PDFOutline *)item numberOfChildren] > 0);
     } else if ([ov isEqual:noteOutlineView]) {
         return [[item texts] count] > 0;
     }
@@ -572,20 +561,18 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
-        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer]){
+        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer])
             return [(PDFOutline *)item label];
-        }else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]){
+        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer])
             return [[[(PDFOutline *)item destination] page] displayLabel];
-        }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer]) {
+        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer])
             return [item type] ? (id)[item string] : (id)[item text];
-        } else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
+        else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifer])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
-        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
+        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer])
             return [[item page] displayLabel];
-        }
     }
     return nil;
 }
