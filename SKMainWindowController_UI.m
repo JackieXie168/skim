@@ -531,12 +531,9 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
         PDFOutline *obj = [(PDFOutline *)item childAtIndex:anIndex];
-        BOOL shouldExpand = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [pdfOutlineItems containsObject:obj] == NO && [obj numberOfChildren] > 0 && [obj isOpen];
         // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
         if (obj)
             [pdfOutlineItems addObject:obj];
-        if (shouldExpand)
-            [outlineView performSelector:@selector(expandItem:) withObject:obj afterDelay:0.0];
         return obj;
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
