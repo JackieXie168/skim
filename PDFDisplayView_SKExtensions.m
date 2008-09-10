@@ -45,7 +45,7 @@
 #import "SKRuntime.h"
 #import "SKAccessibilityProxyElement.h"
 
-@interface NSView (SKPDFDisplayViewprivateDeclarations)
+@interface NSView (SKPDFDisplayViewPrivateDeclarations)
 - (void)passwordEntered:(id)sender;
 
 - (NSRange)accessibilityRangeForSelection:(id)selection;
