@@ -37,24 +37,24 @@
  */
 
 #import "SKMainWindow.h"
-#import "SKPDFHoverWindow.h"
+#import "SKPDFToolTipWindow.h"
 
 
 @implementation SKMainWindow
 
 - (void)sendEvent:(NSEvent *)theEvent {
     if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSKeyDown)
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super sendEvent:theEvent];
 }
 
 - (void)resignMainWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super resignMainWindow];
 }
 
 - (void)resignKeyWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:nil];
     [super resignKeyWindow];
 }
 

@@ -1,5 +1,5 @@
 //
-//  SKPDFHoverWindow.h
+//  SKPDFToolTipWindow.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/16/07.
@@ -41,7 +41,7 @@
 
 @class PDFAnnotation;
 
-@interface SKPDFHoverWindow : SKAnimatedBorderlessWindow {
+@interface SKPDFToolTipWindow : SKAnimatedBorderlessWindow {
     NSFont *font;
     NSColor *backgroundColor;
     NSFont *labelFont;
@@ -50,7 +50,7 @@
     NSPoint point;
 }
 
-+ (id)sharedHoverWindow;
++ (id)sharedToolTipWindow;
 
 - (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)aPoint;
 

@@ -38,7 +38,7 @@
 
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
-#import "SKPDFHoverWindow.h"
+#import "SKPDFToolTipWindow.h"
 #import "SKMainWindowController.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
@@ -243,7 +243,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     mouseDownInAnnotation = NO;
     
     trackingRect = 0;
-    hoverRects = CFArrayCreateMutable(NULL, 0, NULL);
+    PDFToolTipRects = CFArrayCreateMutable(NULL, 0, NULL);
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     
@@ -276,9 +276,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
-    [self removeHoverRects];
-    CFRelease(hoverRects);
+    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+    [self removePDFToolTipRects];
+    CFRelease(PDFToolTipRects);
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [transitionController release];
@@ -288,21 +288,21 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super dealloc];
 }
 
-#pragma mark Hover-rects
+#pragma mark Tool Tips
 
 // Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
 // see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
 - (void)scheduleAddingToolips {}
 
-- (void)removeHoverRects {
-    CFIndex idx = CFArrayGetCount(hoverRects);
+- (void)removePDFToolTipRects {
+    CFIndex idx = CFArrayGetCount(PDFToolTipRects);
     while (idx--)
-        [[self documentView] removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(hoverRects, idx)];
-    CFArrayRemoveAllValues(hoverRects);
+        [[self documentView] removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(PDFToolTipRects, idx)];
+    CFArrayRemoveAllValues(PDFToolTipRects);
 }
 
-- (void)resetHoverRects {
-    [self removeHoverRects];
+- (void)resetPDFToolTipRects {
+    [self removePDFToolTipRects];
     
     if ([self document] && [self window]) {
         NSRange range = [self visiblePageIndexRange];
@@ -320,7 +320,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:[self documentView]];
                         NSTrackingRectTag tag = [[self documentView] addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
-                        CFArrayAppendValue(hoverRects, (void *)tag);
+                        CFArrayAppendValue(PDFToolTipRects, (void *)tag);
                     }
                 }
             }
@@ -469,12 +469,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     readingBar = nil;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
-    [self removeHoverRects];
+    [self removePDFToolTipRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+    [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [super setDocument:document];
-    [self resetHoverRects];
+    [self resetPDFToolTipRects];
 }
 
 - (SKToolMode)toolMode {
@@ -1218,7 +1218,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [super mouseMoved:theEvent];
     
     if ([activeAnnotation isLink]) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
         [self setActiveAnnotation:nil];
     }
     
@@ -1451,9 +1451,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super mouseEntered:theEvent];
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([NSApp isActive] && -1 != CFArrayGetFirstIndexOfValue(hoverRects, CFRangeMake(0, CFArrayGetCount(hoverRects)), (void *)trackingNumber)) {
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
-        hoverRect = trackingNumber;
+    } else if ([NSApp isActive] && -1 != CFArrayGetFirstIndexOfValue(PDFToolTipRects, CFRangeMake(0, CFArrayGetCount(PDFToolTipRects)), (void *)trackingNumber)) {
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
+        PDFToolTipRect = trackingNumber;
     }
 }
  
@@ -1462,9 +1462,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [super mouseExited:theEvent];
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:NO];
-    } else if (hoverRect == trackingNumber) {
-        [[SKPDFHoverWindow sharedHoverWindow] fadeOut];
-        hoverRect = 0;
+    } else if (PDFToolTipRect == trackingNumber) {
+        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        PDFToolTipRect = 0;
     }
 }
 
@@ -1926,7 +1926,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [annotation setShouldPrint:hideNotes == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
-    [self resetHoverRects];
+    [self resetPDFToolTipRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
@@ -1969,7 +1969,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (accessibilityChildren)
         [accessibilityChildren removeObject:[SKAccessibilityProxyElement elementWithObject:wasAnnotation parent:[self documentView]]];
     if (wasNote)
-        [self resetHoverRects];
+        [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
     [wasAnnotation release];
@@ -1986,7 +1986,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [annotation release];
     [self setNeedsDisplayForAnnotation:annotation];
     if ([[annotation type] isEqualToString:SKNNoteString])
-        [self resetHoverRects];
+        [self resetPDFToolTipRects];
     [accessibilityChildren release];
     accessibilityChildren = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
@@ -2015,7 +2015,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if ([activeAnnotation isLink]) {
         
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         if ([activeAnnotation destination])
             [self goToDestination:[(PDFAnnotationLink *)activeAnnotation destination]];
         else if ([(PDFAnnotationLink *)activeAnnotation URL])
@@ -2045,7 +2045,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
     } else if ([activeAnnotation isEditable]) {
         
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         
         if ([[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
             [[self delegate] PDFView:self editAnnotation:activeAnnotation];
@@ -2121,9 +2121,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(roundf(point.x), roundf(point.y))];
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:point];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:point];
         } else {
-            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         }
     }
 }
@@ -2170,9 +2170,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(roundf(point.x), roundf(point.y))];
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:point];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:point];
         } else {
-            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         }
     }
 }
@@ -2505,7 +2505,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             dest = [ann destination];
             doLink = YES;
         } 
-        // Set link = NO if the annotation links outside the document (e.g. for a URL); currently this is only used for the hover window.  We could do something clever like show a URL icon in the hover window (or a WebView!), but for now we'll just ignore these links.
+        // Set link = NO if the annotation links outside the document (e.g. for a URL); currently this is only used for the tool tip window.  We could do something clever like show a URL icon in the tool tip window (or a WebView!), but for now we'll just ignore these links.
     }
     
     if (isLink) *isLink = doLink;
