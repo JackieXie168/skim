@@ -535,23 +535,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item{
     if ([ov isEqual:outlineView]) {
-        if (item == nil){
-            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-                // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
-                id obj = [pdfOutline childAtIndex:anIndex];
-                if (obj)
-                    [pdfOutlineItems addObject:obj];
-                return obj;
-                
-            }else{
-                return nil;
-            }
-        }else{
-            id obj = [(PDFOutline *)item childAtIndex:anIndex];
-            if (obj)
-                [pdfOutlineItems addObject:obj];
-            return obj;
-        }
+        if (item == nil && [[pdfView document] isLocked] == NO)
+            item = pdfOutline;
+        PDFOutline *obj = [(PDFOutline *)item childAtIndex:anIndex];
+        // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
+        if (obj)
+            [pdfOutlineItems addObject:obj];
+        return obj;
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil) {
             return [[noteArrayController arrangedObjects] objectAtIndex:anIndex];
