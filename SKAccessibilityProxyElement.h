@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class PDFAnnotation;
 
 @interface SKAccessibilityProxyElement : NSObject {
     id object;
