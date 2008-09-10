@@ -63,7 +63,7 @@
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
-		CE2DE4C60B85D78200D0DA12 /* SKMiniaturizeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */; };
+		CE2DE4C60B85D78200D0DA12 /* SKBorderlessImageWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4C50B85D78200D0DA12 /* SKBorderlessImageWindow.m */; };
 		CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */; };
 		CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */; };
 		CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */; };
@@ -477,8 +477,8 @@
 		CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnail.m; sourceTree = "<group>"; };
 		CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFullScreenWindow.h; sourceTree = "<group>"; };
 		CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFullScreenWindow.m; sourceTree = "<group>"; };
-		CE2DE4C40B85D78200D0DA12 /* SKMiniaturizeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMiniaturizeWindow.h; sourceTree = "<group>"; };
-		CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMiniaturizeWindow.m; sourceTree = "<group>"; };
+		CE2DE4C40B85D78200D0DA12 /* SKBorderlessImageWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBorderlessImageWindow.h; sourceTree = "<group>"; };
+		CE2DE4C50B85D78200D0DA12 /* SKBorderlessImageWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBorderlessImageWindow.m; sourceTree = "<group>"; };
 		CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCursor_SKExtensions.h; sourceTree = "<group>"; };
 		CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCursor_SKExtensions.m; sourceTree = "<group>"; };
 		CE2DE4FB0B85DBD400D0DA12 /* SKPDFHoverWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFHoverWindow.h; sourceTree = "<group>"; };
@@ -1228,8 +1228,8 @@
 				CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */,
 				CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */,
 				CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */,
-				CE2DE4C40B85D78200D0DA12 /* SKMiniaturizeWindow.h */,
-				CE2DE4C50B85D78200D0DA12 /* SKMiniaturizeWindow.m */,
+				CE2DE4C40B85D78200D0DA12 /* SKBorderlessImageWindow.h */,
+				CE2DE4C50B85D78200D0DA12 /* SKBorderlessImageWindow.m */,
 				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
 				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
 				CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */,
@@ -1979,7 +1979,7 @@
 				CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */,
 				CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */,
 				CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */,
-				CE2DE4C60B85D78200D0DA12 /* SKMiniaturizeWindow.m in Sources */,
+				CE2DE4C60B85D78200D0DA12 /* SKBorderlessImageWindow.m in Sources */,
 				CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */,
 				CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */,
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,

@@ -1,5 +1,5 @@
 //
-//  SKMiniaturizeWindow.h
+//  SKBorderlessImageWindow.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/16/07.
@@ -36,12 +36,31 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKBorderlessImageWindow.h"
 
 
-@interface SKMiniaturizeWindow : NSWindow {
+@implementation SKBorderlessImageWindow
+
+- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image {
+    if (self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+        [self setReleasedWhenClosed:NO];
+        [self setLevel:NSFloatingWindowLevel];
+        
+        NSImageView *imageView = [[NSImageView alloc] init];
+        [imageView setImage:image];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [self setContentView:imageView];
+        [imageView release];
+    }
+    return self;
 }
 
-- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image;
+- (BOOL)canBecomeMainWindow { return NO; }
+
+- (BOOL)canBecomeKeyWindow { return NO; }
+
+- (NSTimeInterval)animationResizeTime:(NSRect)newWindowFrame {
+    return 0.6 * [super animationResizeTime:newWindowFrame];
+}
 
 @end
