@@ -83,7 +83,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [super dealloc];
 }
 
-- (NSString *)windowNibname {
+- (NSString *)windowNibName {
     return @"NotesDocument";
 }
 
@@ -379,7 +379,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
     if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
-        return [item valueForKey:[item valueForKey:([item valueForKey:SKNPDFAnnotationTypeKey] ? SKNPDFAnnotationStringKey : SKNPDFAnnotationTextKey)]];
+        return [item valueForKey:([item valueForKey:SKNPDFAnnotationTypeKey] ? SKNPDFAnnotationStringKey : SKNPDFAnnotationTextKey)];
     } else if([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:SKNPDFAnnotationTypeKey], SKNPDFAnnotationTypeKey, nil];
     } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
