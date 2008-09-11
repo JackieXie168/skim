@@ -81,7 +81,7 @@
         int i, count = [outline numberOfChildren];
         children = [[NSMutableArray alloc] initWithCapacity:count];
         for (i = 0; i < count; i++) {
-            SKPDFOutline *child = [[SKPDFOutline alloc] initWithOutline:[outline childAtIndex:i] parent:self];
+            SKPDFOutline *child = [[[self class] alloc] initWithOutline:[outline childAtIndex:i] parent:self];
             [children addObject:child];
             [child release];
         }
