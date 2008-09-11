@@ -63,6 +63,8 @@
 
 - (PDFPage *)page;
 
+- (NSString *)pageLabel;
+
 - (BOOL)isOpen;
 
 @end
