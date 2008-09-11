@@ -38,6 +38,7 @@
  */
 
 #import "SKPDFOutline.h"
+#import "PDFPage_SKExtensions.h"
 
 
 @implementation SKPDFOutline
@@ -108,6 +109,16 @@
         return [[outline destination] page];
     else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(destination)])
         return [[(PDFActionGoTo *)[outline action] destination] page];
+    else
+        return nil;
+}
+
+- (NSString *)pageLabel {
+    PDFPage *page = [self page];
+    if (page)
+        return [page displayLabel];
+    else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(pageIndex)])
+        return [NSString stringWithFormat:@"%u", [(PDFActionRemoteGoTo *)[outline action] pageIndex] + 1];
     else
         return nil;
 }
