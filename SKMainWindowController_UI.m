@@ -530,10 +530,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
-        PDFOutline *obj = [(PDFOutline *)item childAtIndex:anIndex];
-        // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
-        if (obj)
-            [pdfOutlineItems addObject:obj];
+        id obj = [(PDFOutline *)item childAtIndex:anIndex];
         return obj;
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
@@ -640,13 +637,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
-        PDFOutline *outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
-        PDFDestination *dest = [outlineItem destination];
+        id outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
+        PDFDestination *dest = [(PDFOutline *)outlineItem destination];
         updatingOutlineSelection = YES;
         if (dest)
             [self goToDestination:dest];
-        else if ([outlineItem respondsToSelector:@selector(action)] && [outlineItem action])
-            [pdfView performAction:[outlineItem action]];
+        else if ([outlineItem respondsToSelector:@selector(action)] && [(PDFOutline *)outlineItem action])
+            [pdfView performAction:[(PDFOutline *)outlineItem action]];
         updatingOutlineSelection = NO;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
