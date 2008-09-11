@@ -63,6 +63,7 @@
 #import "SKApplication.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKLineInspector.h"
+#import "SKPDFOutline.h"
 
 static NSString *SKMainWindowLabelColumnIdentifer = @"label";
 static NSString *SKMainWindowNoteColumnIdentifer = @"note";
@@ -516,7 +517,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
-        return [(PDFOutline *)item numberOfChildren];
+        return [(SKPDFOutline *)item numberOfChildren];
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
             return [[noteArrayController arrangedObjects] count];
@@ -530,7 +531,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
-        id obj = [(PDFOutline *)item childAtIndex:anIndex];
+        id obj = [(SKPDFOutline *)item childAtIndex:anIndex];
         return obj;
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
@@ -545,7 +546,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
-        return ([(PDFOutline *)item numberOfChildren] > 0);
+        return ([(SKPDFOutline *)item numberOfChildren] > 0);
     } else if ([ov isEqual:noteOutlineView]) {
         return [[item texts] count] > 0;
     }
@@ -555,10 +556,11 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
-        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer])
-            return [(PDFOutline *)item label];
-        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer])
-            return [[[(PDFOutline *)item destination] page] displayLabel];
+        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer]) {
+            return [(SKPDFOutline *)item label];
+        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
+            return [[(SKPDFOutline *)item page] displayLabel];
+        }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
         if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer])
@@ -637,13 +639,12 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
-        id outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
-        PDFDestination *dest = [(PDFOutline *)outlineItem destination];
+        SKPDFOutline *outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
         updatingOutlineSelection = YES;
-        if (dest)
-            [self goToDestination:dest];
-        else if ([outlineItem respondsToSelector:@selector(action)] && [(PDFOutline *)outlineItem action])
-            [pdfView performAction:[(PDFOutline *)outlineItem action]];
+        if ([outlineItem destination])
+            [self goToDestination:[outlineItem destination]];
+        else if ([outlineItem action])
+            [pdfView performAction:[outlineItem action]];
         updatingOutlineSelection = NO;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
@@ -961,7 +962,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         int i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
-            [array addObject:[[(PDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
+            [array addObject:[[(SKPDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
         return array;
     }
     return nil;
