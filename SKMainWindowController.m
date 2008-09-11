@@ -670,10 +670,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     // update the outline
     [pdfOutline release];
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-        pdfOutline = [[pdfDoc outlineRoot] retain];
-    else
-        pdfOutline = [[SKPDFOutline alloc] initWithOutline:[pdfDoc outlineRoot] parent:nil];
+    pdfOutline = [[SKPDFOutline alloc] initWithOutline:[pdfDoc outlineRoot] parent:nil];
     
     updatingOutlineSelection = YES;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
@@ -3492,11 +3489,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	int i, numRows = [outlineView numberOfRows];
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
-		PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: i];
+		SKPDFOutline *outlineItem = [outlineView itemAtRow:i];
+        PDFPage *page = [outlineItem page];
 		
-		if ([[[outlineItem destination] page ] pageIndex] == pageIndex) {
+        if (page == nil) {
+            continue;
+		} else if ([page pageIndex] == pageIndex) {
             break;
-        } else if ([[[outlineItem destination] page] pageIndex] > pageIndex) {
+        } else if ([page pageIndex] > pageIndex) {
 			if (i > 0) --i;
             break;	
 		}

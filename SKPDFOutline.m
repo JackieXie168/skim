@@ -45,10 +45,10 @@
 
 - (id)initWithOutline:(PDFOutline *)anOutline parent:(SKPDFOutline *)aParent {
     if (self = [super init]) {
-        if (outline) {
+        if (anOutline) {
             outline = [anOutline retain];
             parent = aParent;
-            children = [[NSMutableArray alloc] init];
+            children = nil;
         } else {
             [self release];
             self = nil;
@@ -88,12 +88,28 @@
     return [children objectAtIndex:anIndex];
 }
 
+- (NSString *)label {
+    return [outline label];
+}
+
 - (PDFDestination *)destination {
     return [outline destination];
 }
 
-- (NSString *)label {
-    return [outline label];
+- (PDFAction *)action {
+    if ([outline respondsToSelector:_cmd])
+        return [outline action];
+    else
+        return nil;
+}
+
+- (PDFPage *)page {
+    if ([outline respondsToSelector:@selector(destination)])
+        return [[outline destination] page];
+    else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(destination)])
+        return [[(PDFActionGoTo *)[outline action] destination] page];
+    else
+        return nil;
 }
 
 - (BOOL)isOpen {

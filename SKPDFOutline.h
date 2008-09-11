@@ -55,9 +55,13 @@
 - (unsigned int)numberOfChildren;
 - (SKPDFOutline *)childAtIndex:(unsigned int)anIndex;
 
+- (NSString *)label;
+
 - (PDFDestination *)destination;
 
-- (NSString *)label;
+- (PDFAction *)action;
+
+- (PDFPage *)page;
 
 - (BOOL)isOpen;
 

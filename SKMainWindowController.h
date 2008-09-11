@@ -83,7 +83,7 @@ extern NSString *SKRightSidePaneWidthKey;
 
 extern NSString *SKMainWindowPageColumnIdentifer;
 
-@class PDFAnnotation, PDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
+@class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
@@ -123,7 +123,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     
     IBOutlet SKTocOutlineView   *outlineView;
     IBOutlet NSView             *tocView;
-    id                          pdfOutline;
+    SKPDFOutline                *pdfOutline;
     BOOL                        updatingOutlineSelection;
     
     IBOutlet NSObjectController *ownerController;
