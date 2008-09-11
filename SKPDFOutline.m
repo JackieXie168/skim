@@ -127,7 +127,7 @@
     if ([outline respondsToSelector:_cmd])
         return [outline isOpen];
     else
-        return [parent parent] == nil && (parent == nil || [parent numberOfChildren] == 1);
+        return [parent parent] == nil && (parent == nil || [parent numberOfChildren] == 1) && [outline numberOfChildren] > 0;
 }
 
 @end
