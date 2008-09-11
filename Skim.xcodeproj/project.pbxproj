@@ -60,6 +60,7 @@
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
+		CE2896DA0E78948200031EEA /* SKPDFOutline.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2896D90E78948200031EEA /* SKPDFOutline.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
@@ -468,6 +469,8 @@
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
+		CE2896D80E78948200031EEA /* SKPDFOutline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFOutline.h; sourceTree = "<group>"; };
+		CE2896D90E78948200031EEA /* SKPDFOutline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFOutline.m; sourceTree = "<group>"; };
 		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
 		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
 		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
@@ -1330,6 +1333,8 @@
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
 				CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */,
 				CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */,
+				CE2896D80E78948200031EEA /* SKPDFOutline.h */,
+				CE2896D90E78948200031EEA /* SKPDFOutline.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -2095,6 +2100,7 @@
 				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
 				CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */,
 				CEA450F40E47A87500D161AD /* NSLayoutManager_SKExtensions.m in Sources */,
+				CE2896DA0E78948200031EEA /* SKPDFOutline.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

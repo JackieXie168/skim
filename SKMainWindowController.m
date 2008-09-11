@@ -97,6 +97,7 @@
 #import "SKUnarchiveFromDataArrayTransformer.h"
 #import "RemoteControl.h"
 #import "NSView_SKExtensions.h"
+#import "SKPDFOutline.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -241,8 +242,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
-        // @@ remove or set to nil for Leopard?
-        pdfOutlineItems = [[NSMutableArray alloc] init];
         rowHeights = CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kSKFloatDictionaryValueCallBacks);
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         leftSidePaneState = SKThumbnailSidePaneState;
@@ -288,7 +287,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [mainWindow release];
     [statusBar release];
     [toolbarItems release];
-    [pdfOutlineItems release];
     [savedNormalSetup release];
     [progressController release];
     [colorAccessoryView release];
@@ -672,14 +670,14 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     // update the outline
     [pdfOutline release];
-    pdfOutline = [[pdfDoc outlineRoot] retain];
-    [pdfOutlineItems removeAllObjects];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+        pdfOutline = [[pdfDoc outlineRoot] retain];
+    else
+        pdfOutline = [[SKPDFOutline alloc] initWithOutline:[pdfDoc outlineRoot] parent:nil];
     
     updatingOutlineSelection = YES;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [outlineView reloadData];
-    if ([outlineView numberOfRows] == 1)
-        [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
     updatingOutlineSelection = NO;
     [self updateOutlineSelection];
     
@@ -738,7 +736,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             
             [pdfOutline release];
             pdfOutline = nil;
-            [pdfOutlineItems removeAllObjects];
             
             [lastViewedPages removeAllObjects];
             

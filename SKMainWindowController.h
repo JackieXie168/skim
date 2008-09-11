@@ -123,8 +123,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     
     IBOutlet SKTocOutlineView   *outlineView;
     IBOutlet NSView             *tocView;
-    PDFOutline                  *pdfOutline;
-    NSMutableArray              *pdfOutlineItems;
+    id                          pdfOutline;
     BOOL                        updatingOutlineSelection;
     
     IBOutlet NSObjectController *ownerController;
