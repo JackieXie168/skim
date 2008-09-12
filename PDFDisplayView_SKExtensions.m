@@ -43,7 +43,7 @@
 #import "NSAttributedString_SKExtensions.h"
 #import "SKPDFDocument.h"
 #import "SKRuntime.h"
-#import "SKAccessibilityProxyElement.h"
+#import "SKAccessibilityFauxUIElement.h"
 
 @interface NSView (SKPDFDisplayViewPrivateDeclarations)
 - (void)passwordEntered:(id)sender;

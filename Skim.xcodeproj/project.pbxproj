@@ -206,7 +206,7 @@
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
-		CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */; };
+		CEE177960DBE140900E6C317 /* SKAccessibilityFauxUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
 		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */; };
@@ -855,8 +855,8 @@
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDisplayView_SKExtensions.h; sourceTree = "<group>"; };
 		CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDisplayView_SKExtensions.m; sourceTree = "<group>"; };
-		CEE177940DBE140900E6C317 /* SKAccessibilityProxyElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAccessibilityProxyElement.h; sourceTree = "<group>"; };
-		CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAccessibilityProxyElement.m; sourceTree = "<group>"; };
+		CEE177940DBE140900E6C317 /* SKAccessibilityFauxUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAccessibilityFauxUIElement.h; sourceTree = "<group>"; };
+		CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAccessibilityFauxUIElement.m; sourceTree = "<group>"; };
 		CEE54D170DA2AA050037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CEE54D190DA2AA100037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CEE54D1B0DA2AA280037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -1313,8 +1313,8 @@
 		CE2DE4D20B85D94800D0DA12 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				CEE177940DBE140900E6C317 /* SKAccessibilityProxyElement.h */,
-				CEE177950DBE140900E6C317 /* SKAccessibilityProxyElement.m */,
+				CEE177940DBE140900E6C317 /* SKAccessibilityFauxUIElement.h */,
+				CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */,
 				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
 				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
 				CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */,
@@ -2077,7 +2077,7 @@
 				CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */,
 				CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */,
 				CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */,
-				CEE177960DBE140900E6C317 /* SKAccessibilityProxyElement.m in Sources */,
+				CEE177960DBE140900E6C317 /* SKAccessibilityFauxUIElement.m in Sources */,
 				CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */,
 				CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */,
 				CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */,

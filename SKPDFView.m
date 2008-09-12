@@ -65,7 +65,7 @@
 #import "BDSKEdgeView.h"
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
-#import "SKAccessibilityProxyElement.h"
+#import "SKAccessibilityFauxUIElement.h"
 #import "NSEvent_SKExtensions.h"
 
 #define ANNOTATION_MODE_COUNT 8

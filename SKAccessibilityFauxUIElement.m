@@ -1,5 +1,5 @@
 //
-//  SKAccessibilityProxyElement.m
+//  SKAccessibilityFauxUIElement.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKAccessibilityProxyElement.h"
+#import "SKAccessibilityFauxUIElement.h"
 
 static NSString *SKAttributeWithoutAXPrefix(NSString *attribute) {
 	return [attribute hasPrefix:@"AX"] ? [attribute substringFromIndex:2] : attribute;

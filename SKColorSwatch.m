@@ -40,7 +40,7 @@
 #import "SKRuntime.h"
 #import "NSColor_SKExtensions.h"
 #import <Carbon/Carbon.h>
-#import "SKAccessibilityProxyElement.h"
+#import "SKAccessibilityFauxUIElement.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 

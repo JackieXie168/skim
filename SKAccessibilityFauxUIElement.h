@@ -1,5 +1,5 @@
 //
-//  SKAccessibilityProxyElement.h
+//  SKAccessibilityFauxUIElement.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
