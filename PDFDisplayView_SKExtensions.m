@@ -248,36 +248,45 @@ void SKSwizzlePDFDisplayViewMethods() {
 
 @implementation NSView (SKPDFDisplayViewExtensions)
 
-- (NSRect)element:(SKAccessibilityProxyElement *)element screenRectForRepresentedObject:(id)annotation {
+- (NSRect)screenRectForFauxUIElement:(SKAccessibilityFauxUIElement *)element {
     NSRect rect = NSZeroRect;
     SKPDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
-        rect = [pdfView convertRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] toView:nil];
-        rect.origin = [[pdfView window] convertBaseToScreen:rect.origin];
+        PDFAnnotation *annotation = [element representedObject];
+        if ([annotation respondsToSelector:@selector(bounds)] && [annotation respondsToSelector:@selector(page)]) {
+            rect = [pdfView convertRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] toView:nil];
+            rect.origin = [[pdfView window] convertBaseToScreen:rect.origin];
+        }
     }
     return rect;
 }
 
-- (BOOL)element:(SKAccessibilityProxyElement *)element isRepresentedObjectFocused:(id)annotation {
-    return [SKGetPDFView(self) activeAnnotation] == annotation;
+- (BOOL)isFauxUIElementFocused:(SKAccessibilityFauxUIElement *)element {
+    return [SKGetPDFView(self) activeAnnotation] == [element representedObject];
 }
 
-- (void)element:(SKAccessibilityProxyElement *)element setFocused:(BOOL)focused forRepresentedObject:(id)annotation {
+- (void)fauxUIlement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused {
     SKPDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
-        if (focused)
-            [pdfView setActiveAnnotation:annotation];
-        else if ([pdfView activeAnnotation] == annotation)
-            [pdfView setActiveAnnotation:nil];
+        PDFAnnotation *annotation = [element representedObject];
+        if ([annotation isKindOfClass:[PDFAnnotation class]]) {
+            if (focused)
+                [pdfView setActiveAnnotation:annotation];
+            else if ([pdfView activeAnnotation] == annotation)
+                [pdfView setActiveAnnotation:nil];
+        }
     }
 }
 
-- (void)element:(SKAccessibilityProxyElement *)element pressRepresentedObject:(id)annotation {
+- (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
     SKPDFView *pdfView = SKGetPDFView(self);
     if (pdfView) {
-        if ([pdfView activeAnnotation] != annotation)
-            [pdfView setActiveAnnotation:annotation];
-        [pdfView editActiveAnnotation:self];
+        PDFAnnotation *annotation = [element representedObject];
+        if ([annotation isKindOfClass:[PDFAnnotation class]]) {
+            if ([pdfView activeAnnotation] != annotation)
+                [pdfView setActiveAnnotation:annotation];
+            [pdfView editActiveAnnotation:self];
+        }
     }
 }
 

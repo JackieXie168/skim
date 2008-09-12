@@ -46,40 +46,42 @@ static SEL SKAttributeGetter(NSString *attribute) {
 	return NSSelectorFromString([NSString stringWithFormat:@"accessibility%@Attribute", SKAttributeWithoutAXPrefix(attribute)]);
 }
 
-@implementation SKAccessibilityProxyElement
+@implementation SKAccessibilityFauxUIElement
 
-+ (id)elementWithObject:(id)anObject parent:(id)aParent {
-    return [[[self alloc] initWithObject:anObject parent:aParent] autorelease];
-}
-
-- (id)initWithObject:(id)anObject parent:(id)aParent {
+- (id)initWithParent:(id)aParent {
     if (self = [super init]) {
-        object = [anObject retain];
         parent = aParent;
     }
     return self;
 }
 
-- (void)dealloc {
-    [object release];
-    [super dealloc];
-}
-
 - (BOOL)isEqual:(id)other {
-    if ([other isKindOfClass:[SKAccessibilityProxyElement class]]) {
-        SKAccessibilityProxyElement *otherElement = (SKAccessibilityProxyElement *)other;
-        return object == otherElement->object && parent == otherElement->parent;
+    if ([other isKindOfClass:[SKAccessibilityFauxUIElement class]]) {
+        SKAccessibilityFauxUIElement *otherElement = (SKAccessibilityFauxUIElement *)other;
+        return parent == [otherElement parent];
     } else {
         return NO;
     }
 }
 
 - (unsigned int)hash {
-    return [object hash] + [parent hash];
+    return [parent hash];
+}
+
+- (id)parent {
+    return parent;
+}
+
+- (id)representedObject {
+    return nil;
+}
+
+- (int)index {
+    return -1;
 }
 
 - (NSArray *)accessibilityAttributeNames {
-    return [object respondsToSelector:_cmd] ? [object performSelector:_cmd] : [NSArray array];
+    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] performSelector:_cmd] : [NSArray array];
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
@@ -92,14 +94,19 @@ static SEL SKAttributeGetter(NSString *attribute) {
         // We're in the same top level element as our parent.
         return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent element:self isRepresentedObjectFocused:object]];
+        return [NSNumber numberWithBool:[parent isFauxUIElementFocused:self]];
     } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent element:self screenRectForRepresentedObject:object].origin];
+        return [NSValue valueWithPoint:[parent screenRectForFauxUIElement:self].origin];
     } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent element:self screenRectForRepresentedObject:object].size];
+        return [NSValue valueWithSize:[parent screenRectForFauxUIElement:self].size];
     } else if ([[self accessibilityAttributeNames] containsObject:attribute]) {
 		SEL getter = SKAttributeGetter(attribute);
-        return [object respondsToSelector:getter] ? [object performSelector:getter] : nil;
+        if ([self respondsToSelector:getter])
+            return [self performSelector:getter];
+        else if ([[self representedObject] respondsToSelector:getter])
+            return [[self representedObject] performSelector:getter];
+        else
+            return nil;
     } else {
         return nil;
     }
@@ -111,11 +118,11 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent element:self setFocused:[value boolValue] forRepresentedObject:object];
+        [parent fauxUIElement:self setFocused:[value boolValue]];
 }
 
 - (BOOL)accessibilityIsIgnored {
-    return [object respondsToSelector:_cmd] ? [object accessibilityIsIgnored] : NO;
+    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] accessibilityIsIgnored] : NO;
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
@@ -127,7 +134,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (NSArray *)accessibilityActionNames {
-    return [object respondsToSelector:_cmd] ? [object performSelector:_cmd] : [NSArray array];
+    return [[self representedObject] respondsToSelector:_cmd] ? [[self representedObject] performSelector:_cmd] : [NSArray array];
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction {
@@ -136,7 +143,88 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent element:self pressRepresentedObject:object];
+        [parent pressFauxUIElement:self];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAccessibilityProxyFauxUIElement
+
++ (id)elementWithObject:(id)anObject parent:(id)aParent {
+    return [[[self alloc] initWithObject:anObject parent:aParent] autorelease];
+}
+
+- (id)initWithObject:(id)anObject parent:(id)aParent {
+    if (self = [super initWithParent:aParent]) {
+        object = [anObject retain];
+    }
+    return self;
+}
+
+- (id)initWithParent:(id)aParent {
+    return [self initWithObject:nil parent:aParent];
+}
+
+- (void)dealloc {
+    [object release];
+    [super dealloc];
+}
+
+- (BOOL)isEqual:(id)other {
+    if ([other isKindOfClass:[SKAccessibilityProxyFauxUIElement class]]) {
+        SKAccessibilityProxyFauxUIElement *otherElement = (SKAccessibilityProxyFauxUIElement *)other;
+        return [super isEqual:other] && object == [otherElement representedObject];
+    } else {
+        return NO;
+    }
+}
+
+- (unsigned int)hash {
+    return [super hash] + [object hash];
+}
+
+- (id)representedObject {
+    return object;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAccessibilityIndexedFauxUIElement
+
++ (id)elementWithIndex:(int)anIndex parent:(id)aParent {
+    return [[[self alloc] initWithIndex:anIndex parent:aParent] autorelease];
+}
+
+- (id)initWithIndex:(int)anIndex parent:(id)aParent {
+    if (self = [super initWithParent:aParent]) {
+        index = anIndex;
+    }
+    return self;
+}
+
+- (id)initWithParent:(id)aParent {
+    return [self initWithIndex:-1 parent:aParent];
+}
+
+- (BOOL)isEqual:(id)other {
+    if ([other isKindOfClass:[SKAccessibilityIndexedFauxUIElement class]]) {
+        SKAccessibilityIndexedFauxUIElement *otherElement = (SKAccessibilityIndexedFauxUIElement *)other;
+        return [super isEqual:other] && index == [otherElement index];
+    } else {
+        return NO;
+    }
+}
+
+- (unsigned int)hash {
+    return [super hash] + index;
+}
+
+- (int)index {
+    return index;
 }
 
 @end

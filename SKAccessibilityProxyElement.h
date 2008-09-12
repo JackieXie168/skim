@@ -39,19 +39,39 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKAccessibilityProxyElement : NSObject {
-    id object;
+@interface SKAccessibilityFauxUIElement : NSObject {
     id parent;
+}
+- (id)initWithParent:(id)aParent;
+- (id)parent;
+- (id)representedObject;
+- (int)index;
+@end
+
+#pragma mark -
+
+@interface SKAccessibilityProxyFauxUIElement : SKAccessibilityFauxUIElement {
+    id object;
 }
 + (id)elementWithObject:(id)anObject parent:(id)aParent;
 - (id)initWithObject:(id)anObject parent:(id)aParent;
 @end
 
+#pragma mark -
+
+@interface SKAccessibilityIndexedFauxUIElement : SKAccessibilityFauxUIElement {
+    int index;
+}
++ (id)elementWithIndex:(int)anIndex parent:(id)aParent;
+- (id)initWithIndex:(int)anIndex parent:(id)aParent;
+@end
+
+#pragma mark -
 
 // parent should implement these methods
-@interface NSObject (SKAccessibilityProxyElementParent)
-- (NSRect)element:(SKAccessibilityProxyElement *)element screenRectForRepresentedObject:(id)object;
-- (BOOL)element:(SKAccessibilityProxyElement *)element isRepresentedObjectFocused:(id)object;
-- (void)element:(SKAccessibilityProxyElement *)element setFocused:(BOOL)focused forRepresentedObject:(id)object;
-- (void)element:(SKAccessibilityProxyElement *)element pressRepresentedObject:(id)object;
+@interface NSObject (SKAccessibilityFauxUIElementParent)
+- (NSRect)screenRectForFauxUIElement:(SKAccessibilityFauxUIElement *)element;
+- (BOOL)isFauxUIElementFocused:(SKAccessibilityFauxUIElement *)element;
+- (void)fauxUIElement:(SKAccessibilityFauxUIElement *)element setFocused:(BOOL)focused;
+- (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element;
 @end
