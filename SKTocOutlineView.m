@@ -165,12 +165,6 @@
 
 - (void)reloadData{
     [super reloadData];
-    int i;
-	for (i = 0; i < [self numberOfRows]; i++) {
-		id item = [self itemAtRow:i];
-		if ([item respondsToSelector:@selector(isOpen)] && [item isOpen])
-			[self expandItem:item];
-	}
 	[self rebuildTrackingRects];
 }
 
