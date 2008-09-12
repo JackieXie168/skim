@@ -675,6 +675,11 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     updatingOutlineSelection = YES;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [outlineView reloadData];
+	for (i = 0; i < (unsigned int)[outlineView numberOfRows]; i++) {
+		SKPDFOutline *outline = [outlineView itemAtRow:i];
+		if ([outline isOpen])
+			[outlineView expandItem:outline];
+	}
     updatingOutlineSelection = NO;
     [self updateOutlineSelection];
     
