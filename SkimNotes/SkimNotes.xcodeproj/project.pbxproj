@@ -26,6 +26,7 @@
 			);
 			dependencies = (
 				CEBA2EA60E0673D40000B2E6 /* PBXTargetDependency */,
+				CEEE7B620E7BD90F00B7B208 /* PBXTargetDependency */,
 				CEBA2EAC0E067F420000B2E6 /* PBXTargetDependency */,
 				CEA5F6090E2D270500F65088 /* PBXTargetDependency */,
 			);
@@ -116,6 +117,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = CEBA2B540E0566B00000B2E6;
 			remoteInfo = skimnotes;
+		};
+		CEEE7B610E7BD90F00B7B208 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteInfo = SkimNotesBase;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -598,7 +606,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
+			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -675,6 +683,11 @@
 			isa = PBXTargetDependency;
 			target = CEBA2B540E0566B00000B2E6 /* SkimNotes Tool */;
 			targetProxy = CEDB9AF20E2E9F170057FD09 /* PBXContainerItemProxy */;
+		};
+		CEEE7B620E7BD90F00B7B208 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			targetProxy = CEEE7B610E7BD90F00B7B208 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
