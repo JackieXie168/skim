@@ -332,8 +332,8 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationLinePointsKey, &array)) {
         NSPoint p1, p2;
         if (CGPDFArrayGetCount(array) == 4 && CGPDFArrayGetNumber(array, 0, &p1.x) && CGPDFArrayGetNumber(array, 1, &p1.y) && CGPDFArrayGetNumber(array, 2, &p2.x) && CGPDFArrayGetNumber(array, 3, &p2.y)) {
-            [dictionary setObject:NSStringFromPoint(p1) forKey:SKNPDFAnnotationStartPointKey];
-            [dictionary setObject:NSStringFromPoint(p2) forKey:SKNPDFAnnotationEndPointKey];
+            [dictionary setObject:NSStringFromPoint(SKSubstractPoints(p1, bounds.origin)) forKey:SKNPDFAnnotationStartPointKey];
+            [dictionary setObject:NSStringFromPoint(SKSubstractPoints(p2, bounds.origin)) forKey:SKNPDFAnnotationEndPointKey];
         }
     }
     
