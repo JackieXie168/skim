@@ -70,7 +70,7 @@ static NSString *SKMainWindowNoteColumnIdentifer = @"note";
 static NSString *SKMainWindowTypeColumnIdentifer = @"type";
 static NSString *SKMainWindowImageColumnIdentifer = @"image";
 
-static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu"};
+static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 
 static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 

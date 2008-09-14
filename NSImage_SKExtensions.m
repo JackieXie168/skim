@@ -74,6 +74,7 @@ NSString *SKImageNameToolbarHighlightNote = @"ToolbarHighlightNote";
 NSString *SKImageNameToolbarUnderlineNote = @"ToolbarUnderlineNote";
 NSString *SKImageNameToolbarStrikeOutNote = @"ToolbarStrikeOutNote";
 NSString *SKImageNameToolbarLineNote = @"ToolbarLineNote";
+NSString *SKImageNameToolbarInkNote = @"ToolbarInkNote";
 NSString *SKImageNameToolbarTextNoteMenu = @"ToolbarTextNoteMenu";
 NSString *SKImageNameToolbarAnchoredNoteMenu = @"ToolbarAnchoredNoteMenu";
 NSString *SKImageNameToolbarCircleNoteMenu = @"ToolbarCircleNoteMenu";
@@ -82,6 +83,7 @@ NSString *SKImageNameToolbarHighlightNoteMenu = @"ToolbarHighlightNoteMenu";
 NSString *SKImageNameToolbarUnderlineNoteMenu = @"ToolbarUnderlineNoteMenu";
 NSString *SKImageNameToolbarStrikeOutNoteMenu = @"ToolbarStrikeOutNoteMenu";
 NSString *SKImageNameToolbarLineNoteMenu = @"ToolbarLineNoteMenu";
+NSString *SKImageNameToolbarInkNoteMenu = @"ToolbarInkNoteMenu";
 NSString *SKImageNameToolbarAddTextNote = @"ToolbarAddTextNote";
 NSString *SKImageNameToolbarAddAnchoredNote = @"ToolbarAddAnchoredNote";
 NSString *SKImageNameToolbarAddCircleNote = @"ToolbarAddCircleNote";
@@ -90,6 +92,7 @@ NSString *SKImageNameToolbarAddHighlightNote = @"ToolbarAddHighlightNote";
 NSString *SKImageNameToolbarAddUnderlineNote = @"ToolbarAddUnderlineNote";
 NSString *SKImageNameToolbarAddStrikeOutNote = @"ToolbarAddStrikeOutNote";
 NSString *SKImageNameToolbarAddLineNote = @"ToolbarAddLineNote";
+NSString *SKImageNameToolbarAddInkNote = @"ToolbarAddInkNote";
 NSString *SKImageNameToolbarAddTextNoteMenu = @"ToolbarAddTextNoteMenu";
 NSString *SKImageNameToolbarAddAnchoredNoteMenu = @"ToolbarAddAnchoredNoteMenu";
 NSString *SKImageNameToolbarAddCircleNoteMenu = @"ToolbarAddCircleNoteMenu";
@@ -98,6 +101,7 @@ NSString *SKImageNameToolbarAddHighlightNoteMenu = @"ToolbarAddHighlightNoteMenu
 NSString *SKImageNameToolbarAddUnderlineNoteMenu = @"ToolbarAddUnderlineNoteMenu";
 NSString *SKImageNameToolbarAddStrikeOutNoteMenu = @"ToolbarAddStrikeOutNoteMenu";
 NSString *SKImageNameToolbarAddLineNoteMenu = @"ToolbarAddLineNoteMenu";
+NSString *SKImageNameToolbarAddInkNoteMenu = @"ToolbarAddInkNoteMenu";
 NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
 NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
 NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
@@ -119,6 +123,7 @@ NSString *SKImageNameHighlightNoteAdorn = @"HighlightNoteAdorn";
 NSString *SKImageNameUnderlineNoteAdorn = @"UnderlineNoteAdorn";
 NSString *SKImageNameStrikeOutNoteAdorn = @"StrikeOutNoteAdorn";
 NSString *SKImageNameLineNoteAdorn = @"LineNoteAdorn";
+NSString *SKImageNameInkNoteAdorn = @"InkNoteAdorn";
 
 NSString *SKImageNameResizeRightDownCursor = @"ResizeRightDownCursor";
 NSString *SKImageNameResizeLeftDownCursor = @"ResizeLeftDownCursor";
@@ -245,6 +250,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *toolbarUnderlineNoteImage = nil;
     static NSImage *toolbarStrikeOutNoteImage = nil;
     static NSImage *toolbarLineNoteImage = nil;
+    static NSImage *toolbarInkNoteImage = nil;
     static NSImage *toolbarTextNoteMenuImage = nil;
     static NSImage *toolbarAnchoredNoteMenuImage = nil;
     static NSImage *toolbarCircleNoteMenuImage = nil;
@@ -253,6 +259,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *toolbarUnderlineNoteMenuImage = nil;
     static NSImage *toolbarStrikeOutNoteMenuImage = nil;
     static NSImage *toolbarLineNoteMenuImage = nil;
+    static NSImage *toolbarInkNoteMenuImage = nil;
     static NSImage *toolbarAddTextNoteImage = nil;
     static NSImage *toolbarAddAnchoredNoteImage = nil;
     static NSImage *toolbarAddCircleNoteImage = nil;
@@ -261,6 +268,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *toolbarAddUnderlineNoteImage = nil;
     static NSImage *toolbarAddStrikeOutNoteImage = nil;
     static NSImage *toolbarAddLineNoteImage = nil;
+    static NSImage *toolbarAddInkNoteImage = nil;
     static NSImage *toolbarAddTextNoteMenuImage = nil;
     static NSImage *toolbarAddAnchoredNoteMenuImage = nil;
     static NSImage *toolbarAddCircleNoteMenuImage = nil;
@@ -269,6 +277,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *toolbarAddUnderlineNoteMenuImage = nil;
     static NSImage *toolbarAddStrikeOutNoteMenuImage = nil;
     static NSImage *toolbarAddLineNoteMenuImage = nil;
+    static NSImage *toolbarAddInkNoteMenuImage = nil;
     static NSImage *toolbarTextToolImage = nil;
     static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
@@ -1239,6 +1248,33 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     
     toolbarAddLineNoteMenuImage = [toolbarAddLineNoteImage copyWithMenuBadge];
     [toolbarAddLineNoteMenuImage setName:SKImageNameToolbarAddLineNoteMenu];
+
+    toolbarInkNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
+    [toolbarInkNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
+    [shadow2 set];
+    [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(6.0, 10.0)];
+    [path curveToPoint:NSMakePoint(12.0, 10.0) controlPoint1:NSMakePoint(9.0, 5.0) controlPoint2:NSMakePoint(9.0, 5.0)];
+    [path curveToPoint:NSMakePoint(18.0, 10.0) controlPoint1:NSMakePoint(15.0, 16.0) controlPoint2:NSMakePoint(15.0, 16.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [path setLineWidth:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [toolbarInkNoteImage unlockFocus];
+    [toolbarInkNoteImage setName:SKImageNameToolbarInkNote];
+    
+    toolbarInkNoteMenuImage = [toolbarInkNoteImage copyWithMenuBadge];
+    [toolbarInkNoteMenuImage setName:SKImageNameToolbarInkNoteMenu];
+    
+    toolbarAddInkNoteImage = [toolbarInkNoteImage copyWithAddBadge];
+    [toolbarAddInkNoteImage setName:SKImageNameToolbarAddInkNote];
+    
+    toolbarAddInkNoteMenuImage = [toolbarAddInkNoteImage copyWithMenuBadge];
+    [toolbarAddInkNoteMenuImage setName:SKImageNameToolbarAddInkNoteMenu];
     
     toolbarTextToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarTextToolImage lockFocus];
@@ -1420,6 +1456,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *underlineNoteAdornImage = nil;
     static NSImage *strikeOutNoteAdornImage = nil;
     static NSImage *lineNoteAdornImage = nil;
+    static NSImage *inkNoteAdornImage = nil;
     
     if (outlineViewAdornImage)
         return;
@@ -1799,6 +1836,22 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [NSGraphicsContext restoreGraphicsState];
     [lineNoteAdornImage unlockFocus];
     [lineNoteAdornImage setName:SKImageNameLineNoteAdorn];
+    
+    inkNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
+    [inkNoteAdornImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(noteRect);
+    [shadow1 set];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.70] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(2.0, 5.5)];
+    [path curveToPoint:NSMakePoint(7.5, 5.5) controlPoint1:NSMakePoint(4.5, 5.5) controlPoint2:NSMakePoint(5.0, 5.5)];
+    [path curveToPoint:NSMakePoint(13.0, 5.5) controlPoint1:NSMakePoint(10.0, 5.5) controlPoint2:NSMakePoint(10.5, 5.5)];
+    [path stroke];
+    [NSGraphicsContext restoreGraphicsState];
+    [inkNoteAdornImage unlockFocus];
+    [inkNoteAdornImage setName:SKImageNameInkNoteAdorn];
     
     [shadow1 release];
 }

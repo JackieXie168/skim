@@ -341,6 +341,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self transformCGContext:context forPage:pdfPage];
     SKCGContextSetDefaultRGBColorSpace(context);
     
+    if (bezierPath && pathPageIndex == [pdfPage pageIndex]) {
+        [NSGraphicsContext saveGraphicsState];
+        [[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey] setStroke];
+        [bezierPath stroke];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    
     NSArray *allAnnotations = [pdfPage annotations];
     
     if (allAnnotations) {
@@ -1908,6 +1915,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         case SKLineNote:
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             break;
+        case SKInkNote:
+            if (bezierPath) {
+                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
+                NSBezierPath *path = [bezierPath copy];
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+                [path transformUsingAffineTransform:transform];
+                [(PDFAnnotationInk *)newAnnotation addBezierPath:path];
+                [path release];
+            }
+            break;
 	}
     if (newAnnotation) {
         if (text == nil)
@@ -2955,7 +2973,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
         } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote &&
+                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote && annotationMode != SKInkNote &&
                    NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
@@ -3065,6 +3083,34 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 dragMask = 0;
             }
         }
+        
+        return YES;
+    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO) {
+        BOOL didDraw = NO;
+        bezierPath = [[NSBezierPath alloc] init];
+        [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        if ([bezierPath lineWidth] > 0.0 && [[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
+            NSArray *dashPattern = [[NSUserDefaults standardUserDefaults] objectForKey:SKInkNoteDashPatternKey];
+            int count = [dashPattern count];
+            float pattern[count];
+            for (i = 0; i < count; i++)
+                pattern[i] = [[dashPattern objectAtIndex:i] floatValue];
+            [bezierPath setLineDash:pattern count:count phase:0.0];
+        }
+        [bezierPath moveToPoint:pagePoint];
+        pathPageIndex = [page pageIndex];
+        while (YES) {
+            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+            [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+            [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath bounds], -8.0, -8.0) fromPage:page]];
+            if ([theEvent type] == NSLeftMouseUp)
+                break;
+            didDraw = YES;
+        }
+        if (didDraw)
+            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect([bezierPath bounds], -8.0, -8.0)];
+        [bezierPath release];
+        bezierPath = nil;
         
         return YES;
     } else {

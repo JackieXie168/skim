@@ -125,6 +125,8 @@ typedef NSInteger SKInteractionMode;
     BOOL didSelect;
     BOOL mouseDownInAnnotation;
     int dragMask;
+    NSBezierPath *bezierPath;
+    unsigned int pathPageIndex;
     
     int trackingRect;
     CFMutableArrayRef PDFToolTipRects;

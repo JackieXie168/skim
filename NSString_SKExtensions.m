@@ -415,8 +415,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         imageName = SKImageNameStrikeOutNoteAdorn;
     else if ([self isEqualToString:SKNLineString])
         imageName = SKImageNameLineNoteAdorn;
-    //else if ([self isEqualToString:SKNInkString])
-    //    imageName = SKImageNameInkNoteAdorn;
+    else if ([self isEqualToString:SKNInkString])
+        imageName = SKImageNameInkNoteAdorn;
     
     if (imageName) {
         NSImage *image = [NSImage imageNamed:imageName];
