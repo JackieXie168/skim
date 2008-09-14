@@ -122,6 +122,10 @@ extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
 
 #pragma mark -
 
+extern BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint startPoint, NSPoint endPoint, float delta);
+
+#pragma mark -
+
 static inline
 Rect SKQDRectFromNSRect(NSRect nsRect) {
     Rect qdRect;
