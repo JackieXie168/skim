@@ -100,8 +100,8 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
     if (noteImages == nil) {
         CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];
         
-        noteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
-        invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
+        noteImages = [[NSMutableDictionary alloc] initWithCapacity:9];
+        invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:9];
         
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameTextNoteAdorn, SKNFreeTextString, filter);
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameAnchoredNoteAdorn, SKNNoteString, filter);
@@ -111,7 +111,7 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameUnderlineNoteAdorn, SKNUnderlineString, filter);
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameStrikeOutNoteAdorn, SKNStrikeOutString, filter);
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameLineNoteAdorn, SKNLineString, filter);
-        //SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameInkNoteAdorn, SKNInkString, filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameInkNoteAdorn, SKNInkString, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];

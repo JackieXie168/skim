@@ -129,6 +129,11 @@
         BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
         ZmZmAAABAYY=
         </data>
+        <key>SKInkNoteColor</key>
+        <data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAQAAAYY=
+        </data>
         <key>SKCircleNoteInteriorColor</key>
         <data>
         BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
@@ -143,11 +148,6 @@
         <data>
         BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
         ZmZmAAAAAYY=
-        </data>
-        <key>SKInkNoteColor</key>
-        <data>
-        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
-        ZgAAhg==
         </data>
         <key>SKFreeTextNoteLineWidth</key>
         <real>1.0</real>
