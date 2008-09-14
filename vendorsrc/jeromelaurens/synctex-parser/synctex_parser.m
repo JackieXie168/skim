@@ -3064,7 +3064,7 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 				SYNCTEX_CUR += sizeof(synctex_node_t);
 			}
 		} while((node = SYNCTEX_FRIEND(node)));
-		if(SYNCTEX_START == NULL) {
+		if(node && SYNCTEX_START == NULL) {
 			/* We did not find any matching glue or kern, retry with boxes */
 			do {
 				if((tag == SYNCTEX_TAG(node))
@@ -3102,8 +3102,6 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 		start_ref = (synctex_node_t *)SYNCTEX_START;
 		end_ref   = (synctex_node_t *)SYNCTEX_START;
 next_end:
-printf("We keep:\n");
-SYNCTEX_LOG(*start_ref);
 		end_ref += 1; /*  we allways have start_ref<= end_ref*/
 		if(end_ref < (synctex_node_t *)SYNCTEX_END) {
 			node = *end_ref;
