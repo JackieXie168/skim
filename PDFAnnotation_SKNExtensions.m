@@ -52,6 +52,7 @@ NSString *SKNHighlightString = @"Highlight";
 NSString *SKNUnderlineString = @"Underline";
 NSString *SKNStrikeOutString = @"StrikeOut";
 NSString *SKNLineString = @"Line";
+NSString *SKNInkString = @"Ink";
 
 NSString *SKNPDFAnnotationTypeKey = @"type";
 NSString *SKNPDFAnnotationBoundsKey = @"bounds";
@@ -81,6 +82,8 @@ NSString *SKNPDFAnnotationRotationKey = @"rotation";
 NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
 
 NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
+
+NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
 @implementation PDFAnnotation (SKNExtensions)
 
@@ -156,6 +159,8 @@ static void replacementDealloc(id self, SEL _cmd) {
             annotationClass = [PDFAnnotationMarkup class];
         else if ([type isEqualToString:SKNLineString])
             annotationClass = [PDFAnnotationLine class];
+        else if ([type isEqualToString:SKNInkString])
+            annotationClass = [PDFAnnotationInk class];
         
         [[self initWithBounds:NSZeroRect] release];
         self = [[annotationClass allocWithZone:zone] initSkimNoteWithProperties:dict];
@@ -426,6 +431,63 @@ static void replacementDealloc(id self, SEL _cmd) {
 - (NSDictionary *)SkimNoteProperties{
     NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
     [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:SKNPDFAnnotationIconTypeKey];
+    return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationInk (SKNExtensions)
+
+- (id)initSkimNoteWithProperties:(NSDictionary *)dict{
+    if (self = [super initSkimNoteWithProperties:dict]) {
+        Class arrayClass = [NSArray class];
+        NSArray *pointLists = [dict objectForKey:SKNPDFAnnotationPointListsKey];
+        if ([pointLists isKindOfClass:arrayClass]) {
+            NSUInteger i, iMax = [pointLists count];
+            for (i = 0; i < iMax; i++) {
+                NSArray *pointStrings = [pointLists objectAtIndex:i];
+                if ([pointStrings isKindOfClass:arrayClass]) {
+                    NSUInteger j, jMax = [pointStrings count];
+                    NSBezierPath *path = [NSBezierPath bezierPath];
+                    for (j = 0; j < jMax; j++) {
+                        NSPoint p = NSPointFromString([pointStrings objectAtIndex:j]);
+                        if (j == 0)
+                            [path moveToPoint:p];
+                        else
+                            [path lineToPoint:p];
+                    }
+                    [self addBezierPath:path];
+                }
+            }
+        }
+    }
+    return self;
+}
+
+- (NSDictionary *)SkimNoteProperties{
+    NSMutableDictionary *dict = [[[super SkimNoteProperties] mutableCopy] autorelease];
+    NSArray *paths = [self paths];
+    if (paths) {
+        NSUInteger i, iMax = [paths count];
+        NSMutableArray *pointLists = [[NSMutableArray alloc] initWithCapacity:iMax];
+        for (i = 0; i < iMax; i++) {
+            NSBezierPath *path = [paths objectAtIndex:i];
+            NSUInteger j, jMax = [path elementCount];
+            NSMutableArray *pointStrings = [[NSMutableArray alloc] initWithCapacity:jMax];
+            for (j = 0; j < jMax; j++) {
+                NSPoint points[3];
+                NSBezierPathElement element = [path elementAtIndex:j associatedPoints:points];
+                NSPoint point = element == NSCurveToBezierPathElement ? points[2] : points[0];
+                [pointStrings addObject:NSStringFromPoint(point)];
+            }
+            [pointLists addObject:pointStrings];
+            [pointStrings release];
+        }
+        [dict setValue:pointLists forKey:SKNPDFAnnotationPointListsKey];
+        [pointLists release];
+    }
     return dict;
 }
 
