@@ -42,7 +42,7 @@
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
-#import "SKGeometry.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation PDFAnnotationInk (SKExtensions)
@@ -92,9 +92,7 @@
 - (BOOL)isConvertibleAnnotation { return NO; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    NSRect bounds = [self bounds];
-    NSPoint startPoint = [self startPoint];
-    NSPoint endPoint = [self endPoint];
+    NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
     
     if ([super hitTest:point]) {
         NSEnumerator *pathEnum = [[self paths] objectEnumerator];
@@ -109,7 +107,7 @@
                 element = [path elementAtIndex:i associatedPoints:points];
                 prevPoint = nextPoint;
                 nextPoint = element == NSCurveToBezierPathElement ? points[2] : points[0];
-                if (i > 0 && SKPointNearLineFromPointToPoint(point, prevPoint, nextPoint, 4.0))
+                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, 4.0))
                     return YES;
             }
         }
