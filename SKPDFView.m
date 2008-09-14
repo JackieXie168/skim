@@ -1056,6 +1056,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setAnnotationMode:SKStrikeOutNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'l') && (modifiers == 0)) {
             [self setAnnotationMode:SKLineNote];
+        //} else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0)) {
+        //    [self setAnnotationMode:SKInkNote];
         } else if ([typeSelectHelper processKeyDownEvent:theEvent] == NO) {
             [super keyDown:theEvent];
         }
@@ -1322,6 +1324,10 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
     [item setTag:SKLineNote];
     [item setTarget:self];
+    
+    //item = [submenu addItemWithTitle:NSLocalizedString(@"Ink", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    //[item setTag:SKInkNote];
+    //[item setTarget:self];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
     [item setSubmenu:submenu];
@@ -1626,7 +1632,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 annotation = [annotations objectAtIndex:i];
                 NSString *type = [annotation type];
                 if ([annotation isSkimNote] && [annotation hitTest:location] && 
-                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString])) {
+                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation)
                             [self setNeedsDisplayForAnnotation:highlightAnnotation];
@@ -1674,7 +1680,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 else
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
-            } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString]) {
+            } else if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
                 if (number = [dict objectForKey:SKLineWellLineWidthKey])
@@ -1907,7 +1913,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (text == nil)
             text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         
-        if ([[activeAnnotation type] isEqualToString:SKNLineString] == NO)
+        if ([[activeAnnotation type] isEqualToString:SKNLineString] == NO && [[activeAnnotation type] isEqualToString:SKNInkString] == NO)
             [newAnnotation setString:text];
         
         [self addAnnotation:newAnnotation toPage:page];

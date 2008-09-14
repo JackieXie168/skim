@@ -111,6 +111,7 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameUnderlineNoteAdorn, SKNUnderlineString, filter);
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameStrikeOutNoteAdorn, SKNStrikeOutString, filter);
         SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameLineNoteAdorn, SKNLineString, filter);
+        //SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameInkNoteAdorn, SKNInkString, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];

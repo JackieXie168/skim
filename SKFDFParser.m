@@ -67,6 +67,7 @@ SKFDFString SKFDFAnnotationBorderKey = "Border";
 SKFDFString SKFDFAnnotationIconTypeKey = "Name";
 SKFDFString SKFDFAnnotationLineStylesKey = "LE";
 SKFDFString SKFDFAnnotationLinePointsKey = "L";
+SKFDFString SKFDFAnnotationInkListKey = "InkList";
 SKFDFString SKFDFAnnotationQuadrilateralPointsKey = "QuadPoints";
 SKFDFString SKFDFDefaultAppearanceKey = "DA";
 SKFDFString SKFDFDefaultStyleKey = "DS";
@@ -216,7 +217,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
     
     if (success) {
-        NSSet *validTypes = [NSSet setWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, nil];
+        NSSet *validTypes = [NSSet setWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
         NSString *type = [dictionary objectForKey:SKNPDFAnnotationTypeKey];
         NSString *contents;
         if ([type isEqualToString:SKNTextString]) {
@@ -348,6 +349,27 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
             }
             [dictionary setObject:quadPoints forKey:SKNPDFAnnotationQuadrilateralPointsKey];
         }
+    }
+    
+    if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationInkListKey, &array)) {
+        size_t i, iMax = CGPDFArrayGetCount(array);
+        NSMutableArray *pointLists = [NSMutableArray arrayWithCapacity:iMax];
+        for (i = 0; i < iMax; i++) {
+            CGPDFArrayRef subarray;
+            if (CGPDFArrayGetArray(array, i, &subarray)) {
+                size_t j, jMax = CGPDFArrayGetCount(subarray);
+                if (jMax % 2 == 0) {
+                    NSMutableArray *points = [NSMutableArray arrayWithCapacity:jMax / 2];
+                    for (j = 0; j < jMax; j++) {
+                        NSPoint point;
+                        if (CGPDFArrayGetNumber(subarray, j, &point.x) && CGPDFArrayGetNumber(subarray, ++j, &point.y))
+                            [points addObject:NSStringFromPoint(SKSubstractPoints(point, bounds.origin))];
+                    }
+                    [pointLists addObject:points];
+                }
+            }
+        }
+        [dictionary setObject:pointLists forKey:SKNPDFAnnotationPointListsKey];
     }
     
     if (success && CGPDFDictionaryGetString(annot, SKFDFDefaultAppearanceKey, &string)) {

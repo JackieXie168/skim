@@ -43,6 +43,7 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
+#import "PDFAnnotationInk_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
@@ -283,6 +284,8 @@ enum {
                 self = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
                 self = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+            } else if (type == SKScriptingInkNote) {
+                self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
             }
         }
     }
@@ -348,6 +351,8 @@ enum {
         return SKScriptingStrikeOutNote;
     else if ([[self type] isEqualToString:SKNLineString])
         return SKScriptingLineNote;
+    else if ([[self type] isEqualToString:SKNInkString])
+        return SKScriptingInkNote;
     return 0;
 }
 
