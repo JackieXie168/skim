@@ -99,3 +99,21 @@ NSRect SKCenterRectHorizontally(NSRect rect, float width) {
     rect.size.width = width;
     return rect;
 }
+
+BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoint, float delta) {
+    if (point.x < fminf(aPoint.x, bPoint.x) - delta || point.y < fminf(aPoint.y, bPoint.y) - delta || point.x > fmaxf(aPoint.x, bPoint.x) + delta || point.y > fmaxf(aPoint.y, bPoint.y) + delta)
+        return NO;
+    
+    NSPoint relPoint = SKSubstractPoints(bPoint, aPoint);
+    float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
+    float deltaSquared = delta * delta;
+    float extProduct;
+    
+    if (lengthSquared < deltaSquared)
+        return YES;
+    
+    point = SKSubstractPoints(point, aPoint);
+    extProduct = point.x * relPoint.y - point.y * relPoint.x;
+    
+    return extProduct * extProduct < deltaSquared * lengthSquared;
+}

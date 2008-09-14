@@ -120,25 +120,13 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSRect bounds = [self bounds];
     NSPoint startPoint = [self startPoint];
     NSPoint endPoint = [self endPoint];
+    NSPoint relPoint = SKSubstractPoints(point, bounds.origin);
     
-    if ([super hitTest:point]) {
-        NSPoint relPoint = SKSubstractPoints(endPoint, startPoint);
-        float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
-        float extProduct;
-        
-        if (lengthSquared < 16.0)
-            return YES;
-        
-        point = SKSubstractPoints(SKSubstractPoints(point, bounds.origin), startPoint);
-        extProduct = point.x * relPoint.y - point.y * relPoint.x;
-        
-        return extProduct * extProduct < 16.0 * lengthSquared;
-    } else {
-        
-        point = SKSubstractPoints(point, bounds.origin);
-        return (fabsf(point.x - startPoint.x) < 3.5 && fabsf(point.y - startPoint.y) < 3.5) ||
-               (fabsf(point.x - endPoint.x) < 3.5 && fabsf(point.y - endPoint.y) < 3.5);
-    }
+    if ([super hitTest:point])
+        return SKPointNearLineFromPointToPoint(relPoint, startPoint, endPoint, 4.0);
+    else
+        return (fabsf(relPoint.x - startPoint.x) < 3.5 && fabsf(relPoint.y - startPoint.y) < 3.5) ||
+               (fabsf(relPoint.x - endPoint.x) < 3.5 && fabsf(relPoint.y - endPoint.y) < 3.5);
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {

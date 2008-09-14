@@ -42,6 +42,7 @@
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "SKGeometry.h"
 
 
 @implementation PDFAnnotationInk (SKExtensions)
@@ -89,6 +90,32 @@
 - (BOOL)isMovable { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return NO; }
+
+- (BOOL)hitTest:(NSPoint)point {
+    NSRect bounds = [self bounds];
+    NSPoint startPoint = [self startPoint];
+    NSPoint endPoint = [self endPoint];
+    
+    if ([super hitTest:point]) {
+        NSEnumerator *pathEnum = [[self paths] objectEnumerator];
+        NSBezierPath *path;
+        NSPoint prevPoint, nextPoint = NSZeroPoint;
+        NSPoint points[3];
+        int i, iMax;
+        NSBezierPathElement element;
+        while (path = [pathEnum nextObject]) {
+            iMax = [path elementCount];
+            for (i = 0; i < iMax; i++) {
+                element = [path elementAtIndex:i associatedPoints:points];
+                prevPoint = nextPoint;
+                nextPoint = element == NSCurveToBezierPathElement ? points[2] : points[0];
+                if (i > 0 && SKPointNearLineFromPointToPoint(point, prevPoint, nextPoint, 4.0))
+                    return YES;
+            }
+        }
+    }
+    return NO;
+}
 
 - (NSArray *)pointLists {
     NSMutableArray *pointLists = [NSMutableArray array];
