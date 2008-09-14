@@ -84,6 +84,10 @@ extern NSString *SKNStrikeOutString;
     @discussion  Global string for Line note type.
 */
 extern NSString *SKNLineString;
+/*!
+    @discussion  Global string for Ink note type.
+*/
+extern NSString *SKNInkString;
 
 /*!
     @discussion  Global string for annotation type key.
@@ -183,6 +187,10 @@ extern NSString *SKNPDFAnnotationQuadrilateralPointsKey;
 */
 extern NSString *SKNPDFAnnotationIconTypeKey;
 
+/*!
+    @discussion  Global string for annotation point lists key.
+*/
+extern NSString *SKNPDFAnnotationPointListsKey;
 
 /*!
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
@@ -309,4 +317,13 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
     @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a text annotation.
 */
 @interface PDFAnnotationText (SKNExtensions)
+@end
+
+#pragma mark -
+
+/*!
+    @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
+    @discussion  Implements <code>initSkimNotesWithProperties:</code> and properties to take care of the extra properties of a text annotation.
+*/
+@interface PDFAnnotationInk (SKNExtensions)
 @end
