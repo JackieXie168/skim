@@ -491,7 +491,7 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation {
     NSString *type = [annotation type];
-    if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString]) {
+    if ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString]) {
         [self setLineWidth:[annotation border] ? [[annotation border] lineWidth] : 0.0];
         [self setDashPattern:[[annotation border] dashPattern]];
         [self setStyle:[annotation border] ? [[annotation border] style] : 0];

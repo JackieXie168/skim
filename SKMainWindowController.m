@@ -1242,7 +1242,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)changeLineWidth:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKNLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setLineWidth:[sender lineWidth]];
     }
 }
@@ -1250,7 +1250,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)changeLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setBorderStyle:[sender style]];
     }
 }
@@ -1258,7 +1258,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)changeDashPattern:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString])) {
+    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setDashPattern:[sender dashPattern]];
     }
 }

@@ -210,7 +210,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     NSString *type = [annotation type];
     
     if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:@""] || [type isEqualToString:SKNLineString])) {
+        if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
             updatingLine = YES;
             [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
             updatingLine = NO;

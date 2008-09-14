@@ -112,7 +112,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 @implementation NSString (SKExtensions)
 
 - (NSNumber *)noteTypeOrder {
-    int order = 8;
+    int order = 9;
     if ([self isEqualToString:SKNFreeTextString])
         order = 0;
     else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
@@ -129,6 +129,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         order = 6;
     else if ([self isEqualToString:SKNLineString])
         order = 7;
+    else if ([self isEqualToString:SKNInkString])
+        order = 8;
     return [NSNumber numberWithInt:order];
 }
 
@@ -281,6 +283,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         return NSLocalizedString(@"Strike Out", @"Description for export");
     else if ([self isEqualToString:SKNLineString])
         return NSLocalizedString(@"Line", @"Description for export");
+    else if ([self isEqualToString:SKNInkString])
+        return NSLocalizedString(@"Freehand", @"Description for export");
     else
         return self;
 }
@@ -411,6 +415,8 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         imageName = SKImageNameStrikeOutNoteAdorn;
     else if ([self isEqualToString:SKNLineString])
         imageName = SKImageNameLineNoteAdorn;
+    //else if ([self isEqualToString:SKNInkString])
+    //    imageName = SKImageNameInkNoteAdorn;
     
     if (imageName) {
         NSImage *image = [NSImage imageNamed:imageName];

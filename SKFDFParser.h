@@ -64,6 +64,7 @@ extern SKFDFString SKFDFAnnotationBorderKey;
 extern SKFDFString SKFDFAnnotationIconTypeKey;
 extern SKFDFString SKFDFAnnotationLineStylesKey;
 extern SKFDFString SKFDFAnnotationLinePointsKey;
+extern SKFDFString SKFDFAnnotationInkListKey;
 extern SKFDFString SKFDFAnnotationQuadrilateralPointsKey;
 extern SKFDFString SKFDFDefaultAppearanceKey;
 extern SKFDFString SKFDFDefaultStyleKey;

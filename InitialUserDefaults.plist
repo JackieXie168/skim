@@ -144,6 +144,11 @@
         BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
         ZmZmAAAAAYY=
         </data>
+        <key>SKInkNoteColor</key>
+        <data>
+        BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+        ZmZmAAABAYY=
+        </data>
         <key>SKFreeTextNoteLineWidth</key>
         <real>1.0</real>
         <key>SKFreeTextNoteLineStyle</key>
@@ -174,6 +179,12 @@
         <integer>0</integer>
         <key>SKLineNoteEndLineStyle</key>
         <integer>4</integer>
+        <key>SKInkNoteLineWidth</key>
+        <real>2.0</real>
+        <key>SKInkNoteLineStyle</key>
+        <integer>0</integer>
+        <key>SKInkNoteDashPattern</key>
+        <array/>
         <key>SKAutoCheckFileUpdate</key>
         <false/>
         <key>SKTeXEditorPreset</key>

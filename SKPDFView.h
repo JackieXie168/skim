@@ -78,7 +78,8 @@ enum {
     SKHighlightNote,
     SKUnderlineNote,
     SKStrikeOutNote,
-    SKLineNote
+    SKLineNote,
+    SKInkNote
 };
 typedef NSInteger SKNoteType;
 

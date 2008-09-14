@@ -425,6 +425,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") imageNamed:SKImageNameToolbarUnderlineNote action:@selector(changeAnnotationMode:) target:self tag:SKUnderlineNote];
             [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") imageNamed:SKImageNameToolbarStrikeOutNote action:@selector(changeAnnotationMode:) target:self tag:SKStrikeOutNote];
             [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") imageNamed:SKImageNameToolbarLineNote action:@selector(changeAnnotationMode:) target:self tag:SKLineNote];
+            //[menu addItemWithTitle:NSLocalizedString(@"Freehand", @"Menu item title") imageNamed:SKImageNameToolbarInkNote action:@selector(changeAnnotationMode:) target:self tag:SKInkNote];
             [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
             
             menu = [NSMenu menu];
@@ -441,6 +442,7 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [menu addItemWithTitle:NSLocalizedString(@"Underline Tool", @"Menu item title") action:@selector(changeAnnotationMode:) target:self tag:SKUnderlineNote];
             [menu addItemWithTitle:NSLocalizedString(@"Strike Out Tool", @"Menu item title") action:@selector(changeAnnotationMode:) target:self tag:SKStrikeOutNote];
             [menu addItemWithTitle:NSLocalizedString(@"Line Tool", @"Menu item title") action:@selector(changeAnnotationMode:) target:self tag:SKLineNote];
+            //[menu addItemWithTitle:NSLocalizedString(@"Freehand Tool", @"Menu item title") action:@selector(changeAnnotationMode:) target:self tag:SKInkNote];
             menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Tool Mode", @"Toolbar item label") submenu:menu] autorelease];
             
             [item setLabels:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];

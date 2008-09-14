@@ -48,7 +48,8 @@ enum {
     SKScriptingHighlightNote = 'NHil',
     SKScriptingUnderlineNote = 'NUnd',
     SKScriptingStrikeOutNote = 'NStr',
-    SKScriptingLineNote = 'NLin'
+    SKScriptingLineNote = 'NLin',
+    SKScriptingInkNote = 'NInk'
 };
 
 enum {
