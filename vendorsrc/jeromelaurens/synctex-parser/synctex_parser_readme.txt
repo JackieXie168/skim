@@ -35,12 +35,18 @@ History:
   Unfortunately, the backwards synchronization is not working properly mainly for ConTeXt users, see below.
 1.2: Tue Sep  2 10:28:32 UTC 2008
 - Correction for ConTeXt support in the edit query.
-  Thefile://localhost/Volumes/HD1/Users/coder/dev/texlive/source/texk/web2c/synctexdir/synctex_parser.version previous method was assuming that TeX boxes do not overlap,
+  The previous method was assuming that TeX boxes do not overlap,
   which is reasonable for LaTeX but not for ConTeXt.
   This assumption is no longer considered.
-1.3: Thu Sep  4 11:30:29 UTC 2008
+1.3: Fri Sep  5 09:39:57 UTC 2008
 - Local variable "read" renamed to "already_read" to avoid conflicts.
 - "inline" compiler directive renamed to "SYNCTEX_INLINE" for code support and maintenance
+- _synctex_error cannot be inlined due to variable arguments (thanks Christiaan Hofman)
+- Correction in the display query, extra boundary nodes are used for a more precise forwards synchronization
+1.4: Fri Sep 12 08:12:34 UTC 2008
+- For an unknown reason, the previous version was not the real 1.3 (as used in iTeXMac2 build 747).
+  As a consequence, a crash was observed.
+- Some typos are fixed.
 
 Acknowledgments:
 ----------------

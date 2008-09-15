@@ -3,7 +3,7 @@ Copyright (c) 2008 jerome DOT laurens AT u-bourgogne DOT fr
 
 This file is part of the SyncTeX package.
 
-Version: 1.3
+Version: 1.4
 See synctex_parser_readme.txt for more details
 
 License:
@@ -548,14 +548,13 @@ synctex_node_t _synctex_new_void_hbox(synctex_scanner_t scanner) {
 	return node;
 }
 
-/*  The medium nodes correspond to kern, glue and math nodes.  */
+/*  The medium nodes correspond to kern and math nodes.  */
 typedef struct {
 	synctex_class_t class;
 	synctex_info_t implementation[3+SYNCTEX_WIDTH_IDX+1]; /* parent,sibling,friend,
 	                  * SYNCTEX_TAG,SYNCTEX_LINE,SYNCTEX_COLUMN,
 					  * SYNCTEX_HORIZ,SYNCTEX_VERT,SYNCTEX_WIDTH */
 } synctex_medium_node_t;
-
 
 #define SYNCTEX_IS_BOX(NODE)\
 	((NODE->class->type == synctex_node_type_vbox)\
@@ -565,8 +564,10 @@ typedef struct {
 	
 #define SYNCTEX_HAS_CHILDREN(NODE) (NODE && SYNCTEX_CHILD(NODE))
 	
+void _synctex_log_medium_node(synctex_node_t node);
+
+/*  math node creator */
 synctex_node_t _synctex_new_math(synctex_scanner_t scanner);
-void _synctex_log_medium_node(synctex_node_t sheet);
 void _synctex_display_math(synctex_node_t node);
 
 static const _synctex_class_t synctex_class_math = {
@@ -584,7 +585,6 @@ static const _synctex_class_t synctex_class_math = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-/*  math node creator */
 synctex_node_t _synctex_new_math(synctex_scanner_t scanner) {
 	synctex_node_t node = _synctex_malloc(sizeof(synctex_medium_node_t));
 	if(node) {
@@ -593,32 +593,7 @@ synctex_node_t _synctex_new_math(synctex_scanner_t scanner) {
 	return node;
 }
 
-synctex_node_t _synctex_new_glue(synctex_scanner_t scanner);
-void _synctex_display_glue(synctex_node_t node);
-
-static const _synctex_class_t synctex_class_glue = {
-	NULL,                       /* No scanner yet */
-	synctex_node_type_glue,     /* Node type */
-	&_synctex_new_glue,         /* creator */
-	&_synctex_free_leaf,        /* destructor */
-	&_synctex_log_medium_node,  /* log */
-	&_synctex_display_glue,     /* display */
-	&_synctex_implementation_0, /* parent */
-	NULL,                       /* No child */
-	&_synctex_implementation_1, /* sibling */
-	&_synctex_implementation_2, /* friend */
-	NULL,                       /* No next box */
-	(_synctex_info_getter_t)&_synctex_implementation_3
-};
-/*  glue node creator */
-synctex_node_t _synctex_new_glue(synctex_scanner_t scanner) {
-	synctex_node_t node = _synctex_malloc(sizeof(synctex_medium_node_t));
-	if(node) {
-		node->class = scanner?scanner->class+synctex_node_type_glue:(synctex_class_t)&synctex_class_glue;
-	}
-	return node;
-}
-
+/*  kern node creator */
 synctex_node_t _synctex_new_kern(synctex_scanner_t scanner);
 void _synctex_display_kern(synctex_node_t node);
 
@@ -637,11 +612,72 @@ static const _synctex_class_t synctex_class_kern = {
 	(_synctex_info_getter_t)&_synctex_implementation_3
 };
 
-/*  kern node creator */
 synctex_node_t _synctex_new_kern(synctex_scanner_t scanner) {
 	synctex_node_t node = _synctex_malloc(sizeof(synctex_medium_node_t));
 	if(node) {
 		node->class = scanner?scanner->class+synctex_node_type_kern:(synctex_class_t)&synctex_class_kern;
+	}
+	return node;
+}
+
+/*  The small nodes correspond to glue and boundary nodes.  */
+typedef struct {
+	synctex_class_t class;
+	synctex_info_t implementation[3+SYNCTEX_VERT_IDX+1]; /* parent,sibling,friend,
+	                  * SYNCTEX_TAG,SYNCTEX_LINE,SYNCTEX_COLUMN,
+					  * SYNCTEX_HORIZ,SYNCTEX_VERT */
+} synctex_small_node_t;
+
+void _synctex_log_small_node(synctex_node_t node);
+/*  glue node creator */
+synctex_node_t _synctex_new_glue(synctex_scanner_t scanner);
+void _synctex_display_glue(synctex_node_t node);
+
+static const _synctex_class_t synctex_class_glue = {
+	NULL,                       /* No scanner yet */
+	synctex_node_type_glue,     /* Node type */
+	&_synctex_new_glue,         /* creator */
+	&_synctex_free_leaf,        /* destructor */
+	&_synctex_log_medium_node,  /* log */
+	&_synctex_display_glue,     /* display */
+	&_synctex_implementation_0, /* parent */
+	NULL,                       /* No child */
+	&_synctex_implementation_1, /* sibling */
+	&_synctex_implementation_2, /* friend */
+	NULL,                       /* No next box */
+	(_synctex_info_getter_t)&_synctex_implementation_3
+};
+synctex_node_t _synctex_new_glue(synctex_scanner_t scanner) {
+	synctex_node_t node = _synctex_malloc(sizeof(synctex_medium_node_t));
+	if(node) {
+		node->class = scanner?scanner->class+synctex_node_type_glue:(synctex_class_t)&synctex_class_glue;
+	}
+	return node;
+}
+
+/*  boundary node creator */
+synctex_node_t _synctex_new_boundary(synctex_scanner_t scanner);
+void _synctex_display_boundary(synctex_node_t node);
+
+static const _synctex_class_t synctex_class_boundary = {
+	NULL,                       /* No scanner yet */
+	synctex_node_type_boundary,     /* Node type */
+	&_synctex_new_boundary, /* creator */
+	&_synctex_free_leaf,        /* destructor */
+	&_synctex_log_small_node,   /* log */
+	&_synctex_display_boundary,     /* display */
+	&_synctex_implementation_0, /* parent */
+	NULL,                       /* No child */
+	&_synctex_implementation_1, /* sibling */
+	&_synctex_implementation_2, /* friend */
+	NULL,                       /* No next box */
+	(_synctex_info_getter_t)&_synctex_implementation_3
+};
+
+synctex_node_t _synctex_new_boundary(synctex_scanner_t scanner) {
+	synctex_node_t node = _synctex_malloc(sizeof(synctex_small_node_t));
+	if(node) {
+		node->class = scanner?scanner->class+synctex_node_type_boundary:(synctex_class_t)&synctex_class_boundary;
 	}
 	return node;
 }
@@ -747,7 +783,7 @@ synctex_node_type_t synctex_node_type(synctex_node_t node) {
 /*  Public node accessor: the human readable type  */
 const char * synctex_node_isa(synctex_node_t node) {
 static const char * isa[synctex_node_number_of_types] =
-		{"Not a node","input","sheet","vbox","void vbox","hbox","void hbox","kern","glue","math"};
+		{"Not a node","input","sheet","vbox","void vbox","hbox","void hbox","kern","glue","math","boundary"};
 	return isa[synctex_node_type(node)];
 }
 
@@ -769,6 +805,13 @@ void synctex_node_display(synctex_node_t node) {
 	SYNCTEX_DISPLAY(node);
 }
 
+void _synctex_display_input(synctex_node_t node) {
+	printf("....Input:%i:%s\n",
+		SYNCTEX_TAG(node),
+		SYNCTEX_NAME(node));
+	SYNCTEX_DISPLAY(SYNCTEX_SIBLING(node));
+}
+
 void _synctex_log_sheet(synctex_node_t sheet) {
 	if(sheet) {
 		printf("%s:%i\n",synctex_node_isa(sheet),SYNCTEX_PAGE(sheet));
@@ -778,6 +821,20 @@ void _synctex_log_sheet(synctex_node_t sheet) {
 		printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(sheet));
 		printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(sheet));
 	}
+}
+
+void _synctex_log_small_node(synctex_node_t node) {
+	printf("%s:%i,%i:%i,%i\n",
+		synctex_node_isa(node),
+		SYNCTEX_TAG(node),
+		SYNCTEX_LINE(node),
+		SYNCTEX_HORIZ(node),
+		SYNCTEX_VERT(node));
+	printf("SELF:%p",(void *)node);
+	printf(" SYNCTEX_PARENT:%p",(void *)SYNCTEX_PARENT(node));
+	printf(" SYNCTEX_CHILD:%p",(void *)SYNCTEX_CHILD(node));
+	printf(" SYNCTEX_SIBLING:%p",(void *)SYNCTEX_SIBLING(node));
+	printf(" SYNCTEX_FRIEND:%p\n",(void *)SYNCTEX_FRIEND(node));
 }
 
 void _synctex_log_medium_node(synctex_node_t node) {
@@ -947,10 +1004,12 @@ void _synctex_display_kern(synctex_node_t node) {
 	SYNCTEX_DISPLAY(SYNCTEX_SIBLING(node));
 }
 
-void _synctex_display_input(synctex_node_t node) {
-	printf("....Input:%i:%s\n",
+void _synctex_display_boundary(synctex_node_t node) {
+	printf("....boundary:%i,%i:%i,%i\n",
 		SYNCTEX_TAG(node),
-		SYNCTEX_NAME(node));
+		SYNCTEX_LINE(node),
+		SYNCTEX_HORIZ(node),
+		SYNCTEX_VERT(node));
 	SYNCTEX_DISPLAY(SYNCTEX_SIBLING(node));
 }
 
@@ -1008,7 +1067,6 @@ static int _synctex_error(char * reason,...) {
 #       pragma mark -
 #       pragma mark Prototypes
 #   endif
-void _synctex_log_medium_node(synctex_node_t node);
 void _synctex_log_void_box(synctex_node_t node);
 void _synctex_log_box(synctex_node_t node);
 void _synctex_log_horiz_box(synctex_node_t node);
@@ -1823,7 +1881,6 @@ synctex_status_t _synctex_scan_sheet(synctex_scanner_t scanner, synctex_node_t s
 	synctex_node_t box = sheet;
 	int friend_index = 0;
 	synctex_info_t * info = NULL;
-	int curh, curv;
 	synctex_status_t status = 0;
 	size_t available = 0;
 	if((NULL == scanner) || (NULL == sheet)) {
@@ -2087,16 +2144,24 @@ scan_xobh:
 			}
 		} else if(*SYNCTEX_CUR == 'x') {
 			++SYNCTEX_CUR;
-			if(_synctex_decode_int(scanner,NULL)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,NULL)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,&curh)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,&curv)<SYNCTEX_STATUS_OK
+			if(NULL != (child = _synctex_new_boundary(scanner))
+					&& NULL != (info = SYNCTEX_INFO(child))) {
+				if(SYNCTEX_DECODE_FAILED(SYNCTEX_TAG_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_LINE_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_HORIZ_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_VERT_IDX)
 						|| _synctex_next_line(scanner)<SYNCTEX_STATUS_OK) {
-				_synctex_error("Bad x record.");
+					_synctex_error("Bad boundary record.");
+					SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
+				}
+				SYNCTEX_SET_CHILD(parent,child);
+				_synctex_horiz_box_setup_visible(parent,SYNCTEX_HORIZ(child),SYNCTEX_VERT(child));
+				SYNCTEX_UPDATE_FRIEND(child);
+				goto sibling_loop;
+			} else {
+				_synctex_error("Can't create math record.");
 				SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
 			}
-			_synctex_horiz_box_setup_visible(parent,curh,curv);
-			goto child_loop;
 		} else if(*SYNCTEX_CUR == '}') {
 			goto scan_teehs;
 		} else if(*SYNCTEX_CUR == '!') {
@@ -2294,16 +2359,25 @@ sibling_loop:
 			}
 		} else if(*SYNCTEX_CUR == 'x') {
 			++SYNCTEX_CUR;
-			if(_synctex_decode_int(scanner,NULL)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,NULL)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,&curh)<SYNCTEX_STATUS_OK
-						|| _synctex_decode_int(scanner,&curv)<SYNCTEX_STATUS_OK
+			if(NULL != (sibling = _synctex_new_boundary(scanner))
+					&& NULL != (info = SYNCTEX_INFO(sibling))) {
+				if(SYNCTEX_DECODE_FAILED(SYNCTEX_TAG_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_LINE_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_HORIZ_IDX)
+						|| SYNCTEX_DECODE_FAILED(SYNCTEX_VERT_IDX)
 						|| _synctex_next_line(scanner)<SYNCTEX_STATUS_OK) {
-				_synctex_error("Bad x record (2).");
+					_synctex_error("Bad boundary record (2).");
+					SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
+				}
+				SYNCTEX_SET_SIBLING(child,sibling);
+				child = sibling;
+				SYNCTEX_UPDATE_FRIEND(child);
+				_synctex_horiz_box_setup_visible(parent,SYNCTEX_HORIZ(child),SYNCTEX_VERT(child));
+				goto sibling_loop;
+			} else {
+				_synctex_error("Can't create boundary record (2).");
 				SYNCTEX_RETURN(SYNCTEX_STATUS_ERROR);
 			}
-			_synctex_horiz_box_setup_visible(parent,curh,curv);
-			goto sibling_loop;
 		} else if(*SYNCTEX_CUR == '}') {
 			goto scan_teehs;
 		} else if(*SYNCTEX_CUR == '!') {
@@ -2534,6 +2608,8 @@ synctex_scanner_t _synctex_scanner_new_with_contents_of_file(const char * name) 
 	 *  If there is a post scriptum section, this value will be overriden by the real life value */
 	scanner->x_offset = scanner->y_offset = 6.027e23f;
 	scanner->class[synctex_node_type_sheet] = synctex_class_sheet;
+	scanner->class[synctex_node_type_input] = synctex_class_input;
+	(scanner->class[synctex_node_type_input]).scanner = scanner;
 	(scanner->class[synctex_node_type_sheet]).scanner = scanner;
 	scanner->class[synctex_node_type_vbox] = synctex_class_vbox;
 	(scanner->class[synctex_node_type_vbox]).scanner = scanner;
@@ -2549,8 +2625,8 @@ synctex_scanner_t _synctex_scanner_new_with_contents_of_file(const char * name) 
 	(scanner->class[synctex_node_type_glue]).scanner = scanner;
 	scanner->class[synctex_node_type_math] = synctex_class_math;
 	(scanner->class[synctex_node_type_math]).scanner = scanner;
-	scanner->class[synctex_node_type_input] = synctex_class_input;
-	(scanner->class[synctex_node_type_input]).scanner = scanner;
+	scanner->class[synctex_node_type_boundary] = synctex_class_boundary;
+	(scanner->class[synctex_node_type_boundary]).scanner = scanner;
 	SYNCTEX_FILE = gzopen(name,"r");
 	if(NULL == SYNCTEX_FILE) {
 		if(errno != ENOENT) {
@@ -3029,10 +3105,6 @@ synctex_node_t synctex_sheet_content(synctex_scanner_t scanner,int page) {
 #       pragma mark Query
 #   endif
 
-int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,int column);
-int synctex_edit_query(synctex_scanner_t scanner,int page,float h,float v);
-synctex_node_t synctex_next_result(synctex_scanner_t scanner);
-
 int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,int column) {
 #	ifdef __DARWIN_UNIX03
 #       pragma unused(column)
@@ -3040,6 +3112,7 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 	int tag = synctex_scanner_get_tag(scanner,name);
 	size_t size = 0;
 	int friend_index = 0;
+	int max_line = 0;
 	synctex_node_t node = NULL;
 	if(tag == 0) {
 		printf("SyncTeX Warning: No tag for %s\n",name);
@@ -3047,27 +3120,14 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 	}
 	free(SYNCTEX_START);
 	SYNCTEX_CUR = SYNCTEX_END = SYNCTEX_START = NULL;
-	friend_index = (tag+line)%(scanner->number_of_lists);
-	if((node = (scanner->lists_of_friends)[friend_index])) {
-		do {
-			if((synctex_node_type(node)>=synctex_node_type_kern)
-				&& (tag == SYNCTEX_TAG(node))
-					&& (line == SYNCTEX_LINE(node))) {
-				if(SYNCTEX_CUR == SYNCTEX_END) {
-					size += 16;
-					SYNCTEX_END = realloc(SYNCTEX_START,size*sizeof(synctex_node_t *));
-					SYNCTEX_CUR += SYNCTEX_END - SYNCTEX_START;
-					SYNCTEX_START = SYNCTEX_END;
-					SYNCTEX_END = SYNCTEX_START + size*sizeof(synctex_node_t *);
-				}			
-				*(synctex_node_t *)SYNCTEX_CUR = node;
-				SYNCTEX_CUR += sizeof(synctex_node_t);
-			}
-		} while((node = SYNCTEX_FRIEND(node)));
-		if(node && SYNCTEX_START == NULL) {
-			/* We did not find any matching glue or kern, retry with boxes */
+	max_line = line < UINT_MAX-scanner->number_of_lists ? line+scanner->number_of_lists:UINT_MAX;
+	while(line<max_line) {
+		/*  This loop will only be performed once for advanced viewers */
+		friend_index = (tag+line)%(scanner->number_of_lists);
+		if((node = (scanner->lists_of_friends)[friend_index])) {
 			do {
-				if((tag == SYNCTEX_TAG(node))
+				if((synctex_node_type(node)>=synctex_node_type_boundary)
+					&& (tag == SYNCTEX_TAG(node))
 						&& (line == SYNCTEX_LINE(node))) {
 					if(SYNCTEX_CUR == SYNCTEX_END) {
 						size += 16;
@@ -3080,45 +3140,88 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 					SYNCTEX_CUR += sizeof(synctex_node_t);
 				}
 			} while((node = SYNCTEX_FRIEND(node)));
-		}
-	}
-	SYNCTEX_END = SYNCTEX_CUR;
-	/*  Now reverse the order to have nodes in display order, and keep just a few nodes */
-	if((SYNCTEX_START) && (SYNCTEX_END))
-	{
-		synctex_node_t * start_ref = (synctex_node_t *)SYNCTEX_START;
-		synctex_node_t * end_ref   = (synctex_node_t *)SYNCTEX_END;
-		end_ref -= 1;
-		while(start_ref < end_ref) {
-			node = *start_ref;
-			*start_ref = *end_ref;
-			*end_ref = node;
-			start_ref += 1;
-			end_ref -= 1;
-		}
-		/*  Basically, we keep the first node for each parent.
-		 *  More precisely, we keep only nodes that are not descendants of
-		 *  their predecessor's parent. */
-		start_ref = (synctex_node_t *)SYNCTEX_START;
-		end_ref   = (synctex_node_t *)SYNCTEX_START;
-next_end:
-		end_ref += 1; /*  we allways have start_ref<= end_ref*/
-		if(end_ref < (synctex_node_t *)SYNCTEX_END) {
-			node = *end_ref;
-			while((node = SYNCTEX_PARENT(node))) {
-				if(SYNCTEX_PARENT(*start_ref) == node) {
-					goto next_end;
+			if(SYNCTEX_START == NULL) {
+				/* We did not find any matching boundary, retry with glue or kern */
+				node = (scanner->lists_of_friends)[friend_index];/* no need to test it again, already done */
+				do {
+					if((synctex_node_type(node)>=synctex_node_type_kern)
+						&& (tag == SYNCTEX_TAG(node))
+							&& (line == SYNCTEX_LINE(node))) {
+						if(SYNCTEX_CUR == SYNCTEX_END) {
+							size += 16;
+							SYNCTEX_END = realloc(SYNCTEX_START,size*sizeof(synctex_node_t *));
+							SYNCTEX_CUR += SYNCTEX_END - SYNCTEX_START;
+							SYNCTEX_START = SYNCTEX_END;
+							SYNCTEX_END = SYNCTEX_START + size*sizeof(synctex_node_t *);
+						}			
+						*(synctex_node_t *)SYNCTEX_CUR = node;
+						SYNCTEX_CUR += sizeof(synctex_node_t);
+					}
+				} while((node = SYNCTEX_FRIEND(node)));
+				if(SYNCTEX_START == NULL) {
+					/* We did not find any matching glue or kern, retry with boxes */
+					node = (scanner->lists_of_friends)[friend_index];/* no need to test it again, already done */
+					do {
+						if((tag == SYNCTEX_TAG(node))
+								&& (line == SYNCTEX_LINE(node))) {
+							if(SYNCTEX_CUR == SYNCTEX_END) {
+								size += 16;
+								SYNCTEX_END = realloc(SYNCTEX_START,size*sizeof(synctex_node_t *));
+								SYNCTEX_CUR += SYNCTEX_END - SYNCTEX_START;
+								SYNCTEX_START = SYNCTEX_END;
+								SYNCTEX_END = SYNCTEX_START + size*sizeof(synctex_node_t *);
+							}			
+							*(synctex_node_t *)SYNCTEX_CUR = node;
+							SYNCTEX_CUR += sizeof(synctex_node_t);
+						}
+					} while((node = SYNCTEX_FRIEND(node)));
 				}
 			}
-			start_ref += 1;
-			*start_ref = *end_ref;
-			goto next_end;
+			SYNCTEX_END = SYNCTEX_CUR;
+			/*  Now reverse the order to have nodes in display order, and keep just a few nodes */
+			if((SYNCTEX_START) && (SYNCTEX_END))
+			{
+				synctex_node_t * start_ref = (synctex_node_t *)SYNCTEX_START;
+				synctex_node_t * end_ref   = (synctex_node_t *)SYNCTEX_END;
+				end_ref -= 1;
+				while(start_ref < end_ref) {
+					node = *start_ref;
+					*start_ref = *end_ref;
+					*end_ref = node;
+					start_ref += 1;
+					end_ref -= 1;
+				}
+				/*  Basically, we keep the first node for each parent.
+				 *  More precisely, we keep only nodes that are not descendants of
+				 *  their predecessor's parent. */
+				start_ref = (synctex_node_t *)SYNCTEX_START;
+				end_ref   = (synctex_node_t *)SYNCTEX_START;
+		next_end:
+				end_ref += 1; /*  we allways have start_ref<= end_ref*/
+				if(end_ref < (synctex_node_t *)SYNCTEX_END) {
+					node = *end_ref;
+					while((node = SYNCTEX_PARENT(node))) {
+						if(SYNCTEX_PARENT(*start_ref) == node) {
+							goto next_end;
+						}
+					}
+					start_ref += 1;
+					*start_ref = *end_ref;
+					goto next_end;
+				}
+				start_ref += 1;
+				SYNCTEX_END = (unsigned char *)start_ref;
+			}
+			SYNCTEX_CUR = NULL;
+			return (SYNCTEX_END-SYNCTEX_START)/sizeof(synctex_node_t);
 		}
-		start_ref += 1;
-		SYNCTEX_END = (unsigned char *)start_ref;
+#       if defined(__SYNCTEX_STRONG_DISPLAY_QUERY__)
+		break;
+#       else
+		++line;
+#       endif
 	}
-	SYNCTEX_CUR = NULL;
-	return (SYNCTEX_END-SYNCTEX_START)/sizeof(synctex_node_t);
+	return 0;
 }
 
 synctex_node_t synctex_next_result(synctex_scanner_t scanner) {
