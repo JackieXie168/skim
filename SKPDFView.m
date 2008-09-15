@@ -3010,7 +3010,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 NSRect bounds1 = [activeAnnotation bounds];
                 NSRect bounds2 = [newActiveAnnotation bounds];
                 NSRect bounds3 = NSUnionRect(bounds1, bounds2);
-                PDFAnnotationInk *newAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithBounds:bounds3] autorelease];
+                PDFAnnotationInk *newAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds3] autorelease];
                 [transform translateXBy:NSMinX(bounds1) - NSMinX(bounds3) yBy:NSMinY(bounds1) - NSMinY(bounds3)];
                 pathEnum = [[(PDFAnnotationInk *)activeAnnotation paths] objectEnumerator];
                 while (path = [pathEnum nextObject]) {
@@ -3024,7 +3024,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 while (path = [pathEnum nextObject]) {
                     path = [path copy];
                     [path transformUsingAffineTransform:transform];
-                    [(PDFAnnotationInk *)activeAnnotation addBezierPath:path];
+                    [newAnnotation addBezierPath:path];
                     [path release];
                 }
                 [newAnnotation setString:[activeAnnotation string]];
