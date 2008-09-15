@@ -1259,7 +1259,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(7.0, 9.0)];
     [path curveToPoint:NSMakePoint(13.5, 10.0) controlPoint1:NSMakePoint(13.0, 5.0) controlPoint2:NSMakePoint(16.0, 5.0)];
-    [path curveToPoint:NSMakePoint(20.0, 11.0) controlPoint1:NSMakePoint(11.0, 16.0) controlPoint2:NSMakePoint(14.0, 16.0)];
+    [path curveToPoint:NSMakePoint(20.0, 11.0) controlPoint1:NSMakePoint(11.0, 15.0) controlPoint2:NSMakePoint(14.0, 15.0)];
     [path setLineWidth:2.0];
     [path stroke];
     [path setLineWidth:1.0];
