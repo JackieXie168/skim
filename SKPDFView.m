@@ -2988,20 +2988,55 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
             newActiveAnnotation = nil;
             mouseDownInAnnotation = YES;
-        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkup]) {
-            int markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
-            PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
-            [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
-            
-            [self removeActiveAnnotation:nil];
-            [self removeAnnotation:newActiveAnnotation];
-            [accessibilityChildren release];
-            accessibilityChildren = nil;
-            
-            newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:markupType] autorelease];
-            [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
-            [self addAnnotation:newActiveAnnotation toPage:page];
-            [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
+            if ([activeAnnotation isMarkup]) {
+                int markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
+                PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
+                [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
+                
+                [self removeActiveAnnotation:nil];
+                [self removeAnnotation:newActiveAnnotation];
+                [accessibilityChildren release];
+                accessibilityChildren = nil;
+                
+                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:markupType] autorelease];
+                [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
+                [self addAnnotation:newActiveAnnotation toPage:page];
+                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+            } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
+                NSEnumerator *pathEnum;
+                NSBezierPath *path;
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                NSRect bounds1 = [activeAnnotation bounds];
+                NSRect bounds2 = [newActiveAnnotation bounds];
+                NSRect bounds3 = NSUnionRect(bounds1, bounds2);
+                PDFAnnotationInk *newAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithBounds:bounds3] autorelease];
+                [transform translateXBy:NSMinX(bounds1) - NSMinX(bounds3) yBy:NSMinY(bounds1) - NSMinY(bounds3)];
+                pathEnum = [[(PDFAnnotationInk *)activeAnnotation paths] objectEnumerator];
+                while (path = [pathEnum nextObject]) {
+                    path = [path copy];
+                    [path transformUsingAffineTransform:transform];
+                    [newAnnotation addBezierPath:path];
+                    [path release];
+                }
+                [transform translateXBy:NSMinX(bounds2) - NSMinX(bounds1) yBy:NSMinY(bounds2) - NSMinY(bounds1)];
+                pathEnum = [[(PDFAnnotationInk *)newActiveAnnotation paths] objectEnumerator];
+                while (path = [pathEnum nextObject]) {
+                    path = [path copy];
+                    [path transformUsingAffineTransform:transform];
+                    [(PDFAnnotationInk *)activeAnnotation addBezierPath:path];
+                    [path release];
+                }
+                [newAnnotation setString:[activeAnnotation string]];
+                [newAnnotation setColor:[activeAnnotation color]];
+                [newAnnotation setBorder:[activeAnnotation border]];
+                [self removeActiveAnnotation:nil];
+                [self removeAnnotation:newActiveAnnotation];
+                newActiveAnnotation = newAnnotation;
+                [self addAnnotation:newActiveAnnotation toPage:page];
+                [accessibilityChildren release];
+                accessibilityChildren = nil;
+            }
         }
     }
     
@@ -3085,7 +3120,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         }
         
         return YES;
-    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO) {
+        
+    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
+        
         BOOL didDraw = NO;
         bezierPath = [[NSBezierPath alloc] init];
         [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
@@ -3113,6 +3150,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         bezierPath = nil;
         
         return YES;
+        
     } else {
         // no new active annotation
         return NO;
