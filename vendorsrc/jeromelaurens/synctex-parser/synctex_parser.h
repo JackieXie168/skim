@@ -3,7 +3,7 @@ Copyright (c) 2008 jerome DOT laurens AT u-bourgogne DOT fr
 
 This file is part of the SyncTeX package.
 
-Version: 1.3
+Version: 1.4
 See synctex_parser_readme.txt for more details
 
 License:
@@ -210,6 +210,7 @@ typedef enum {
 	synctex_node_type_kern,
 	synctex_node_type_glue,
 	synctex_node_type_math,
+	synctex_node_type_boundary,
 	synctex_node_number_of_types
 } synctex_node_type_t;
 
