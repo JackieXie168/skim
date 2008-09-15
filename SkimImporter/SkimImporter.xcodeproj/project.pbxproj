@@ -40,8 +40,6 @@
 		CED8D41D0D744E060028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "../Configurations/Skim-Common.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D41E0D744E060028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "../Configurations/Skim-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D41F0D744E060028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "../Configurations/Skim-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
-		CEE54D430DA2AB3E0037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CEE54D440DA2AB450037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/schema.strings; sourceTree = "<group>"; };
 		CEFD60CE0C01D0E40027B933 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		CEFD60D20C01D1040027B933 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		CEFD6C620C01EF770027B933 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/schema.strings; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 				CEC4BE4B0CA90A9700299397 /* Spanish */,
 				CE68C6A10CEF8A4300B082F1 /* German */,
 				CE4F972B0CFB4B9D00DBEA14 /* ru */,
-				CEE54D430DA2AB3E0037169F /* cs */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -251,7 +248,6 @@
 				CEC4BE480CA90A9000299397 /* Spanish */,
 				CE68C69E0CEF8A3C00B082F1 /* German */,
 				CE4F97280CFB4B9300DBEA14 /* ru */,
-				CEE54D440DA2AB450037169F /* cs */,
 			);
 			name = schema.strings;
 			sourceTree = "<group>";
