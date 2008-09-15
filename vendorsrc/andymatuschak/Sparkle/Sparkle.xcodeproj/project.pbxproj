@@ -142,9 +142,6 @@
 		CECD97B40C57A4900026AAEC /* fr */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Sparkle.strings; sourceTree = "<group>"; };
 		CECD97B70C57A49F0026AAEC /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/SUAutomaticUpdateAlert.nib; sourceTree = "<group>"; };
 		CECD97B80C57A4A80026AAEC /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = fr; path = fr.lproj/SUUpdateAlert.nib; sourceTree = "<group>"; };
-		CEE54D4D0DA2AB830037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Sparkle.strings; sourceTree = "<group>"; };
-		CEE54D4E0DA2AB830037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/SUAutomaticUpdateAlert.nib; sourceTree = "<group>"; };
-		CEE54D4F0DA2AB830037169F /* cs */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = cs; path = cs.lproj/SUUpdateAlert.nib; sourceTree = "<group>"; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		F9F22CA70C14DECD00041284 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = ../../../../../../../../System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -534,7 +531,6 @@
 				CEC4B8B50CA9093700299397 /* es */,
 				CE68C6D90CEF8A8600B082F1 /* de */,
 				CE4F97790CFB4C6300DBEA14 /* ru */,
-				CEE54D4D0DA2AB830037169F /* cs */,
 				CE5A826A0E6C4BA0008C0AA9 /* it */,
 			);
 			name = Sparkle.strings;
@@ -549,7 +545,6 @@
 				CEC4B8B60CA9093700299397 /* es */,
 				CE68C6DA0CEF8A8700B082F1 /* de */,
 				CE4F977A0CFB4C6300DBEA14 /* ru */,
-				CEE54D4E0DA2AB830037169F /* cs */,
 				CE5A826B0E6C4BA0008C0AA9 /* it */,
 			);
 			name = SUAutomaticUpdateAlert.nib;
@@ -564,7 +559,6 @@
 				CEC4B8B70CA9093700299397 /* es */,
 				CE68C6DD0CEF8A8700B082F1 /* de */,
 				CE4F977B0CFB4C6300DBEA14 /* ru */,
-				CEE54D4F0DA2AB830037169F /* cs */,
 				CE5A826E0E6C4BA0008C0AA9 /* it */,
 			);
 			name = SUUpdateAlert.nib;
