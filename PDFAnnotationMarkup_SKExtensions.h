@@ -48,7 +48,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 @interface PDFAnnotationMarkup (SKExtensions)
 
-- (id)initNoteWithSelection:(PDFSelection *)selection markupType:(int)type;
+- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(int)type;
 - (PDFSelection *)selection;
 
 @end

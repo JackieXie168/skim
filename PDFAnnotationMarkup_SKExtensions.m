@@ -193,7 +193,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return YES;
 }
 
-- (id)initNoteWithSelection:(PDFSelection *)selection markupType:(int)type {
+- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(int)type {
     NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
