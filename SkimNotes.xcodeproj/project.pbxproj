@@ -122,7 +122,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088;
 			remoteInfo = SkimNotesBase;
 		};
 /* End PBXContainerItemProxy section */
@@ -164,7 +164,6 @@
 		CE3907B50E082C930015B0B7 /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B70E082C9A0015B0B7 /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907B80E082CAD0015B0B7 /* Spanish */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/SkimNotes.strings; sourceTree = "<group>"; };
-		CE3907B90E082CB00015B0B7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE3907BA0E082CB40015B0B7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Common.xcconfig"; sourceTree = "<group>"; };
 		CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotesBase-Framework.xcconfig"; sourceTree = "<group>"; };
@@ -700,7 +699,6 @@
 				CE3907B50E082C930015B0B7 /* French */,
 				CE3907B70E082C9A0015B0B7 /* German */,
 				CE3907B80E082CAD0015B0B7 /* Spanish */,
-				CE3907B90E082CB00015B0B7 /* cs */,
 				CE3907BA0E082CB40015B0B7 /* ru */,
 				CE5A82DD0E6C5403008C0AA9 /* Italian */,
 			);
