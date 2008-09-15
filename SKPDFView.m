@@ -1894,7 +1894,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeHighlight];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
             if ([[activeAnnotation type] isEqualToString:SKNUnderlineString] && [[activeAnnotation page] isEqual:page]) {
@@ -1902,7 +1902,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeUnderline];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
             if ([[activeAnnotation type] isEqualToString:SKNStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
@@ -1910,7 +1910,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self removeActiveAnnotation:nil];
                 text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             }
-            newAnnotation = [[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
+            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKLineNote:
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
@@ -2999,7 +2999,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [accessibilityChildren release];
                 accessibilityChildren = nil;
                 
-                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initNoteWithSelection:sel markupType:markupType] autorelease];
+                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
                 [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];

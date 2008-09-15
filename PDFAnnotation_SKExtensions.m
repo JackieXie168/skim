@@ -267,7 +267,7 @@ enum {
                         markupType = kPDFMarkupTypeUnderline;
                     else if (type == SKScriptingStrikeOutNote)
                         markupType = kPDFMarkupTypeStrikeOut;
-                    if (self = [[PDFAnnotationMarkup alloc] initNoteWithSelection:selection markupType:markupType]) {
+                    if (self = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType]) {
                         PDFPage *page = [[selection pages] objectAtIndex:0];
                         if (page && [self respondsToSelector:@selector(setPage:)])
                             [self performSelector:@selector(setPage:) withObject:page];
