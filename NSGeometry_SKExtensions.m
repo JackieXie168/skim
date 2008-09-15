@@ -105,15 +105,7 @@ BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoi
         return NO;
     
     NSPoint relPoint = SKSubstractPoints(bPoint, aPoint);
-    float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
-    float deltaSquared = delta * delta;
-    float extProduct;
+    float extProduct = ( point.x - aPoint.x ) * relPoint.y - ( point.y - aPoint.y ) * relPoint.x;
     
-    if (lengthSquared < deltaSquared)
-        return YES;
-    
-    point = SKSubstractPoints(point, aPoint);
-    extProduct = point.x * relPoint.y - point.y * relPoint.x;
-    
-    return extProduct * extProduct < deltaSquared * lengthSquared;
+    return extProduct * extProduct < delta * delta * ( relPoint.x * relPoint.x + relPoint.y * relPoint.y );
 }
