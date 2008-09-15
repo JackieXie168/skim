@@ -51,6 +51,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
 #import "SKRuntime.h"
+#import "PDFAnnotation_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -126,16 +127,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page {
-    NSRect bounds = [annotation bounds];
-    if ([[annotation type] isEqualToString:SKNUnderlineString]) {
-        float delta = 0.03 * NSHeight(bounds);
-        bounds.origin.y -= delta;
-        bounds.size.height += delta;
-    } else if ([[annotation type] isEqualToString:SKNLineString]) {
-        // need a large padding amount for large line width and cap changes
-        bounds = NSInsetRect(bounds, -20.0, -20.0);
-    }
-    [self setNeedsDisplayInRect:bounds ofPage:page];
+    [self setNeedsDisplayInRect:[annotation displayRectForBounds:[annotation bounds]] ofPage:page];
 }
 
 - (void)redisplay {

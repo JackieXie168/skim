@@ -115,6 +115,12 @@
     return NO;
 }
 
+- (NSRect)displayRectForBounds:(NSRect)bounds {
+    bounds = [super displayRectForBounds:bounds];
+    // need a large padding amount for large line width changes, we may have this depend on the line width
+    return NSInsetRect(bounds, -8.0, -8.0);
+}
+
 - (NSArray *)pointLists {
     NSMutableArray *pointLists = [NSMutableArray array];
     NSMutableArray *pointValues;
