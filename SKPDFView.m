@@ -3126,14 +3126,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         BOOL didDraw = NO;
         bezierPath = [[NSBezierPath alloc] init];
         [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-        if ([bezierPath lineWidth] > 0.0 && [[NSUserDefaults standardUserDefaults] integerForKey:SKInkNoteLineStyleKey] == kPDFBorderStyleDashed) {
-            NSArray *dashPattern = [[NSUserDefaults standardUserDefaults] objectForKey:SKInkNoteDashPatternKey];
-            int count = [dashPattern count];
-            float pattern[count];
-            for (i = 0; i < count; i++)
-                pattern[i] = [[dashPattern objectAtIndex:i] floatValue];
-            [bezierPath setLineDash:pattern count:count phase:0.0];
-        }
         [bezierPath moveToPoint:pagePoint];
         pathPageIndex = [page pageIndex];
         while (YES) {
