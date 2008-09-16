@@ -229,9 +229,11 @@
         menuItem = [menu addItemWithTitle:[SKNLineString typeName] action:@selector(toggleDisplayNoteType:) target:self];
         [menuItem setRepresentedObject:SKNLineString];
         [menuItem setState:NSOnState];
-        //menuItem = [menu addItemWithTitle:[SKNInkString typeName] action:@selector(toggleDisplayNoteType:) target:self];
-        //[menuItem setRepresentedObject:SKNInkString];
-        //[menuItem setState:NSOnState];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKEnableFreehandTool"]) {
+            menuItem = [menu addItemWithTitle:[SKNInkString typeName] action:@selector(toggleDisplayNoteType:) target:self];
+            [menuItem setRepresentedObject:SKNInkString];
+            [menuItem setState:NSOnState];
+        }
         [menu addItem:[NSMenuItem separatorItem]];
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) target:self];
         menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) target:self];
