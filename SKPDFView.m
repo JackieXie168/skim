@@ -1063,8 +1063,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [self setAnnotationMode:SKStrikeOutNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'l') && (modifiers == 0)) {
             [self setAnnotationMode:SKLineNote];
-        //} else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0)) {
-        //    [self setAnnotationMode:SKInkNote];
+        } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0) && [[NSUserDefaults standardUserDefaults] boolForKey:@"SKEnableFreehandTool"]) {
+            [self setAnnotationMode:SKInkNote];
         } else if ([typeSelectHelper processKeyDownEvent:theEvent] == NO) {
             [super keyDown:theEvent];
         }
@@ -1332,9 +1332,11 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [item setTag:SKLineNote];
     [item setTarget:self];
     
-    //item = [submenu addItemWithTitle:NSLocalizedString(@"Ink", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
-    //[item setTag:SKInkNote];
-    //[item setTarget:self];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKEnableFreehandTool"]) {
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Ink", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+        [item setTag:SKInkNote];
+        [item setTarget:self];
+    }
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
     [item setSubmenu:submenu];
