@@ -82,7 +82,7 @@
 - (NSDictionary *)defaultLineStyles;
 - (void)setDefaultLineStyles:(NSDictionary *)dict;
 - (NSDictionary *)defaultDashPatterns;
-- (void)setDefaultDashPattern:(NSDictionary *)dict;
+- (void)setDefaultDashPatterns:(NSDictionary *)dict;
 - (FourCharCode)defaultStartLineStyle;
 - (void)setDefaultStartLineStyle:(FourCharCode)style;
 - (FourCharCode)defaultEndLineStyle;

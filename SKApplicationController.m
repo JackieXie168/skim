@@ -642,7 +642,7 @@ static id sharedApplicationController = nil;
         nil];
 }
 
-- (void)setDefaultDashPattern:(NSDictionary *)dict {
+- (void)setDefaultDashPatterns:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSArray *array;
     if (array = [dict objectForKey:SKNFreeTextString])
