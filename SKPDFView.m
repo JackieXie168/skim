@@ -3139,7 +3139,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             didDraw = YES;
         }
         if (didDraw)
-            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect([bezierPath bounds], -8.0, -8.0)];
+            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect(NSIntegralRect([bezierPath bounds]), -8.0, -8.0)];
         [bezierPath release];
         bezierPath = nil;
         
