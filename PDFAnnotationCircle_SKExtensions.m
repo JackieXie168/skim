@@ -101,6 +101,10 @@
     return customCircleScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingCircleNote;
+}
+
 #pragma mark Accessibility
 
 - (NSArray *)accessibilityAttributeNames {

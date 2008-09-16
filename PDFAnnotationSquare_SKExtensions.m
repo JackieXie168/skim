@@ -102,6 +102,10 @@
     return customSquareScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingSquareNote;
+}
+
 #pragma mark Accessibility
 
 - (NSArray *)accessibilityAttributeNames {

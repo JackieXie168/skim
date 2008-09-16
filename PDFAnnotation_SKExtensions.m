@@ -335,24 +335,6 @@ enum {
 }
 
 - (FourCharCode)scriptingNoteType {
-    if ([[self type] isEqualToString:SKNFreeTextString])
-        return SKScriptingTextNote;
-    else if ([[self type] isEqualToString:SKNNoteString])
-        return SKScriptingAnchoredNote;
-    else if ([[self type] isEqualToString:SKNCircleString])
-        return SKScriptingCircleNote;
-    else if ([[self type] isEqualToString:SKNSquareString])
-        return SKScriptingSquareNote;
-    else if ([[self type] isEqualToString:SKNHighlightString] || [[self type] isEqualToString:SKNMarkUpString])
-        return SKScriptingHighlightNote;
-    else if ([[self type] isEqualToString:SKNUnderlineString])
-        return SKScriptingUnderlineNote;
-    else if ([[self type] isEqualToString:SKNStrikeOutString])
-        return SKScriptingStrikeOutNote;
-    else if ([[self type] isEqualToString:SKNLineString])
-        return SKScriptingLineNote;
-    else if ([[self type] isEqualToString:SKNInkString])
-        return SKScriptingInkNote;
     return 0;
 }
 

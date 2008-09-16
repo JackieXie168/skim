@@ -121,6 +121,10 @@
     return customFreeTextScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingTextNote;
+}
+
 - (id)textContents {
     NSTextStorage *textContents = [[[NSTextStorage alloc] initWithString:[self string]] autorelease];
     if ([self font])
