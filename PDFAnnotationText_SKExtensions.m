@@ -125,6 +125,10 @@ NSString *SKPDFAnnotationScriptingIconTypeKey = @"scriptingIconType";
     return customTextScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingAnchoredNote;
+}
+
 - (FourCharCode)scriptingIconType {
     return SKScriptingIconTypeFromIconType([self iconType]);
 }

@@ -143,6 +143,12 @@
     return pointLists;
 }
 
+#pragma mark Scripting support
+
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingInkNote;
+}
+
 #pragma mark Accessibility
 
 - (NSArray *)accessibilityAttributeNames {

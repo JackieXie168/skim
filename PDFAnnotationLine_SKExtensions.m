@@ -156,6 +156,10 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     return customLineScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    return SKScriptingLineNote;
+}
+
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];

@@ -375,6 +375,18 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return customMarkupScriptingKeys;
 }
 
+- (FourCharCode)scriptingNoteType {
+    switch ([self markupType]) {
+        case kPDFMarkupTypeUnderline:
+            return SKScriptingUnderlineNote;
+        case kPDFMarkupTypeStrikeOut:
+            return SKScriptingStrikeOutNote;
+        case kPDFMarkupTypeHighlight:
+        default:
+            return SKScriptingHighlightNote;
+    }
+}
+
 - (id)selectionSpecifier {
     PDFSelection *sel = [self selection];
     return sel ? [sel objectSpecifier] : [NSArray array];
