@@ -3120,7 +3120,7 @@ int synctex_display_query(synctex_scanner_t scanner,const char * name,int line,i
 	}
 	free(SYNCTEX_START);
 	SYNCTEX_CUR = SYNCTEX_END = SYNCTEX_START = NULL;
-	max_line = line < (int)UINT_MAX-scanner->number_of_lists ? line+scanner->number_of_lists:(int)UINT_MAX;
+	max_line = line < INT_MAX-scanner->number_of_lists ? line+scanner->number_of_lists:INT_MAX;
 	while(line<max_line) {
 		/*  This loop will only be performed once for advanced viewers */
 		friend_index = (tag+line)%(scanner->number_of_lists);
