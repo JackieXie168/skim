@@ -907,6 +907,10 @@
                 description="Default line color.">
                 <cocoa key="Line"/>
             </property>
+            <property name="freehand note color" code="CInk" type="RGBA color" hidden="yes"
+                description="Default freehand color.">
+                <cocoa key="Ink"/>
+            </property>
             <property name="circle note interior color" code="CCiI" type="RGBA color"
                 description="Default circle fill color.">
                 <cocoa key="CircleInterior"/>
@@ -938,6 +942,10 @@
                 description="Default line line width.">
                 <cocoa key="Line"/>
             </property>
+            <property name="freehand note line width" code="WInk" type="real" hidden="yes"
+                description="Default freehand line width.">
+                <cocoa key="Ink"/>
+            </property>
         </record-type>
 
         <record-type name="note line styles" code="NLSt">
@@ -956,6 +964,10 @@
             <property name="line note line style" code="SLin" type="note line style"
                 description="Default line line width.">
                 <cocoa key="Line"/>
+            </property>
+            <property name="freehand note line style" code="SInk" type="note line style" hidden="yes"
+                description="Default freehand line width.">
+                <cocoa key="Ink"/>
             </property>
         </record-type>
 
@@ -979,6 +991,11 @@
                 description="Default line dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="Line"/>
+            </property>
+            <property name="freehand note dash pattern" code="DInk" hidden="yes"
+                description="Default freehand dash pattern.">
+                <type type="real" list="yes"/>
+                <cocoa key="Ink"/>
             </property>
         </record-type>
 
@@ -1062,6 +1079,8 @@
                 description="Strike out highlight."/>
             <enumerator name="line note" code="NLin"
                 description="Line."/>
+            <enumerator name="line note" code="NInk" hidden="yes"
+                description="Freehand."/>
         </enumeration>
 
         <enumeration name="icon type" code="ITpE">

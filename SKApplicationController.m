@@ -543,7 +543,7 @@ static id sharedApplicationController = nil;
         [sud colorForKey:SKUnderlineNoteColorKey], SKNUnderlineString, 
         [sud colorForKey:SKStrikeOutNoteColorKey], SKNStrikeOutString, 
         [sud colorForKey:SKLineNoteColorKey], SKNLineString, 
-        //[sud colorForKey:SKInkNoteColorKey], SKNInkString, 
+        [sud colorForKey:SKInkNoteColorKey], SKNInkString, 
         [sud colorForKey:SKCircleNoteInteriorColorKey], @"CircleInterior", 
         [sud colorForKey:SKSquareNoteInteriorColorKey], @"SquareInterior", 
         [sud colorForKey:SKFreeTextNoteFontColorKey], @"FreeTextFont", 
@@ -569,8 +569,8 @@ static id sharedApplicationController = nil;
         [sud setColor:color forKey:SKStrikeOutNoteColorKey];
     if (color = [colorDict objectForKey:SKNLineString])
         [sud setColor:color forKey:SKLineNoteColorKey];
-    //if (color = [colorDict objectForKey:SKNInkString])
-    //    [sud setColor:color forKey:SKInkNoteColorKey];
+    if (color = [colorDict objectForKey:SKNInkString])
+        [sud setColor:color forKey:SKInkNoteColorKey];
     if (color = [colorDict objectForKey:@"CircleInterior"])
         [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
     if (color = [colorDict objectForKey:@"SquareInterior"])
@@ -586,7 +586,7 @@ static id sharedApplicationController = nil;
         [NSNumber numberWithFloat:[sud floatForKey:SKCircleNoteLineWidthKey]], SKNCircleString, 
         [NSNumber numberWithFloat:[sud floatForKey:SKSquareNoteLineWidthKey]], SKNSquareString, 
         [NSNumber numberWithFloat:[sud floatForKey:SKLineNoteLineWidthKey]], SKNLineString, 
-        //[NSNumber numberWithFloat:[sud floatForKey:SKInkNoteLineWidthKey]], SKNInkString, 
+        [NSNumber numberWithFloat:[sud floatForKey:SKInkNoteLineWidthKey]], SKNInkString, 
         nil];
 }
 
@@ -601,8 +601,8 @@ static id sharedApplicationController = nil;
         [sud setFloat:[number floatValue] forKey:SKSquareNoteLineWidthKey];
     if (number = [dict objectForKey:SKNLineString])
         [sud setFloat:[number floatValue] forKey:SKLineNoteLineWidthKey];
-    //if (number = [dict objectForKey:SKNInkString])
-    //    [sud setFloat:[number floatValue] forKey:SKInkNoteLineWidthKey];
+    if (number = [dict objectForKey:SKNInkString])
+        [sud setFloat:[number floatValue] forKey:SKInkNoteLineWidthKey];
 }
 
 - (NSDictionary *)defaultLineStyles {
@@ -612,7 +612,7 @@ static id sharedApplicationController = nil;
         [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], SKNCircleString, 
         [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], SKNSquareString, 
         [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], SKNLineString,
-        //[NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKInkNoteLineStyleKey])], SKNInkString,
+        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKInkNoteLineStyleKey])], SKNInkString,
         nil];
 }
 
@@ -627,8 +627,8 @@ static id sharedApplicationController = nil;
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKSquareNoteLineStyleKey];
     if (number = [dict objectForKey:SKNLineString])
         [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKLineNoteLineStyleKey];
-    //if (number = [dict objectForKey:SKNInkString])
-    //    [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKInkNoteLineStyleKey];
+    if (number = [dict objectForKey:SKNInkString])
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKInkNoteLineStyleKey];
 }
 
 - (NSDictionary *)defaultDashPatterns {
@@ -638,7 +638,7 @@ static id sharedApplicationController = nil;
         [sud arrayForKey:SKCircleNoteDashPatternKey], SKNCircleString, 
         [sud arrayForKey:SKSquareNoteDashPatternKey], SKNSquareString, 
         [sud arrayForKey:SKLineNoteDashPatternKey], SKNLineString,
-        //[sud arrayForKey:SKInkNoteDashPatternKey], SKNInkString,
+        [sud arrayForKey:SKInkNoteDashPatternKey], SKNInkString,
         nil];
 }
 
@@ -653,8 +653,8 @@ static id sharedApplicationController = nil;
         [sud setObject:array forKey:SKSquareNoteDashPatternKey];
     if (array = [dict objectForKey:SKNLineString])
         [sud setObject:array forKey:SKLineNoteDashPatternKey];
-    //if (array = [dict objectForKey:SKNInkString])
-    //    [sud setObject:array forKey:SKInkNoteDashPatternKey];
+    if (array = [dict objectForKey:SKNInkString])
+        [sud setObject:array forKey:SKInkNoteDashPatternKey];
 }
 
 - (FourCharCode)defaultStartLineStyle {
