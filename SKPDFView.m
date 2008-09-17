@@ -3127,6 +3127,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         BOOL didDraw = NO;
         bezierPath = [[NSBezierPath alloc] init];
+        [bezierPath setLineCapStyle:NSRoundLineCapStyle];
+        [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
         [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
         [bezierPath moveToPoint:pagePoint];
         pathPageIndex = [page pageIndex];
