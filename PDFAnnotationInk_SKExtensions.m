@@ -122,7 +122,7 @@
     NSRect rect = NSZeroRect;
     while (path = [pathEnum nextObject])
         rect = NSUnionRect(rect, NSInsetRect([path bounds], -lineWidth, -lineWidth));
-    rect.origin = NSAddPoints(rect.origin, bounds.origin);
+    rect.origin = SKAddPoints(rect.origin, bounds.origin);
     return NSUnionRect([super displayRectForBounds:bounds], NSIntegralRect(rect));
 }
 
