@@ -116,9 +116,14 @@
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
-    bounds = [super displayRectForBounds:bounds];
-    // need a large padding amount for large line width changes, we may have this depend on the line width
-    return NSInsetRect(bounds, -8.0, -8.0);
+    float lineWidth = [self lineWidth];
+    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
+    NSBezierPath *path;
+    NSRect rect = NSZeroRect;
+    while (path = [pathEnum nextObject])
+        rect = NSUnionRect(rect, NSInsetRect([path bounds], -lineWidth, -lineWidth));
+    rect.origin = NSAddPoints(rect.origin, bounds.origin);
+    return NSUnionRect([super displayRectForBounds:bounds], NSIntegralRect(rect));
 }
 
 - (NSArray *)pointLists {
