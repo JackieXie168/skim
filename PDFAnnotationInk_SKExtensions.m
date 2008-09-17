@@ -93,6 +93,7 @@
 
 - (BOOL)hitTest:(NSPoint)point {
     NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
+    float delta = fmaxf(4.0, 0.5 * [self lineWidth]);
     
     if ([super hitTest:point]) {
         NSEnumerator *pathEnum = [[self paths] objectEnumerator];
@@ -107,7 +108,7 @@
                 element = [path elementAtIndex:i associatedPoints:points];
                 prevPoint = nextPoint;
                 nextPoint = element == NSCurveToBezierPathElement ? points[2] : points[0];
-                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, 4.0))
+                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta))
                     return YES;
             }
         }
