@@ -47,4 +47,10 @@
 
 - (NSString *)xmlString;
 
++ (NSData *)dataWithPointAsQDPoint:(NSPoint)point;
++ (NSData *)dataWithRectAsQDRect:(NSRect)rect;
+
+- (NSPoint)pointValueAsQDPoint;
+- (NSRect)rectValueAsQDRect;
+
 @end

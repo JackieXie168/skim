@@ -47,6 +47,7 @@
 #import "SKStringConstants.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 #import "SKCFCallBacks.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainWindowController.h"
@@ -396,20 +397,18 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSData *)boundsAsQDRect {
-    Rect qdBounds = SKQDRectFromNSRect([self boundsForBox:kPDFDisplayBoxCropBox]);
-    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+    return [NSData dataWithRectAsQDRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setBoundsAsQDRect:[self boundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
         // this will dirty the document, even though no saveable change has been made
         // but we cannot undo the document change count because there may be real changes to the document in the script
         
-        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
+        NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
         if (NSWidth(newBounds) < 0.0)
             newBounds.size.width = 0.0;
         if (NSHeight(newBounds) < 0.0)
@@ -422,20 +421,18 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSData *)mediaBoundsAsQDRect {
-    Rect qdBounds = SKQDRectFromNSRect([self boundsForBox:kPDFDisplayBoxMediaBox]);
-    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+    return [NSData dataWithRectAsQDRect:[self boundsForBox:kPDFDisplayBoxMediaBox]];
 }
 
 - (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setMediaBoundsAsQDRect:[self mediaBoundsAsQDRect]];
         [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
         // this will dirty the document, even though no saveable change has been made
         // but we cannot undo the document change count because there may be real changes to the document in the script
         
-        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
+        NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
         if (NSWidth(newBounds) < 0.0)
             newBounds.size.width = 0.0;
         if (NSHeight(newBounds) < 0.0)
@@ -448,8 +445,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSData *)contentBoundsAsQDRect {
-    Rect qdBounds = SKQDRectFromNSRect([self foregroundBox]);
-    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+    return [NSData dataWithRectAsQDRect:[self foregroundBox]];
 }
 
 - (id)richText {
