@@ -43,6 +43,7 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSBezierPath_BDSKExtensions.h"
 
 
 @implementation PDFAnnotationInk (SKExtensions)
@@ -122,7 +123,7 @@
     NSBezierPath *path;
     NSRect rect = NSZeroRect;
     while (path = [pathEnum nextObject])
-        rect = NSUnionRect(rect, NSInsetRect([path bounds], -lineWidth, -lineWidth));
+        rect = NSUnionRect(rect, NSInsetRect([path nonEmptyBounds], -lineWidth, -lineWidth));
     rect.origin = SKAddPoints(rect.origin, bounds.origin);
     return NSUnionRect([super displayRectForBounds:bounds], NSIntegralRect(rect));
 }

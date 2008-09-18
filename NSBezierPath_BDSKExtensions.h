@@ -67,4 +67,6 @@
 + (NSBezierPath *)bezierPathWithStarInRect:(NSRect)rect;
 + (NSBezierPath *)bezierPathWithInvertedStarInRect:(NSRect)rect;
 
+- (NSRect)nonEmptyBounds;
+
 @end

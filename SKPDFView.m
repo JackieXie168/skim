@@ -3135,13 +3135,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         while (YES) {
             theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
             [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
-            [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath bounds], -8.0, -8.0) fromPage:page]];
+            [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
             if ([theEvent type] == NSLeftMouseUp)
                 break;
             didDraw = YES;
         }
         if (didDraw)
-            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect(NSIntegralRect([bezierPath bounds]), -8.0, -8.0)];
+            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect(NSIntegralRect([bezierPath nonEmptyBounds]), -8.0, -8.0)];
         [bezierPath release];
         bezierPath = nil;
         
