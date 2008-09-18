@@ -347,5 +347,30 @@
     return path;
 }
 
+- (NSRect)nonEmptyBounds {
+    NSRect bounds = [self bounds];
+    if (NSIsEmptyRect(bounds) && [self elementCount]) {
+        NSPoint points[2];
+        NSPoint point, minPoint = NSZeroPoint, maxPoint = NSZeroPoint;
+        unsigned int i, count = [self elementCount];
+        for (i = 0; i < count; i++) {
+            if ([self elementAtIndex:i associatedPoints:points] == NSCurveToBezierPathElement)
+                point = points[2];
+            else
+                point = points[0];
+            if (i == 0) {
+                minPoint = maxPoint = point;
+            } else {
+                minPoint.x = fminf(minPoint.x, point.x);
+                minPoint.y = fminf(minPoint.y, point.y);
+                maxPoint.x = fmaxf(maxPoint.x, point.x);
+                maxPoint.y = fmaxf(maxPoint.y, point.y);
+            }
+        }
+        bounds = NSMakeRect(minPoint.x - 0.1, minPoint.y - 0.1, maxPoint.x - minPoint.x + 0.2, maxPoint.y - minPoint.y + 0.2);
+    }
+    return bounds;
+}
+
 @end
 
