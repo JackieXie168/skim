@@ -37,6 +37,7 @@
  */
 
 #import "NSData_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation NSData (SKExtensions)
@@ -112,6 +113,36 @@
         return nil;
     [string deleteCharactersInRange:NSMakeRange(loc, [string length] - loc)];
     return string;
+}
+
+#pragma mark Scripting support
+
++ (NSData *)dataWithPointAsQDPoint:(NSPoint)point {
+    Point qdPoint = SKQDPointFromNSPoint(point);
+    return [self dataWithBytes:&qdPoint length:sizeof(Point)];
+}
+
++ (NSData *)dataWithRectAsQDRect:(NSRect)rect {
+    Rect qdBounds = SKQDRectFromNSRect(rect);
+    return [self dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+- (NSPoint)pointValueAsQDPoint {
+    NSPoint point = NSZeroPoint;
+    if ([self length] == sizeof(Point)) {
+        const Point *qdPoint = (const Point *)[self bytes];
+        point = SKNSPointFromQDPoint(*qdPoint);
+    }
+    return point;
+}
+
+- (NSRect)rectValueAsQDRect {
+    NSRect rect = NSZeroRect;
+    if ([self length] == sizeof(Rect)) {
+        const Rect *qdRect = (const Rect *)[self bytes];
+        rect = SKNSRectFromQDRect(*qdRect);
+    }
+    return rect;
 }
 
 @end

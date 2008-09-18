@@ -44,6 +44,7 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 
 
 FourCharCode SKScriptingLineStyleFromLineStyle(PDFLineStyle lineStyle) {
@@ -161,9 +162,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 }
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
-    if ([inQDPointAsData length] == sizeof(Point)) {
-        const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint startPoint = SKNSPointFromQDPoint(*qdPoint);
+    if (inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
+        NSPoint startPoint = [inQDPointAsData pointValueAsQDPoint];
         
         NSRect bounds = [self bounds];
         NSPoint endPoint = SKIntegralPoint(SKAddPoints([self endPoint], bounds.origin));
@@ -194,14 +194,12 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSPoint startPoint = SKAddPoints([self startPoint], bounds.origin);
     startPoint.x = floorf(startPoint.x);
     startPoint.y = floorf(startPoint.y);
-    Point qdPoint = SKQDPointFromNSPoint(startPoint);
-    return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
+    return [NSData dataWithPointAsQDPoint:startPoint];
 }
 
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
-    if ([inQDPointAsData length] == sizeof(Point)) {
-        const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint endPoint = SKNSPointFromQDPoint(*qdPoint);
+    if (inQDPointAsData && [inQDPointAsData isEqual:[NSNull null]] == NO) {
+        NSPoint endPoint = [inQDPointAsData pointValueAsQDPoint];
         
         NSRect bounds = [self bounds];
         NSPoint startPoint = SKIntegralPoint(SKAddPoints([self startPoint], bounds.origin));
@@ -232,8 +230,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
     NSPoint endPoint = SKAddPoints([self endPoint], bounds.origin);
     endPoint.x = floorf(endPoint.x);
     endPoint.y = floorf(endPoint.y);
-    Point qdPoint = SKQDPointFromNSPoint(endPoint);
-    return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
+    return [NSData dataWithPointAsQDPoint:endPoint];
 }
 
 - (FourCharCode)scriptingStartLineStyle {

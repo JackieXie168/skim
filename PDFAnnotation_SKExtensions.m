@@ -53,6 +53,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 
 
@@ -367,9 +368,8 @@ enum {
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([inQDBoundsAsData length] == sizeof(Rect) && [self isMovable]) {
-        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        NSRect newBounds = SKNSRectFromQDRect(*qdBounds);
+    if ([self isMovable]) {
+        NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
         if ([self isResizable] == NO) {
             newBounds.size = [self bounds].size;
         } else {
@@ -384,8 +384,7 @@ enum {
 }
 
 - (NSData *)boundsAsQDRect {
-    Rect qdBounds = SKQDRectFromNSRect([self bounds]);
-    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+    return [NSData dataWithRectAsQDRect:[self bounds]];
 }
 
 - (NSString *)fontName {
