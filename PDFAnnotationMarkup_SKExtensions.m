@@ -39,12 +39,14 @@
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
+#import "PDFAnnotationInk_SKExtensions.h"
 #import "PDFBorder_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 #import "SKCFCallBacks.h"
 #import "SKRuntime.h"
 
@@ -366,6 +368,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if (customMarkupScriptingKeys == nil) {
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
         [customKeys addObject:SKPDFAnnotationSelectionSpecifierKey];
+        [customKeys addObject:SKPDFAnnotationScriptingPointListsKey];
         [customKeys removeObject:SKNPDFAnnotationLineWidthKey];
         [customKeys removeObject:SKPDFAnnotationScriptingBorderStyleKey];
         [customKeys removeObject:SKNPDFAnnotationDashPatternKey];
@@ -396,6 +399,24 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
         [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
+}
+
+- (NSArray *)scriptingPointLists {
+    NSPoint origin = [self bounds].origin;
+    NSMutableArray *pointLists = [NSMutableArray array];
+    NSMutableArray *pointValues;
+    NSPoint point;
+    int i, j, iMax = [[self quadrilateralPoints] count] / 4;
+    for (i = 0; i < iMax; i++) {
+        pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
+        for (j = 0; j < 4; j++) {
+            point = [[[self quadrilateralPoints] objectAtIndex:4 * i + j] pointValue];
+            [pointValues addObject:[NSData dataWithPointAsQDPoint:SKAddPoints(point, origin)]];
+        }
+        [pointLists addObject:pointValues];
+        [pointValues release];
+    }
+    return pointLists;
 }
 
 #pragma mark Accessibility
