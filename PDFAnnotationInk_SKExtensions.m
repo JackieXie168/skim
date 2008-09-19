@@ -146,6 +146,7 @@
             [pointValues addObject:[NSValue valueWithPoint:point]];
         }
         [pointLists addObject:pointValues];
+        [pointValues release];
     }
     return pointLists;
 }
