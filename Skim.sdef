@@ -744,8 +744,8 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
-            <property name="path list" code="Pths" access="r" hidden="yes"
-                description="The list of paths for a freehand note.">
+            <property name="path list" code="Pths" access="r"
+                description="The list of paths for a freehand or markup note.">
                 <type type="point list" list="yes"/>
                 <cocoa key="scriptingPointLists"/>
             </property>
