@@ -696,7 +696,7 @@
             </property>
             <property name="font color" code="FntC" type="RGBA color"
                 description="The text color of a text note.">
-                <cocoa key="fontColor"/>
+                <cocoa key="scriptingFontColor"/>
             </property>
             <property name="extended text" code="XTxt" type="rich text"
                 description="The rich extended text of an anchored note.">
@@ -744,6 +744,11 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
+            <property name="path list" code="Pths" access="r" hidden="yes"
+                description="The list of paths for a freehand note.">
+                <type type="point list" list="yes"/>
+                <cocoa key="scriptingPointLists"/>
+            </property>
 			<responds-to name="get bounds for">
 				<cocoa method=""/>
 			</responds-to>
@@ -756,6 +761,12 @@
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
+        </class>
+
+        <class name="point list" plural="point lists" code="PtLi"
+            description="A list of points.">
+            <cocoa class="NSArray"/>
+            <type type="point" list="yes"/>
         </class>
 
         <class name="TeX line" plural="TeX lines" code="Line"
@@ -1079,7 +1090,7 @@
                 description="Strike out highlight."/>
             <enumerator name="line note" code="NLin"
                 description="Line."/>
-            <enumerator name="line note" code="NInk" hidden="yes"
+            <enumerator name="freehand note" code="NInk" hidden="yes"
                 description="Freehand."/>
         </enumeration>
 
