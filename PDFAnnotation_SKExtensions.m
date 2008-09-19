@@ -55,6 +55,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSBezierPath_BDSKExtensions.h"
 
 
 FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {
@@ -274,6 +275,54 @@ enum {
                             [self performSelector:@selector(setPage:) withObject:page];
                     }
                 }
+            } else if (type == SKScriptingInkNote) {
+                NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+                if ([pointLists isKindOfClass:[NSArray class]] == NO) {
+                    [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                    [currentCommand setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+                } else {
+                    NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
+                    NSBezierPath *path;
+                    NSEnumerator *pEnum;
+                    id pt;
+                    NSEnumerator *listEnum = [pointLists objectEnumerator];
+                    NSArray *list;
+                    bounds = NSZeroRect;
+                    while (list = [listEnum nextObject]) {
+                        if ([list isKindOfClass:[NSArray class]] == NO) continue;
+                        path = [[NSBezierPath alloc] init];
+                        pEnum = [list objectEnumerator];
+                        while (pt = [pEnum nextObject]) {
+                            NSPoint point;
+                            if ([pt isKindOfClass:[NSData class]]) {
+                                point = [pt pointValueAsQDPoint];
+                            } else if ([pt isKindOfClass:[NSArray class]] && [pt count] == 2) {
+                                Point qdPoint;
+                                qdPoint.v = [[pt objectAtIndex:0] intValue];
+                                qdPoint.h = [[pt objectAtIndex:1] intValue];
+                                point = SKNSPointFromQDPoint(qdPoint);
+                            } else continue;
+                            if ([path elementCount])
+                                [path lineToPoint:point];
+                            else
+                                [path moveToPoint:point];
+                        }
+                        if ([path elementCount] > 1) {
+                            [paths addObject:path];
+                            bounds = NSUnionRect(bounds, [path nonEmptyBounds]);
+                        }
+                        [path release];
+                    }
+                    bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
+                    NSAffineTransform *transform = [NSAffineTransform transform];
+                    [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+                    [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                    self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
+                    pEnum = [paths objectEnumerator];
+                    while (path = [pEnum nextObject])
+                        [(PDFAnnotationInk *)self addBezierPath:path];
+                    [paths release];
+                }
             } else if (type == SKScriptingTextNote) {
                 self = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingAnchoredNote) {
@@ -327,8 +376,9 @@ enum {
     [customKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
     [customKeys unionSet:[SKNPDFAnnotationNote customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
     [customKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
+    [customKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
     [customKeys minusSet:[[self class] customScriptingKeys]];
     [properties removeObjectsForKeys:[customKeys allObjects]];
     [customKeys release];
@@ -395,6 +445,10 @@ enum {
     return 0;
 }
 
+- (NSColor *)scriptingFontColor {
+    return (id)[NSNull null];
+}
+
 - (FourCharCode)scriptingBorderStyle {
     return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }
@@ -421,6 +475,10 @@ enum {
 
 - (id)selectionSpecifier {
     return [NSNull null];
+}
+
+- (NSArray *)scriptingPointLists {
+    return (id)[NSNull null];
 }
 
 #pragma mark Accessibility

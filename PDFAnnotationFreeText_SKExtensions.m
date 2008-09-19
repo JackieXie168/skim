@@ -44,6 +44,7 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 
+NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 
 @interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
 - (int)rotation;
@@ -115,6 +116,7 @@
         NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
         [customKeys addObject:SKNPDFAnnotationFontNameKey];
         [customKeys addObject:SKNPDFAnnotationFontSizeKey];
+        [customKeys addObject:SKPDFAnnotationScriptingFontColorKey];
         customFreeTextScriptingKeys = [customKeys copy];
         [customKeys release];
     }
@@ -150,6 +152,15 @@
     NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (font)
         [self setFont:font];
+}
+
+- (NSColor *)scriptingFontColor {
+    return [self respondsToSelector:@selector(fontColor)] ? [self fontColor] : [NSColor blackColor];
+}
+
+- (void)setScriptingFontColor:(NSColor *)newScriptingFontColor {
+    if ([self respondsToSelector:@selector(setFontColor:)])
+        [self setFontColor:newScriptingFontColor];
 }
 
 #pragma mark Accessibility

@@ -39,10 +39,12 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationScriptingFontColorKey;
 
 @interface PDFAnnotationFreeText (SKExtensions)
 
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(float)pointSize;
+- (void)setScriptingFontColor:(NSColor *)newScriptingFontColor;
 
 @end

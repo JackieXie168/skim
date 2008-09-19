@@ -39,7 +39,12 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKPDFAnnotationScriptingPointListsKey;
 
 @interface PDFAnnotationInk (SKExtensions)
+
 - (NSArray *)pointLists;
+
+- (void)setScriptingPointLists:(NSArray *)lists;
+
 @end

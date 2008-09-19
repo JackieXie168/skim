@@ -43,8 +43,10 @@
 #import "SKFDFParser.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 
+NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 @implementation PDFAnnotationInk (SKExtensions)
 
@@ -152,9 +154,51 @@
 }
 
 #pragma mark Scripting support
+#pragma mark Scripting support
+
++ (NSSet *)customScriptingKeys {
+    static NSSet *customInkScriptingKeys = nil;
+    if (customInkScriptingKeys == nil) {
+        NSMutableSet *customKeys = [[super customScriptingKeys] mutableCopy];
+        [customKeys addObject:SKPDFAnnotationScriptingPointListsKey];
+        customInkScriptingKeys = [customKeys copy];
+        [customKeys release];
+    }
+    return customInkScriptingKeys;
+}
 
 - (FourCharCode)scriptingNoteType {
     return SKScriptingInkNote;
+}
+
+- (NSArray *)scriptingPointLists {
+    NSPoint origin = [self bounds].origin;
+    NSMutableArray *pointLists = [NSMutableArray array];
+    NSMutableArray *pointValues;
+    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
+    NSBezierPath *path;
+    NSPoint point;
+    NSPoint points[3];
+    int i, iMax;
+    NSBezierPathElement element;
+    while (path = [pathEnum nextObject]) {
+        iMax = [path elementCount];
+        pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
+        for (i = 0; i < iMax; i++) {
+            element = [path elementAtIndex:i associatedPoints:points];
+            point = element == NSCurveToBezierPathElement ? points[2] : points[0];
+            [pointValues addObject:[NSData dataWithPointAsQDPoint:SKAddPoints(point, origin)]];
+        }
+        [pointLists addObject:pointValues];
+        [pointValues release];
+    }
+    return pointLists;
+}
+
+- (void)setScriptingPointLists:(NSArray *)lists {
+    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
+    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
+        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
 }
 
 #pragma mark Accessibility

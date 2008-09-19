@@ -113,6 +113,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;
 - (float)fontSize;
+- (NSColor *)scriptingFontColor;
 - (FourCharCode)scriptingBorderStyle;
 - (void)setScriptingBorderStyle:(int)style;
 - (NSData *)startPointAsQDPoint;
@@ -120,6 +121,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (FourCharCode)scriptingStartLineStyle;
 - (FourCharCode)scriptingEndLineStyle;
 - (id)selectionSpecifier;
+- (NSArray *)scriptingPointLists;
 
 - (NSArray *)accessibilityAttributeNames;
 - (id)accessibilityRoleAttribute;
