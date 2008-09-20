@@ -48,7 +48,7 @@
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
 		CE0ECCD90DE71868006EEDDB /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
-		CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
+		CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
@@ -85,7 +85,7 @@
 		CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
-		CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
+		CE416D4A0CE6354F00AAB04C /* archivedmg.sh in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
@@ -141,9 +141,9 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
-		CE7DC8F60E09551800D6D76D /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
+		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
-		CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
+		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
 		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
@@ -208,7 +208,7 @@
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
 		CEE177960DBE140900E6C317 /* SKAccessibilityFauxUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
-		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
+		CEE22EA30BFB8672002B746B /* displayline in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */; };
 		CEE54D930DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D920DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m */; };
 		CEE54D980DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54D970DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m */; };
@@ -220,8 +220,8 @@
 		CEE54F6C0DA3FB060037169F /* SKMainWindowController_Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6B0DA3FB060037169F /* SKMainWindowController_Toolbar.m */; };
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.m */; };
-		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
-		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
+		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
+		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
 		CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
@@ -231,7 +231,7 @@
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
-		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
+		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -354,48 +354,52 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CE816A0A0D70F9B6008D807D /* CopyFiles */ = {
+		CE816A0A0D70F9B6008D807D /* Copy Files: QuickLook */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Contents/Library/QuickLook;
 			dstSubfolderSpec = 1;
 			files = (
-				CE816A060D70F9A7008D807D /* Skim.qlgenerator in CopyFiles */,
+				CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */,
 			);
+			name = "Copy Files: QuickLook";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEE112760BCBF52500BF2D3E /* CopyFiles */ = {
+		CEE112760BCBF52500BF2D3E /* Copy Files: Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in CopyFiles */,
-				CEE8DFC90E5C806400EFA97F /* Sparkle.framework in CopyFiles */,
+				CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */,
+				CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */,
 			);
+			name = "Copy Files: Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEE22EA00BFB8614002B746B /* CopyFiles */ = {
+		CEE22EA00BFB8614002B746B /* Copy Files: Shared Support */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 12;
 			files = (
-				CE7DC8F60E09551800D6D76D /* skimnotes in CopyFiles */,
-				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
-				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in CopyFiles */,
-				CE0ECCDA0DE7188C006EEDDB /* Templates in CopyFiles */,
+				CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */,
+				CEE22EA30BFB8672002B746B /* displayline in Copy Files: Shared Support */,
+				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in Copy Files: Shared Support */,
+				CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */,
 			);
+			name = "Copy Files: Shared Support";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEFD68720C01D3FE0027B933 /* CopyFiles */ = {
+		CEFD68720C01D3FE0027B933 /* Copy Files: Spotlight */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Contents/Library/Spotlight;
 			dstSubfolderSpec = 1;
 			files = (
-				CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */,
+				CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */,
 			);
+			name = "Copy Files: Spotlight";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1608,18 +1612,18 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Skim" */;
 			buildPhases = (
-				CEE1383C0BCEA63F00BF2D3E /* ShellScript */,
+				CEE1383C0BCEA63F00BF2D3E /* Run Script: Genstrings */,
 				8D15AC2B0486D014006FF6A4 /* Resources */,
-				CEF82CA50C77286200A3AD51 /* ShellScript */,
-				CEF82CAD0C772A4200A3AD51 /* ShellScript */,
+				CEF82CA50C77286200A3AD51 /* Run Script: Build Help */,
+				CEF82CAD0C772A4200A3AD51 /* Run Script: Copy Help */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				CEE22EA00BFB8614002B746B /* CopyFiles */,
-				CEE112760BCBF52500BF2D3E /* CopyFiles */,
-				CEFD68720C01D3FE0027B933 /* CopyFiles */,
-				CE816A0A0D70F9B6008D807D /* CopyFiles */,
-				CEE22EA50BFB8691002B746B /* ShellScript */,
-				CE4B67590BF4DC3000A73E42 /* ShellScript */,
+				CEE22EA00BFB8614002B746B /* Copy Files: Shared Support */,
+				CEE112760BCBF52500BF2D3E /* Copy Files: Frameworks */,
+				CEFD68720C01D3FE0027B933 /* Copy Files: Spotlight */,
+				CE816A0A0D70F9B6008D807D /* Copy Files: QuickLook */,
+				CEE22EA50BFB8691002B746B /* Run Script: Symlink scripts */,
+				CE4B67590BF4DC3000A73E42 /* Run Script: Strip headers and .DS_Store */,
 			);
 			buildRules = (
 			);
@@ -1835,13 +1839,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		CE4B67590BF4DC3000A73E42 /* ShellScript */ = {
+		CE4B67590BF4DC3000A73E42 /* Run Script: Strip headers and .DS_Store */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Strip headers and .DS_Store";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1861,33 +1866,35 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/rm -f /tmp/Skim.dmg\n/bin/rm -f ${SOURCE_ROOT}/Skim.dmg\n/usr/bin/unzip ${SOURCE_ROOT}/Skim.dmg.zip\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\n/usr/bin/osascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil resize -size `/usr/bin/hdiutil resize /tmp/Skim.dmg | cut -f -1 -d \" \" -`b /tmp/Skim.dmg\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\n/bin/rm -f /tmp/Skim.dmg\n/bin/rm -f ${SOURCE_ROOT}/Skim.dmg\nexit 0";
 		};
-		CEE1383C0BCEA63F00BF2D3E /* ShellScript */ = {
+		CEE1383C0BCEA63F00BF2D3E /* Run Script: Genstrings */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Genstrings";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\n# Check to see if a previous version exists and create it\n# if not, or else pbxcp will complain.\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nexit 0\nfi\n#\n# Run the genstrings build phase\n#\nfi\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\n\n/usr/bin/genstrings -q -o ${SOURCE_ROOT}/English.lproj *.m 2>&1 | sed -e 's/^/warning: /g' | sed -e 's/warning:.*Warning:/warning:/g' >&2\n";
 		};
-		CEE22EA50BFB8691002B746B /* ShellScript */ = {
+		CEE22EA50BFB8691002B746B /* Run Script: Symlink scripts */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Symlink scripts";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nln -fs ../SharedSupport/displayline displayline\nln -fs ../SharedSupport/displayline forward-search.sh\n";
 		};
-		CEF82CA50C77286200A3AD51 /* ShellScript */ = {
+		CEF82CA50C77286200A3AD51 /* Run Script: Build Help */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1900,6 +1907,7 @@
 				"$(SRCROOT)/Dutch.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
 			);
+			name = "Run Script: Build Help";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.helpindex",
@@ -1910,7 +1918,7 @@
 			shellPath = /bin/sh;
 			shellScript = "HELP_NAME=\"Skim Help\"\n\nLOC_LANGS=(English Dutch)\n\nINPUT=\"${HELP_NAME}/skim.texi\"\nTOOLS=\"${HELP_NAME}\"\nDEST=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\"\n\nHELP_INDEXER=\"${SYSTEM_DEVELOPER_UTILITIES_DIR}/Help Indexer.app/Contents/MacOS/Help Indexer\"\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LANG in ${LOC_LANGS[*]}; do\n\tLOC_TARGET=\"${TARGET}/${LANG}.lproj/${DEST}\";\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\";\n\t\n\techo \"*** Creating help files in ${LOC_TARGET} ***\";\n\t\"${TOOLS}/texi2html\" \"${LANG}.lproj/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html;\n\t\n\techo \"*** Indexing Help in ${LOC_TARGET} ***\"\n\tif [ \"${LANG}\" = \"French\" ]; then STOPWORDS=\"fr\";\n\telif [ \"${LANG}\" = \"German\" ]; then STOPWORDS=\"de\";\n\telif [ \"${LANG}\" = \"Hungarian\" ]; then STOPWORDS=\"hu\";\n\telif [ \"${LANG}\" = \"Italian\" ]; then STOPWORDS=\"it\";\n\telif [ \"${LANG}\" = \"Spanish\" ]; then STOPWORDS=\"es\";\n\telif [ \"${LANG}\" = \"Swedish\" ]; then STOPWORDS=\"sv\";\n\telif [ \"${LANG}\" = \"Dutch\" ]; then STOPWORDS=\"${SOURCE_ROOT}/${HELP_NAME}/stopwords-nl.txt\";\n\telse STOPWORDS=\"en\";\n\tfi;\n\tif [ \"${LANG}\" = \"Japanese\" -o \"${LANG}\" = \"zh_CN\" -o \"${LANG}\" = \"zh_TW\" ]; then MINTERMLENGTH=1;\n\telse MINTERMLENGTH=3;\n\tfi;\n\t\"${HELP_INDEXER}\" \"${LOC_TARGET}\" -ShowProgress NO -LogStyle 2 -IndexAnchors YES -TigerIndexing YES -GenerateSummaries YES -Stopwords \"${STOPWORDS}\" -MinTermLength \"${MINTERMLENGTH}\";\ndone;\n";
 		};
-		CEF82CAD0C772A4200A3AD51 /* ShellScript */ = {
+		CEF82CAD0C772A4200A3AD51 /* Run Script: Copy Help */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1919,6 +1927,7 @@
 				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
 				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
 			);
+			name = "Run Script: Copy Help";
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/Skim Help/Skim Help.html",
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/Skim Help/Skim Help.html",
