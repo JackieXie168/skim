@@ -316,11 +316,13 @@ enum {
                     bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
                     NSAffineTransform *transform = [NSAffineTransform transform];
                     [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-                    [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                    self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
-                    pEnum = [paths objectEnumerator];
-                    while (path = [pEnum nextObject])
-                        [(PDFAnnotationInk *)self addBezierPath:path];
+                    if (self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds]) {
+                        pEnum = [paths objectEnumerator];
+                        while (path = [pEnum nextObject]) {
+                            [path transformUsingAffineTransform:transform];
+                            [(PDFAnnotationInk *)self addBezierPath:path];
+                        }
+                    }
                     [paths release];
                 }
             } else if (type == SKScriptingTextNote) {
