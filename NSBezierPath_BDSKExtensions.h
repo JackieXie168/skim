@@ -69,4 +69,6 @@
 
 - (NSRect)nonEmptyBounds;
 
+- (NSPoint)associatedPointForElementAtIndex:(unsigned int)anIndex;
+
 @end

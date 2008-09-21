@@ -90,9 +90,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    NSPoint points[3];
     int i, iMax;
-    NSBezierPathElement element;
     NSRect bounds = [self bounds];
     [fdfString appendFDFName:SKFDFAnnotationInkListKey];
     [fdfString appendString:@"["];
@@ -100,8 +98,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
         iMax = [path elementCount];
         [fdfString appendString:@"["];
         for (i = 0; i < iMax; i++) {
-            element = [path elementAtIndex:i associatedPoints:points];
-            point = element == NSCurveToBezierPathElement ? points[2] : points[0];
+            point = [path associatedPointForElementAtIndex:i];
             [fdfString appendFormat:@"%f %f ", point.x + NSMinX(bounds), point.y + NSMinY(bounds)];
         }
         [fdfString appendString:@"]"];
@@ -124,15 +121,12 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
         NSEnumerator *pathEnum = [[self paths] objectEnumerator];
         NSBezierPath *path;
         NSPoint prevPoint, nextPoint = NSZeroPoint;
-        NSPoint points[3];
         int i, iMax;
-        NSBezierPathElement element;
         while (path = [pathEnum nextObject]) {
             iMax = [path elementCount];
             for (i = 0; i < iMax; i++) {
-                element = [path elementAtIndex:i associatedPoints:points];
                 prevPoint = nextPoint;
-                nextPoint = element == NSCurveToBezierPathElement ? points[2] : points[0];
+                nextPoint = [path associatedPointForElementAtIndex:i];
                 if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta))
                     return YES;
             }
@@ -158,15 +152,12 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    NSPoint points[3];
     int i, iMax;
-    NSBezierPathElement element;
     while (path = [pathEnum nextObject]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (i = 0; i < iMax; i++) {
-            element = [path elementAtIndex:i associatedPoints:points];
-            point = element == NSCurveToBezierPathElement ? points[2] : points[0];
+            point = [path associatedPointForElementAtIndex:i];
             [pointValues addObject:[NSValue valueWithPoint:point]];
         }
         [pointLists addObject:pointValues];
@@ -200,15 +191,12 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    NSPoint points[3];
     int i, iMax;
-    NSBezierPathElement element;
     while (path = [pathEnum nextObject]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (i = 0; i < iMax; i++) {
-            element = [path elementAtIndex:i associatedPoints:points];
-            point = element == NSCurveToBezierPathElement ? points[2] : points[0];
+            point = [path associatedPointForElementAtIndex:i];
             [pointValues addObject:[NSData dataWithPointAsQDPoint:SKAddPoints(point, origin)]];
         }
         [pointLists addObject:pointValues];
