@@ -3008,11 +3008,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 NSRect bounds = [activeAnnotation bounds];
                 [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
                 [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                
                 transform = [NSAffineTransform transform];
                 bounds = [newActiveAnnotation bounds];
                 [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
                 [newPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                [paths addObjectsFromArray:newPaths];
+                [newPaths release];
                 
                 [self removeAnnotation:newActiveAnnotation];
                 newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
@@ -3024,7 +3025,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 
                 [paths release];
-                [newPaths release];
                 [accessibilityChildren release];
                 accessibilityChildren = nil;
             }
