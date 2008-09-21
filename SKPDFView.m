@@ -43,6 +43,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
+#import "PDFAnnotationInk_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
@@ -1918,23 +1919,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             break;
         case SKInkNote:
-            if (bezierPath) {
-                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
-                NSBezierPath *path = [bezierPath copy];
-                NSAffineTransform *transform = [NSAffineTransform transform];
-                [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-                [path transformUsingAffineTransform:transform];
-                [(PDFAnnotationInk *)newAnnotation addBezierPath:path];
-                [path release];
-            }
+            if (bezierPath)
+                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:[NSArray arrayWithObject:[[bezierPath copy] autorelease]]];
             break;
 	}
     if (newAnnotation) {
-        if (text == nil)
-            text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-        
-        if ([[activeAnnotation type] isEqualToString:SKNLineString] == NO && [[activeAnnotation type] isEqualToString:SKNInkString] == NO)
-            [newAnnotation setString:text];
+        if (annotationType != SKLineNote && annotationType != SKInkNote) {
+            if (text == nil)
+                text = [[[page selectionForRect:[newAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            if (text)
+                [newAnnotation setString:text];
+        }
         
         [self addAnnotation:newAnnotation toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
@@ -3006,36 +3001,30 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
-                NSEnumerator *pathEnum;
-                NSBezierPath *path;
+                NSMutableArray *paths = [[NSMutableArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
+                NSArray *newPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)newActiveAnnotation paths] copyItems:YES];
+                
                 NSAffineTransform *transform = [NSAffineTransform transform];
-                NSRect bounds1 = [activeAnnotation bounds];
-                NSRect bounds2 = [newActiveAnnotation bounds];
-                NSRect bounds3 = NSUnionRect(bounds1, bounds2);
-                PDFAnnotationInk *newAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds3] autorelease];
-                [transform translateXBy:NSMinX(bounds1) - NSMinX(bounds3) yBy:NSMinY(bounds1) - NSMinY(bounds3)];
-                pathEnum = [[(PDFAnnotationInk *)activeAnnotation paths] objectEnumerator];
-                while (path = [pathEnum nextObject]) {
-                    path = [path copy];
-                    [path transformUsingAffineTransform:transform];
-                    [newAnnotation addBezierPath:path];
-                    [path release];
-                }
-                [transform translateXBy:NSMinX(bounds2) - NSMinX(bounds1) yBy:NSMinY(bounds2) - NSMinY(bounds1)];
-                pathEnum = [[(PDFAnnotationInk *)newActiveAnnotation paths] objectEnumerator];
-                while (path = [pathEnum nextObject]) {
-                    path = [path copy];
-                    [path transformUsingAffineTransform:transform];
-                    [newAnnotation addBezierPath:path];
-                    [path release];
-                }
-                [newAnnotation setString:[activeAnnotation string]];
-                [newAnnotation setColor:[activeAnnotation color]];
-                [newAnnotation setBorder:[activeAnnotation border]];
-                [self removeActiveAnnotation:nil];
+                NSRect bounds = [activeAnnotation bounds];
+                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+                [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                
+                transform = [NSAffineTransform transform];
+                bounds = [newActiveAnnotation bounds];
+                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+                [newPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                
                 [self removeAnnotation:newActiveAnnotation];
-                newActiveAnnotation = newAnnotation;
+                newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
+                [(PDFAnnotationInk *)newActiveAnnotation setString:[activeAnnotation string]];
+                [(PDFAnnotationInk *)newActiveAnnotation setColor:[activeAnnotation color]];
+                [(PDFAnnotationInk *)newActiveAnnotation setBorder:[activeAnnotation border]];
+                [self removeActiveAnnotation:nil];
                 [self addAnnotation:newActiveAnnotation toPage:page];
+                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                
+                [paths release];
+                [newPaths release];
                 [accessibilityChildren release];
                 accessibilityChildren = nil;
             }
@@ -3141,7 +3130,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             didDraw = YES;
         }
         if (didDraw)
-            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSInsetRect(NSIntegralRect([bezierPath nonEmptyBounds]), -8.0, -8.0)];
+            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
         [bezierPath release];
         bezierPath = nil;
         

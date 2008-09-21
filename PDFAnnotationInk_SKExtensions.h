@@ -43,6 +43,8 @@ extern NSString *SKPDFAnnotationScriptingPointListsKey;
 
 @interface PDFAnnotationInk (SKExtensions)
 
+- (id)initSkimNoteWithPaths:(NSArray *)paths;
+
 - (NSArray *)pointLists;
 
 - (void)setScriptingPointLists:(NSArray *)lists;

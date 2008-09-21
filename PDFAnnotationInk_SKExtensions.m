@@ -63,6 +63,28 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     return self; 	 
 } 	 
 
+- (id)initSkimNoteWithPaths:(NSArray *)paths {
+    NSRect bounds = NSZeroRect;
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    NSEnumerator *pathEnum;
+    NSBezierPath *path;
+    
+    pathEnum = [paths objectEnumerator];
+    while (path = [pathEnum nextObject])
+        bounds = NSUnionRect(bounds, [path nonEmptyBounds]);
+    bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
+    [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+    
+    if (self = [self initSkimNoteWithBounds:bounds]) {
+        pathEnum = [paths objectEnumerator];
+        while (path = [pathEnum nextObject]) {
+            [path transformUsingAffineTransform:transform];
+            [self addBezierPath:path];
+        }
+    }
+    return self;
+}
+
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];

@@ -282,47 +282,34 @@ enum {
                     [currentCommand setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
                 } else {
                     NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
-                    NSBezierPath *path;
-                    NSEnumerator *pEnum;
-                    id pt;
                     NSEnumerator *listEnum = [pointLists objectEnumerator];
                     NSArray *list;
-                    bounds = NSZeroRect;
                     while (list = [listEnum nextObject]) {
-                        if ([list isKindOfClass:[NSArray class]] == NO) continue;
-                        path = [[NSBezierPath alloc] init];
-                        pEnum = [list objectEnumerator];
-                        while (pt = [pEnum nextObject]) {
-                            NSPoint point;
-                            if ([pt isKindOfClass:[NSData class]]) {
-                                point = [pt pointValueAsQDPoint];
-                            } else if ([pt isKindOfClass:[NSArray class]] && [pt count] == 2) {
-                                Point qdPoint;
-                                qdPoint.v = [[pt objectAtIndex:0] intValue];
-                                qdPoint.h = [[pt objectAtIndex:1] intValue];
-                                point = SKNSPointFromQDPoint(qdPoint);
-                            } else continue;
-                            if ([path elementCount])
-                                [path lineToPoint:point];
-                            else
-                                [path moveToPoint:point];
-                        }
-                        if ([path elementCount] > 1) {
-                            [paths addObject:path];
-                            bounds = NSUnionRect(bounds, [path nonEmptyBounds]);
-                        }
-                        [path release];
-                    }
-                    bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
-                    NSAffineTransform *transform = [NSAffineTransform transform];
-                    [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-                    if (self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds]) {
-                        pEnum = [paths objectEnumerator];
-                        while (path = [pEnum nextObject]) {
-                            [path transformUsingAffineTransform:transform];
-                            [(PDFAnnotationInk *)self addBezierPath:path];
+                        if ([list isKindOfClass:[NSArray class]] == NO) {
+                            NSBezierPath *path = [[NSBezierPath alloc] init];
+                            NSEnumerator *ptEnum = [list objectEnumerator];
+                            id pt;
+                            while (pt = [ptEnum nextObject]) {
+                                NSPoint point;
+                                if ([pt isKindOfClass:[NSData class]]) {
+                                    point = [pt pointValueAsQDPoint];
+                                } else if ([pt isKindOfClass:[NSArray class]] && [pt count] == 2) {
+                                    Point qdPoint;
+                                    qdPoint.v = [[pt objectAtIndex:0] intValue];
+                                    qdPoint.h = [[pt objectAtIndex:1] intValue];
+                                    point = SKNSPointFromQDPoint(qdPoint);
+                                } else continue;
+                                if ([path elementCount])
+                                    [path lineToPoint:point];
+                                else
+                                    [path moveToPoint:point];
+                            }
+                            if ([path elementCount] > 1)
+                                [paths addObject:path];
+                            [path release];
                         }
                     }
+                    self = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
                     [paths release];
                 }
             } else if (type == SKScriptingTextNote) {
@@ -336,8 +323,6 @@ enum {
                 self = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
             } else if (type == SKScriptingLineNote) {
                 self = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
-            } else if (type == SKScriptingInkNote) {
-                self = [[PDFAnnotationInk alloc] initSkimNoteWithBounds:bounds];
             }
         }
     }
