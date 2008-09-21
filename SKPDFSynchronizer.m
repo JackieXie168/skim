@@ -260,6 +260,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (void)setFileName:(NSString *)newFileName {
     @synchronized(self) {
+        // we compare filenames in canonical form throughout, so we need to make sure fileName also is in canonical form
+        newFileName = [[newFileName stringByResolvingSymlinksInPath] stringByStandardizingPath];
         if (fileName != newFileName) {
             if ([fileName isEqualToString:newFileName] == NO) {
                 [syncFileName release];
@@ -329,7 +331,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         file = [file stringByAppendingPathExtension:extension];
     if ([file isAbsolutePath] == NO)
         file = [[[self fileName] stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
-    return [file stringByStandardizingPath];
+    // the docs say -stringByStandardizingPath uses -stringByResolvingSymlinksInPath, but it doesn't 
+    return [[file stringByResolvingSymlinksInPath] stringByStandardizingPath];
 }
 
 - (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep defaultExtension:(NSString *)extension {
@@ -673,7 +676,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         BOOL success = NO;
         
         file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
-        
+        NSLog(@"%@ %@",[self fileName],file);
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         else
