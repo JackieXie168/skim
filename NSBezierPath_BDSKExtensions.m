@@ -347,17 +347,21 @@
     return path;
 }
 
+- (NSPoint)associatedPointForElementAtIndex:(unsigned int)anIndex {
+    NSPoint points[3];
+    if (NSCurveToBezierPathElement == [self elementAtIndex:anIndex associatedPoints:points])
+        return points[2];
+    else
+        return points[0];
+}
+
 - (NSRect)nonEmptyBounds {
     NSRect bounds = [self bounds];
     if (NSIsEmptyRect(bounds) && [self elementCount]) {
-        NSPoint points[2];
         NSPoint point, minPoint = NSZeroPoint, maxPoint = NSZeroPoint;
         unsigned int i, count = [self elementCount];
         for (i = 0; i < count; i++) {
-            if ([self elementAtIndex:i associatedPoints:points] == NSCurveToBezierPathElement)
-                point = points[2];
-            else
-                point = points[0];
+            point = [self associatedPointForElementAtIndex:i];
             if (i == 0) {
                 minPoint = maxPoint = point;
             } else {
