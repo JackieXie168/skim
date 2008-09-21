@@ -1334,7 +1334,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [item setTarget:self];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKEnableFreehandTool"]) {
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Ink", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Freehand", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
         [item setTag:SKInkNote];
         [item setTarget:self];
     }
