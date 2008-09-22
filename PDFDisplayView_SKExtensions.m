@@ -128,7 +128,7 @@ static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayVi
     NSAttributedString *attributedString = nil;
     if ([pdfDisplayView respondsToSelector:@selector(selectionForAccessibilityRange:)]) {
         // make sure the accessibility table is generated
-        [pdfDisplayView accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute];
+        [pdfDisplayView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
         PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
         if ([selection respondsToSelector:@selector(attributedString)])
             attributedString = [selection attributedString];
@@ -145,7 +145,7 @@ static id replacementAccessibilityRangeForPositionAttributeForParameter(id self,
             int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
             if (i != -1) {
                 // make sure the accessibility table is generated
-                [self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute];
+                [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
                 return [NSValue valueWithRange:[self accessibilityRangeForSelection:[page selectionForRange:NSMakeRange(i, 1)]]];
             }
         }
@@ -173,6 +173,8 @@ static id replacementAccessibilityAttributedStringForRangeAttributeForParameter(
 static id replacementAccessibilityStyleRangeForIndexAttributeForParameter(id self, SEL _cmd, id parameter) {
     id pdfView = SKGetPDFView(self);
     if (pdfView) {
+        // make sure the accessibility table is generated
+        [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
         int i = [parameter unsignedIntValue];
         int n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
         int start = MAX(0, i - 25), end = MIN(n, i + 25);
