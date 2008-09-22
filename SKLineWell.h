@@ -49,6 +49,7 @@ extern NSString *SKLineWellEndLineStyleKey;
 
 enum {
     SKLineWellDisplayStyleLine,
+    SKLineWellDisplayStyleSimpleLine,
     SKLineWellDisplayStyleRectangle,
     SKLineWellDisplayStyleOval
 };

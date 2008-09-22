@@ -245,6 +245,10 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
                 [path closePath];
                 break;
         }
+    } else if ([self displayStyle] == SKLineWellDisplayStyleSimpleLine) {
+        float offset = 0.5 * lineWidth - floorf(0.5 * lineWidth);
+        [path moveToPoint:NSMakePoint(NSMinX(bounds) + 7.0, roundf(NSMidY(bounds)) - offset)];
+        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - 7.0, roundf(NSMidY(bounds)) - offset)];
     } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
         float inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];
