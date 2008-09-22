@@ -285,7 +285,7 @@ enum {
                     NSEnumerator *listEnum = [pointLists objectEnumerator];
                     NSArray *list;
                     while (list = [listEnum nextObject]) {
-                        if ([list isKindOfClass:[NSArray class]] == NO) {
+                        if ([list isKindOfClass:[NSArray class]]) {
                             NSBezierPath *path = [[NSBezierPath alloc] init];
                             NSEnumerator *ptEnum = [list objectEnumerator];
                             id pt;
