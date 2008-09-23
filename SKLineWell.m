@@ -247,8 +247,8 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         }
     } else if ([self displayStyle] == SKLineWellDisplayStyleSimpleLine) {
         float offset = 0.5 * lineWidth - floorf(0.5 * lineWidth);
-        [path moveToPoint:NSMakePoint(NSMinX(bounds) + 7.0, roundf(NSMidY(bounds)) - offset)];
-        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - 7.0, roundf(NSMidY(bounds)) - offset)];
+        [path moveToPoint:NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset)];
+        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset)];
     } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
         float inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];
