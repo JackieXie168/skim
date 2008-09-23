@@ -918,7 +918,7 @@
                 description="Default line color.">
                 <cocoa key="Line"/>
             </property>
-            <property name="freehand note color" code="CInk" type="RGBA color" hidden="yes"
+            <property name="freehand note color" code="CInk" type="RGBA color"
                 description="Default freehand color.">
                 <cocoa key="Ink"/>
             </property>
@@ -953,7 +953,7 @@
                 description="Default line line width.">
                 <cocoa key="Line"/>
             </property>
-            <property name="freehand note line width" code="WInk" type="real" hidden="yes"
+            <property name="freehand note line width" code="WInk" type="real"
                 description="Default freehand line width.">
                 <cocoa key="Ink"/>
             </property>
@@ -976,7 +976,7 @@
                 description="Default line line width.">
                 <cocoa key="Line"/>
             </property>
-            <property name="freehand note line style" code="SInk" type="note line style" hidden="yes"
+            <property name="freehand note line style" code="SInk" type="note line style"
                 description="Default freehand line width.">
                 <cocoa key="Ink"/>
             </property>
@@ -1003,7 +1003,7 @@
                 <type type="real" list="yes"/>
                 <cocoa key="Line"/>
             </property>
-            <property name="freehand note dash pattern" code="DInk" hidden="yes"
+            <property name="freehand note dash pattern" code="DInk"
                 description="Default freehand dash pattern.">
                 <type type="real" list="yes"/>
                 <cocoa key="Ink"/>
@@ -1090,7 +1090,7 @@
                 description="Strike out highlight."/>
             <enumerator name="line note" code="NLin"
                 description="Line."/>
-            <enumerator name="freehand note" code="NInk" hidden="yes"
+            <enumerator name="freehand note" code="NInk"
                 description="Freehand."/>
         </enumeration>
 
