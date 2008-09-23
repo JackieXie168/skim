@@ -147,6 +147,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [lineLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
     [lineLineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
     [lineLineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
+    
+    [freehandLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreehandNoteLineWidthKey) options:nil];
+    [freehandLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreehandNoteLineStyleKey) options:nil];
+    [freehandLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreehandNoteDashPatternKey) options:nil];
+    [freehandLineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
