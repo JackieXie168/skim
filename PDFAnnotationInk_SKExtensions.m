@@ -111,7 +111,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)isConvertibleAnnotation { return [[NSUserDefaults standardUserDefaults] boolForKey:@"SKEnableFreehandTool"]; }
+- (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {
     NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
