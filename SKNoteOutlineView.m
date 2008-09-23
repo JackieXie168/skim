@@ -54,6 +54,9 @@
 
 - (void)awakeFromNib {
     [self noteTypeMenu]; // this sets the menu for the header view
+    id cell = [[[NSActionCell alloc] init] autorelease];
+    [cell setTag:-1];
+    [noteTypeMatrix putCell:cell atRow:4 column:0];
     NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
     if (fontSize)
         [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
@@ -246,7 +249,7 @@
     NSMenu *menu = [self noteTypeMenu];
     int i;
     
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 9; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         if ([item state] == NSOnState)
             [types addObject:[item representedObject]];
@@ -258,7 +261,7 @@
     NSMenu *menu = [self noteTypeMenu];
     int i;
     
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 9; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         [item setState:[types containsObject:[item representedObject]] ? NSOnState : NSOffState];
     }
@@ -277,7 +280,7 @@
 - (IBAction)displayAllNoteTypes:(id)sender {
     NSMenu *menu = [self noteTypeMenu];
     int i;
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 9; i++)
         [[menu itemAtIndex:i] setState:NSOnState];
     [self noteTypesUpdated];
 }
@@ -286,8 +289,8 @@
     if (returnCode == NSOKButton) {
         NSMenu *menu = [self noteTypeMenu];
         int i;
-        for (i = 0; i < 8; i++)
-            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellAtRow:i % 4 column:i / 4] state]];
+        for (i = 0; i < 9; i++)
+            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellWithTag:i] state]];
         [self noteTypesUpdated];
     }
 }
@@ -300,8 +303,8 @@
     
     NSMenu *menu = [self noteTypeMenu];
     int i;
-    for (i = 0; i < 8; i++)
-        [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
+    for (i = 0; i < 9; i++)
+        [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
 	
     [NSApp beginSheet:noteTypeSheet
        modalForWindow:[[self delegate] respondsToSelector:@selector(window)] ? [[self delegate] window] : [self window]
