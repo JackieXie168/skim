@@ -254,7 +254,6 @@
         <command name="open" code="aevtodoc"
             description="Open a document.">
 			<direct-parameter description="The file(s) to be opened.">
-				<type type="file"/>
 				<type type="file" list="yes"/>
 			</direct-parameter>
             <parameter name="at TeX line" code="Line" type="integer" optional="yes" hidden="yes"
