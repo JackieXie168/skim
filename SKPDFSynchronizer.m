@@ -676,7 +676,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         BOOL success = NO;
         
         file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
-        NSLog(@"%@ %@",[self fileName],file);
+        
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         else
