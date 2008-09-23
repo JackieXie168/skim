@@ -51,6 +51,7 @@
     IBOutlet SKLineWell *lineLineWell;
     IBOutlet SKLineWell *circleLineWell;
     IBOutlet SKLineWell *boxLineWell;
+    IBOutlet SKLineWell *freehandLineWell;
     IBOutlet SKFontWell *textNoteFontWell;
     IBOutlet SKFontWell *anchoredNoteFontWell;
     NSDictionary *resettableKeys;
