@@ -44,6 +44,8 @@
 				<string>SKLineWell</string>
 				<key>circleLineWell</key>
 				<string>SKLineWell</string>
+				<key>freehandLineWell</key>
+				<string>SKLineWell</string>
 				<key>lineLineWell</key>
 				<string>SKLineWell</string>
 				<key>revertFullScreenPDFSettingsButton</key>
