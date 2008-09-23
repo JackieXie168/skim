@@ -872,15 +872,15 @@
                 <cocoa key="KeywordsString"/>
             </property>
             <property name="encrypted" code="Encr" type="boolean"
-                description=".">
+                description="Whether the document is encrypted.">
                 <cocoa key="Encrypted"/>
             </property>
             <property name="allows printing" code="Prnt" type="boolean"
-                description=".">
+                description="Whether the document allows printing.">
                 <cocoa key="AllowsPrinting"/>
             </property>
             <property name="allows copying" code="Copy" type="boolean"
-                description=".">
+                description="Whether the document allows copying.">
                 <cocoa key="AllowsCopying"/>
             </property>
         </record-type>
