@@ -1420,32 +1420,46 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
         NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
         NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
-        NSEnumerator *pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
-        NSString *appSupportPath;
-        NSMutableDictionary *environment = [[[[NSProcessInfo processInfo] environment] mutableCopy] autorelease];
-        NSMutableArray *paths = [NSMutableArray arrayWithArray:[[environment objectForKey:@"PATH"] componentsSeparatedByString:@":"]];
         
-        if ([paths containsObject:@"/usr/bin"] == NO)
-            [paths addObject:@"/usr/bin"];
-        if ([paths containsObject:@"/usr/local/bin"] == NO)
-            [paths addObject:@"/usr/local/bin"];
-        if ([editorPreset isEqualToString:@""] == NO) {
-            NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
-            if (appPath) {
-                NSBundle *appBundle = [NSBundle bundleWithPath:appPath];
-                [paths addObjectsFromArray:[NSArray arrayWithObjects:
-                    [appBundle resourcePath], [[appBundle resourcePath] stringByAppendingPathComponent:@"bin"],
-                    [appBundle sharedSupportPath], [[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"],
-                    [[[appBundle executablePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bin"], nil]];
-                if ([editorPreset caseInsensitiveCompare:[[appBundle executablePath] lastPathComponent]] != NSOrderedSame)
-                    [paths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
+        if ([editorCmd isAbsolutePath] == NO) {
+            NSMutableArray *searchPaths = [NSMutableArray arrayWithObjects:@"/usr/bin", @"/usr/local/bin", nil];
+            NSString *executablePath = nil;
+            NSEnumerator *pathEnum;
+            NSString *path;
+            NSString *toolPath;
+            NSBundle *appBundle;
+            NSFileManager *fm = [NSFileManager defaultManager];
+            
+            if ([editorPreset isEqualToString:@""] == NO) {
+                if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
+                    (appBundle = [NSBundle bundleWithPath:path])) {
+                    executablePath = [appBundle executablePath];
+                    [searchPaths addObject:[appBundle sharedSupportPath]];
+                    [searchPaths addObject:[appBundle resourcePath]];
+                    [searchPaths addObject:[executablePath stringByDeletingLastPathComponent]];
+                }
+            } else {
+                pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
+                while (path = [pathEnum nextObject]) {
+                    [searchPaths addObject:path];
+                    [searchPaths addObject:[path stringByAppendingPathComponent:@"Scripts"]];
+                }
+            }
+            
+            pathEnum = [searchPaths objectEnumerator];
+            while (path = [pathEnum nextObject]) {
+                toolPath = [path stringByAppendingPathComponent:editorCmd];
+                if ([fm isExecutableFileAtPath:toolPath] && [executablePath caseInsensitiveCompare:toolPath] != NSOrderedSame) {
+                    editorCmd = toolPath;
+                    break;
+                }
+                toolPath = [[path stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd];
+                if ([fm isExecutableFileAtPath:toolPath]  && [executablePath caseInsensitiveCompare:toolPath] != NSOrderedSame) {
+                    editorCmd = toolPath;
+                    break;
+                }
             }
         }
-        while (appSupportPath = [pathEnum nextObject]) {
-            [paths addObject:appSupportPath];
-            [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
-        }
-        [environment setObject:[paths componentsJoinedByString:@":"] forKey:@"PATH"];
         
         NSRange range = NSMakeRange(0, 0);
         unichar prevChar, nextChar;
@@ -1486,7 +1500,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         }
         
-        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent] environment:environment];
+        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent]];
     }
 }
 
