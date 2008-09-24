@@ -42,17 +42,11 @@
 @implementation NSTask (SKExtensions) 
 
 + (NSTask *)launchedTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
-    return [self launchedTaskWithLaunchPath:launchPath arguments:arguments currentDirectoryPath:directoryPath environment:nil];
-}
-
-+ (NSTask *)launchedTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath environment:(NSDictionary *)environment {
     NSTask *task = [[[NSTask alloc] init] autorelease];
     
     [task setLaunchPath:launchPath];
     if (directoryPath)
         [task setCurrentDirectoryPath:directoryPath];
-    if (environment)
-        [task setEnvironment:environment];
     [task setArguments:arguments];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
