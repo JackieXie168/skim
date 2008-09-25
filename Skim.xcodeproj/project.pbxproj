@@ -37,6 +37,152 @@
 		8D15AC310486D014006FF6A4 /* SKPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SKPDFDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE0461160E8BA8FF00253123 /* BDSKCollapsibleView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0710110B89BDD600733CC8 /* BDSKCollapsibleView.h */; };
+		CE0461170E8BA90000253123 /* BDSKContainerView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0710130B89BDD600733CC8 /* BDSKContainerView.h */; };
+		CE0461180E8BA90100253123 /* BDSKDragImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */; };
+		CE0461190E8BA90100253123 /* BDSKEdgeView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */; };
+		CE04611A0E8BA90200253123 /* BDSKFindFieldEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */; };
+		CE04611B0E8BA90300253123 /* BDSKGradientView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */; };
+		CE04611C0E8BA90400253123 /* BDSKHeaderPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = F92DB5B10B36FE5E002A26E9 /* BDSKHeaderPopUpButton.h */; };
+		CE04611D0E8BA90500253123 /* BDSKHeaderPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */; };
+		CE04611E0E8BA90600253123 /* BDSKZoomablePDFView.h in Headers */ = {isa = PBXBuildFile; fileRef = F92DB5AA0B36FE1F002A26E9 /* BDSKZoomablePDFView.h */; };
+		CE04611F0E8BA90600253123 /* CIImage_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */; };
+		CE0461200E8BA90900253123 /* Files_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */; };
+		CE0461210E8BA90C00253123 /* NSAffineTransform_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBF85DF0CCE2DE70057A050 /* NSAffineTransform_SKExtensions.h */; };
+		CE0461220E8BA90D00253123 /* NSArray_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */; };
+		CE0461230E8BA90E00253123 /* NSAttributedString_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3401DE0E01378A00A7FFE6 /* NSAttributedString_SKExtensions.h */; };
+		CE0461240E8BA90E00253123 /* NSBezierPath_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */; };
+		CE0461250E8BA90F00253123 /* NSBezierPath_CoreImageExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */; };
+		CE0461260E8BA91000253123 /* NSBitmapImageRep_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */; };
+		CE0461270E8BA91100253123 /* NSCell_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */; };
+		CE0461280E8BA91200253123 /* NSCharacterSet_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */; };
+		CE0461290E8BA91300253123 /* NSColor_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */; };
+		CE04612A0E8BA91300253123 /* NSCursor_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */; };
+		CE04612B0E8BA91500253123 /* NSData_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */; };
+		CE04612C0E8BA91600253123 /* NSDocument_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0ECD1A0DE73604006EEDDB /* NSDocument_SKExtensions.h */; };
+		CE04612D0E8BA91700253123 /* NSEvent_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */; };
+		CE04612E0E8BA91800253123 /* NSGeometry_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */; };
+		CE04612F0E8BA91900253123 /* NSImage_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */; };
+		CE0461300E8BA91900253123 /* NSInvocation_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */; };
+		CE0461310E8BA91A00253123 /* NSLayoutManager_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA450F20E47A87500D161AD /* NSLayoutManager_SKExtensions.h */; };
+		CE0461320E8BA91B00253123 /* NSMenu_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3400AA0E0034DF00A7FFE6 /* NSMenu_SKExtensions.h */; };
+		CE0461330E8BA91C00253123 /* NSNumber_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3401E40E01388700A7FFE6 /* NSNumber_SKExtensions.h */; };
+		CE0461340E8BA91D00253123 /* NSParagraphStyle_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */; };
+		CE0461350E8BA91F00253123 /* NSScanner_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */; };
+		CE0461360E8BA92000253123 /* NSScrollView_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */; };
+		CE0461370E8BA92000253123 /* NSSegmentedControl_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */; };
+		CE0461380E8BA92200253123 /* NSString_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */; };
+		CE0461390E8BA92200253123 /* NSTask_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */; };
+		CE04613A0E8BA92300253123 /* NSURL_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */; };
+		CE04613B0E8BA92400253123 /* NSUserDefaults_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */; };
+		CE04613C0E8BA92500253123 /* NSUserDefaultsController_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */; };
+		CE04613D0E8BA92600253123 /* NSValue_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */; };
+		CE04613E0E8BA92600253123 /* NSView_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */; };
+		CE04613F0E8BA92900253123 /* NSWindowController_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */; };
+		CE0461400E8BA92900253123 /* PDFAnnotation_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54D860DA2E37B0037169F /* PDFAnnotation_SKExtensions.h */; };
+		CE0461410E8BA92A00253123 /* PDFAnnotationCircle_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54D910DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.h */; };
+		CE0461420E8BA92B00253123 /* PDFAnnotationFreeText_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54DAC0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.h */; };
+		CE0461430E8BA92C00253123 /* PDFAnnotationInk_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */; };
+		CE0461440E8BA92C00253123 /* PDFAnnotationLine_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54D9A0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.h */; };
+		CE0461450E8BA92D00253123 /* PDFAnnotationLink_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC3AD220E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.h */; };
+		CE0461460E8BA92E00253123 /* PDFAnnotationMarkup_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54DB20DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.h */; };
+		CE0461470E8BA92F00253123 /* PDFAnnotationSquare_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54D960DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.h */; };
+		CE0461480E8BA92F00253123 /* PDFAnnotationText_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */; };
+		CE0461490E8BA93100253123 /* PDFBorder_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */; };
+		CE04614A0E8BA93200253123 /* PDFDisplayView_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */; };
+		CE04614B0E8BA93300253123 /* PDFDocument_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */; };
+		CE04614C0E8BA93400253123 /* PDFPage_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */; };
+		CE04614D0E8BA93500253123 /* PDFSelection_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */; };
+		CE04614E0E8BA93700253123 /* SKAccessibilityFauxUIElement.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE177940DBE140900E6C317 /* SKAccessibilityFauxUIElement.h */; };
+		CE04614F0E8BA93700253123 /* SKAnimatedBorderlessWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */; };
+		CE0461500E8BA93800253123 /* SKAnnotationTypeImageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */; };
+		CE0461510E8BA93900253123 /* SKApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0463C90B84D24300C11E4A /* SKApplication.h */; };
+		CE0461520E8BA93900253123 /* SKApplicationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4530D8C70B27B04D007C59F4 /* SKApplicationController.h */; };
+		CE0461530E8BA93B00253123 /* SKBookmark.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */; };
+		CE0461540E8BA93C00253123 /* SKBookmarkController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */; };
+		CE0461550E8BA93E00253123 /* SKBookmarkOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE665A120E1BF43700D0704D /* SKBookmarkOutlineView.h */; };
+		CE0461560E8BA93F00253123 /* SKBorderlessImageWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE4C40B85D78200D0DA12 /* SKBorderlessImageWindow.h */; };
+		CE0461570E8BA94000253123 /* SKBoundsCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4643DC0DF6B77800CFD8D2 /* SKBoundsCommand.h */; };
+		CE0461580E8BA94000253123 /* SKCenteredTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */; };
+		CE0461590E8BA94100253123 /* SKCFCallBacks.h in Headers */ = {isa = PBXBuildFile; fileRef = CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */; };
+		CE04615A0E8BA94200253123 /* SKColorSwatch.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */; };
+		CE04615B0E8BA94300253123 /* SKDocumentController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE31A6150C01FC45003612A9 /* SKDocumentController.h */; };
+		CE04615C0E8BA94400253123 /* SKDownload.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA559B0C6DE235006BD633 /* SKDownload.h */; };
+		CE04615D0E8BA94600253123 /* SKDownloadController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */; };
+		CE04615E0E8BA94700253123 /* SKFDFParser.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5FA1650C909886008BE480 /* SKFDFParser.h */; };
+		CE04615F0E8BA94800253123 /* SKFindController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */; };
+		CE0461600E8BA94900253123 /* SKFindTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CECDDBAB0C5BB95F0026AAEC /* SKFindTableView.h */; };
+		CE0461610E8BA94900253123 /* SKFontWell.h in Headers */ = {isa = PBXBuildFile; fileRef = CECF61FD0DB258D600587D96 /* SKFontWell.h */; };
+		CE0461620E8BA94A00253123 /* SKFullScreenWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */; };
+		CE0461630E8BA94B00253123 /* SKGroupedSearchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = CECB03D10DC7503A0000B16B /* SKGroupedSearchResult.h */; };
+		CE0461640E8BA94C00253123 /* SKIndexCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4643D90DF6B66000CFD8D2 /* SKIndexCommand.h */; };
+		CE0461650E8BA94D00253123 /* SKInfoWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */; };
+		CE0461660E8BA94E00253123 /* SKJoinCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */; };
+		CE0461670E8BA94F00253123 /* SKLine.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAF2E570C45414100C3ECBB /* SKLine.h */; };
+		CE0461680E8BA95100253123 /* SKLineInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */; };
+		CE0461690E8BA95100253123 /* SKLineWell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */; };
+		CE04616A0E8BA95200253123 /* SKMainWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */; };
+		CE04616B0E8BA95300253123 /* SKMainWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4530D7ED0B27AAD6007C59F4 /* SKMainWindowController.h */; };
+		CE04616C0E8BA95300253123 /* SKMainWindowController_Toolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54F6A0DA3FB060037169F /* SKMainWindowController_Toolbar.h */; };
+		CE04616D0E8BA95400253123 /* SKMainWindowController_UI.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */; };
+		CE04616E0E8BA95500253123 /* SKNavigationWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */; };
+		CE04616F0E8BA95600253123 /* SKNoteOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */; };
+		CE0461700E8BA95600253123 /* SKNotesDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */; };
+		CE0461710E8BA95800253123 /* SKNotesPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6C96AF0CD925550022D69F /* SKNotesPanelController.h */; };
+		CE0461720E8BA95900253123 /* SKNoteWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */; };
+		CE0461730E8BA95900253123 /* SKNPDFAnnotationNote_SKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */; };
+		CE0461740E8BA95A00253123 /* SKNumberArrayFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */; };
+		CE0461750E8BA95A00253123 /* SKOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */; };
+		CE0461760E8BA95B00253123 /* SKPagesCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */; };
+		CE0461770E8BA95C00253123 /* SKPDFAnnotationTemporary.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */; };
+		CE0461780E8BA95C00253123 /* SKPDFDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A37F4AEFDCFA73011CA2CEA /* SKPDFDocument.h */; };
+		CE0461790E8BA95D00253123 /* SKPDFOutline.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2896D80E78948200031EEA /* SKPDFOutline.h */; };
+		CE04617A0E8BA95E00253123 /* SKPDFSynchronizer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */; };
+		CE04617B0E8BA96000253123 /* SKPDFSyncRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */; };
+		CE04617C0E8BA96000253123 /* SKPDFToolTipWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE4FB0B85DBD400D0DA12 /* SKPDFToolTipWindow.h */; };
+		CE04617D0E8BA96100253123 /* SKPDFView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4530DCF50B27CACE007C59F4 /* SKPDFView.h */; };
+		CE04617E0E8BA96100253123 /* SKPreferenceController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */; };
+		CE04617F0E8BA96200253123 /* SKProgressCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA55B40C6DE452006BD633 /* SKProgressCell.h */; };
+		CE0461800E8BA96300253123 /* SKProgressController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE209FA70C9D38C6007C72F9 /* SKProgressController.h */; };
+		CE0461810E8BA96400253123 /* SKPSProgressController.h in Headers */ = {isa = PBXBuildFile; fileRef = F97751610B37461000DF673B /* SKPSProgressController.h */; };
+		CE0461820E8BA96400253123 /* SKReadingBar.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4294A10BBD29120016FDC2 /* SKReadingBar.h */; };
+		CE0461830E8BA96500253123 /* SKRemoteStateWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */; };
+		CE0461840E8BA96600253123 /* SKReleaseNotesController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */; };
+		CE0461850E8BA96800253123 /* SKRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1F67FD0E37552400E07E76 /* SKRuntime.h */; };
+		CE0461860E8BA96900253123 /* SKSecondaryPDFView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */; };
+		CE0461870E8BA96900253123 /* SKSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAE39040CA43E7300849B0F /* SKSheetController.h */; };
+		CE0461880E8BA96A00253123 /* SKSideWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */; };
+		CE0461890E8BA96B00253123 /* SKSnapshotPageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */; };
+		CE04618A0E8BA96B00253123 /* SKSnapshotWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4530D7E60B27AAB9007C59F4 /* SKSnapshotWindowController.h */; };
+		CE04618B0E8BA96C00253123 /* SKSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4EC88A0B7E6EDB0091F228 /* SKSplitView.h */; };
+		CE04618C0E8BA96D00253123 /* SKStatusBar.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */; };
+		CE04618D0E8BA96E00253123 /* SKStringConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 45A3BD060B4F0770002B297F /* SKStringConstants.h */; };
+		CE04618E0E8BA96F00253123 /* SKTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5BF7FE0C7CBF6300EBDCF7 /* SKTableView.h */; };
+		CE04618F0E8BA97100253123 /* SKTemplateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */; };
+		CE0461900E8BA97200253123 /* SKTemplateTag.h in Headers */ = {isa = PBXBuildFile; fileRef = CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */; };
+		CE0461910E8BA97200253123 /* SKTextCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */; };
+		CE0461920E8BA97300253123 /* SKTextWithIconCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA1D6E70C9984400061A6D4 /* SKTextWithIconCell.h */; };
+		CE0461930E8BA97400253123 /* SKThumbnail.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */; };
+		CE0461940E8BA97500253123 /* SKThumbnailTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */; };
+		CE0461950E8BA97500253123 /* SKTocOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA575FB0B9208B60003D2E7 /* SKTocOutlineView.h */; };
+		CE0461960E8BA97600253123 /* SKToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4972880BDE8B2900D7F1D2 /* SKToolbarItem.h */; };
+		CE0461970E8BA97700253123 /* SKTransitionController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB72B890C4A189D000350F9 /* SKTransitionController.h */; };
+		CE0461980E8BA97800253123 /* SKTypeSelectHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */; };
+		CE0461990E8BA97A00253123 /* SKVersionNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */; };
+		CE04619A0E8BA97B00253123 /* SKUnarchiveFromDataArrayTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE54F8E0DA3FE9A0037169F /* SKUnarchiveFromDataArrayTransformer.h */; };
+		CE04619B0E8BA98100253123 /* AppleRemote.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B38D0CF5F2D2008CCD63 /* AppleRemote.h */; };
+		CE04619C0E8BA98100253123 /* BDAlias.h in Headers */ = {isa = PBXBuildFile; fileRef = 453DC2760B4F242200A72509 /* BDAlias.h */; };
+		CE04619D0E8BA98200253123 /* GlobalKeyboardDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B38F0CF5F2D2008CCD63 /* GlobalKeyboardDevice.h */; };
+		CE04619E0E8BA98300253123 /* HIDRemoteControlDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B3910CF5F2D2008CCD63 /* HIDRemoteControlDevice.h */; };
+		CE04619F0E8BA98400253123 /* KeyspanFrontRowControl.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B3930CF5F2D2008CCD63 /* KeyspanFrontRowControl.h */; };
+		CE0461A00E8BA98500253123 /* MultiClickRemoteBehavior.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B3950CF5F2D2008CCD63 /* MultiClickRemoteBehavior.h */; };
+		CE0461A10E8BA98600253123 /* RemoteControl.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2A1E600CE513E300A0499B /* RemoteControl.h */; };
+		CE0461A20E8BA98700253123 /* RemoteControlContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC7B3970CF5F2D2008CCD63 /* RemoteControlContainer.h */; };
+		CE0461A30E8BA98800253123 /* synctex_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3363A00E26E120005F99E6 /* synctex_parser.h */; };
+		CE0461A40E8BA98800253123 /* UKFileWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = F9F220840C14BD9C00041284 /* UKFileWatcher.h */; };
+		CE0461A50E8BA98900253123 /* UKKQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F9F220870C14BDFF00041284 /* UKKQueue.h */; };
+		CE0461A60E8BA99F00253123 /* Skim_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCF750370BD2300C91783 /* Skim_Prefix.pch */; };
+		CE0461AB0E8BA9F700253123 /* SKPrintAccessoryController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */; };
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */; };
 		CE0710170B89BDD600733CC8 /* BDSKCollapsibleView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0710120B89BDD600733CC8 /* BDSKCollapsibleView.m */; };
@@ -1607,12 +1753,176 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		CE0461110E8BA8F100253123 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE0461160E8BA8FF00253123 /* BDSKCollapsibleView.h in Headers */,
+				CE0461170E8BA90000253123 /* BDSKContainerView.h in Headers */,
+				CE0461180E8BA90100253123 /* BDSKDragImageView.h in Headers */,
+				CE0461190E8BA90100253123 /* BDSKEdgeView.h in Headers */,
+				CE04611A0E8BA90200253123 /* BDSKFindFieldEditor.h in Headers */,
+				CE04611B0E8BA90300253123 /* BDSKGradientView.h in Headers */,
+				CE04611C0E8BA90400253123 /* BDSKHeaderPopUpButton.h in Headers */,
+				CE04611D0E8BA90500253123 /* BDSKHeaderPopUpButtonCell.h in Headers */,
+				CE04611E0E8BA90600253123 /* BDSKZoomablePDFView.h in Headers */,
+				CE04611F0E8BA90600253123 /* CIImage_BDSKExtensions.h in Headers */,
+				CE0461200E8BA90900253123 /* Files_SKExtensions.h in Headers */,
+				CE0461210E8BA90C00253123 /* NSAffineTransform_SKExtensions.h in Headers */,
+				CE0461220E8BA90D00253123 /* NSArray_SKExtensions.h in Headers */,
+				CE0461230E8BA90E00253123 /* NSAttributedString_SKExtensions.h in Headers */,
+				CE0461240E8BA90E00253123 /* NSBezierPath_BDSKExtensions.h in Headers */,
+				CE0461250E8BA90F00253123 /* NSBezierPath_CoreImageExtensions.h in Headers */,
+				CE0461260E8BA91000253123 /* NSBitmapImageRep_SKExtensions.h in Headers */,
+				CE0461270E8BA91100253123 /* NSCell_SKExtensions.h in Headers */,
+				CE0461280E8BA91200253123 /* NSCharacterSet_SKExtensions.h in Headers */,
+				CE0461290E8BA91300253123 /* NSColor_SKExtensions.h in Headers */,
+				CE04612A0E8BA91300253123 /* NSCursor_SKExtensions.h in Headers */,
+				CE04612B0E8BA91500253123 /* NSData_SKExtensions.h in Headers */,
+				CE04612C0E8BA91600253123 /* NSDocument_SKExtensions.h in Headers */,
+				CE04612D0E8BA91700253123 /* NSEvent_SKExtensions.h in Headers */,
+				CE04612E0E8BA91800253123 /* NSGeometry_SKExtensions.h in Headers */,
+				CE04612F0E8BA91900253123 /* NSImage_SKExtensions.h in Headers */,
+				CE0461300E8BA91900253123 /* NSInvocation_SKExtensions.h in Headers */,
+				CE0461310E8BA91A00253123 /* NSLayoutManager_SKExtensions.h in Headers */,
+				CE0461320E8BA91B00253123 /* NSMenu_SKExtensions.h in Headers */,
+				CE0461330E8BA91C00253123 /* NSNumber_SKExtensions.h in Headers */,
+				CE0461340E8BA91D00253123 /* NSParagraphStyle_SKExtensions.h in Headers */,
+				CE0461350E8BA91F00253123 /* NSScanner_SKExtensions.h in Headers */,
+				CE0461360E8BA92000253123 /* NSScrollView_SKExtensions.h in Headers */,
+				CE0461370E8BA92000253123 /* NSSegmentedControl_SKExtensions.h in Headers */,
+				CE0461380E8BA92200253123 /* NSString_SKExtensions.h in Headers */,
+				CE0461390E8BA92200253123 /* NSTask_SKExtensions.h in Headers */,
+				CE04613A0E8BA92300253123 /* NSURL_SKExtensions.h in Headers */,
+				CE04613B0E8BA92400253123 /* NSUserDefaults_SKExtensions.h in Headers */,
+				CE04613C0E8BA92500253123 /* NSUserDefaultsController_SKExtensions.h in Headers */,
+				CE04613D0E8BA92600253123 /* NSValue_SKExtensions.h in Headers */,
+				CE04613E0E8BA92600253123 /* NSView_SKExtensions.h in Headers */,
+				CE04613F0E8BA92900253123 /* NSWindowController_SKExtensions.h in Headers */,
+				CE0461400E8BA92900253123 /* PDFAnnotation_SKExtensions.h in Headers */,
+				CE0461410E8BA92A00253123 /* PDFAnnotationCircle_SKExtensions.h in Headers */,
+				CE0461420E8BA92B00253123 /* PDFAnnotationFreeText_SKExtensions.h in Headers */,
+				CE0461430E8BA92C00253123 /* PDFAnnotationInk_SKExtensions.h in Headers */,
+				CE0461440E8BA92C00253123 /* PDFAnnotationLine_SKExtensions.h in Headers */,
+				CE0461450E8BA92D00253123 /* PDFAnnotationLink_SKExtensions.h in Headers */,
+				CE0461460E8BA92E00253123 /* PDFAnnotationMarkup_SKExtensions.h in Headers */,
+				CE0461470E8BA92F00253123 /* PDFAnnotationSquare_SKExtensions.h in Headers */,
+				CE0461480E8BA92F00253123 /* PDFAnnotationText_SKExtensions.h in Headers */,
+				CE0461490E8BA93100253123 /* PDFBorder_SKExtensions.h in Headers */,
+				CE04614A0E8BA93200253123 /* PDFDisplayView_SKExtensions.h in Headers */,
+				CE04614B0E8BA93300253123 /* PDFDocument_SKExtensions.h in Headers */,
+				CE04614C0E8BA93400253123 /* PDFPage_SKExtensions.h in Headers */,
+				CE04614D0E8BA93500253123 /* PDFSelection_SKExtensions.h in Headers */,
+				CE04614E0E8BA93700253123 /* SKAccessibilityFauxUIElement.h in Headers */,
+				CE04614F0E8BA93700253123 /* SKAnimatedBorderlessWindow.h in Headers */,
+				CE0461500E8BA93800253123 /* SKAnnotationTypeImageCell.h in Headers */,
+				CE0461510E8BA93900253123 /* SKApplication.h in Headers */,
+				CE0461520E8BA93900253123 /* SKApplicationController.h in Headers */,
+				CE0461530E8BA93B00253123 /* SKBookmark.h in Headers */,
+				CE0461540E8BA93C00253123 /* SKBookmarkController.h in Headers */,
+				CE0461550E8BA93E00253123 /* SKBookmarkOutlineView.h in Headers */,
+				CE0461560E8BA93F00253123 /* SKBorderlessImageWindow.h in Headers */,
+				CE0461570E8BA94000253123 /* SKBoundsCommand.h in Headers */,
+				CE0461580E8BA94000253123 /* SKCenteredTextFieldCell.h in Headers */,
+				CE0461590E8BA94100253123 /* SKCFCallBacks.h in Headers */,
+				CE04615A0E8BA94200253123 /* SKColorSwatch.h in Headers */,
+				CE04615B0E8BA94300253123 /* SKDocumentController.h in Headers */,
+				CE04615C0E8BA94400253123 /* SKDownload.h in Headers */,
+				CE04615D0E8BA94600253123 /* SKDownloadController.h in Headers */,
+				CE04615E0E8BA94700253123 /* SKFDFParser.h in Headers */,
+				CE04615F0E8BA94800253123 /* SKFindController.h in Headers */,
+				CE0461600E8BA94900253123 /* SKFindTableView.h in Headers */,
+				CE0461610E8BA94900253123 /* SKFontWell.h in Headers */,
+				CE0461620E8BA94A00253123 /* SKFullScreenWindow.h in Headers */,
+				CE0461630E8BA94B00253123 /* SKGroupedSearchResult.h in Headers */,
+				CE0461640E8BA94C00253123 /* SKIndexCommand.h in Headers */,
+				CE0461650E8BA94D00253123 /* SKInfoWindowController.h in Headers */,
+				CE0461660E8BA94E00253123 /* SKJoinCommand.h in Headers */,
+				CE0461670E8BA94F00253123 /* SKLine.h in Headers */,
+				CE0461680E8BA95100253123 /* SKLineInspector.h in Headers */,
+				CE0461690E8BA95100253123 /* SKLineWell.h in Headers */,
+				CE04616A0E8BA95200253123 /* SKMainWindow.h in Headers */,
+				CE04616B0E8BA95300253123 /* SKMainWindowController.h in Headers */,
+				CE04616C0E8BA95300253123 /* SKMainWindowController_Toolbar.h in Headers */,
+				CE04616D0E8BA95400253123 /* SKMainWindowController_UI.h in Headers */,
+				CE04616E0E8BA95500253123 /* SKNavigationWindow.h in Headers */,
+				CE04616F0E8BA95600253123 /* SKNoteOutlineView.h in Headers */,
+				CE0461700E8BA95600253123 /* SKNotesDocument.h in Headers */,
+				CE0461710E8BA95800253123 /* SKNotesPanelController.h in Headers */,
+				CE0461720E8BA95900253123 /* SKNoteWindowController.h in Headers */,
+				CE0461730E8BA95900253123 /* SKNPDFAnnotationNote_SKExtensions.h in Headers */,
+				CE0461740E8BA95A00253123 /* SKNumberArrayFormatter.h in Headers */,
+				CE0461750E8BA95A00253123 /* SKOutlineView.h in Headers */,
+				CE0461760E8BA95B00253123 /* SKPagesCommand.h in Headers */,
+				CE0461770E8BA95C00253123 /* SKPDFAnnotationTemporary.h in Headers */,
+				CE0461780E8BA95C00253123 /* SKPDFDocument.h in Headers */,
+				CE0461790E8BA95D00253123 /* SKPDFOutline.h in Headers */,
+				CE04617A0E8BA95E00253123 /* SKPDFSynchronizer.h in Headers */,
+				CE04617B0E8BA96000253123 /* SKPDFSyncRecord.h in Headers */,
+				CE04617C0E8BA96000253123 /* SKPDFToolTipWindow.h in Headers */,
+				CE04617D0E8BA96100253123 /* SKPDFView.h in Headers */,
+				CE04617E0E8BA96100253123 /* SKPreferenceController.h in Headers */,
+				CE04617F0E8BA96200253123 /* SKProgressCell.h in Headers */,
+				CE0461800E8BA96300253123 /* SKProgressController.h in Headers */,
+				CE0461810E8BA96400253123 /* SKPSProgressController.h in Headers */,
+				CE0461820E8BA96400253123 /* SKReadingBar.h in Headers */,
+				CE0461830E8BA96500253123 /* SKRemoteStateWindow.h in Headers */,
+				CE0461840E8BA96600253123 /* SKReleaseNotesController.h in Headers */,
+				CE0461850E8BA96800253123 /* SKRuntime.h in Headers */,
+				CE0461860E8BA96900253123 /* SKSecondaryPDFView.h in Headers */,
+				CE0461870E8BA96900253123 /* SKSheetController.h in Headers */,
+				CE0461880E8BA96A00253123 /* SKSideWindow.h in Headers */,
+				CE0461890E8BA96B00253123 /* SKSnapshotPageCell.h in Headers */,
+				CE04618A0E8BA96B00253123 /* SKSnapshotWindowController.h in Headers */,
+				CE04618B0E8BA96C00253123 /* SKSplitView.h in Headers */,
+				CE04618C0E8BA96D00253123 /* SKStatusBar.h in Headers */,
+				CE04618D0E8BA96E00253123 /* SKStringConstants.h in Headers */,
+				CE04618E0E8BA96F00253123 /* SKTableView.h in Headers */,
+				CE04618F0E8BA97100253123 /* SKTemplateParser.h in Headers */,
+				CE0461900E8BA97200253123 /* SKTemplateTag.h in Headers */,
+				CE0461910E8BA97200253123 /* SKTextCommand.h in Headers */,
+				CE0461920E8BA97300253123 /* SKTextWithIconCell.h in Headers */,
+				CE0461930E8BA97400253123 /* SKThumbnail.h in Headers */,
+				CE0461940E8BA97500253123 /* SKThumbnailTableView.h in Headers */,
+				CE0461950E8BA97500253123 /* SKTocOutlineView.h in Headers */,
+				CE0461960E8BA97600253123 /* SKToolbarItem.h in Headers */,
+				CE0461970E8BA97700253123 /* SKTransitionController.h in Headers */,
+				CE0461980E8BA97800253123 /* SKTypeSelectHelper.h in Headers */,
+				CE0461990E8BA97A00253123 /* SKVersionNumber.h in Headers */,
+				CE04619A0E8BA97B00253123 /* SKUnarchiveFromDataArrayTransformer.h in Headers */,
+				CE04619B0E8BA98100253123 /* AppleRemote.h in Headers */,
+				CE04619C0E8BA98100253123 /* BDAlias.h in Headers */,
+				CE04619D0E8BA98200253123 /* GlobalKeyboardDevice.h in Headers */,
+				CE04619E0E8BA98300253123 /* HIDRemoteControlDevice.h in Headers */,
+				CE04619F0E8BA98400253123 /* KeyspanFrontRowControl.h in Headers */,
+				CE0461A00E8BA98500253123 /* MultiClickRemoteBehavior.h in Headers */,
+				CE0461A10E8BA98600253123 /* RemoteControl.h in Headers */,
+				CE0461A20E8BA98700253123 /* RemoteControlContainer.h in Headers */,
+				CE0461A30E8BA98800253123 /* synctex_parser.h in Headers */,
+				CE0461A40E8BA98800253123 /* UKFileWatcher.h in Headers */,
+				CE0461A50E8BA98900253123 /* UKKQueue.h in Headers */,
+				CE0461A60E8BA99F00253123 /* Skim_Prefix.pch in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE0461AC0E8BAA1C00253123 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE0461AB0E8BA9F700253123 /* SKPrintAccessoryController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		8D15AC270486D014006FF6A4 /* Skim */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Skim" */;
 			buildPhases = (
 				CEE1383C0BCEA63F00BF2D3E /* Run Script: Genstrings */,
+				CE0461110E8BA8F100253123 /* Headers */,
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				CEF82CA50C77286200A3AD51 /* Run Script: Build Help */,
 				CEF82CAD0C772A4200A3AD51 /* Run Script: Copy Help */,
@@ -1645,6 +1955,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Skim-Leopard" */;
 			buildPhases = (
+				CE0461AC0E8BAA1C00253123 /* Headers */,
 				CE816AA70D71958F008D807D /* Resources */,
 				CE816AA80D71958F008D807D /* Sources */,
 				CE816AA90D71958F008D807D /* Frameworks */,
