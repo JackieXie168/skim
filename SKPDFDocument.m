@@ -1767,6 +1767,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         [pdfView addAnnotation:newNote toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    } else {
+        [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
     }
 }
 
