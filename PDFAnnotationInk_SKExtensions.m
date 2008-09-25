@@ -167,7 +167,6 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 }
 
 #pragma mark Scripting support
-#pragma mark Scripting support
 
 + (NSSet *)customScriptingKeys {
     static NSSet *customInkScriptingKeys = nil;
