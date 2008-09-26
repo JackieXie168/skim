@@ -182,6 +182,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         NSMutableDictionary *note;
         while (note = [noteEnum nextObject]) {
             note = [note mutableCopy];
+            [note setValue:[dict valueForKey:SKNPDFAnnotationStringKey] forKey:SKNPDFAnnotationContentsKey];
+            [note removeObjectForKey:SKNPDFAnnotationStringKey];
             [note removeObjectForKey:SKNotesDocumentRowHeightKey];
             [note removeObjectForKey:SKNotesDocumentChildKey];
             [array addObject:note];
