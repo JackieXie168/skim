@@ -48,6 +48,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSUserDefaultsController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKThumbnailTableView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -69,6 +77,22 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -411,22 +435,6 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -449,19 +457,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSnapshotTableView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKThumbnailTableView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKSplitView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSSplitView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKSnapshotTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKThumbnailTableView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -517,14 +525,6 @@
 			<string>NSControl</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>SKAnnotationTypeImageCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSImageCell</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>editBookmarks</key>
@@ -565,6 +565,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKAnnotationTypeImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSImageCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKSnapshotPageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -593,6 +601,19 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>BDSKContainerView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>contentView</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -642,19 +663,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>PDFView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>BDSKContainerView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>contentView</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

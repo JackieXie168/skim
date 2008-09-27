@@ -185,6 +185,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)goToFindResults:(NSArray *)findResults;
 - (void)updateFindResultHighlights:(BOOL)scroll;
 
+- (void)selectSelectedNote:(id)sender;
+
 - (void)updateNoteFilterPredicate;
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
@@ -352,6 +354,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[findTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    
+    [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
+    [noteOutlineView setTarget:self];
     
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     
@@ -1332,6 +1337,17 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (IBAction)createNewLineNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         [pdfView addAnnotationWithType:SKLineNote];
+    } else NSBeep();
+}
+
+- (void)selectSelectedNote:(id)sender{
+    if ([pdfView hideNotes] == NO) {
+        NSArray *selectedNotes = [self selectedNotes];
+        if ([selectedNotes count] == 1) {
+            PDFAnnotation *annotation = [selectedNotes lastObject];
+            [pdfView scrollAnnotationToVisible:annotation];
+            [pdfView setActiveAnnotation:annotation];
+        }
     } else NSBeep();
 }
 
