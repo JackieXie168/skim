@@ -76,6 +76,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 @interface SKMainWindowController (SKPrivateMain)
 
+- (IBAction)selectSelectedNote:(id)sender;
+
 - (void)updateLeftStatus;
 - (void)updateRightStatus;
 
@@ -131,17 +133,6 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
         [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
     }
-}
-
-- (void)selectSelectedNote{
-    if ([pdfView hideNotes] == NO) {
-        NSArray *selectedNotes = [self selectedNotes];
-        if ([selectedNotes count] == 1) {
-            PDFAnnotation *annotation = [selectedNotes lastObject];
-            [pdfView scrollAnnotationToVisible:annotation];
-            [pdfView setActiveAnnotation:annotation];
-        }
-    } else NSBeep();
 }
 
 #pragma mark UI updating
@@ -788,7 +779,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)outlineViewInsertNewline:(NSOutlineView *)ov {
     if ([ov isEqual:noteOutlineView]) {
-        [self selectSelectedNote];
+        [self selectSelectedNote:ov];
     }
 }
 
