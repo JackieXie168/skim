@@ -326,7 +326,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
-        NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
+        NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < [tv rowHeight])

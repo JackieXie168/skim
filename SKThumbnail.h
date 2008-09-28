@@ -43,9 +43,13 @@
     NSImage *image;
     NSString *label;
     BOOL dirty;
+    id delegate;
 }
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
+
+- (id)delegate;
+- (void)setDelegate:(id)newDelegate;
 
 - (BOOL)isDirty;
 - (void)setDirty:(BOOL)flag;
@@ -56,4 +60,10 @@
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
 
+- (NSSize)size;
+
+@end
+
+@interface NSObject (SKThumbnailDelegate)
+- (NSImage *)imageForThumbnail:(SKThumbnail *)thumbnail;
 @end
