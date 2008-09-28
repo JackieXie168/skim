@@ -711,6 +711,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (shouldAnimate) {
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
         [[self transitionController] animateForRect:rect forward:next];
+        if (interactionMode == SKPresentationMode)
+            [self doAutohide:YES];
     }
 }
 
