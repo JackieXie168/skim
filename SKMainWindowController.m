@@ -2588,6 +2588,17 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
+    
+    NSDictionary *fadeOutDict = [NSDictionary dictionaryWithObjectsAndKeys:pdfView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    
+    [animation setAnimationBlockingMode:NSAnimationBlocking];
+    [animation setDuration:1.0];
+    [animation startAnimation];
+    [animation release];
+    
+    [pdfView setAlphaValue:1.0];
+    [pdfView setHidden:NO];
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
