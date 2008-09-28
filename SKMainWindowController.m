@@ -2467,10 +2467,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     
-    NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
-    SKFullScreenWindow *window;
-    while (window = [blankScreenEnumerator nextObject])
-        [window fadeOut];
+    [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
 }
 
 - (void)saveNormalSetup {
