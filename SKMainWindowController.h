@@ -359,6 +359,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex;
 - (void)removeAllObjectsFromNotes;
 
+- (NSArray *)thumbnails;
 - (unsigned int)countOfThumbnails;
 - (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex;
 - (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex;

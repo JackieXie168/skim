@@ -56,10 +56,22 @@
     [super dealloc];
 }
 
+- (id)delegate { return delegate; }
+
+- (void)setDelegate:(id)newDelegate { delegate = newDelegate; }
+
 - (BOOL)isDirty { return dirty; }
+
 - (void)setDirty:(BOOL)flag { dirty = flag; }
 
 - (NSImage *)image {
+    if (dirty) {
+        NSImage *anImage = [delegate imageForThumbnail:self];
+        if (anImage) {
+            [self setDirty:NO];
+            [self setImage:anImage];
+        }
+    }
     return image;
 }
 
@@ -79,6 +91,10 @@
         [label release];
         label = [newLabel retain];
     }
+}
+
+- (NSSize)size {
+    return [image size];
 }
 
 @end

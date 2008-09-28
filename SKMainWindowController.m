@@ -1051,31 +1051,16 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     }
 }
 
+- (NSArray *)thumbnails {
+    return [[thumbnails copy] autorelease];
+}
+
 - (unsigned int)countOfThumbnails {
     return [thumbnails count];
 }
 
 - (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex {
-    SKThumbnail *thumbnail = [thumbnails objectAtIndex:theIndex];
-    
-    if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
-        
-        NSSize newSize, oldSize = [[thumbnail image] size];
-        PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:theIndex];
-        NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
-        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
-        
-        // setImage: sends a KVO notification that results in calling objectInThumbnailsAtIndex: endlessly, so set dirty to NO first
-        [thumbnail setDirty:NO];
-        [thumbnail setImage:image];
-        
-        newSize = [image size];
-        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
-            [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:theIndex] afterDelay:0.0];
-        }
-    }
-    return thumbnail;
+    return [thumbnails objectAtIndex:theIndex];
 }
 
 - (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex {
@@ -3578,6 +3563,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i]];
+            [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
             [thumbnail release];
@@ -3612,6 +3598,26 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     while (tn = [te nextObject])
         [tn setDirty:YES];
     [thumbnailTableView reloadData];
+}
+
+
+- (NSImage *)imageForThumbnail:(SKThumbnail *)thumbnail {
+    NSImage *image = nil;
+    if (NO == isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
+        
+        unsigned int theIndex = [thumbnails indexOfObject:thumbnail];
+        NSSize newSize, oldSize = [thumbnail size];
+        PDFDocument *pdfDoc = [pdfView document];
+        PDFPage *page = [pdfDoc pageAtIndex:theIndex];
+        NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
+        image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
+        
+        newSize = [image size];
+        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
+            [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:theIndex] afterDelay:0.0];
+        }
+    }
+    return image;
 }
 
 #pragma mark Notes
