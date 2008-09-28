@@ -244,6 +244,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             [temporaryAnnotationTimer release];
             temporaryAnnotationTimer = nil;
         }
+        if ([[pdfView document] isFinding])
+            [[pdfView document] cancelFindString];
         
         [ownerController setContent:nil];
     }
