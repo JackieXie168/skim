@@ -124,12 +124,12 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)fadeOut {
+- (void)fadeOutBlocking:(BOOL)block {
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
     [fadeOutDict release];
     
-    [animation setAnimationBlockingMode:NSAnimationNonblockingThreaded];
+    [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
     [animation setDuration:1];
     [animation setDelegate:self];
     [animation startAnimation];

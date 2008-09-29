@@ -2475,7 +2475,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow makeKeyWindow];
     [mainWindow display];
-    [fullScreenWindow fadeOut];
+    [fullScreenWindow fadeOutBlocking:NO];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
@@ -2606,19 +2606,21 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
-    NSDictionary *fadeOutDict = [NSDictionary dictionaryWithObjectsAndKeys:pdfView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    SKFullScreenWindow *bgWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
+    [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
+    [bgWindow setLevel:[fullScreenWindow level]];
+    [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    [fullScreenWindow fadeOutBlocking:YES];
     
-    [animation setAnimationBlockingMode:NSAnimationBlocking];
-    [animation setDuration:1.0];
-    [animation startAnimation];
-    [animation release];
-    
-    [pdfView setAlphaValue:1.0];
-    [pdfView setHidden:NO];
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
+    
+    [fullScreenWindow setAlphaValue:1.0];
+    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
+    [fullScreenWindow displayIfNeeded];
+    [bgWindow orderOut:nil];
+    [bgWindow release];
     
     if ([self isPresentation])
         [self exitPresentationMode];
