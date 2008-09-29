@@ -81,11 +81,13 @@
 #import "SKLineInspector.h"
 #import "SKStatusBar.h"
 #import "SKTransitionController.h"
+#import "SKPresentationOptionsSheetController.h"
 #import "SKTypeSelectHelper.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
 #import "SKSheetController.h"
+#import "SKTextFieldSheetController.h"
 #import "SKColorSwatch.h"
 #import "SKRuntime.h"
 #import "SKApplicationController.h"
@@ -294,10 +296,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [colorAccessoryView release];
     [leftSideDrawer release];
     [rightSideDrawer release];
-    [pageSheetController release];
-    [scaleSheetController release];
-    [passwordSheetController release];
-    [bookmarkSheetController release];
     [secondaryPdfEdgeView release];
     [super dealloc];
 }
@@ -1492,8 +1490,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)doGoToPage:(id)sender {
-    if (pageSheetController == nil)
-        pageSheetController = [[SKPageSheetController alloc] init];
+    SKPageSheetController *pageSheetController = [[[SKPageSheetController alloc] init] autorelease];
     
     [pageSheetController setObjectValues:pageLabels];
     [pageSheetController setStringValue:[self pageLabel]];
@@ -1886,8 +1883,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)chooseScale:(id)sender {
-    if (scaleSheetController == nil)
-        scaleSheetController = [[SKScaleSheetController alloc] init];
+    SKScaleSheetController *scaleSheetController = [[[SKScaleSheetController alloc] init] autorelease];
     
     [[scaleSheetController textField] setIntValue:[pdfView scaleFactor]];
     
@@ -1991,8 +1987,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)password:(id)sender {
-    if (passwordSheetController == nil)
-        passwordSheetController = [[SKPasswordSheetController alloc] init];
+    SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
     
     [passwordSheetController beginSheetModalForWindow: [self window]
         modalDelegate:self 
@@ -2011,8 +2006,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)addBookmark:(id)sender {
-    if (bookmarkSheetController == nil)
-        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
     
 	[bookmarkSheetController setStringValue:[[self document] displayName]];
     
@@ -2032,8 +2026,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)addSetupBookmark:(id)sender {
-    if (bookmarkSheetController == nil)
-        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
     
 	[bookmarkSheetController setStringValue:[[self document] displayName]];
     
@@ -2053,8 +2046,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)addSessionBookmark:(id)sender {
-    if (bookmarkSheetController == nil)
-        bookmarkSheetController = [[SKBookmarkSheetController alloc] init];
+    SKBookmarkSheetController *bookmarkSheetController = [[[SKBookmarkSheetController alloc] init] autorelease];
     
 	[bookmarkSheetController setStringValue:[[self document] displayName]];
     
@@ -2075,8 +2067,29 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
+- (void)presentationSheetDidEnd:(SKPresentationOptionsSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        SKTransitionController *transitions = [pdfView transitionController];
+        [transitions setTransitionStyle:[controller transitionStyle]];
+        [transitions setDuration:[controller duration]];
+        [transitions setShouldRestrict:[controller shouldRestrict]];
+        [(SKPDFDocument *)[self document] setPresentationNotesDocument:[controller notesDocument]];
+    }
+}
+
 - (IBAction)chooseTransition:(id)sender {
-    [[[self pdfView] transitionController] chooseTransitionModalForWindow:[self window]];
+    SKPresentationOptionsSheetController *presentationSheetController = [[[SKPresentationOptionsSheetController alloc] initForDocument:(SKPDFDocument *)[self document]] autorelease];
+    
+    SKTransitionController *transitions = [pdfView transitionController];
+    [presentationSheetController setTransitionStyle:[transitions transitionStyle]];
+    [presentationSheetController setDuration:[transitions duration]];
+    [presentationSheetController setShouldRestrict:[transitions shouldRestrict]];
+    [presentationSheetController setNotesDocument:[(SKPDFDocument *)[self document] presentationNotesDocument]];
+    
+    [presentationSheetController beginSheetModalForWindow: [self window]
+        modalDelegate: self
+       didEndSelector: @selector(presentationSheetDidEnd:returnCode:contextInfo:)
+          contextInfo: NULL];
 }
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
@@ -2508,6 +2521,10 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [pdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    
+    SKPDFView *notesPdfView = [[(SKPDFDocument *)[self document] presentationNotesDocument] pdfView];
+    if (notesPdfView)
+        [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
     // periodically send a 'user activity' to prevent sleep mode and screensaver from being activated
     activityTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(activityTimerFired:) userInfo:NULL repeats:YES] retain];

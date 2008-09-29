@@ -40,8 +40,6 @@
 
 
 @interface SKSheetController : NSWindowController {
-    IBOutlet NSTextField *textField;
-	
     id theModalDelegate;
     SEL theDidEndSelector;
     void *theContextInfo;
@@ -54,38 +52,5 @@
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)endSheetWithReturnCode:(int)returnCode;
 
-- (NSTextField *)textField;
-
-- (NSString *)stringValue;
-- (void)setStringValue:(NSString *)string;
-
 @end
 
-#pragma mark -
-
-@interface SKPageSheetController : SKSheetController
-- (NSArray *)objectValues;
-- (void)setObjectValues:(NSArray *)objects;
-@end
-
-#pragma mark -
-
-@interface SKScaleSheetController : SKSheetController
-@end
-
-#pragma mark -
-
-@class SKBookmark;
-
-@interface SKBookmarkSheetController : SKSheetController {
-    IBOutlet NSPopUpButton *folderPopUp;
-}
-
-- (SKBookmark *)selectedFolder;
-
-@end
-
-#pragma mark -
-
-@interface SKPasswordSheetController : SKSheetController
-@end

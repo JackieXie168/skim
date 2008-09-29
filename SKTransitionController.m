@@ -137,7 +137,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (id)initWithView:(NSView *)aView {
-    if (self = [super initWithWindowNibName:@"TransitionSheet"]) {
+    if (self = [super init]) {
+        transitionWindow = [[SKTransitionWindow alloc] init];
         view = aView; // don't retain as it may retain us
         transitionStyle = SKNoTransition;
         duration = 1.0;
@@ -147,20 +148,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
+    [transitionWindow release];
     [initialImage release];
     [filters release];
     [super dealloc];
-}
-
-- (void)windowDidLoad {
-    NSArray *filterNames = [[self class] transitionFilterNames];
-    int i, count = [filterNames count];
-    for (i = 0; i < count; i++) {
-        NSString *name = [filterNames objectAtIndex:i];
-        [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
-        NSMenuItem *item = [transitionStylePopUpButton lastItem];
-        [item setTag:SKCoreImageTransition + i];
-    }
 }
 
 - (NSView *)view {
@@ -309,15 +300,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (NSWindow *)transitionWindow {
-    if (transitionWindow == nil)
-        [self window];
     return transitionWindow;
 }
 
 - (SKTransitionView *)transitionView {
-    if (transitionView == nil)
-        [self window];
-    return transitionView;
+    return (SKTransitionView *)[transitionWindow contentView];
 }
 
 - (void)prepareAnimationForRect:(NSRect)rect {
@@ -455,34 +442,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         [[self transitionView] setAnimation:nil];
         
     }
-}
-
-#pragma mark Setup sheet
-
-- (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        [self setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
-        [self setDuration:fmaxf([transitionDurationField floatValue], 0.0)];
-        [self setShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
-    }
-}
-
-- (void)chooseTransitionModalForWindow:(NSWindow *)window {
-    [self window];
-    [transitionStylePopUpButton selectItemWithTag:[self transitionStyle]];
-    [transitionDurationField setFloatValue:[self duration]];
-    [transitionDurationSlider setFloatValue:[self duration]];
-    [transitionExtentMatrix selectCellWithTag:(int)[self shouldRestrict]];
-	[NSApp beginSheet:[self window]
-       modalForWindow:window
-        modalDelegate:self 
-       didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissTransitionSheet:(id)sender {
-    [NSApp endSheet:[self window] returnCode:[sender tag]];
-    [[self window] orderOut:self];
 }
 
 @end
@@ -655,10 +614,13 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 @implementation SKTransitionWindow
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:bufferingType defer:deferCreation]) {
+- (id)init {
+    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
         [self setReleasedWhenClosed:NO];
         [self setIgnoresMouseEvents:YES];
+        SKTransitionView *view = [[SKTransitionView alloc] init];
+        [self setContentView:view];
+        [view release];
     }
     return self;
 }
