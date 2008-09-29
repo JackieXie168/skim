@@ -2462,6 +2462,10 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView layoutDocumentView];
     
+    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    
+    SetSystemUIMode(kUIModeNormal, 0);
+    
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
     
@@ -2627,8 +2631,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     else
         [self applyPDFSettings:savedNormalSetup];
    
-    SetSystemUIMode(kUIModeNormal, 0);
-    
     [self removeFullScreen];
 }
 
