@@ -2620,7 +2620,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
-    [fullScreenWindow setAlphaValue:1.0];
+    //[fullScreenWindow setAlphaValue:1.0];
     [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
     [fullScreenWindow displayIfNeeded];
     [bgWindow orderOut:nil];
