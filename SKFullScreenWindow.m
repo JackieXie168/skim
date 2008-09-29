@@ -135,6 +135,10 @@
     [animation startAnimation];
 }
 
+- (void)fadeOut {
+    return [self fadeOutBlocking:NO];
+}
+
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
     [animation release];
     animation = nil;
