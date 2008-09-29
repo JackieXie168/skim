@@ -376,6 +376,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
             [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
             
+            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
+                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
             file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
             [files addObject:file];
             
@@ -419,6 +421,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
                     } else if (ch == '(') {
                         // start of a new source file
                         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+                            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
+                                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
                             file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
                             [files addObject:file];
                             if ([lines objectForKey:file] == nil) {
