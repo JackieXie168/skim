@@ -1,10 +1,10 @@
 //
-//  SKSheetController.m
+//  SKPresentationOptionsSheetController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/21/07.
+//  Created by Christiaan Hofman on 9/28/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,51 +36,35 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <Cocoa/Cocoa.h>
 #import "SKSheetController.h"
-#import "NSInvocation_SKExtensions.h"
+#import "SKTransitionController.h"
 
+@class SKPDFDocument;
 
-@implementation SKSheetController
-
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
-	[self prepare];
-	
-    theModalDelegate = delegate;
-	theDidEndSelector = didEndSelector;
-    theContextInfo = contextInfo;
-	
-	[self retain]; // make sure we stay around long enough
-	
-	[NSApp beginSheet:[self window]
-	   modalForWindow:window
-		modalDelegate:self
-	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
-		  contextInfo:NULL];
+@interface SKPresentationOptionsSheetController : SKSheetController {
+    IBOutlet NSPopUpButton *transitionStylePopUpButton;
+    IBOutlet NSTextField *transitionDurationField;
+    IBOutlet NSSlider *transitionDurationSlider;
+    IBOutlet NSMatrix *transitionExtentMatrix;
+    IBOutlet NSPopUpButton *notesDocumentPopUpButton;
+    SKPDFDocument *document;
 }
 
-- (void)prepare {}
+- (id)initForDocument:(SKPDFDocument *)aDocument;
 
-- (IBAction)dismiss:(id)sender {
-	[self endSheetWithReturnCode:[sender tag]];
-    [self release];
-}
+- (SKPDFDocument *)document;
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-	if(theModalDelegate != nil && theDidEndSelector != NULL){
-		NSInvocation *invocation = [NSInvocation invocationWithTarget:theModalDelegate selector:theDidEndSelector argument:&self];
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation setArgument:&theContextInfo atIndex:4];
-		[invocation invoke];
-	}
-}
+- (SKAnimationTransitionStyle)transitionStyle;
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
 
-- (void)endSheetWithReturnCode:(int)returnCode {
-    [NSApp endSheet:[self window] returnCode:returnCode];
-    [[self window] orderOut:self];
-    
-    theModalDelegate = nil;
-    theDidEndSelector = NULL;
-    theContextInfo = NULL;
-}
+- (float)duration;
+- (void)setDuration:(float)newDuration;
+
+- (BOOL)shouldRestrict;
+- (void)setShouldRestrict:(BOOL)flag;
+
+- (SKPDFDocument *)notesDocument;
+- (void)setNotesDocument:(SKPDFDocument *)newNotesDocument;
 
 @end

@@ -104,8 +104,9 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)handleFileUpdateNotification:(NSNotification *)notification;
 - (void)handleFileMoveNotification:(NSNotification *)notification;
 - (void)handleFileDeleteNotification:(NSNotification *)notification;
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
+- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification;
 
 - (SKProgressController *)progressController;
 
@@ -119,6 +120,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [synchronizer stopDOServer];
     [synchronizer release];
+    [presentationNotesDocument release];
     [watchedFile release];
     [pdfData release];
     [pdfDocument release];
@@ -167,6 +169,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveDocumentNotification:) 
+                                                 name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
 }
 
 - (void)showWindows{
@@ -1359,6 +1363,15 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     fileChangedOnDisk = YES;
 }
 
+- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
+    // This is only called to delay a file update handling
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
+    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
+    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
+}
+
+#pragma mark Notification handlers
+
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
@@ -1369,11 +1382,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
-    // This is only called to delay a file update handling
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
-    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
-    [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
+- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification {
+    if ([[notification userInfo] objectForKey:@"document"] == presentationNotesDocument)
+        [self setPresentationNotesDocument:nil];
 }
 
 #pragma mark Notification observation
@@ -1551,6 +1562,17 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
+}
+
+- (SKPDFDocument *)presentationNotesDocument {
+    return presentationNotesDocument;
+}
+
+- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument {
+    if (presentationNotesDocument != aDocument) {
+        [presentationNotesDocument release];
+        presentationNotesDocument = [aDocument retain];
+    }
 }
 
 - (NSArray *)fileIDStrings {

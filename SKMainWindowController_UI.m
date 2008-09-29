@@ -1391,6 +1391,12 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     
     [self synchronizeWindowTitleWithDocumentName];
     [self updateLeftStatus];
+    
+    if ([self isPresentation]) {
+        SKPDFView *notesPdfView = [[(SKPDFDocument *)[self document] presentationNotesDocument] pdfView];
+        if (notesPdfView)
+            [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[page pageIndex]]];
+    }
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {

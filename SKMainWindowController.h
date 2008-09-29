@@ -213,11 +213,6 @@ extern NSString *SKMainWindowPageColumnIdentifer;
     IBOutlet SKColorSwatch      *colorSwatch;
     NSMutableDictionary         *toolbarItems;
     
-    SKPageSheetController       *pageSheetController;
-    SKScaleSheetController      *scaleSheetController;
-    SKPasswordSheetController   *passwordSheetController;
-    SKBookmarkSheetController   *bookmarkSheetController;
-    
     SKProgressController        *progressController;
     
     NSButton                    *colorAccessoryView;

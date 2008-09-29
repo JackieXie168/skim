@@ -1,10 +1,10 @@
 //
-//  SKSheetController.m
+//  SKTextFieldSheetController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/21/07.
+//  Created by Christiaan Hofman on 9/29/08.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,51 +36,46 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <Cocoa/Cocoa.h>
 #import "SKSheetController.h"
-#import "NSInvocation_SKExtensions.h"
 
 
-@implementation SKSheetController
-
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
-	[self prepare];
-	
-    theModalDelegate = delegate;
-	theDidEndSelector = didEndSelector;
-    theContextInfo = contextInfo;
-	
-	[self retain]; // make sure we stay around long enough
-	
-	[NSApp beginSheet:[self window]
-	   modalForWindow:window
-		modalDelegate:self
-	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
-		  contextInfo:NULL];
+@interface SKTextFieldSheetController : SKSheetController {
+    IBOutlet NSTextField *textField;
 }
 
-- (void)prepare {}
+- (NSTextField *)textField;
 
-- (IBAction)dismiss:(id)sender {
-	[self endSheetWithReturnCode:[sender tag]];
-    [self release];
+- (NSString *)stringValue;
+- (void)setStringValue:(NSString *)string;
+
+@end
+
+#pragma mark -
+
+@interface SKPageSheetController : SKTextFieldSheetController
+- (NSArray *)objectValues;
+- (void)setObjectValues:(NSArray *)objects;
+@end
+
+#pragma mark -
+
+@interface SKScaleSheetController : SKTextFieldSheetController
+@end
+
+#pragma mark -
+
+@class SKBookmark;
+
+@interface SKBookmarkSheetController : SKTextFieldSheetController {
+    IBOutlet NSPopUpButton *folderPopUp;
 }
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-	if(theModalDelegate != nil && theDidEndSelector != NULL){
-		NSInvocation *invocation = [NSInvocation invocationWithTarget:theModalDelegate selector:theDidEndSelector argument:&self];
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation setArgument:&theContextInfo atIndex:4];
-		[invocation invoke];
-	}
-}
+- (SKBookmark *)selectedFolder;
 
-- (void)endSheetWithReturnCode:(int)returnCode {
-    [NSApp endSheet:[self window] returnCode:returnCode];
-    [[self window] orderOut:self];
-    
-    theModalDelegate = nil;
-    theDidEndSelector = NULL;
-    theContextInfo = NULL;
-}
+@end
 
+#pragma mark -
+
+@interface SKPasswordSheetController : SKTextFieldSheetController
 @end
