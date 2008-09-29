@@ -320,6 +320,7 @@
             <string>SKUnderlineNoteColor</string>
             <string>SKStrikeOutNoteColor</string>
             <string>SKLineNoteColor</string>
+            <string>SKInkNoteColor</string>
             <string>SKCircleNoteInteriorColor</string>
             <string>SKSquareNoteInteriorColor</string>
             <string>SKFreeTextNoteFontColor</string>
@@ -342,6 +343,9 @@
             <string>SKLineNoteDashPattern</string>
             <string>SKLineNoteStartLineStyle</string>
             <string>SKLineNoteEndLineStyle</string>
+            <string>SKInkNoteLineWidth</string>
+            <string>SKInkNoteLineStyle</string>
+            <string>SKInkNoteDashPattern</string>
         </array>
         <key>sync</key>
         <array>
