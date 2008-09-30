@@ -123,8 +123,8 @@
 }
 
 + (NSData *)dataWithRectAsQDRect:(NSRect)rect {
-    Rect qdBounds = SKQDRectFromNSRect(rect);
-    return [self dataWithBytes:&qdBounds length:sizeof(Rect)];
+    Rect qdRect = SKQDRectFromNSRect(rect);
+    return [self dataWithBytes:&qdRect length:sizeof(Rect)];
 }
 
 - (NSPoint)pointValueAsQDPoint {
