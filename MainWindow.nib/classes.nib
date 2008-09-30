@@ -79,22 +79,6 @@
 			<string>SKOutlineView</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addBookmark</key>
@@ -435,6 +419,22 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -603,19 +603,6 @@
 			<string>NSObject</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>BDSKContainerView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>contentView</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addAnnotation</key>
@@ -663,6 +650,19 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>PDFView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>BDSKContainerView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>contentView</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

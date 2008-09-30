@@ -72,67 +72,46 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     }
 }
 
-static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMutableDictionary *filteredImages, NSString *name, NSString *key, CIFilter *filter)
-{
-    NSImage *image = [NSImage imageNamed:name];
-    NSImage *filteredImage = [[NSImage alloc] initWithSize:[image size]];
-    CIImage *ciImage = [CIImage imageWithData:[image TIFFRepresentation]];
-    
-    [filter setValue:ciImage forKey:@"inputImage"];
-    ciImage = [filter valueForKey:@"outputImage"];
-    
-    CGRect cgRect = [ciImage extent];
-    NSRect nsRect = *(NSRect*)&cgRect;
-    
-    [filteredImage lockFocus];
-    [ciImage drawAtPoint:NSZeroPoint fromRect:nsRect operation:NSCompositeCopy fraction:1.0];
-    [filteredImage unlockFocus];
-    
-    [images setObject:image forKey:key];
-    [filteredImages setObject:filteredImage forKey:key];
-    [filteredImage release];
-}
-
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    static NSMutableDictionary *noteImages = nil;
-    static NSMutableDictionary *invertedNoteImages = nil;
+    NSImage *image = nil;
     
-    if (noteImages == nil) {
-        CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];
-        
-        noteImages = [[NSMutableDictionary alloc] initWithCapacity:9];
-        invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:9];
-        
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameTextNoteAdorn, SKNFreeTextString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameAnchoredNoteAdorn, SKNNoteString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameCircleNoteAdorn, SKNCircleString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameSquareNoteAdorn, SKNSquareString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameHighlightNoteAdorn, SKNHighlightString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameUnderlineNoteAdorn, SKNUnderlineString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameStrikeOutNoteAdorn, SKNStrikeOutString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameLineNoteAdorn, SKNLineString, filter);
-        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, SKImageNameInkNoteAdorn, SKNInkString, filter);
-    }
+    if ([type isEqualToString:SKNFreeTextString])
+        image = [NSImage imageNamed:SKImageNameToolbarTextNote];
+    else if ([type isEqualToString:SKNNoteString])
+        image = [NSImage imageNamed:SKImageNameToolbarAnchoredNote];
+    else if ([type isEqualToString:SKNCircleString])
+        image = [NSImage imageNamed:SKImageNameToolbarCircleNote];
+    else if ([type isEqualToString:SKNSquareString])
+        image = [NSImage imageNamed:SKImageNameToolbarSquareNote];
+    else if ([type isEqualToString:SKNHighlightString])
+        image = [NSImage imageNamed:SKImageNameToolbarHighlightNote];
+    else if ([type isEqualToString:SKNUnderlineString])
+        image = [NSImage imageNamed:SKImageNameToolbarUnderlineNote];
+    else if ([type isEqualToString:SKNStrikeOutString])
+        image = [NSImage imageNamed:SKImageNameToolbarStrikeOutNote];
+    else if ([type isEqualToString:SKNLineString])
+        image = [NSImage imageNamed:SKImageNameToolbarLineNote];
+    else if ([type isEqualToString:SKNInkString])
+        image = [NSImage imageNamed:SKImageNameToolbarInkNote];
     
-    BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
-    NSImage *image = type ? [(isSelected ? invertedNoteImages : noteImages) objectForKey:type] : nil;
+    [super setObjectValue:image];
+    [super drawWithFrame:cellFrame inView:controlView];
     
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
-        if (isSelected)
+        if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
             [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
         else
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
         NSRect rect = cellFrame;
-        rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - NSWidth(cellFrame)));
-        rect.size.height = NSWidth(rect);
+        float width = NSWidth(cellFrame);
+        float height = fminf(width, NSHeight(cellFrame) - 1.0);
+        rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height));
+        rect.size.height = height;
         [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         [[NSGraphicsContext currentContext] restoreGraphicsState];
     }
-    
-    [super setObjectValue:image];
-    [super drawWithFrame:cellFrame inView:controlView];
 }
 
 - (NSArray *)accessibilityAttributeNames {

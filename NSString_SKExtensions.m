@@ -400,23 +400,23 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     
     NSString *imageName = nil;
     if ([self isEqualToString:SKNFreeTextString])
-        imageName = SKImageNameTextNoteAdorn;
+        imageName = SKImageNameToolbarTextNote;
     else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
-        imageName = SKImageNameAnchoredNoteAdorn;
+        imageName = SKImageNameToolbarAnchoredNote;
     else if ([self isEqualToString:SKNCircleString])
-        imageName = SKImageNameCircleNoteAdorn;
+        imageName = SKImageNameToolbarCircleNote;
     else if ([self isEqualToString:SKNSquareString])
-        imageName = SKImageNameSquareNoteAdorn;
+        imageName = SKImageNameToolbarSquareNote;
     else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
-        imageName = SKImageNameHighlightNoteAdorn;
+        imageName = SKImageNameToolbarHighlightNote;
     else if ([self isEqualToString:SKNUnderlineString])
-        imageName = SKImageNameUnderlineNoteAdorn;
+        imageName = SKImageNameToolbarUnderlineNote;
     else if ([self isEqualToString:SKNStrikeOutString])
-        imageName = SKImageNameStrikeOutNoteAdorn;
+        imageName = SKImageNameToolbarStrikeOutNote;
     else if ([self isEqualToString:SKNLineString])
-        imageName = SKImageNameLineNoteAdorn;
+        imageName = SKImageNameToolbarLineNote;
     else if ([self isEqualToString:SKNInkString])
-        imageName = SKImageNameInkNoteAdorn;
+        imageName = SKImageNameToolbarInkNote;
     
     if (imageName) {
         NSImage *image = [NSImage imageNamed:imageName];
