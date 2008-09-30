@@ -130,7 +130,7 @@
     [fadeOutDict release];
     
     [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-    [animation setDuration:1];
+    [animation setDuration:0.7];
     [animation setDelegate:self];
     [animation startAnimation];
 }
