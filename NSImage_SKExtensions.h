@@ -111,15 +111,6 @@ extern NSString *SKImageNameNoteViewAdorn;
 extern NSString *SKImageNameSnapshotViewAdorn;
 extern NSString *SKImageNameFindViewAdorn;
 extern NSString *SKImageNameGroupedFindViewAdorn;
-extern NSString *SKImageNameTextNoteAdorn;
-extern NSString *SKImageNameAnchoredNoteAdorn;
-extern NSString *SKImageNameCircleNoteAdorn;
-extern NSString *SKImageNameSquareNoteAdorn;
-extern NSString *SKImageNameHighlightNoteAdorn;
-extern NSString *SKImageNameUnderlineNoteAdorn;
-extern NSString *SKImageNameStrikeOutNoteAdorn;
-extern NSString *SKImageNameLineNoteAdorn;
-extern NSString *SKImageNameInkNoteAdorn;
 
 extern NSString *SKImageNameResizeRightDownCursor;
 extern NSString *SKImageNameResizeLeftDownCursor;
