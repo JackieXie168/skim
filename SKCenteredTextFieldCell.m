@@ -44,9 +44,11 @@
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     float height = [self cellSize].height;
-    cellFrame.origin.y += floorf(0.5 * (NSHeight(cellFrame) - height));
-    cellFrame.origin.y += [controlView isFlipped] ? TEXT_OFFSET : -TEXT_OFFSET;
-    cellFrame.size.height = height;
+    if (height < NSHeight(cellFrame)) {
+        cellFrame.origin.y += floorf(0.5 * (NSHeight(cellFrame) - height));
+        cellFrame.origin.y += [controlView isFlipped] ? TEXT_OFFSET : -TEXT_OFFSET;
+        cellFrame.size.height = height;
+    }
     [super drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
