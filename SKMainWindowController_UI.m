@@ -76,7 +76,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 @interface SKMainWindowController (SKPrivateMain)
 
-- (IBAction)selectSelectedNote:(id)sender;
+- (void)selectSelectedNote:(id)sender;
+- (void)goToSelectedOutlineItem:(id)sender;
 
 - (void)updateLeftStatus;
 - (void)updateRightStatus;
@@ -632,12 +633,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
-        SKPDFOutline *outlineItem = [outlineView itemAtRow: [outlineView selectedRow]];
         updatingOutlineSelection = YES;
-        if ([outlineItem destination])
-            [self goToDestination:[outlineItem destination]];
-        else if ([outlineItem action])
-            [pdfView performAction:[outlineItem action]];
+        [self goToSelectedOutlineItem:nil];
         updatingOutlineSelection = NO;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];

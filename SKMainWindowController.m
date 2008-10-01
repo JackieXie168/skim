@@ -184,10 +184,12 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)activityTimerFired:(NSTimer *)timer;
 
 - (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll;
-- (void)goToFindResults:(NSArray *)findResults;
+- (void)goToSelectedFindResults:(id)sender;
 - (void)updateFindResultHighlights:(BOOL)scroll;
 
 - (void)selectSelectedNote:(id)sender;
+- (void)goToSelectedOutlineItem:(id)sender;
+- (void)toggleSelectedSnapshots:(id)sender;
 
 - (void)updateNoteFilterPredicate;
 
@@ -355,6 +357,14 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
     [noteOutlineView setTarget:self];
+    [outlineView setDoubleAction:@selector(goToSelectedOutlineItem:)];
+    [outlineView setTarget:self];
+    [snapshotTableView setDoubleAction:@selector(toggleSelectedSnapshots:)];
+    [snapshotTableView setTarget:self];
+    [findTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [findTableView setTarget:self];
+    [groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
+    [groupedFindTableView setTarget:self];
     
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     
@@ -1332,6 +1342,18 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             [pdfView setActiveAnnotation:annotation];
         }
     } else NSBeep();
+}
+
+- (void)goToSelectedOutlineItem:(id)sender {
+    SKPDFOutline *outlineItem = [outlineView itemAtRow:[outlineView selectedRow]];
+    if ([outlineItem destination])
+        [self goToDestination:[outlineItem destination]];
+    else if ([outlineItem action])
+        [pdfView performAction:[outlineItem action]];
+}
+
+- (IBAction):(id)sender {
+
 }
 
 - (IBAction)editNote:(id)sender{
@@ -2951,8 +2973,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [pdfView setCurrentSelection:currentSel];
 }
 
-- (void)goToFindResults:(NSArray *)findResults {
-    [self goToFindResults:findResults scrollToVisible:YES];
+- (void)goToSelectedFindResults:(id)sender {
+    [self updateFindResultHighlights:YES];
 }
 
 - (void)updateFindResultHighlights:(BOOL)scroll {
@@ -3202,9 +3224,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)toggleSnapshots:(NSArray *)snapshotArray {
+- (void)toggleSelectedSnapshots:(id)sender {
     // there should only be a single snapshot
-    SKSnapshotWindowController *controller = [snapshotArray lastObject];
+    SKSnapshotWindowController *controller = [[snapshotArrayController selectedObjects] lastObject];
     
     if ([[controller window] isVisible])
         [controller miniaturize];
