@@ -339,7 +339,6 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotWithSetups:(NSArray *)setups;
-- (void)toggleSnapshots:(NSArray *)snapshotArray;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (SKPDFView *)pdfView;
