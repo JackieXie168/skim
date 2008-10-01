@@ -81,7 +81,7 @@ static SKInfoWindowController *sharedInstance = nil;
 
 - (id)init {
     if (sharedInstance == nil && (sharedInstance = self = [super initWithWindowNibName:@"InfoWindow"])) {
-        info = [[NSMutableDictionary alloc] init];
+        info = nil;
     }
     return sharedInstance;
 }
@@ -235,11 +235,14 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 }
 
 - (NSDictionary *)info {
-    return [[info copy] autorelease];
+    return info;
 }
 
 - (void)setInfo:(NSDictionary *)newInfo {
-    [info setDictionary:newInfo];
+    if (info != newInfo) {
+        [info release];
+        info = [newInfo retain];
+    }
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)notification {

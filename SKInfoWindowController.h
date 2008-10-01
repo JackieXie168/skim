@@ -40,7 +40,7 @@
 
 
 @interface SKInfoWindowController : NSWindowController {
-    NSMutableDictionary *info;
+    NSDictionary *info;
 }
 
 + (id)sharedInstance;
