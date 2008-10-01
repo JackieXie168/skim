@@ -25,6 +25,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKTextFieldSheetController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>textField</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>SKSheetController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -50,7 +63,7 @@
 				<string>NSPopUpButton</string>
 			</dict>
 			<key>SUPERCLASS</key>
-			<string>SKSheetController</string>
+			<string>SKTextFieldSheetController</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -69,6 +82,14 @@
 			<string>NSObject</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>dismiss</key>
@@ -80,21 +101,11 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>textField</key>
-				<string>NSTextField</string>
 				<key>theModalDelegate</key>
 				<string>id</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
