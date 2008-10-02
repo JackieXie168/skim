@@ -42,12 +42,10 @@
 */
 
 #import "SKTransitionController.h"
-#import <Quartz/Quartz.h>
 #import "NSBitmapImageRep_SKExtensions.h"
 #include <unistd.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
-#import "SKFullScreenWindow.h"
 
 #pragma mark Private Core Graphics types and functions
 
@@ -108,17 +106,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
            CGSInvokeTransition != (void *)kUnresolvedCFragSymbolAddress &&
            CGSReleaseTransition != (void *)kUnresolvedCFragSymbolAddress;
 }
-
-#pragma mark -
-
-@interface SKTransitionAnimation : NSAnimation {
-    CIFilter *filter;
-}
-
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve;
-- (CIImage *)currentImage;
-
-@end
 
 #pragma mark -
 
@@ -421,7 +408,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         NSRect frame = [view convertRect:[view frame] toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
-        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:duration animationCurve:NSAnimationEaseInOut];
+        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:duration];
         [[self transitionView] setAnimation:animation];
         [animation release];
         
@@ -450,8 +437,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 @implementation SKTransitionAnimation
 
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve {
-    if (self = [super initWithDuration:duration animationCurve:animationCurve]) {
+- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration {
+    if (self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut]) {
         filter = [aFilter retain];
     }
     return self;
