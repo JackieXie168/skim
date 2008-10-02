@@ -2636,6 +2636,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
     [bgWindow setLevel:[fullScreenWindow level]];
     [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    [fullScreenWindow setDelegate:nil];
     [fullScreenWindow fadeOutBlocking:YES];
     
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
