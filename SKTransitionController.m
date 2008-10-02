@@ -221,6 +221,17 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [translationFilter valueForKey:@"outputImage"];
 }
 
+- (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
+    CIFilter *scalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
+    CGRect extent = [image extent];
+    float xScale = size.width / CGRectGetWidth(extent);
+    float yScale = size.height / CGRectGetHeight(extent);
+    [scalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
+    [scalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
+    [scalingFilter setValue:image forKey:@"inputImage"];
+    return [scalingFilter valueForKey:@"outputImage"];
+}
+
 - (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
@@ -231,47 +242,39 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     NSString *key;
     
     while (key = [keyEnum nextObject]) {
-        if([key isEqualToString:@"inputExtent"]) {
+        id value = nil;
+        if ([key isEqualToString:@"inputExtent"]) {
             NSRect extent = shouldRestrict ? rect : bounds;
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)] forKey:key];
-        } else if([key isEqualToString:@"inputAngle"]) {
+            value = [CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)];
+        } else if ([key isEqualToString:@"inputAngle"]) {
             float angle = forward ? 0.0 : M_PI;
             if ([filterName isEqualToString:@"CIPageCurlTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
-            [transitionFilter setValue:[NSNumber numberWithFloat:angle] forKey:@"inputAngle"];
-        } else if([key isEqualToString:@"inputCenter"]) {
-            [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:key];
-        } else {
-            NSString *classType = [[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass];
-            
-            if([classType isEqualToString:@"CIImage"]) {
-                if([key isEqualToString:@"inputShadingImage"]) {
-                    [transitionFilter setValue:[self inputShadingImage] forKey:key];
-                } else if ([key isEqualToString:@"inputBacksideImage"]) {
-                    [transitionFilter setValue:initialCIImage forKey:key];
-                } else  {
-                    // Scale and translate our mask image to match the transition area size.
-                    CIFilter *maskScalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
-                    CGRect maskExtent = [[self inputMaskImage] extent];
-                    float xScale = NSWidth(rect) / CGRectGetWidth(maskExtent);
-                    float yScale = NSHeight(rect) / CGRectGetHeight(maskExtent);
-                    [maskScalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
-                    [maskScalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
-                    [maskScalingFilter setValue:[self inputMaskImage] forKey:@"inputImage"];
-                    
-                    [transitionFilter setValue:[self translateImage:[maskScalingFilter valueForKey:@"outputImage"] xBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)] forKey:key];
-                }
-            }
-        }
+            value = [NSNumber numberWithFloat:angle];
+        } else if ([key isEqualToString:@"inputCenter"]) {
+            value = [CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)];
+        } else if ([key isEqualToString:@"inputImage"]) {
+            value = initialCIImage;
+            if (NSEqualRects(rect, bounds) == NO)
+                value = [self cropImage:value toRect:rect];
+        } else if ([key isEqualToString:@"inputTargetImage"]) {
+            value = finalCIImage;
+            if (NSEqualRects(rect, bounds) == NO)
+                value = [self cropImage:value toRect:rect];
+        } else if ([key isEqualToString:@"inputShadingImage"]) {
+            value = [self inputShadingImage];
+        } else if ([key isEqualToString:@"inputBacksideImage"]) {
+            value = initialCIImage;
+            if (NSEqualRects(rect, bounds) == NO)
+                value = [self cropImage:value toRect:rect];
+        } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
+            // Scale and translate our mask image to match the transition area size.
+            value = [self scaleImage:[self inputMaskImage] toSize:rect.size];
+            if (NSEqualPoints(rect.origin, bounds.origin) == NO)
+                value = [self translateImage:value xBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
+        } else continue;
+        [transitionFilter setValue:value forKey:key];
     }
-    
-    if (NSEqualRects(rect, bounds) == NO) {
-        initialCIImage = [self cropImage:initialCIImage toRect:rect];
-        finalCIImage = [self cropImage:finalCIImage toRect:rect];
-    }
-    
-    [transitionFilter setValue:initialCIImage forKey:@"inputImage"];
-    [transitionFilter setValue:finalCIImage forKey:@"inputTargetImage"];
     
     return transitionFilter;
 }
