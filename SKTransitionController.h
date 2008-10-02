@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
+#import <Quartz/Quartz.h>
 
 #pragma mark SKTransitionController
 
@@ -97,7 +98,14 @@ typedef enum _SKAnimationTransitionStyle {
 
 #pragma mark -
 
-@class SKTransitionAnimation, CIImage, CIContext;
+@interface SKTransitionAnimation : NSAnimation {
+    CIFilter *filter;
+}
+- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
+- (CIImage *)currentImage;
+@end
+
+#pragma mark -
 
 @interface SKTransitionView : NSOpenGLView {
     SKTransitionAnimation *animation;
