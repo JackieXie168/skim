@@ -3606,7 +3606,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
-            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i]];
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
@@ -3649,16 +3649,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSImage *image = nil;
     if (NO == isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
         
-        unsigned int theIndex = [thumbnails indexOfObject:thumbnail];
         NSSize newSize, oldSize = [thumbnail size];
         PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:theIndex];
+        PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
         NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
         image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
         
         newSize = [image size];
         if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
-            [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:theIndex] afterDelay:0.0];
+            [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]] afterDelay:0.0];
         }
     }
     return image;

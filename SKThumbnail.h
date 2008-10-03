@@ -42,11 +42,12 @@
 @interface SKThumbnail : NSObject {
     NSImage *image;
     NSString *label;
+    unsigned int pageIndex;
     BOOL dirty;
     id delegate;
 }
 
-- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
+- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(unsigned int)anIndex;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
@@ -55,10 +56,10 @@
 - (void)setDirty:(BOOL)flag;
 
 - (NSImage *)image;
-- (void)setImage:(NSImage *)newImage;
 
 - (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
+
+- (unsigned int)pageIndex;
 
 - (NSSize)size;
 

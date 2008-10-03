@@ -41,10 +41,11 @@
 
 @implementation SKThumbnail
 
-- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel {
+- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(unsigned int)anIndex {
     if (self = [super init]) {
         image = [anImage retain];
         label = [aLabel retain];
+        pageIndex = anIndex;
         dirty = NO;
     }
     return self;
@@ -64,6 +65,13 @@
 
 - (void)setDirty:(BOOL)flag { dirty = flag; }
 
+- (void)setImage:(NSImage *)newImage {
+    if (image != newImage) {
+        [image release];
+        image = [newImage retain];
+    }
+}
+
 - (NSImage *)image {
     if (dirty) {
         NSImage *anImage = [delegate imageForThumbnail:self];
@@ -75,22 +83,12 @@
     return image;
 }
 
-- (void)setImage:(NSImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-    }
-}
-
 - (NSString *)label {
     return label;
 }
 
-- (void)setLabel:(NSString *)newLabel {
-    if (label != newLabel) {
-        [label release];
-        label = [newLabel retain];
-    }
+- (unsigned int)pageIndex {
+    return pageIndex;
 }
 
 - (NSSize)size {
