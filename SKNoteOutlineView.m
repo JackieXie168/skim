@@ -53,13 +53,17 @@
 }
 
 - (void)awakeFromNib {
-    [self noteTypeMenu]; // this sets the menu for the header view
-    id cell = [[[NSActionCell alloc] init] autorelease];
-    [cell setTag:-1];
-    [noteTypeMatrix putCell:cell atRow:4 column:0];
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    if (fontSize)
-        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+    if (noteTypeMatrix) {
+        id cell = [[[NSActionCell alloc] init] autorelease];
+        [cell setTag:-1];
+        [cell setEnabled:NO];
+        [noteTypeMatrix putCell:cell atRow:4 column:0];
+    } else {
+        [self noteTypeMenu]; // this sets the menu for the header view
+        NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
+        if (fontSize)
+            [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+    }
 }
 
 - (void)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
