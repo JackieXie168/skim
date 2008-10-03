@@ -2481,32 +2481,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (void)removeFullScreen {
-    [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
-    [pdfView layoutDocumentView];
-    
-    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
-    
-    SetSystemUIMode(kUIModeNormal, 0);
-    
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
-        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
-            [(id)wc setForceOnTop:NO];
-    }
-    
-    [fullScreenWindow setDelegate:nil];
-    [self setWindow:mainWindow];
-    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
-    [mainWindow makeKeyWindow];
-    [mainWindow display];
-    [fullScreenWindow fadeOutBlocking:NO];
-    [mainWindow makeFirstResponder:pdfView];
-    [mainWindow recalculateKeyViewLoop];
-    [mainWindow setDelegate:self];
-    
-    [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
 }
 
 - (void)saveNormalSetup {
@@ -2569,11 +2543,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasVerticalScrollerKey] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:SKMainWindowAutoHidesScrollersKey] boolValue]];
     
-    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-    [pdfView setBackgroundColor:backgroundColor];
-    [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:NSNormalWindowLevel];
-    
     [self hideLeftSideWindow];
     
     isPresentation = NO;
@@ -2593,6 +2562,11 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [self exitPresentationMode];
     else
         [self goFullScreen];
+    
+    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    [pdfView setBackgroundColor:backgroundColor];
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:NSNormalWindowLevel];
     
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     if ([fullScreenSetup count])
@@ -2642,18 +2616,41 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
     [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
-    
-    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
-    [fullScreenWindow displayIfNeeded];
-    [bgWindow orderOut:nil];
-    [bgWindow release];
+    [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+    [pdfView layoutDocumentView];
     
     if ([self isPresentation])
         [self exitPresentationMode];
     else
         [self applyPDFSettings:savedNormalSetup];
-   
-    [self removeFullScreen];
+    
+    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
+    [fullScreenWindow displayIfNeeded];
+    [bgWindow orderOut:nil];
+    [bgWindow release];
+    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    
+    SetSystemUIMode(kUIModeNormal, 0);
+    
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
+            [(id)wc setForceOnTop:NO];
+    }
+    
+    [fullScreenWindow setDelegate:nil];
+    [self setWindow:mainWindow];
+    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    [mainWindow makeKeyWindow];
+    [mainWindow display];
+    [fullScreenWindow fadeOutBlocking:NO];
+    [mainWindow makeFirstResponder:pdfView];
+    [mainWindow recalculateKeyViewLoop];
+    [mainWindow setDelegate:self];
+    
+    [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
 }
 
 #pragma mark Swapping tables
