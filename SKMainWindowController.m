@@ -177,7 +177,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 - (void)showSideWindowsOnScreen:(NSScreen *)screen;
 - (void)hideSideWindows;
 - (void)goFullScreen;
-- (void)removeFullScreen;
 - (void)saveNormalSetup;
 - (void)enterPresentationMode;
 - (void)exitPresentationMode;
@@ -2478,9 +2477,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [fullScreenWindow recalculateKeyViewLoop];
     [mainWindow orderOut:self];    
     [fullScreenWindow setDelegate:self];
-}
-
-- (void)removeFullScreen {
 }
 
 - (void)saveNormalSetup {
