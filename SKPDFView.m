@@ -68,6 +68,7 @@
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityFauxUIElement.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKLineInspector.h"
 
 #define ANNOTATION_MODE_COUNT 8
 #define TOOL_MODE_COUNT 5
@@ -992,6 +993,27 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     [self setAnnotationMode:[sender tag]];
 }
 
+- (void)showColorsForThisAnnotation:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    if (annotation)
+        [self setActiveAnnotation:annotation];
+    [[NSColorPanel sharedColorPanel] orderFront:sender];
+}
+
+- (void)showLinesForThisAnnotation:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    if (annotation)
+        [self setActiveAnnotation:annotation];
+    [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
+}
+
+- (void)showFontsForThisAnnotation:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    if (annotation)
+        [self setActiveAnnotation:annotation];
+    [[NSFontManager sharedFontManager] orderFrontFontPanel:sender];
+}
+
 #pragma mark Event Handling
 
 - (void)keyDown:(NSEvent *)theEvent
@@ -1412,6 +1434,26 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         }
         
         if (annotation) {
+            if ((annotation != activeAnnotation || [NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
+                [[annotation type] isEqualToString:SKNFreeTextString]) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setRepresentedObject:annotation];
+                [item setTarget:self];
+            }
+            
+            if ((annotation != activeAnnotation || [SKLineInspector sharedLineInspectorExists] == NO || [[[SKLineInspector sharedLineInspector] window] isVisible] == NO) &&
+                [annotation isMarkup] == NO && [[annotation type] isEqualToString:SKNNoteString] == NO) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Line", @"Menu item title") stringByAppendingEllipsis] action:@selector(showLinesForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setRepresentedObject:annotation];
+                [item setTarget:self];
+            }
+            
+            if (annotation != activeAnnotation || [NSColorPanel sharedColorPanelExists] == NO || [[NSColorPanel sharedColorPanel] isVisible] == NO) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Color", @"Menu item title") stringByAppendingEllipsis] action:@selector(showColorsForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setRepresentedObject:annotation];
+                [item setTarget:self];
+            }
+            
             if ((annotation != activeAnnotation || [self isEditing] == NO) && [annotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setRepresentedObject:annotation];
@@ -1422,6 +1464,23 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [item setRepresentedObject:annotation];
             [item setTarget:self];
         } else if ([activeAnnotation isSkimNote]) {
+            if (([NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
+                [[activeAnnotation type] isEqualToString:SKNFreeTextString]) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setTarget:self];
+            }
+            
+            if (([SKLineInspector sharedLineInspectorExists] == NO || [[[SKLineInspector sharedLineInspector] window] isVisible] == NO) &&
+                [activeAnnotation isMarkup] == NO && [[activeAnnotation type] isEqualToString:SKNNoteString] == NO) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Current Note Line", @"Menu item title") stringByAppendingEllipsis] action:@selector(showLinesForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setTarget:self];
+            }
+            
+            if ([NSColorPanel sharedColorPanelExists] == NO || [[NSColorPanel sharedColorPanel] isVisible] == NO) {
+                item = [menu insertItemWithTitle:[NSLocalizedString(@"Current Note Color", @"Menu item title") stringByAppendingEllipsis] action:@selector(showColorsForThisAnnotation:) keyEquivalent:@"" atIndex:0];
+                [item setTarget:self];
+            }
+            
             if ([self isEditing] == NO && [activeAnnotation isEditable]) {
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setTarget:self];
