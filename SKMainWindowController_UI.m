@@ -823,6 +823,17 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     [self outlineView:noteOutlineView copyItems:[sender representedObject]];
 }
 
+- (void)editNoteFromTable:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    int row = [noteOutlineView rowForItem:annotation];
+    [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
+}
+
+- (void)deselectNote:(id)sender {
+    [pdfView setActiveAnnotation:nil];
+}
+
 - (void)selectNote:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     [pdfView scrollAnnotationToVisible:annotation];
@@ -832,10 +843,6 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)revealNote:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     [pdfView scrollAnnotationToVisible:annotation];
-}
-
-- (void)deselectNote:(id)sender {
-    [pdfView setActiveAnnotation:nil];
 }
 
 - (void)autoSizeNoteRows:(id)sender {
@@ -900,22 +907,22 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
             [menuItem setRepresentedObject:items];
         }
-        if ([pdfView hideNotes] == NO) {
-            NSArray *noteItems = [self noteItems:items];
-            if ([noteItems count] == 1) {
-                PDFAnnotation *annotation = [noteItems lastObject];
-                if ([annotation isEditable]) {
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) target:pdfView];
-                    [menuItem setRepresentedObject:annotation];
-                }
-                if ([pdfView activeAnnotation] == annotation)
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
+        if ([pdfView hideNotes] == NO && [items count] == 1) {
+            PDFAnnotation *annotation = [[self noteItems:items] lastObject];
+            if ([annotation isEditable]) {
+                if ([[items lastObject] type])
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editNoteFromTable:) target:self];
                 else
-                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
-                [menuItem setRepresentedObject:annotation];
-                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
+                    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) target:pdfView];
                 [menuItem setRepresentedObject:annotation];
             }
+            if ([pdfView activeAnnotation] == annotation)
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) target:self];
+            else
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) target:self];
+            [menuItem setRepresentedObject:annotation];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
+            [menuItem setRepresentedObject:annotation];
         }
         if ([menu numberOfItems] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
