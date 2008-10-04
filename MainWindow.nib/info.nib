@@ -9,7 +9,10 @@
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>
-	<array/>
+	<array>
+		<integer>797</integer>
+		<integer>225</integer>
+	</array>
 	<key>IBSystem Version</key>
 	<string>9F33</string>
 	<key>targetFramework</key>
