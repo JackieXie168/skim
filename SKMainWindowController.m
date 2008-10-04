@@ -1673,6 +1673,22 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, page, SKPDFPagePageKey, nil]];
 }
 
+- (void)rotateAllBy:(int)rotation {
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] rotateAllBy:-rotation];
+    [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
+    [[self document] undoableActionDoesntDirtyDocument];
+    
+    PDFPage *page = [pdfView currentPage];
+    int i, count = [[pdfView document] pageCount];
+    for (i = 0; i < count; i++)
+        [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + rotation];
+    [pdfView goToPage:page];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
+}
+
 - (IBAction)rotateRight:(id)sender {
     [self rotatePageAtIndex:[[pdfView currentPage] pageIndex] by:90];
 }
@@ -1682,40 +1698,15 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (IBAction)rotateAllRight:(id)sender {
-    NSUndoManager *undoManager = [[self document] undoManager];
-    [[undoManager prepareWithInvocationTarget:self] rotateAllLeft:nil];
-    [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
-    
-    int i, count = [[pdfView document] pageCount];
-    for (i = 0; i < count; i++) {
-        [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
-}
-
-- (IBAction)rotateAllLeftRight:(id)sender {
-    if ([sender selectedSegment] == 0)
-        [self rotateLeft:sender];
-    else
-        [self rotateAllRight:sender];
+    [self rotateAllBy:90];
 }
 
 - (IBAction)rotateAllLeft:(id)sender {
-    NSUndoManager *undoManager = [[self document] undoManager];
-    [[undoManager prepareWithInvocationTarget:self] rotateAllRight:nil];
-    [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
-    [[self document] undoableActionDoesntDirtyDocument];
-    
-    int i, count = [[pdfView document] pageCount];
-    for (i = 0; i < count; i++) {
-        [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
-            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, nil]];
+    [self rotateAllBy:-90];
+}
+
+- (IBAction)rotateAllLeftRight:(id)sender {
+    [self rotateAllBy:[sender selectedSegment] == 0 ? -90 : 90];
 }
 
 - (void)cropPageAtIndex:(unsigned int)anIndex toRect:(NSRect)rect {
