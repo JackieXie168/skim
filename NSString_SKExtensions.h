@@ -44,6 +44,7 @@
 - (NSComparisonResult)noteTypeCompare:(id)other;
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
+- (NSString *)stringByRemovingAliens;
 
 - (NSString *)stringByAppendingEllipsis;
 
