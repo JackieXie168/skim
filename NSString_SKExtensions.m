@@ -143,6 +143,20 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
 }
 
+- (NSString *)stringByRemovingAliens {
+    NSCharacterSet *charSet = [NSCharacterSet privateUseCharacterSet];
+    if ([self rangeOfCharacterFromSet:charSet].length) {
+        NSMutableString *ms = [[self mutableCopy] autorelease];
+        NSRange r = [ms rangeOfCharacterFromSet:charSet];
+        while (r.length) {
+            [ms deleteCharactersInRange:r];
+            r = [ms rangeOfCharacterFromSet:charSet];
+        }
+        return ms;
+    }
+    return self;
+}
+
 - (NSString *)stringByAppendingEllipsis;
 {
     return [self stringByAppendingFormat:@"%C", ELLIPSIS_CHARACTER];

@@ -1884,7 +1884,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (selection != nil) {
         selection = [self currentSelection];
         
-        text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+        text = [selection cleanedString];
         
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [[selection pages] objectAtIndex: 0];
@@ -1954,7 +1954,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKNHighlightString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
-                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [sel cleanedString];
             }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
@@ -1962,7 +1962,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKNUnderlineString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
-                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [sel cleanedString];
             }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
@@ -1970,7 +1970,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([[activeAnnotation type] isEqualToString:SKNStrikeOutString] && [[activeAnnotation page] isEqual:page]) {
                 [sel addSelection:[(PDFAnnotationMarkup *)activeAnnotation selection]];
                 [self removeActiveAnnotation:nil];
-                text = [[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [sel cleanedString];
             }
             newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
@@ -1985,7 +1985,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (newAnnotation) {
         if (annotationType != SKLineNote && annotationType != SKInkNote) {
             if (text == nil)
-                text = [[[page selectionForRect:[newAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [[page selectionForRect:[newAnnotation bounds]] cleanedString];
             if (text)
                 [newAnnotation setString:text];
         }
@@ -2673,7 +2673,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [activeAnnotation setBounds:newBounds];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
             ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            NSString *selString = [[[activeAnnotation page] selectionForRect:newBounds] cleanedString];
             if ([selString length])
                 [activeAnnotation setString:selString];
         }
@@ -2921,7 +2921,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [activeAnnotation setBounds:newBounds];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                 ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-                NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                NSString *selString = [[[activeAnnotation page] selectionForRect:newBounds] cleanedString];
                 if ([selString length])
                     [activeAnnotation setString:selString];
             }
@@ -3056,7 +3056,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 accessibilityChildren = nil;
                 
                 newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
-                [newActiveAnnotation setString:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
+                [newActiveAnnotation setString:[sel cleanedString]];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
@@ -3159,7 +3159,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 if (draggedAnnotation && 
                     [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
                     ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                    NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] cleanedString];
                     if ([selString length])
                         [activeAnnotation setString:selString];
                 }

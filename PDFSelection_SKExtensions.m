@@ -58,10 +58,14 @@
     return [pages count] ? [[pages objectAtIndex:0] displayLabel] : nil;
 }
 
+- (NSString *)cleanedString {
+	return [[[self string] stringByRemovingAliens] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+}
+
 - (NSAttributedString *)contextString {
     PDFSelection *extendedSelection = [self copy]; // see remark in -tableViewSelectionDidChange:
 	NSMutableAttributedString *attributedSample;
-	NSString *searchString = [[self string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+	NSString *searchString = [self cleanedString];
 	NSString *sample;
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
@@ -75,7 +79,7 @@
 	[extendedSelection extendSelectionAtEnd:50];
 	
     // get the cleaned string
-    sample = [[extendedSelection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+    sample = [extendedSelection cleanedString];
     
 	// Finally, create attributed string.
  	attributedSample = [[NSMutableAttributedString alloc] initWithString:sample];
