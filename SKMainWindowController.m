@@ -1683,6 +1683,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     int i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++)
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + rotation];
+    [pdfView layoutDocumentView];
+    // due to as PDFKit bug, PDFView doesn't notice that it's currentPage has changed, so we need to force a page change to have it notice first
+    [pdfView goToPreviousPage:nil];
     [pdfView goToPage:page];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
