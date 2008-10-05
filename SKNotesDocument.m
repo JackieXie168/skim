@@ -290,6 +290,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (NSView *)printableView{
     BDSKPrintableView *printableView = [[[BDSKPrintableView alloc] initForScreenDisplay:NO] autorelease];
     NSAttributedString *attrString = [[[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL] autorelease];
+    [printableView setPrintInfo:[self printInfo]];
     [printableView setAttributedString:attrString];
     return printableView;
 }
