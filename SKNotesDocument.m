@@ -55,6 +55,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "Files_SKExtensions.h"
+#import "BDSKPrintableView.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -282,6 +283,26 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     }
     
     return setup;
+}
+
+#pragma mark Printing
+
+- (NSView *)printableView{
+    BDSKPrintableView *printableView = [[[BDSKPrintableView alloc] initForScreenDisplay:NO] autorelease];
+    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL] autorelease];
+    [printableView setAttributedString:attrString];
+    return printableView;
+}
+
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
+    NSPrintInfo *info = [[self printInfo] copy];
+    [[info dictionary] addEntriesFromDictionary:printSettings];
+    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:[self printableView] printInfo:info];
+    [info release];
+    NSPrintPanel *printPanel = [printOperation printPanel];
+    if ([printPanel respondsToSelector:@selector(setOptions:)])
+        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+    return printOperation;
 }
 
 #pragma mark Actions
