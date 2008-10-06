@@ -143,18 +143,83 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
 }
 
+// NS and CF character sets won't find these, due to the way CFString handles surrogate pairs.  These inlines were borrowed from CFCharacterSetPriv.h in CF-lite-476.13.
+static inline bool __SKIsSurrogateHighCharacter(UniChar character) {
+    return ((character >= 0xD800UL) && (character <= 0xDBFFUL) ? true : false);
+}
+
+static inline bool __SKIsSurrogateLowCharacter(UniChar character) {
+    return ((character >= 0xDC00UL) && (character <= 0xDFFFUL) ? true : false);
+}
+
+static inline UTF32Char __SKGetLongCharacterForSurrogatePair(UniChar surrogateHigh, UniChar surrogateLow) {
+    return ((surrogateHigh - 0xD800UL) << 10) + (surrogateLow - 0xDC00UL) + 0x0010000UL;
+}
+
+#define SURROGATE_START 0xD800
+#define SURROGATE_END 0xDFFF
+
+// remove anything in the private use planes, and/or malformed surrogate pair sequences
 - (NSString *)stringByRemovingAliens {
-    NSCharacterSet *charSet = [NSCharacterSet privateUseCharacterSet];
-    if ([self rangeOfCharacterFromSet:charSet].length) {
-        NSMutableString *ms = [[self mutableCopy] autorelease];
-        NSRange r = [ms rangeOfCharacterFromSet:charSet];
-        while (r.length) {
-            [ms deleteCharactersInRange:r];
-            r = [ms rangeOfCharacterFromSet:charSet];
+
+    // make a mutable copy only if needed
+    CFMutableStringRef theString = NULL;
+    
+    CFStringInlineBuffer inlineBuffer;
+    CFIndex length = CFStringGetLength((void *)self);
+    
+    // use the current mutable string with the inline buffer, but make a new mutable copy if needed
+    CFStringInitInlineBuffer((void *)self, &inlineBuffer, CFRangeMake(0, length));
+    UniChar ch;
+    NSCharacterSet *privateUse = [NSCharacterSet privateUseCharacterSet];
+    
+#define LAZY_COPY do{if(NULL==theString){theString=(void*)[[self mutableCopy] autorelease];}} while(0)
+        
+    // idx is current index into the inline buffer, and delIdx is current index in the mutable string
+    CFIndex idx = 0, delIdx = 0;
+    while(idx < length){
+        ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx);
+        if ([privateUse characterIsMember:ch]) {
+            LAZY_COPY;
+            CFStringDelete(theString, CFRangeMake(delIdx, 1));
+        } else if ((ch >= SURROGATE_START) && (ch <= SURROGATE_END)) {
+            
+            if ((idx + 1) < length) {
+                
+                UniChar highChar = ch;
+                UniChar lowChar = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx + 1);
+                UTF32Char longChar = __SKGetLongCharacterForSurrogatePair(highChar, lowChar);
+                // if we only have half of a surrogate pair, delete the offending character
+                if (__SKIsSurrogateLowCharacter(lowChar) == false || __SKIsSurrogateHighCharacter(highChar) == false) {
+                    LAZY_COPY;
+                    CFStringDelete(theString, CFRangeMake(delIdx, 1));
+                    // only deleted a single char, so don't need to adjust idx
+                } else if (CFCharacterSetIsLongCharacterMember((CFCharacterSetRef)privateUse, longChar)) {
+                    LAZY_COPY;
+                    // remove the pair; can't display private use characters
+                    CFStringDelete(theString, CFRangeMake(delIdx, 2));
+                    // adjust since we removed two characters...
+                    idx++;
+                } else {
+                    // valid surrogate pair, so we'll leave it alone
+                    delIdx += 2;
+                    idx++;
+                }
+                
+            } else {
+                // insufficient length for this to be a valid sequence, so it's only half of a surrogate pair
+                LAZY_COPY;
+                CFStringDelete(theString, CFRangeMake(delIdx, 1));
+            }
+            
+        } else {
+            // keep track of our index in the copy and the original
+            delIdx++;
         }
-        return ms;
+        idx++;
     }
-    return self;
+
+    return (NULL == theString ? self : (id)theString);
 }
 
 - (NSString *)stringByAppendingEllipsis;
