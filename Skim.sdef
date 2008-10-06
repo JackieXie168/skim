@@ -260,14 +260,6 @@
                 -->
 				<type type="file" list="yes"/>
 			</direct-parameter>
-            <parameter name="at TeX line" code="Line" type="integer" optional="yes" hidden="yes"
-                description="Go to a location in the PDF corresponding to the line in a TeX source file.">
-                <cocoa key="line"/>
-            </parameter>
-			<parameter name="from source" type="file" code="SrcF" optional="yes" hidden="yes"
-				description="The TeX source file. By default this is derived from the file."> 
-				<cocoa key="source"/> 
-			</parameter>
 			<!--
 				According to TN2106, 'open' should return the resulting document
 				object.  However, the Cocoa implementation does not do this yet.
