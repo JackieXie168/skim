@@ -57,7 +57,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     static NSSet *richTextTypes = nil;
     if (richTextTypes == nil) {
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"odt", nil];
+            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
         else
             richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
     }
@@ -71,7 +71,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
-    } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"odt"] != NSOrderedSame) {
+    } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"docx"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"odt"] != NSOrderedSame) {
         data = [[self notesStringUsingTemplateFile:templateFile] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     }
     return data;
