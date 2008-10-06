@@ -38,7 +38,6 @@
 
 #import "SKApplication.h"
 #import "SKPDFDocument.h"
-#import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
@@ -243,54 +242,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [orderedDocuments removeObjectAtIndex:i];
     
     return orderedDocuments;
-}
-
-- (id)handleOpenScriptCommand:(NSScriptCommand *)command {
-	NSDictionary *args = [command evaluatedArguments];
-    id file = [command directParameter];
-	id lineNumber = [args objectForKey:@"line"];
- 	id source = [args objectForKey:@"source"];
-    
-    if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1)) {
-        if ([[SKApplication superclass] instancesRespondToSelector:_cmd])
-            [super handleOpenScriptCommand:command];
-        return nil;
-    }
-	
-    if ([file isKindOfClass:[NSArray class]])
-        file = [file lastObject];
-    if ([file isKindOfClass:[NSString class]])
-        file = [NSURL fileURLWithPath:file];
-    
-    if (source == nil)
-        source = file;
-    if ([source isKindOfClass:[NSString class]])
-        source = [NSURL fileURLWithPath:source];
-    
-    if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]]) {
-        
-        source = [[source path] stringByReplacingPathExtension:@"tex"];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]]) {
-            
-            NSError *error = nil;
-            SKPDFDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:&error];
-            if (document == nil)
-                [self presentError:error];
-            
-            if ([[NSFileManager defaultManager] fileExistsAtPath:source] && [document respondsToSelector:@selector(synchronizer)])
-                [[document synchronizer] findPageAndLocationForLine:MAX(0, [lineNumber intValue] - 1) inFile:source];
-            
-        } else {
-            [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-            [command setScriptErrorString:@"File does not exist."];
-        }
-    } else {
-		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [command setScriptErrorString:@"File argument is not a file."];
-    }
-    
-    return nil;
 }
 
 @end
