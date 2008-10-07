@@ -52,7 +52,8 @@
 
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;
-
+- (IBAction)toggleStatusBar:(id)sender;
+ 
 - (NSArray *)notes;
 - (unsigned int)countOfNotes;
 - (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;

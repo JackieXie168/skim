@@ -62,6 +62,7 @@ static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindo
 
 static NSString *SKNotesDocumentToolbarIdentifier = @"SKNotesDocumentToolbarIdentifier";
 static NSString *SKNotesDocumentSearchToolbarItemIdentifier = @"SKNotesDocumentSearchToolbarItemIdentifier";
+static NSString *SKNotesDocumentOpenPDFToolbarItemIdentifier = @"SKNotesDocumentOpenPDFToolbarItemIdentifier";
 
 static NSString *SKLastExportedNotesTypeKey = @"SKLastExportedNotesType";
 
@@ -86,6 +87,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (void)dealloc {
     [notes release];
     [toolbarItems release];
+    [statusBar release];
     [super dealloc];
 }
 
@@ -104,6 +106,12 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [self setupToolbar:aController];
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
+    
+    [statusBar retain];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey] == NO)
+        [self toggleStatusBar:nil];
+    
+    [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
     
@@ -372,6 +380,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     }
 }
 
+- (IBAction)toggleStatusBar:(id)sender {
+    [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:1.0];
+    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowNotesStatusBarKey];
+}
+
 - (void)copyNote:(id)sender {
     NSDictionary *item = [sender representedObject];
     [self outlineView:outlineView copyItems:[NSArray arrayWithObjects:item, nil]];
@@ -411,6 +424,18 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
             [rowIndexes addIndex:row];
     }
     [outlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(toggleStatusBar:)) {
+        if ([statusBar isVisible])
+            [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
+        return YES;
+    }
+    return YES;
 }
 
 #pragma mark Accessors
@@ -645,6 +670,15 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [toolbarItems setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
     [item release];
     
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKNotesDocumentOpenPDFToolbarItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Open PDF", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Open Associated PDF File", @"Tool tip message")];
+    [item setImageNamed:@"PDFDocument"];
+    [item setTarget:self];
+    [item setAction:@selector(openPDF:)];
+    [toolbarItems setObject:item forKey:SKNotesDocumentOpenPDFToolbarItemIdentifier];
+    [item release];
+    
     // Attach the toolbar to the window
     [[aController window] setToolbar:toolbar];
 }
@@ -658,17 +692,25 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
     return [NSArray arrayWithObjects:
-        SKNotesDocumentSearchToolbarItemIdentifier,
-        NSToolbarFlexibleSpaceItemIdentifier, nil];
+        SKNotesDocumentSearchToolbarItemIdentifier, 
+        NSToolbarFlexibleSpaceItemIdentifier, 
+        SKNotesDocumentOpenPDFToolbarItemIdentifier, nil];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
     return [NSArray arrayWithObjects: 
         SKNotesDocumentSearchToolbarItemIdentifier, 
+        SKNotesDocumentOpenPDFToolbarItemIdentifier, 
         NSToolbarFlexibleSpaceItemIdentifier, 
 		NSToolbarSpaceItemIdentifier, 
 		NSToolbarSeparatorItemIdentifier, 
 		NSToolbarCustomizeToolbarItemIdentifier, nil];
+}
+
+- (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
+    if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
+        return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileName] stringByReplacingPathExtension:@"pdf"]];
+    return YES;
 }
 
 @end
