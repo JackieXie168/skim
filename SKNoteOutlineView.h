@@ -49,6 +49,8 @@
 - (void)setNoteTypes:(NSArray *)types;
 - (NSMenu *)noteTypeMenu;
 
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString;
+
 - (IBAction)toggleDisplayNoteType:(id)sender;
 - (IBAction)displayAllNoteTypes:(id)sender;
 - (IBAction)selectNoteTypes:(id)sender;
