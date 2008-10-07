@@ -704,6 +704,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return [NSArray arrayWithObjects: 
         SKNotesDocumentSearchToolbarItemIdentifier, 
         SKNotesDocumentOpenPDFToolbarItemIdentifier, 
+        NSToolbarPrintItemIdentifier, 
         NSToolbarFlexibleSpaceItemIdentifier, 
 		NSToolbarSpaceItemIdentifier, 
 		NSToolbarSeparatorItemIdentifier, 
