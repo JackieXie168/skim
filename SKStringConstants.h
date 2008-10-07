@@ -103,6 +103,7 @@ extern NSString *SKDefaultPDFDisplaySettingsKey;
 extern NSString *SKDefaultFullScreenPDFDisplaySettingsKey;
 extern NSString *SKShowStatusBarKey;
 extern NSString *SKShowBookmarkStatusBarKey;
+extern NSString *SKShowNotesStatusBarKey;
 extern NSString *SKEnableAppleRemoteKey;
 extern NSString *SKEnableKeyspanFrontRowControlKey;
 extern NSString *SKEnableKeyboardRemoteSimulationKey;

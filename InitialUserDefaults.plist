@@ -276,6 +276,8 @@
         <true/>
         <key>SKShowBookmarkStatusBar</key>
         <true/>
+        <key>SKShowNotesStatusBar</key>
+        <true/>
         <key>SKAutoRotatePrintedPages</key>
         <true/>
     </dict>

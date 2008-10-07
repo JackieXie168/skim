@@ -104,6 +104,7 @@ NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";
 NSString *SKDefaultFullScreenPDFDisplaySettingsKey = @"SKDefaultFullScreenPDFDisplaySettings";
 NSString *SKShowStatusBarKey = @"SKShowStatusBar";
 NSString *SKShowBookmarkStatusBarKey = @"SKShowBookmarkStatusBar";
+NSString *SKShowNotesStatusBarKey = @"SKShowNotesStatusBar";
 NSString *SKEnableAppleRemoteKey = @"SKEnableAppleRemote";
 NSString *SKEnableKeyspanFrontRowControlKey = @"SKEnableKeyspanFrontRowControl";
 NSString *SKEnableKeyboardRemoteSimulationKey = @"SKEnableKeyboardRemoteSimulation";
