@@ -113,6 +113,9 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
+    [[[outlineView tableColumnWithIdentifier:@"note"] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:@"page"] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    
     [outlineView setAutoresizesOutlineColumn: NO];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
