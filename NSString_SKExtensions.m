@@ -138,6 +138,28 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[self noteTypeOrder] compare:[other noteTypeOrder]];
 }
 
+- (NSComparisonResult)boundsCompare:(NSString *)aString {
+    NSRect rect1 = NSRectFromString(self);
+    NSRect rect2 = NSRectFromString(aString);
+    float top1 = NSMaxY(rect1);
+    float top2 = NSMaxY(rect2);
+    
+    if (top1 > top2)
+        return NSOrderedAscending;
+    else if (top1 < top2)
+        return NSOrderedDescending;
+    
+    float left1 = NSMinX(rect1);
+    float left2 = NSMinX(rect2);
+    
+    if (left1 < left2)
+        return NSOrderedAscending;
+    else if (left1 > left2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
+}
+
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 {
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
