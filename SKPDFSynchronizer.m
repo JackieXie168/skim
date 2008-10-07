@@ -327,8 +327,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | Server thread
 
 - (NSString *)sourceFileForFileName:(NSString *)file defaultExtension:(NSString *)extension {
-    if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
-        file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
     if (extension && [[file pathExtension] length] == 0)
         file = [file stringByAppendingPathExtension:extension];
     if ([file isAbsolutePath] == NO)
@@ -378,6 +376,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
             [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
             
+            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
+                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
             file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
             [files addObject:file];
             
@@ -421,6 +421,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
                     } else if (ch == '(') {
                         // start of a new source file
                         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+                            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
+                                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
                             file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
                             [files addObject:file];
                             if ([lines objectForKey:file] == nil) {
@@ -578,7 +580,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
     BOOL rv = NO;
     if (scanner)
         synctex_scanner_free(scanner);
-    if (scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation])) {
+    scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation]);
+    if (scanner == NULL) {
+        // synctex has the weird bug where it adds quotes around file names contining spaces
+        NSString *quotedFileName = [[theFileName lastPathComponent] stringByDeletingPathExtension];
+        quotedFileName = [NSString stringWithFormat:@"\"%@\"", quotedFileName];
+        quotedFileName = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:quotedFileName];
+        quotedFileName = [quotedFileName stringByAppendingPathExtension:[theFileName pathExtension]];
+        scanner = synctex_scanner_new_with_output_file([quotedFileName fileSystemRepresentation]);
+    }
+    if (scanner) {
         [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) defaultExtension:nil]];
         if (filenames)
             [filenames removeAllObjects];
