@@ -56,8 +56,12 @@
 #import "NSView_SKExtensions.h"
 #import "Files_SKExtensions.h"
 #import "BDSKPrintableView.h"
+#import "SKToolbarItem.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
+
+static NSString *SKNotesDocumentToolbarIdentifier = @"SKNotesDocumentToolbarIdentifier";
+static NSString *SKNotesDocumentSearchToolbarItemIdentifier = @"SKNotesDocumentSearchToolbarItemIdentifier";
 
 static NSString *SKLastExportedNotesTypeKey = @"SKLastExportedNotesType";
 
@@ -81,6 +85,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 - (void)dealloc {
     [notes release];
+    [toolbarItems release];
     [super dealloc];
 }
 
@@ -95,6 +100,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [aController setShouldCloseDocument:YES];
+    
+    [self setupToolbar:aController];
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
@@ -285,6 +292,45 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return setup;
 }
 
+- (void)updateNoteFilterPredicate {
+    NSPredicate *filterPredicate = nil;
+    NSPredicate *typePredicate = nil;
+    NSPredicate *searchPredicate = nil;
+    NSArray *types = [outlineView noteTypes];
+    NSString *searchString = [searchField stringValue];
+    if ([types count] < 8) {
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+        NSMutableArray *predicateArray = [NSMutableArray array];
+        NSEnumerator *typeEnum = [types objectEnumerator];
+        NSString *type;
+        
+        while (type = [typeEnum nextObject]) {
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        }
+        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+    }
+    if (searchString && [searchString isEqualToString:@""] == NO) {
+        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
+        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        rhs = [NSExpression expressionForKeyPath:@"text.string"];
+        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
+    }
+    if (typePredicate) {
+        if (searchPredicate)
+            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
+        else
+            filterPredicate = typePredicate;
+    } else if (searchPredicate) {
+        filterPredicate = searchPredicate;
+    }
+    [arrayController setFilterPredicate:filterPredicate];
+    [outlineView reloadData];
+}
+
 #pragma mark Printing
 
 - (NSView *)printableView{
@@ -315,6 +361,15 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:SKResolvedURLFromPath(path) display:YES error:&error])
             [NSApp presentError:error];
     } else NSBeep();
+}
+
+- (IBAction)searchNotes:(id)sender {
+    [self updateNoteFilterPredicate];
+    if ([[sender stringValue] length]) {
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
+    }
 }
 
 - (void)copyNote:(id)sender {
@@ -447,23 +502,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
-    NSArray *types = [outlineView noteTypes];
-    if ([types count] == 8) {
-        [arrayController setFilterPredicate:nil];
-    } else {
-        NSExpression *lhs = [NSExpression expressionForKeyPath:SKNPDFAnnotationTypeKey];
-        NSMutableArray *predicateArray = [NSMutableArray array];
-        NSEnumerator *typeEnum = [types objectEnumerator];
-        NSString *type;
-        
-        while (type = [typeEnum nextObject]) {
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        }
-        [arrayController setFilterPredicate:[NSCompoundPredicate orPredicateWithSubpredicates:predicateArray]];
-    }
-    [outlineView reloadData];
+    [self updateNoteFilterPredicate];
 }
 
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
@@ -572,6 +611,64 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
     else
         [statusBar setLeftStringValue:@""];
+}
+
+#pragma mark Toolbar
+
+- (void)setupToolbar:(NSWindowController *)aController {
+    // Create a new toolbar instance, and attach it to our document window
+    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKNotesDocumentToolbarIdentifier] autorelease];
+    SKToolbarItem *item;
+    
+    toolbarItems = [[NSMutableDictionary alloc] initWithCapacity:1];
+    
+    // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
+    [toolbar setAllowsUserCustomization:YES];
+    [toolbar setAutosavesConfiguration:YES];
+    [toolbar setDisplayMode: NSToolbarDisplayModeDefault];
+    
+    // We are the delegate
+    [toolbar setDelegate:self];
+    
+    // Add template toolbar items
+    
+    NSSize minSize = [searchField frame].size;
+    NSSize maxSize = minSize;
+    maxSize.width = 1000.0;
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKNotesDocumentSearchToolbarItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Search", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Search Notes", @"Tool tip message")];
+    [item setView:searchField];
+    [item setMinSize:minSize];
+    [item setMaxSize:maxSize];
+    [toolbarItems setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
+    [item release];
+    
+    // Attach the toolbar to the window
+    [[aController window] setToolbar:toolbar];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted {
+    NSToolbarItem *item = [toolbarItems objectForKey:itemIdent];
+    if (willBeInserted == NO)
+        item = [[item copy] autorelease];
+    return item;
+}
+
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects:
+        SKNotesDocumentSearchToolbarItemIdentifier,
+        NSToolbarFlexibleSpaceItemIdentifier, nil];
+}
+
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
+    return [NSArray arrayWithObjects: 
+        SKNotesDocumentSearchToolbarItemIdentifier, 
+        NSToolbarFlexibleSpaceItemIdentifier, 
+		NSToolbarSpaceItemIdentifier, 
+		NSToolbarSeparatorItemIdentifier, 
+		NSToolbarCustomizeToolbarItemIdentifier, nil];
 }
 
 @end
