@@ -68,20 +68,6 @@
     return nonWhitespaceAndNewlineCharacterSet;
 }
 
-+ (id)privateUseCharacterSet {
-    static NSCharacterSet *privateUseCharacterSet = nil;
-    if (nil == privateUseCharacterSet) {
-        // supplementary private use B
-        NSMutableCharacterSet *mcs = [NSMutableCharacterSet characterSetWithRange:NSMakeRange(0x100000, 0x10FFFF-0x100000)];
-        // supplementary private use A
-        [mcs addCharactersInRange:NSMakeRange(0xF0000, 0xFFFFF-0xF0000)];
-        // private use area
-        [mcs addCharactersInRange:NSMakeRange(0xE000, 0xF8FF-0xE000)];
-        privateUseCharacterSet = [mcs copy];
-    }
-    return privateUseCharacterSet;
-}
-
 + (void)load {
     SKAddClassMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet));
 }
