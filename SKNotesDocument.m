@@ -304,41 +304,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (void)updateNoteFilterPredicate {
-    NSPredicate *filterPredicate = nil;
-    NSPredicate *typePredicate = nil;
-    NSPredicate *searchPredicate = nil;
-    NSArray *types = [outlineView noteTypes];
-    NSString *searchString = [searchField stringValue];
-    if ([types count] < 8) {
-        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-        NSMutableArray *predicateArray = [NSMutableArray array];
-        NSEnumerator *typeEnum = [types objectEnumerator];
-        NSString *type;
-        
-        while (type = [typeEnum nextObject]) {
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        }
-        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
-    }
-    if (searchString && [searchString isEqualToString:@""] == NO) {
-        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
-        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
-        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
-        rhs = [NSExpression expressionForKeyPath:@"text.string"];
-        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
-        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
-    }
-    if (typePredicate) {
-        if (searchPredicate)
-            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
-        else
-            filterPredicate = typePredicate;
-    } else if (searchPredicate) {
-        filterPredicate = searchPredicate;
-    }
-    [arrayController setFilterPredicate:filterPredicate];
+    [arrayController setFilterPredicate:[outlineView filterPredicateForSearchString:[searchField stringValue]]];
     [outlineView reloadData];
 }
 

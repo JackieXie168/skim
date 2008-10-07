@@ -44,6 +44,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 
+#define NUMBER_OF_TYPES 9
 
 @implementation SKNoteOutlineView
 
@@ -199,6 +200,43 @@
     }
 }
 
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString {
+    NSPredicate *filterPredicate = nil;
+    NSPredicate *typePredicate = nil;
+    NSPredicate *searchPredicate = nil;
+    NSArray *types = [self noteTypes];
+    if ([types count] < NUMBER_OF_TYPES) {
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+        NSMutableArray *predicateArray = [NSMutableArray array];
+        NSEnumerator *typeEnum = [types objectEnumerator];
+        NSString *type;
+        
+        while (type = [typeEnum nextObject]) {
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        }
+        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+    }
+    if (searchString && [searchString isEqualToString:@""] == NO) {
+        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
+        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        rhs = [NSExpression expressionForKeyPath:@"text.string"];
+        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
+    }
+    if (typePredicate) {
+        if (searchPredicate)
+            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
+        else
+            filterPredicate = typePredicate;
+    } else if (searchPredicate) {
+        filterPredicate = searchPredicate;
+    }
+    return filterPredicate;
+}
+
 #pragma mark Note Types
 
 - (NSMenu *)noteTypeMenu {
@@ -248,7 +286,7 @@
     NSMenu *menu = [self noteTypeMenu];
     int i;
     
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < NUMBER_OF_TYPES; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         if ([item state] == NSOnState)
             [types addObject:[item representedObject]];
@@ -260,7 +298,7 @@
     NSMenu *menu = [self noteTypeMenu];
     int i;
     
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < NUMBER_OF_TYPES; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         [item setState:[types containsObject:[item representedObject]] ? NSOnState : NSOffState];
     }
@@ -279,7 +317,7 @@
 - (IBAction)displayAllNoteTypes:(id)sender {
     NSMenu *menu = [self noteTypeMenu];
     int i;
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[menu itemAtIndex:i] setState:NSOnState];
     [self noteTypesUpdated];
 }
@@ -288,7 +326,7 @@
     if (returnCode == NSOKButton) {
         NSMenu *menu = [self noteTypeMenu];
         int i;
-        for (i = 0; i < 9; i++)
+        for (i = 0; i < NUMBER_OF_TYPES; i++)
             [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellWithTag:i] state]];
         [self noteTypesUpdated];
     }
@@ -302,7 +340,7 @@
     
     NSMenu *menu = [self noteTypeMenu];
     int i;
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
 	
     [NSApp beginSheet:noteTypeSheet

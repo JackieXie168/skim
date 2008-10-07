@@ -3698,41 +3698,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)updateNoteFilterPredicate {
-    NSPredicate *filterPredicate = nil;
-    NSPredicate *typePredicate = nil;
-    NSPredicate *searchPredicate = nil;
-    NSArray *types = [noteOutlineView noteTypes];
-    NSString *searchString = [noteSearchField stringValue];
-    if ([types count] < 8) {
-        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-        NSMutableArray *predicateArray = [NSMutableArray array];
-        NSEnumerator *typeEnum = [types objectEnumerator];
-        NSString *type;
-        
-        while (type = [typeEnum nextObject]) {
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        }
-        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
-    }
-    if (searchString && [searchString isEqualToString:@""] == NO) {
-        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
-        NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
-        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
-        rhs = [NSExpression expressionForKeyPath:@"text.string"];
-        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
-        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
-    }
-    if (typePredicate) {
-        if (searchPredicate)
-            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
-        else
-            filterPredicate = typePredicate;
-    } else if (searchPredicate) {
-        filterPredicate = searchPredicate;
-    }
-    [noteArrayController setFilterPredicate:filterPredicate];
+    [noteArrayController setFilterPredicate:[noteOutlineView filterPredicateForSearchString:[noteSearchField stringValue]]];
     [noteOutlineView reloadData];
 }
 
