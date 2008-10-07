@@ -9,6 +9,8 @@
 			<dict>
 				<key>openPDF</key>
 				<string>id</string>
+				<key>searchNotes</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>SKNotesDocument</string>
@@ -20,6 +22,8 @@
 				<string>NSArrayController</string>
 				<key>outlineView</key>
 				<string>SKNoteOutlineView</string>
+				<key>searchField</key>
+				<string>NSSearchField</string>
 				<key>statusBar</key>
 				<string>SKStatusBar</string>
 			</dict>

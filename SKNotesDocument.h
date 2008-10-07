@@ -44,16 +44,21 @@
     IBOutlet SKNoteOutlineView *outlineView;
     IBOutlet NSArrayController *arrayController;
     IBOutlet SKStatusBar *statusBar;
+    IBOutlet NSSearchField *searchField;
+    NSMutableDictionary *toolbarItems;
     NSMutableArray *notes;
     BOOL exportUsingPanel;
 }
 
 - (IBAction)openPDF:(id)sender;
+- (IBAction)searchNotes:(id)sender;
 
 - (NSArray *)notes;
 - (unsigned int)countOfNotes;
 - (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;
 - (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)index;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)index;
+
+- (void)setupToolbar:(NSWindowController *)aController;
 
 @end
