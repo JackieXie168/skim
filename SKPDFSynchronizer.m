@@ -326,7 +326,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 #pragma mark | Server thread
 
-- (NSString *)sourceFileForFileName:(NSString *)file defaultExtension:(NSString *)extension {
+- (NSString *)sourceFileForFileName:(NSString *)file defaultExtension:(NSString *)extension removeQuotes:(BOOL)removeQuotes {
+    if (removeQuotes && [file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
+        file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
     if (extension && [[file pathExtension] length] == 0)
         file = [file stringByAppendingPathExtension:extension];
     if ([file isAbsolutePath] == NO)
@@ -337,7 +339,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
 
 - (NSString *)sourceFileForFileSystemRepresentation:(const char *)fileRep defaultExtension:(NSString *)extension {
     NSString *file = (NSString *)CFStringCreateWithFileSystemRepresentation(NULL, fileRep);
-    return [self sourceFileForFileName:[file autorelease] defaultExtension:extension];
+    return [self sourceFileForFileName:[file autorelease] defaultExtension:extension removeQuotes:NO];
 }
 
 #pragma mark || PDFSync
@@ -376,9 +378,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] &&
             [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL]) {
             
-            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
-                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
-            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
+            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:YES];
             [files addObject:file];
             
             array = [[NSMutableArray alloc] init];
@@ -421,9 +421,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                     } else if (ch == '(') {
                         // start of a new source file
                         if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
-                            if ([file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
-                                file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
-                            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
+                            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:YES];
                             [files addObject:file];
                             if ([lines objectForKey:file] == nil) {
                                 array = [[NSMutableArray alloc] init];
@@ -599,7 +597,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         synctex_node_t node = synctex_scanner_input(scanner);
         do {
             filename = [(NSString *)CFStringCreateWithFileSystemRepresentation(NULL, synctex_scanner_get_name(scanner, synctex_node_tag(node))) autorelease];
-            [filenames setObject:filename forKey:[self sourceFileForFileName:filename defaultExtension:SKPDFSynchronizerTexExtension]];
+            [filenames setObject:filename forKey:[self sourceFileForFileName:filename defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:NO]];
         } while (node = synctex_node_next(node));
         isPdfsync = NO;
         rv = [self shouldKeepRunning];
@@ -688,7 +686,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
         
-        file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension];
+        file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:NO];
         
         if (isPdfsync)
             success = [self pdfsyncFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
