@@ -203,6 +203,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
             note = [note mutableCopy];
             [note setValue:[note valueForKey:SKNPDFAnnotationStringKey] forKey:SKNPDFAnnotationContentsKey];
             [note removeObjectForKey:SKNPDFAnnotationStringKey];
+            [note removeObjectForKey:SKNPDFAnnotationPageKey];
             [note removeObjectForKey:SKNotesDocumentRowHeightKey];
             [note removeObjectForKey:SKNotesDocumentChildKey];
             [array addObject:note];
@@ -239,8 +240,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         
         while (dict = [dictEnum nextObject]) {
             NSMutableDictionary *note = [dict mutableCopy];
+            unsigned int pageIndex = [[dict valueForKey:@"pageIndex"] unsignedIntValue];
+            NSDictionary *pageDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%u", pageIndex + 1], @"label", nil];
             
             [note setValue:[dict valueForKey:SKNPDFAnnotationContentsKey] forKey:SKNPDFAnnotationStringKey];
+            [note setValue:pageDict forKey:SKNPDFAnnotationPageKey];
             if ([[note valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNTextString])
                 [note setValue:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
             if ([[note valueForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNNoteString]) {
@@ -262,7 +266,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         [[self mutableArrayValueForKey:SKNotesDocumentNotesKey] setArray:newNotes];
         [outlineView reloadData];
         didRead = YES;
-    }
+    }NSLog(@"%@",notes);
     
     if (didRead == NO && outError != NULL)
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
