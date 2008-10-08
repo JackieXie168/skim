@@ -508,10 +508,13 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [self performFit:self];
     
     // Open snapshots?
-    if (hasWindowSetup && [savedNormalSetup objectForKey:SKMainWindowSnapshotsKey])
-        [self showSnapshotWithSetups:[savedNormalSetup objectForKey:SKMainWindowSnapshotsKey]];
+    NSArray *snapshotSetups = nil;
+    if (hasWindowSetup)
+        snapshotSetups = [savedNormalSetup objectForKey:SKMainWindowSnapshotsKey];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
-        [self showSnapshotWithSetups:[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]]];
+        snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]];
+    if ([snapshotSetups count])
+        [self showSnapshotWithSetups:snapshotSetups];
     
     // typeSelectHelpers
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
@@ -565,7 +568,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:SKMainWindowLeftSidePaneWidthKey];
     [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:SKMainWindowRightSidePaneWidthKey];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:SKMainWindowPageIndexKey];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SKMainWindowSnapshotsKey];
+    if ([snapshots count])
+        [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SKMainWindowSnapshotsKey];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
         [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
