@@ -765,7 +765,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if ([string length])
             [pboard setString:string forType:NSStringPboardType];
         if ([attrString length])
-            [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil] forType:NSRTFPboardType];
+            [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
     }
 }
 

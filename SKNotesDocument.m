@@ -358,9 +358,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowNotesStatusBarKey];
 }
 
-- (void)copyNote:(id)sender {
-    NSDictionary *item = [sender representedObject];
-    [self outlineView:outlineView copyItems:[NSArray arrayWithObjects:item, nil]];
+- (void)copyNotes:(id)sender {
+    [self outlineView:noteOutlineView copyItems:[sender representedObject]];
 }
 
 - (void)autoSizeNoteRows:(id)sender {
@@ -372,19 +371,19 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     NSSize size = NSMakeSize(width, FLT_MAX);
     NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
-    NSMutableArray *items = [NSMutableArray array];
-    id item = [sender representedObject];
+    NSArray *items = [sender representedObject];
     
-    if (item) {
-        [items addObject:item];
-    } else {
-        [items addObjectsFromArray:[self notes]];
-        [items addObjectsFromArray:[[self notes] valueForKey:SKNotesDocumentChildKey]];
+    if (items == nil) {
+        items = [NSMutableArray array];
+        [(NSMutableArray *)items addObjectsFromArray:[self notes]];
+        [(NSMutableArray *)items addObjectsFromArray:[[self notes] valueForKey:SKNotesDocumentChildKey]];
+        [(NSMutableArray *)items removeObject:[NSNull null]];
     }
     
     int i, count = [items count];
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     int row;
+    id item;
     
     for (i = 0; i < count; i++) {
         item = [items objectAtIndex:i];
@@ -396,7 +395,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         if (row != -1)
             [rowIndexes addIndex:row];
     }
-    [outlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
+    [outlineView reloadData];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
@@ -516,25 +516,23 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
             [string appendString:@"\n\n"];
         if ([attrString length])
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:@"\n\n"];
-        if ([item valueForKey:SKNPDFAnnotationTypeKey]) {
-            [string appendString:[item valueForKey:SKNPDFAnnotationStringKey]];
+        [string appendString:[item valueForKey:SKNPDFAnnotationStringKey]];
+        if ([item valueForKey:SKNPDFAnnotationTypeKey])
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[item valueForKey:SKNPDFAnnotationStringKey]];
-        } else {
-            [string appendString:[item valueForKey:SKNPDFAnnotationStringKey]];
+        else
             [attrString appendAttributedString:[item valueForKey:SKNPDFAnnotationTextKey]];
-        }
     }
     
-    if (string)
+    if ([string length])
         [types addObject:NSStringPboardType];
-    if (attrString)
+    if ([attrString length])
         [types addObject:NSRTFPboardType];
     if ([types count])
         [pboard declareTypes:types owner:nil];
-    if (string)
+    if ([string length])
         [pboard setString:string forType:NSStringPboardType];
-    if (attrString)
-        [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil] forType:NSRTFPboardType];
+    if ([attrString length])
+        [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {
@@ -561,17 +559,24 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSMenu *menu = nil;
     NSMenuItem *menuItem;
+    NSMutableArray *items = [NSMutableArray array];
+    NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
+    unsigned int row = [rowIndexes firstIndex];
+    while (row != NSNotFound) {
+        [items addObject:[outlineView itemAtRow:row]];
+        row = [rowIndexes indexGreaterThanIndex:row];
+    }
     
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
     if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
-        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) target:self];
-        [menuItem setRepresentedObject:item];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNotes:) target:self];
+        [menuItem setRepresentedObject:items];
         [menu addItem:[NSMenuItem separatorItem]];
     }
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Row", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
-    [menuItem setRepresentedObject:item];
+    menuItem = [menu addItemWithTitle:[items count] == 1 ? NSLocalizedString(@"Auto Size Row", @"Menu item title") : NSLocalizedString(@"Auto Size Rows", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
+    [menuItem setRepresentedObject:items];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Auto Size All", @"Menu item title") action:@selector(autoSizeNoteRows:) target:self];
     
     return menu;
