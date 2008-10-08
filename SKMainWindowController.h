@@ -338,7 +338,7 @@ extern NSString *SKMainWindowPageColumnIdentifer;
 - (IBAction)toggleWholeWordSearch:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits;
-- (void)showSnapshotWithSetups:(NSArray *)setups;
+- (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (SKPDFView *)pdfView;
