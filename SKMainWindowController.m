@@ -508,7 +508,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [self performFit:self];
     
     // Open snapshots?
-    if ([sud boolForKey:SKRememberSnapshotsKey])
+    if (hasWindowSetup && [savedNormalSetup objectForKey:SKMainWindowSnapshotsKey])
+        [self showSnapshotWithSetups:[savedNormalSetup objectForKey:SKMainWindowSnapshotsKey]];
+    else if ([sud boolForKey:SKRememberSnapshotsKey])
         [self showSnapshotWithSetups:[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]]];
     
     // typeSelectHelpers
@@ -563,6 +565,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:SKMainWindowLeftSidePaneWidthKey];
     [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:SKMainWindowRightSidePaneWidthKey];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:SKMainWindowPageIndexKey];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SKMainWindowSnapshotsKey];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
         [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
