@@ -630,16 +630,14 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     // Add template toolbar items
     
-    NSSize minSize = [searchField frame].size;
-    NSSize maxSize = minSize;
-    maxSize.width = 1000.0;
-    
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKNotesDocumentSearchToolbarItemIdentifier];
     [item setLabels:NSLocalizedString(@"Search", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Search Notes", @"Tool tip message")];
     [item setView:searchField];
-    [item setMinSize:minSize];
-    [item setMaxSize:maxSize];
+    NSSize size = [searchField frame].size;
+    [item setMinSize:size];
+    size.width = 1000.0;
+    [item setMaxSize:size];
     [toolbarItems setObject:item forKey:SKNotesDocumentSearchToolbarItemIdentifier];
     [item release];
     
