@@ -685,7 +685,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
-    if (NO == [[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
+    if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
         return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileName] stringByReplacingPathExtension:@"pdf"]];
