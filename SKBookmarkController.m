@@ -859,17 +859,15 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
-    NSString *identifier = [toolbarItem itemIdentifier];
-    if ([identifier isEqualToString:SKBookmarksDeleteToolbarItemIdentifier]) {
+    if ([[[self window] toolbar] customizationPaletteIsRunning])
+        return NO;
+    else if ([[toolbarItem itemIdentifier] isEqualToString:SKBookmarksDeleteToolbarItemIdentifier])
         return [outlineView canDelete];
-    } else {
-        return YES;
-    }
+    return YES;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    SEL action = [menuItem action];
-    if (action == @selector(toggleStatusBar:)) {
+    if ([menuItem action] == @selector(toggleStatusBar:)) {
         if ([statusBar isVisible])
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
         else

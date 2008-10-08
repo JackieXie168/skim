@@ -683,26 +683,27 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)toolbarItem {
     NSString *identifier = [toolbarItem itemIdentifier];
-    BOOL noPalette = NO == [[mainWindow toolbar] customizationPaletteIsRunning];
     
-    if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return noPalette && fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+    if ([[mainWindow toolbar] customizationPaletteIsRunning]) {
+        return NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
+        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
-        return noPalette && [pdfView autoScales] == NO;
+        return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
-        return noPalette && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
+        return NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
-        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier]) {
         BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
         [noteButton setEnabled:enabled forSegment:SKHighlightNote];
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
-        return noPalette && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     }
-    return noPalette;
+    return YES;
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
