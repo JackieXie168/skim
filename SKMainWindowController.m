@@ -514,7 +514,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     else if ([sud boolForKey:SKRememberSnapshotsKey])
         snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]];
     if ([snapshotSetups count])
-        [self showSnapshotWithSetups:snapshotSetups];
+        [self showSnapshotsWithSetups:snapshotSetups];
     
     // typeSelectHelpers
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
@@ -775,7 +775,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [self updatePageLabelsAndOutline];
         [self updateNoteSelection];
         
-        [self showSnapshotWithSetups:snapshotDicts];
+        [self showSnapshotsWithSetups:snapshotDicts];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -3199,7 +3199,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [swc showWindow:self];
 }
 
-- (void)showSnapshotWithSetups:(NSArray *)setups {
+- (void)showSnapshotsWithSetups:(NSArray *)setups {
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     NSEnumerator *setupEnum = [setups objectEnumerator];
     NSDictionary *setup;
