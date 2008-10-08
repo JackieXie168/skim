@@ -541,7 +541,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     NSNumber *heightNumber = [item valueForKey:SKNotesDocumentRowHeightKey];
-    return heightNumber ? [heightNumber floatValue] : [ov rowHeight] + 2.0;
+    return heightNumber ? [heightNumber floatValue] : [item valueForKey:SKNPDFAnnotationTypeKey] ? [ov rowHeight] + 2.0 : 85.0;
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
@@ -549,7 +549,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
-    return nil != [item valueForKey:SKNotesDocumentRowHeightKey];
+    return YES;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
