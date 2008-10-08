@@ -512,6 +512,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (void)setChildren:(NSArray *)newChildren ofBookmark:(SKBookmark *)bookmark {
+    [self endEditing];
     [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] setArray:newChildren];
 }
 
@@ -520,6 +521,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (void)removeObjectsFromChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
+    [self endEditing];
     [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] removeObjectsAtIndexes:indexes];
 }
 
