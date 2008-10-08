@@ -11,6 +11,8 @@
 				<string>id</string>
 				<key>searchNotes</key>
 				<string>id</string>
+				<key>toggleStatusBar</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>SKNotesDocument</string>
