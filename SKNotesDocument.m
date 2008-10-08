@@ -359,7 +359,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (void)copyNotes:(id)sender {
-    [self outlineView:noteOutlineView copyItems:[sender representedObject]];
+    [self outlineView:outlineView copyItems:[sender representedObject]];
 }
 
 - (void)autoSizeNoteRows:(id)sender {
