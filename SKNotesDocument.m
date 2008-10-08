@@ -113,8 +113,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
-    [[[outlineView tableColumnWithIdentifier:@"note"] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:@"page"] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:SKNotesDocumentNoteColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:SKNotesDocumentPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
     
@@ -266,7 +266,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
         [[self mutableArrayValueForKey:SKNotesDocumentNotesKey] setArray:newNotes];
         [outlineView reloadData];
         didRead = YES;
-    }NSLog(@"%@",notes);
+    }
     
     if (didRead == NO && outError != NULL)
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
