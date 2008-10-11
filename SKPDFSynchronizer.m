@@ -579,14 +579,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (scanner)
         synctex_scanner_free(scanner);
     scanner = synctex_scanner_new_with_output_file([theFileName fileSystemRepresentation]);
-    if (scanner == NULL) {
-        // synctex has the weird bug where it adds quotes around file names contining spaces
-        NSString *quotedFileName = [[theFileName lastPathComponent] stringByDeletingPathExtension];
-        quotedFileName = [NSString stringWithFormat:@"\"%@\"", quotedFileName];
-        quotedFileName = [[theFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent:quotedFileName];
-        quotedFileName = [quotedFileName stringByAppendingPathExtension:[theFileName pathExtension]];
-        scanner = synctex_scanner_new_with_output_file([quotedFileName fileSystemRepresentation]);
-    }
     if (scanner) {
         [self setSyncFileName:[self sourceFileForFileSystemRepresentation:synctex_scanner_get_synctex(scanner) defaultExtension:nil]];
         if (filenames)
