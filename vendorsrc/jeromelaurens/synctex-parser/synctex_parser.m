@@ -1086,6 +1086,7 @@ synctex_status_t _synctex_horiz_box_setup_visible(synctex_node_t node,int h, int
 synctex_status_t _synctex_scan_sheet(synctex_scanner_t scanner, synctex_node_t parent);
 synctex_status_t _synctex_scan_content(synctex_scanner_t scanner);
 void _synctex_strip_last_path_extension(char * string);
+void _synctex_quote_last_path_component(char * string);
 synctex_scanner_t _synctex_scanner_new_with_contents_of_file(const char * name);
 int synctex_scanner_pre_x_offset(synctex_scanner_t scanner);
 int synctex_scanner_pre_y_offset(synctex_scanner_t scanner);
@@ -2523,6 +2524,29 @@ void _synctex_strip_last_path_extension(char * string) {
 	}
 }
 
+/*  put double quotes around the last path component of the given string */
+void _synctex_quote_last_path_component(char * string) {
+	if(NULL != string){
+		char * last_component = NULL;
+		char * next = NULL;
+		char * end = string + strlen(string);
+		/* first we find the last path component */
+		if(NULL == (last_component = strstr(string,"/"))){
+			last_component = string;
+		} else {
+			++last_component;
+			while(NULL != (next = strstr(last_component,"/"))){
+				last_component = next+1;
+			}
+		}
+		/* then we shift the last components and add double-quotes */
+		memmove(last_component+1, last_component, end-last_component);
+		last_component[0] = '"';
+		end[1] = '"';
+		end[2] = '\0';
+	}
+}
+
 /*  Where the synctex scanner is created.
  *  output is the full or relative path of the uncompressed or compressed synctex file.
  *  On error, NULL is returned.
@@ -2565,7 +2589,29 @@ return_on_error:
 		}
 		scanner = _synctex_scanner_new_with_contents_of_file(synctex);
 		if(NULL == scanner) {
-			goto return_on_error;
+			/*  including the terminating character */
+			if(synctex != strcpy(synctex,output)) {
+				fprintf(stderr,"!  synctex_scanner_new_with_output_file: Copy problem\n");
+				goto return_on_error;
+			}
+			/*  remove the last path extension if any and add double-quotes around the file name */
+			_synctex_strip_last_path_extension(synctex);
+			_synctex_quote_last_path_component(synctex);
+			if(synctex != strcat(synctex,synctex_suffix)){
+				fprintf(stderr,"!  synctex_scanner_new_with_output_file: Concatenation problem (can't add suffix '%s')\n",synctex_suffix);
+				goto return_on_error;
+			}
+			scanner = _synctex_scanner_new_with_contents_of_file(synctex);
+			if(NULL == scanner) {
+				if(synctex != strcat(synctex,synctex_suffix_gz)){
+					fprintf(stderr,"!  synctex_scanner_new_with_output_file: Concatenation problem (can't add suffix '%s')\n",synctex_suffix_gz);
+					goto return_on_error;
+				}
+				scanner = _synctex_scanner_new_with_contents_of_file(synctex);
+				if(NULL == scanner) {
+					goto return_on_error;
+				}
+			}
 		}
 	}
 	/* make a private copy of output for the scanner */
