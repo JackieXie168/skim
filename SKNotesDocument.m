@@ -557,6 +557,9 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([outlineView isRowSelected:[outlineView rowForItem:item]] == NO)
+        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
+    
     NSMenu *menu = nil;
     NSMenuItem *menuItem;
     NSMutableArray *items = [NSMutableArray array];
