@@ -1703,6 +1703,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if (saveOption == NSAlertDefaultReturn) {
                 const char *userNameCString = [NSUserName() UTF8String];
                 const char *nameCString = [[NSString stringWithFormat:@"Skim - %@", fileIDString] UTF8String];
+                const char *commentCString = [[self fileName] UTF8String];
                 
                 OSStatus err;
                 SecKeychainItemRef itemRef = NULL;    
@@ -1720,7 +1721,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     passwordData = [aPassword UTF8String];
                     SecKeychainAttribute attrs[] = {
                         { kSecAccountItemAttr, strlen(userNameCString), (char *)userNameCString },
-                        { kSecServiceItemAttr, strlen(nameCString), (char *)nameCString } };
+                        { kSecServiceItemAttr, strlen(nameCString), (char *)nameCString },
+                        { kSecCommentItemAttr, strlen(commentCString), (char *)commentCString } };
                     const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
                     
                     err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
@@ -1728,6 +1730,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     // password not on keychain, so add it
                     passwordData = [password UTF8String];
                     err = SecKeychainAddGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, strlen(passwordData), passwordData, &itemRef);    
+                    
+                    SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(commentCString), (char *)commentCString } };
+                    const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
+                    
+                    err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
                 } else 
                     NSLog(@"Error %d occurred setting password", err);
             }
