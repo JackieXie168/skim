@@ -381,19 +381,13 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     }
     
     int i, count = [items count];
-    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
-    int row;
-    id item;
     
     for (i = 0; i < count; i++) {
-        item = [items objectAtIndex:i];
+        id item = [items objectAtIndex:i];
         [cell setObjectValue:[item valueForKey:([item valueForKey:SKNPDFAnnotationTypeKey] ? SKNPDFAnnotationStringKey : SKNPDFAnnotationTextKey)]];
         NSAttributedString *attrString = [cell attributedStringValue];
-        NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
+        NSRect rect = [attrString boundingRectWithSize:[item valueForKey:SKNPDFAnnotationTypeKey] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         [item setValue:[NSNumber numberWithFloat:fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0)] forKey:SKNotesDocumentRowHeightKey];
-        row = [outlineView rowForItem:item];
-        if (row != -1)
-            [rowIndexes addIndex:row];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [outlineView reloadData];

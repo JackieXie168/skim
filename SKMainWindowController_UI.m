@@ -863,20 +863,14 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     }
     
     int i, count = [items count];
-    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
-    int row;
-    id item;
     
     for (i = 0; i < count; i++) {
-        item = [items objectAtIndex:i];
+        id item = [items objectAtIndex:i];
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         float height = fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0);
         CFDictionarySetValue(rowHeights, (const void *)item, &height);
-        row = [noteOutlineView rowForItem:item];
-        if (row != -1)
-            [rowIndexes addIndex:row];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [noteOutlineView reloadData];
