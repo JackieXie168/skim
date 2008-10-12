@@ -55,23 +55,3 @@ extern NSString *SKPDFAnnotationRichTextKey;
 @interface SKNPDFAnnotationNote (SKExtensions)
 - (void)setRichText:(id)newText;
 @end
-
-#pragma mark -
-
-@interface SKNoteText : NSObject {
-    PDFAnnotation *annotation;
-}
-
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
-
-- (PDFAnnotation *)annotation;
-
-- (NSArray *)texts;
-
-- (NSString *)type;
-- (PDFPage *)page;
-- (unsigned int)pageIndex;
-- (NSString *)string;
-- (NSAttributedString *)text;
-
-@end

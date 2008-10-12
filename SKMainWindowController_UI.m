@@ -54,6 +54,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
+#import "SKNoteText.h"
 #import "SKPDFToolTipWindow.h"
 #import "SKPDFDocument.h"
 #import "PDFPage_SKExtensions.h"
@@ -583,7 +584,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifer]) {
             if ([item type] == nil) {
                 if ([pdfView hideNotes] == NO) {
-                    PDFAnnotation *annotation = [(SKNoteText *)item annotation];
+                    PDFAnnotation *annotation = [(SKNoteText *)item note];
                     [pdfView scrollAnnotationToVisible:annotation];
                     [pdfView setActiveAnnotation:annotation];
                     [self showNote:annotation];
@@ -697,7 +698,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     
     while (item = [itemEnum nextObject]) {
         if ([item type] == nil) {
-            item = [(SKNoteText *)item annotation];
+            item = [(SKNoteText *)item note];
         }
         if ([noteItems containsObject:item] == NO)
             [noteItems addObject:item];
