@@ -544,7 +544,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return heightNumber ? [heightNumber floatValue] : [item valueForKey:SKNPDFAnnotationTypeKey] ? [ov rowHeight] + 2.0 : 85.0;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(float)newHeight byItem:(id)item {
     [item setObject:[NSNumber numberWithFloat:newHeight] forKey:SKNotesDocumentRowHeightKey];
 }
 
