@@ -78,7 +78,7 @@
 - (NSDictionary *)defaultNoteColors;
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict;
 - (NSDictionary *)defaultLineWidths;
-- (void)setDefaultLineWidth:(NSDictionary *)dict;
+- (void)setDefaultLineWidths:(NSDictionary *)dict;
 - (NSDictionary *)defaultLineStyles;
 - (void)setDefaultLineStyles:(NSDictionary *)dict;
 - (NSDictionary *)defaultDashPatterns;
