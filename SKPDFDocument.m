@@ -1681,6 +1681,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 #pragma mark Passwords
 
+- (const char *)keychainServiceName {
+    NSArray *fileIDStrings = [self fileIDStrings];
+    if ([fileIDStrings count])
+        return [[NSString stringWithFormat:@"Skim - %@", [fileIDStrings objectAtIndex:0]] UTF8String];
+    return NULL;
+}
+
 - (void)savePasswordInKeychain:(NSString *)aPassword {
     if ([[self pdfDocument] isLocked])
         return;
@@ -1689,9 +1696,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption != NSAlertAlternateReturn) {
-        NSArray *fileIDStrings = [self fileIDStrings];
-        NSString *fileIDString = [fileIDStrings count] ? [fileIDStrings objectAtIndex:0] : nil;
-        if (fileIDString) {
+        const char *serviceName = [self keychainServiceName];
+        if (serviceName != NULL) {
             if (saveOption == NSAlertOtherReturn) {
                 NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog")]
                                                  defaultButton:NSLocalizedString(@"Yes", @"Button title")
@@ -1701,9 +1707,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 saveOption = [alert runModal];
             }
             if (saveOption == NSAlertDefaultReturn) {
-                const char *userNameCString = [NSUserName() UTF8String];
-                const char *nameCString = [[NSString stringWithFormat:@"Skim - %@", fileIDString] UTF8String];
-                const char *commentCString = [[self fileName] UTF8String];
+                const char *userName = [NSUserName() UTF8String];
+                const char *comment = [[self fileName] UTF8String];
                 
                 OSStatus err;
                 SecKeychainItemRef itemRef = NULL;    
@@ -1711,7 +1716,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 UInt32 passwordLength = 0;
                 
                 // first see if the password exists in the keychain
-                err = SecKeychainFindGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, &passwordLength, (void **)&passwordData, &itemRef);
+                err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, (void **)&passwordData, &itemRef);
                 
                 if(err == noErr){
                     // password was on keychain, so flush the buffer and then modify the keychain
@@ -1720,19 +1725,19 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     
                     passwordData = [aPassword UTF8String];
                     SecKeychainAttribute attrs[] = {
-                        { kSecAccountItemAttr, strlen(userNameCString), (char *)userNameCString },
-                        { kSecServiceItemAttr, strlen(nameCString), (char *)nameCString },
-                        { kSecCommentItemAttr, strlen(commentCString), (char *)commentCString } };
-                    const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
+                        { kSecAccountItemAttr, strlen(userName), (char *)userName },
+                        { kSecServiceItemAttr, strlen(serviceName), (char *)serviceName },
+                        { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
+                    const SecKeychainAttributeList attributes = { comment == NULL ? 2 : 3, attrs };
                     
                     err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
                 } else if(err == errSecItemNotFound){
                     // password not on keychain, so add it
                     passwordData = [password UTF8String];
-                    err = SecKeychainAddGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, strlen(passwordData), passwordData, &itemRef);    
-                    if (err == noErr && commentCString != NULL) {
-                        SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(commentCString), (char *)commentCString } };
-                        const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
+                    err = SecKeychainAddGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, strlen(passwordData), passwordData, &itemRef);    
+                    if (err == noErr && comment != NULL) {
+                        SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(comment), (char *)comment } };
+                        const SecKeychainAttributeList attributes = { 1, attrs };
                         
                         err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
                     }
@@ -1744,12 +1749,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)tryToUnlockDocument:(PDFDocument *)document {
-    int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
-    if (saveOption != NSAlertAlternateReturn) {
-        NSArray *fileIDStrings = [self fileIDStrings];
-        NSString *fileIDString = [fileIDStrings count] ? [fileIDStrings objectAtIndex:0] : nil;
-        if (fileIDString) {
-            const char *serviceName = [[NSString stringWithFormat:@"Skim - %@", fileIDString] UTF8String];
+    if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
+        const char *serviceName = [self keychainServiceName];
+        if (serviceName != NULL) {
             const char *userName = [NSUserName() UTF8String];
             void *passwordData = NULL;
             UInt32 passwordLength = 0;
