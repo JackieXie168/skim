@@ -45,6 +45,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKNoteText.h"
 
 
 NSString *SKPDFAnnotationRichTextKey = @"richText";
@@ -59,7 +60,7 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
-        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
+        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithNote:self] autorelease], nil];
     }
     return self;
 }
@@ -156,34 +157,5 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 - (NSArray *)accessibilityActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKNoteText
-
-- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation {
-    if (self = [super init]) {
-        annotation = anAnnotation;
-    }
-    return self;
-}
-
-- (PDFAnnotation *)annotation {
-    return annotation;
-}
-
-- (NSArray *)texts { return nil; }
-
-- (NSString *)type { return nil; }
-
-- (PDFPage *)page { return nil; }
-
-- (NSString *)string { return [[self text] string]; }
-
-- (unsigned int)pageIndex { return [annotation pageIndex]; }
-
-- (NSAttributedString *)text { return [annotation text]; }
 
 @end

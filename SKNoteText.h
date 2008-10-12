@@ -1,8 +1,8 @@
 //
-//  SKNotesDocument.h
+//  SKNoteText.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/10/07.
+//  Created by Christiaan Hofman on 10/12/08.
 /*
  This software is Copyright (c) 2007-2008
  Christiaan Hofman. All rights reserved.
@@ -38,29 +38,21 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKNoteOutlineView, SKStatusBar;
 
-@interface SKNotesDocument : NSDocument {
-    IBOutlet SKNoteOutlineView *outlineView;
-    IBOutlet NSArrayController *arrayController;
-    IBOutlet SKStatusBar *statusBar;
-    IBOutlet NSSearchField *searchField;
-    NSMutableDictionary *toolbarItems;
-    NSMutableArray *notes;
-    CFMutableDictionaryRef rowHeights;
-    BOOL exportUsingPanel;
+@interface SKNoteText : NSObject {
+    id note;
 }
 
-- (IBAction)openPDF:(id)sender;
-- (IBAction)searchNotes:(id)sender;
-- (IBAction)toggleStatusBar:(id)sender;
- 
-- (NSArray *)notes;
-- (unsigned int)countOfNotes;
-- (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;
-- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned int)index;
+- (id)initWithNote:(id)aNote;
 
-- (void)setupToolbar:(NSWindowController *)aController;
+- (id)note;
+
+- (NSArray *)texts;
+
+- (NSString *)type;
+- (id)page;
+- (unsigned int)pageIndex;
+- (NSString *)string;
+- (NSAttributedString *)text;
 
 @end

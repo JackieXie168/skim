@@ -60,6 +60,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
+#import "SKNoteText.h"
 #import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"
 #import "NSScrollView_SKExtensions.h"
@@ -1136,7 +1137,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     while (row != NSNotFound) {
         item = [noteOutlineView itemAtRow:row];
         if ([item type] == nil)
-            item = [(SKNoteText *)item annotation];
+            item = [(SKNoteText *)item note];
         if ([selectedNotes containsObject:item] == NO)
             [selectedNotes addObject:item];
         row = [rowIndexes indexGreaterThanIndex:row];

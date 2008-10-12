@@ -326,6 +326,10 @@
 		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
 		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
 		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
+		CEAA8EF70EA2A14700C16FE4 /* SKNote.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA8EF50EA2A14700C16FE4 /* SKNote.h */; };
+		CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8EF60EA2A14700C16FE4 /* SKNote.m */; };
+		CEAA8F2E0EA2A86200C16FE4 /* SKNoteText.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */; };
+		CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
 		CEAE38C40CA4399B00849B0F /* TransitionSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAE38C20CA4399B00849B0F /* TransitionSheet.nib */; };
 		CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE39050CA43E7300849B0F /* SKSheetController.m */; };
@@ -915,6 +919,10 @@
 		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
 		CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURL_SKExtensions.m; sourceTree = "<group>"; };
 		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Resume.tiff; sourceTree = "<group>"; };
+		CEAA8EF50EA2A14700C16FE4 /* SKNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNote.h; sourceTree = "<group>"; };
+		CEAA8EF60EA2A14700C16FE4 /* SKNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNote.m; sourceTree = "<group>"; };
+		CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteText.h; sourceTree = "<group>"; };
+		CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteText.m; sourceTree = "<group>"; };
 		CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSecondaryPDFView.h; sourceTree = "<group>"; };
 		CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSecondaryPDFView.m; sourceTree = "<group>"; };
 		CEAE38C30CA4399B00849B0F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
@@ -1470,6 +1478,10 @@
 				CECB03D20DC7503A0000B16B /* SKGroupedSearchResult.m */,
 				CEAF2E570C45414100C3ECBB /* SKLine.h */,
 				CEAF2E580C45414100C3ECBB /* SKLine.m */,
+				CEAA8EF50EA2A14700C16FE4 /* SKNote.h */,
+				CEAA8EF60EA2A14700C16FE4 /* SKNote.m */,
+				CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */,
+				CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
 				CE4294A20BBD29120016FDC2 /* SKReadingBar.m */,
 				CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */,
@@ -1925,6 +1937,8 @@
 				CE05A86E0E90ED950060BB07 /* SKTextFieldSheetController.h in Headers */,
 				CE9AFFF40E991AEC00FE1497 /* BDSKPrintableView.h in Headers */,
 				CE9AFFF60E991B0E00FE1497 /* MultiplePageView.h in Headers */,
+				CEAA8EF70EA2A14700C16FE4 /* SKNote.h in Headers */,
+				CEAA8F2E0EA2A86200C16FE4 /* SKNoteText.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2430,6 +2444,8 @@
 				CE05A86F0E90ED950060BB07 /* SKTextFieldSheetController.m in Sources */,
 				CE9AFFF00E991ACD00FE1497 /* MultiplePageView.m in Sources */,
 				CE9AFFF20E991AD500FE1497 /* BDSKPrintableView.m in Sources */,
+				CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */,
+				CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
