@@ -250,6 +250,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
     
     if ([self documentClassForType:type] == NULL) {
+        // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
@@ -262,6 +263,13 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
         }
         if (type == nil && outError)
             *outError = error;
+    } else if (SKIsNotesFDFDocumentType(type)) {
+        // Springer sometimes sends PDF files with an .fdf extension for review, huh?
+        NSString *fileName = [inAbsoluteURL path];
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+        NSData *leadingData = [fh readDataOfLength:headerLength];
+        if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]])
+            type = SKPDFDocumentType;
     }
     
     return type;
