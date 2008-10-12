@@ -590,7 +590,7 @@ static id sharedApplicationController = nil;
         nil];
 }
 
-- (void)setDefaultLineWidth:(NSDictionary *)dict {
+- (void)setDefaultLineWidths:(NSDictionary *)dict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
     if (number = [dict objectForKey:SKNFreeTextString])
