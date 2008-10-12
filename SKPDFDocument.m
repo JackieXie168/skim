@@ -1730,7 +1730,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     // password not on keychain, so add it
                     passwordData = [password UTF8String];
                     err = SecKeychainAddGenericPassword(NULL, strlen(nameCString), nameCString, strlen(userNameCString), userNameCString, strlen(passwordData), passwordData, &itemRef);    
-                    if (err == noErr && commentStr != NULL) {
+                    if (err == noErr && commentCString != NULL) {
                         SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(commentCString), (char *)commentCString } };
                         const SecKeychainAttributeList attributes = { sizeof(attrs) / sizeof(attrs[0]), attrs };
                         
