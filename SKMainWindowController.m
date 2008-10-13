@@ -113,7 +113,7 @@ NSString *SKMainWindowNotesKey = @"notes";
 NSString *SKMainWindowThumbnailsKey = @"thumbnails";
 NSString *SKMainWindowSnapshotsKey = @"snapshots";
 
-NSString *SKMainWindowPageColumnIdentifer = @"page";
+NSString *SKMainWindowPageColumnIdentifier = @"page";
 static NSString *SKMainWindowNoteColumnIdentifer = @"note";
 
 static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
@@ -351,9 +351,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    [[[findTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[findTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
     [noteOutlineView setTarget:self];
@@ -646,7 +646,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 }
 
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
-    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:SKMainWindowPageColumnIdentifer];
+    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier];
     id cell = [tableColumn dataCell];
     float labelWidth = 0.0;
     NSEnumerator *labelEnum = [pageLabels objectEnumerator];
