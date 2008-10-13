@@ -66,10 +66,10 @@
 #import "SKLineInspector.h"
 #import "SKPDFOutline.h"
 
-static NSString *SKMainWindowLabelColumnIdentifer = @"label";
-static NSString *SKMainWindowNoteColumnIdentifer = @"note";
-static NSString *SKMainWindowTypeColumnIdentifer = @"type";
-static NSString *SKMainWindowImageColumnIdentifer = @"image";
+static NSString *SKMainWindowLabelColumnIdentifier = @"label";
+static NSString *SKMainWindowNoteColumnIdentifier = @"note";
+static NSString *SKMainWindowTypeColumnIdentifier = @"type";
+static NSString *SKMainWindowImageColumnIdentifier = @"image";
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 
@@ -331,7 +331,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifier] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
@@ -341,7 +341,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             return fmaxf(1.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifer] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifier] width], 
                                      fminf(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
@@ -551,18 +551,18 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
-        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifer]) {
+        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifier]) {
             return [(SKPDFOutline *)item label];
-        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
+        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifier]) {
             return [(SKPDFOutline *)item pageLabel];
         }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer])
+        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifier])
             return [item type] ? (id)[item string] : (id)[item text];
-        else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifer])
+        else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifier])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
-        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifer])
+        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifier])
             return [[item page] displayLabel];
     }
     return nil;
@@ -570,7 +570,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifer]) {
+        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
             if ([item type] && [object isEqualToString:[item string]] == NO)
                 [item setString:object];
         }
@@ -581,7 +581,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifer]) {
+        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
             if ([item type] == nil) {
                 if ([pdfView hideNotes] == NO) {
                     PDFAnnotation *annotation = [(SKNoteText *)item note];
@@ -611,11 +611,11 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
             NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
-            if ([tcID isEqualToString:SKMainWindowTypeColumnIdentifer]) {
+            if ([tcID isEqualToString:SKMainWindowTypeColumnIdentifier]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifer]) {
+            } else if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifier]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifer]) {
+            } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifier]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
             }
@@ -848,7 +848,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)autoSizeNoteRows:(id)sender {
     float rowHeight = [noteOutlineView rowHeight];
-    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifer];
+    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifier];
     id cell = [tableColumn dataCell];
     float indentation = [noteOutlineView indentationPerLevel];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
