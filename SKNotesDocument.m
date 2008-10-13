@@ -56,7 +56,6 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "Files_SKExtensions.h"
-#import "BDSKPrintableView.h"
 #import "SKToolbarItem.h"
 #import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"
@@ -284,18 +283,25 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 #pragma mark Printing
 
 - (NSView *)printableView{
-    BDSKPrintableView *printableView = [[[BDSKPrintableView alloc] initForScreenDisplay:NO] autorelease];
-    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL] autorelease];
-    [printableView setPrintInfo:[self printInfo]];
-    [printableView setAttributedString:attrString];
+    NSAttributedString *attrString = [[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL];
+    NSTextView *printableView = [[[NSTextView alloc] initWithFrame:[[NSPrintInfo sharedPrintInfo] imageablePageBounds]] autorelease];
+    [printableView setVerticallyResizable:YES];
+    [printableView setHorizontallyResizable:NO];
+    [[printableView textStorage] beginEditing];
+    [[printableView textStorage] setAttributedString:attrString];
+    [[printableView textStorage] endEditing];
+    [attrString release];
     return printableView;
 }
 
 - (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
-    NSPrintInfo *info = [[self printInfo] copy];
-    [[info dictionary] addEntriesFromDictionary:printSettings];
-    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:[self printableView] printInfo:info];
-    [info release];
+    NSPrintInfo *printInfo = [[self printInfo] copy];
+    [[printInfo dictionary] addEntriesFromDictionary:printSettings];
+    [printInfo setHorizontalPagination:NSFitPagination];
+    [printInfo setHorizontallyCentered:NO];
+    [printInfo setVerticallyCentered:NO];
+    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:[self printableView] printInfo:printInfo];
+    [printInfo release];
     NSPrintPanel *printPanel = [printOperation printPanel];
     if ([printPanel respondsToSelector:@selector(setOptions:)])
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
