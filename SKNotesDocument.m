@@ -56,6 +56,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "Files_SKExtensions.h"
+#import "BDSKPrintableView.h"
 #import "SKToolbarItem.h"
 #import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"
@@ -282,20 +283,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 #pragma mark Printing
 
-- (NSView *)printableView {
-    NSTextView *printableView = [[[NSTextView alloc] initWithFrame:[[self printInfo] imageablePageBounds]] autorelease];
-    NSTextStorage *textStorage = [printableView textStorage];
+- (NSView *)printableView{
+    BDSKPrintableView *printableView = [[[BDSKPrintableView alloc] initForScreenDisplay:NO] autorelease];
     NSAttributedString *attrString = [[[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL] autorelease];
-    
-    [printableView setVerticallyResizable:YES];
-    [printableView setHorizontallyResizable:NO];
-
-    [textStorage beginEditing];
-    [textStorage setAttributedString:attrString];
-    [textStorage endEditing];
-    
-    [printableView sizeToFit];
-    
+    [printableView setPrintInfo:[self printInfo]];
+    [printableView setAttributedString:attrString];
     return printableView;
 }
 
