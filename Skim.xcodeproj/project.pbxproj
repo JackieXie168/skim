@@ -304,10 +304,6 @@
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
-		CE9AFFF00E991ACD00FE1497 /* MultiplePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AFFEF0E991ACD00FE1497 /* MultiplePageView.m */; };
-		CE9AFFF20E991AD500FE1497 /* BDSKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9AFFF10E991AD500FE1497 /* BDSKPrintableView.m */; };
-		CE9AFFF40E991AEC00FE1497 /* BDSKPrintableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9AFFF30E991AEC00FE1497 /* BDSKPrintableView.h */; };
-		CE9AFFF60E991B0E00FE1497 /* MultiplePageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9AFFF50E991B0D00FE1497 /* MultiplePageView.h */; };
 		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
@@ -883,10 +879,6 @@
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
 		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
 		CE8B46F30C29CA4A005CE7F1 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/LineInspector.nib; sourceTree = "<group>"; };
-		CE9AFFEF0E991ACD00FE1497 /* MultiplePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePageView.m; sourceTree = "<group>"; };
-		CE9AFFF10E991AD500FE1497 /* BDSKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKPrintableView.m; sourceTree = "<group>"; };
-		CE9AFFF30E991AEC00FE1497 /* BDSKPrintableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKPrintableView.h; sourceTree = "<group>"; };
-		CE9AFFF50E991B0D00FE1497 /* MultiplePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePageView.h; sourceTree = "<group>"; };
 		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
 		CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRemoteStateWindow.m; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
@@ -1457,10 +1449,6 @@
 				F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */,
 				F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */,
 				F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */,
-				CE9AFFF50E991B0D00FE1497 /* MultiplePageView.h */,
-				CE9AFFEF0E991ACD00FE1497 /* MultiplePageView.m */,
-				CE9AFFF30E991AEC00FE1497 /* BDSKPrintableView.h */,
-				CE9AFFF10E991AD500FE1497 /* BDSKPrintableView.m */,
 				F92DB5AA0B36FE1F002A26E9 /* BDSKZoomablePDFView.h */,
 				F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */,
 			);
@@ -1935,8 +1923,6 @@
 				CE0461A60E8BA99F00253123 /* Skim_Prefix.pch in Headers */,
 				CE05A7370E9024ED0060BB07 /* SKPresentationOptionsSheetController.h in Headers */,
 				CE05A86E0E90ED950060BB07 /* SKTextFieldSheetController.h in Headers */,
-				CE9AFFF40E991AEC00FE1497 /* BDSKPrintableView.h in Headers */,
-				CE9AFFF60E991B0E00FE1497 /* MultiplePageView.h in Headers */,
 				CEAA8EF70EA2A14700C16FE4 /* SKNote.h in Headers */,
 				CEAA8F2E0EA2A86200C16FE4 /* SKNoteText.h in Headers */,
 			);
@@ -2442,8 +2428,6 @@
 				CEEE7C520E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m in Sources */,
 				CE05A7380E9024ED0060BB07 /* SKPresentationOptionsSheetController.m in Sources */,
 				CE05A86F0E90ED950060BB07 /* SKTextFieldSheetController.m in Sources */,
-				CE9AFFF00E991ACD00FE1497 /* MultiplePageView.m in Sources */,
-				CE9AFFF20E991AD500FE1497 /* BDSKPrintableView.m in Sources */,
 				CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */,
 				CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */,
 			);
