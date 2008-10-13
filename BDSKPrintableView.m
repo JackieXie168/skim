@@ -103,6 +103,8 @@
 }
 
 - (void)printInfoUpdated {
+    [super printInfoUpdated];
+    
     unsigned cnt, numberOfPages = [self numberOfPages];
     NSArray *textContainers = [[self layoutManager] textContainers];
     
@@ -114,11 +116,6 @@
         [textContainer setContainerSize:textFrame.size];
         [[textContainer textView] setFrame:textFrame];
     }
-}
-
-- (void)setPrintInfo:(NSPrintInfo *)info {
-    [super setPrintInfo:info];
-    [self printInfoUpdated];
 }
 
 - (void)addPage {
@@ -239,7 +236,6 @@
     margins.top = width;
     margins.bottom = width;
     [self printInfoUpdated];
-    [self setNeedsDisplay:YES];
 }
 
 - (NSSize)documentSizeInPage {

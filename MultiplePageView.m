@@ -83,12 +83,16 @@ float defaultTextPadding(void) {
     }
 }
 
+- (void)printInfoUpdated {
+    [self updateFrame];
+    [self setNeedsDisplay:YES];	/* Because the page size or margins might change (could optimize this) */
+}
+
 - (void)setPrintInfo:(NSPrintInfo *)anObject {
     if (printInfo != anObject) {
         [printInfo autorelease];
         printInfo = [anObject copyWithZone:[self zone]];
-        [self updateFrame];
-        [self setNeedsDisplay:YES];	/* Because the page size or margins might change (could optimize this) */
+        [self printInfoUpdated];
     }
 }
 
