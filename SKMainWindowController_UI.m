@@ -643,7 +643,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:@"note"]) {
+    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
         return [item string];
     }
     return nil;
