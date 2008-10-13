@@ -19,6 +19,7 @@
         type = [properties valueForKey:SKNPDFAnnotationTypeKey];
         if ([type isEqualToString:SKNTextString])
             type = SKNNoteString;
+        [type retain];
         if ([type isEqualToString:SKNNoteString])
             texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithNote:self] autorelease], nil];
         NSMutableString *mutableContents = [[NSMutableString alloc] init];
