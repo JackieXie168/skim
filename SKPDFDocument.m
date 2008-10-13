@@ -418,10 +418,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsPDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-        // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
-        // if we automatically save a .skim backup we silently ignore this problem
-        if (didWrite && NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey])
-            didWrite = [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
