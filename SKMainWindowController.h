@@ -81,7 +81,7 @@ extern NSString *SKMainWindowSnapshotsKey;
 extern NSString *SKLeftSidePaneWidthKey;
 extern NSString *SKRightSidePaneWidthKey;
 
-extern NSString *SKMainWindowPageColumnIdentifer;
+extern NSString *SKMainWindowPageColumnIdentifier;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
