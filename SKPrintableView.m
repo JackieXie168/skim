@@ -41,6 +41,19 @@
 
 @implementation SKPrintableView
 
+- (id)initWithAttributedString:(NSAttributedString *)attributedString printInfo:(NSPrintInfo *)printInfo {
+    if (self = [self initWithFrame:[(printInfo ?: [NSPrintInfo sharedPrintInfo]) imageablePageBounds]]) {
+        [self setVerticallyResizable:YES];
+        [self setHorizontallyResizable:NO];
+        if (attributedString) {
+            [[self textStorage] beginEditing];
+            [[self textStorage] setAttributedString:attributedString];
+            [[self textStorage] endEditing];
+        }
+    }
+    return self;
+}
+
 - (BOOL)knowsPageRange:(NSRangePointer)range {
     NSPrintInfo *info = [[NSPrintOperation currentOperation] printInfo];
     if (info) {
