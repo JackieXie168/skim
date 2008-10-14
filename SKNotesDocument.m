@@ -59,6 +59,7 @@
 #import "SKToolbarItem.h"
 #import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"
+#import "SKPrintableView.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -284,7 +285,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 - (NSView *)printableView{
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL];
-    NSTextView *printableView = [[[NSTextView alloc] initWithFrame:[[NSPrintInfo sharedPrintInfo] imageablePageBounds]] autorelease];
+    NSTextView *printableView = [[[SKPrintableView alloc] initWithFrame:[[NSPrintInfo sharedPrintInfo] imageablePageBounds]] autorelease];
     [printableView setVerticallyResizable:YES];
     [printableView setHorizontallyResizable:NO];
     [[printableView textStorage] beginEditing];
