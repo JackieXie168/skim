@@ -43,8 +43,10 @@
 
 - (BOOL)knowsPageRange:(NSRangePointer)range {
     NSPrintInfo *info = [[NSPrintOperation currentOperation] printInfo];
-    if (info && NSEqualSizes([info imageablePageBounds].size, [self frame].size) == NO)
+    if (info) {
+        [self setFrame:NSZeroRect];
         [self setFrame:[info imageablePageBounds]];
+    }
     return [super knowsPageRange:range];
 }
 
