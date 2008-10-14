@@ -283,29 +283,26 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
 #pragma mark Printing
 
-- (NSView *)printableView{
-    NSAttributedString *attrString = [[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL];
-    NSTextView *printableView = [[[SKPrintableView alloc] initWithFrame:[[NSPrintInfo sharedPrintInfo] imageablePageBounds]] autorelease];
-    [printableView setVerticallyResizable:YES];
-    [printableView setHorizontallyResizable:NO];
-    [[printableView textStorage] beginEditing];
-    [[printableView textStorage] setAttributedString:attrString];
-    [[printableView textStorage] endEditing];
-    [attrString release];
-    return printableView;
-}
-
 - (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {
     NSPrintInfo *printInfo = [[self printInfo] copy];
     [[printInfo dictionary] addEntriesFromDictionary:printSettings];
     [printInfo setHorizontalPagination:NSFitPagination];
     [printInfo setHorizontallyCentered:NO];
     [printInfo setVerticallyCentered:NO];
-    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:[self printableView] printInfo:printInfo];
+    
+    NSAttributedString *attrString = [[NSAttributedString alloc] initWithRTF:[self notesRTFData] documentAttributes:NULL];
+    NSView *printableView = [[SKPrintableView alloc] initWithAttributedString:attrString printInfo:printInfo];
+    
+    NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:printableView printInfo:printInfo];
+    
+    [attrString release];
+    [printableView release];
     [printInfo release];
+    
     NSPrintPanel *printPanel = [printOperation printPanel];
     if ([printPanel respondsToSelector:@selector(setOptions:)])
         [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+    
     return printOperation;
 }
 
