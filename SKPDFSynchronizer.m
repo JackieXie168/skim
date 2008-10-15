@@ -392,49 +392,58 @@ static NSPoint pdfOffset = {0.0, 0.0};
                 
                 while ([self shouldKeepRunning] && [sc scanCharacter:&ch]) {
                     
-                    if (ch == 'l') {
-                        if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
-                            // we ignore the column
-                            [sc scanInt:NULL];
-                            record = [records recordForIndex:recordIndex];
-                            [record setFile:file];
-                            [record setLine:line];
-                            [[lines objectForKey:file] addObject:record];
-                        }
-                    } else if (ch == 'p') {
-                        // we ignore * and + modifiers
-                        [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
-                        if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
-                            record = [records recordForIndex:recordIndex];
-                            [record setPageIndex:[pages count] - 1];
-                            [record setPoint:NSMakePoint(PDFSYNC_TO_PDF(x) + pdfOffset.x, PDFSYNC_TO_PDF(y) + pdfOffset.y)];
-                            [[pages lastObject] addObject:record];
-                        }
-                    } else if (ch == 's') {
-                        // start of a new page, the scanned integer should always equal [pages count]+1
-                        if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
-                        while (pageIndex > (int)[pages count]) {
-                            array = [[NSMutableArray alloc] init];
-                            [pages addObject:array];
-                            [array release];
-                        }
-                    } else if (ch == '(') {
-                        // start of a new source file
-                        if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
-                            file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:YES];
-                            [files addObject:file];
-                            if ([lines objectForKey:file] == nil) {
+                    switch (ch) {
+                        case 'l':
+                            if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
+                                // we ignore the column
+                                [sc scanInt:NULL];
+                                record = [records recordForIndex:recordIndex];
+                                [record setFile:file];
+                                [record setLine:line];
+                                [[lines objectForKey:file] addObject:record];
+                            }
+                            break;
+                        case 'p':
+                            // we ignore * and + modifiers
+                            [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
+                            if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
+                                record = [records recordForIndex:recordIndex];
+                                [record setPageIndex:[pages count] - 1];
+                                [record setPoint:NSMakePoint(PDFSYNC_TO_PDF(x) + pdfOffset.x, PDFSYNC_TO_PDF(y) + pdfOffset.y)];
+                                [[pages lastObject] addObject:record];
+                            }
+                            break;
+                        case 's':
+                            // start of a new page, the scanned integer should always equal [pages count]+1
+                            if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
+                            while (pageIndex > (int)[pages count]) {
                                 array = [[NSMutableArray alloc] init];
-                                [lines setObject:array forKey:file];
+                                [pages addObject:array];
                                 [array release];
                             }
-                        }
-                    } else if (ch == ')') {
-                        // closing of a source file
-                        if ([files count]) {
-                            [files removeLastObject];
-                            file = [files lastObject];
-                        }
+                            break;
+                        case '(':
+                            // start of a new source file
+                            if ([sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
+                                file = [self sourceFileForFileName:file defaultExtension:SKPDFSynchronizerTexExtension removeQuotes:YES];
+                                [files addObject:file];
+                                if ([lines objectForKey:file] == nil) {
+                                    array = [[NSMutableArray alloc] init];
+                                    [lines setObject:array forKey:file];
+                                    [array release];
+                                }
+                            }
+                            break;
+                        case ')':
+                            // closing of a source file
+                            if ([files count]) {
+                                [files removeLastObject];
+                                file = [files lastObject];
+                            }
+                            break;
+                        default:
+                            // shouldn't reach
+                            break;
                     }
                     
                     [sc scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
