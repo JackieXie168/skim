@@ -204,6 +204,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [noteController commitEditing];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
+    [[[[self document] mainWindowController] window] makeKeyWindow];
 }
 
 - (IBAction)showWindow:(id)sender {

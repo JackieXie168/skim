@@ -177,6 +177,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
     if (miniaturizing == NO && [[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
         [[self delegate] snapshotControllerWindowWillClose:self];
+    [[[[self document] mainWindowController] window] makeKeyWindow];
 }
 
 
