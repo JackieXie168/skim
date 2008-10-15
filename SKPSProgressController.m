@@ -284,7 +284,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     if (dviToolPath == nil) {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
         NSString *commandName = [commandPath lastPathComponent];
-        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/gwTeX/bin/powerpc-apple-darwin-current", @"/usr/local/gwTeX/bin/i386-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
+        NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
         int i = 0, iMax = [paths count];
         NSFileManager *fm = [NSFileManager defaultManager];
         NSArray *supportedTools = [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil];
