@@ -1276,6 +1276,29 @@ For example, you can change the colors of all notes or highlights of a certain t
 
 @c ======================================================================================
 
+@topic TeX-PDF synchronization
+
+Skim supports SyncTeX and PDFSync to synchronize between a line in a TeX source file and the generated output PDF file.
+To enable TeX-PDF synchronization, you need to setup Skim and your favorite editor to know about each other.
+
+@box{taskbox}
+@itemize
+@item To display the TeX source line corresponding to a point in the PDF document, hold down the Option key and click on a point in the PDF document.
+@end itemize
+@itemize
+@item To choose the command to open the TeX editor, choose Skim > Preferences, click Sync, and choose a preset editor, or choose Custom and enter a path to an editor command and arguments.
+@end itemize
+@endbox
+
+Check the Skim Wiki for more details, in particular about how to set up various editors to use Skim's TeX-PDF synchronization.
+
+@heading Open this for me
+@multitable {}
+@item @uref{http://skim-app.sourceforge.net/wiki/index.php?title=TeX_and_PDF_Synchronization, TeX-PDF Synchronization page on the Skim Wiki}
+@end multitable
+
+@c ======================================================================================
+
 @node More information
 @chapter More information
 @abstract{Getting more help}
@@ -1291,16 +1314,16 @@ For example, you can change the colors of all notes or highlights of a certain t
 @heading Mailing List
 
 If your questions aren't answered in this help file, the
-@uref{http://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users mailing list} 
+@uref{https://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users mailing list} 
 may have an answer. Your question
 may have been answered already, so you can check the 
-@uref{http://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,list archives} 
+@uref{https://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,list archives} 
 to get instant gratification.
 
 @heading Bug reports
 
 You can submit a bug report to the bug tracker at 
-@uref{http://sourceforge.net/projects/skim-app}.
+@uref{https://sourceforge.net/projects/skim-app}.
 
 The reports are most useful if they provide a clear description of
 what went wrong, what you expected, and how to reproduce the problem

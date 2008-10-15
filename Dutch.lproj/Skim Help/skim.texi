@@ -1281,6 +1281,29 @@ U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald 
 
 @c ======================================================================================
 
+@topic TeX-PDF synchronisatie
+
+Skim ondersteund SyncTeX en PDFSync om te synchroniseren tussen een lijn in een TeX bron bestand en een gegenereerd PDF document.
+Om TeX-PDF synchronisatie te activeren, moet u Skim en uw favoriete editor opzetten zodat zij van elkaar weten.
+
+@box{taskbox}
+@itemize
+@item Om een TeX bron lijn te tonen die behoort bij een punt in het PDF document, houd de Optie-toets ingedrukt en klik in het PDF document.
+@end itemize
+@itemize
+@item Om het commando te kiezen, kies Skim > Voorkeuren, klik op Sync, en kies een standaard Instelling, of kies Custom en geef een pad voor een editor commando en argumenten.
+@end itemize
+@endbox
+
+Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editors kunt aanpassen om gebruik te maken vane Skim's TeX-PDF synchronisatie.
+
+@heading Open dit voor mij
+@multitable {}
+@item @uref{http://skim-app.sourceforge.net/wiki/index.php?title=TeX_and_PDF_Synchronization, TeX-PDF Synchronisatie pagina op de Skim Wiki}
+@end multitable
+
+@c ======================================================================================
+
 @node Meer informatie
 @chapter Meer informatie
 @abstract{Vind meer help}
