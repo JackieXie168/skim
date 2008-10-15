@@ -550,6 +550,11 @@ De notities worden bewaard bij het document en zijn zichtbaar voor andere gebrui
 @item Sleep de notitie in het document tot dit op de gewenste plaats is en de gewenste grootte heeft.
 @item Om tekst in te voeren, klikt u dubbel op de notitie.
 @end enumerate
+@heading of:
+@enumerate
+@item Kies Extra's > Soort notitie > Tekstnotitie.
+@item Selecteer het gebied voor de textnotitie, en voer de tekst in. U kunt dit herhaaldelijk doen.
+@end enumerate
 @heading Om een langere tekstnotitie (verankerde notitie) toe te voegen:
 @enumerate
 @item Kies Extra's > Tekstfunctie. 
@@ -558,11 +563,16 @@ De notities worden bewaard bij het document en zijn zichtbaar voor andere gebrui
 @item Om tekst in te voeren, klikt u dubbel op de notitie. Een venster zal vertoond worden die de tekst van de notitie bevat. Er is een korte tekst die gebruikt kan worden om de notitie te identificeren, en een langer tekst die ook opmaak kan bevatten. 
 @item U kunt ook een eenvoudig plaatje aan de notitie toevoegen. Sleep een plaatje naar de plaatjesput in het notitievenster. 
 @end enumerate
+@heading of:
+@enumerate
+@item Kies Extra's > Soort notitie > Verankerde Notitie.
+@item Klik het punt aan waar u de nieuwe notitie wilt hebben. U kunt dit herhaaldelijk doen.
+@end enumerate
 @endbox
 
 U kunt notities ook toevoegen met behulp van knoppen op de knoppenbalk. Om de knoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knoppen naar de knoppenbalk.
 
-U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de notitie te wijzigen, kies Extra's > 'Toon kleuren'. Om een notitie te verwijderen, kies Extra's > Textfunctie, selecteer de notitie, en druk op de Delete-toets.
+U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie of Extra's > Notitiefunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de notitie te wijzigen, kies Extra's > 'Toon kleuren'. Om een notitie te verwijderen, kies Extra's > Textfunctie of Extra's > Notitiefunctie, selecteer de notitie, en druk op de Delete-toets.
 
 @heading Zie ook
 @menu
@@ -588,13 +598,18 @@ De markeringen worden bewaard bij het document en zijn zichtbaar voor andere geb
 @item Kies Notities > Nieuwe cirkel, Notities > Nieuwe box, Notities > Nieuwe markering, Notities > Nieuwe ondelijning, of Notities > Nieuwe doorstreping. 
 @item U kunt cirkel- en box-markeringen totdat de markering juist geplaatst is en de gewenste grootte heeft. 
 @end enumerate
+@heading of:
+@enumerate
+@item Kies Extra's > Soort notitie > Cirkel, Extra's > Soort notitie > Box, Extra's > Soort notitie > Markering, Extra's > Soort notitie > Ondelijning, of Extra's > Soort notitie > Doorstreping.
+@item Selecteer de tekst die u wilt markeren of het gebied dat u wilt omcirkelen. U kunt dit herhaaldelijk doen.
+@end enumerate
 @endbox
 
 U kunt markeringen ook toevoegen met behulp van knoppen op de knoppenbalk. Om de knoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knoppen naar de knoppenbalk.
 
-U kunt markeringen wijzigen en verwijderen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de markering te wijzigen, kies Extra's > 'Toon kleuren'. Om een markering te verwijderen, kies Extra's > Textfunctie, selecteer de markering, en druk op de Delete-toets.
+U kunt markeringen wijzigen en verwijderen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de markering te wijzigen, kies Extra's > 'Toon kleuren'. Om een markering te verwijderen, kies Extra's > Textfunctie of Extra's > Notitiefunctie, selecteer de markering, en druk op de Delete-toets.
 
-Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden. Om een markeringen te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen.
+Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden. Om een markeringen te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie of Extra's > Notitiefunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen.
 
 @heading Zie ook
 @menu
@@ -618,11 +633,21 @@ De lijnen worden bewaard bij het document en zijn zichtbaar voor andere gebruike
 @item Kies Notities > Lijn. 
 @item Sleep de lijn of ŽŽn van zijn eindpunten in het document tot deze op de gewenste plaats is en naar de juiste postie wijst.
 @end enumerate
+@heading of:
+@enumerate
+@item Kies Extra's > Soort notitie > Lijn.
+@item Trek de lijn met behulp can de muis van het beginpunt naar het eindpunt. U kunt dit herhaaldelijk doen.
+@end enumerate
+@heading Om een lijn toe te voegen:
+@enumerate
+@item Kies Extra's > Soort notitie > Vrije hand.
+@item Trek de lijn met behulp can de muis. U kunt dit herhaaldelijk doen.
+@end enumerate
 @endbox
 
 U kunt lijnen ook toevoegen met behulp van een knop op de knoppenbalk. Om de knop aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knop naar de knoppenbalk.
 
-U kunt lijnen wijzigen en verwijderen. Om een lijn of ŽŽn van zijn eindpunten te verplaatsen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep een zwarte vierkantje om een eindpunt te verplaatsen. Om de kleur van de lijn te wijzigen, kies Extra's > 'Toon kleuren'. Om een lijn te verwijderen, kies Extra's > Textfunctie, selecteer de lijn, en druk op de Delete-toets.
+U kunt lijnen wijzigen en verwijderen. Om een lijn of ŽŽn van zijn eindpunten te verplaatsen, kies Extra's > Tekstfunctie of Extra's > Notitiefunctie, en gebruik de muis om te selecteren en te slepen. Sleep een zwarte vierkantje om een eindpunt te verplaatsen. Om de kleur van de lijn te wijzigen, kies Extra's > 'Toon kleuren'. Om een lijn te verwijderen, kies Extra's > Textfunctie of Extra's > Notitiefunctie, selecteer de lijn, en druk op de Delete-toets.
 
 @heading Zie ook
 @menu
