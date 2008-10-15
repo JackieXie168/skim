@@ -1301,10 +1301,10 @@ For example, you can change the colors of all notes or highlights of a certain t
 
 @c ======================================================================================
 
-@topic TeX-PDF synchronization
+@topic PDF-TeX synchronization
 
 Skim supports SyncTeX and PDFSync to synchronize between a line in a TeX source file and the generated output PDF file.
-To enable TeX-PDF synchronization, you need to setup Skim and your favorite editor to know about each other.
+To enable PDF-TeX synchronization, you need to setup Skim and your favorite editor to know about each other.
 
 @box{taskbox}
 @itemize

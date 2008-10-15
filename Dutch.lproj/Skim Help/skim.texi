@@ -1306,10 +1306,10 @@ U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald 
 
 @c ======================================================================================
 
-@topic TeX-PDF synchronisatie
+@topic PDF-TeX synchronisatie
 
 Skim ondersteund SyncTeX en PDFSync om te synchroniseren tussen een lijn in een TeX bron bestand en een gegenereerd PDF document.
-Om TeX-PDF synchronisatie te activeren, moet u Skim en uw favoriete editor opzetten zodat zij van elkaar weten.
+Om PDF-TeX synchronisatie te activeren, moet u Skim en uw favoriete editor opzetten zodat zij van elkaar weten.
 
 @box{taskbox}
 @itemize
@@ -1344,15 +1344,15 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 @heading Verzendlijst
 
 Als deze help-gids uw vragen niet beantwoord dan kan de
-@uref{http://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users verzendlijst} 
+@uref{https://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users verzendlijst} 
 een antwoord voor u hebben. Het kan zijn dat uw vraag al is beantwoord, dus controleer het 
-@uref{http://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,verzendlijst archief} 
+@uref{https://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,verzendlijst archief} 
 voor directe voldoening.
 
 @heading Bugmelding
 
 U kunt een bugmelding meedelen aan de bug tracker 
-@uref{http://sourceforge.net/projects/skim-app}.
+@uref{https://sourceforge.net/projects/skim-app}.
 
 De meldingen zijn het nuttigst als zij een duidelijke beschrijving bevatten van wat er fout ging, 
 wat u had verwacht, en hoe het probleem kan worden gereproduceerd op een andere computer zonder dat u erbij hoeft te zijn om het uit te leggen. 
