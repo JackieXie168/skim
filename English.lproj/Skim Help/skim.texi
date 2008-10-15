@@ -549,6 +549,11 @@ The notes are saved with the document, so also other Skim users can see them. Th
 @item Drag in the document until the note is located where you want and has the size you want.
 @item To enter text, double-click the note. 
 @end enumerate
+@heading or:
+@enumerate
+@item Choose Tools > Note Type > Text Note.
+@item Select region for the text note, and enter the text. You can do this repeatedly.
+@end enumerate
 @heading To add a longer text note:
 @enumerate
 @item Choose Tools > Text Tool. 
@@ -557,11 +562,16 @@ The notes are saved with the document, so also other Skim users can see them. Th
 @item To enter text, double-click the note. A window will show containing the text of the note. It has a short text that is used for identification, and a longer text that can also contain attributes. 
 @item You can also add a simple image to the note. Drag an image to the image well in the window for the note. 
 @end enumerate
+@heading or:
+@enumerate
+@item Choose Tools > Note Type > Anchored Note.
+@item Click at the point where you want to put the new note. You can do this repeatedly.
+@end enumerate
 @endbox
 
 You can also use toolbar buttons to add notes. To add notes buttons to the toolbar, choose View > Customize Toolbar and drag the buttons to the toolbar.
 
-You can edit or delete the notes. To move or resize the note, choose Tools > Text Tool, and use the mouse.  Drag the black box to resize. To edit the note's text, choose Tools > Text Tool, and double-click the note. To change the color used for the note, choose Tools > Show Colors. To delete the note, choose Tools > Text Tool, select the note, and press Delete.
+You can edit or delete the notes. To move or resize the note, choose Tools > Text Tool or Tools > Note Tool, and use the mouse.  Drag the black box to resize. To edit the note's text, choose Tools > Text Tool or Tools > Note Tool, and double-click the note. To change the color used for the note, choose Tools > Show Colors. To delete the note, choose Tools > Text Tool, select the note, and press Delete.
 
 @heading See also
 @menu
@@ -587,13 +597,18 @@ The highlights are saved with the document, so also other Skim users can see the
 @item Choose Notes > Circle, Notes > Box, Notes > Highlight, Notes > Underline, or Notes > Strike Out. 
 @item You may drag circle and box highlights in the document until the highlight is located where you want and has the size you want.
 @end enumerate
+@heading or:
+@enumerate
+@item Choose Tools > Note Type > Circle, Tools > Note Type > Box, Tools > Note Type > Highlight, Tools > Note Type > Underline, or Tools > Note Type > Strike Out. 
+@item Select the text you want to highlight or region you want to circle. You can do this repeatedly.
+@end enumerate
 @endbox
 
 You can also use toolbar buttons to add highlights. To add highlight buttons to the toolbar, choose View > Customize Toolbar and drag the buttons to the toolbar.
 
-You can edit or delete the highlights. To change the color used for the highlight, choose Tools > Show Colors. To delete the highlight, choose Tools > Text Tool, select the highlight, and press Delete. 
+You can edit or delete the highlights. To change the color used for the highlight, choose Tools > Show Colors. To delete the highlight, choose Tools > Text Tool or Tools > Note Tool, select the highlight, and press Delete. 
 
-Circle and box highlights can also be moved and resized. To move or resize the highlight, choose Tools > Text Tool, and use the mouse. Drag the black box to resize. 
+Circle and box highlights can also be moved and resized. To move or resize the highlight, choose Tools > Text Tool or Tools > Note Tool, and use the mouse. Drag the black box to resize. 
 
 @heading See also
 @menu
@@ -617,11 +632,21 @@ The lines are saved with the document, so also other Skim users can see them. Th
 @item Choose Notes > Line. 
 @item Drag in the document until the line is located where you want, and drag the end points until it points where you want.
 @end enumerate
+@heading or:
+@enumerate
+@item Choose Tools > Note Type > Line.
+@item Stroke the line using the mouse from the start point to the end point. You can do this repeatedly.
+@end enumerate
+@heading To add a freehand line:
+@enumerate
+@item Choose Tools > Note Type > Freehand.
+@item Stroke the line using the mouse. You can do this repeatedly.
+@end enumerate
 @endbox
 
 You can also use toolbar buttons to add lines. To add a line button to the toolbar, choose View > Customize Toolbar and drag the button to the toolbar.
 
-You can edit or delete the line. To move the line or its end points, choose Tools > Text Tool, and use the mouse. Drag a black box to move an end point. To change the color used for the line, choose Tools > Show Colors. To delete the line, choose Tools > Text Tool, select the line, and press Delete.
+You can edit or delete the line. To move the line or its end points, choose Tools > Text Tool or Tools > Note Tool, and use the mouse. Drag a black box to move an end point. To change the color used for the line, choose Tools > Show Colors. To delete the line, choose Tools > Text Tool or Tools > Note Tool, select the line, and press Delete.
 
 @heading See also
 @menu
