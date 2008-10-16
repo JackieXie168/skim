@@ -118,6 +118,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [mainWindowController release];
     [synchronizer stopDOServer];
     [synchronizer release];
     [presentationNotesDocument release];
@@ -134,13 +135,13 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 }
 
 - (void)makeWindowControllers{
-    SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] init] autorelease];
+    mainWindowController = [[SKMainWindowController alloc] init];
     [mainWindowController setShouldCloseDocument:YES];
     [self addWindowController:mainWindowController];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
-    SKMainWindowController *mainController =  (SKMainWindowController *)aController;
+    SKMainWindowController *mainController = (SKMainWindowController *)aController;
     
     if ([pdfDocument isLocked])
         [self tryToUnlockDocument:pdfDocument];
@@ -189,6 +190,16 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidShowNotification object:self];
 }
 
+- (void)removeWindowController:(NSWindowController *)windowController {
+    if ([windowController isEqual:mainWindowController]) {
+        // we need to do this on Tiger, because windowWillClose notifications are posted after this
+        [self saveRecentDocumentInfo];
+        [mainWindowController release];
+        mainWindowController = nil;
+    }
+    [super removeWindowController:windowController];
+}
+
 - (SKProgressController *)progressController {
     if (progressController == nil)
         progressController = [[SKProgressController alloc] init];
@@ -196,9 +207,9 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 }
 
 - (void)saveRecentDocumentInfo {
-    unsigned int pageIndex = [[[self pdfView] currentPage] pageIndex];
     NSString *path = [[self fileURL] path];
-    if (pageIndex != NSNotFound && path)
+    unsigned int pageIndex = [[[self pdfView] currentPage] pageIndex];
+    if (path && pageIndex != NSNotFound && [self mainWindowController])
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
 
@@ -1524,8 +1535,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 #pragma mark Accessors
 
 - (SKMainWindowController *)mainWindowController {
-    NSArray *windowControllers = [self windowControllers];
-    return [windowControllers count] ? [windowControllers objectAtIndex:0] : nil;
+    return mainWindowController;
 }
 
 - (PDFDocument *)pdfDocument{

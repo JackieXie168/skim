@@ -65,6 +65,8 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;
     
+    SKMainWindowController *mainWindowController;
+    
     NSButton *autoRotateButton;
     
     // variables to be saved:
