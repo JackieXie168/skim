@@ -122,7 +122,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)awakeFromNib
 {
     [progressBar setUsesThreadedAnimation:YES];
-    [[self window] setTitle:@""];
+    [[self window] setTitle:[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:[self fileType]]]];
 }
 
 - (NSString *)windowNibName { return @"ConversionProgressWindow"; }
@@ -191,7 +191,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)conversionStarted;
 {
     [progressBar startAnimation:nil];
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:[self fileType]]] stringByAppendingEllipsis]];
+    [textField setStringValue:[[[self window] title] stringByAppendingEllipsis]];
 }
 
 @end
