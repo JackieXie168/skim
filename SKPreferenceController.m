@@ -153,9 +153,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [freehandLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteDashPatternKey) options:nil];
     [freehandLineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
     
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
-    [textNoteFontWell setHasTextColor:YES];
-    [textNoteFontWell bind:SKFontWellTextColorKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
+        [textNoteFontWell setHasTextColor:YES];
+        [textNoteFontWell bind:SKFontWellTextColorKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
+    }
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
