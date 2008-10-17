@@ -152,6 +152,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [freehandLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineStyleKey) options:nil];
     [freehandLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteDashPatternKey) options:nil];
     [freehandLineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
+    [textNoteFontWell setHasTextColor:YES];
+    [textNoteFontWell bind:SKFontWellTextColorKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
@@ -248,7 +252,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)changeFont:(id)sender {
-    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager];
+    [[[[self window] contentView] activeFontWellSubview] changeFontFromFontManager:sender];
+}
+
+- (IBAction)changeAttributes:(id)sender {
+    [[[[self window] contentView] activeFontWellSubview] changeAttributesFromFontManager:sender];
 }
 
 - (IBAction)resetAll:(id)sender {

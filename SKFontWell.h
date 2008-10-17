@@ -40,6 +40,7 @@
 
 extern NSString *SKFontWellFontNameKey;
 extern NSString *SKFontWellFontSizeKey;
+extern NSString *SKFontWellTextColorKey;
 
 extern NSString *SKFontWellFontKey;
 extern NSString *SKFontWellActionKey;
@@ -63,10 +64,27 @@ extern NSString *SKFontWellTargetKey;
 - (float)fontSize;
 - (void)setFontSize:(float)pointSize;
 
-- (void)changeFontFromFontManager;
+- (NSColor *)textColor;
+- (void)setTextColor:(NSColor *)newTextColor;
+
+- (BOOL)hasTextColor;
+- (void)setHasTextColor:(BOOL)newHasTextColor;
+
+- (void)changeFontFromFontManager:(id)sender;
+- (void)changeAttributesFromFontManager:(id)sender;
 
 @end
 
 
-@interface SKFontWellCell : NSButtonCell
+@interface SKFontWellCell : NSButtonCell {
+    NSColor *textColor;
+    BOOL hasTextColor;
+}
+
+- (NSColor *)textColor;
+- (void)setTextColor:(NSColor *)newTextColor;
+
+- (BOOL)hasTextColor;
+- (void)setHasTextColor:(BOOL)newHasTextColor;
+
 @end

@@ -47,6 +47,7 @@ static NSString *SKFontWellWillBecomeActiveNotification = @"SKFontWellWillBecome
 
 NSString *SKFontWellFontNameKey = @"fontName";
 NSString *SKFontWellFontSizeKey = @"fontSize";
+NSString *SKFontWellTextColorKey = @"textColor";
 
 NSString *SKFontWellFontKey = @"font";
 NSString *SKFontWellActionKey = @"action";
@@ -67,6 +68,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 + (void)initialize {
     [self exposeBinding:SKFontWellFontNameKey];
     [self exposeBinding:SKFontWellFontSizeKey];
+    [self exposeBinding:SKFontWellTextColorKey];
     
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontNameKey];
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontSizeKey];
@@ -83,6 +85,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
         return [NSString class];
     else if ([binding isEqualToString:SKFontWellFontNameKey])
         return [NSNumber class];
+    else if ([binding isEqualToString:SKFontWellTextColorKey])
+        return [NSColor class];
     else
         return [super valueClassForBinding:binding];
 }
@@ -172,11 +176,31 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
 }
 
-- (void)changeFontFromFontManager {
+- (void)notifyTextColorBinding {
+    NSDictionary *info = [self infoForBinding:SKFontWellTextColorKey];
+    if (info) {
+        id value = [self textColor];
+        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+        if (transformerName) {
+            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
+            value = [valueTransformer reverseTransformedValue:value]; 
+        }
+        [[info objectForKey:NSObservedObjectKey] setValue:value forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
+    }
+}
+
+- (void)changeFontFromFontManager:(id)sender {
     if ([self isActive]) {
-        NSFontManager *fm = [NSFontManager sharedFontManager];
-        [self setFont:[fm convertFont:[self font]]];
+        [self setFont:[sender convertFont:[self font]]];
         [self notifyBinding];
+        [self sendAction:[self action] to:[self target]];
+    }
+}
+
+- (void)changeAttributesFromFontManager:(id)sender {
+    if ([self isActive] && [self hasTextColor]) {
+        [self setTextColor:[[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[self textColor], NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName]];
+        [self notifyTextColorBinding];
         [self sendAction:[self action] to:[self target]];
     }
 }
@@ -274,6 +298,28 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     NSFont *newFont = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (newFont)
         [self setFont:newFont];
+}
+
+- (NSColor *)textColor {
+    return [[self cell] textColor];
+}
+
+- (void)setTextColor:(NSColor *)newTextColor {
+    BOOL didChange = [[self textColor] isEqual:newTextColor] == NO;
+    [[self cell] setTextColor:newTextColor];
+    if (didChange)
+        [self setNeedsDisplay:YES];
+}
+
+- (BOOL)hasTextColor {
+    return [[self cell] hasTextColor];
+}
+
+- (void)setHasTextColor:(BOOL)newHasTextColor {
+    if ([self hasTextColor] != newHasTextColor) {
+        [[self cell] setHasTextColor:newHasTextColor];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 #pragma mark Binding support
@@ -406,6 +452,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 @implementation SKFontWellCell
 
 - (void)commonInit {
+    [self setTextColor:[NSColor blackColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
     [self setButtonType:NSPushOnPushOffButton];
     [self setState:NSOffState];
@@ -423,6 +470,11 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 		[self commonInit];
 	}
 	return self;
+}
+
+- (void)dealloc {
+    [textColor release];
+    [super dealloc];
 }
 
 - (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
@@ -455,6 +507,37 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
         NSSetFocusRingStyle(NSFocusRingOnly);
         NSRectFill(frame);
         [NSGraphicsContext restoreGraphicsState];
+    }
+}
+
+- (NSAttributedString *)attributedTitle {
+    if ([self hasTextColor]) {
+        NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
+        [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
+        return attrString;
+    } else {
+        return [super attributedTitle];
+    }
+}
+
+- (NSColor *)textColor {
+    return textColor;
+}
+
+- (void)setTextColor:(NSColor *)newTextColor {
+    if (textColor != newTextColor) {
+        [textColor release];
+        textColor = [newTextColor copy];
+    }
+}
+
+- (BOOL)hasTextColor {
+    return hasTextColor;
+}
+
+- (void)setHasTextColor:(BOOL)newHasTextColor {
+    if (hasTextColor != newHasTextColor) {
+        hasTextColor = newHasTextColor;
     }
 }
 
