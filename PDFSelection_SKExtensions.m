@@ -151,7 +151,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     return range;
 }
 
-static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec, NSScriptObjectSpecifier **containerSpec) {
+static NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec, NSScriptObjectSpecifier **containerSpec) {
     if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
     
