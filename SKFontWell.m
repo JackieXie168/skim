@@ -48,6 +48,7 @@ static NSString *SKFontWellWillBecomeActiveNotification = @"SKFontWellWillBecome
 NSString *SKFontWellFontNameKey = @"fontName";
 NSString *SKFontWellFontSizeKey = @"fontSize";
 NSString *SKFontWellTextColorKey = @"textColor";
+NSString *SKFontWellHasTextColorKey = @"hasTextColor";
 
 NSString *SKFontWellFontKey = @"font";
 NSString *SKFontWellActionKey = @"action";
@@ -112,8 +113,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     if (self = [super initWithCoder:decoder]) {
 		NSButtonCell *oldCell = [self cell];
 		if (NO == [oldCell isKindOfClass:[[self class] cellClass]]) {
-			SKFontWellCell *newCell = [[SKFontWellCell alloc] init];
-			[newCell setBezelStyle:[oldCell bezelStyle]];
+			SKFontWellCell *newCell = [[[self class] alloc] init];
 			[newCell setAlignment:[oldCell alignment]];
 			[newCell setEditable:[oldCell isEditable]];
 			[newCell setTarget:[oldCell target]];
@@ -452,7 +452,8 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 @implementation SKFontWellCell
 
 - (void)commonInit {
-    [self setTextColor:[NSColor blackColor]];
+    if (textColor == nil)
+        [self setTextColor:[NSColor blackColor]];
     [self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
     [self setButtonType:NSPushOnPushOffButton];
     [self setState:NSOffState];
@@ -465,11 +466,29 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 	return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
-	if (self = [super initWithCoder:coder]) {
-		[self commonInit];
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+        if ([decoder allowsKeyedCoding]) {
+            [self setTextColor:[decoder decodeObjectForKey:SKFontWellTextColorKey]];
+            [self setHasTextColor:[decoder decodeBoolForKey:SKFontWellHasTextColorKey]];
+        } else {
+            [self setTextColor:[decoder decodeObject]];
+            [decoder decodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];
+		}
+        [self commonInit];
 	}
 	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    if ([coder allowsKeyedCoding]) {
+        [coder encodeConditionalObject:textColor forKey:SKFontWellTextColorKey];
+        [coder encodeObject:textColor forKey:SKFontWellHasTextColorKey];
+    } else {
+        [coder encodeObject:textColor];
+        [coder encodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];
+    }
 }
 
 - (void)dealloc {
