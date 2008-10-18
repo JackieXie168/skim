@@ -41,6 +41,7 @@
 extern NSString *SKFontWellFontNameKey;
 extern NSString *SKFontWellFontSizeKey;
 extern NSString *SKFontWellTextColorKey;
+extern NSString *SKFontWellHasTextColorKey;
 
 extern NSString *SKFontWellFontKey;
 extern NSString *SKFontWellActionKey;
