@@ -113,7 +113,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     if (self = [super initWithCoder:decoder]) {
 		NSButtonCell *oldCell = [self cell];
 		if (NO == [oldCell isKindOfClass:[[self class] cellClass]]) {
-			SKFontWellCell *newCell = [[[self class] alloc] init];
+			SKFontWellCell *newCell = [[[[self class] cellClass] alloc] init];
 			[newCell setAlignment:[oldCell alignment]];
 			[newCell setEditable:[oldCell isEditable]];
 			[newCell setTarget:[oldCell target]];
