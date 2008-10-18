@@ -157,7 +157,8 @@ static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec
     
     // we should get ranges of characters, words, or parapgraphs of the richText of a page
     NSString *key = [spec key];
-    if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO && [key isEqualToString:@"attributeRuns"] == NO)
+    NSSet *textKeys = [NSSet setWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", nil];
+    if ([textKeys containsObject:key] == NO)
         return nil;
     
     // get the richText specifier
@@ -169,7 +170,7 @@ static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec
         return nil;
     
     unsigned int containerOffset = 0;
-    if ([key isEqualToString:@"characters"] || [key isEqualToString:@"words"] || [key isEqualToString:@"paragraphs"] || [key isEqualToString:@"attributeRuns"] == NO) {
+    if ([textKeys containsObject:[textSpec key]]) {
         NSArray *textRanges = characterRangesForSpecifier(textSpec, containerSpec);
         if ([textRanges count] == 0)
             return nil;
@@ -279,6 +280,8 @@ static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec
 }
 
 + (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage {
+    NSSet *textKeys = [NSSet setWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", nil];
+    
     if ([specifier isEqual:[NSNull null]])
         return nil;
     if ([specifier isKindOfClass:[NSArray class]] == NO)
@@ -287,11 +290,12 @@ static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec
         NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
         if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
             NSString *key = [spec key];
-            if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO && [key isEqualToString:@"attributeRuns"] == NO)
+            if ([textKeys containsObject:key] == NO && [key isEqualToString:@"richText"] == NO) {
                 // this allows to use selection properties directly
                 specifier = [spec objectsByEvaluatingSpecifier];
                 if ([specifier isKindOfClass:[NSArray class]] == NO)
                     specifier = [NSArray arrayWithObject:specifier];
+            }
         }
     }
     
@@ -303,20 +307,33 @@ static inline NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
-        NSScriptObjectSpecifier *containerSpec = nil;
-        NSArray *ranges = characterRangesForSpecifier(spec, &containerSpec);
-        unsigned int i, numRanges = [ranges count];
+        NSArray *ranges = nil;
+        NSScriptObjectSpecifier *textSpec = nil;
+        NSString *key = [spec key];
         
-        if ([containerSpec isKindOfClass:[NSScriptObjectSpecifier class]] == NO || [[containerSpec key] isEqualToString:@"richText"] == NO)
+        if ([key isEqualToString:@"richText"]) {
+            NSTextStorage *textStorage = [spec objectsByEvaluatingSpecifier];
+            if ([textStorage isKindOfClass:[NSArray class]])
+                textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
+            if ([textStorage isKindOfClass:[NSTextStorage class]])
+                continue;
+            ranges = [NSArray arrayWithObjects:[NSValue valueWithRange:NSMakeRange(0, [textStorage length])], nil];
+            textSpec = spec;
+        } else if ([textKeys containsObject:key] == NO) {
+            ranges = characterRangesForSpecifier(spec, &textSpec);
+            if ([textSpec isKindOfClass:[NSScriptObjectSpecifier class]] == NO || [[textSpec key] isEqualToString:@"richText"] == NO)
+                continue;
+        } else
             continue;
         
-        NSScriptObjectSpecifier *pageSpec = [containerSpec containerSpecifier];
+        NSScriptObjectSpecifier *pageSpec = [textSpec containerSpecifier];
         PDFPage *page = [pageSpec objectsByEvaluatingSpecifier];
         if ([page isKindOfClass:[NSArray class]])
             page = [(NSArray *)page count] ? [(NSArray *)page objectAtIndex:0] : nil;
         if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO))
             continue;
         
+        unsigned int i, numRanges = [ranges count];
         for (i = 0; i < numRanges; i++) {
             PDFSelection *sel;
             NSRange range = [[ranges objectAtIndex:i] rangeValue];
