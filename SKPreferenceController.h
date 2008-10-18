@@ -76,6 +76,7 @@
 - (IBAction)revertFullScreenPDFViewSettings:(id)sender;
 
 - (IBAction)changeFont:(id)sender;
+- (IBAction)changeAttributes:(id)sender;
 
 - (IBAction)resetAll:(id)sender;
 - (IBAction)resetCurrent:(id)sender;
