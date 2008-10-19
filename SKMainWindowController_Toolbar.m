@@ -547,8 +547,6 @@ static NSString *SKDocumentToolbarCustomizeItemIdentifier = @"SKDocumentToolbarC
             [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
             [item setImageNamed:@"ToolbarFonts"];
             [item setSegmentedControl:fontsButton];
-            if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-                [fontsButton setImage:[NSImage imageNamed:@"ToolbarFontsBlack"] forSegment:0];
             [item setMenuFormRepresentation:menuItem];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarLinesItemIdentifier]) {

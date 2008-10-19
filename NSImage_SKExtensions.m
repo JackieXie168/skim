@@ -270,7 +270,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *toolbarAddLineNoteMenuImage = nil;
     static NSImage *toolbarAddInkNoteMenuImage = nil;
     static NSImage *toolbarTextToolImage = nil;
-    static NSImage *toolbarMoveToolImage = nil;
     static NSImage *toolbarMagnifyToolImage = nil;
     static NSImage *toolbarSelectToolImage = nil;
     static NSImage *toolbarNewFolderImage = nil;
@@ -295,14 +294,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
     NSColor *fgColor = [NSColor whiteColor];
-    
-    BOOL isTiger = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4;
-    
-    if (isTiger) {
-        [shadow1 setShadowBlurRadius:1.0];
-        [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
-        fgColor = [NSColor blackColor];
-    }
     
     NSBezierPath *path;
     
@@ -419,7 +410,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarBackImage unlockFocus];
     [toolbarBackImage setName:SKImageNameToolbarBack];
     
-    if (isTiger) {
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         // the image drawn right after ToolbarBack on Tiger has drawing artifacts, a gray upward pointing arrow at the bottom, so we make it a dummy image
         NSImage *dummy = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
         [dummy lockFocus];
@@ -837,12 +828,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarCropBoxImage setName:SKImageNameToolbarCropBox];
     
     float outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
-    if (isTiger) {
-        outStartGray = 0.0;
-        outEndGray = 0.1;
-        inStartGray = 0.15;
-        inEndGray = 0.3;
-    }
     
     toolbarLeftPaneImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
     [toolbarLeftPaneImage lockFocus];
@@ -1025,8 +1010,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path closePath];
     [path appendBezierPathWithRect:NSMakeRect(12.0, 7.0, 2.0, 2.0)];
     [path setWindingRule:NSEvenOddWindingRule];
-    if (isTiger == NO)
-        [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.988 green:0.988 blue:0.988 alpha:1.0] endColor:[CIColor colorWithRed:0.762 green:0.762 blue:0.762 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarAnchoredNoteImage unlockFocus];
     [toolbarAnchoredNoteImage setName:SKImageNameToolbarAnchoredNote];
@@ -1294,51 +1277,9 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [NSGraphicsContext saveGraphicsState];
     [path setClip];
     path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.0, 4.0, 13.0, 6.0)];
-    if (isTiger == NO)
-        [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.0] endColor:[CIColor colorWithRed:0.798 green:0.798 blue:0.798 alpha:1.0]];
     [NSGraphicsContext restoreGraphicsState];
     [toolbarTextToolImage unlockFocus];
     [toolbarTextToolImage setName:SKImageNameToolbarTextTool];
-    
-    if (isTiger) {
-        toolbarMoveToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
-        [toolbarMoveToolImage lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSColor clearColor] setFill];
-        NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 17.0));
-        [shadow1 set];
-        [fgColor setFill];
-        path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(10.0, 7.5)];
-        [path lineToPoint:NSMakePoint(8.0, 9.5)];
-        [path lineToPoint:NSMakePoint(10.0, 11.5)];
-        [path lineToPoint:NSMakePoint(10.0, 10.0)];
-        [path lineToPoint:NSMakePoint(13.0, 10.0)];
-        [path lineToPoint:NSMakePoint(13.0, 13.0)];
-        [path lineToPoint:NSMakePoint(11.5, 13.0)];
-        [path lineToPoint:NSMakePoint(13.5, 15.0)];
-        [path lineToPoint:NSMakePoint(15.5, 13.0)];
-        [path lineToPoint:NSMakePoint(14.0, 13.0)];
-        [path lineToPoint:NSMakePoint(14.0, 10.0)];
-        [path lineToPoint:NSMakePoint(17.0, 10.0)];
-        [path lineToPoint:NSMakePoint(17.0, 11.5)];
-        [path lineToPoint:NSMakePoint(19.0, 9.5)];
-        [path lineToPoint:NSMakePoint(17.0, 7.5)];
-        [path lineToPoint:NSMakePoint(17.0, 9.0)];
-        [path lineToPoint:NSMakePoint(14.0, 9.0)];
-        [path lineToPoint:NSMakePoint(14.0, 6.0)];
-        [path lineToPoint:NSMakePoint(15.5, 6.0)];
-        [path lineToPoint:NSMakePoint(13.5, 4.0)];
-        [path lineToPoint:NSMakePoint(11.5, 6.0)];
-        [path lineToPoint:NSMakePoint(13.0, 6.0)];
-        [path lineToPoint:NSMakePoint(13.0, 9.0)];
-        [path lineToPoint:NSMakePoint(10.0, 9.0)];
-        [path closePath];
-        [path fill];
-        [NSGraphicsContext restoreGraphicsState];
-        [toolbarMoveToolImage unlockFocus];
-        [toolbarMoveToolImage setName:SKImageNameToolbarMoveTool];
-    }
     
     toolbarMagnifyToolImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [toolbarMagnifyToolImage lockFocus];
