@@ -159,4 +159,6 @@
     [self drawInteriorWithFrame:[self drawingRectForBounds:frame] inView:controlView];
 }
 
+- (BOOL) _isTextured { return YES; }
+
 @end
