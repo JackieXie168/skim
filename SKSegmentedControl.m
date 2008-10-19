@@ -129,7 +129,7 @@
             [image drawFlipped:[controlView isFlipped] inRect:sideRect fromRect:sliverRect operation:NSCompositeSourceOver fraction:1.0];
         }
         if (NSWidth(midRect) > 0.0) {
-            image = [NSImage imageNamed:isPressed ? @"Segment_MiddlePress" : @"Segment_Middle"];
+            image = [NSImage imageNamed:isPressed ? @"Segment_RightCapPress" : @"Segment_RightCap"];
             [image drawFlipped:[controlView isFlipped] inRect:midRect fromRect:sliverRect operation:NSCompositeSourceOver fraction:1.0];
         }
         if (keySegment == i && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView)
