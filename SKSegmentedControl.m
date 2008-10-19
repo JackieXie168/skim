@@ -113,8 +113,8 @@
         if (i == 0) {
             rect.size.width += SEGMENT_CAP_EXTRA_WIDTH;
             NSDivideRect(rect, &sideRect, &midRect, SEGMENT_CAP_WIDTH, NSMinXEdge);
-            image = [NSImage imageNamed:isPressed ? @"Segment_LeftCapPress" : @"Segment_LeftCap"];
-            [image drawFlipped:[controlView isFlipped] inRect:sideRect fromRect:capRect operation:NSCompositeSourceOver fraction:1.0];
+            image = [NSImage imageNamed:isPressed ? @"Segment_RightCapPress" : @"Segment_RightCap"];
+            [image drawMirroredAndFlipped:[controlView isFlipped] inRect:sideRect fromRect:capRect operation:NSCompositeSourceOver fraction:1.0];
         }
         if (i == count - 1) {
             rect.size.width += SEGMENT_CAP_EXTRA_WIDTH;
