@@ -2005,6 +2005,35 @@ static NSSize tinyImageSize = {16.0, 16.0};
         [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
+- (void)drawMirroredInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    [NSGraphicsContext saveGraphicsState];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:NSMaxX(dstRect) yBy:0.0];
+    [transform scaleXBy:-1.0 yBy:1.0];
+    [transform translateXBy:-NSMinX(dstRect) yBy:0.0];
+    [transform concat];
+    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)drawMirroredAndFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    [NSGraphicsContext saveGraphicsState];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:NSMaxX(dstRect) yBy:NSMaxY(dstRect)];
+    [transform scaleXBy:-1.0 yBy:-1.0];
+    [transform translateXBy:-NSMinX(dstRect) yBy:-NSMinY(dstRect)];
+    [transform concat];
+    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    if (isFlipped)
+        [self drawMirroredAndFlippedInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    else
+        [self drawMirroredInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+}
+
 static NSComparisonResult compareImageRepWidths(NSBitmapImageRep *r1, NSBitmapImageRep *r2, void *ctxt)
 {
     NSSize s1 = [r1 size];
