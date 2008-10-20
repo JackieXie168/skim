@@ -60,7 +60,11 @@
 + (NSColor *)secondarySelectedTableColor {
     static NSColor *secondarySelectedTableColor = nil;
     if (nil == secondarySelectedTableColor) {
-        secondarySelectedTableColor = [[NSColor colorWithCalibratedRed:0.724706 green:0.743529 blue:0.771765 alpha:1.0] retain];
+        if ([self respondsToSelector:@selector(_sourceListBackgroundColor)])
+            secondarySelectedTableColor = [NSColor colorWithCalibratedRed:0.671373 green:0.693334 blue:0.718431 alpha:1.0];
+        else
+            secondarySelectedTableColor = [NSColor colorWithCalibratedRed:0.724706 green:0.743529 blue:0.771765 alpha:1.0];
+        [secondarySelectedTableColor retain];
     }
     return secondarySelectedTableColor;
 }
