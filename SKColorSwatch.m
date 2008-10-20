@@ -101,7 +101,7 @@ static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
             autoResizes = [decoder decodeBoolForKey:SKColorSwatchAutoresizesKey];
         } else {
             colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObject]];
-            [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
+            action = NSSelectorFromString([decoder decodeObject]);
             target = [decoder decodeObject];
             [decoder decodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
         }
@@ -119,7 +119,7 @@ static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
         [coder encodeBool:autoResizes forKey:SKColorSwatchAutoresizesKey];
     } else {
         [coder encodeObject:colors];
-        [coder encodeValueOfObjCType:@encode(SEL) at:action];
+        [coder encodeObject:NSStringFromSelector(action)];
         [coder encodeConditionalObject:target];
         [coder encodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
     }
