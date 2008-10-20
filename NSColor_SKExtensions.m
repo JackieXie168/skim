@@ -60,7 +60,6 @@
 + (NSColor *)secondarySelectedTableColor {
     static NSColor *secondarySelectedTableColor = nil;
     if (nil == secondarySelectedTableColor) {
-        secondarySelectedTableColor = [self tableBackgroundColor];
         secondarySelectedTableColor = [[NSColor colorWithCalibratedRed:0.724706 green:0.743529 blue:0.771765 alpha:1.0] retain];
     }
     return secondarySelectedTableColor;
