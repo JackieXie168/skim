@@ -266,10 +266,10 @@
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
 		CE51630A0EAB5A1A009FA237 /* SKSegmentedControl.h in Headers */ = {isa = PBXBuildFile; fileRef = CE5163080EAB5A1A009FA237 /* SKSegmentedControl.h */; };
 		CE51630B0EAB5A1A009FA237 /* SKSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */; };
-		CE5163380EAB5EE2009FA237 /* Segment_RightCap.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632C0EAB5EE2009FA237 /* Segment_RightCap.tiff */; };
-		CE51633A0EAB5EE2009FA237 /* Segment_RightCapPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632E0EAB5EE2009FA237 /* Segment_RightCapPress.tiff */; };
-		CE51633C0EAB5EE2009FA237 /* Segment_SeparatorPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5163300EAB5EE2009FA237 /* Segment_SeparatorPress.tiff */; };
-		CE51633D0EAB5EE2009FA237 /* Segment_Separator.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5163310EAB5EE2009FA237 /* Segment_Separator.tiff */; };
+		CE5163380EAB5EE2009FA237 /* Segment_Cap.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */; };
+		CE51633A0EAB5EE2009FA237 /* Segment_CapPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632E0EAB5EE2009FA237 /* Segment_CapPress.tiff */; };
+		CE51633C0EAB5EE2009FA237 /* Segment_DividerPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5163300EAB5EE2009FA237 /* Segment_DividerPress.tiff */; };
+		CE51633D0EAB5EE2009FA237 /* Segment_Divider.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5163310EAB5EE2009FA237 /* Segment_Divider.tiff */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
@@ -777,10 +777,10 @@
 		CE4F9DED0BC1BE3A005BE0A1 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5163080EAB5A1A009FA237 /* SKSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSegmentedControl.h; sourceTree = "<group>"; };
 		CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSegmentedControl.m; sourceTree = "<group>"; };
-		CE51632C0EAB5EE2009FA237 /* Segment_RightCap.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_RightCap.tiff; sourceTree = "<group>"; };
-		CE51632E0EAB5EE2009FA237 /* Segment_RightCapPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_RightCapPress.tiff; sourceTree = "<group>"; };
-		CE5163300EAB5EE2009FA237 /* Segment_SeparatorPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_SeparatorPress.tiff; sourceTree = "<group>"; };
-		CE5163310EAB5EE2009FA237 /* Segment_Separator.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_Separator.tiff; sourceTree = "<group>"; };
+		CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_Cap.tiff; sourceTree = "<group>"; };
+		CE51632E0EAB5EE2009FA237 /* Segment_CapPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_CapPress.tiff; sourceTree = "<group>"; };
+		CE5163300EAB5EE2009FA237 /* Segment_DividerPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_DividerPress.tiff; sourceTree = "<group>"; };
+		CE5163310EAB5EE2009FA237 /* Segment_Divider.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_Divider.tiff; sourceTree = "<group>"; };
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -1593,10 +1593,10 @@
 				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE6DC8890D68C657003A072F /* ToolbarMoveTool.tiff */,
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
-				CE51632C0EAB5EE2009FA237 /* Segment_RightCap.tiff */,
-				CE51632E0EAB5EE2009FA237 /* Segment_RightCapPress.tiff */,
-				CE5163310EAB5EE2009FA237 /* Segment_Separator.tiff */,
-				CE5163300EAB5EE2009FA237 /* Segment_SeparatorPress.tiff */,
+				CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */,
+				CE51632E0EAB5EE2009FA237 /* Segment_CapPress.tiff */,
+				CE5163310EAB5EE2009FA237 /* Segment_Divider.tiff */,
+				CE5163300EAB5EE2009FA237 /* Segment_DividerPress.tiff */,
 				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
@@ -2181,10 +2181,10 @@
 				CEAF36D70E672BB900491E3B /* MainWindow.nib in Resources */,
 				CEAF371A0E676EC300491E3B /* BookmarksWindow.nib in Resources */,
 				CE39C6E70E9BCA7B003FF992 /* NotesDocument.nib in Resources */,
-				CE5163380EAB5EE2009FA237 /* Segment_RightCap.tiff in Resources */,
-				CE51633A0EAB5EE2009FA237 /* Segment_RightCapPress.tiff in Resources */,
-				CE51633C0EAB5EE2009FA237 /* Segment_SeparatorPress.tiff in Resources */,
-				CE51633D0EAB5EE2009FA237 /* Segment_Separator.tiff in Resources */,
+				CE5163380EAB5EE2009FA237 /* Segment_Cap.tiff in Resources */,
+				CE51633A0EAB5EE2009FA237 /* Segment_CapPress.tiff in Resources */,
+				CE51633C0EAB5EE2009FA237 /* Segment_DividerPress.tiff in Resources */,
+				CE51633D0EAB5EE2009FA237 /* Segment_Divider.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

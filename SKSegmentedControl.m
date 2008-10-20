@@ -108,7 +108,7 @@
         NSRect sliverRect = NSMakeRect(0.0, 0.0, SEGMENT_SLIVER_WIDTH, SEGMENT_HEIGHT);
         rect.size.width = [self widthForSegment:i];
         midRect = rect;
-        NSImage *image = [NSImage imageNamed:[self isPressedSegment:i] ? @"Segment_RightCapPress" : @"Segment_RightCap"];
+        NSImage *image = [NSImage imageNamed:[self isPressedSegment:i] ? @"Segment_CapPress" : @"Segment_Cap"];
         if (i == 0) {
             rect.size.width += SEGMENT_CAP_EXTRA_WIDTH;
             NSDivideRect(rect, &sideRect, &midRect, SEGMENT_CAP_WIDTH, NSMinXEdge);
@@ -122,7 +122,7 @@
         } else {
             NSDivideRect(midRect, &sideRect, &midRect, -SEGMENT_SLIVER_WIDTH, NSMaxXEdge);
             NSDivideRect(midRect, &sideRect, &midRect, SEGMENT_SLIVER_WIDTH, NSMaxXEdge);
-            NSImage *sepImage = [NSImage imageNamed:[self isPressedSegment:i] || [self isPressedSegment:i + 1] ? @"Segment_SeparatorPress" : @"Segment_Separator"];
+            NSImage *sepImage = [NSImage imageNamed:[self isPressedSegment:i] || [self isPressedSegment:i + 1] ? @"Segment_DividerPress" : @"Segment_Divider"];
             [sepImage drawFlipped:[controlView isFlipped] inRect:sideRect fromRect:sliverRect operation:NSCompositeSourceOver fraction:1.0];
         }
         if (NSWidth(midRect) > 0.0) {
