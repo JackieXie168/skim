@@ -120,7 +120,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
             [decoder decodeValueOfObjCType:@encode(NSInteger) at:&endLineStyle];
             [decoder decodeValueOfObjCType:@encode(NSInteger) at:&displayStyle];
             [decoder decodeValueOfObjCType:@encode(BOOL) at:&active];
-            [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
+            action = NSSelectorFromString([decoder decodeObject]);
             target = [decoder decodeObject];
         }
         [self commonInit];
@@ -148,7 +148,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
         [coder encodeValueOfObjCType:@encode(NSInteger) at:&endLineStyle];
         [coder encodeValueOfObjCType:@encode(NSInteger) at:&displayStyle];
         [coder encodeValueOfObjCType:@encode(BOOL) at:&active];
-        [coder encodeValueOfObjCType:@encode(SEL) at:action];
+        [coder encodeObject:NSStringFromSelector(action)];
         [coder encodeConditionalObject:target];
     }
 }

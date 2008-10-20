@@ -125,7 +125,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
             action = NSSelectorFromString([decoder decodeObjectForKey:SKFontWellActionKey]);
             target = [decoder decodeObjectForKey:SKFontWellTargetKey];
         } else {
-            [decoder decodeValueOfObjCType:@encode(SEL) at:&action];
+            action = NSSelectorFromString([decoder decodeObject]);
             target = [decoder decodeObject];
         }
         [self commonInit];
@@ -139,7 +139,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
         [coder encodeObject:NSStringFromSelector(action) forKey:SKFontWellActionKey];
         [coder encodeConditionalObject:target forKey:SKFontWellTargetKey];
     } else {
-        [coder encodeValueOfObjCType:@encode(SEL) at:action];
+        [coder encodeObject:NSStringFromSelector(action)];
         [coder encodeConditionalObject:target];
     }
 }
