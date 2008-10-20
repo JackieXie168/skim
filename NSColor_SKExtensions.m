@@ -39,12 +39,20 @@
 #import "NSColor_SKExtensions.h"
 
 
+@interface NSColor (SKApplePrivateDeclerations)
++ (NSColor *)_sourceListBackgroundColor;
+@end
+
 @implementation NSColor (SKExtensions)
 
 + (NSColor *)tableBackgroundColor {
     static NSColor *tableBackgroundColor = nil;
     if (nil == tableBackgroundColor) {
-        tableBackgroundColor = [[NSColor colorWithCalibratedRed:0.905882 green:0.929412 blue:0.964706 alpha:1.0] retain];
+        if ([self respondsToSelector:@selector(_sourceListBackgroundColor)])
+            tableBackgroundColor = [[self _sourceListBackgroundColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        else
+            tableBackgroundColor = [NSColor colorWithCalibratedRed:0.905882 green:0.929412 blue:0.964706 alpha:1.0];
+        [tableBackgroundColor retain];
     }
     return tableBackgroundColor;
 }
