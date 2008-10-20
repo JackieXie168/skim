@@ -40,38 +40,61 @@
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
+#define CAPSULE_HEIGHT  23.0
+#define TEXTURED_HEIGHT 25.0
 
 @implementation SKSegmentedControl
 
++ (Class)cellClass {
+    return [self instancesRespondToSelector:@selector(setSegmentStyle:)] ? [super cellClass] : [SKSegmentedCell class];
+}
+
+- (id)initWithFrame:(NSRect)frameRect {
+    frameRect.size.height = [self respondsToSelector:@selector(setSegmentStyle:)] ? CAPSULE_HEIGHT : TEXTURED_HEIGHT;
+    if (self = [super initWithFrame:frameRect]) {
+        if ([self respondsToSelector:@selector(setSegmentStyle:)])
+            [self setSegmentStyle:NSSegmentStyleCapsule];
+    }
+    return self;
+}
+
 - (id)initWithCoder:(NSCoder *)coder {
     if (self = [super initWithCoder:coder]) {
-        if ([self respondsToSelector:@selector(setSegmentStyle:)] == NO) {
-            SKSegmentedCell *cell = [[[SKSegmentedCell alloc] init] autorelease];
-            id oldCell = [self cell];
-            unsigned int i, count = [self segmentCount];
-            
-            [cell setSegmentCount:count];
-            [cell setTrackingMode:[oldCell trackingMode]];
-            [cell setAction:[oldCell action]];
-            [cell setTarget:[oldCell target]];
-            [cell setTag:[oldCell tag]];
-            [cell setEnabled:[oldCell isEnabled]];
-            [cell setBezeled:NO];
-            [cell setBordered:NO];
-            
-            for (i = 0; i < count; i++) {
-                [cell setWidth:[oldCell widthForSegment:i] forSegment:i];
-                [cell setImage:[oldCell imageForSegment:i] forSegment:i];
-                [cell setLabel:[oldCell labelForSegment:i] forSegment:i];
-                [cell setToolTip:[oldCell toolTipForSegment:i] forSegment:i];
-                [cell setEnabled:[oldCell isEnabledForSegment:i] forSegment:i];
-                [cell setSelected:[oldCell isSelectedForSegment:i] forSegment:i];
-                [cell setMenu:[oldCell menuForSegment:i] forSegment:i];
-                [cell setTag:[oldCell tagForSegment:i] forSegment:i];
+        NSRect frame = [self frame];
+        if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
+            [self setSegmentStyle:NSSegmentStyleCapsule];
+            frame.size.height = CAPSULE_HEIGHT;
+        } else {
+            if ([[self cell] isKindOfClass:[[[self class] cellClass] class]] == NO) {
+                NSSegmentedCell *cell = [[[[[self class] cellClass] alloc] init] autorelease];
+                id oldCell = [self cell];
+                unsigned int i, count = [self segmentCount];
+                
+                [cell setSegmentCount:count];
+                [cell setTrackingMode:[oldCell trackingMode]];
+                [cell setAction:[oldCell action]];
+                [cell setTarget:[oldCell target]];
+                [cell setTag:[oldCell tag]];
+                [cell setEnabled:[oldCell isEnabled]];
+                [cell setBezeled:NO];
+                [cell setBordered:NO];
+                
+                for (i = 0; i < count; i++) {
+                    [cell setWidth:[oldCell widthForSegment:i] forSegment:i];
+                    [cell setImage:[oldCell imageForSegment:i] forSegment:i];
+                    [cell setLabel:[oldCell labelForSegment:i] forSegment:i];
+                    [cell setToolTip:[oldCell toolTipForSegment:i] forSegment:i];
+                    [cell setEnabled:[oldCell isEnabledForSegment:i] forSegment:i];
+                    [cell setSelected:[oldCell isSelectedForSegment:i] forSegment:i];
+                    [cell setMenu:[oldCell menuForSegment:i] forSegment:i];
+                    [cell setTag:[oldCell tagForSegment:i] forSegment:i];
+                }
+                
+                [self setCell:cell];
             }
-            
-            [self setCell:cell];
+            frame.size.height = TEXTURED_HEIGHT;
         }
+        [self setFrame:frame];
     }
     return self;
 }

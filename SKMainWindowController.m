@@ -136,9 +136,6 @@ static NSString *SKMainWindowHasVerticalScrollerKey = @"hasVerticalScroller";
 static NSString *SKMainWindowAutoHidesScrollersKey = @"autoHidesScrollers";
 static NSString *SKMainWindowPageIndexKey = @"pageIndex";
 
-static float segmentedControlHeight = 23.0;
-static float segmentedControlOffset = 1.0;
-
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
 static void *SKNPDFAnnotationPropertiesObservationContext = (void *)@"SKNPDFAnnotationPropertiesObservationContext";
@@ -219,11 +216,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        segmentedControlHeight = 25.0;
-        segmentedControlOffset = 0.0;
-    }
-
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
 }
 
