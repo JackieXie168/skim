@@ -2,19 +2,17 @@
 
 # displayline (Skim)
 #
-# Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
+# Usage: displayline [-r] LINE PDFFILE [TEXSOURCEFILE]
 
 # get arguments
-command=`basename "$0"`
+revert=0
+if [ "$1" == "-r" -o "$1" == "-revert" ]; then
+  revert=1
+  shift
+fi
 line=$1
-if [ "$command" == "forward-search.sh" ]; then
-# if called as forward-search.sh, the order of arguments is different
-source="$2"
-file="$3"
-else
 file="$2"
 [ $# -gt 2 ] && source="$3" || source="${file%.pdf}.tex"
-fi
 
 # expand relative paths
 [ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
@@ -22,16 +20,21 @@ fi
 
 # pass arguments as NULL-separated string to osascript
 # pass through cat to get them as raw bytes to preserve non-ASCII characters
-echo -ne "${line}\x00${file}\x00${source}\x00" | \
+echo -ne "${line}\x00${file}\x00${source}\x00${revert}\x00" | \
 /usr/bin/osascript \
   -e "set theArgv to do shell script \"/bin/cat\"" \
   -e "set AppleScript's text item delimiters to ASCII character 0" \
-  -e "set {theLine, theFile, theSource} to text items of theArgv" \
+  -e "set {theLine, theFile, theSource, shouldRevert} to text items of theArgv" \
   -e "set theLine to theLine as integer" \
   -e "set theFile to POSIX file theFile" \
   -e "set theSource to POSIX file theSource" \
+  -e "set shouldRevert to (shouldRevert as integer) as boolean" \
   -e "tell application \"Skim\"" \
   -e "  activate" \
+  -e "  if shouldRevert then" \
+  -e "    set theDocs to get documents whose path is (get POSIX path of (theFile as alias))" \
+  -e "    if (count of theDocs) > 0 then revert theDocs" \
+  -e "  end if" \
   -e "  open theFile" \
   -e "  tell front document to go to TeX line theLine from theSource" \
   -e "end tell" -
