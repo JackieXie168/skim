@@ -1977,7 +1977,6 @@
 				CEE112760BCBF52500BF2D3E /* Copy Files: Frameworks */,
 				CEFD68720C01D3FE0027B933 /* Copy Files: Spotlight */,
 				CE816A0A0D70F9B6008D807D /* Copy Files: QuickLook */,
-				CEE22EA50BFB8691002B746B /* Run Script: Symlink scripts */,
 				CE4B67590BF4DC3000A73E42 /* Run Script: Strip headers and .DS_Store */,
 			);
 			buildRules = (
@@ -2238,20 +2237,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\n# Check to see if a previous version exists and create it\n# if not, or else pbxcp will complain.\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nexit 0\nfi\n#\n# Run the genstrings build phase\n#\nfi\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\n\n/usr/bin/genstrings -q -o ${SOURCE_ROOT}/English.lproj *.m 2>&1 | sed -e 's/^/warning: /g' | sed -e 's/warning:.*Warning:/warning:/g' >&2\n";
-		};
-		CEE22EA50BFB8691002B746B /* Run Script: Symlink scripts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script: Symlink scripts";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nln -fs ../SharedSupport/displayline displayline\nln -fs ../SharedSupport/displayline forward-search.sh\n";
 		};
 		CEF82CA50C77286200A3AD51 /* Run Script: Build Help */ = {
 			isa = PBXShellScriptBuildPhase;
