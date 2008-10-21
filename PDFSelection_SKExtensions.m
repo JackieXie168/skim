@@ -165,7 +165,7 @@ static NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec, NSScr
     NSScriptObjectSpecifier *textSpec = [spec containerSpecifier];
     NSTextStorage *textStorage = [textSpec objectsByEvaluatingSpecifier];
     if ([textStorage isKindOfClass:[NSArray class]])
-        textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
+        textStorage = [(NSArray *)textStorage count] == 1 ? [(NSArray *)textStorage objectAtIndex:0] : nil;
     if ([textStorage isKindOfClass:[NSTextStorage class]] == NO)
         return nil;
     
@@ -319,7 +319,7 @@ static NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec, NSScr
                 continue;
             ranges = [NSArray arrayWithObjects:[NSValue valueWithRange:NSMakeRange(0, [textStorage length])], nil];
             textSpec = spec;
-        } else if ([textKeys containsObject:key] == NO) {
+        } else if ([textKeys containsObject:key]) {
             ranges = characterRangesForSpecifier(spec, &textSpec);
             if ([textSpec isKindOfClass:[NSScriptObjectSpecifier class]] == NO || [[textSpec key] isEqualToString:@"richText"] == NO)
                 continue;
@@ -329,7 +329,7 @@ static NSArray *characterRangesForSpecifier(NSScriptObjectSpecifier *spec, NSScr
         NSScriptObjectSpecifier *pageSpec = [textSpec containerSpecifier];
         PDFPage *page = [pageSpec objectsByEvaluatingSpecifier];
         if ([page isKindOfClass:[NSArray class]])
-            page = [(NSArray *)page count] ? [(NSArray *)page objectAtIndex:0] : nil;
+            page = [(NSArray *)page count] == 1 ? [(NSArray *)page objectAtIndex:0] : nil;
         if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO))
             continue;
         
