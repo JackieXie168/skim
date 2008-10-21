@@ -1996,7 +1996,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             source = [self fileURL];
         [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
     } else {
-        PDFSelection *selection = [PDFSelection selectionWithSpecifier:location];
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([[selection pages] count]) {
             PDFPage *page = [[selection pages] objectAtIndex:0];
             NSRect bounds = [selection boundsForPage:page];
