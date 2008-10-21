@@ -60,6 +60,7 @@
 #import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
+#import "SKPDFView.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -472,11 +473,21 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 - (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSMutableArray *types = [NSMutableArray array];
+    NSData *noteData = nil;
     NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
     NSMutableString *string = [NSMutableString string];
-    NSEnumerator *itemEnum = [items objectEnumerator];
+    NSEnumerator *itemEnum;
     id item;
     
+    itemEnum = [items objectEnumerator];
+    while (item = [itemEnum nextObject]) {
+        if ([item type] == nil || ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO)) {
+            noteData = [NSKeyedArchiver archivedDataWithRootObject:[([item type] ? item : [item note]) SkimNoteProperties]];
+            [types addObject:SKSkimNotePboardType];
+            break;
+        }
+    }
+    itemEnum = [items objectEnumerator];
     while (item = [itemEnum nextObject]) {
         if ([string length])
             [string appendString:@"\n\n"];
@@ -491,6 +502,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     if ([string length])
         [types addObject:NSStringPboardType];
+    if (noteData)
+        [pboard setData:noteData forType:SKSkimNotePboardType];
     if ([attrString length])
         [types addObject:NSRTFPboardType];
     if ([types count])
