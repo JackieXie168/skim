@@ -213,6 +213,7 @@
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */; };
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
+		CED6A3120EADF37800E8CD11 /* NSImageCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CED6A3110EADF37800E8CD11 /* NSImageCell_SKExtensions.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
 		CEE177960DBE140900E6C317 /* SKAccessibilityFauxUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */; };
@@ -871,6 +872,8 @@
 		CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindTableView.m; sourceTree = "<group>"; };
 		CECF61FD0DB258D600587D96 /* SKFontWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFontWell.h; sourceTree = "<group>"; };
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
+		CED6A3100EADF37800E8CD11 /* NSImageCell_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSImageCell_SKExtensions.h; sourceTree = "<group>"; };
+		CED6A3110EADF37800E8CD11 /* NSImageCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSImageCell_SKExtensions.m; sourceTree = "<group>"; };
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
@@ -1553,8 +1556,6 @@
 				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
 				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
 				F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */,
-				CE5F71530C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.h */,
-				CE5F71540C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m */,
 				CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */,
 				CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */,
 				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
@@ -1563,6 +1564,8 @@
 				CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */,
 				CE34FFA60DFF58FB00A7FFE6 /* NSEvent_SKExtensions.h */,
 				CE34FFA70DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m */,
+				CED6A3100EADF37800E8CD11 /* NSImageCell_SKExtensions.h */,
+				CED6A3110EADF37800E8CD11 /* NSImageCell_SKExtensions.m */,
 				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
 				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
 				CEA450F20E47A87500D161AD /* NSLayoutManager_SKExtensions.h */,
@@ -1573,6 +1576,8 @@
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
 				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
+				CE5F71530C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.h */,
+				CE5F71540C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m */,
 				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
@@ -2120,6 +2125,7 @@
 				CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */,
 				CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */,
 				CE51630B0EAB5A1A009FA237 /* SKSegmentedControl.m in Sources */,
+				CED6A3120EADF37800E8CD11 /* NSImageCell_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
