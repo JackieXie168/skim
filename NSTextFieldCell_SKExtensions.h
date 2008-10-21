@@ -1,5 +1,5 @@
 //
-//  NSCell_SKExtensions.h
+//  NSTextFieldCell_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 9/4/07.
@@ -38,23 +38,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSCell_SKExtensions.h"
-#import "SKRuntime.h"
+#import <Cocoa/Cocoa.h>
 
 
-@implementation NSCell (SKExtensions)
-
-static id (*originalHighlightColorWithFrameInView)(id, SEL, NSRect, id) = NULL;
-
-- (NSColor *)replacementHighlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    if ([controlView respondsToSelector:@selector(highlightColor)])
-        return [(id)controlView highlightColor];
-    else
-        return originalHighlightColorWithFrameInView(self, _cmd, cellFrame, controlView);
-}
-
-+ (void)load {
-    originalHighlightColorWithFrameInView = (id (*)(id, SEL, NSRect, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(highlightColorWithFrame:inView:), @selector(replacementHighlightColorWithFrame:inView:));
-}
-
+@interface NSTextFieldCell (SKExtensions)
 @end
