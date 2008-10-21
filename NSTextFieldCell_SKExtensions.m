@@ -1,5 +1,5 @@
 //
-//  NSCell_SKExtensions.h
+//  NSTextFieldCell_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 9/4/07.
@@ -38,8 +38,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSTextFieldCell_SKExtensions.h"
 
 
-@interface NSCell (SKExtensions)
+@implementation NSTextFieldCell (SKExtensions)
+
+// Fix an AppKit bug, so text cells don't draw their background in selected table rows when they're not supposed to
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    return [self drawsBackground] ? [super highlightColorWithFrame:cellFrame inView:controlView] : nil;
+}
+
 @end
