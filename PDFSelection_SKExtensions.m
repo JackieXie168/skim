@@ -151,19 +151,17 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     return range;
 }
 
-static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier) {
+static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous) {
     if ([specifier isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
     
     NSMutableArray *rangeDicts = [NSMutableArray array];
-    
-    // we should get ranges of characters, words, or parapgraphs of the richText of a page
     NSString *key = [specifier key];
     
-    if ([[NSSet setWithObjects:@"characters", @"words", @"paragraphs", @"attributeRuns", nil] containsObject:key]) {
+    if ([key isEqualToString:@"characters"] || [key isEqualToString:@"words"] || [key isEqualToString:@"paragraphs"] || [key isEqualToString:@"attributeRuns"]) {
         
         // get the richText specifier and textStorage
-        NSArray *dicts = characterRangesAndContainersForSpecifier([specifier containerSpecifier]);
+        NSArray *dicts = characterRangesAndContainersForSpecifier([specifier containerSpecifier], NO);
         if ([dicts count] == 0)
             return nil;
         
@@ -189,7 +187,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 if ([specifier isKindOfClass:[NSPropertySpecifier class]]) {
                     // this should be the full range of characters, words, or paragraphs
                     numRanges = 1;
-                    ranges = NSZoneRealloc(NSDefaultMallocZone(), ranges, sizeof(NSRange));
+                    ranges = NSZoneMalloc(NSDefaultMallocZone(), sizeof(NSRange));
                     ranges[0] = NSMakeRange(0, [[textStorage valueForKey:key] count]);
                 } else if ([specifier isKindOfClass:[NSRangeSpecifier class]]) {
                     // somehow getting the indices as for the general case sometimes leads to an exception for NSRangeSpecifier, so we get the indices of the start/endSpecifiers
@@ -211,7 +209,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                         }
                         if (startIndex >= 0 && endIndex >= 0) {
                             numRanges = 1;
-                            ranges = NSZoneRealloc(NSDefaultMallocZone(), ranges, sizeof(NSRange));
+                            ranges = NSZoneMalloc(NSDefaultMallocZone(), sizeof(NSRange));
                             ranges[0] = NSMakeRange(MIN(startIndex, endIndex), MAX(startIndex, endIndex) + 1 - MIN(startIndex, endIndex));
                         }
                     }
@@ -236,28 +234,49 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                         NSRange range = ranges[i];
                         range.location += textRange.location;
                         range = NSIntersectionRange(range, textRange);
-                        if (range.length)
-                            [rangeValues addObject:[NSValue valueWithRange:range]];
+                        if (range.length) {
+                            if (continuous) {
+                                [rangeValues addObject:[NSValue valueWithRange:range]];
+                            } else {
+                                unsigned int j;
+                                for (j = range.location; j < NSMaxRange(range); j++)
+                                    [rangeValues addObject:[NSValue valueWithRange:NSMakeRange(j, 1)]];
+                            }
+                        }
                     }
                 } else {
                     // translate from subtext ranges to character ranges
                     NSString *string = [textStorage string];
                     NSArray *substrings = [[textStorage valueForKey:key] valueForKey:@"string"];
-                    for (i = 0; i < numRanges; i++) {
-                        startIndex = MIN(ranges[i].location, [substrings count]);
-                        endIndex = MIN(NSMaxRange(ranges[i]) - 1, [substrings count]);
-                        if (endIndex == startIndex) endIndex = -1;
-                        NSRange range = rangeOfSubstringOfStringAtIndex(string, substrings, startIndex);
-                        if (range.location == NSNotFound)
-                            continue;
-                        startIndex = range.location;
-                        if (endIndex >= 0) {
-                            range = rangeOfSubstringOfStringAtIndex(string, substrings, endIndex);
-                            if (range.location == NSNotFound)
-                                continue;
+                    if ([substrings count]) {
+                        for (i = 0; i < numRanges; i++) {
+                            startIndex = MIN(ranges[i].location, [substrings count] - 1);
+                            endIndex = MIN(NSMaxRange(ranges[i]) - 1, [substrings count] - 1);
+                            if (endIndex == startIndex) endIndex = -1;
+                            if (continuous) {
+                                NSRange range = rangeOfSubstringOfStringAtIndex(string, substrings, startIndex);
+                                if (range.location == NSNotFound)
+                                    continue;
+                                startIndex = range.location;
+                                if (endIndex >= 0) {
+                                    range = rangeOfSubstringOfStringAtIndex(string, substrings, endIndex);
+                                    if (range.location == NSNotFound)
+                                        continue;
+                                }
+                                endIndex = NSMaxRange(range) - 1;
+                                [rangeValues addObject:[NSValue valueWithRange:NSMakeRange(textRange.location + startIndex, endIndex + 1 - startIndex)]];
+                            } else {
+                                if (endIndex == -1) endIndex = startIndex;
+                                int j;
+                                for (j = startIndex; j <= endIndex; j++) {
+                                    NSRange range = rangeOfSubstringOfStringAtIndex(string, substrings, j);
+                                    if (range.location == NSNotFound)
+                                        continue;
+                                    range.location += textRange.location;
+                                    [rangeValues addObject:[NSValue valueWithRange:range]];
+                                }
+                            }
                         }
-                        endIndex = NSMaxRange(range) - 1;
-                        [rangeValues addObject:[NSValue valueWithRange:NSMakeRange(textRange.location + startIndex, endIndex + 1 - startIndex)]];
                     }
                 }
                 
@@ -335,7 +354,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
-        NSArray *dicts = characterRangesAndContainersForSpecifier(spec);
+        NSArray *dicts = characterRangesAndContainersForSpecifier(spec, YES);
         NSEnumerator *dictEnum = [dicts objectEnumerator];
         NSDictionary *dict;
         PDFDocument *doc = nil;
