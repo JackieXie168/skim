@@ -131,7 +131,6 @@
         return NSMakeRange(NSNotFound, 0);
 }
 
-
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, unsigned int anIndex) {
     unsigned int length = [string length];
     NSRange range = NSMakeRange(0, 0);
@@ -166,18 +165,21 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             return nil;
         
         NSEnumerator *dictEnum = [dicts objectEnumerator];
-        NSDictionary *dict;
+        NSMutableDictionary *dict;
         
         while (dict = [dictEnum nextObject]) {
             NSTextStorage *containerText = [dict objectForKey:@"text"];
-            PDFPage *page = [dict objectForKey:@"page"];
             NSEnumerator *rangeEnum = [[dict objectForKey:@"ranges"] objectEnumerator];
             NSValue *value;
             NSMutableArray *rangeValues = [[NSMutableArray alloc] init];
             
             while (value = [rangeEnum nextObject]) {
                 NSRange textRange = [value rangeValue];
-                NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:[containerText attributedSubstringFromRange:textRange]];
+                NSTextStorage *textStorage = nil;
+                if (NSEqualRanges(textRange, NSMakeRange(0, [containerText length])))
+                    textStorage = [containerText retain];
+                else
+                    textStorage = [[NSTextStorage alloc] initWithAttributedString:[containerText attributedSubstringFromRange:textRange]];
                 
                 // now get the ranges, which can be any kind of specifier
                 int startIndex, endIndex, i, count, *indices;
@@ -285,9 +287,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             }
             
             if ([rangeValues count]) {
-                dict = [[NSDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", page, @"page", nil];
+                [dict setObject:rangeValues forKey:@"ranges"];
                 [rangeDicts addObject:dict];
-                [dict release];
             }
             [rangeValues release];
         }
@@ -313,7 +314,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         while (page = [pageEnum nextObject]) {
             NSTextStorage *containerText = [page richText];
             NSArray *rangeValues = [[NSArray alloc] initWithObjects:[NSValue valueWithRange:NSMakeRange(0, [containerText length])], nil];
-            NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", page, @"page", nil];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", page, @"page", nil];
             [rangeDicts addObject:dict];
             [dict release];
             [rangeValues release];
