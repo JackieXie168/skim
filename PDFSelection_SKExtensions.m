@@ -362,7 +362,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
         while (dict = [dictEnum nextObject]) {
             PDFPage *page = [dict objectForKey:@"page"];
-            if ((aPage && [aPage isEqual:page] == NO) || (doc && [doc isEqual:[page document]] == NO))
+            if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO) || (doc && [doc isEqual:[page document]] == NO))
                 continue;
             
             NSArray *ranges = [dict objectForKey:@"ranges"];
