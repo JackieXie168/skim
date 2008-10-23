@@ -304,7 +304,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 return nil;
         }
         
-        NSArray *containers = containers = [specifier objectsByEvaluatingSpecifier];
+        NSArray *containers = [specifier objectsByEvaluatingSpecifier];
         if (containers && [containers isKindOfClass:[NSArray class]] == NO)
             containers = [NSArray arrayWithObject:containers];
         if ([containers count] == 0)
