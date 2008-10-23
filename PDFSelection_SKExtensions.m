@@ -315,6 +315,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
         while (container = [containerEnum nextObject]) {
             NSTextStorage *containerText = [container valueForKey:key];
+            if ([containerText isKindOfClass:[NSTextStorage class]] == NO || [containerText length] == 0)
+                continue;
             NSArray *rangeValues = [[NSArray alloc] initWithObjects:[NSValue valueWithRange:NSMakeRange(0, [containerText length])], nil];
             NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", container, @"container", nil];
             [rangeDicts addObject:dict];
