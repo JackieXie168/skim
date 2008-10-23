@@ -388,55 +388,49 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     return selection;
 }
 
-static inline id addRangeSpecifierWithRangeAndPage(NSMutableArray *ranges, NSRange range, PDFPage *page) {
+static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges, NSRange range, PDFPage *page) {
     NSRangeSpecifier *rangeSpec = nil;
     NSIndexSpecifier *startSpec = nil;
     NSIndexSpecifier *endSpec = nil;
     NSScriptObjectSpecifier *textSpec = [[NSPropertySpecifier alloc] initWithContainerSpecifier:[page objectSpecifier] key:@"richText"];
     
     if (textSpec) {
-        startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:range.location];
-        endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1];
-        if (startSpec && endSpec) {
-            rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec];
-            if (rangeSpec)
+        if (startSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:range.location]) {
+            if (range.length == 1) {
+                [ranges addObject:startSpec];
+            } else if ((endSpec = [[NSIndexSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" index:NSMaxRange(range) - 1]) &&
+                       (rangeSpec = [[NSRangeSpecifier alloc] initWithContainerClassDescription:[textSpec keyClassDescription] containerSpecifier:textSpec key:@"characters" startSpecifier:startSpec endSpecifier:endSpec])) {
                 [ranges addObject:rangeSpec];
+                [rangeSpec release];
+            }
+            [startSpec release];
+            [endSpec release];
         }
+        [textSpec release];
     }
-    [rangeSpec release];
-    [startSpec release];
-    [endSpec release];
-    [textSpec release];
-    
-    return rangeSpec;
 }
 
 - (id)objectSpecifier {
-    NSArray *pages = [self pages];
-    if ([pages count] == 0)
-        return [NSArray array];
     NSMutableArray *ranges = [NSMutableArray array];
-    NSEnumerator *pageEnum = [pages objectEnumerator];
+    NSEnumerator *pageEnum = [[self pages] objectEnumerator];
     PDFPage *page;
     while (page = [pageEnum nextObject]) {
         unsigned int i, iMax = [self safeNumberOfRangesOnPage:page];
         NSRange lastRange = NSMakeRange(0, 0);
         for (i = 0; i < iMax; i++) {
             NSRange range = [self safeRangeAtIndex:i onPage:page];
-            if (range.length == 0)
-                continue;
-            
-            if (lastRange.length == 0) {
+            if (range.length == 0) {
+            } else if (lastRange.length == 0) {
                 lastRange = range;
             } else if (NSMaxRange(lastRange) == range.location) {
                 lastRange.length += range.length;
             } else {
-                addRangeSpecifierWithRangeAndPage(ranges, lastRange, page);
+                addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
                 lastRange = range;
             }
         }
         if (lastRange.length)
-            addRangeSpecifierWithRangeAndPage(ranges, lastRange, page);
+            addSpecifierWithCharacterRangeAndPage(ranges, lastRange, page);
     }
     return ranges;
 }
