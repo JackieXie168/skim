@@ -150,7 +150,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     return range;
 }
 
-static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous) {
+static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous, BOOL continuousContainers) {
     if ([specifier isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
     
@@ -160,7 +160,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     if ([key isEqualToString:@"characters"] || [key isEqualToString:@"words"] || [key isEqualToString:@"paragraphs"] || [key isEqualToString:@"attributeRuns"]) {
         
         // get the richText specifier and textStorage
-        NSArray *dicts = characterRangesAndContainersForSpecifier([specifier containerSpecifier], NO);
+        NSArray *dicts = characterRangesAndContainersForSpecifier([specifier containerSpecifier], continuousContainers, continuousContainers);
         if ([dicts count] == 0)
             return nil;
         
@@ -295,26 +295,28 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
     } else {
         
-        NSArray *pages = nil;
-        if ([key isEqualToString:@"richText"]) {
+        NSScriptClassDescription *classDesc = [specifier keyClassDescription];
+        if ([[classDesc className] isEqualToString:@"rich text"]) {
             specifier = [specifier containerSpecifier];
-            key = [specifier key];
+        } else {
+            key = [classDesc defaultSubcontainerAttributeKey];
+            if (key == nil || [[[classDesc classDescriptionForKey:key] className] isEqualToString:@"rich text"] == NO)
+                return nil;
         }
-        if ([key isEqualToString:@"pages"]) {
-            pages = [specifier objectsByEvaluatingSpecifier];
-            if (pages && [pages isKindOfClass:[NSArray class]] == NO)
-                pages = [NSArray arrayWithObject:pages];
-        }
-        if ([pages count] == 0)
+        
+        NSArray *containers = containers = [specifier objectsByEvaluatingSpecifier];
+        if (containers && [containers isKindOfClass:[NSArray class]] == NO)
+            containers = [NSArray arrayWithObject:containers];
+        if ([containers count] == 0)
             return nil;
         
-        NSEnumerator *pageEnum = [pages objectEnumerator];
-        PDFPage *page;
+        NSEnumerator *containerEnum = [containers objectEnumerator];
+        id container;
         
-        while (page = [pageEnum nextObject]) {
-            NSTextStorage *containerText = [page richText];
+        while (container = [containerEnum nextObject]) {
+            NSTextStorage *containerText = [container valueForKey:key];
             NSArray *rangeValues = [[NSArray alloc] initWithObjects:[NSValue valueWithRange:NSMakeRange(0, [containerText length])], nil];
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", page, @"page", nil];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:rangeValues, @"ranges", containerText, @"text", container, @"container", nil];
             [rangeDicts addObject:dict];
             [dict release];
             [rangeValues release];
@@ -355,13 +357,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
-        NSArray *dicts = characterRangesAndContainersForSpecifier(spec, YES);
+        NSArray *dicts = characterRangesAndContainersForSpecifier(spec, YES, NO);
         NSEnumerator *dictEnum = [dicts objectEnumerator];
         NSDictionary *dict;
         PDFDocument *doc = nil;
         
         while (dict = [dictEnum nextObject]) {
-            PDFPage *page = [dict objectForKey:@"page"];
+            PDFPage *page = [dict objectForKey:@"container"];
             if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO) || (doc && [doc isEqual:[page document]] == NO))
                 continue;
             
