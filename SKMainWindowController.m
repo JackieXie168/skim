@@ -720,13 +720,17 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 
     if ([pdfView document] != document) {
         
-        unsigned pageIndex = NSNotFound;
-        NSRect visibleRect = NSZeroRect;
+        unsigned pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
+        NSRect visibleRect = NSZeroRect, secondaryVisibleRect = NSZeroRect;
         NSArray *snapshotDicts = nil;
         
         if ([pdfView document]) {
             pageIndex = [[pdfView currentPage] pageIndex];
             visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
+            if (secondaryPdfView) {
+                secondaryPageIndex = [[secondaryPdfView currentPage] pageIndex];
+                secondaryVisibleRect = [secondaryPdfView convertRect:[secondaryPdfView convertRect:[[secondaryPdfView documentView] visibleRect] fromView:[secondaryPdfView documentView]] toPage:[secondaryPdfView currentPage]];
+            }
             
             [[pdfView document] cancelFindString];
             [temporaryAnnotationTimer invalidate];
@@ -770,12 +774,27 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         
         [self showSnapshotsWithSetups:snapshotDicts];
         
-        if (pageIndex != NSNotFound && [document pageCount]) {
-            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
-            [pdfView goToPage:page];
+        if ([document pageCount] && (pageIndex != NSNotFound || secondaryPageIndex != NSNotFound)) {
+            PDFPage *page = nil;
+            PDFPage *secondaryPage = nil;
+            if (pageIndex != NSNotFound) {
+                page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
+                [pdfView goToPage:page];
+            }
+            if (secondaryPageIndex != NSNotFound) {
+                secondaryPage = [document pageAtIndex:MIN(secondaryPageIndex, [document pageCount] - 1)];
+                [secondaryPdfView goToPage:secondaryPage];
+            }
             [[pdfView window] disableFlushWindow];
-            [pdfView display];
-            [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:page] toView:[pdfView documentView]]];
+            if (page) {
+                [pdfView display];
+                [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:page] toView:[pdfView documentView]]];
+            }
+            if (secondaryPage) {
+                if ([secondaryPdfView window])
+                    [secondaryPdfView display];
+                [[secondaryPdfView documentView] scrollRectToVisible:[secondaryPdfView convertRect:[secondaryPdfView convertRect:secondaryVisibleRect fromPage:secondaryPage] toView:[secondaryPdfView documentView]]];
+            }
             [[pdfView window] enableFlushWindow];
         }
         
