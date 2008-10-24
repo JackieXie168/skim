@@ -100,6 +100,10 @@
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
             </element>
+            <contents name="text" code="ctxt" type="rich text" access="r"
+                description="The text of the document.">
+                <cocoa key="richText"/>
+            </contents>
             <property name="name" code="pnam" type="text" access="r"
                 description="The document's name.">
                 <cocoa key="displayName"/>
@@ -123,10 +127,6 @@
             <property name="active note" code="ANot" type="note"
                 description="The active note.">
                 <cocoa key="activeNote"/>
-            </property>
-            <property name="text" code="ctxt" type="text" access="r"
-                description="The text of the document.">
-                <cocoa key="text"/>
             </property>
             <property name="selection" code="sele"
                 description="The selection of the document.">

@@ -140,7 +140,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
 - (void)setActiveNote:(id)note;
-- (NSString *)text;
+- (id)richText;
 - (id)selectionSpecifier;
 - (void)setSelectionSpecifier:(id)specifier;
 - (NSData *)selectionQDRect;
