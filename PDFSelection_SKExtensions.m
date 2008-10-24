@@ -441,7 +441,7 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                     }
                     
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
-                        PDFSelection *sel = [document selectionFromPage:[doc pageAtIndex:startPage] atCharacterIndex:startIndex toPage:[doc pageAtIndex:endPage] atCharacterIndex:endIndex];
+                        PDFSelection *sel = [document selectionFromPage:[document pageAtIndex:startPage] atCharacterIndex:startIndex toPage:[document pageAtIndex:endPage] atCharacterIndex:endIndex];
                         if (sel) {
                             doc = document;
                             if (selection == nil)
