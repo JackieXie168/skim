@@ -390,7 +390,7 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
         }
     }
     
-    PDFSelection *selection = nil;
+    NSMutableArray *selections = [NSMutableArray array];
     NSEnumerator *specEnum = [specifier objectEnumerator];
     NSScriptObjectSpecifier *spec;
     
@@ -422,6 +422,7 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                     NSRange range = [value rangeValue];
                     unsigned int pageStart = 0;
                     unsigned int startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
+                    
                     for (i = 0; i < numPages; i++) {
                         if (pageLengths[i] == NSNotFound)
                             pageLengths[i] = [[[document pageAtIndex:i] string] length];
@@ -443,11 +444,8 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
                         PDFSelection *sel = [document selectionFromPage:[document pageAtIndex:startPage] atCharacterIndex:startIndex toPage:[document pageAtIndex:endPage] atCharacterIndex:endIndex];
                         if (sel) {
+                            [selections addObject:sel];
                             doc = document;
-                            if (selection == nil)
-                                selection = sel;
-                            else
-                                [selection addSelection:sel];
                         }
                     }
                 }
@@ -460,15 +458,21 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                     PDFSelection *sel;
                     NSRange range = [value rangeValue];
                     if (range.length && (sel = [container selectionForRange:range])) {
+                        [selections addObject:sel];
                         doc = [container document];
-                        if (selection == nil)
-                            selection = sel;
-                        else
-                            [selection addSelection:sel];
                     }
                 }
                 
             }
+        }
+    }
+    
+    PDFSelection *selection = nil;
+    if ([selections count]) {
+        selection = [selections objectAtIndex:0];
+        if ([selections count] > 1) {
+            [selections removeObjectAtIndex:0];
+            [selection addSelections:selections];
         }
     }
     return selection;
