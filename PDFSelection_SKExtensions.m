@@ -41,6 +41,7 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKPDFDocument.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
@@ -329,6 +330,44 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     return rangeDicts;
 }
 
+static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFDocument *document) {
+    int i, count = [document pageCount];
+    NSRange *pageRanges = NSZoneMalloc(NSDefaultMallocZone(), count * sizeof(NSRange));
+    unsigned int start = 0;
+    
+    for (i = 0; i < count; i++) {
+        pageRanges[i] = NSMakeRange(start, [[[document pageAtIndex:i] string] length]);
+        start += pageRanges[i].length;
+    }
+    
+    PDFSelection *selection = nil;
+    
+    NSEnumerator *rangeEnum = [ranges objectEnumerator];
+    NSValue *value;
+    
+    while (value = [rangeEnum nextObject]) {
+        NSRange range = [value rangeValue];
+        for (i = 0; i < count && NSMaxRange(range) > pageRanges[i].location; i++) {
+            PDFSelection *sel;
+            NSRange r = NSIntersectionRange(pageRanges[i], range);
+            if (range.length == 0)
+                continue;
+            r.location -= pageRanges[i].location;
+            if (sel = [[document pageAtIndex:i] selectionForRange:r]) {
+                if (selection == nil)
+                    selection = sel;
+                else
+                    [selection addSelection:sel];
+            }
+        }
+    }
+    
+    
+    NSZoneFree(NSDefaultMallocZone(), pageRanges);
+    
+    return selection;
+}
+
 + (id)selectionWithSpecifier:(id)specifier {
     return [self selectionWithSpecifier:specifier onPage:nil];
 }
@@ -365,23 +404,56 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         PDFDocument *doc = nil;
         
         while (dict = [dictEnum nextObject]) {
-            PDFPage *page = [dict objectForKey:@"container"];
-            if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO) || (doc && [doc isEqual:[page document]] == NO))
-                continue;
+            id container = [dict objectForKey:@"container"];
+            NSEnumerator *rangeEnum = [[dict objectForKey:@"ranges"] objectEnumerator];
+            NSValue *value;
             
-            NSArray *ranges = [dict objectForKey:@"ranges"];
-            unsigned int i, numRanges = [ranges count];
-            
-            for (i = 0; i < numRanges; i++) {
-                PDFSelection *sel;
-                NSRange range = [[ranges objectAtIndex:i] rangeValue];
-                if (range.length && (sel = [page selectionForRange:range])) {
-                    doc = [page document];
-                    if (selection == nil)
-                        selection = sel;
-                    else
-                        [selection addSelection:sel];
+            if ([container isKindOfClass:[SKPDFDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
+                
+                PDFDocument *document = [container pdfDocument];
+                unsigned int i, numPages = [document pageCount];
+                NSRange *pageRanges = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(NSRange));
+                
+                for (i = 0; i < numPages; i++)
+                    pageRanges[i] = NSMakeRange(i == 0 ? 0 : NSMaxRange(pageRanges[i - 1]), [[[document pageAtIndex:i] string] length]);
+                
+                while (value = [rangeEnum nextObject]) {
+                    NSRange range = [value rangeValue];
+                    for (i = 0; (i < numPages) && (NSMaxRange(range) > pageRanges[i].location); i++) {
+                        PDFSelection *sel;
+                        NSRange r = NSIntersectionRange(pageRanges[i], range);
+                        if (r.length == 0)
+                            continue;
+                        r.location -= pageRanges[i].location;
+                        PDFPage *page = [document pageAtIndex:i];
+                        if (aPage && [aPage isEqual:page] == NO)
+                            continue;
+                        if (sel = [page selectionForRange:r]) {
+                            doc = document;
+                            if (selection == nil)
+                                selection = sel;
+                            else
+                                [selection addSelection:sel];
+                        }
+                    }
                 }
+                
+                NSZoneFree(NSDefaultMallocZone(), pageRanges);
+                
+            } else if ([container isKindOfClass:[PDFPage class]] && (aPage == nil || [aPage isEqual:container]) && (doc == nil || [doc isEqual:[container document]])) {
+                
+                while (value = [rangeEnum nextObject]) {
+                    PDFSelection *sel;
+                    NSRange range = [value rangeValue];
+                    if (range.length && (sel = [container selectionForRange:range])) {
+                        doc = [container document];
+                        if (selection == nil)
+                            selection = sel;
+                        else
+                            [selection addSelection:sel];
+                    }
+                }
+                
             }
         }
     }
