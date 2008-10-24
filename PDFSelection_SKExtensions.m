@@ -413,28 +413,30 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                 PDFDocument *document = [container pdfDocument];
                 unsigned int i, numPages = [document pageCount];
                 NSRange *pageRanges = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(NSRange));
+                unsigned aPageIndex = aPage ? [aPage pageIndex] : NSNotFound;
                 
                 for (i = 0; i < numPages; i++)
-                    pageRanges[i] = NSMakeRange(i == 0 ? 0 : NSMaxRange(pageRanges[i - 1]), [[[document pageAtIndex:i] string] length]);
+                    pageRanges[i] = NSMakeRange(NSNotFound, 0);
                 
                 while (value = [rangeEnum nextObject]) {
                     NSRange range = [value rangeValue];
-                    for (i = 0; (i < numPages) && (NSMaxRange(range) > pageRanges[i].location); i++) {
-                        PDFSelection *sel;
-                        NSRange r = NSIntersectionRange(pageRanges[i], range);
-                        if (r.length == 0)
-                            continue;
-                        r.location -= pageRanges[i].location;
-                        PDFPage *page = [document pageAtIndex:i];
-                        if (aPage && [aPage isEqual:page] == NO)
-                            continue;
-                        if (sel = [page selectionForRange:r]) {
-                            doc = document;
-                            if (selection == nil)
-                                selection = sel;
-                            else
-                                [selection addSelection:sel];
+                    for (i = 0; i < numPages; i++) {
+                        if (pageRanges[i].location == NSNotFound)
+                            pageRanges[i] = NSMakeRange(i == 0 ? 0 : NSMaxRange(pageRanges[i - 1]), [[[document pageAtIndex:i] string] length]);
+                        if ((aPageIndex == NSNotFound || i == aPageIndex) && pageRanges[i].length && range.location < NSMaxRange(pageRanges[i])) {
+                            PDFSelection *sel;
+                            NSRange r = NSIntersectionRange(pageRanges[i], range);
+                            r.location -= pageRanges[i].location;
+                            if (sel = [[document pageAtIndex:i] selectionForRange:r]) {
+                                doc = document;
+                                if (selection == nil)
+                                    selection = sel;
+                                else
+                                    [selection addSelection:sel];
+                            }
                         }
+                        if (NSMaxRange(range) <= NSMaxRange(pageRanges[i]))
+                            break;
                     }
                 }
                 
