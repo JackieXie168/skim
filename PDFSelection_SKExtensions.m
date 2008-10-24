@@ -412,35 +412,47 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                 
                 PDFDocument *document = [container pdfDocument];
                 unsigned int i, numPages = [document pageCount];
-                NSRange *pageRanges = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(NSRange));
+                unsigned int *pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
                 unsigned aPageIndex = aPage ? [aPage pageIndex] : NSNotFound;
                 
                 for (i = 0; i < numPages; i++)
-                    pageRanges[i] = NSMakeRange(NSNotFound, 0);
+                    pageLengths[i] = NSNotFound;
                 
                 while (value = [rangeEnum nextObject]) {
                     NSRange range = [value rangeValue];
+                    unsigned int pageStart = 0;
+                    unsigned int startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     for (i = 0; i < numPages; i++) {
-                        if (pageRanges[i].location == NSNotFound)
-                            pageRanges[i] = NSMakeRange(i == 0 ? 0 : NSMaxRange(pageRanges[i - 1]), [[[document pageAtIndex:i] string] length]);
-                        if ((aPageIndex == NSNotFound || i == aPageIndex) && pageRanges[i].length && range.location < NSMaxRange(pageRanges[i])) {
-                            PDFSelection *sel;
-                            NSRange r = NSIntersectionRange(pageRanges[i], range);
-                            r.location -= pageRanges[i].location;
-                            if (sel = [[document pageAtIndex:i] selectionForRange:r]) {
-                                doc = document;
-                                if (selection == nil)
-                                    selection = sel;
-                                else
-                                    [selection addSelection:sel];
+                        if (pageLengths[i] == NSNotFound)
+                            pageLengths[i] = [[[document pageAtIndex:i] string] length];
+                        if ((aPageIndex == NSNotFound || i == aPageIndex) && pageLengths[i] && range.location < pageStart + pageLengths[i]) {
+                            if (startPage == NSNotFound && startIndex == NSNotFound) {
+                                startPage = i;
+                                startIndex = range.location < pageStart ? 0 : range.location - pageStart;
+                            }
+                            if (startPage != NSNotFound && startIndex != NSNotFound) {
+                                endPage = i;
+                                endIndex = MIN(NSMaxRange(range) - pageStart, pageLengths[i] - 1);
                             }
                         }
-                        if (NSMaxRange(range) <= NSMaxRange(pageRanges[i]))
+                        pageStart += pageLengths[i];
+                        if (pageStart >= NSMaxRange(range))
                             break;
+                    }
+                    
+                    if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
+                        PDFSelection *sel = [document selectionFromPage:[doc pageAtIndex:startPage] atCharacterIndex:startIndex toPage:[doc pageAtIndex:endPage] atCharacterIndex:endIndex];
+                        if (sel) {
+                            doc = document;
+                            if (selection == nil)
+                                selection = sel;
+                            else
+                                [selection addSelection:sel];
+                        }
                     }
                 }
                 
-                NSZoneFree(NSDefaultMallocZone(), pageRanges);
+                NSZoneFree(NSDefaultMallocZone(), pageLengths);
                 
             } else if ([container isKindOfClass:[PDFPage class]] && (aPage == nil || [aPage isEqual:container]) && (doc == nil || [doc isEqual:[container document]])) {
                 
