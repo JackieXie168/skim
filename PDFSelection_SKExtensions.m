@@ -394,6 +394,9 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
     NSEnumerator *specEnum = [specifier objectEnumerator];
     NSScriptObjectSpecifier *spec;
     
+    unsigned int *pageLengths = NULL;
+    unsigned int numPages = 0;
+    
     while (spec = [specEnum nextObject]) {
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
@@ -411,17 +414,18 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
             if ([container isKindOfClass:[SKPDFDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
                 
                 PDFDocument *document = [container pdfDocument];
-                unsigned int i, numPages = [document pageCount];
-                unsigned int *pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
-                unsigned aPageIndex = aPage ? [aPage pageIndex] : NSNotFound;
+                unsigned int i, aPageIndex = aPage ? [aPage pageIndex] : NSNotFound;
                 
-                for (i = 0; i < numPages; i++)
-                    pageLengths[i] = NSNotFound;
+                if (pageLengths == NULL) {
+                    numPages = [document pageCount];
+                    pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
+                    for (i = 0; i < numPages; i++)
+                        pageLengths[i] = NSNotFound;
+                }
                 
                 while (value = [rangeEnum nextObject]) {
                     NSRange range = [value rangeValue];
-                    unsigned int pageStart = 0;
-                    unsigned int startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
+                    unsigned int pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     
                     for (i = 0; i < numPages; i++) {
                         if (pageLengths[i] == NSNotFound)
@@ -450,8 +454,6 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
                     }
                 }
                 
-                NSZoneFree(NSDefaultMallocZone(), pageLengths);
-                
             } else if ([container isKindOfClass:[PDFPage class]] && (aPage == nil || [aPage isEqual:container]) && (doc == nil || [doc isEqual:[container document]])) {
                 
                 while (value = [rangeEnum nextObject]) {
@@ -466,6 +468,9 @@ static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFD
             }
         }
     }
+    
+    if (pageLengths)
+        NSZoneFree(NSDefaultMallocZone(), pageLengths);
     
     PDFSelection *selection = nil;
     if ([selections count]) {
