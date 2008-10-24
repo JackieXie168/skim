@@ -448,9 +448,9 @@ static BOOL usesSequentialPageNumbering = NO;
     return [NSData dataWithRectAsQDRect:[self foregroundBox]];
 }
 
-- (id)richText {
+- (NSTextStorage *)richText {
     NSAttributedString *attrString = [self attributedString];
-    return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [NSNull null];
+    return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
 }
 
 - (NSArray *)notes {

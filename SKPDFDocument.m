@@ -1839,9 +1839,18 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[self pdfView] setActiveAnnotation:note];
 }
 
-- (id)richText {
-    NSAttributedString *attrString = [[[self pdfDocument] selectionForEntireDocument] attributedString];
-    return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [NSNull null];
+- (NSTextStorage *)richText {
+    PDFDocument *doc = [self pdfDocument];
+    unsigned int i, count = [doc pageCount];
+    NSTextStorage *textStorage = [[[NSTextStorage alloc] init] autorelease];
+    NSAttributedString *attrString;
+    [textStorage beginEditing];
+    for (i = 0; i < count; i++) {
+        if (attrString = [[doc pageAtIndex:i] attributedString])
+            [textStorage appendAttributedString:attrString];
+    }
+    [textStorage endEditing];
+    return textStorage;
 }
 
 - (id)selectionSpecifier {

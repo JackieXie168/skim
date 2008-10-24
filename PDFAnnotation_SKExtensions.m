@@ -388,7 +388,7 @@ enum {
 
 - (id)textContents;
 {
-    return [self string] ? [[[NSTextStorage alloc] initWithString:[self string]] autorelease] : [NSNull null];
+    return [[[NSTextStorage alloc] initWithString:[self string] ?: @""] autorelease];
 }
 
 - (void)setTextContents:(id)text;
