@@ -330,44 +330,6 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     return rangeDicts;
 }
 
-static PDFSelection *selectionForCharacterRangesInDocument(NSArray *ranges, PDFDocument *document) {
-    int i, count = [document pageCount];
-    NSRange *pageRanges = NSZoneMalloc(NSDefaultMallocZone(), count * sizeof(NSRange));
-    unsigned int start = 0;
-    
-    for (i = 0; i < count; i++) {
-        pageRanges[i] = NSMakeRange(start, [[[document pageAtIndex:i] string] length]);
-        start += pageRanges[i].length;
-    }
-    
-    PDFSelection *selection = nil;
-    
-    NSEnumerator *rangeEnum = [ranges objectEnumerator];
-    NSValue *value;
-    
-    while (value = [rangeEnum nextObject]) {
-        NSRange range = [value rangeValue];
-        for (i = 0; i < count && NSMaxRange(range) > pageRanges[i].location; i++) {
-            PDFSelection *sel;
-            NSRange r = NSIntersectionRange(pageRanges[i], range);
-            if (range.length == 0)
-                continue;
-            r.location -= pageRanges[i].location;
-            if (sel = [[document pageAtIndex:i] selectionForRange:r]) {
-                if (selection == nil)
-                    selection = sel;
-                else
-                    [selection addSelection:sel];
-            }
-        }
-    }
-    
-    
-    NSZoneFree(NSDefaultMallocZone(), pageRanges);
-    
-    return selection;
-}
-
 + (id)selectionWithSpecifier:(id)specifier {
     return [self selectionWithSpecifier:specifier onPage:nil];
 }
