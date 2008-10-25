@@ -118,6 +118,24 @@ Boolean	SKNSRectEqual(const void *value1, const void *value2) {
     return NSEqualRects(*(NSRect *)value1, *(NSRect *)value2);
 }
 
+const void *SKNSRangeRetain(CFAllocatorRef allocator, const void *value) {
+    NSRange *rangePtr = (NSRange *)CFAllocatorAllocate(allocator, sizeof(NSRange), 0);
+    *rangePtr = *(NSRange *)value;
+    return rangePtr;
+}
+
+void SKNSRangeRelease(CFAllocatorRef allocator, const void *value) {
+    CFAllocatorDeallocate(allocator, (NSRange *)value);
+}
+
+CFStringRef SKNSRangeCopyDescription(const void *value) {
+    return (CFStringRef)[[NSString alloc] initWithFormat:@"(%u, %u)", ((NSRange *)value)->location, ((NSRange *)value)->length];
+}
+
+Boolean	SKNSRangeEqual(const void *value1, const void *value2) {
+    return NSEqualRanges(*(NSRange *)value1, *(NSRange *)value2);
+}
+
 const CFDictionaryKeyCallBacks kSKPointerEqualObjectDictionaryKeyCallBacks = {
     0,   // version
     SKNSObjectRetain,
@@ -158,6 +176,14 @@ const CFArrayCallBacks kSKNSRectArrayCallBacks = {
     SKNSRectRelease,
     SKNSRectCopyDescription,
     SKNSRectEqual
+};
+
+const CFArrayCallBacks kSKNSRangeArrayCallBacks = {
+    0, // version
+    SKNSRangeRetain,
+    SKNSRangeRelease,
+    SKNSRangeCopyDescription,
+    SKNSRangeEqual
 };
 
 const CFSetCallBacks kSKPointerEqualObjectSetCallBacks = {
