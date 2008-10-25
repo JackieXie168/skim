@@ -68,6 +68,15 @@ extern CFStringRef SKNSRectCopyDescription(const void *value);
 extern Boolean SKNSRectEqual(const void *value1, const void *value2);
 
 
+extern const void *SKNSRangeRetain(CFAllocatorRef allocator, const void *value);
+
+extern void SKNSRangeRelease(CFAllocatorRef allocator, const void *value);
+
+extern CFStringRef SKNSRangeCopyDescription(const void *value);
+
+extern Boolean SKNSRangeEqual(const void *value1, const void *value2);
+
+
 extern const CFDictionaryKeyCallBacks kSKPointerEqualObjectDictionaryKeyCallBacks;
 
 extern const CFDictionaryKeyCallBacks kSKCaseInsensitiveStringDictionaryKeyCallBacks;
@@ -80,6 +89,8 @@ extern const CFDictionaryValueCallBacks kSKNSRectDictionaryValueCallBacks;
 
 
 extern const CFArrayCallBacks kSKNSRectArrayCallBacks;
+
+extern const CFArrayCallBacks kSKNSRangeArrayCallBacks;
 
 
 extern const CFSetCallBacks kSKPointerEqualObjectSetCallBacks;
