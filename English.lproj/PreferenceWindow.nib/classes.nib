@@ -15,6 +15,8 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>changeAttributes</key>
+				<string>id</string>
 				<key>changeDiscreteThumbnailSizes</key>
 				<string>id</string>
 				<key>changeFont</key>
@@ -105,6 +107,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSActionCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSWindow</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -115,6 +125,8 @@
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeAttributesFromFontManager</key>
+				<string>id</string>
+				<key>changeFontFromFontManager</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>

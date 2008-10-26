@@ -56,8 +56,8 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     if (self = [super initSkimNoteWithBounds:bounds]) {
-        NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
-                                       size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
+        NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKFreeTextNoteFontNameKey]
+                                       size:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteFontSizeKey]];
         if (font)
             [self setFont:font];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]];
