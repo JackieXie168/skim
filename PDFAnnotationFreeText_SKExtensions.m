@@ -131,6 +131,8 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     NSTextStorage *textContents = [super textContents];
     if ([self font])
         [textContents addAttribute:NSFontAttributeName value:[self font] range:NSMakeRange(0, [textContents length])];
+    if ([self respondsToSelector:@selector(fontColor)] && [self fontColor])
+        [textContents addAttribute:NSForegroundColorAttributeName value:[self fontColor] range:NSMakeRange(0, [textContents length])];
     return textContents;
 }
 
