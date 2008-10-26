@@ -85,9 +85,9 @@
         <string>Helvetica</string>
         <key>SKAnchoredNoteFontSize</key>
         <real>12.0</real>
-        <key>SKTextNoteFontName</key>
+        <key>SKFreeTextNoteFontName</key>
         <string>LucidaGrande</string>
-        <key>SKTextNoteFontSize</key>
+        <key>SKFreeTextNoteFontSize</key>
         <real>11.0</real>
         <key>SKFreeTextNoteColor</key>
         <data>
@@ -326,8 +326,8 @@
             <string>SKCircleNoteInteriorColor</string>
             <string>SKSquareNoteInteriorColor</string>
             <string>SKFreeTextNoteFontColor</string>
-            <string>SKTextNoteFontName</string>
-            <string>SKTextNoteFontSize</string>
+            <string>SKFreeTextNoteFontName</string>
+            <string>SKFreeTextNoteFontSize</string>
             <string>SKAnchoredNoteFontName</string>
             <string>SKAnchoredNoteFontSize</string>
             <string>SKFreeTextNoteLineWidth</string>
