@@ -922,6 +922,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         
         [self setPDFDataUndoable:[pdfDoc dataRepresentation]];
         [pdfDoc release];
+        
+        [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
     }
     
     [[self progressController] endSheet];
