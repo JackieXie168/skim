@@ -389,7 +389,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
                         [scanner scanLocation] == location + 2) {
                         NSFont *font = [NSFont fontWithName:fontName size:fontSize];
                         if (font == nil) {
-                            fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey];
+                            fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKFreeTextNoteFontNameKey];
                             font = [NSFont fontWithName:fontName size:fontSize];
                         }
                         if (font)
