@@ -366,9 +366,6 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     NSEnumerator *specEnum = [specifier objectEnumerator];
     NSScriptObjectSpecifier *spec;
     
-    unsigned int *pageLengths = NULL;
-    unsigned int numPages = 0;
-    
     while (spec = [specEnum nextObject]) {
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
@@ -381,40 +378,35 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         while (dict = [dictEnum nextObject]) {
             id container = [dict objectForKey:@"container"];
             CFArrayRef ranges = (CFArrayRef)[dict objectForKey:@"ranges"];
-            unsigned int ri, numRanges = CFArrayGetCount(ranges);
+            unsigned int i, numRanges = CFArrayGetCount(ranges);
             
             if ([container isKindOfClass:[SKPDFDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
                 
                 PDFDocument *document = [container pdfDocument];
-                unsigned int i, aPageIndex = aPage ? [aPage pageIndex] : NSNotFound;
+                unsigned int aPageIndex = (aPage ? [aPage pageIndex] : NSNotFound), page, numPages = [document pageCount];
+                unsigned int *pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
                 
-                if (pageLengths == NULL) {
-                    numPages = [document pageCount];
-                    pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
-                    for (i = 0; i < numPages; i++)
-                        pageLengths[i] = NSNotFound;
-                }
+                for (page = 0; page < numPages; page++)
+                    pageLengths[page] = NSNotFound;
                 
-                for (ri = 0; ri < numRanges; ri++) {
-                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, ri);
+                for (i = 0; i < numRanges; i++) {
+                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
                     unsigned int pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     
-                    for (i = 0; i < numPages; i++) {
-                        if (pageLengths[i] == NSNotFound)
-                            pageLengths[i] = [[[document pageAtIndex:i] string] length];
-                        if ((aPageIndex == NSNotFound || i == aPageIndex) && pageLengths[i] && range.location < pageStart + pageLengths[i]) {
+                    for (page = 0; (page < numPages) && (pageStart < NSMaxRange(range)); page++) {
+                        if (pageLengths[page] == NSNotFound)
+                            pageLengths[page] = [[[document pageAtIndex:page] attributedString] length];
+                        if ((aPageIndex == NSNotFound || page == aPageIndex) && pageLengths[page] && range.location < pageStart + pageLengths[page]) {
                             if (startPage == NSNotFound && startIndex == NSNotFound) {
-                                startPage = i;
-                                startIndex = range.location < pageStart ? 0 : range.location - pageStart;
+                                startPage = page;
+                                startIndex = MAX(pageStart, range.location) - pageStart;
                             }
                             if (startPage != NSNotFound && startIndex != NSNotFound) {
-                                endPage = i;
-                                endIndex = MIN(NSMaxRange(range) - pageStart, pageLengths[i] - 1);
+                                endPage = page;
+                                endIndex = MIN(NSMaxRange(range) - pageStart, pageLengths[page]) - 1;
                             }
                         }
-                        pageStart += pageLengths[i];
-                        if (pageStart >= NSMaxRange(range))
-                            break;
+                        pageStart += pageLengths[page];
                     }
                     
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
@@ -426,11 +418,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     }
                 }
                 
+                NSZoneFree(NSDefaultMallocZone(), pageLengths);
+                
             } else if ([container isKindOfClass:[PDFPage class]] && (aPage == nil || [aPage isEqual:container]) && (doc == nil || [doc isEqual:[container document]])) {
                 
-                for (ri = 0; ri < numRanges; ri++) {
+                for (i = 0; i < numRanges; i++) {
                     PDFSelection *sel;
-                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, ri);
+                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
                     if (range.length && (sel = [container selectionForRange:range])) {
                         [selections addObject:sel];
                         doc = [container document];
@@ -440,9 +434,6 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             }
         }
     }
-    
-    if (pageLengths)
-        NSZoneFree(NSDefaultMallocZone(), pageLengths);
     
     PDFSelection *selection = nil;
     if ([selections count]) {
