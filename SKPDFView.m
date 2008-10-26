@@ -2001,7 +2001,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
-    [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [self addAnnotation:annotation toPage:page undoable:YES];
+}
+
+- (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page undoable:(BOOL)undoable {
+    if (undoable)
+        [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [annotation setShouldDisplay:hideNotes == NO];
     [annotation setShouldPrint:hideNotes == NO];
     [page addAnnotation:annotation];
@@ -2015,8 +2020,6 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 - (void)removeActiveAnnotation:(id)sender{
     if ([activeAnnotation isSkimNote]) {
         [self removeAnnotation:activeAnnotation];
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
         [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
@@ -2026,28 +2029,29 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (annotation) {
         [self removeAnnotation:annotation];
-        [accessibilityChildren release];
-        accessibilityChildren = nil;
         [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
 
-- (void)removeAnnotation:(PDFAnnotation *)annotation{
+- (void)removeAnnotation:(PDFAnnotation *)annotation {
+    [self removeAnnotation:annotation undoable:YES];
+}
+
+- (void)removeAnnotation:(PDFAnnotation *)annotation undoable:(BOOL)undoable {
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
     BOOL wasNote = [[wasAnnotation type] isEqualToString:SKNNoteString];
     
-    [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
-    [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
-    
+    if (undoable)
+        [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
-    if (accessibilityChildren)
-        [accessibilityChildren removeObject:[SKAccessibilityProxyFauxUIElement elementWithObject:wasAnnotation parent:[self documentView]]];
+    [accessibilityChildren release];
+    accessibilityChildren = nil;
     if (wasNote)
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 

@@ -184,9 +184,11 @@ typedef NSInteger SKInteractionMode;
 - (void)addAnnotation:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
+- (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page undoable:(BOOL)undoable;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;
+- (void)removeAnnotation:(PDFAnnotation *)annotation undoable:(BOOL)undoable;
 
 - (void)editActiveAnnotation:(id)sender;
 - (void)editThisAnnotation:(id)sender;

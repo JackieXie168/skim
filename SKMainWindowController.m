@@ -810,7 +810,6 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     PDFAnnotation *annotation;
     NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
-    NSMutableArray *observedNotes = [self mutableArrayValueForKey:SKMainWindowNotesKey];
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
@@ -821,15 +820,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             else if (pageIndex >= [pdfDoc pageCount])
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-            if (undoable) {
-                [pdfView addAnnotation:annotation toPage:page];
-            } else {
-                [annotation setShouldDisplay:[pdfView hideNotes] == NO];
-                [annotation setShouldPrint:[pdfView hideNotes] == NO];
-                [page addAnnotation:annotation];
-                [pdfView setNeedsDisplayForAnnotation:annotation];
-                [observedNotes addObject:annotation];
-            }
+            [pdfView addAnnotation:annotation toPage:page undoable:undoable];
             [annotation release];
         }
     }
@@ -848,17 +839,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     
     // remove the current annotations
     [pdfView setActiveAnnotation:nil];
-    while (annotation = [e nextObject]) {
-        if (undoable) {
-            [pdfView removeAnnotation:annotation];
-        } else {
-            [pdfView setNeedsDisplayForAnnotation:annotation];
-            [[annotation page] removeAnnotation:annotation];
-        }
-    }
-    
-    if (undoable == NO)
-        [self removeAllObjectsFromNotes];
+    while (annotation = [e nextObject])
+        [pdfView removeAnnotation:annotation undoable:undoable];
     
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
