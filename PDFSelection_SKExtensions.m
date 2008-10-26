@@ -306,6 +306,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
         NSScriptClassDescription *classDesc = [specifier keyClassDescription];
         if ([[classDesc className] isEqualToString:@"rich text"]) {
+            if ([[[specifier containerClassDescription] toManyRelationshipKeys] containsObject:key])
+                return nil;
             specifier = [specifier containerSpecifier];
         } else {
             key = [classDesc defaultSubcontainerAttributeKey];
