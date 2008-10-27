@@ -89,6 +89,3 @@ extern const CFDictionaryValueCallBacks kSKNSRectDictionaryValueCallBacks;
 extern const CFArrayCallBacks kSKNSRectArrayCallBacks;
 
 extern const CFArrayCallBacks kSKNSRangeArrayCallBacks;
-
-
-extern const CFSetCallBacks kSKPointerEqualObjectSetCallBacks;
