@@ -173,7 +173,6 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSTextStorage *containerText = [dict objectForKey:@"text"];
             CFArrayRef textRanges = (CFArrayRef)[dict objectForKey:@"ranges"];
             unsigned int ri, numRanges = CFArrayGetCount(textRanges);
-            NSMutableArray *rangeValues = [[NSMutableArray alloc] init];
             CFMutableArrayRef ranges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
             
             for (ri = 0; ri < numRanges; ri++) {
@@ -295,7 +294,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 [textStorage release];
             }
             
-            if ([rangeValues count]) {
+            if (CFArrayGetCount(ranges)) {
                 [dict setObject:(id)ranges forKey:@"ranges"];
                 [rangeDicts addObject:dict];
             }
