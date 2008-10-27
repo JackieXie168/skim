@@ -127,8 +127,8 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
     [placards setArray:newPlacards];
     
     if ([placards count] != 0) {
-        originalSetHasHorizontalScroller(self, _cmd, YES);
-        originalSetAutohidesScrollers(self, _cmd, NO);
+        originalSetHasHorizontalScroller(self, @selector(setHasHorizontalScroller:), YES);
+        originalSetAutohidesScrollers(self, @selector(setAutohidesScrollers:), NO);
     } else if (placards) {
         CFDictionaryRemoveValue(scrollViewPlacards, self);
         placards = nil;
