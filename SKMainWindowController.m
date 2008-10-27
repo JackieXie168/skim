@@ -2270,12 +2270,10 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
             [secondaryPdfView release];
             [pdfSplitView addSubview:secondaryPdfEdgeView];
             // Because of a PDFView bug, display properties can not be changed before it is placed in a window
+            [secondaryPdfView setSynchronizedPDFView:pdfView];
             [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
             [secondaryPdfView setDisplaysPageBreaks:NO];
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKSplitPDFCopiesZoomKey])
-                [secondaryPdfView setScaleFactor:[pdfView scaleFactor]];
-            else
-                [secondaryPdfView setAutoScales:YES];
+            [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];
         } else {
             [secondaryPdfEdgeView setFrame:frame2];

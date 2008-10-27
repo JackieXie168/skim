@@ -43,22 +43,23 @@
 @interface SKSecondaryPDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
     NSPopUpButton *pagePopUpButton;
+    PDFView *synchronizedPDFView;
+    BOOL synchronizeZoom;
 }
 
-- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
-- (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
+- (PDFView *)synchronizedPDFView;
+- (void)setSynchronizedPDFView:(PDFView *)newSynchronizedPDFView;
+
+- (BOOL)synchronizeZoom;
+- (void)setSynchronizeZoom:(BOOL)newSync;
+
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
+
 - (NSScrollView *)scrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
-- (void)dragWithEvent:(NSEvent *)theEvent;
-- (void)reloadPagePopUpButton;
-- (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
+
 - (void)setNeedsDisplayInRect:(NSRect)aRect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
-
-- (void)makePopUpButtons;
-- (void)reloadPagePopUpButton;
 
 @end

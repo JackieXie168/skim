@@ -44,9 +44,28 @@
 #import "SKStringConstants.h"
 
 
+@interface SKSecondaryPDFView (SKPrivate)
+
+- (void)makePopUpButtons;
+- (void)reloadPagePopUpButton;
+
+- (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag;
+- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
+- (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
+
+- (void)startObservingSynchronizedPDFView;
+- (void)stopObservingSynchronizedPDFView;
+
+- (void)handleSynchronizedScaleChangedNotification:(NSNotification *)notification;
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
+
+@end
+
 @implementation SKSecondaryPDFView
 
 /* For genstrings:
+    NSLocalizedStringFromTable(@"=", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"Auto", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"10%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"20%", @"ZoomValues", @"Zoom popup entry")
@@ -66,35 +85,40 @@
     NSLocalizedStringFromTable(@"600%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"800%", @"ZoomValues", @"Zoom popup entry")
 */   
-static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
-static float SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
+static NSString *SKDefaultScaleMenuLabels[] = {@"=", @"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
+static float SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
 static float SKPopUpMenuFontSize = 11.0;
 
+- (void)commonInitialization {
+    scalePopUpButton = nil;
+    pagePopUpButton = nil;
+    synchronizedPDFView = nil;
+    synchronizeZoom = NO;
+    
+    [self makePopUpButtons];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                 name:PDFViewPageChangedNotification object:self];
+}
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        scalePopUpButton = nil;
-        pagePopUpButton = nil;
-        
-        [self makePopUpButtons];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
-                                                     name:PDFViewPageChangedNotification object:self];
+        [self commonInitialization];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        scalePopUpButton = nil;
-        pagePopUpButton = nil;
-        
-        [self makePopUpButtons];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
-                                                     name:PDFViewPageChangedNotification object:self];
+        [self commonInitialization];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [synchronizedPDFView release];
+    [super dealloc];
 }
 
 - (void)setDocument:(PDFDocument *)document {
@@ -167,7 +191,7 @@ static float SKPopUpMenuFontSize = 11.0;
     [scrollView setHasHorizontalScroller:YES];
     NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
     
-    if (scalePopUpButton == nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKSplitPDFCopiesZoomKey] == NO) {
+    if (scalePopUpButton == nil) {
 
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
@@ -246,8 +270,10 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)scalePopUpAction:(id)sender {
     NSNumber *selectedFactorObject = [[sender selectedItem] representedObject];
-    if(selectedFactorObject)
+    if (selectedFactorObject)
         [self setScaleFactor:[selectedFactorObject floatValue] adjustPopup:NO];
+    else if ([sender indexOfSelectedItem] == 0)
+        [self setSynchronizeZoom:YES adjustPopup:NO];
     else
         [self setAutoScales:YES adjustPopup:NO];
 }
@@ -256,33 +282,72 @@ static float SKPopUpMenuFontSize = 11.0;
     [self goToPage:[[self document] pageAtIndex:[sender indexOfSelectedItem]]];
 }
 
+- (PDFView *)synchronizedPDFView {
+    return synchronizedPDFView;
+}
+
+- (void)setSynchronizedPDFView:(PDFView *)newSynchronizedPDFView {
+    if (synchronizedPDFView != newSynchronizedPDFView) {
+        if ([self synchronizeZoom])
+            [self stopObservingSynchronizedPDFView];
+        [synchronizedPDFView release];
+        synchronizedPDFView = [newSynchronizedPDFView retain];
+        if ([self synchronizeZoom])
+            [self startObservingSynchronizedPDFView];
+    }
+}
+
+- (BOOL)synchronizeZoom {
+    return synchronizeZoom;
+}
+
+- (void)setSynchronizeZoom:(BOOL)newSync {
+    [self setSynchronizeZoom:newSync adjustPopup:YES];
+}
+
+- (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag {
+    if (synchronizeZoom != newSync) {
+        synchronizeZoom = newSync;
+        if (newSync) {
+            [super setAutoScales:NO];
+            [self startObservingSynchronizedPDFView];
+            [super setScaleFactor:synchronizedPDFView ? [synchronizedPDFView scaleFactor] : 1.0];
+            if (flag)
+                [scalePopUpButton selectItemAtIndex:0];
+        } else {
+            [self stopObservingSynchronizedPDFView];
+            [self setScaleFactor:[self scaleFactor]];
+        }
+    }
+}
+
 - (void)setAutoScales:(BOOL)newAuto {
-    if (scalePopUpButton)
-        [self setAutoScales:newAuto adjustPopup:YES];
-    else
+    if ([self synchronizeZoom])
         [super setAutoScales:newAuto];
+    else
+        [self setAutoScales:newAuto adjustPopup:YES];
 }
 
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag {
+    [self setSynchronizeZoom:NO adjustPopup:NO];
     [super setAutoScales:newAuto];
     if (newAuto && flag)
-        [scalePopUpButton selectItemAtIndex:0];
+        [scalePopUpButton selectItemAtIndex:1];
 }
 
 - (void)setScaleFactor:(float)newScaleFactor {
-    if (scalePopUpButton)
-        [self setScaleFactor:newScaleFactor adjustPopup:YES];
-    else
+    if ([self synchronizeZoom])
         [super setScaleFactor:newScaleFactor];
+    else
+        [self setScaleFactor:newScaleFactor adjustPopup:YES];
 }
 
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
-    
 	if (flag) {
 		if (newScaleFactor < 0.01) {
             newScaleFactor = 0.0;
         } else {
-            unsigned cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+            unsigned cnt = 2, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
             
             // We only work with some preset zoom values, so choose one of the appropriate values
             while (cnt < numberOfDefaultItems - 1 && newScaleFactor > 0.5 * (SKDefaultScaleMenuFactors[cnt] + SKDefaultScaleMenuFactors[cnt + 1])) cnt++;
@@ -291,6 +356,7 @@ static float SKPopUpMenuFontSize = 11.0;
         }
     }
     
+    [self setSynchronizeZoom:NO adjustPopup:NO];
     if (newScaleFactor < 0.01) {
         [self setAutoScales:YES];
     } else {
@@ -300,7 +366,10 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomIn:(id)sender{
-    int cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    if ([self synchronizeZoom])
+        return;
+    
+    int cnt = 2, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
@@ -311,34 +380,41 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomOut:(id)sender{
-    int cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    if ([self synchronizeZoom])
+        return;
+    
+    int cnt = 2, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
     cnt--;
-    while (cnt < 1) cnt++;
+    while (cnt < 2) cnt++;
     [self setScaleFactor:SKDefaultScaleMenuFactors[cnt]];
 }
 
 - (BOOL)canZoomIn{
-    if ([super canZoomIn] == NO)
+    if ([super canZoomIn] == NO || [self synchronizeZoom])
         return NO;
-    unsigned cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    
+    unsigned cnt = 2, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
+    
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
     return cnt < numberOfDefaultItems - 1;
 }
 
 - (BOOL)canZoomOut{
-    if ([super canZoomOut] == NO)
+    if ([super canZoomOut] == NO || [self synchronizeZoom])
         return NO;
-    unsigned cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    
+    unsigned cnt = 2, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
+    
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
-    return cnt > 1;
+    return cnt > 2;
 }
 
 
@@ -359,11 +435,13 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    static NSSet *selectionActions = nil;
-    if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenuItem *item;
+    NSSet *selectionActions = nil;
+    if ([self synchronizeZoom])
+        selectionActions = [NSSet setWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_setActualSize:", @"_setAutoSize:", @"zoomIn:", @"zoomOut:", nil];
+    else
+        selectionActions = [NSSet setWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
@@ -450,12 +528,6 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
-    [self dragWithEvent:theEvent];	
-    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
-}
-
-- (void)dragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
 	BOOL keepGoing = YES;
@@ -489,12 +561,30 @@ static float SKPopUpMenuFontSize = 11.0;
 				break;
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
 }
 
 #pragma mark Notification handling
 
+- (void)startObservingSynchronizedPDFView {
+    if (synchronizedPDFView)
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSynchronizedScaleChangedNotification:) 
+                                                     name:PDFViewScaleChangedNotification object:synchronizedPDFView];
+}
+
+- (void)stopObservingSynchronizedPDFView {
+    if (synchronizedPDFView)
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:PDFViewScaleChangedNotification object:synchronizedPDFView];
+}
+
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [pagePopUpButton selectItemAtIndex:[[self document] indexForPage:[self currentPage]]];
+}
+
+- (void)handleSynchronizedScaleChangedNotification:(NSNotification *)notification {
+    if ([self synchronizeZoom])
+        [super setScaleFactor:[synchronizedPDFView scaleFactor]];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
