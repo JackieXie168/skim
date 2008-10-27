@@ -185,12 +185,3 @@ const CFArrayCallBacks kSKNSRangeArrayCallBacks = {
     SKNSRangeCopyDescription,
     SKNSRangeEqual
 };
-
-const CFSetCallBacks kSKPointerEqualObjectSetCallBacks = {
-    0,   // version
-    SKNSObjectRetain,
-    SKNSObjectRelease,
-    SKNSObjectCopyDescription,
-    NULL, // equal
-    NULL // hash
-};
