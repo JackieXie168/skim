@@ -121,3 +121,4 @@ NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
 NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
 NSString *SKTableFontSizeKey = @"SKTableFontSize";
 NSString *SKSequentialPageNumberingKey = @"SKSequentialPageNumbering";
+NSString *SKSplitPDFCopiesZoomKey = @"SKSplitPDFCopiesZoom";

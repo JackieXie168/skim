@@ -120,3 +120,4 @@ extern NSString *SKAutoCloseDownloadsWindowKey;
 extern NSString *SKShouldSetCreatorCodeKey;
 extern NSString *SKTableFontSizeKey;
 extern NSString *SKSequentialPageNumberingKey;
+extern NSString *SKSplitPDFCopiesZoomKey;

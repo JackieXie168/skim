@@ -1407,6 +1407,9 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     [zoomInActualOutButton setEnabled:fabsf([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
     [zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
     [zoomActualButton setEnabled:fabsf([pdfView scaleFactor] - 1.0 ) > 0.01];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKSplitPDFCopiesZoomKey])
+        [secondaryPdfView setScaleFactor:[pdfView scaleFactor]];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
