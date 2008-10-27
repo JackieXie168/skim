@@ -92,7 +92,14 @@
                 case SKScriptingColorDarkGray: return [NSColor darkGrayColor];
                 case SKScriptingColorLightGray: return [NSColor lightGrayColor];
                 case SKScriptingColorClear: return [NSColor clearColor];
-                default: return nil;
+                default:
+                {
+                    NSString *string = [descriptor stringValue];
+                    if (string) {
+                        NSColor *color = [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]];
+                        return [color isKindOfClass:[NSColor class]] ? color : nil;
+                    }
+                }
             }
             break;
         case 4:
