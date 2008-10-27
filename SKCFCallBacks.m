@@ -129,7 +129,7 @@ void SKNSRangeRelease(CFAllocatorRef allocator, const void *value) {
 }
 
 CFStringRef SKNSRangeCopyDescription(const void *value) {
-    return (CFStringRef)[[NSString alloc] initWithFormat:@"(%u, %u)", ((NSRange *)value)->location, ((NSRange *)value)->length];
+    return CFStringCreateWithFormat(NULL, NULL, CFSTR("(%u, %u)"), ((NSRange *)value)->location, ((NSRange *)value)->length);
 }
 
 Boolean	SKNSRangeEqual(const void *value1, const void *value2) {
