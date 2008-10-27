@@ -83,8 +83,6 @@ extern const CFDictionaryKeyCallBacks kSKCaseInsensitiveStringDictionaryKeyCallB
 
 extern const CFDictionaryValueCallBacks kSKFloatDictionaryValueCallBacks;
 
-extern const CFDictionaryValueCallBacks kSKFloatDictionaryValueCallBacks;
-
 extern const CFDictionaryValueCallBacks kSKNSRectDictionaryValueCallBacks;
 
 
