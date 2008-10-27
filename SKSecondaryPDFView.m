@@ -41,6 +41,7 @@
 #import "NSScrollView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKSecondaryPDFView
@@ -166,7 +167,7 @@ static float SKPopUpMenuFontSize = 11.0;
     [scrollView setHasHorizontalScroller:YES];
     NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
     
-    if (scalePopUpButton == nil) {
+    if (scalePopUpButton == nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKSplitPDFCopiesZoomKey] == NO) {
 
         // create it        
         scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
@@ -256,7 +257,10 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (void)setAutoScales:(BOOL)newAuto {
-    [self setAutoScales:newAuto adjustPopup:YES];
+    if (scalePopUpButton)
+        [self setAutoScales:newAuto adjustPopup:YES];
+    else
+        [super setAutoScales:newAuto];
 }
 
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag {
@@ -266,7 +270,10 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (void)setScaleFactor:(float)newScaleFactor {
-	[self setScaleFactor:newScaleFactor adjustPopup:YES];
+    if (scalePopUpButton)
+        [self setScaleFactor:newScaleFactor adjustPopup:YES];
+    else
+        [super setScaleFactor:newScaleFactor];
 }
 
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
@@ -356,9 +363,7 @@ static float SKPopUpMenuFontSize = 11.0;
     if (selectionActions == nil)
         selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
-    int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
     NSMenuItem *item;
-    PDFDisplayMode displayMode = [self displayMode];
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
@@ -369,7 +374,12 @@ static float SKPopUpMenuFontSize = 11.0;
             break;
     }
     
+    int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
+    if (i == -1)
+        i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
     if (i != -1) {
+        PDFDisplayMode displayMode = [self displayMode];
+        [menu insertItem:[NSMenuItem separatorItem] atIndex:++i];
         if (displayMode == kPDFDisplayTwoUp || displayMode == kPDFDisplayTwoUpContinuous) { 
             item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBookFromMenu:) keyEquivalent:@"" atIndex:++i];
             [item setTarget:self];
