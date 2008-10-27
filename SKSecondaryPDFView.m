@@ -300,7 +300,7 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomIn:(id)sender{
-    int cnt = 0, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    int cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
@@ -311,20 +311,20 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomOut:(id)sender{
-    int cnt = 0, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    int cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
     cnt--;
-    if (cnt < 0) cnt++;
+    while (cnt < 1) cnt++;
     [self setScaleFactor:SKDefaultScaleMenuFactors[cnt]];
 }
 
 - (BOOL)canZoomIn{
     if ([super canZoomIn] == NO)
         return NO;
-    unsigned cnt = 0, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    unsigned cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
@@ -334,11 +334,11 @@ static float SKPopUpMenuFontSize = 11.0;
 - (BOOL)canZoomOut{
     if ([super canZoomOut] == NO)
         return NO;
-    unsigned cnt = 0, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+    unsigned cnt = 1, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > SKDefaultScaleMenuFactors[cnt]) cnt++;
-    return cnt > 0;
+    return cnt > 1;
 }
 
 
