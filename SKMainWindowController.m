@@ -810,6 +810,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     PDFAnnotation *annotation;
     NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
+    NSMutableArray *observableNotes = [self mutableArrayValueForKey:SKMainWindowNotesKey];
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
@@ -821,6 +822,9 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [pdfView addAnnotation:annotation toPage:page undoable:undoable];
+            // this is necessary for the initial load of the document, as the notification handler is not yet registered
+            if ([observableNotes containsObject:annotation] == NO)
+                [observableNotes addObject:annotation];
             [annotation release];
         }
     }
