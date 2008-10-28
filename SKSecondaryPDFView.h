@@ -45,6 +45,7 @@
     NSPopUpButton *pagePopUpButton;
     PDFView *synchronizedPDFView;
     BOOL synchronizeZoom;
+    BOOL switching;
 }
 
 - (PDFView *)synchronizedPDFView;
