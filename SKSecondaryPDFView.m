@@ -307,13 +307,13 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag {
     if (synchronizeZoom != newSync) {
+        BOOL savedSwitching = switching;
+        switching = YES;
         synchronizeZoom = newSync;
         if (newSync) {
-            switching = YES;
             if ([self autoScales])
                 [super setAutoScales:NO];
             [super setScaleFactor:synchronizedPDFView ? [synchronizedPDFView scaleFactor] : 1.0];
-            switching = NO;
             [self startObservingSynchronizedPDFView];
             if (flag)
                 [scalePopUpButton selectItemAtIndex:0];
@@ -321,32 +321,44 @@ static float SKPopUpMenuFontSize = 11.0;
             [self stopObservingSynchronizedPDFView];
             [self setScaleFactor:[self scaleFactor] adjustPopup:flag];
         }
+        switching = savedSwitching;
     }
 }
 
 - (void)setAutoScales:(BOOL)newAuto {
-    if (switching)
+    BOOL savedSwitching = switching;
+    switching = YES;
+    if (savedSwitching)
         [super setAutoScales:newAuto];
     else
         [self setAutoScales:newAuto adjustPopup:YES];
+    switching = savedSwitching;
 }
 
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag {
+    BOOL savedSwitching = switching;
+    switching = YES;
     if ([self synchronizeZoom])
         [self setSynchronizeZoom:NO adjustPopup:NO];
     [super setAutoScales:newAuto];
     if (newAuto && flag)
         [scalePopUpButton selectItemAtIndex:1];
+    switching = savedSwitching;
 }
 
 - (void)setScaleFactor:(float)newScaleFactor {
-    if ([self synchronizeZoom] || switching)
+    BOOL savedSwitching = switching;
+    switching = YES;
+    if ([self synchronizeZoom] || savedSwitching)
         [super setScaleFactor:newScaleFactor];
     else
         [self setScaleFactor:newScaleFactor adjustPopup:YES];
+    switching = savedSwitching;
 }
 
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
+    BOOL savedSwitching = switching;
+    switching = YES;
     if ([self synchronizeZoom])
         [self setSynchronizeZoom:NO adjustPopup:NO];
 	
@@ -371,6 +383,7 @@ static float SKPopUpMenuFontSize = 11.0;
             [self setAutoScales:NO adjustPopup:NO];
         [super setScaleFactor:newScaleFactor];
     }
+    switching = savedSwitching;
 }
 
 - (IBAction)zoomIn:(id)sender{
@@ -584,7 +597,7 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)handleSynchronizedScaleChangedNotification:(NSNotification *)notification {
     if ([self synchronizeZoom])
-        [super setScaleFactor:[synchronizedPDFView scaleFactor]];
+        [self setScaleFactor:[synchronizedPDFView scaleFactor]];
 }
 
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
