@@ -98,7 +98,8 @@
                     if (string) {
                         NSColor *color = [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]];
                         return [color isKindOfClass:[NSColor class]] ? color : nil;
-                    }
+                    } else
+                        return nil;
                 }
             }
             break;
