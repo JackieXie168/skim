@@ -336,7 +336,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return [[self document] indexForPage:self];
 }
 
-- (NSString *)logicalLabel {
+- (NSString *)sequentialLabel {
     return [NSString stringWithFormat:@"%u", [self pageIndex] + 1];
 }
 
@@ -344,7 +344,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSString *label = nil;
     if ([[self class] usesSequentialPageNumbering] == NO)
         label = [self label];
-    return label ?: [self logicalLabel];
+    return label ?: [self sequentialLabel];
 }
 
 #pragma mark Scripting support

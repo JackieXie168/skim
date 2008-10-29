@@ -72,7 +72,7 @@ extern NSString *SKPDFPageActionRotate;
 - (NSArray *)lineRects;
 
 - (unsigned int)pageIndex;
-- (NSString *)logicalLabel;
+- (NSString *)sequentialLabel;
 - (NSString *)displayLabel;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
