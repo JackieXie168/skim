@@ -109,6 +109,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSActionCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKCenteredTextFieldCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -130,6 +138,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
