@@ -60,7 +60,7 @@
 }
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
-    float red, green, blue, alpha = 1.0;
+    float red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0;
     switch ([descriptor numberOfItems]) {
         case 0:
             switch ([descriptor enumCodeValue]) {
