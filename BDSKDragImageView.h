@@ -57,5 +57,4 @@
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
 - (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view;
-- (BOOL)dragImageView:(BDSKDragImageView *)view setImage:(NSImage *)image;
 @end
