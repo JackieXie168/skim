@@ -223,6 +223,24 @@ static float BDSKScaleMenuFontSize = 11.0;
     }
 }
 
+- (unsigned int)lowerIndexForScaleFactor:(float)scaleFactor {
+    unsigned int i, count = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    for (i = count - 1; i > 0; i--) {
+        if (scaleFactor * 1.01 > BDSKDefaultScaleMenuFactors[i])
+            return i;
+    }
+    return 1;
+}
+
+- (unsigned int)upperIndexForScaleFactor:(float)scaleFactor {
+    unsigned int i, count = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    for (i = 1; i < count; i++) {
+        if (scaleFactor * 0.99 < BDSKDefaultScaleMenuFactors[i])
+            return i;
+    }
+    return count - 1;
+}
+
 - (void)setScaleFactor:(float)newScaleFactor {
 	[self setScaleFactor:newScaleFactor adjustPopup:YES];
 }
@@ -233,12 +251,13 @@ static float BDSKScaleMenuFontSize = 11.0;
 		if (newScaleFactor < 0.01) {
             newScaleFactor = 0.0;
         } else {
-            unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-            
-            // We only work with some preset zoom values, so choose one of the appropriate values
-            while (cnt < numberOfDefaultItems - 1 && newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[cnt] + BDSKDefaultScaleMenuFactors[cnt + 1])) cnt++;
-            [scalePopUpButton selectItemAtIndex:cnt];
-            newScaleFactor = BDSKDefaultScaleMenuFactors[cnt];
+            unsigned int i = [self lowerIndexForScaleFactor:newScaleFactor], upper = [self upperIndexForScaleFactor:newScaleFactor];
+            if (upper > i) {
+                if (newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[i] + BDSKDefaultScaleMenuFactors[upper]))
+                    i = upper;
+            }
+            [scalePopUpButton selectItemAtIndex:i];
+            newScaleFactor = BDSKDefaultScaleMenuFactors[i];
         }
     }
     
@@ -257,14 +276,10 @@ static float BDSKScaleMenuFontSize = 11.0;
         [super zoomIn:sender];
         [self setAutoFits:NO adjustPopup:YES];
     }else{
-        int cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-        float scaleFactor = [self scaleFactor];
-        
-        // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
-        while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
-        cnt++;
-        while (cnt >= numberOfDefaultItems) cnt--;
-        [self setScaleFactor:BDSKDefaultScaleMenuFactors[cnt]];
+        unsigned int numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+        unsigned int i = [self lowerIndexForScaleFactor:[self scaleFactor]];
+        if (i < numberOfDefaultItems - 1) i++;
+        [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
     }
 }
 
@@ -273,35 +288,25 @@ static float BDSKScaleMenuFontSize = 11.0;
         [super zoomOut:sender];
         [self setAutoFits:NO adjustPopup:YES];
     }else{
-        int cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-        float scaleFactor = [self scaleFactor];
-        
-        // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
-        while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
-        cnt--;
-        while (cnt < 1) cnt++;
-        [self setScaleFactor:BDSKDefaultScaleMenuFactors[cnt]];
+        unsigned int i = [self upperIndexForScaleFactor:[self scaleFactor]];
+        if (i > 1) i--;
+        [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
     }
 }
 
 - (BOOL)canZoomIn{
     if ([super canZoomIn] == NO)
         return NO;
-    unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-    float scaleFactor = [self scaleFactor];
-    // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
-    while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
-    return cnt < numberOfDefaultItems - 1;
+    unsigned int numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    unsigned int i = [self lowerIndexForScaleFactor:[self scaleFactor]];
+    return i < numberOfDefaultItems - 1;
 }
 
 - (BOOL)canZoomOut{
     if ([super canZoomOut] == NO)
         return NO;
-    unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-    float scaleFactor = [self scaleFactor];
-    // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
-    while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
-    return cnt > 1;
+    unsigned int i = [self upperIndexForScaleFactor:[self scaleFactor]];
+    return i > 1;
 }
 
 - (void)goToPage:(PDFPage *)aPage {
