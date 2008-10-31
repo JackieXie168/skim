@@ -215,6 +215,7 @@
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED6A3120EADF37800E8CD11 /* NSImageCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CED6A3110EADF37800E8CD11 /* NSImageCell_SKExtensions.m */; };
 		CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */; };
+		CEE0F6C20EBB4743000A7A8C /* ConversionProgressWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE0F6C10EBB4743000A7A8C /* ConversionProgressWindow.nib */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */; };
 		CEE177960DBE140900E6C317 /* SKAccessibilityFauxUIElement.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE177950DBE140900E6C317 /* SKAccessibilityFauxUIElement.m */; };
@@ -873,6 +874,7 @@
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
 		CEE0F5E90EBB3DEC000A7A8C /* SKLevelIndicatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLevelIndicatorCell.h; sourceTree = "<group>"; };
 		CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLevelIndicatorCell.m; sourceTree = "<group>"; };
+		CEE0F6C10EBB4743000A7A8C /* ConversionProgressWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDisplayView_SKExtensions.h; sourceTree = "<group>"; };
@@ -1067,6 +1069,7 @@
 				CEAF37190E676EC300491E3B /* BookmarksWindow.nib */,
 				CEAF36B10E67246A00491E3B /* ReleaseNotes.nib */,
 				CEAF36B30E6724B900491E3B /* ProgressSheet.nib */,
+				CEE0F6C10EBB4743000A7A8C /* ConversionProgressWindow.nib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -1861,6 +1864,7 @@
 				CE51633A0EAB5EE2009FA237 /* Segment_CapPress.tiff in Resources */,
 				CE51633C0EAB5EE2009FA237 /* Segment_DividerPress.tiff in Resources */,
 				CE51633D0EAB5EE2009FA237 /* Segment_Divider.tiff in Resources */,
+				CEE0F6C20EBB4743000A7A8C /* ConversionProgressWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
