@@ -38,7 +38,6 @@
 
 #import "SKFindTableView.h"
 #import "SKStringConstants.h"
-#import "SKRuntime.h"
 
 
 @implementation SKFindTableView
@@ -144,37 +143,6 @@
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
         [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
 	}
-}
-
-@end
-
-#pragma mark -
-
-@interface NSLevelIndicatorCell (SKExtensions)
-@end
-
-@implementation NSLevelIndicatorCell (SKExtensions)
-
-static void (*originalDrawWithFrameInView)(id, SEL, NSRect, id) = NULL;
-
-// Drawing does not restrict the clip, while in discrete style it heavily uses gaussian blur, leading to unacceptable slow drawing
-// see <http://toxicsoftware.com/discrete-nslevelindicatorcell-too-slow/>
-- (void)replacementDrawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    BOOL drawDiscreteContinuous = ([self levelIndicatorStyle] == NSDiscreteCapacityLevelIndicatorStyle) && ((NSWidth(cellFrame) + 1.0) / [self maxValue] < 3.0);
-    if (drawDiscreteContinuous)
-        [self setLevelIndicatorStyle:NSContinuousCapacityLevelIndicatorStyle];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSBezierPath bezierPathWithRect:cellFrame] addClip];
-    originalDrawWithFrameInView(self, _cmd, cellFrame, controlView);
-    [NSGraphicsContext restoreGraphicsState];
-    if (drawDiscreteContinuous)
-        [self setLevelIndicatorStyle:NSDiscreteCapacityLevelIndicatorStyle];
-}
-
-+ (void)load {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    originalDrawWithFrameInView = (void (*)(id, SEL, NSRect, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithFrame:inView:), @selector(replacementDrawWithFrame:inView:));
-    [pool release];
 }
 
 @end

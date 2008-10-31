@@ -420,19 +420,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSMenu</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -505,14 +505,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSSegmentedControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSScrollView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -534,6 +526,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSSegmentedControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSImageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -542,19 +542,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKAnnotationTypeImageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSImageCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -733,6 +733,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKLevelIndicatorCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSLevelIndicatorCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
