@@ -65,17 +65,17 @@ static NSString *SKNotesFDFDocumentTypeName = @"Notes as FDF";
 static NSString *SKPostScriptDocumentTypeName = @"PostScript document";
 static NSString *SKDVIDocumentTypeName = @"DVI document";
 
-static NSString *SKPDFDocumentUTI = @"com.adobe.pdf";
-static NSString *SKPDFBundleDocumentUTI = @"net.sourceforge.skim-app.pdfd";
-static NSString *SKEmbeddedPDFDocumentUTI = @"net.sourceforge.skim-app.embedded.pdf";
-static NSString *SKBarePDFDocumentUTI = @"net.sourceforge.skim-app.bare.pdf";
-static NSString *SKNotesDocumentUTI = @"net.sourceforge.skim-app.skimnotes";
-static NSString *SKTextDocumentUTI = @"public.plain-text";
-static NSString *SKRTFDocumentUTI = @"public.rtf";
-static NSString *SKRTFDDocumentUTI = @"com.apple.rtfd";
-static NSString *SKFDFDocumentUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
-static NSString *SKPostScriptDocumentUTI = @"com.adobe.postscript";
-static NSString *SKDVIDocumentUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
+static NSString *SKPDFDocumentTypeUTI = @"com.adobe.pdf";
+static NSString *SKPDFBundleDocumentTypeUTI = @"net.sourceforge.skim-app.pdfd";
+static NSString *SKEmbeddedPDFDocumentTypeUTI = @"net.sourceforge.skim-app.embedded.pdf";
+static NSString *SKBarePDFDocumentTypeUTI = @"net.sourceforge.skim-app.bare.pdf";
+static NSString *SKNotesDocumentTypeUTI = @"net.sourceforge.skim-app.skimnotes";
+static NSString *SKNotesTextDocumentTypeUTI = @"public.plain-text";
+static NSString *SKNotesRTFDocumentTypeUTI = @"public.rtf";
+static NSString *SKNotesRTFDDocumentTypeUTI = @"com.apple.rtfd";
+static NSString *SKNotesFDFDocumentTypeUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
+static NSString *SKPostScriptDocumentTypeUTI = @"com.adobe.postscript";
+static NSString *SKDVIDocumentTypeUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
 
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = nil;
@@ -93,68 +93,35 @@ static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NS
     return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:docUTI]) || [docType isEqualToString:docTypeName];
 }
 
-BOOL SKIsPDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKPDFDocumentTypeName, SKPDFDocumentUTI) &&
-           NO == SKIsEqualToDocumentType(docType, nil, SKEmbeddedPDFDocumentUTI) &&
-           NO == SKIsEqualToDocumentType(docType, nil, SKBarePDFDocumentUTI);
-}
-BOOL SKIsPDFBundleDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKPDFBundleDocumentTypeName, SKPDFBundleDocumentUTI);
-}
-BOOL SKIsEmbeddedPDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKEmbeddedPDFDocumentTypeName, SKEmbeddedPDFDocumentUTI);
-}
-BOOL SKIsBarePDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKBarePDFDocumentTypeName, SKBarePDFDocumentUTI);
-}
-BOOL SKIsNotesDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesDocumentTypeName, SKNotesDocumentUTI);
-}
-BOOL SKIsNotesTextDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesTextDocumentTypeName, SKTextDocumentUTI);
-}
-BOOL SKIsNotesRTFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesRTFDocumentTypeName, SKRTFDocumentUTI);
-}
-BOOL SKIsNotesRTFDDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesRTFDDocumentTypeName, SKRTFDDocumentUTI);
-}
-BOOL SKIsNotesFDFDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKNotesFDFDocumentTypeName, SKFDFDocumentUTI) &&
-           NO == SKIsEqualToDocumentType(docType, nil, SKPDFDocumentUTI);
-}
-BOOL SKIsPostScriptDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKPostScriptDocumentTypeName, SKPostScriptDocumentUTI);
-}
-BOOL SKIsDVIDocumentType(NSString *docType) {
-    return SKIsEqualToDocumentType(docType, SKDVIDocumentTypeName, SKDVIDocumentUTI);
-}
+#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return SKIsEqualToDocumentType(docType, SK##name##DocumentTypeName, SK##name##DocumentTypeUTI); }
+
+DEFINE_IS_DOCUMENT_TYPE(PDF)
+DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
+DEFINE_IS_DOCUMENT_TYPE(EmbeddedPDF)
+DEFINE_IS_DOCUMENT_TYPE(BarePDF)
+DEFINE_IS_DOCUMENT_TYPE(Notes)
+DEFINE_IS_DOCUMENT_TYPE(NotesText)
+DEFINE_IS_DOCUMENT_TYPE(NotesRTF)
+DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
+DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
+DEFINE_IS_DOCUMENT_TYPE(PostScript)
+DEFINE_IS_DOCUMENT_TYPE(DVI)
+
+#define CHECK_DOCUMENT_TYPE(name) if (SKIs##name##DocumentType(docType)) return SK##name##DocumentType
 
 NSString *SKNormalizedDocumentType(NSString *docType) {
-    if (SKIsPDFDocumentType(docType))
-        return SKPDFDocumentType;
-    else if (SKIsPDFBundleDocumentType(docType))
-        return SKPDFBundleDocumentType;
-    else if (SKIsEmbeddedPDFDocumentType(docType))
-        return SKEmbeddedPDFDocumentType;
-    else if (SKIsBarePDFDocumentType(docType))
-        return SKBarePDFDocumentType;
-    else if (SKIsNotesDocumentType(docType))
-        return SKNotesDocumentType;
-    else if (SKIsNotesTextDocumentType(docType))
-        return SKNotesTextDocumentType;
-    else if (SKIsNotesRTFDocumentType(docType))
-        return SKNotesRTFDocumentType;
-    else if (SKIsNotesRTFDDocumentType(docType))
-        return SKNotesRTFDDocumentType;
-    else if (SKIsNotesFDFDocumentType(docType))
-        return SKNotesFDFDocumentType;
-    else if (SKIsPostScriptDocumentType(docType))
-        return SKPostScriptDocumentType;
-    else if (SKIsDVIDocumentType(docType))
-        return SKDVIDocumentType;
-    else
-        return SKPDFDocumentType;
+    CHECK_DOCUMENT_TYPE(PDF);
+    CHECK_DOCUMENT_TYPE(PDFBundle);
+    CHECK_DOCUMENT_TYPE(EmbeddedPDF);
+    CHECK_DOCUMENT_TYPE(BarePDF);
+    CHECK_DOCUMENT_TYPE(Notes);
+    CHECK_DOCUMENT_TYPE(NotesText);
+    CHECK_DOCUMENT_TYPE(NotesRTF);
+    CHECK_DOCUMENT_TYPE(NotesRTFD);
+    CHECK_DOCUMENT_TYPE(NotesFDF);
+    CHECK_DOCUMENT_TYPE(PostScript);
+    CHECK_DOCUMENT_TYPE(DVI);
+    return docType;
 }
 
 
@@ -167,35 +134,23 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 @implementation SKDocumentController
 
+#define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SK##name##DocumentTypeName : SK##name##DocumentTypeUTI
+
 + (void)initialize {
     OBINITIALIZE;
     
-    SKPDFDocumentTypeName = [NSPDFPboardType copy];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        SKPDFDocumentType = SKPDFDocumentTypeName;
-        SKPDFBundleDocumentType = SKPDFBundleDocumentTypeName;
-        SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentTypeName;
-        SKBarePDFDocumentType = SKBarePDFDocumentTypeName;
-        SKNotesDocumentType = SKNotesDocumentTypeName;
-        SKNotesTextDocumentType = SKNotesTextDocumentTypeName;
-        SKNotesRTFDocumentType = SKNotesRTFDocumentTypeName;
-        SKNotesRTFDDocumentType = SKNotesRTFDDocumentTypeName;
-        SKNotesFDFDocumentType = SKNotesFDFDocumentTypeName;
-        SKPostScriptDocumentType = SKPostScriptDocumentTypeName;
-        SKDVIDocumentType = SKDVIDocumentTypeName;
-    } else {
-        SKPDFDocumentType = SKPDFDocumentUTI;
-        SKPDFBundleDocumentType = SKPDFBundleDocumentUTI;
-        SKEmbeddedPDFDocumentType = SKEmbeddedPDFDocumentUTI;
-        SKBarePDFDocumentType = SKBarePDFDocumentUTI;
-        SKNotesDocumentType = SKNotesDocumentUTI;
-        SKNotesTextDocumentType = SKTextDocumentUTI;
-        SKNotesRTFDocumentType = SKRTFDocumentUTI;
-        SKNotesRTFDDocumentType = SKRTFDDocumentUTI;
-        SKNotesFDFDocumentType = SKFDFDocumentUTI;
-        SKPostScriptDocumentType = SKPostScriptDocumentUTI;
-        SKDVIDocumentType = SKDVIDocumentUTI;
-    }
+    SKPDFDocumentTypeName = NSPDFPboardType;
+    DEFINE_DOCUMENT_TYPE(PDF);
+    DEFINE_DOCUMENT_TYPE(PDFBundle);
+    DEFINE_DOCUMENT_TYPE(EmbeddedPDF);
+    DEFINE_DOCUMENT_TYPE(BarePDF);
+    DEFINE_DOCUMENT_TYPE(Notes);
+    DEFINE_DOCUMENT_TYPE(NotesText);
+    DEFINE_DOCUMENT_TYPE(NotesRTF);
+    DEFINE_DOCUMENT_TYPE(NotesRTFD);
+    DEFINE_DOCUMENT_TYPE(NotesFDF);
+    DEFINE_DOCUMENT_TYPE(PostScript);
+    DEFINE_DOCUMENT_TYPE(DVI);
 }
 
 - (id)init {
