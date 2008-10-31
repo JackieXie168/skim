@@ -64,6 +64,7 @@ enum {
 - (void)conversionStarted;
 - (void)converterWasStopped;
 - (NSString *)fileType;
+- (void)setButtonTitle:(NSString *)title action:(SEL)action;
 @end
 
 @interface SKPSProgressController (Private)
@@ -122,6 +123,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)awakeFromNib
 {
     [progressBar setUsesThreadedAnimation:YES];
+    [self setButtonTitle:NSLocalizedString(@"Cancel", @"Button title") action:@selector(cancel:)];
     [[self window] setTitle:[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:[self fileType]]]];
 }
 
@@ -174,8 +176,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)converterWasStopped {
     NSBeep();
     [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
-    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
-    [cancelButton setAction:@selector(close:)];
+    [self setButtonTitle:NSLocalizedString(@"Close", @"Button title") action:@selector(close:)];
 }
 
 - (NSString *)fileType { return @""; }
@@ -184,14 +185,24 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 {
     [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"PS conversion progress message")];
     [progressBar stopAnimation:nil];
-    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
-    [cancelButton setAction:@selector(close:)];
+    [self setButtonTitle:NSLocalizedString(@"Close", @"Button title") action:@selector(close:)];
 }
 
 - (void)conversionStarted;
 {
     [progressBar startAnimation:nil];
     [textField setStringValue:[[[self window] title] stringByAppendingEllipsis]];
+}
+
+- (void)setButtonTitle:(NSString *)title action:(SEL)action {
+    [cancelButton setTitle:title];
+    [cancelButton setAction:action];
+    NSRect frame = [cancelButton frame];
+    [cancelButton sizeToFit];
+    float width = fmaxf(NSWidth([cancelButton frame]), 90.0);
+    frame.origin.x = NSMaxX(frame) - width;
+    frame.size.width = width;
+    [cancelButton setFrame:frame];
 }
 
 @end
