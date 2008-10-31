@@ -1,45 +1,184 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSObject; LANGUAGE = ObjC; }, 
-        {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {
-                doubleClickBookmark = id; 
-                insertBookmarkFolder = id; 
-                insertBookmarkSeparator = id; 
-            }; 
-            CLASS = SKBookmarkController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {outlineView = SKBookmarkOutlineView; statusBar = SKStatusBar; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = SKBookmarkOutlineView; LANGUAGE = ObjC; SUPERCLASS = SKOutlineView; }, 
-        {
-            ACTIONS = {
-                copy = id; 
-                delete = id; 
-                scrollToBeginningOfDocument = id; 
-                scrollToEndOfDocument = id; 
-            }; 
-            CLASS = SKOutlineView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSOutlineView; 
-        }, 
-        {
-            ACTIONS = {startAnimation = id; stopAnimation = id; }; 
-            CLASS = SKStatusBar; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {leftCell = id; rightCell = id; }; 
-            SUPERCLASS = NSControl; 
-        }, 
-        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
-        {CLASS = SKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>deleteBookmark</key>
+				<string>id</string>
+				<key>doubleClickBookmark</key>
+				<string>id</string>
+				<key>insertBookmarkFolder</key>
+				<string>id</string>
+				<key>insertBookmarkSeparator</key>
+				<string>id</string>
+				<key>toggleStatusBar</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKBookmarkController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>outlineView</key>
+				<string>SKBookmarkOutlineView</string>
+				<key>statusBar</key>
+				<string>SKStatusBar</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>changeDashPattern</key>
+				<string>id</string>
+				<key>changeEndLineStyle</key>
+				<string>id</string>
+				<key>changeLineStyle</key>
+				<string>id</string>
+				<key>changeLineWidth</key>
+				<string>id</string>
+				<key>changeStartLineStyle</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>startAnimation</key>
+				<string>id</string>
+				<key>stopAnimation</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKStatusBar</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>leftCell</key>
+				<string>id</string>
+				<key>rightCell</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSActionCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKTextWithIconCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTextFieldCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKBookmarkOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>copy</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>scrollToBeginningOfDocument</key>
+				<string>id</string>
+				<key>scrollToEndOfDocument</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
