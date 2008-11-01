@@ -49,7 +49,6 @@
 		CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */; };
 		CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = CE09FC3B0E3886C100BDF413 /* SKRuntime.m */; };
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
-		CE0ECCD90DE71868006EEDDB /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
@@ -1853,7 +1852,6 @@
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
 				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
-				CE0ECCD90DE71868006EEDDB /* Templates in Resources */,
 				CEAF36B20E67246A00491E3B /* ReleaseNotes.nib in Resources */,
 				CEAF36B40E6724B900491E3B /* ProgressSheet.nib in Resources */,
 				CEAF36B60E6724F400491E3B /* SnapshotWindow.nib in Resources */,
