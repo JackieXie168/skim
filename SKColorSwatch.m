@@ -338,7 +338,7 @@ static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
 #pragma mark Accessors
 
 - (NSArray *)colors {
-    return colors;
+    return [[colors copy] autorelease];
 }
 
 - (void)setColors:(NSArray *)newColors {
