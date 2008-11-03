@@ -91,4 +91,6 @@ extern NSString *SKPDFPageActionRotate;
 - (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
 
+- (id)handleGrabScriptCommand:(NSScriptCommand *)command;
+
 @end

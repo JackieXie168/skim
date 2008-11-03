@@ -653,7 +653,7 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="grab">
-				<cocoa method=""/>
+				<cocoa method="handleGrabScriptCommand"/>
 			</responds-to>
         </class>
 
@@ -1327,7 +1327,6 @@
 
         <command name="grab" code="SKIMGrab"
             description="Grab a picture from a page.">
-            <cocoa class="SKGrabCommand"/>
             <direct-parameter type="page"
                 description="The page for the picture."/>
             <parameter name="for" type="rectangle" code="for " optional="yes"

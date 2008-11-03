@@ -484,4 +484,61 @@ static BOOL usesSequentialPageNumbering = NO;
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
 }
 
+- (id)handleGrabScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    NSData *boundsData = [args objectForKey:@"Bounds"];
+    id asTIFF = [args objectForKey:@"AsTIFF"];
+    NSAppleEventDescriptor *desc = nil;
+    
+    if ([asTIFF respondsToSelector:@selector(boolValue)] == NO)
+        return nil;
+    if ([asTIFF boolValue]) {
+        NSImage *pageImage = [self imageForBox:kPDFDisplayBoxMediaBox];
+        if (boundsData) {
+            NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+            NSRect bounds = [boundsData rectValueAsQDRect];
+            NSRect sourceRect = bounds;
+            NSRect targetRect = {NSZeroPoint, sourceRect.size};
+            NSImage *image = nil;
+            
+            sourceRect.origin.x -= NSMinX(pageBounds);
+            sourceRect.origin.y -= NSMinY(pageBounds);
+            image = [[NSImage alloc] initWithSize:targetRect.size];
+            [image lockFocus];
+            [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+            [image unlockFocus];
+            pageImage = image;
+        }
+        desc = [NSAppleEventDescriptor descriptorWithDescriptorType:'TIFF' data:[pageImage TIFFRepresentation]];
+    } else {
+        NSData *data = [self dataRepresentation];
+        if (boundsData) {
+            if ([boundsData isKindOfClass:[NSData class]] == NO)
+                return nil;
+            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
+            PDFPage *page = [pdfDoc pageAtIndex:0];
+            NSRect bounds = [boundsData rectValueAsQDRect];
+            
+            if (NSIsEmptyRect(bounds))
+                return nil;
+            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+                [page setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
+                [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+            } else {
+                // setting the media box is buggy on Tiger, see bug # 1928384
+                [page setBounds:bounds forBox:kPDFDisplayBoxCropBox];
+            }
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
+            data = [page dataRepresentation];
+            [page release];
+        }
+        if (data)
+            desc = [NSAppleEventDescriptor descriptorWithDescriptorType:'PDF ' data:data];
+    }
+    
+    return desc;
+}
+
 @end
