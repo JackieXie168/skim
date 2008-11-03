@@ -127,6 +127,8 @@ typedef NSInteger SKInteractionMode;
     int dragMask;
     NSBezierPath *bezierPath;
     unsigned int pathPageIndex;
+    float gestureRotation;
+    unsigned int gesturePageIndex;
     
     int trackingRect;
     CFMutableArrayRef PDFToolTipRects;

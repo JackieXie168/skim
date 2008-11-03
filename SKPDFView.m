@@ -117,6 +117,20 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 #pragma mark -
 
+@interface NSResponder (SKLeopardPrivate)
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)rotateWithEvent:(NSEvent *)theEvent;
+- (void)beginGestureWithEvent:(NSEvent *)theEvent;
+- (void)endGestureWithEvent:(NSEvent *)theEvent;
+@end
+
+@interface NSEvent (SKLeopardPrivate)
+- (float)magnification;
+- (float)rotation;
+@end
+
+#pragma mark -
+
 @interface PDFView (SKLeopardPrivate)
 - (void)addTooltipsForVisiblePages;
 @end
@@ -243,6 +257,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     magnification = 0.0;
     didSelect = NO;
     mouseDownInAnnotation = NO;
+    
+    gestureRotation = 0.0;
+    gesturePageIndex = NSNotFound;
     
     trackingRect = 0;
     PDFToolTipRects = CFArrayCreateMutable(NULL, 0, NULL);
@@ -1540,6 +1557,42 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     } else if (PDFToolTipRect == trackingNumber) {
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
         PDFToolTipRect = 0;
+    }
+}
+
+- (void)rotatePageAtIndex:(unsigned int)idx by:(int)rotation {
+    NSUndoManager *undoManager = [self undoManager];
+    [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
+    [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
+    [[[[self window] windowController] document] undoableActionDoesntDirtyDocument];
+    
+    PDFPage *page = [[self document] pageAtIndex:idx];
+    [page setRotation:[page rotation] + rotation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+            object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, page, SKPDFPagePageKey, nil]];
+}
+
+- (void)beginGestureWithEvent:(NSEvent *)theEvent {
+    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
+        [super beginGestureWithEvent:theEvent];
+    gestureRotation = 0.0;
+    gesturePageIndex = [[self currentPage] pageIndex];
+}
+
+- (void)endGestureWithEvent:(NSEvent *)theEvent {
+    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
+        [super endGestureWithEvent:theEvent];
+    gestureRotation = 0.0;
+    gesturePageIndex = NSNotFound;
+}
+
+- (void)rotateWithEvent:(NSEvent *)theEvent {
+    if ([theEvent respondsToSelector:@selector(rotation)])
+        gestureRotation += [theEvent rotation];
+    if (fabsf(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
+        [self rotatePageAtIndex:gesturePageIndex by:90.0 * roundf(gestureRotation / 90.0)];
+        gestureRotation -= 90.0 * roundf(gestureRotation / 90.0);
     }
 }
 
