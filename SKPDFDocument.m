@@ -73,6 +73,7 @@
 #import "SKSnapshotWindowController.h"
 #import "NSDocument_SKExtensions.h"
 #import "SKApplication.h"
+#import "NSResponder_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 

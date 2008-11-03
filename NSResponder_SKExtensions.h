@@ -1,10 +1,10 @@
 //
-//  SKApplication.h
+//  NSResponder_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/15/07.
+//  Created by Christiaan Hofman on /11/308.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,25 +38,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKApplicationStartsTerminatingNotification;
 
-@interface SKApplication : NSApplication {
-    BOOL userAttentionDisabled;
-}
-
-- (BOOL)isUserAttentionDisabled;
-- (void)setUserAttentionDisabled:(BOOL)flag;
-
-- (NSArray *)allOrderedDocuments;
-
+@interface NSResponder (SKExtensions)
+- (BOOL)isDescendantOf:(NSView *)aView;
 @end
 
-
-@interface NSObject (SKApplicationDelegate)
-- (void)applicationStartsTerminating:(NSNotification *)aNotification;
+@interface NSResponder (SKOptionalExtensions)
+- (void)magnifyWheel:(NSEvent *)theEvent;
+- (void)remoteButtonPressed:(NSEvent *)theEvent;
 @end
 
-
-enum {
-    SKRemoteButtonEvent = 1
-};
+@interface NSResponder (SKLeopardGestures)
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)rotateWithEvent:(NSEvent *)theEvent;
+- (void)beginGestureWithEvent:(NSEvent *)theEvent;
+- (void)endGestureWithEvent:(NSEvent *)theEvent;
+@end
