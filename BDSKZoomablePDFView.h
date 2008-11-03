@@ -45,6 +45,7 @@
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
+    float pinchZoomFactor;
 }
 
 - (BOOL)autoFits;

@@ -44,6 +44,16 @@
 #import "SKStringConstants.h"
 
 
+@interface NSResponder (BDSKGesturesPrivate)
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)beginGestureWithEvent:(NSEvent *)theEvent;
+- (void)endGestureWithEvent:(NSEvent *)theEvent;
+@end
+
+@interface NSEvent (BDSKGesturesPrivate)
+- (float)magnification;
+@end
+
 @interface SKSecondaryPDFView (SKPrivate)
 
 - (void)makePopUpButtons;
@@ -94,6 +104,7 @@ static float SKPopUpMenuFontSize = 11.0;
     pagePopUpButton = nil;
     synchronizedPDFView = nil;
     synchronizeZoom = NO;
+    pinchZoomFactor = 1.0;
     
     [self makePopUpButtons];
     
@@ -364,6 +375,13 @@ static float SKPopUpMenuFontSize = 11.0;
     return count - 1;
 }
 
+- (unsigned int)indexForScaleFactor:(float)scaleFactor {
+    unsigned int lower = [self lowerIndexForScaleFactor:scaleFactor], upper = [self upperIndexForScaleFactor:scaleFactor];
+    if (upper > lower && scaleFactor < 0.5 * (SKDefaultScaleMenuFactors[lower] + SKDefaultScaleMenuFactors[upper]))
+        return lower;
+    return upper;
+}
+
 - (void)setScaleFactor:(float)newScaleFactor {
     BOOL savedSwitching = switching;
     switching = YES;
@@ -384,11 +402,7 @@ static float SKPopUpMenuFontSize = 11.0;
 		if (newScaleFactor < 0.01) {
             newScaleFactor = 0.0;
         } else {
-            unsigned int i = [self lowerIndexForScaleFactor:newScaleFactor], upper = [self upperIndexForScaleFactor:newScaleFactor];
-            if (upper > i) {
-                if (newScaleFactor > 0.5 * (SKDefaultScaleMenuFactors[i] + SKDefaultScaleMenuFactors[upper]))
-                    i = upper;
-            }
+            unsigned int i = [self indexForScaleFactor:newScaleFactor];
             [scalePopUpButton selectItemAtIndex:i];
             newScaleFactor = SKDefaultScaleMenuFactors[i];
         }
@@ -520,6 +534,34 @@ static float SKPopUpMenuFontSize = 11.0;
 		[[pagePopUpButton cell] setControlSize:controlSize];
         [pagePopUpButton setFont:[NSFont toolTipsFontOfSize: SKPopUpMenuFontSize - controlSize]];
 	}
+}
+
+#pragma mark Gestures
+
+- (void)beginGestureWithEvent:(NSEvent *)theEvent {
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
+        [super beginGestureWithEvent:theEvent];
+    pinchZoomFactor = 1.0;
+}
+
+- (void)endGestureWithEvent:(NSEvent *)theEvent {
+    if (fabsf(pinchZoomFactor - 1.0) > 0.1)
+        [self setScaleFactor:fmaxf(pinchZoomFactor * [self scaleFactor], SKDefaultScaleMenuFactors[2])];
+    pinchZoomFactor = 1.0;
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
+        [super endGestureWithEvent:theEvent];
+}
+
+- (void)magnifyWithEvent:(NSEvent *)theEvent {
+    if ([theEvent respondsToSelector:@selector(magnification)]) {
+        pinchZoomFactor *= 1.0 + fmaxf(-0.5, fminf(1.0 , [theEvent magnification]));
+        float scaleFactor = pinchZoomFactor * [self scaleFactor];
+        unsigned int i = [self indexForScaleFactor:fmaxf(scaleFactor, SKDefaultScaleMenuFactors[2])];
+        if (i != [self indexForScaleFactor:[self scaleFactor]]) {
+            [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
+            pinchZoomFactor = scaleFactor / [self scaleFactor];
+        }
+    }
 }
 
 #pragma mark Dragging
