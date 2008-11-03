@@ -652,6 +652,9 @@
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="grab">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="note" plural="notes" code="Note"
@@ -1320,6 +1323,23 @@
                 description="The list of pages for the object.">
                 <type type="page" list="yes"/>
             </result>
+        </command>
+
+        <command name="grab" code="SKIMGrab"
+            description="Grab a picture from a page.">
+            <cocoa class="SKGrabCommand"/>
+            <direct-parameter type="page"
+                description="The page for the picture."/>
+            <parameter name="for" type="rectangle" code="for " optional="yes"
+                description="The bounds for the picture.">
+                <cocoa key="Bounds"/>
+            </parameter>
+            <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes"
+                description="The format for the picture.">
+                <cocoa key="AsTIFF"/>
+            </parameter>
+            <result type="any"
+                description="The data of the picture."/>
         </command>
 
     </suite>
