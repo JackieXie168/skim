@@ -47,3 +47,8 @@ enum {
 - (NSUInteger)standardModifierFlags;
 - (unichar)firstCharacter;
 @end
+
+@interface NSEvent (SKLeopardGestures)
+- (float)magnification;
+- (float)rotation;
+@end

@@ -39,17 +39,9 @@
 #import "BDSKZoomablePDFView.h"
 #import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
-
-@interface NSResponder (BDSKGesturesPrivate)
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
-- (void)beginGestureWithEvent:(NSEvent *)theEvent;
-- (void)endGestureWithEvent:(NSEvent *)theEvent;
-@end
-
-@interface NSEvent (BDSKGesturesPrivate)
-- (float)magnification;
-@end
 
 @implementation BDSKZoomablePDFView
 

@@ -1,10 +1,10 @@
 //
-//  SKApplication.h
+//  NSResponder_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/15/07.
+//  Created by Christiaan Hofman on /11/308.
 /*
- This software is Copyright (c) 2007-2008
+ This software is Copyright (c) 2008
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,27 +36,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSResponder_SKExtensions.h"
 
-extern NSString *SKApplicationStartsTerminatingNotification;
 
-@interface SKApplication : NSApplication {
-    BOOL userAttentionDisabled;
-}
-
-- (BOOL)isUserAttentionDisabled;
-- (void)setUserAttentionDisabled:(BOOL)flag;
-
-- (NSArray *)allOrderedDocuments;
-
+@implementation NSResponder (SKExtensions)
+- (BOOL)isDescendantOf:(NSView *)aView { return NO; }
 @end
-
-
-@interface NSObject (SKApplicationDelegate)
-- (void)applicationStartsTerminating:(NSNotification *)aNotification;
-@end
-
-
-enum {
-    SKRemoteButtonEvent = 1
-};

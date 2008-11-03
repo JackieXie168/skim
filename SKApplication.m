@@ -41,6 +41,7 @@
 #import "SKPDFView.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 

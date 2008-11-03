@@ -100,6 +100,7 @@
 #import "SKUnarchiveFromDataArrayTransformer.h"
 #import "RemoteControl.h"
 #import "NSView_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 #import "SKPDFOutline.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
@@ -147,15 +148,6 @@ NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
-
-
-@interface NSResponder (SKExtensions)
-- (BOOL)isDescendantOf:(NSView *)aView;
-@end
-
-@implementation NSResponder (SKExtensions)
-- (BOOL)isDescendantOf:(NSView *)aView { return NO; }
-@end
 
 
 @interface SKMainWindowController (SKPrivate)

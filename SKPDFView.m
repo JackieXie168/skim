@@ -67,6 +67,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "PDFDisplayView_SKExtensions.h"
 #import "SKAccessibilityFauxUIElement.h"
+#import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKLineInspector.h"
 
@@ -114,20 +115,6 @@ static inline int SKIndexOfRectAtYInOrderedRects(float y,  NSArray *rectValues, 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius, bool active);
 static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float radius, int mask);
-
-#pragma mark -
-
-@interface NSResponder (SKLeopardPrivate)
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
-- (void)rotateWithEvent:(NSEvent *)theEvent;
-- (void)beginGestureWithEvent:(NSEvent *)theEvent;
-- (void)endGestureWithEvent:(NSEvent *)theEvent;
-@end
-
-@interface NSEvent (SKLeopardPrivate)
-- (float)magnification;
-- (float)rotation;
-@end
 
 #pragma mark -
 

@@ -42,6 +42,8 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSResponder_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @interface NSResponder (BDSKGesturesPrivate)
