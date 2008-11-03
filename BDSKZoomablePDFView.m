@@ -41,6 +41,16 @@
 #import "NSScrollView_SKExtensions.h"
 
 
+@interface NSResponder (BDSKGesturesPrivate)
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)beginGestureWithEvent:(NSEvent *)theEvent;
+- (void)endGestureWithEvent:(NSEvent *)theEvent;
+@end
+
+@interface NSEvent (BDSKGesturesPrivate)
+- (float)magnification;
+@end
+
 @implementation BDSKZoomablePDFView
 
 /* For genstrings:
@@ -74,6 +84,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         scalePopUpButton = nil;
         autoFitPage = nil;
         autoFitRect = NSZeroRect;
+        pinchZoomFactor = 1.0;
         
         [self makeScalePopUpButton];
         
@@ -90,6 +101,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         scalePopUpButton = nil;
         autoFitPage = nil;
         autoFitRect = NSZeroRect;
+        pinchZoomFactor = 1.0;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                      name:NSViewFrameDidChangeNotification object:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
@@ -241,6 +253,13 @@ static float BDSKScaleMenuFontSize = 11.0;
     return count - 1;
 }
 
+- (unsigned int)indexForScaleFactor:(float)scaleFactor {
+    unsigned int lower = [self lowerIndexForScaleFactor:scaleFactor], upper = [self upperIndexForScaleFactor:scaleFactor];
+    if (upper > lower && scaleFactor < 0.5 * (BDSKDefaultScaleMenuFactors[lower] + BDSKDefaultScaleMenuFactors[upper]))
+        return lower;
+    return upper;
+}
+
 - (void)setScaleFactor:(float)newScaleFactor {
 	[self setScaleFactor:newScaleFactor adjustPopup:YES];
 }
@@ -251,11 +270,7 @@ static float BDSKScaleMenuFontSize = 11.0;
 		if (newScaleFactor < 0.01) {
             newScaleFactor = 0.0;
         } else {
-            unsigned int i = [self lowerIndexForScaleFactor:newScaleFactor], upper = [self upperIndexForScaleFactor:newScaleFactor];
-            if (upper > i) {
-                if (newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[i] + BDSKDefaultScaleMenuFactors[upper]))
-                    i = upper;
-            }
+            unsigned int i = [self indexForScaleFactor:newScaleFactor];
             [scalePopUpButton selectItemAtIndex:i];
             newScaleFactor = BDSKDefaultScaleMenuFactors[i];
         }
@@ -388,6 +403,34 @@ static float BDSKScaleMenuFontSize = 11.0;
 		[[scalePopUpButton cell] setControlSize:controlSize];
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
 	}
+}
+
+#pragma mark Gestures
+
+- (void)beginGestureWithEvent:(NSEvent *)theEvent {
+    if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+        [super beginGestureWithEvent:theEvent];
+    pinchZoomFactor = 1.0;
+}
+
+- (void)endGestureWithEvent:(NSEvent *)theEvent {
+    if (fabsf(pinchZoomFactor - 1.0) > 0.1)
+        [self setScaleFactor:fmaxf(pinchZoomFactor * [self scaleFactor], BDSKDefaultScaleMenuFactors[1])];
+    pinchZoomFactor = 1.0;
+    if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+        [super endGestureWithEvent:theEvent];
+}
+
+- (void)magnifyWithEvent:(NSEvent *)theEvent {
+    if ([theEvent respondsToSelector:@selector(magnification)]) {
+        pinchZoomFactor *= 1.0 + fmaxf(-0.5, fminf(1.0 , [theEvent magnification]));
+        float scaleFactor = pinchZoomFactor * [self scaleFactor];
+        unsigned int i = [self indexForScaleFactor:fmaxf(scaleFactor, BDSKDefaultScaleMenuFactors[1])];
+        if (i != [self indexForScaleFactor:[self scaleFactor]]) {
+            [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
+            pinchZoomFactor = scaleFactor / [self scaleFactor];
+        }
+    }
 }
 
 #pragma mark Dragging
