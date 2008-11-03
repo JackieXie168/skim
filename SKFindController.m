@@ -186,28 +186,24 @@ static SKFindController *sharedFindController = nil;
 	return options;
 }
 
-- (id)target {
-    id target = [[NSApp mainWindow] windowController];
-    if (target == nil)
+- (id)responderForSelector:(SEL)selector {
+    id responder = [[NSApp mainWindow] windowController];
+    if (responder == nil)
         return nil;
-    if ([target respondsToSelector:@selector(findString:options:)])
-        return target;
-    target = [target document];
-    if ([target respondsToSelector:@selector(findString:options:)])
-        return target;
+    if ([responder respondsToSelector:selector])
+        return responder;
+    responder = [responder document];
+    if ([responder respondsToSelector:selector])
+        return responder;
     return nil;
 }
 
+- (id)target {
+    return [self responderForSelector:@selector(findString:options:)];
+}
+
 - (id)selectionSource {
-    id source = [[NSApp mainWindow] windowController];
-    if (source == nil)
-        return nil;
-    if ([source respondsToSelector:@selector(pdfView)])
-        return source;
-    source = [source document];
-    if ([source respondsToSelector:@selector(pdfView)])
-        return source;
-    return nil;
+    return [self responderForSelector:@selector(pdfView)];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
