@@ -653,7 +653,7 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="grab">
-				<cocoa method="handleGrabScriptCommand"/>
+				<cocoa method="handleGrabScriptCommand:"/>
 			</responds-to>
         </class>
 
@@ -1334,11 +1334,11 @@
                 <cocoa key="Bounds"/>
             </parameter>
             <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes"
-                description="The format for the picture.">
+                description="Whether to return TIFF data. By default returns PDF data.">
                 <cocoa key="AsTIFF"/>
             </parameter>
             <result type="any"
-                description="The data of the picture."/>
+                description="The PDF or TIFF data of the picture."/>
         </command>
 
     </suite>

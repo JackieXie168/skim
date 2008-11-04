@@ -488,11 +488,10 @@ static BOOL usesSequentialPageNumbering = NO;
 	NSDictionary *args = [command evaluatedArguments];
     NSData *boundsData = [args objectForKey:@"Bounds"];
     id asTIFF = [args objectForKey:@"AsTIFF"];
-    NSAppleEventDescriptor *desc = nil;
+    NSData *data = nil;
+    DescType type = 'PDF ';
     
-    if ([asTIFF respondsToSelector:@selector(boolValue)] == NO)
-        return nil;
-    if ([asTIFF boolValue]) {
+    if ([asTIFF respondsToSelector:@selector(boolValue)] && [asTIFF boolValue]) {
         NSImage *pageImage = [self imageForBox:kPDFDisplayBoxMediaBox];
         if (boundsData) {
             NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
@@ -507,11 +506,13 @@ static BOOL usesSequentialPageNumbering = NO;
             [image lockFocus];
             [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
             [image unlockFocus];
-            pageImage = image;
+            data = [image TIFFRepresentation];
+        } else {
+            data = [pageImage TIFFRepresentation];
         }
-        desc = [NSAppleEventDescriptor descriptorWithDescriptorType:'TIFF' data:[pageImage TIFFRepresentation]];
+        type = typeTIFF;
     } else {
-        NSData *data = [self dataRepresentation];
+        data = [self dataRepresentation];
         if (boundsData) {
             if ([boundsData isKindOfClass:[NSData class]] == NO)
                 return nil;
@@ -534,11 +535,9 @@ static BOOL usesSequentialPageNumbering = NO;
             data = [page dataRepresentation];
             [page release];
         }
-        if (data)
-            desc = [NSAppleEventDescriptor descriptorWithDescriptorType:'PDF ' data:data];
     }
     
-    return desc;
+    return data ? [NSAppleEventDescriptor descriptorWithDescriptorType:type data:data] : nil;
 }
 
 @end
