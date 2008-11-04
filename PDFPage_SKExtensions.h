@@ -69,6 +69,9 @@ extern NSString *SKPDFPageActionRotate;
 - (NSAttributedString *)thumbnail64Attachment;
 - (NSAttributedString *)thumbnail32Attachment;
 
+- (NSData *)PDFDataForRect:(NSRect)rect;
+- (NSData *)TIFFDataForRect:(NSRect)rect;
+
 - (NSArray *)lineRects;
 
 - (unsigned int)pageIndex;
