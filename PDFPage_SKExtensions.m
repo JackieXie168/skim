@@ -562,7 +562,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSData *data = nil;
     DescType type = 0;
     
-    if ([boundsData isKindOfClass:[NSData class]] == NO || [asTIFF respondsToSelector:@selector(boolValue)] == NO)
+    if ([boundsData isKindOfClass:[NSData class]] == NO || (asTIFF && [asTIFF respondsToSelector:@selector(boolValue)] == NO))
         return nil;
     
     if ([asTIFF boolValue]) {
