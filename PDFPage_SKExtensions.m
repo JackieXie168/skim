@@ -339,7 +339,10 @@ static BOOL usesSequentialPageNumbering = NO;
     [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
     [image unlockFocus];
     
-    return [image TIFFRepresentation];
+    NSData *data = [image TIFFRepresentation];
+    [image release];
+    
+    return data;
 }
 
 - (NSArray *)lineRects {
