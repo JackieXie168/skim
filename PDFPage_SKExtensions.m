@@ -51,6 +51,7 @@
 #import "SKCFCallBacks.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainWindowController.h"
+#import "NSAffineTransform_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -274,6 +275,73 @@ static BOOL usesSequentialPageNumbering = NO;
     return [self thumbnailAttachmentWithSize:32.0];
 }
 
+- (NSData *)PDFDataForRect:(NSRect)rect {
+    NSData *data = [self dataRepresentation];
+    
+    if (NSEqualRects(rect, NSZeroRect))
+        return data;
+    if (NSIsEmptyRect(rect))
+        return nil;
+    
+    if ([self rotation]) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        switch ([self rotation]) {
+            case 90:
+                [transform translateXBy:0.0 yBy:NSWidth(bounds)];
+                break;
+            case 180:
+                [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
+                break;
+            case 270:
+                [transform translateXBy:NSHeight(bounds) yBy:0.0];
+                break;
+        }
+        [transform rotateByDegrees:-[self rotation]];
+        rect = [transform transformRect:rect];
+    }
+    
+    PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
+    PDFPage *page = [pdfDoc pageAtIndex:0];
+    
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+        [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
+        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+    } else {
+        // setting the media box is buggy on Tiger, see bug # 1928384
+        [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
+    }
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
+    data = [page dataRepresentation];
+    [pdfDoc release];
+    
+    return data;
+}
+
+- (NSData *)TIFFDataForRect:(NSRect)rect {
+    NSImage *pageImage = [self imageForBox:kPDFDisplayBoxMediaBox];
+    
+    if (NSEqualRects(rect, NSZeroRect))
+        return [pageImage TIFFRepresentation];
+    if (NSIsEmptyRect(rect))
+        return nil;
+    
+    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    NSRect sourceRect = rect;
+    NSRect targetRect = {NSZeroPoint, rect.size};
+    sourceRect.origin.x -= NSMinX(pageBounds);
+    sourceRect.origin.y -= NSMinY(pageBounds);
+    
+    NSImage *image = [[NSImage alloc] initWithSize:targetRect.size];
+    [image lockFocus];
+    [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+    [image unlockFocus];
+    
+    return [image TIFFRepresentation];
+}
+
 - (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
@@ -489,52 +557,17 @@ static BOOL usesSequentialPageNumbering = NO;
     NSData *boundsData = [args objectForKey:@"Bounds"];
     id asTIFF = [args objectForKey:@"AsTIFF"];
     NSData *data = nil;
-    DescType type = 'PDF ';
+    DescType type = 0;
     
-    if ([asTIFF respondsToSelector:@selector(boolValue)] && [asTIFF boolValue]) {
-        NSImage *pageImage = [self imageForBox:kPDFDisplayBoxMediaBox];
-        if (boundsData) {
-            NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-            NSRect bounds = [boundsData rectValueAsQDRect];
-            NSRect sourceRect = bounds;
-            NSRect targetRect = {NSZeroPoint, sourceRect.size};
-            NSImage *image = nil;
-            
-            sourceRect.origin.x -= NSMinX(pageBounds);
-            sourceRect.origin.y -= NSMinY(pageBounds);
-            image = [[NSImage alloc] initWithSize:targetRect.size];
-            [image lockFocus];
-            [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-            [image unlockFocus];
-            data = [image TIFFRepresentation];
-        } else {
-            data = [pageImage TIFFRepresentation];
-        }
-        type = typeTIFF;
+    if ([boundsData isKindOfClass:[NSData class]] == NO || [asTIFF respondsToSelector:@selector(boolValue)] == NO)
+        return nil;
+    
+    if ([asTIFF boolValue]) {
+        data = [self TIFFDataForRect:[boundsData rectValueAsQDRect]];
+        type = 'TIFF';
     } else {
-        data = [self dataRepresentation];
-        if (boundsData) {
-            if ([boundsData isKindOfClass:[NSData class]] == NO)
-                return nil;
-            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
-            PDFPage *page = [pdfDoc pageAtIndex:0];
-            NSRect bounds = [boundsData rectValueAsQDRect];
-            
-            if (NSIsEmptyRect(bounds))
-                return nil;
-            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-                [page setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
-                [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
-            } else {
-                // setting the media box is buggy on Tiger, see bug # 1928384
-                [page setBounds:bounds forBox:kPDFDisplayBoxCropBox];
-            }
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
-            data = [page dataRepresentation];
-            [page release];
-        }
+        data = [self PDFDataForRect:[boundsData rectValueAsQDRect]];
+        type = 'PDF ';
     }
     
     return data ? [NSAppleEventDescriptor descriptorWithDescriptorType:type data:data] : nil;

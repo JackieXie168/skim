@@ -777,60 +777,12 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound) {
         NSRect selRect = NSIntegralRect(selectionRect);
-        NSRect targetRect = selRect;
         PDFPage *page = [self currentSelectionPage];
         
-        if ([page rotation]) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            NSRect bounds = [page boundsForBox:kPDFDisplayBoxMediaBox];
-            switch ([page rotation]) {
-                case 90:
-                    [transform translateXBy:0.0 yBy:NSWidth(bounds)];
-                    break;
-                case 180:
-                    [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
-                    break;
-                case 270:
-                    [transform translateXBy:NSHeight(bounds) yBy:0.0];
-                    break;
-            }
-            [transform rotateByDegrees:-[page rotation]];
-            targetRect = [transform transformRect:targetRect];
-        }
-        
-        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
-        page = [pdfDoc pageAtIndex:0];
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-            [page setBounds:targetRect forBox:kPDFDisplayBoxMediaBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
-        } else {
-            // setting the media box is buggy on Tiger, see bug # 1928384
-            [page setBounds:targetRect forBox:kPDFDisplayBoxCropBox];
-        }
-        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
-        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
-        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
-        
-        if (pdfData = [page dataRepresentation])
+        if (pdfData = [page PDFDataForRect:selRect])
             [types addObject:NSPDFPboardType];
-        [pdfDoc release];
-        
-        NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
-        NSRect sourceRect = selRect;
-        NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
-        NSImage *image = nil;
-        
-        sourceRect.origin.x -= NSMinX(bounds);
-        sourceRect.origin.y -= NSMinY(bounds);
-        targetRect.origin = NSZeroPoint;
-        targetRect.size = sourceRect.size;
-        image = [[NSImage alloc] initWithSize:targetRect.size];
-        [image lockFocus];
-        [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-        if (tiffData = [image TIFFRepresentation])
+        if (tiffData = [page TIFFDataForRect:selRect])
             [types addObject:NSTIFFPboardType];
-        [image release];
         
         /*
          Possible hidden default?  Alternate way of getting a bitmap rep; this varies resolution with zoom level, which is very useful if you want to copy a single figure or equation for a non-PDF-capable program.  The first copy: action has some odd behavior, though (view moves).  Preview produces a fixed resolution bitmap for a given selection area regardless of zoom.
