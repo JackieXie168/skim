@@ -558,18 +558,17 @@ static BOOL usesSequentialPageNumbering = NO;
 - (id)handleGrabScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     NSData *boundsData = [args objectForKey:@"Bounds"];
-    id asTIFF = [args objectForKey:@"AsTIFF"];
+    id asTIFFNumber = [args objectForKey:@"AsTIFF"];
+    NSRect bounds = [boundsData respondsToSelector:@selector(rectValueAsQDRect)] ? [boundsData rectValueAsQDRect] : NSZeroRect;
+    BOOL asTIFF = [asTIFFNumber respondsToSelector:@selector(boolValue)] ? [asTIFFNumber boolValue] : NO; 
     NSData *data = nil;
     DescType type = 0;
     
-    if ([boundsData isKindOfClass:[NSData class]] == NO || (asTIFF && [asTIFF respondsToSelector:@selector(boolValue)] == NO))
-        return nil;
-    
-    if ([asTIFF boolValue]) {
-        data = [self TIFFDataForRect:[boundsData rectValueAsQDRect]];
+    if (asTIFF) {
+        data = [self TIFFDataForRect:bounds];
         type = 'TIFF';
     } else {
-        data = [self PDFDataForRect:[boundsData rectValueAsQDRect]];
+        data = [self PDFDataForRect:bounds];
         type = 'PDF ';
     }
     
