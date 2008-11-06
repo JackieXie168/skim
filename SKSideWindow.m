@@ -111,7 +111,8 @@
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
         [self animateToWidth:WINDOW_OFFSET];
-        [[controller window] makeKeyAndOrderFront:self];
+        if ([self isKeyWindow])
+            [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
 }
@@ -120,7 +121,10 @@
     if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
         state = NSDrawerOpeningState;
         [self animateToWidth:NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET];
-        [self makeKeyAndOrderFront:nil];
+        if ([[controller window] isKeyWindow])
+            [self makeKeyAndOrderFront:nil];
+        else
+            [self orderFront:nil];
         state = NSDrawerOpenState;
     }
 }
@@ -153,7 +157,6 @@
 - (void)expand {
     [[self contentView] setAcceptsMouseOver:NO];
     [self slideIn];
-    [self makeKeyAndOrderFront:nil];
 }
 
 - (void)collapse {
