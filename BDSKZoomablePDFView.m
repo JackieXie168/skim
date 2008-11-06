@@ -341,9 +341,8 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
-    int i, count = [menu numberOfItems];
     
     [self setCurrentSelection:nil];
     while ([menu numberOfItems]) {
@@ -354,13 +353,9 @@ static float BDSKScaleMenuFontSize = 11.0;
             break;
     }
     
-    for (i = 0; i < count; i++) {
-        NSMenuItem *item = [menu itemAtIndex:i];
-        if ([item action] == NSSelectorFromString(@"_setAutoSize:")) {
-            [item setAction:@selector(doAutoFit:)];
-            break;
-        }
-    }
+    unsigned int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
+    if (i != NSNotFound)
+        [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
     
     return menu;
 }
