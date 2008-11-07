@@ -1694,6 +1694,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSArray *fileIDStrings = [self fileIDStrings];
     if ([fileIDStrings count])
         return [[NSString stringWithFormat:@"Skim - %@", [fileIDStrings objectAtIndex:0]] UTF8String];
+    if ([self fileName])
+        return [[NSString stringWithFormat:@"Skim - %@", [self fileName]] UTF8String];
     return NULL;
 }
 
