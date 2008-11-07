@@ -241,6 +241,8 @@
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
+		CEF82CC50EC4ADDA009652CF /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CC40EC4ADDA009652CF /* libssl.dylib */; };
+		CEF82CE60EC4B2FE009652CF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
@@ -915,6 +917,8 @@
 		CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaultsController_SKExtensions.m; sourceTree = "<group>"; };
 		CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKReleaseNotesController.h; sourceTree = "<group>"; };
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
+		CEF82CC40EC4ADDA009652CF /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
+		CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
 		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPreferences.tiff; sourceTree = "<group>"; };
@@ -952,6 +956,8 @@
 				CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */,
 				CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */,
 				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
+				CEF82CC50EC4ADDA009652CF /* libssl.dylib in Frameworks */,
+				CEF82CE60EC4B2FE009652CF /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -977,6 +983,8 @@
 				CE1ADB170C4BC6DE00071840 /* OpenGL.framework */,
 				CE5F42D30BF8A3400069D89C /* IOKit.framework */,
 				CE3363CD0E26E378005F99E6 /* libz.dylib */,
+				CEF82CC40EC4ADDA009652CF /* libssl.dylib */,
+				CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
