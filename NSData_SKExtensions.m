@@ -38,7 +38,7 @@
 
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-
+#import <openssl/md5.h>
 
 @implementation NSData (SKExtensions)
 
@@ -97,6 +97,19 @@
         }
     }
     return NSNotFound;
+}
+
+#define MD5_SIGNATURE_LENGTH 16
+
+- (NSData *)md5Signature {
+    MD5_CTX md5context;
+    unsigned char signature[MD5_SIGNATURE_LENGTH];
+
+    MD5_Init(&md5context);
+    MD5_Update(&md5context, [self bytes], [self length]);
+    MD5_Final(signature, &md5context);
+
+    return [NSData dataWithBytes:signature length:MD5_SIGNATURE_LENGTH];
 }
 
 #pragma mark Templating support
