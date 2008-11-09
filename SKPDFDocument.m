@@ -1693,10 +1693,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (const char *)keychainServiceName {
     NSArray *fileIDStrings = [self fileIDStrings];
     if ([fileIDStrings count])
-        return [[NSString stringWithFormat:@"Skim - %@", [fileIDStrings objectAtIndex:0]] UTF8String];
+        return [[@"Skim - " stringByAppendingString:[fileIDStrings objectAtIndex:0]] UTF8String];
     NSString *md5Signature = [[[NSString alloc] initWithData:[pdfData md5Signature] encoding:NSUTF8StringEncoding] autorelease];
     if (md5Signature)
-        return [[NSString stringWithFormat:@"Skim - %@", md5Signature] UTF8String];
+        return [[@"Skim - " stringByAppendingString:md5Signature] UTF8String];
     return NULL;
 }
 
