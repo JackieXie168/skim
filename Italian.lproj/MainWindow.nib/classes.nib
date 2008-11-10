@@ -5,14 +5,6 @@
 	<key>IBClasses</key>
 	<array>
 		<dict>
-			<key>CLASS</key>
-			<string>NSDocument</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>dismissNoteTypeSheet</key>
@@ -40,50 +32,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKAnnotationTypeImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSImageCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>SKBookmarkOutlineView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKOutlineView</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>editBookmarks</key>
-				<string>id</string>
-				<key>openBookmark</key>
-				<string>id</string>
-				<key>orderFrontLineInspector</key>
-				<string>id</string>
-				<key>orderFrontNotesPanel</key>
-				<string>id</string>
-				<key>saveCurrentOpenDocuments</key>
-				<string>id</string>
-				<key>showDownloads</key>
-				<string>id</string>
-				<key>showPreferencePanel</key>
-				<string>id</string>
-				<key>showReleaseNotes</key>
-				<string>id</string>
-				<key>visitWebSite</key>
-				<string>id</string>
-				<key>visitWiki</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKApplicationController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -103,41 +64,27 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKFindTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKTableView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKSnapshotPageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTextFieldCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>findNext</key>
-				<string>id</string>
-				<key>findNextAndOrderOutFindPanel</key>
-				<string>id</string>
-				<key>findPrevious</key>
-				<string>id</string>
-				<key>performFindPanelAction</key>
-				<string>id</string>
-				<key>pickFindString</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKFindController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>findField</key>
-				<string>NSTextField</string>
-				<key>ignoreCaseCheckbox</key>
-				<string>NSButton</string>
-				<key>ownerController</key>
-				<string>NSObjectController</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -146,34 +93,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>deleteBookmark</key>
-				<string>id</string>
-				<key>doubleClickBookmark</key>
-				<string>id</string>
-				<key>insertBookmarkFolder</key>
-				<string>id</string>
-				<key>insertBookmarkSeparator</key>
-				<string>id</string>
-				<key>toggleStatusBar</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKBookmarkController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>outlineView</key>
-				<string>SKBookmarkOutlineView</string>
-				<key>statusBar</key>
-				<string>SKStatusBar</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -193,20 +112,16 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSMenu</string>
+			<string>SKMainWindow</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
-			<string>NSObject</string>
+			<string>NSWindow</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addBookmark</key>
-				<string>id</string>
-				<key>addSessionBookmark</key>
-				<string>id</string>
-				<key>addSetupBookmark</key>
 				<string>id</string>
 				<key>allGoToFirstPage</key>
 				<string>id</string>
@@ -541,6 +456,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSWindowController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -550,153 +473,9 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
-				<key>addBookmark</key>
-				<string>id</string>
-				<key>addSessionBookmark</key>
-				<string>id</string>
-				<key>addSetupBookmark</key>
-				<string>id</string>
-				<key>allGoToFirstPage</key>
-				<string>id</string>
-				<key>allGoToLastPage</key>
-				<string>id</string>
-				<key>allGoToNextPage</key>
-				<string>id</string>
-				<key>allGoToPreviousPage</key>
-				<string>id</string>
-				<key>alternatePaste</key>
-				<string>id</string>
-				<key>alternateZoomToFit</key>
-				<string>id</string>
-				<key>autoCropAll</key>
-				<string>id</string>
-				<key>autoSelectContent</key>
-				<string>id</string>
-				<key>changeAnnotationMode</key>
-				<string>id</string>
-				<key>changeDisplayBox</key>
-				<string>id</string>
-				<key>changeLeftSidePaneState</key>
-				<string>id</string>
-				<key>changeRightSidePaneState</key>
-				<string>id</string>
-				<key>changeToolMode</key>
-				<string>id</string>
-				<key>chooseTransition</key>
-				<string>id</string>
-				<key>convertNotes</key>
-				<string>id</string>
-				<key>createNewNote</key>
-				<string>id</string>
-				<key>crop</key>
-				<string>id</string>
-				<key>cropAll</key>
-				<string>id</string>
-				<key>deselectAll</key>
-				<string>id</string>
-				<key>displayCropBox</key>
-				<string>id</string>
-				<key>displayFacingPages</key>
-				<string>id</string>
-				<key>displayMediaBox</key>
-				<string>id</string>
-				<key>displaySinglePages</key>
-				<string>id</string>
-				<key>doGoBack</key>
-				<string>id</string>
-				<key>doGoForward</key>
-				<string>id</string>
-				<key>doGoToFirstPage</key>
-				<string>id</string>
-				<key>doGoToLastPage</key>
-				<string>id</string>
-				<key>doGoToNextPage</key>
-				<string>id</string>
-				<key>doGoToPage</key>
-				<string>id</string>
-				<key>doGoToPreviousPage</key>
-				<string>id</string>
-				<key>doZoomIn</key>
-				<string>id</string>
-				<key>doZoomOut</key>
-				<string>id</string>
-				<key>doZoomToActualSize</key>
-				<string>id</string>
-				<key>doZoomToFit</key>
-				<string>id</string>
-				<key>doZoomToPhysicalSize</key>
-				<string>id</string>
-				<key>doZoomToSelection</key>
-				<string>id</string>
-				<key>editBookmarks</key>
-				<string>id</string>
-				<key>editNote</key>
-				<string>id</string>
-				<key>emailArchive</key>
-				<string>id</string>
-				<key>emailDiskImage</key>
-				<string>id</string>
-				<key>getInfo</key>
-				<string>id</string>
-				<key>goToMarkedPage</key>
-				<string>id</string>
-				<key>markPage</key>
-				<string>id</string>
-				<key>newDocumentFromClipboard</key>
+				<key>orderFrontFontPanel</key>
 				<string>id</string>
 				<key>orderFrontLineInspector</key>
-				<string>id</string>
-				<key>orderFrontNotesPanel</key>
-				<string>id</string>
-				<key>password</key>
-				<string>id</string>
-				<key>performFit</key>
-				<string>id</string>
-				<key>readNotes</key>
-				<string>id</string>
-				<key>rotateAllLeft</key>
-				<string>id</string>
-				<key>rotateAllRight</key>
-				<string>id</string>
-				<key>rotateLeft</key>
-				<string>id</string>
-				<key>rotateRight</key>
-				<string>id</string>
-				<key>saveArchive</key>
-				<string>id</string>
-				<key>saveDiskImage</key>
-				<string>id</string>
-				<key>savePDFSettingToDefaults</key>
-				<string>id</string>
-				<key>searchPDF</key>
-				<string>id</string>
-				<key>smartAutoCropAll</key>
-				<string>id</string>
-				<key>takeSnapshot</key>
-				<string>id</string>
-				<key>toggleAutoScale</key>
-				<string>id</string>
-				<key>toggleDisplayAsBook</key>
-				<string>id</string>
-				<key>toggleDisplayContinuous</key>
-				<string>id</string>
-				<key>toggleDisplayPageBreaks</key>
-				<string>id</string>
-				<key>toggleFullScreen</key>
-				<string>id</string>
-				<key>toggleHideNotes</key>
-				<string>id</string>
-				<key>toggleLeftSidePane</key>
-				<string>id</string>
-				<key>togglePresentation</key>
-				<string>id</string>
-				<key>toggleReadingBar</key>
-				<string>id</string>
-				<key>toggleRightSidePane</key>
-				<string>id</string>
-				<key>toggleSplitPDF</key>
-				<string>id</string>
-				<key>toggleStatusBar</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
@@ -719,6 +498,8 @@
 				<string>id</string>
 				<key>changeStartLineStyle</key>
 				<string>id</string>
+				<key>splitViewDoubleClick</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>NSObject</string>
@@ -740,28 +521,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>SKThumbnailTableView</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>startAnimation</key>
-				<string>id</string>
-				<key>stopAnimation</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKStatusBar</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>leftCell</key>
-				<string>id</string>
-				<key>rightCell</key>
-				<string>id</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSControl</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -834,30 +593,20 @@
 			<string>BDSKContainerView</string>
 		</dict>
 		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>newDocumentFromClipboard</key>
-				<string>id</string>
-			</dict>
 			<key>CLASS</key>
-			<string>SKDocumentController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSDocumentController</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>checkForUpdates</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SUUpdater</string>
+			<string>NSCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKCenteredTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTextFieldCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -866,6 +615,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -917,36 +674,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSOutlineView</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>convertNotes</key>
-				<string>id</string>
-				<key>emailArchive</key>
-				<string>id</string>
-				<key>emailDiskImage</key>
-				<string>id</string>
-				<key>readNotes</key>
-				<string>id</string>
-				<key>saveArchive</key>
-				<string>id</string>
-				<key>saveDiskImage</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKPDFDocument</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>readNotesAccessoryView</key>
-				<string>NSView</string>
-				<key>replaceNotesCheckButton</key>
-				<string>NSButton</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSDocument</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
