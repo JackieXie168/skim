@@ -5,36 +5,74 @@
 	<key>IBClasses</key>
 	<array>
 		<dict>
-			<key>CLASS</key>
-			<string>BDSKGradientView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
-				<key>copy</key>
+				<key>openPDF</key>
 				<string>id</string>
-				<key>delete</key>
+				<key>searchNotes</key>
 				<string>id</string>
-				<key>paste</key>
-				<string>id</string>
-				<key>show</key>
+				<key>toggleStatusBar</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
-			<string>BDSKDragImageView</string>
+			<string>SKNotesDocument</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>delegate</key>
-				<string>id</string>
+				<key>arrayController</key>
+				<string>NSArrayController</string>
+				<key>outlineView</key>
+				<string>SKNoteOutlineView</string>
+				<key>searchField</key>
+				<string>NSSearchField</string>
+				<key>statusBar</key>
+				<string>SKStatusBar</string>
 			</dict>
 			<key>SUPERCLASS</key>
-			<string>NSImageView</string>
+			<string>NSDocument</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSDocument</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>dismissNoteTypeSheet</key>
+				<string>id</string>
+				<key>displayAllNoteTypes</key>
+				<string>id</string>
+				<key>selectNoteTypes</key>
+				<string>id</string>
+				<key>toggleDisplayNoteType</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKNoteOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>noteTypeMatrix</key>
+				<string>NSMatrix</string>
+				<key>noteTypeSheet</key>
+				<string>NSWindow</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKAnnotationTypeImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSImageCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -43,14 +81,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenuItem</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -59,14 +89,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -119,19 +141,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSTextFieldCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSActionCell</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKCenteredTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTextFieldCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -150,46 +172,31 @@
 			<string>NSView</string>
 		</dict>
 		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>copy</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>scrollToBeginningOfDocument</key>
+				<string>id</string>
+				<key>scrollToEndOfDocument</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSOutlineView</string>
+		</dict>
+		<dict>
 			<key>CLASS</key>
 			<string>NSResponder</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>statusBarClicked</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKNoteWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>OUTLETS</key>
-			<dict>
-				<key>iconTypePopUpButton</key>
-				<string>NSPopUpButton</string>
-				<key>imageView</key>
-				<string>BDSKDragImageView</string>
-				<key>noteController</key>
-				<string>NSObjectController</string>
-				<key>statusBar</key>
-				<string>SKStatusBar</string>
-				<key>textView</key>
-				<string>NSTextView</string>
-			</dict>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSImageCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSCell</string>
 		</dict>
 	</array>
 	<key>IBVersion</key>
