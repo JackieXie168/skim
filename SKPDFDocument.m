@@ -1694,9 +1694,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSArray *fileIDStrings = [self fileIDStrings];
     if ([fileIDStrings count])
         return [[@"Skim - " stringByAppendingString:[fileIDStrings objectAtIndex:0]] UTF8String];
-    NSString *md5Signature = [[[NSString alloc] initWithData:[pdfData md5Signature] encoding:NSUTF8StringEncoding] autorelease];
-    if (md5Signature)
-        return [[@"Skim - " stringByAppendingString:md5Signature] UTF8String];
+    NSString *md5HexString = [[pdfData md5Signature] hexString];
+    if (md5HexString)
+        return [[@"Skim - " stringByAppendingString:md5HexString] UTF8String];
     return NULL;
 }
 

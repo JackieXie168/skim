@@ -112,6 +112,38 @@
     return [NSData dataWithBytes:signature length:MD5_SIGNATURE_LENGTH];
 }
 
+- (NSString *)hexString {
+    const char *inputBytes, *inputBytesPtr;
+    unsigned int inputBytesLength, outputBufferLength;
+    unichar *outputBuffer, *outputBufferEnd;
+    unichar *outputBufferPtr;
+    const char hexChars[] = "0123456789abcdef";
+    NSString *hexString;
+
+    inputBytes = [self bytes];
+    inputBytesLength = [self length];
+    outputBufferLength = inputBytesLength * 2;
+    outputBuffer = NSZoneMalloc(NULL, outputBufferLength * sizeof(unichar));
+    outputBufferEnd = outputBuffer + outputBufferLength;
+
+    inputBytesPtr = inputBytes;
+    outputBufferPtr = outputBuffer;
+
+    while (outputBufferPtr < outputBufferEnd) {
+        unsigned char inputByte;
+
+        inputByte = *inputBytesPtr++;
+        *outputBufferPtr++ = hexChars[(inputByte & 0xf0) >> 4];
+        *outputBufferPtr++ = hexChars[inputByte & 0x0f];
+    }
+
+    hexString = [[NSString allocWithZone:[self zone]] initWithCharacters:outputBuffer length:outputBufferLength];
+
+    NSZoneFree(NULL, outputBuffer);
+
+    return [hexString autorelease];
+}
+
 #pragma mark Templating support
 
 - (NSString *)xmlString {

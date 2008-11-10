@@ -46,7 +46,7 @@
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange;
 
 - (NSData *)md5Signature;
-
+- (NSString *)hexString;
 - (NSString *)xmlString;
 
 + (NSData *)dataWithPointAsQDPoint:(NSPoint)point;
