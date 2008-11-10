@@ -982,9 +982,6 @@
 				455989F70B2662FF00E5419B /* Quartz.framework */,
 				CE1ADB170C4BC6DE00071840 /* OpenGL.framework */,
 				CE5F42D30BF8A3400069D89C /* IOKit.framework */,
-				CE3363CD0E26E378005F99E6 /* libz.dylib */,
-				CEF82CC40EC4ADDA009652CF /* libssl.dylib */,
-				CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -1095,6 +1092,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE0998CA0EC8EC2A006CD0F7 /* Linked Libraries */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				CE2BB81B0E0DB4FA0090E848 /* Embedded Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
@@ -1151,6 +1149,16 @@
 				CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */,
 			);
 			name = "Foundation Categories";
+			sourceTree = "<group>";
+		};
+		CE0998CA0EC8EC2A006CD0F7 /* Linked Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				CE3363CD0E26E378005F99E6 /* libz.dylib */,
+				CEF82CC40EC4ADDA009652CF /* libssl.dylib */,
+				CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */,
+			);
+			name = "Linked Libraries";
 			sourceTree = "<group>";
 		};
 		CE2BB81B0E0DB4FA0090E848 /* Embedded Frameworks */ = {
