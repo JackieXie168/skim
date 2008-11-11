@@ -1444,7 +1444,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if ([editorCmd isAbsolutePath] == NO) {
             NSMutableArray *searchPaths = [NSMutableArray arrayWithObjects:@"/usr/bin", @"/usr/local/bin", nil];
-            NSString *executablePath = nil;
             NSEnumerator *pathEnum;
             NSString *path;
             NSString *toolPath;
@@ -1454,10 +1453,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if ([editorPreset isEqualToString:@""] == NO) {
                 if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
                     (appBundle = [NSBundle bundleWithPath:path])) {
-                    executablePath = [appBundle executablePath];
                     [searchPaths addObject:[appBundle sharedSupportPath]];
                     [searchPaths addObject:[appBundle resourcePath]];
-                    [searchPaths addObject:[executablePath stringByDeletingLastPathComponent]];
+                    [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
                 }
             } else {
                 pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
@@ -1470,12 +1468,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             pathEnum = [searchPaths objectEnumerator];
             while (path = [pathEnum nextObject]) {
                 toolPath = [path stringByAppendingPathComponent:editorCmd];
-                if ([fm isExecutableFileAtPath:toolPath] && [executablePath caseInsensitiveCompare:toolPath] != NSOrderedSame) {
+                if ([fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                     break;
                 }
                 toolPath = [[path stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd];
-                if ([fm isExecutableFileAtPath:toolPath]  && [executablePath caseInsensitiveCompare:toolPath] != NSOrderedSame) {
+                if ([fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;
                     break;
                 }
