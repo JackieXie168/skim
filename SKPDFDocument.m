@@ -2074,6 +2074,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
+- (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
+    [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+}
+
 @end
 
 

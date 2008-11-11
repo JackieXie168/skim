@@ -164,6 +164,9 @@
             <responds-to name="go">
                 <cocoa method="handleGoToScriptCommand:"/>
             </responds-to>
+            <responds-to name="convert notes">
+                <cocoa method="handleConvertNotesScriptCommand:"/>
+            </responds-to>
             <responds-to name="find">
                 <cocoa method="handleFindScriptCommand:"/>
             </responds-to>
@@ -1177,6 +1180,12 @@
 				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
 				<cocoa key="Source"/> 
 			</parameter>
+        </command>
+
+        <command name="convert notes" code="SKIMConv"
+            description="Convert in a document PDF annotations to Skim notes.">
+            <direct-parameter type="specifier"
+                description="The document(s) or window(s) to revert."/>
         </command>
 
         <command name="find" code="SKIMFind"
