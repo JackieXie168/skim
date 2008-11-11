@@ -49,9 +49,8 @@
 
 #define PDFSYNC_TO_PDF(coord) ((float)coord / 65536.0)
 
-static NSString *SKPDFSynchronizerTexExtension = @"tex";
 static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
-static NSSet *SKPDFSynchronizerTexExtensionSet = nil;
+static NSArray *SKPDFSynchronizerTexExtensions = nil;
 
 #pragma mark -
 
@@ -84,7 +83,7 @@ struct SKServerFlags {
 
 + (void)initialize {
     OBINITIALIZE;
-    SKPDFSynchronizerTexExtensionSet = [[NSSet alloc] initWithObjects:@"tex", @"ltx", @"latex", @"lyx", @"sty", @"cls", @"aux", @"bbl", @"idx", @"lof", @"lot", @"exa", @"clo", @"fd", @"def", @"cfg", nil];
+    SKPDFSynchronizerTexExtensions = [[NSArray alloc] initWithObjects:@"tex", @"ltx", @"latex", @"lyx", nil];
 }
 
 // Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
@@ -336,10 +335,19 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (NSString *)sourceFileForFileName:(NSString *)file isTeX:(BOOL)isTeX removeQuotes:(BOOL)removeQuotes {
     if (removeQuotes && [file length] > 2 && [file characterAtIndex:0] == '"' && [file characterAtIndex:[file length] - 1] == '"')
         file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
-    if (isTeX && [SKPDFSynchronizerTexExtensionSet containsObject:[[file pathExtension] lowercaseString]] == NO)
-        file = [file stringByAppendingPathExtension:SKPDFSynchronizerTexExtension];
     if ([file isAbsolutePath] == NO)
         file = [[[self fileName] stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
+    if (isTeX && SKFileExistsAtPath(file) == NO && [SKPDFSynchronizerTexExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
+        NSEnumerator *texExtensions = [SKPDFSynchronizerTexExtensions objectEnumerator];
+        NSString *extension;
+        while (extension = [texExtensions nextObject]) {
+            NSString *tryFile = [file stringByAppendingPathExtension:extension];
+            if (SKFileExistsAtPath(tryFile)) {
+                file = tryFile;
+                break;
+            }
+        }
+    }
     // the docs say -stringByStandardizingPath uses -stringByResolvingSymlinksInPath, but it doesn't 
     return [[file stringByResolvingSymlinksInPath] stringByStandardizingPath];
 }
