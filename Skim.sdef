@@ -1184,8 +1184,8 @@
 
         <command name="convert notes" code="SKIMConv"
             description="Convert in a document PDF annotations to Skim notes.">
-            <direct-parameter type="specifier"
-                description="The document(s) or window(s) to revert."/>
+            <direct-parameter type="document"
+                description="The document(s) for which to convert notes."/>
         </command>
 
         <command name="find" code="SKIMFind"
