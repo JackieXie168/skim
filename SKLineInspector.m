@@ -101,6 +101,9 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
+    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
+        [[self window] setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+    
     [lineWell setCanActivate:NO];
     [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:SKLineInspectorLineWidthKey options:nil];
     [lineWell bind:SKLineWellStyleKey toObject:self withKeyPath:SKLineInspectorStyleKey options:nil];

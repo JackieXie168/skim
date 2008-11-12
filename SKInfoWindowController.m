@@ -103,6 +103,9 @@ static SKInfoWindowController *sharedInstance = nil;
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
     
+    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
+        [[self window] setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+    
     [self setInfo:[self infoForDocument:[[[NSApp mainWindow] windowController] document]]];
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowDidBecomeMainNotification:) 
