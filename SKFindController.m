@@ -78,8 +78,9 @@ static SKFindController *sharedFindController = nil;
 - (unsigned)retainCount { return UINT_MAX; }
 
 - (void)awakeFromNib {
-    if (self == sharedFindController)
-        [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
+    [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
+    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
+        [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {

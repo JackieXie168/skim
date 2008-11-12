@@ -76,6 +76,9 @@ static SKNotesPanelController *sharedController = nil;
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];
+    
+    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
+        [[self window] setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
 }
 
 - (IBAction)addNote:(id)sender {
