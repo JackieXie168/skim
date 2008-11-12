@@ -1528,7 +1528,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)rotateWithEvent:(NSEvent *)theEvent {
     if ([theEvent respondsToSelector:@selector(rotation)])
-        gestureRotation += [theEvent rotation];
+        gestureRotation -= [theEvent rotation];
     if (fabsf(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
         [self rotatePageAtIndex:gesturePageIndex by:90.0 * roundf(gestureRotation / 90.0)];
         gestureRotation -= 90.0 * roundf(gestureRotation / 90.0);
