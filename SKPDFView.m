@@ -1103,7 +1103,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 case SKNoteToolMode:
                     if ([self doSelectAnnotationWithEvent:theEvent] == NO &&
                         (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
-                        if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil) {
+                        if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] string] == nil) {
                             [self doDragWithEvent:theEvent];
                         } else if (nil == activeAnnotation && mouseDownInAnnotation) {
                             [self doSelectTextWithEvent:theEvent];
@@ -4043,7 +4043,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                 BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
-                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil))
+                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] string] == nil))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode && annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote)
                     cursor = [NSCursor arrowCursor];
