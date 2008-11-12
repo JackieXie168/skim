@@ -1455,7 +1455,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     (appBundle = [NSBundle bundleWithPath:path])) {
                     [searchPaths addObject:[appBundle sharedSupportPath]];
                     [searchPaths addObject:[appBundle resourcePath]];
-                    [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
+                    if ([editorPreset isEqualToString:@"BBEdit"] == NO)
+                        [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
                 }
             } else {
                 pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
