@@ -85,8 +85,6 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
         [self setLevel:NSStatusWindowLevel];
-        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
-            [self setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
     
         
         NSImageView *imageView = [[NSImageView alloc] init];
