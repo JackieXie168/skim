@@ -84,7 +84,7 @@ extern NSString *SKRightSidePaneWidthKey;
 extern NSString *SKMainWindowPageColumnIdentifier;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
-@class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
+@class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -161,7 +161,7 @@ extern NSString *SKMainWindowPageColumnIdentifier;
     BOOL                        updatingNoteSelection;
     
     IBOutlet NSArrayController  *snapshotArrayController;
-    IBOutlet SKSnapshotTableView *snapshotTableView;
+    IBOutlet SKThumbnailTableView *snapshotTableView;
     IBOutlet NSView             *snapshotView;
     NSMutableArray              *snapshots;
     NSMutableArray              *dirtySnapshots;

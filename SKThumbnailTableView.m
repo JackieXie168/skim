@@ -164,9 +164,3 @@ static void (*originalTrackKnob)(id, SEL, id) = NULL;
 }
 
 @end
-
-#pragma mark -
-
-@implementation SKSnapshotTableView
-
-@end
