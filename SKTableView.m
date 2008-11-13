@@ -95,9 +95,9 @@
     NSIndexSet *indexes = [self selectedRowIndexes];
     if ([indexes count] && [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
         if ([[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)])
-           return [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
+            return [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
         else
-            return YES;
+            return [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)];
     }
     return NO;
 }
@@ -113,9 +113,9 @@
     NSIndexSet *indexes = [self selectedRowIndexes];
     if ([indexes count] && [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)]) {
         if ([[self delegate] respondsToSelector:@selector(tableView:canCopyRowsWithIndexes:)])
-           return [[self delegate] tableView:self canCopyRowsWithIndexes:indexes];
+            return [[self delegate] tableView:self canCopyRowsWithIndexes:indexes];
         else
-            return YES;
+            return [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)];
     }
     return NO;
 }

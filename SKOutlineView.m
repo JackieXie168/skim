@@ -117,9 +117,9 @@
     NSArray *items = [self selectedItems];
     if ([items count] && [[self delegate] respondsToSelector:@selector(outlineView:deleteItems:)]) {
         if ([[self delegate] respondsToSelector:@selector(outlineView:canDeleteItems:)])
-           return [[self delegate] outlineView:self canDeleteItems:items];
+            return [[self delegate] outlineView:self canDeleteItems:items];
         else
-            return YES;
+            return [[self delegate] respondsToSelector:@selector(outlineView:deleteItems:)];
     }
     return NO;
 }
@@ -135,9 +135,9 @@
     NSArray *items = [self selectedItems];
     if ([items count] && [[self delegate] respondsToSelector:@selector(outlineView:copyItems:)]) {
         if ([[self delegate] respondsToSelector:@selector(outlineView:canCopyItems:)])
-           return [[self delegate] outlineView:self canCopyItems:items];
+            return [[self delegate] outlineView:self canCopyItems:items];
         else
-            return YES;
+            return [[self delegate] respondsToSelector:@selector(outlineView:copyItems:)];
     }
     return NO;
 }
