@@ -75,8 +75,6 @@ static id sharedRemoteStateWindow = nil;
             [self setDisplaysWhenScreenProfileChanges:NO];
             [self setLevel:NSStatusWindowLevel];
             [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
-            if ([self respondsToSelector:@selector(setCollectionBehavior:)])
-                [self setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
         }
     }
     return sharedRemoteStateWindow;
