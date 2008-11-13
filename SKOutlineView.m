@@ -187,16 +187,26 @@
 }
 
 - (NSFont *)font {
-    NSArray *tableColumns = [self tableColumns];
-    return [tableColumns count] ? [[(NSTableColumn *)[tableColumns objectAtIndex:0] dataCell] font] : nil;
+    NSEnumerator *tcEnum = [[self tableColumns] objectEnumerator];
+    NSTableColumn *tc;
+    
+    while (tc = [tcEnum nextObject]) {
+        NSCell *cell = [tc dataCell];
+        if ([cell type] == NSTextCellType)
+            return [cell font];
+    }
+    return nil;
 }
 
 - (void)setFont:(NSFont *)font {
     NSEnumerator *tcEnum = [[self tableColumns] objectEnumerator];
     NSTableColumn *tc;
     
-    while (tc = [tcEnum nextObject])
-        [[tc dataCell] setFont:font];
+    while (tc = [tcEnum nextObject]) {
+        NSCell *cell = [tc dataCell];
+        if ([cell type] == NSTextCellType)
+            [cell setFont:font];
+    }
     
     [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
