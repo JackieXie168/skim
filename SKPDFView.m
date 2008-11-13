@@ -4011,6 +4011,11 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         
         [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }
+    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+    while (YES) {
+        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+            break;
+    }
 }
 
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
