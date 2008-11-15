@@ -138,6 +138,9 @@
 	return NO;
 }
 
+- (void)concludeDragOperation:(id <NSDraggingInfo>)sender {
+}
+
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self isEditable] == NO) {
         return;
