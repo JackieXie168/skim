@@ -53,19 +53,18 @@ Boolean GetMetadataForFile(void* thisInterface,
     Boolean success = FALSE;
     NSString *notePath = nil;
     NSString *sourcePath = nil;
+    BOOL isSkimNotes = UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"));
+    BOOL isPDFBundle = isSkimNotes == NO && UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"));
     
-    if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"))) {
+    if (isSkimNotes) {
         notePath = (NSString *)pathToFile;
         sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-    } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+    } else if (isPDFBundle) {
         NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:(NSString *)pathToFile];
-        NSString *noteFilename = @"notes.skim";
+        NSString *noteFilename = [[[(NSString *)pathToFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
         if ([files containsObject:noteFilename] == NO) {
-            noteFilename = [[[(NSString *)pathToFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
-            if ([files containsObject:noteFilename] == NO) {
-                unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-                noteFilename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
-            }
+            unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+            noteFilename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
         }
         if (noteFilename)
             notePath = [(NSString *)pathToFile stringByAppendingPathComponent:noteFilename];
@@ -103,7 +102,7 @@ Boolean GetMetadataForFile(void* thisInterface,
             }
         }
         
-        if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+        if (isPDFBundle) {
             NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
             NSString *string = [NSString stringWithContentsOfFile:textPath];
             if ([string length]) {
