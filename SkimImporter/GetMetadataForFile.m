@@ -39,6 +39,8 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import <Quartz/Quartz.h>
+#import <SkimNotesBase/SkimNotesBase.h>
 
 Boolean GetMetadataForFile(void* thisInterface, 
                            CFMutableDictionaryRef attributes, 
@@ -50,71 +52,96 @@ Boolean GetMetadataForFile(void* thisInterface,
     /* Return TRUE if successful, FALSE if there was no data provided */
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *notePath = nil;
-    NSString *sourcePath = nil;
-    BOOL isSkimNotes = UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"));
-    BOOL isPDFBundle = isSkimNotes == NO && UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"));
-    Boolean success = [[NSFileManager defaultManager] fileExistsAtPath:(NSString *)pathToFile] && (isSkimNotes || isPDFBundle);
     
-    if (isSkimNotes) {
-        notePath = (NSString *)pathToFile;
-        sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-    } else if (isPDFBundle) {
-        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:(NSString *)pathToFile];
-        NSString *noteFilename = [[[(NSString *)pathToFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
-        if ([files containsObject:noteFilename] == NO) {
-            unsigned idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
-            noteFilename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
-        }
-        if (noteFilename)
-            notePath = [(NSString *)pathToFile stringByAppendingPathComponent:noteFilename];
-    }
+    BOOL isSkimNotes = UTTypeConformsTo(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"));
+    BOOL isPDFBundle = isSkimNotes == NO && UTTypeConformsTo(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"));
+    BOOL isPDF = isSkimNotes == NO && isPDFBundle == NO && UTTypeConformsTo(contentTypeUTI, kUTTypePDF);
+    Boolean success = [[NSFileManager defaultManager] fileExistsAtPath:(NSString *)pathToFile] && (isSkimNotes || isPDFBundle || isPDF);
     
-    NSMutableString *textContent = [[NSMutableString alloc] init];
-    
-    if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:notePath options:NSUncachedRead error:NULL];
-        if (data) {
-            NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-            [data release];
-            
-            if (array) {
-                NSEnumerator *noteEnum = [array objectEnumerator];
-                NSDictionary *note;
-                NSMutableArray *notes = [[NSMutableArray alloc] init];
-                while (note = [noteEnum nextObject]) {
-                    NSString *contents = [note objectForKey:@"contents"];
-                    if (contents) {
-                        if ([textContent length])
-                            [textContent appendString:@"\n\n"];
-                        [textContent appendString:contents];
-                        [notes addObject:contents];
+    if (success) {
+        NSURL *fileURL = [NSURL fileURLWithPath:(NSString *)pathToFile];
+        NSArray *notes = nil;
+        NSString *pdfText = nil;
+        NSDictionary *info = nil;
+        NSString *sourcePath = nil;
+        
+        if (isSkimNotes) {
+            notes = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:fileURL error:NULL];
+            sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+        } else if (isPDF) {
+            notes = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:fileURL];
+            if (pdfDoc) {
+                pdfText = [pdfDoc string];
+                info = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
+                unsigned int pageCount = [pdfDoc pageCount];
+                NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
+                [(NSMutableDictionary *)info setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+                [(NSMutableDictionary *)info setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
+                [(NSMutableDictionary *)info setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
+                [(NSMutableDictionary *)info setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
+                [(NSMutableDictionary *)info setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
+                [pdfDoc release];
+            }
+        } else if (isPDFBundle) {
+            notes = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:fileURL error:NULL];
+            NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
+            pdfText = [NSString stringWithContentsOfFile:textPath];
+            NSString *plistPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.plist"];
+            NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
+            info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
+            if (pdfText == nil || info == nil) {
+                NSString *pdfPath = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:(NSString *)pathToFile error:NULL];
+                PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfPath]];
+                if (pdfDoc) {
+                    if (pdfText == nil)
+                        pdfText = [pdfDoc string];
+                    if (info == nil) {
+                        info = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
+                        unsigned int pageCount = [pdfDoc pageCount];
+                        NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
+                        [(NSMutableDictionary *)info setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+                        [(NSMutableDictionary *)info setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
+                        [(NSMutableDictionary *)info setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
+                        [(NSMutableDictionary *)info setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
+                        [(NSMutableDictionary *)info setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
                     }
-                    NSString *text = [[note objectForKey:@"text"] string];
-                    if (text) {
-                        if ([textContent length])
-                            [textContent appendString:@"\n\n"];
-                        [textContent appendString:text];
-                    }
+                    [pdfDoc release];
                 }
-                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
-                [notes release];
             }
         }
-    }
-    
-    if (isPDFBundle) {
-        NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
-        NSString *string = [NSString stringWithContentsOfFile:textPath];
-        if ([string length]) {
+        
+        NSMutableString *textContent = [[NSMutableString alloc] init];
+        
+        if (notes) {
+            NSEnumerator *noteEnum = [notes objectEnumerator];
+            NSDictionary *note;
+            NSMutableArray *noteContents = [[NSMutableArray alloc] init];
+            while (note = [noteEnum nextObject]) {
+                NSString *contents = [note objectForKey:@"contents"];
+                if (contents) {
+                    if ([textContent length])
+                        [textContent appendString:@"\n\n"];
+                    [textContent appendString:contents];
+                    [noteContents addObject:contents];
+                }
+                NSString *text = [[note objectForKey:@"text"] string];
+                if (text) {
+                    if ([textContent length])
+                        [textContent appendString:@"\n\n"];
+                    [textContent appendString:text];
+                }
+            }
+            [(NSMutableDictionary *)attributes setObject:noteContents forKey:@"net_sourceforge_skim_app_notes"];
+            [noteContents release];
+        }
+        
+        if ([pdfText length]) {
             if ([textContent length])
                 [textContent appendString:@"\n\n"];
-            [textContent appendString:string];
-       }
-    
-        NSString *plistPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.plist"];
-        NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
-        NSDictionary *info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
+            [textContent appendString:pdfText];
+        }
+        
         if (info) {
             id value;
             id pageWidth = [info objectForKey:@"PageWidth"], pageHeight = [info objectForKey:@"PageHeight"];
@@ -138,22 +165,22 @@ Boolean GetMetadataForFile(void* thisInterface,
                 [(NSMutableDictionary *)attributes setObject:[NSString stringWithFormat:@"%@ x %@ points", pageWidth, pageHeight] forKey:@"net_sourceforge_skim_app_dimensions"];
             }
         }
+        
+        [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
+        [textContent release];
+        
+        [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
+        
+        if (sourcePath && [[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
+            [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:sourcePath, nil] forKey:(NSString *)kMDItemWhereFroms];
+        
+        NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
+        NSDate *date;
+        if (date = [fileAttributes objectForKey:NSFileModificationDate])
+            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentModificationDate];
+        if (date = [fileAttributes objectForKey:NSFileCreationDate])
+            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentCreationDate];
     }
-    
-    [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
-    [textContent release];
-    
-    [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
-    
-    if (sourcePath && [[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
-        [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:sourcePath, nil] forKey:(NSString *)kMDItemWhereFroms];
-    
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
-    NSDate *date;
-    if (date = [fileAttributes objectForKey:NSFileModificationDate])
-        [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentModificationDate];
-    if (date = [fileAttributes objectForKey:NSFileCreationDate])
-        [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentCreationDate];
     
     [pool release];
     
