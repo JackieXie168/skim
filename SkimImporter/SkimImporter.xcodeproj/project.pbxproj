@@ -14,10 +14,64 @@
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
 		C88FB7D8067446EC006EBB30 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7D7067446EC006EBB30 /* schema.xml */; };
 		C88FB7E40674480E006EBB30 /* schema.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7E30674480E006EBB30 /* schema.strings */; };
+		CEE23DEB0ECFA8370013CDF7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23DEA0ECFA8370013CDF7 /* Quartz.framework */; };
+		CEE23E5B0ECFA8F30013CDF7 /* SkimNotesBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
+		CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */; };
 		CEFD60CF0C01D0E40027B933 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60CE0C01D0E40027B933 /* Foundation.framework */; };
 		CEFD60D30C01D1040027B933 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFD60D20C01D1040027B933 /* ApplicationServices.framework */; };
 		F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F915705F0C020DDF008B68E9 /* AppKit.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CEE23E510ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
+			remoteInfo = SkimNotes;
+		};
+		CEE23E530ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */;
+			remoteInfo = SkimNotesBase;
+		};
+		CEE23E550ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEBA2B550E0566B00000B2E6 /* skimnotes */;
+			remoteInfo = "SkimNotes Tool";
+		};
+		CEE23E570ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */;
+			remoteInfo = SkimNotesTest;
+		};
+		CEE23E590ECFA8E50013CDF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteInfo = SkimNotesBase;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CEE23E410ECFA88E0013CDF7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEE23E5C0ECFA8FA0013CDF7 /* SkimNotesBase.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -40,6 +94,8 @@
 		CED8D41D0D744E060028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Common.xcconfig"; path = "../Configurations/Skim-Common.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D41E0D744E060028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Debug.xcconfig"; path = "../Configurations/Skim-Debug.xcconfig"; sourceTree = SOURCE_ROOT; };
 		CED8D41F0D744E060028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Skim-Release.xcconfig"; path = "../Configurations/Skim-Release.xcconfig"; sourceTree = SOURCE_ROOT; };
+		CEE23DEA0ECFA8370013CDF7 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
+		CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimNotes.xcodeproj; path = ../SkimNotes/SkimNotes.xcodeproj; sourceTree = SOURCE_ROOT; };
 		CEFD60CE0C01D0E40027B933 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		CEFD60D20C01D1040027B933 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		CEFD6C620C01EF770027B933 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/schema.strings; sourceTree = "<group>"; };
@@ -59,6 +115,8 @@
 				CEFD60CF0C01D0E40027B933 /* Foundation.framework in Frameworks */,
 				CEFD60D30C01D1040027B933 /* ApplicationServices.framework in Frameworks */,
 				F91570600C020DDF008B68E9 /* AppKit.framework in Frameworks */,
+				CEE23DEB0ECFA8370013CDF7 /* Quartz.framework in Frameworks */,
+				CEE23E5B0ECFA8F30013CDF7 /* SkimNotesBase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +129,7 @@
 				08FB77AFFE84173DC02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				CEE23E440ECFA8C20013CDF7 /* Subprojects */,
 				19C28FB6FE9D52B211CA2CBB /* Products */,
 				CED8D41C0D744DDE0028E3E2 /* Configurations */,
 			);
@@ -85,6 +144,7 @@
 				CEFD60CE0C01D0E40027B933 /* Foundation.framework */,
 				C86B05260671AA6E00DD9006 /* CoreServices.framework */,
 				0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */,
+				CEE23DEA0ECFA8370013CDF7 /* Quartz.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -127,32 +187,44 @@
 			name = Configurations;
 			sourceTree = "<group>";
 		};
-/* End PBXGroup section */
-
-/* Begin PBXHeadersBuildPhase section */
-		8D57630E048677EA00EA77CD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+		CEE23E440ECFA8C20013CDF7 /* Subprojects */ = {
+			isa = PBXGroup;
+			children = (
+				CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			name = Subprojects;
+			sourceTree = "<group>";
 		};
-/* End PBXHeadersBuildPhase section */
+		CEE23E460ECFA8D10013CDF7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEE23E520ECFA8D20013CDF7 /* SkimNotes.framework */,
+				CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */,
+				CEE23E560ECFA8D20013CDF7 /* skimnotes */,
+				CEE23E580ECFA8D20013CDF7 /* SkimNotesTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
 		8D57630D048677EA00EA77CD /* SkimImporter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 70138C840896BE9A00968C2F /* Build configuration list for PBXNativeTarget "SkimImporter" */;
 			buildPhases = (
-				8D57630E048677EA00EA77CD /* Headers */,
 				8D57630F048677EA00EA77CD /* Resources */,
 				8D576311048677EA00EA77CD /* Sources */,
 				8D576313048677EA00EA77CD /* Frameworks */,
 				8D576315048677EA00EA77CD /* Rez */,
+				CEE23E410ECFA88E0013CDF7 /* CopyFiles */,
+				CEE23EA20ED02CBD0013CDF7 /* ShellScript */,
+				CEE23E980ECFB3A30013CDF7 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CEE23E5A0ECFA8E50013CDF7 /* PBXTargetDependency */,
 			);
 			name = SkimImporter;
 			productInstallPath = /Library/Spotlight;
@@ -181,12 +253,49 @@
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* SkimImporter */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CEE23E460ECFA8D10013CDF7 /* Products */;
+					ProjectRef = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8D57630D048677EA00EA77CD /* SkimImporter */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CEE23E520ECFA8D20013CDF7 /* SkimNotes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SkimNotes.framework;
+			remoteRef = CEE23E510ECFA8D20013CDF7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEE23E540ECFA8D20013CDF7 /* SkimNotesBase.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SkimNotesBase.framework;
+			remoteRef = CEE23E530ECFA8D20013CDF7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEE23E560ECFA8D20013CDF7 /* skimnotes */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = skimnotes;
+			remoteRef = CEE23E550ECFA8D20013CDF7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEE23E580ECFA8D20013CDF7 /* SkimNotesTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = SkimNotesTest.app;
+			remoteRef = CEE23E570ECFA8D20013CDF7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8D57630F048677EA00EA77CD /* Resources */ = {
@@ -211,6 +320,35 @@
 		};
 /* End PBXRezBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CEE23E980ECFB3A30013CDF7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n";
+		};
+		CEE23EA20ED02CBD0013CDF7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change @executable_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D576311048677EA00EA77CD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -222,6 +360,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CEE23E5A0ECFA8E50013CDF7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SkimNotesBase;
+			targetProxy = CEE23E590ECFA8E50013CDF7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8D5B49A704867FD3000E48DA /* InfoPlist.strings */ = {
@@ -258,6 +404,7 @@
 		70138C850896BE9A00968C2F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
@@ -269,6 +416,7 @@
 		70138C860896BE9A00968C2F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/../SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_STYLE = Bundle;
