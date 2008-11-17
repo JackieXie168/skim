@@ -14,15 +14,24 @@
     </attributes>
 
     <types>
-        <type name="net.sourceforge.skim-app.skimnotes">
+        <type name="com.adobe.pdf">
             <note>
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
                 net_sourceforge_skim_app_notes
+                net_sourceforge_skim_app_dimensions
             </allattrs>
             <displayattrs>
-                kMDItemWhereFroms
+                kMDItemTitle
+                kMDItemAuthors
+                kMDItemCreator
+                kMDItemNumberOfPages
+                net_sourceforge_skim_app_dimensions
+                kMDItemVersion
+                kMDItemEncodingApplications
+                kMDItemSecurityMethod
+                kMDItemKeywords
                 net_sourceforge_skim_app_notes
             </displayattrs>
         </type>
@@ -44,6 +53,18 @@
                 kMDItemEncodingApplications
                 kMDItemSecurityMethod
                 kMDItemKeywords
+                net_sourceforge_skim_app_notes
+            </displayattrs>
+        </type>
+        <type name="net.sourceforge.skim-app.skimnotes">
+            <note>
+		The keys that this metadata importer handles.
+            </note>
+            <allattrs>
+                net_sourceforge_skim_app_notes
+            </allattrs>
+            <displayattrs>
+                kMDItemWhereFroms
                 net_sourceforge_skim_app_notes
             </displayattrs>
         </type>
