@@ -27,35 +27,35 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* SkimNotes.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = SkimNotes;
 		};
 		CEE23E530ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */;
+			remoteGlobalIDString = CEA5F53D0E2CED0E00F65088;
 			remoteInfo = SkimNotesBase;
 		};
 		CEE23E550ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CEBA2B550E0566B00000B2E6 /* skimnotes */;
+			remoteGlobalIDString = CEBA2B550E0566B00000B2E6;
 			remoteInfo = "SkimNotes Tool";
 		};
 		CEE23E570ECFA8D20013CDF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CEDB9AE90E2E9F090057FD09 /* SkimNotesTest.app */;
+			remoteGlobalIDString = CEDB9AE90E2E9F090057FD09;
 			remoteInfo = SkimNotesTest;
 		};
 		CEE23E590ECFA8E50013CDF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEE23E450ECFA8D10013CDF7 /* SkimNotes.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088 /* SkimNotesBase */;
+			remoteGlobalIDString = CEA5F53C0E2CED0E00F65088;
 			remoteInfo = SkimNotesBase;
 		};
 /* End PBXContainerItemProxy section */
