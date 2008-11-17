@@ -42,6 +42,28 @@
 #import <Quartz/Quartz.h>
 #import <SkimNotesBase/SkimNotesBase.h>
 
+static BOOL GetTextAndAttributesForPDFFile(NSURL *url, NSString **text, NSDictionary **info)
+{
+    PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:url];
+    if (pdfDoc) {
+        if (text != NULL)
+            *text = [pdfDoc string];
+        if (info != NULL) {
+            unsigned int pageCount = [pdfDoc pageCount];
+            NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
+            NSMutableDictionary *mutableInfo = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
+            [mutableInfo setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+            [mutableInfo setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
+            [mutableInfo setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
+            [mutableInfo setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
+            [mutableInfo setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
+            *info = mutableInfo;
+        }
+        [pdfDoc release];
+    }
+    return pdfDoc != nil;
+}
+
 Boolean GetMetadataForFile(void* thisInterface, 
                            CFMutableDictionaryRef attributes, 
                            CFStringRef contentTypeUTI,
@@ -71,20 +93,7 @@ Boolean GetMetadataForFile(void* thisInterface,
             sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
         } else if (isPDF) {
             notes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:fileURL];
-            if (pdfDoc) {
-                pdfText = [pdfDoc string];
-                unsigned int pageCount = [pdfDoc pageCount];
-                NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
-                NSMutableDictionary *mutableInfo = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
-                [mutableInfo setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-                [mutableInfo setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
-                [mutableInfo setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
-                [mutableInfo setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
-                [mutableInfo setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
-                info = mutableInfo;
-                [pdfDoc release];
-            }
+            GetTextAndAttributesForPDFFile(fileURL, &pdfText, &info);
         } else if (isPDFBundle) {
             notes = [fm readSkimNotesFromPDFBundleAtURL:fileURL error:NULL];
             NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
@@ -94,23 +103,8 @@ Boolean GetMetadataForFile(void* thisInterface,
             info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
             if (pdfText == nil || info == nil) {
                 NSString *pdfPath = [fm bundledFileWithExtension:@"pdf" inPDFBundleAtPath:(NSString *)pathToFile error:NULL];
-                PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfPath]];
-                if (pdfDoc) {
-                    if (pdfText == nil)
-                        pdfText = [pdfDoc string];
-                    if (info == nil) {
-                        unsigned int pageCount = [pdfDoc pageCount];
-                        NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
-                        NSMutableDictionary *mutableInfo = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
-                        [mutableInfo setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-                        [mutableInfo setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
-                        [mutableInfo setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
-                        [mutableInfo setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
-                        [mutableInfo setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
-                        info = mutableInfo;
-                    }
-                    [pdfDoc release];
-                }
+                if (pdfPath)
+                    GetTextAndAttributesForPDFFile([NSURL fileURLWithPath:pdfPath], pdfText == nil ? &pdfText : NULL, info == nil ? &info : NULL);
             }
         }
         
