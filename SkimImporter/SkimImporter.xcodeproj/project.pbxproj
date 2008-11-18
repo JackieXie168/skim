@@ -345,7 +345,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change @executable_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}\"\n";
+			shellScript = "install_name_tool -change @executable_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}\"\ninstall_name_tool -id @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkimNotesBase.framework/Versions/A/SkimNotesBase\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
