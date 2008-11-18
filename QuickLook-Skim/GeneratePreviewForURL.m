@@ -44,7 +44,7 @@ static NSDictionary *imageAttachments()
 {
     NSMutableDictionary *attachments = [NSMutableDictionary dictionary];
     NSBundle *bundle = SKQLGetMainBundle();
-    NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", nil];
+    NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", @"Ink", nil];
     NSString *imageName;
     NSMutableDictionary *imgProps;
     NSData *imgData;
