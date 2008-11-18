@@ -60,10 +60,10 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
 
 static NSAttributedString *imageAttachmentForType(NSString *type)
 {        
-    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[SKQLGetMainBundle() pathForResource:@"Note" ofType:@"png"]];
+    NSImage *image = [[NSImage alloc] initWithContentsOfFile:[SKQLGetMainBundle() pathForResource:type ofType:@"png"]];
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
     [image release];
-    [wrapper setPreferredFilename:[NSString stringWithFormat:@"%@.tiff", type]];
+    [wrapper setPreferredFilename:[type stringByAppendingPathExtension:@"tiff"]];
     
     NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
     [wrapper release];
