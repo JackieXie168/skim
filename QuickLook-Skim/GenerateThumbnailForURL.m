@@ -50,14 +50,15 @@ static const NSSize _containerSize = (NSSize) { 572, 752 };
 static const NSRect _iconRect = (NSRect) { { 50, 140 }, { 512, 512 } };
 
 // wash the app icon over a white page background
-static void drawBackgroundAndApplicationIconInCurrentContext()
+static void drawBackgroundAndApplicationIconInCurrentContext(QLThumbnailRequestRef thumbnail)
 {
     [[NSColor whiteColor] setFill];
     NSRect pageRect = { NSZeroPoint, _paperSize };
     NSRectFillUsingOperation(pageRect, NSCompositeSourceOver);
     
-    NSString *iconPath = [SKQLGetMainBundle() pathForResource:@"Skim" ofType:@"icns"];
-    NSImage *appIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
+    NSURL *iconURL = (NSURL *)CFBundleCopyResourceURL(QLThumbnailRequestGetGeneratorBundle(thumbnail), CFSTR("Skim"), CFSTR("icns"), NULL);
+    NSImage *appIcon = [[NSImage alloc] initWithContentsOfFile:[iconURL path]];
+    [iconURL release];
     
     [appIcon drawInRect:_iconRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.3];
     [appIcon release];    
@@ -168,7 +169,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         
         if (data) {
-            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] forThumbnail:thumbnail];
             [data release];
             
             if (attrString) {
@@ -177,7 +178,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
                 [NSGraphicsContext saveGraphicsState];
                 [NSGraphicsContext setCurrentContext:nsContext];
                 
-                drawBackgroundAndApplicationIconInCurrentContext();
+                drawBackgroundAndApplicationIconInCurrentContext(thumbnail);
                 drawAttributedStringInCurrentContext(attrString);
                 
                 QLThumbnailRequestFlushContext(thumbnail, ctxt);
