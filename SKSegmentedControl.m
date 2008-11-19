@@ -184,4 +184,6 @@
 
 - (BOOL) _isTextured { return YES; }
 
+- (void)setControlSize:(NSControlSize)size {}
+
 @end
