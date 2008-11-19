@@ -32,11 +32,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#include <QuickLook/QuickLook.h>
 
-extern NSBundle *SKQLGetMainBundle();
 extern NSString *SKQLPDFPathForPDFBundleURL(NSURL *url);
 
 @interface SKQLConverter : NSObject
-+ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes;
++ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes forThumbnail:(QLThumbnailRequestRef)thumbnail;
 + (NSString *)htmlStringWithNotes:(NSArray *)notes;
 @end

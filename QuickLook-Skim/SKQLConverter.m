@@ -39,8 +39,6 @@ static const CGFloat _noteIndent = 20.0;
 static const CGFloat _fontSize = 20.0;
 static const CGFloat _smallFontSize = 10.0;
 
-NSBundle *SKQLGetMainBundle() { return [NSBundle bundleWithIdentifier:@"net.sourceforge.skim-app.quicklookgenerator"]; }
-
 NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
 {
     NSString *filePath = [url path];
@@ -58,10 +56,10 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
     return pdfFile ? [filePath stringByAppendingPathComponent:pdfFile] : nil;
 }
 
-static NSAttributedString *imageAttachmentForType(NSString *type)
+static NSAttributedString *imageAttachmentForPath(NSString *path)
 {        
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithPath:[SKQLGetMainBundle() pathForResource:type ofType:@"png"]];
-    [wrapper setPreferredFilename:[type stringByAppendingPathExtension:@"png"]];
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithPath:path];
+    [wrapper setPreferredFilename:[path lastPathComponent]];
     
     NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
     [wrapper release];
@@ -142,7 +140,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
 
 @implementation SKQLConverter
 
-+ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes;
++ (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes forThumbnail:(QLThumbnailRequestRef)thumbnail;
 {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
     NSFont *font = [NSFont userFontOfSize:_fontSize];
@@ -157,6 +155,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
     [noteParStyle setHeadIndent:_noteIndent];
     
     if (notes) {
+        CFBundleRef bundle = QLThumbnailRequestGetGeneratorBundle(thumbnail);
         NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
         NSEnumerator *noteEnum = [[notes sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] objectEnumerator];
         NSDictionary *note;
@@ -166,9 +165,10 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             NSString *text = [[note objectForKey:@"text"] string];
             NSColor *color = [note objectForKey:@"color"];
             unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+            NSURL *imgURL = [(NSURL *)CFBundleCopyResourceURL(bundle, (CFStringRef)type, CFSTR("png"), NULL) autorelease];
             int start;
             
-            [attrString appendAttributedString:imageAttachmentForType(type)];
+            [attrString appendAttributedString:imageAttachmentForPath([imgURL path])];
             [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
             [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
             start = [attrString length];
