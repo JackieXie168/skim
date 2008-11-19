@@ -12,21 +12,7 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.adobe.pdf</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>MDImporter</string>
-			<key>LSItemContentTypes</key>
-			<array>
 				<string>net.sourceforge.skim-app.pdfd</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>MDImporter</string>
-			<key>LSItemContentTypes</key>
-			<array>
 				<string>net.sourceforge.skim-app.skimnotes</string>
 			</array>
 		</dict>
