@@ -40,16 +40,15 @@
 
 static const CGFloat _fontSize = 12.0;
 
-static NSDictionary *imageAttachments()
+static NSDictionary *imageAttachments(NSSet *imageNames)
 {
     NSMutableDictionary *attachments = [NSMutableDictionary dictionary];
     NSBundle *bundle = SKQLGetMainBundle();
-    NSArray *allImageNames = [NSArray arrayWithObjects:@"FreeText", @"Note", @"Circle", @"Square", @"Highlight", @"Underline", @"StrikeOut", @"Line", @"Ink", nil];
     NSString *imageName;
     NSMutableDictionary *imgProps;
     NSData *imgData;
     
-    for (imageName in allImageNames) {
+    for (imageName in imageNames) {
         if (imgData = [NSData dataWithContentsOfFile:[bundle pathForResource:imageName ofType:@"png"]]) {
             imgProps = [[NSMutableDictionary alloc] init];
             [imgProps setObject:imgData forKey:(NSString *)kQLPreviewPropertyAttachmentDataKey];
@@ -86,13 +85,15 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         if (data) {
-            NSString *htmlString = [SKQLConverter htmlStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+            NSArray *notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSString *htmlString = [SKQLConverter htmlStringWithNotes:notes];
             [data release];
             if (data = [htmlString dataUsingEncoding:NSUTF8StringEncoding]) {
+                NSSet *types = [NSSet setWithArray:[notes valueForKey:@"type"]];
                 NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:
                                             @"UTF-8", (NSString *)kQLPreviewPropertyTextEncodingNameKey,
                                             @"text/html", (NSString *)kQLPreviewPropertyMIMETypeKey,
-                                            imageAttachments(), (NSString *)kQLPreviewPropertyAttachmentsKey, nil];
+                                            imageAttachments(types), (NSString *)kQLPreviewPropertyAttachmentsKey, nil];
                 QLPreviewRequestSetDataRepresentation(preview, (CFDataRef)data, kUTTypeHTML, (CFDictionaryRef)props);
                 err = noErr;
             }
