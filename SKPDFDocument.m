@@ -1851,6 +1851,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSAttributedString *attrString;
     [textStorage beginEditing];
     for (i = 0; i < count; i++) {
+        if (i > 0)
+            [[textStorage mutableString] appendString:@"\n"];
         if (attrString = [[doc pageAtIndex:i] attributedString])
             [textStorage appendAttributedString:attrString];
     }

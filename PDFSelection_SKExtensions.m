@@ -407,7 +407,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                 endIndex = MIN(NSMaxRange(range) - pageStart, pageLengths[page]) - 1;
                             }
                         }
-                        pageStart += pageLengths[page];
+                        pageStart += pageLengths[page] + 1; // text of pages is separated by newlines, see -[SKPDFDocument richText]
                     }
                     
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
