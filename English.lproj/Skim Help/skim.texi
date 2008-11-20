@@ -1308,7 +1308,7 @@ To enable PDF-TeX synchronization, you need to setup Skim and your favorite edit
 
 @box{taskbox}
 @itemize
-@item To display the TeX source line corresponding to a point in the PDF document, hold down the Option key and click on a point in the PDF document.
+@item To display the TeX source line corresponding to a point in the PDF document, hold down the Shift and Apple key and click on a point in the PDF document.
 @end itemize
 @itemize
 @item To choose the command to open the TeX editor, choose Skim > Preferences, click Sync, and choose a preset editor, or choose Custom and enter a path to an editor command and arguments.
