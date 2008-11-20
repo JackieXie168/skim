@@ -1313,7 +1313,7 @@ Om PDF-TeX synchronisatie te activeren, moet u Skim en uw favoriete editor opzet
 
 @box{taskbox}
 @itemize
-@item Om een TeX bron lijn te tonen die behoort bij een punt in het PDF document, houd de Optie-toets ingedrukt en klik in het PDF document.
+@item Om een TeX bron lijn te tonen die behoort bij een punt in het PDF document, houd de Shift- en Apple-toetsen ingedrukt en klik in het PDF document.
 @end itemize
 @itemize
 @item Om het commando te kiezen, kies Skim > Voorkeuren, klik op Sync, en kies een standaard Instelling, of kies Custom en geef een pad voor een editor commando en argumenten.
