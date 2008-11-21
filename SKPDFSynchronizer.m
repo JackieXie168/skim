@@ -83,7 +83,7 @@ struct SKServerFlags {
 
 + (void)initialize {
     OBINITIALIZE;
-    SKPDFSynchronizerTexExtensions = [[NSArray alloc] initWithObjects:@"tex", @"ltx", @"latex", @"lyx", nil];
+    SKPDFSynchronizerTexExtensions = [[NSArray alloc] initWithObjects:@"tex", @"ltx", @"latex", @"ctx", @"lyx", nil];
 }
 
 // Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
