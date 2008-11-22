@@ -1347,6 +1347,9 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     } else if (action == @selector(toggleWholeWordSearch:)) {
         [menuItem setState:wholeWordSearch ? NSOnState : NSOffState];
         return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4;
+    } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
+        [menuItem setState:caseInsensitiveNoteSearch ? NSOnState : NSOffState];
+        return YES;
     }
     return YES;
 }

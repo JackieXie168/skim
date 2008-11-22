@@ -49,7 +49,7 @@
 - (void)setNoteTypes:(NSArray *)types;
 - (NSMenu *)noteTypeMenu;
 
-- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString;
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive;
 
 - (IBAction)toggleDisplayNoteType:(id)sender;
 - (IBAction)displayAllNoteTypes:(id)sender;

@@ -159,6 +159,7 @@ extern NSString *SKMainWindowPageColumnIdentifier;
     NSMutableArray              *notes;
     CFMutableDictionaryRef      rowHeights;
     BOOL                        updatingNoteSelection;
+    BOOL                        caseInsensitiveNoteSearch;
     
     IBOutlet NSArrayController  *snapshotArrayController;
     IBOutlet SKThumbnailTableView *snapshotTableView;
@@ -336,6 +337,7 @@ extern NSString *SKMainWindowPageColumnIdentifier;
 - (IBAction)chooseTransition:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
 - (IBAction)toggleWholeWordSearch:(id)sender;
+- (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;

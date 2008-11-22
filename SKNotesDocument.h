@@ -49,11 +49,13 @@
     NSMutableArray *notes;
     CFMutableDictionaryRef rowHeights;
     BOOL exportUsingPanel;
+    BOOL caseInsensitiveSearch;
 }
 
 - (IBAction)openPDF:(id)sender;
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
+- (IBAction)toggleCaseInsensitiveSearch:(id)sender;
  
 - (NSArray *)notes;
 - (unsigned int)countOfNotes;

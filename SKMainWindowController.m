@@ -224,6 +224,7 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         findPanelFind = NO;
         caseInsensitiveSearch = YES;
         wholeWordSearch = NO;
+        caseInsensitiveNoteSearch = YES;
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
@@ -331,6 +332,10 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
+    
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:self];
+    [[noteSearchField cell] setSearchMenuTemplate:menu];
     [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
@@ -2115,6 +2120,12 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
         [self search:searchField];
 }
 
+- (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender {
+    caseInsensitiveNoteSearch = NO == caseInsensitiveNoteSearch;
+    if ([[noteSearchField stringValue] length])
+        [self searchNotes:noteSearchField];
+}
+
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
@@ -3692,7 +3703,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)updateNoteFilterPredicate {
-    [noteArrayController setFilterPredicate:[noteOutlineView filterPredicateForSearchString:[noteSearchField stringValue]]];
+    [noteArrayController setFilterPredicate:[noteOutlineView filterPredicateForSearchString:[noteSearchField stringValue] caseInsensitive:caseInsensitiveNoteSearch]];
     [noteOutlineView reloadData];
 }
 

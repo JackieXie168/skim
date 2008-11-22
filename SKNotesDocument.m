@@ -82,6 +82,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     if (self = [super init]) {
         notes = [[NSMutableArray alloc] initWithCapacity:10];
         rowHeights = CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kSKFloatDictionaryValueCallBacks);
+        caseInsensitiveSearch = YES;
     }
     return self;
 }
@@ -114,6 +115,9 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey] == NO)
         [self toggleStatusBar:nil];
     
+    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveSearch:) target:self];
+    [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
     [[[outlineView tableColumnWithIdentifier:SKNotesDocumentNoteColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
@@ -278,7 +282,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (void)updateNoteFilterPredicate {
-    [arrayController setFilterPredicate:[outlineView filterPredicateForSearchString:[searchField stringValue]]];
+    [arrayController setFilterPredicate:[outlineView filterPredicateForSearchString:[searchField stringValue] caseInsensitive:caseInsensitiveSearch]];
     [outlineView reloadData];
 }
 
@@ -368,6 +372,12 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [outlineView reloadData];
 }
 
+- (IBAction)toggleCaseInsensitiveSearch:(id)sender {
+    caseInsensitiveSearch = NO == caseInsensitiveSearch;
+    if ([[searchField stringValue] length])
+        [self searchNotes:searchField];
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(toggleStatusBar:)) {
@@ -375,6 +385,9 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
+        return YES;
+    } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
+        [menuItem setState:caseInsensitiveSearch ? NSOnState : NSOffState];
         return YES;
     }
     return YES;
