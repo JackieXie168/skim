@@ -200,7 +200,7 @@
     }
 }
 
-- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString {
+- (NSPredicate *)filterPredicateForSearchString:(NSString *)searchString caseInsensitive:(BOOL)caseInsensitive {
     NSPredicate *filterPredicate = nil;
     NSPredicate *typePredicate = nil;
     NSPredicate *searchPredicate = nil;
@@ -221,9 +221,12 @@
     if (searchString && [searchString isEqualToString:@""] == NO) {
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
         NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
-        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        unsigned int options = NSDiacriticInsensitivePredicateOption;
+        if (caseInsensitive)
+            options |= NSCaseInsensitivePredicateOption;
+        NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
         rhs = [NSExpression expressionForKeyPath:@"text.string"];
-        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
         searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:stringPredicate, textPredicate, nil]];
     }
     if (typePredicate) {
