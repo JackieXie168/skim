@@ -130,9 +130,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, stringSortDescriptor, nil]];
     [outlineView reloadData];
     
-    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
-    [typeSelectHelper setMatchOption:SKSubstringMatch];
-    [outlineView setTypeSelectHelper:typeSelectHelper];
+    [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {

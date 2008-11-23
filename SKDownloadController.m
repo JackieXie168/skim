@@ -102,7 +102,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     
-    [tableView setTypeSelectHelper:[[[SKTypeSelectHelper alloc] init] autorelease]];
+    [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }

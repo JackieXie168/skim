@@ -63,17 +63,28 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 
 @implementation SKTypeSelectHelper
 
-// Init and dealloc
 
-- (id)init {
++ (id)typeSelectHelper {
+    return [[[self alloc] init] autorelease];
+}
+
++ (id)typeSelectHelperWithMatchOption:(int)aMatchOption {
+    return [[[self alloc] typeSelectHelperWithMatchOption:aMatchOption] autorelease];
+}
+
+- (id)initWithMatchOption:(int)aMatchOption {
     if (self = [super init]){
         searchCache = nil;
         searchString = nil;
         cycleResults = YES;
         matchesImmediately = YES;
-        matchOption = SKPrefixMatch;
+        matchOption = aMatchOption;
     }
     return self;
+}
+
+- (id)init {
+    return [self initWithMatchOption:SKPrefixMatch];
 }
 
 - (void)dealloc {

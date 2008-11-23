@@ -191,7 +191,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowFileColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
     [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
-    [outlineView setTypeSelectHelper:[[[SKTypeSelectHelper alloc] init] autorelease]];
+    [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     

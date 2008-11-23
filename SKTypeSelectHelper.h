@@ -57,6 +57,11 @@ enum {
     BOOL processing;
 }
 
++ (id)typeSelectHelper;
++ (id)typeSelectHelperWithMatchOption:(int)aMatchOption;
+
+- (id)initWithMatchOption:(int)aMatchOption;
+
 - (id)dataSource;
 - (void)setDataSource:(id)anObject;
 
