@@ -51,15 +51,14 @@
 }
 
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange {
-    unsigned const char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
-    unsigned const char firstPatternByte;
-    unsigned int selfLength;
-    BOOL backward = (mask & NSBackwardsSearch) != 0;
-    
-    selfLength = [self length];
+    unsigned int selfLength = [self length];
     if (searchRange.location > selfLength || NSMaxRange(searchRange) > selfLength)
         [NSException raise:NSRangeException format:@"Range {%u,%u} exceeds length %u", searchRange.location, searchRange.length, selfLength];
-
+    
+    unsigned const char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
+    unsigned const char firstPatternByte = *(const char *)patternBytes;
+    BOOL backward = (mask & NSBackwardsSearch) != 0;
+    
     if (patternLength == 0)
         return searchRange.location;
     if (patternLength > searchRange.length) {
@@ -67,7 +66,6 @@
         return NSNotFound;
     }
     
-    firstPatternByte = *(const char *)patternBytes;
     selfBufferStart = [self bytes];
     selfPtrMax = selfBufferStart + NSMaxRange(searchRange) + 1 - patternLength;
     if (backward) {
