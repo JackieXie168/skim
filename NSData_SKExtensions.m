@@ -52,7 +52,7 @@
 
 - (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange {
     unsigned const char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
-    unsigned const char firstPatternByte = *(const char *)patternBytes;
+    unsigned const char firstPatternByte;
     unsigned int selfLength;
     BOOL backward = (mask & NSBackwardsSearch) != 0;
     
@@ -67,6 +67,7 @@
         return NSNotFound;
     }
     
+    firstPatternByte = *(const char *)patternBytes;
     selfBufferStart = [self bytes];
     selfPtrMax = selfBufferStart + NSMaxRange(searchRange) + 1 - patternLength;
     if (backward) {
