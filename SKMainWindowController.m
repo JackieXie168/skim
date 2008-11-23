@@ -510,18 +510,15 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
     [typeSelectHelper setMatchesImmediately:NO];
     [typeSelectHelper setCyclesSimilarResults:NO];
     [typeSelectHelper setMatchOption:SKFullStringMatch];
-    [typeSelectHelper setDataSource:self];
     [thumbnailTableView setTypeSelectHelper:typeSelectHelper];
     [pdfView setTypeSelectHelper:typeSelectHelper];
     
     typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setMatchOption:SKSubstringMatch];
-    [typeSelectHelper setDataSource:self];
     [noteOutlineView setTypeSelectHelper:typeSelectHelper];
     
     typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setMatchOption:SKSubstringMatch];
-    [typeSelectHelper setDataSource:self];
     [outlineView setTypeSelectHelper:typeSelectHelper];
     
     // This update toolbar item and other states
