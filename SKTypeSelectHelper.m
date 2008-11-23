@@ -68,11 +68,11 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     return [[[self alloc] init] autorelease];
 }
 
-+ (id)typeSelectHelperWithMatchOption:(int)aMatchOption {
++ (id)typeSelectHelperWithMatchOption:(SKTypeSelectMatchOption)aMatchOption {
     return [[[self alloc] initWithMatchOption:aMatchOption] autorelease];
 }
 
-- (id)initWithMatchOption:(int)aMatchOption {
+- (id)initWithMatchOption:(SKTypeSelectMatchOption)aMatchOption {
     if (self = [super init]){
         dataSource = nil;
         searchCache = nil;
@@ -127,11 +127,11 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     matchesImmediately = newValue;
 }
 
-- (int)matchOption {
+- (SKTypeSelectMatchOption)matchOption {
     return matchOption;
 }
 
-- (void)setMatchOption:(int)newValue {
+- (void)setMatchOption:(SKTypeSelectMatchOption)newValue {
     matchOption = newValue;
 }
 

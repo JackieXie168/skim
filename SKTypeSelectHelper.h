@@ -44,11 +44,12 @@ enum {
     SKSubstringMatch,
     SKFullStringMatch
 };
+typedef int SKTypeSelectMatchOption;
 
 @interface SKTypeSelectHelper : NSObject {
     id dataSource;
     BOOL cycleResults;
-    int matchOption;
+    SKTypeSelectMatchOption matchOption;
     BOOL matchesImmediately;
     
     NSArray *searchCache;
@@ -58,9 +59,9 @@ enum {
 }
 
 + (id)typeSelectHelper;
-+ (id)typeSelectHelperWithMatchOption:(int)aMatchOption;
++ (id)typeSelectHelperWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;
 
-- (id)initWithMatchOption:(int)aMatchOption;
+- (id)initWithMatchOption:(SKTypeSelectMatchOption)aMatchOption;
 
 - (id)dataSource;
 - (void)setDataSource:(id)anObject;
@@ -71,8 +72,8 @@ enum {
 - (BOOL)matchesImmediately;
 - (void)setMatchesImmediately:(BOOL)newValue;
 
-- (int)matchOption;
-- (void)setMatchOption:(int)newValue;
+- (SKTypeSelectMatchOption)matchOption;
+- (void)setMatchOption:(SKTypeSelectMatchOption)newValue;
     
 - (NSString *)searchString;
 - (void)setSearchString:(NSString *)newSearchString;
