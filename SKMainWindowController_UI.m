@@ -927,10 +927,15 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if ([pdfView hideNotes] == NO && [items count] == 1) {
             PDFAnnotation *annotation = [[self noteItems:items] lastObject];
             if ([annotation isEditable]) {
-                if ([[items lastObject] type])
+                if ([[items lastObject] type]) {
                     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editNoteFromTable:) target:self];
-                else
+                    [menuItem setRepresentedObject:annotation];
+                    menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Edit", @"Menu item title") stringByAppendingEllipsis] action:@selector(editThisAnnotation:) target:pdfView];
+                    [menuItem setKeyEquivalentModifierMask:NSAlternateKeyMask];
+                    [menuItem setAlternate:YES];
+                } else {
                     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) target:pdfView];
+                }
                 [menuItem setRepresentedObject:annotation];
             }
             if ([pdfView activeAnnotation] == annotation)
