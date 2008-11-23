@@ -74,11 +74,14 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 
 - (id)initWithMatchOption:(int)aMatchOption {
     if (self = [super init]){
+        dataSource = nil;
         searchCache = nil;
         searchString = nil;
         cycleResults = YES;
         matchesImmediately = YES;
         matchOption = aMatchOption;
+        processing = NO;
+        timer = nil;
     }
     return self;
 }
@@ -258,11 +261,7 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     return modifierFlags == 0 && character == CANCEL_CHARACTER;
 }
 
-@end 
-
-#pragma mark -
-
-@implementation SKTypeSelectHelper (SKPrivate)
+#pragma mark Private methods
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
 - (NSTimeInterval)timeoutInterval {
