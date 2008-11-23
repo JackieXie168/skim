@@ -506,6 +506,28 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     return menu;
 }
 
+- (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    if ([tv isEqual:thumbnailTableView]) {
+        return pageLabels;
+    }
+    return nil;
+}
+
+- (void)tableView:(NSTableView *)tv typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+    if ([tv isEqual:thumbnailTableView]) {
+        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
+    }
+}
+
+- (void)tableView:(NSTableView *)tv typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+    if ([tv isEqual:thumbnailTableView]) {
+        if (searchString)
+            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
+        else
+            [self updateLeftStatus];
+    }
+}
+
 #pragma mark NSOutlineView datasource protocol
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
@@ -936,12 +958,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     }
 }
 
-#pragma mark SKTypeSelectHelper datasource protocol
-
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        return pageLabels;
-    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    if ([ov isEqual:noteOutlineView]) {
         int i, count = [noteOutlineView numberOfRows];
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) {
@@ -950,7 +968,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             [texts addObject:string ?: @""];
         }
         return texts;
-    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+    } else if ([ov isEqual:outlineView]) {
         int i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
@@ -960,42 +978,15 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     return nil;
 }
 
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        return [[thumbnailTableView selectedRowIndexes] lastIndex];
-    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        int row = [noteOutlineView selectedRow];
-        return row == -1 ? NSNotFound : row;
-    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
-        int row = [outlineView selectedRow];
-        return row == -1 ? NSNotFound : row;
-    }
-    return NSNotFound;
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        [self setPageNumber:itemIndex + 1];
-    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
-        [noteOutlineView scrollRowToVisible:itemIndex];
-    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
-        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
-        [noteOutlineView scrollRowToVisible:itemIndex];
-    }
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
-    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+    if ([ov isEqual:noteOutlineView]) {
         [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
-    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+    } else if ([ov isEqual:outlineView]) {
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
     }
 }
 
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];

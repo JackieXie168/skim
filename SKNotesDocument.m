@@ -132,7 +132,6 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setMatchOption:SKSubstringMatch];
-    [typeSelectHelper setDataSource:self];
     [outlineView setTypeSelectHelper:typeSelectHelper];
 }
 
@@ -581,9 +580,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return menu;
 }
 
-#pragma mark SKTypeSelectHelper datasource protocol
-
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     int i, count = [outlineView numberOfRows];
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
@@ -594,21 +591,11 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     return texts;
 }
 
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    int row = [outlineView selectedRow];
-    return row == -1 ? NSNotFound : row;
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
-    [outlineView scrollRowToVisible:itemIndex];
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
     [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
 }
 
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
     if (searchString)
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
     else

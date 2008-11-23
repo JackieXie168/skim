@@ -58,6 +58,7 @@
     if (typeSelectHelper != newTypeSelectHelper) {
         [typeSelectHelper release];
         typeSelectHelper = [newTypeSelectHelper retain];
+        [typeSelectHelper setDataSource:self];
     }
 }
 
@@ -181,6 +182,33 @@
     
     [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+#pragma mark SKTypeSelectHelper datasource protocol
+
+- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper {
+    if ([[self delegate] respondsToSelector:@selector(tableView:typeSelectHelperSelectionItems:)])
+        return [[self delegate] tableView:self typeSelectHelperSelectionItems:aTypeSelectHelper];
+    return nil;
+}
+
+- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)aTypeSelectHelper {
+    return [[self selectedRowIndexes] lastIndex];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
+    [self scrollRowToVisible:itemIndex];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+    if ([[self delegate] respondsToSelector:@selector(tableView:typeSelectHelper:didFailToFindMatchForSearchString:)])
+        [[self delegate] tableView:self typeSelectHelper:aTypeSelectHelper didFailToFindMatchForSearchString:searchString];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString {
+    if ([[self delegate] respondsToSelector:@selector(tableView:typeSelectHelper:updateSearchString:)])
+        [[self delegate] tableView:self typeSelectHelper:aTypeSelectHelper updateSearchString:searchString];
 }
 
 @end

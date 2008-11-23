@@ -102,9 +102,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     
-    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
-    [typeSelectHelper setDataSource:self];
-    [tableView setTypeSelectHelper:typeSelectHelper];
+    [tableView setTypeSelectHelper:[[[SKTypeSelectHelper alloc] init] autorelease]];
     
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }
@@ -402,19 +400,8 @@ static SKDownloadController *sharedDownloadController = nil;
     return menu;
 }
 
-#pragma mark SKTypeSelectHelper datasource protocol
-
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     return [downloads valueForKey:SKDownloadFileNameKey];
-}
-
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    return [[tableView selectedRowIndexes] lastIndex];
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
-    [tableView scrollRowToVisible:itemIndex];
 }
 
 #pragma mark KVO

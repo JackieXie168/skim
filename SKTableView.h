@@ -60,9 +60,17 @@
 
 
 @interface NSObject (SKTableViewDelegate)
+
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)rowIndex;
+
+- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+
 @end

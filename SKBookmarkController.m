@@ -191,9 +191,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowFileColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
     [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
-    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
-    [typeSelectHelper setDataSource:self];
-    [outlineView setTypeSelectHelper:typeSelectHelper];
+    [outlineView setTypeSelectHelper:[[[SKTypeSelectHelper alloc] init] autorelease]];
     
     [outlineView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
@@ -753,9 +751,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return [item bookmarkType] == SKBookmarkTypeSeparator;
 }
 
-#pragma mark SKTypeSelectHelper datasource protocol
-
-- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+- (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     int i, count = [outlineView numberOfRows];
     NSMutableArray *labels = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
@@ -765,20 +761,11 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return labels;
 }
 
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    return [[outlineView selectedRowIndexes] lastIndex];
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
-    [outlineView scrollRowToVisible:itemIndex];
-}
-
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
     [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];
 }
 
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+- (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
     if (searchString)
         [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString]];
     else

@@ -62,13 +62,24 @@
 
 
 @interface NSObject (SKOutlineViewDelegate)
+
 - (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
+
 - (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
+
 - (NSMenu *)outlineView:(NSOutlineView *)anOutlineView menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
+
+- (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
+- (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+
 @end
 
 @interface NSObject (SKOutlineViewDataSource)
+
 - (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
+
 @end
+
