@@ -40,5 +40,9 @@
 
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@interface SKUnarchiveFromDataArrayTransformer : NSValueTransformer
+@interface SKArrayValueTransformer : NSValueTransformer
++ (NSValueTransformer *)itemValueTransformer;
+@end
+
+@interface SKUnarchiveFromDataArrayTransformer : SKArrayValueTransformer
 @end
