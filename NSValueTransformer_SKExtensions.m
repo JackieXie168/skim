@@ -1,5 +1,5 @@
 //
-//  SKUnarchiveFromDataArrayTransformer.m
+//  NSValueTransformer_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/2/08.
@@ -36,37 +36,82 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKUnarchiveFromDataArrayTransformer.h"
+#import "NSValueTransformer_SKExtensions.h"
 
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
 
-@implementation SKArrayValueTransformer
-
-+ (NSValueTransformer *)itemValueTransformer {
-    return [[[NSValueTransformer alloc] init] autorelease];
+@interface SKOneWayArrayTransformer : NSValueTransformer {
+    NSValueTransformer *valueTransformer;
 }
+- (NSValueTransformer *)valueTransformer;
+- (id)initWithValueTransformer:(NSValueTransformer *)aValueTransformer;
+- (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector;
+@end
+
+#pragma mark -
+
+@interface SKTwoWayArrayTransformer : SKOneWayArrayTransformer
+@end
+
+#pragma mark -
+
+@implementation SKOneWayArrayTransformer
 
 + (Class)transformedValueClass {
     return [NSArray class];
 }
 
 + (BOOL)allowsReverseTransformation {
-    return [[[self itemValueTransformer] class] allowsReverseTransformation];
+    return NO;
+}
+
+- (id)initWithValueTransformer:(NSValueTransformer *)aValueTransformer {
+    if (self = [super init]) {
+        if (aValueTransformer) {
+            valueTransformer = [aValueTransformer retain];
+        } else {
+            [self release];
+            self = nil;
+        }
+    }
+    return self;
+}
+
+- (id)init {
+    return [self initWithValueTransformer:[[[NSValueTransformer alloc] init] autorelease]];
+}
+
+- (void)dealloc {
+    [valueTransformer release];
+    [super dealloc];
+}
+
+- (NSValueTransformer *)valueTransformer {
+    return valueTransformer;
 }
 
 - (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector {
-    NSValueTransformer *itemValueTransformer = [[self class] itemValueTransformer];
     NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
     NSEnumerator *objEnum = [array objectEnumerator];
     id obj;
     while (obj = [objEnum nextObject])
-        [transformedArray addObject:[itemValueTransformer performSelector:selector withObject:obj] ?: [NSNull null]];
+        [transformedArray addObject:[valueTransformer performSelector:selector withObject:obj] ?: [NSNull null]];
     return transformedArray;
 }
 
 - (id)transformedValue:(id)array {
     return [self transformedArray:array usingSelector:_cmd];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKTwoWayArrayTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return YES;
 }
 
 - (id)reverseTransformedValue:(id)array {
@@ -77,10 +122,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 #pragma mark -
 
-@implementation SKUnarchiveFromDataArrayTransformer
+@implementation NSValueTransformer (SKExtensions)
 
-+ (NSValueTransformer *)itemValueTransformer {
-    return [NSValueTransformer valueTransformerForName:NSUnarchiveFromDataTransformerName];
++ (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)valueTransformer {
+    if ([[valueTransformer class] allowsReverseTransformation])
+        return [[[SKTwoWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
+    else if (valueTransformer)
+        return [[[SKOneWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
+    else
+        return nil;
+}
+
++ (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name {
+    return [self arrayTransformerWithValueTransformer:[self valueTransformerForName:name]];
 }
 
 @end

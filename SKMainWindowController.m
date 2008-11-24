@@ -97,7 +97,7 @@
 #import "NSImage_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
-#import "SKUnarchiveFromDataArrayTransformer.h"
+#import "NSValueTransformer_SKExtensions.h"
 #import "RemoteControl.h"
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
@@ -148,6 +148,8 @@ NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
 static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
+
+NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
 
 @interface SKMainWindowController (SKPrivate)
@@ -205,7 +207,8 @@ static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearch
 + (void)initialize {
     OBINITIALIZE;
     
-    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
+    [NSValueTransformer setValueTransformer:[NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName]
+                                    forName:SKUnarchiveFromDataArrayTransformerName];
     
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
 }
