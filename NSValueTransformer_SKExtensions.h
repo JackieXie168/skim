@@ -1,5 +1,5 @@
 //
-//  SKUnarchiveFromDataArrayTransformer.h
+//  NSValueTransformer_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/2/08.
@@ -40,9 +40,7 @@
 
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@interface SKArrayValueTransformer : NSValueTransformer
-+ (NSValueTransformer *)itemValueTransformer;
-@end
-
-@interface SKUnarchiveFromDataArrayTransformer : SKArrayValueTransformer
+@interface NSValueTransformer (SKExtensions)
++ (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)itemValueTransformer;
++ (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name;
 @end
