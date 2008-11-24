@@ -42,7 +42,7 @@
 #import "SKStringConstants.h"
 #import "SKPDFView.h"
 #import "SKColorSwatch.h"
-#import "SKUnarchiveFromDataArrayTransformer.h"
+#import "NSValueTransformer_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "NSImage_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
