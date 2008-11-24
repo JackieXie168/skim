@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @interface NSValueTransformer (SKExtensions)
 + (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)itemValueTransformer;

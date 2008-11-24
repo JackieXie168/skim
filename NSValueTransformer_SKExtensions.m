@@ -38,8 +38,6 @@
 
 #import "NSValueTransformer_SKExtensions.h"
 
-NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
-
 
 @interface SKOneWayArrayTransformer : NSValueTransformer {
     NSValueTransformer *valueTransformer;
