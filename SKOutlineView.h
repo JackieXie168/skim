@@ -44,6 +44,8 @@
     SKTypeSelectHelper *typeSelectHelper;
 }
 
++ (BOOL)usesDefaultFontSize;
+
 - (NSArray *)selectedItems;
 
 - (SKTypeSelectHelper *)typeSelectHelper;

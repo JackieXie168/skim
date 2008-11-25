@@ -44,6 +44,8 @@
     SKTypeSelectHelper *typeSelectHelper;
 }
 
++ (BOOL)usesDefaultFontSize;
+
 - (SKTypeSelectHelper *)typeSelectHelper;
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 

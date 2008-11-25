@@ -37,22 +37,14 @@
  */
 
 #import "SKBookmarkOutlineView.h"
-#import "NSUserDefaultsController_SKExtensions.h"
-#import "SKStringConstants.h"
-
-static void *SKBookmarkOutlineViewDefaultsObservationContext = (void *)@"SKBookmarkOutlineViewDefaultsObservationContext";
 
 
 @implementation SKBookmarkOutlineView
 
++ (BOOL)usesDefaultFontSize { return YES; }
+
 #define SEPARATOR_LEFT_INDENT 20.0
 #define SEPARATOR_RIGHT_INDENT 2.0
-
-- (void)dealloc {
-    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
-    @catch (id e) {}
-    [super dealloc];
-}
 
 - (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect {
     if ([[self delegate] respondsToSelector:@selector(outlineView:drawSeparatorRowForItem:)] &&
@@ -64,25 +56,6 @@ static void *SKBookmarkOutlineViewDefaultsObservationContext = (void *)@"SKBookm
         [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, floorf(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, floorf(NSMidY(rect)) + 0.5)];
     } else {
         [super drawRow:rowIndex clipRect:clipRect];
-    }
-}
-
-- (void)awakeFromNib {
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    if (fontSize)
-        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKBookmarkOutlineViewDefaultsObservationContext];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKBookmarkOutlineViewDefaultsObservationContext) {
-        NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKTableFontSizeKey]) {
-            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
-            [self setFont:font];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 

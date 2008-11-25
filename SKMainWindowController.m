@@ -3415,9 +3415,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         } else if ([key isEqualToString:SKTableFontSizeKey]) {
             NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
             [outlineView setFont:font];
-            [noteOutlineView setFont:font];
-            [findTableView setFont:font];
-            [groupedFindTableView setFont:font];
             [self updatePageColumnWidthForTableView:outlineView];
         }
         
