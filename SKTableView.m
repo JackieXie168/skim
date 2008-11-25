@@ -40,14 +40,46 @@
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSLayoutManager_SKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
+#import "SKStringConstants.h"
+
+static void *SKTableViewDefaultsObservationContext = (void *)@"SKTableViewDefaultsObservationContext";
 
 
 @implementation SKTableView
 
++ (BOOL)usesDefaultFontSize { return NO; }
+
 - (void)dealloc {
+    if ([[self class] usesDefaultFontSize]) {
+        @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
+        @catch (id e) {}
+    }
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [super dealloc];
+}
+
+- (void)awakeFromNib {
+    if ([[self class] usesDefaultFontSize]) {
+        NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
+        if (fontSize)
+            [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKTableViewDefaultsObservationContext];
+    }
+    if ([[SKTableView superclass] instancesRespondToSelector:_cmd])
+        [super awakeFromNib];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == SKTableViewDefaultsObservationContext) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKTableFontSizeKey]) {
+            [self setFont:[NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]]];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 - (SKTypeSelectHelper *)typeSelectHelper {

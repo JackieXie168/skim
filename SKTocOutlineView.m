@@ -39,21 +39,16 @@
 #import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
-#import "SKStringConstants.h"
 
 
 @implementation SKTocOutlineView
+
++ (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
     if (trackingRects != NULL)
         CFRelease(trackingRects);
     [super dealloc];
-}
-
-- (void)awakeFromNib {
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    if (fontSize)
-        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
 }
 
 - (NSColor *)backgroundColor {

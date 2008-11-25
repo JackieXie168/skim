@@ -37,21 +37,16 @@
  */
 
 #import "SKFindTableView.h"
-#import "SKStringConstants.h"
 
 
 @implementation SKFindTableView
+
++ (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc{
     if (trackingRects != NULL)
         CFRelease(trackingRects);
     [super dealloc];
-}
-
-- (void)awakeFromNib {
-    NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    if (fontSize)
-        [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
 }
 
 - (void)removeTrackingRects {

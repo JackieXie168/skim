@@ -40,13 +40,14 @@
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import <SkimNotes/SkimNotes.h>
-#import "SKStringConstants.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
 @implementation SKNoteOutlineView
+
++ (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
     [noteTypeSheet release];
@@ -56,9 +57,7 @@
 - (void)awakeFromNib {
     if (noteTypeMatrix == nil) {
         [self noteTypeMenu]; // this sets the menu for the header view
-        NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-        if (fontSize)
-            [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+        [super awakeFromNib];
     }
 }
 
