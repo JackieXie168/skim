@@ -61,6 +61,7 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
 
@@ -76,6 +77,8 @@ static NSString *SKNotesDocumentNoteColumnIdentifier = @"note";
 static NSString *SKNotesDocumentTypeColumnIdentifier = @"type";
 static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 
+static void *SKNotesDocumentDefaultsObservationContext = (void *)@"SKNotesDocumentDefaultsObservationContext";
+
 @implementation SKNotesDocument
 
 - (id)init {
@@ -88,6 +91,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (void)dealloc {
+    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
+    @catch (id e) {}
     [notes release];
 	CFRelease(rowHeights);
     [toolbarItems release];
@@ -131,6 +136,8 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [outlineView reloadData];
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
+
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKNotesDocumentDefaultsObservationContext];
 }
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
@@ -674,6 +681,20 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
         return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileName] stringByReplacingPathExtension:@"pdf"]];
     return YES;
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == SKNotesDocumentDefaultsObservationContext) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKTableFontSizeKey]) {
+            NSFont *font = [NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]];
+            [outlineView setFont:font];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

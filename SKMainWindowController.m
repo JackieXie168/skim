@@ -3304,12 +3304,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)unregisterAsObserver {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
-                                  SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
-                                  SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
-                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, 
-                                  SKTableFontSizeKey, nil]];
+    @try {
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
+            [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
+                                      SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
+                                      SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
+                                      SKShouldAntiAliasKey, SKGreekingThresholdKey, 
+                                      SKTableFontSizeKey, nil]];
+    }
+    @catch (id e) {}
 }
 
 #pragma mark Undo
