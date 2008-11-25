@@ -85,25 +85,6 @@
     return string;
 }
 
-- (NSAttributedString *)attributedStringForObjectValue:(id)obj withDefaultAttributes:(NSDictionary *)attrs {
-    if ([obj isKindOfClass:[NSNumber class]])
-        obj = [NSArray arrayWithObjects:obj, nil];
-    
-    NSEnumerator *numberEnum = [obj objectEnumerator];
-    NSNumber *number;
-    NSMutableAttributedString *string = [[[NSMutableAttributedString alloc] init] autorelease];
-    
-    while (number = [numberEnum nextObject]) {
-        NSAttributedString *s = [numberFormatter attributedStringForObjectValue:number withDefaultAttributes:attrs];
-        if ([s length]) {
-            if ([string length])
-                [string appendAttributedString:[[[NSAttributedString alloc] initWithString:@" " attributes:attrs] autorelease]];
-            [string appendAttributedString:s];
-        }
-    }
-    return string;
-}
-
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
     NSEnumerator *stringEnum = [[string componentsSeparatedByString:@" "] objectEnumerator];
     NSString *s;
