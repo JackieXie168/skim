@@ -49,7 +49,8 @@ static void *SKBookmarkOutlineViewDefaultsObservationContext = (void *)@"SKBookm
 #define SEPARATOR_RIGHT_INDENT 2.0
 
 - (void)dealloc {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey];
+    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
+    @catch (id e) {}
     [super dealloc];
 }
 
