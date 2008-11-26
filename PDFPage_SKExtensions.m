@@ -146,7 +146,9 @@ static BOOL usesSequentialPageNumbering = NO;
         }
         [transform concat];
     }
+    [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
     [self drawWithBox:box]; 
+    [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
     [image unlockFocus];
     
     return [image autorelease];
