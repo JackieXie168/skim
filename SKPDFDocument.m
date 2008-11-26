@@ -894,15 +894,34 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         
         while (annotation = [annEnum nextObject]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
+                NSDictionary *properties = [annotation SkimNoteProperties];
                 if ([[annotation type] isEqualToString:SKNTextString]) {
-                    PDFAnnotation *newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithProperties:[annotation SkimNoteProperties]];
+                    NSMutableDictionary *tmpProperties = [[properties mutableCopy] autorelease];
+                    NSRect bounds = NSRectFromString([properties objectForKey:SKNPDFAnnotationBoundsKey]);
+                    NSString *contents = [properties objectForKey:SKNPDFAnnotationContentsKey];
+                    [tmpProperties setObject:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
+                    bounds.size = SKNPDFAnnotationNoteSize;
+                    [tmpProperties setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
+                    if (contents) {
+                        NSRange r = [contents rangeOfString:@"  "];
+                        if (NSMaxRange(r) < [contents length]) {
+                            NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
+                                                           size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+                            NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
+                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
+                            [tmpProperties setObject:attrString forKey:SKNPDFAnnotationTextKey];
+                            [tmpProperties setObject:[contents substringToIndex:r.location] forKey:SKNPDFAnnotationContentsKey];
+                        }
+                    }
+                    properties = tmpProperties;
+                }
+                PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
+                if (newAnnotation) {
                     [[self pdfView] removeAnnotation:annotation];
                     [[self pdfView] addAnnotation:newAnnotation toPage:page];
                     [newAnnotation release];
-                } else {
-                    [self addAsNote:annotation];                
+                    didConvert = YES;
                 }
-                didConvert = YES;
             }
         }
     }
