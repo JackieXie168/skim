@@ -94,9 +94,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)setNoteDicts:(NSArray *)array;
 - (void)setPassword:(NSString *)newPassword;
 
-- (void)addAsNote:(PDFAnnotation *)annotation;
-- (void)removeAsNote:(PDFAnnotation *)annotation;
-
 - (void)tryToUnlockDocument:(PDFDocument *)document;
 
 - (void)checkFileUpdatesIfNeeded;
@@ -855,24 +852,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        contextInfo:NULL];		
 }
 
-- (void)addAsNote:(PDFAnnotation *)annotation {
-    [[[self undoManager] prepareWithInvocationTarget:self] removeAsNote:annotation];
-    [[[self undoManager] prepareWithInvocationTarget:annotation] setShouldDisplay:[annotation shouldDisplay]];
-    [[[self undoManager] prepareWithInvocationTarget:annotation] setShouldPrint:[annotation shouldPrint]];
-    [annotation setShouldDisplay:[[self pdfView] hideNotes] == NO];
-    [annotation setShouldPrint:[[self pdfView] hideNotes] == NO];
-    [annotation setSkimNote:YES];
-    [[self mainWindowController] addNote:annotation];                
-}
-
-- (void)removeAsNote:(PDFAnnotation *)annotation {
-    [[[self undoManager] prepareWithInvocationTarget:self] addAsNote:annotation];
-    if ([[self pdfView] activeAnnotation] == annotation)
-        [[self pdfView] setActiveAnnotation:nil];
-    [annotation setSkimNote:NO];
-    [[self mainWindowController] removeNote:annotation];                
-}
-
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertAlternateReturn)
         return;
@@ -895,26 +874,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         while (annotation = [annEnum nextObject]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
                 NSDictionary *properties = [annotation SkimNoteProperties];
-                if ([[annotation type] isEqualToString:SKNTextString]) {
-                    NSMutableDictionary *tmpProperties = [[properties mutableCopy] autorelease];
-                    NSRect bounds = NSRectFromString([properties objectForKey:SKNPDFAnnotationBoundsKey]);
-                    NSString *contents = [properties objectForKey:SKNPDFAnnotationContentsKey];
-                    [tmpProperties setObject:SKNNoteString forKey:SKNPDFAnnotationTypeKey];
-                    bounds.size = SKNPDFAnnotationNoteSize;
-                    [tmpProperties setObject:NSStringFromRect(bounds) forKey:SKNPDFAnnotationBoundsKey];
-                    if (contents) {
-                        NSRange r = [contents rangeOfString:@"  "];
-                        if (NSMaxRange(r) < [contents length]) {
-                            NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
-                                                           size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
-                            NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:[contents substringFromIndex:NSMaxRange(r)]
-                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]] autorelease];
-                            [tmpProperties setObject:attrString forKey:SKNPDFAnnotationTextKey];
-                            [tmpProperties setObject:[contents substringToIndex:r.location] forKey:SKNPDFAnnotationContentsKey];
-                        }
-                    }
-                    properties = tmpProperties;
-                }
+                if ([[annotation type] isEqualToString:SKNTextString])
+                    properties = [SKNPDFAnnotationNote textToNoteSkimNoteProperties:properties];
                 PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:properties];
                 if (newAnnotation) {
                     [[self pdfView] removeAnnotation:annotation];

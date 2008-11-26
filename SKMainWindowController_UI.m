@@ -1483,9 +1483,13 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:SKPDFViewAnnotationKey];
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
-    if ([annotation isSkimNote])
-        [self addNote:annotation];
-    
+    if ([annotation isSkimNote]) {
+        updatingNoteSelection = YES;
+        [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:annotation];
+        [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+        updatingNoteSelection = NO;
+        [noteOutlineView reloadData];
+    }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
@@ -1516,7 +1520,11 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
             }
         }
         
-        [self removeNote:annotation];
+        updatingNoteSelection = YES;
+        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:annotation];
+        [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
+        updatingNoteSelection = NO;
+        [noteOutlineView reloadData];
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
@@ -1528,7 +1536,6 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         }
         [secondaryPdfView setNeedsDisplayForAnnotation:annotation onPage:page];
     }
-    [noteOutlineView reloadData];
 }
 
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification {

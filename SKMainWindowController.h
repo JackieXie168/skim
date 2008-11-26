@@ -430,9 +430,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 - (void)updateNoteSelection;
 
-- (void)addNote:(PDFAnnotation *)note;
-- (void)removeNote:(PDFAnnotation *)note;
-
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
