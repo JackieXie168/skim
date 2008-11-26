@@ -3700,22 +3700,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [noteOutlineView reloadData];
 }
 
-- (void)addNote:(PDFAnnotation *)note {
-    updatingNoteSelection = YES;
-    [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:note];
-    [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
-    updatingNoteSelection = NO;
-    [noteOutlineView reloadData];
-}
-
-- (void)removeNote:(PDFAnnotation *)note {
-    updatingNoteSelection = YES;
-    [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:note];
-    [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
-    updatingNoteSelection = NO;
-    [noteOutlineView reloadData];
-}
-
 #pragma mark Snapshots
 
 - (void)resetSnapshotSizeIfNeeded {
