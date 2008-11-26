@@ -867,6 +867,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)removeAsNote:(PDFAnnotation *)annotation {
     [[[self undoManager] prepareWithInvocationTarget:self] addAsNote:annotation];
+    if ([[self pdfView] activeAnnotation] == annotation)
+        [[self pdfView] setActiveAnnotation:nil];
     [annotation setSkimNote:NO];
     [[self mainWindowController] removeNote:annotation];                
 }
