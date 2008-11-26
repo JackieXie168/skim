@@ -467,8 +467,9 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     NSImage *image = [self thumbnailWithSize:size];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-    [wrapper setFilename:@"page.tiff"];
-    [wrapper setPreferredFilename:@"page.tiff"];
+    NSString *filename = [NSString stringWithFormat:@"snapshot_page_%u.tiff", [self pageIndex] + 1];
+    [wrapper setFilename:filename];
+    [wrapper setPreferredFilename:filename];
 
     NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
     [wrapper release];

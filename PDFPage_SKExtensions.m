@@ -242,8 +242,9 @@ static BOOL usesSequentialPageNumbering = NO;
     NSImage *image = [self thumbnailWithSize:size forBox:kPDFDisplayBoxCropBox];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-    [wrapper setFilename:@"page.tiff"];
-    [wrapper setPreferredFilename:@"page.tiff"];
+    NSString *filename = [NSString stringWithFormat:@"page_%u.tiff", [self pageIndex] + 1];
+    [wrapper setFilename:filename];
+    [wrapper setPreferredFilename:filename];
 
     NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
     [wrapper release];
