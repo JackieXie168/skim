@@ -56,6 +56,7 @@ extern NSString *SKPDFPageActionRotate;
 
 - (NSRect)foregroundBox;
 
+- (NSImage *)image;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect;
