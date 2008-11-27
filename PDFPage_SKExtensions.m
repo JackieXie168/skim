@@ -132,18 +132,18 @@ static BOOL usesSequentialPageNumbering = NO;
     NSRectFill(bounds);
     if ([self rotation]) {
         NSAffineTransform *transform = [NSAffineTransform transform];
-        [transform rotateByDegrees:[self rotation]];
         switch ([self rotation]) {
             case 90:
-                [transform translateXBy:0.0 yBy:-NSWidth(bounds)];
+                [transform translateXBy:NSWidth(bounds) yBy:0.0];
                 break;
             case 180:
-                [transform translateXBy:-NSWidth(bounds) yBy:-NSHeight(bounds)];
+                [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)];
                 break;
             case 270:
-                [transform translateXBy:-NSHeight(bounds) yBy:0.0];
+                [transform translateXBy:0.0 yBy:NSHeight(bounds)];
                 break;
         }
+        [transform rotateByDegrees:[self rotation]];
         [transform concat];
     }
     [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];

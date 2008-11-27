@@ -197,18 +197,18 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
         int rotation = [page rotation];
         if (rotation) {
             NSAffineTransform *transform = [NSAffineTransform transform];
-            [transform rotateByDegrees:rotation];
             switch (rotation) {
                 case 90:
-                    [transform translateXBy:0.0 yBy:-NSWidth(bounds)];
+                    [transform translateXBy:NSWidth(bounds) yBy:0.0];
                     break;
                 case 180:
-                    [transform translateXBy:-NSWidth(bounds) yBy:-NSHeight(bounds)];
+                    [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
                     break;
                 case 270:
-                    [transform translateXBy:-NSHeight(bounds) yBy:0.0];
+                    [transform translateXBy:0.0 yBy:NSHeight(bounds)];
                     break;
             }
+            [transform rotateByDegrees:rotation];
             [transform concat];
         }
         [page drawWithBox:box];

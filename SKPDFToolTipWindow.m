@@ -210,21 +210,21 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             PDFSelection *selection = [page selectionForRect:bounds];
             NSAffineTransform *transform = [NSAffineTransform transform];
             
-            [transform rotateByDegrees:-[page rotation]];
             switch ([page rotation]) {
                 case 0:
                     [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
                     break;
                 case 90:
-                    [transform translateXBy:-NSMaxX(bounds) yBy:-NSMinY(bounds)];
+                    [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)];
                     break;
                 case 180:
-                    [transform translateXBy:-NSMaxX(bounds) yBy:-NSMaxY(bounds)];
+                    [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)];
                     break;
                 case 270:
-                    [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)];
+                    [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)];
                     break;
             }
+            [transform rotateByDegrees:-[page rotation]];
             
             bounds = [transform transformRect:bounds];
             
