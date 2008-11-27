@@ -167,25 +167,6 @@ static BOOL usesSequentialPageNumbering = NO;
     // dereferencing here should always be safe (if not in the dictionary, it was initialized)
     return *rectPtr;
 }
-    
-- (NSImage *)image {
-    return [self imageForBox:kPDFDisplayBoxCropBox];
-}
-
-- (NSImage *)imageForBox:(PDFDisplayBox)box {
-    NSRect bounds = [self boundsForBox:box];
-    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
-    
-    [image lockFocus];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    [[NSColor whiteColor] set];
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
-    [self drawUnrotatedWithBox:box]; 
-    [image unlockFocus];
-    
-    return [image autorelease];
-}
 
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box {
     return  [self thumbnailWithSize:size forBox:box readingBarRect:NSZeroRect];
@@ -357,18 +338,34 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSData *)TIFFDataForRect:(NSRect)rect {
-    NSImage *pageImage = [self imageForBox:kPDFDisplayBoxMediaBox];
+    PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+    NSRect bounds = [self boundsForBox:box];
     
-    if (NSEqualRects(rect, NSZeroRect))
+    if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))
         return [pageImage TIFFRepresentation];
     if (NSIsEmptyRect(rect))
         return nil;
     
-    NSRect pageBounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-    NSRect sourceRect = rect;
-    NSRect targetRect = {NSZeroPoint, rect.size};
-    sourceRect.origin.x -= NSMinX(pageBounds);
-    sourceRect.origin.y -= NSMinY(pageBounds);
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    switch ([self rotation]) {
+        case 0:
+            [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+            break;
+        case 90:
+            [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)];
+            break;
+        case 180:
+            [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)];
+            break;
+        case 270:
+            [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)];
+            break;
+    }
+    [transform rotateByDegrees:-[self rotation]];
+    
+    NSRect sourceRect = [transform transformRect:rect];
+    NSRect targetRect = {NSZeroPoint, sourceRect.size};
     
     NSImage *image = [[NSImage alloc] initWithSize:targetRect.size];
     [image lockFocus];

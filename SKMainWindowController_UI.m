@@ -374,7 +374,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *pdfData = [page dataRepresentation];
-            NSData *tiffData = [[page imageForBox:[pdfView displayBox]] TIFFRepresentation];
+            NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
             [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
             [pboard setData:pdfData forType:NSPDFPboardType];
