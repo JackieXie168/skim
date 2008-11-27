@@ -453,22 +453,6 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     }
 }
 
-- (void)copyPage:(id)sender {
-    PDFPage *page = [sender representedObject];
-    NSData *pdfData = [page dataRepresentation];
-    NSData *tiffData = [[page imageForBox:[pdfView displayBox]] TIFFRepresentation];
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
-    [pboard setData:pdfData forType:NSPDFPboardType];
-    [pboard setData:tiffData forType:NSTIFFPboardType];
-}
-
-- (void)deleteSnapshot:(id)sender {
-    SKSnapshotWindowController *controller = [sender representedObject];
-    [[controller window] orderOut:self];
-    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObject:controller];
-}
-
 - (void)showSnapshot:(id)sender {
     SKSnapshotWindowController *controller = [sender representedObject];
     if ([[controller window] isVisible])
@@ -487,14 +471,14 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     NSMenu *menu = nil;
     if ([tv isEqual:thumbnailTableView]) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) target:self];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:thumbnailTableView];
         [menuItem setRepresentedObject:[[pdfView document] pageAtIndex:row]];
     } else if ([tv isEqual:snapshotTableView]) {
         [snapshotTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) target:self];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(delete:) target:snapshotTableView];
         [menuItem setRepresentedObject:controller];
         menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(showSnapshot:) target:self];
         [menuItem setRepresentedObject:controller];
