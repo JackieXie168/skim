@@ -174,49 +174,6 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
     return NSMakeRect(iLeft, jMax + MARGIN - jBottom - 1, iRight + 1 - iLeft, jBottom + 1 - jTop);
 }
 
-- (NSBitmapImageRep *)initWithPDFPage:(PDFPage *)page forBox:(PDFDisplayBox)box;
-{
-    
-    NSRect bounds = [page boundsForBox:box];    
-    self = [self initWithBitmapDataPlanes:NULL
-                               pixelsWide:NSWidth(bounds) 
-                               pixelsHigh:NSHeight(bounds) 
-                            bitsPerSample:8 
-                          samplesPerPixel:4
-                                 hasAlpha:YES 
-                                 isPlanar:NO 
-                           colorSpaceName:NSCalibratedRGBColorSpace 
-                             bitmapFormat:0 
-                              bytesPerRow:0 
-                             bitsPerPixel:32];
-    if (self) {
-        [NSGraphicsContext saveGraphicsState];
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:self]];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
-        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
-        int rotation = [page rotation];
-        if (rotation) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            switch (rotation) {
-                case 90:
-                    [transform translateXBy:NSWidth(bounds) yBy:0.0];
-                    break;
-                case 180:
-                    [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
-                    break;
-                case 270:
-                    [transform translateXBy:0.0 yBy:NSHeight(bounds)];
-                    break;
-            }
-            [transform rotateByDegrees:rotation];
-            [transform concat];
-        }
-        [page drawWithBox:box];
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    return self;
-}
-
 // A fast alternative to filling with [NSColor clearColor].
 - (void)clear {
     unsigned char *bitmapData = [self bitmapData];
