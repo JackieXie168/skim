@@ -41,7 +41,6 @@
 
 @interface NSBitmapImageRep (SKExtensions)
 
-- (NSBitmapImageRep *)initWithPDFPage:(PDFPage *)page forBox:(PDFDisplayBox)box;
 - (NSRect)foregroundRect;
 
 - (void)clear;

@@ -91,45 +91,9 @@ static BOOL usesSequentialPageNumbering = NO;
     usesSequentialPageNumbering = flag;
 }
 
-// mainly useful for drawing the box in a PDFView while debugging
-- (NSRect)foregroundBox {
-    
-    NSRect *rectPtr = NULL;
-    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectPtr)) {
-        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
-        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
-        NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
-        NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
-        NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        if (imageRep == nil) {
-            r = b;
-        } else if (NSEqualRects(NSZeroRect, r)) {
-            r = NSMakeRect(NSMidX(b), NSMidY(b), 0.0, 0.0);
-        } else {
-            r.origin = SKAddPoints(r.origin, b.origin);
-        }
-        [imageRep release];
-        r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
-        rectPtr = &r;
-        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectPtr);
-    }
-    // dereferencing here should always be safe (if not in the dictionary, it was initialized)
-    return *rectPtr;
-}
-    
-- (NSImage *)image {
-    return [self imageForBox:kPDFDisplayBoxCropBox];
-}
-
-- (NSImage *)imageForBox:(PDFDisplayBox)box {
+- (void)drawUnrotatedWithBox:(PDFDisplayBox)box {
     NSRect bounds = [self boundsForBox:box];
-    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
-    
-    [image lockFocus];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    [[NSColor whiteColor] set];
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
+    [NSGraphicsContext saveGraphicsState];
     if ([self rotation]) {
         NSAffineTransform *transform = [NSAffineTransform transform];
         switch ([self rotation]) {
@@ -149,6 +113,75 @@ static BOOL usesSequentialPageNumbering = NO;
     [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
     [self drawWithBox:box]; 
     [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
+    
+    NSRect bounds = [self boundsForBox:box];
+    NSBitmapImageRep *imageRep;
+    imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                                                       pixelsWide:NSWidth(bounds) 
+                                                       pixelsHigh:NSHeight(bounds) 
+                                                    bitsPerSample:8 
+                                                  samplesPerPixel:4
+                                                         hasAlpha:YES 
+                                                         isPlanar:NO 
+                                                   colorSpaceName:NSCalibratedRGBColorSpace 
+                                                     bitmapFormat:0 
+                                                      bytesPerRow:0 
+                                                     bitsPerPixel:32];
+    if (imageRep) {
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
+        [self drawUnrotatedWithBox:box];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    return imageRep;
+}
+
+- (NSRect)foregroundBox {
+    NSRect *rectPtr = NULL;
+    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectPtr)) {
+        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
+        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
+        NSBitmapImageRep *imageRep = [self newBitmapImageRepForBox:kPDFDisplayBoxMediaBox];
+        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        NSRect rect = [imageRep foregroundRect];
+        if (imageRep) {
+            rect = bounds;
+        } else if (NSEqualRects(NSZeroRect, rect)) {
+            rect.origin.x = floorf(NSMidX(bounds));
+            rect.origin.x = ceilf(NSMidY(bounds));
+        } else {
+            rect.origin.x += NSMinX(bounds);
+            rect.origin.y += NSMinY(bounds);
+        }
+        [imageRep release];
+        rect = NSIntersectionRect(NSInsetRect(rect, -marginWidth, -marginHeight), bounds);
+        rectPtr = &rect;
+        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectPtr);
+    }
+    // dereferencing here should always be safe (if not in the dictionary, it was initialized)
+    return *rectPtr;
+}
+    
+- (NSImage *)image {
+    return [self imageForBox:kPDFDisplayBoxCropBox];
+}
+
+- (NSImage *)imageForBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
+    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
+    
+    [image lockFocus];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    [[NSColor whiteColor] set];
+    bounds.origin = NSZeroPoint;
+    NSRectFill(bounds);
+    [self drawUnrotatedWithBox:box]; 
     [image unlockFocus];
     
     return [image autorelease];
