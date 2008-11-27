@@ -91,33 +91,7 @@ static BOOL usesSequentialPageNumbering = NO;
     usesSequentialPageNumbering = flag;
 }
 
-- (void)drawUnrotatedWithBox:(PDFDisplayBox)box {
-    NSRect bounds = [self boundsForBox:box];
-    [NSGraphicsContext saveGraphicsState];
-    if ([self rotation]) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        switch ([self rotation]) {
-            case 90:
-                [transform translateXBy:NSWidth(bounds) yBy:0.0];
-                break;
-            case 180:
-                [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)];
-                break;
-            case 270:
-                [transform translateXBy:0.0 yBy:NSHeight(bounds)];
-                break;
-        }
-        [transform rotateByDegrees:[self rotation]];
-        [transform concat];
-    }
-    [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
-    [self drawWithBox:box]; 
-    [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
-    [NSGraphicsContext restoreGraphicsState];
-}
-
 - (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
-    
     NSRect bounds = [self boundsForBox:box];
     NSBitmapImageRep *imageRep;
     imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
@@ -136,7 +110,25 @@ static BOOL usesSequentialPageNumbering = NO;
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
         [[NSGraphicsContext currentContext] setShouldAntialias:NO];
-        [self drawUnrotatedWithBox:box];
+        if ([self rotation]) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            switch ([self rotation]) {
+                case 90:
+                    [transform translateXBy:NSWidth(bounds) yBy:0.0];
+                    break;
+                case 180:
+                    [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)];
+                    break;
+                case 270:
+                    [transform translateXBy:0.0 yBy:NSHeight(bounds)];
+                    break;
+            }
+            [transform rotateByDegrees:[self rotation]];
+            [transform concat];
+        }
+        [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
+        [self drawWithBox:box]; 
+        [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
         [NSGraphicsContext restoreGraphicsState];
     }
     return imageRep;
