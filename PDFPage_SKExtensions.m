@@ -154,6 +154,10 @@ static BOOL usesSequentialPageNumbering = NO;
     return *rectPtr;
 }
 
+- (NSImage *)image {
+    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+}
+
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box {
     return  [self thumbnailWithSize:size forBox:box readingBarRect:NSZeroRect];
 }
