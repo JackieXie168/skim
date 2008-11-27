@@ -113,15 +113,9 @@ static BOOL usesSequentialPageNumbering = NO;
         if ([self rotation]) {
             NSAffineTransform *transform = [NSAffineTransform transform];
             switch ([self rotation]) {
-                case 90:
-                    [transform translateXBy:NSWidth(bounds) yBy:0.0];
-                    break;
-                case 180:
-                    [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)];
-                    break;
-                case 270:
-                    [transform translateXBy:0.0 yBy:NSHeight(bounds)];
-                    break;
+                case 90:  [transform translateXBy:NSWidth(bounds) yBy:0.0]; break;
+                case 180: [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)]; break;
+                case 270: [transform translateXBy:0.0 yBy:NSHeight(bounds)]; break;
             }
             [transform rotateByDegrees:[self rotation]];
             [transform concat];
@@ -260,29 +254,17 @@ static BOOL usesSequentialPageNumbering = NO;
     return attrString;
 }
 
-- (NSAttributedString *)thumbnailAttachment {
-    return [self thumbnailAttachmentWithSize:0.0];
-}
+- (NSAttributedString *)thumbnailAttachment { return [self thumbnailAttachmentWithSize:0.0]; }
 
-- (NSAttributedString *)thumbnail512Attachment {
-    return [self thumbnailAttachmentWithSize:512.0];
-}
+- (NSAttributedString *)thumbnail512Attachment { return [self thumbnailAttachmentWithSize:512.0]; }
 
-- (NSAttributedString *)thumbnail256Attachment {
-    return [self thumbnailAttachmentWithSize:256.0];
-}
+- (NSAttributedString *)thumbnail256Attachment { return [self thumbnailAttachmentWithSize:256.0]; }
 
-- (NSAttributedString *)thumbnail128Attachment {
-    return [self thumbnailAttachmentWithSize:128.0];
-}
+- (NSAttributedString *)thumbnail128Attachment { return [self thumbnailAttachmentWithSize:128.0]; }
 
-- (NSAttributedString *)thumbnail64Attachment {
-    return [self thumbnailAttachmentWithSize:64.0];
-}
+- (NSAttributedString *)thumbnail64Attachment { return [self thumbnailAttachmentWithSize:64.0]; }
 
-- (NSAttributedString *)thumbnail32Attachment {
-    return [self thumbnailAttachmentWithSize:32.0];
-}
+- (NSAttributedString *)thumbnail32Attachment { return [self thumbnailAttachmentWithSize:32.0]; }
 
 - (NSData *)PDFDataForRect:(NSRect)rect {
     NSData *data = [self dataRepresentation];
@@ -296,15 +278,9 @@ static BOOL usesSequentialPageNumbering = NO;
         NSAffineTransform *transform = [NSAffineTransform transform];
         NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
         switch ([self rotation]) {
-            case 90:
-                [transform translateXBy:0.0 yBy:NSWidth(bounds)];
-                break;
-            case 180:
-                [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
-                break;
-            case 270:
-                [transform translateXBy:NSHeight(bounds) yBy:0.0];
-                break;
+            case 90:  [transform translateXBy:0.0 yBy:NSWidth(bounds)]; break;
+            case 180: [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)]; break;
+            case 270: [transform translateXBy:NSHeight(bounds) yBy:0.0]; break;
         }
         [transform rotateByDegrees:-[self rotation]];
         rect = [transform transformRect:rect];
@@ -341,18 +317,10 @@ static BOOL usesSequentialPageNumbering = NO;
     
     NSAffineTransform *transform = [NSAffineTransform transform];
     switch ([self rotation]) {
-        case 0:
-            [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-            break;
-        case 90:
-            [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)];
-            break;
-        case 180:
-            [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)];
-            break;
-        case 270:
-            [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)];
-            break;
+        case 0:   [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
+        case 90:  [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)]; break;
+        case 180: [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)]; break;
+        case 270: [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)]; break;
     }
     [transform rotateByDegrees:-[self rotation]];
     
