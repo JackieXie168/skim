@@ -1773,60 +1773,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSMutableArray *writeTypes = [NSMutableArray array];
         NSData *pdfData = nil;
         NSData *tiffData = nil;
-        
         NSRect selRect = NSIntegralRect(selectionRect);
-        NSRect targetRect = selRect;
         
-        if ([types containsObject:NSPDFPboardType]) {
-            PDFPage *page = [self currentSelectionPage];
-            
-            if ([page rotation]) {
-                NSAffineTransform *transform = [NSAffineTransform transform];
-                NSRect bounds = [page boundsForBox:kPDFDisplayBoxMediaBox];
-                switch ([page rotation]) {
-                    case 90:
-                        [transform translateXBy:0.0 yBy:NSWidth(bounds)];
-                        break;
-                    case 180:
-                        [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
-                        break;
-                    case 270:
-                        [transform translateXBy:NSHeight(bounds) yBy:0.0];
-                        break;
-                }
-                [transform rotateByDegrees:-[page rotation]];
-                targetRect = [transform transformRect:targetRect];
-            }
-            
-            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
-            page = [pdfDoc pageAtIndex:0];
-            [page setBounds:targetRect forBox:kPDFDisplayBoxCropBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
-            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
-            
-            if (pdfData = [page dataRepresentation])
-                [writeTypes addObject:NSPDFPboardType];
-            [pdfDoc release];
-        }
+        if ([types containsObject:NSPDFPboardType]  &&
+            (pdfData = [[self currentSelectionPage] PDFDataForRect:selRect]))
+            [writeTypes addObject:NSPDFPboardType];
         
-        if ([types containsObject:NSTIFFPboardType]) {
-            NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
-            NSRect sourceRect = selRect;
-            NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
-            NSImage *image = nil;
-            
-            sourceRect.origin = SKSubstractPoints(sourceRect.origin, bounds.origin);
-            targetRect.origin = NSZeroPoint;
-            targetRect.size = sourceRect.size;
-            image = [[NSImage alloc] initWithSize:targetRect.size];
-            [image lockFocus];
-            [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-            [image unlockFocus];
-            if (tiffData = [image TIFFRepresentation])
-                [writeTypes addObject:NSTIFFPboardType];
-            [image release];
-        }
+        if ([types containsObject:NSTIFFPboardType] &&
+            (tiffData = [[self currentSelectionPage] TIFFDataForRect:selRect]))
+            [writeTypes addObject:NSTIFFPboardType];
     
         [pboard declareTypes:writeTypes owner:nil];
         if (pdfData)
