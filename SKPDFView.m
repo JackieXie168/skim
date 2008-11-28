@@ -525,6 +525,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 
 - (void)setInteractionMode:(SKInteractionMode)newInteractionMode screen:(NSScreen *)screen {
     if (interactionMode != newInteractionMode) {
+        if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
+            [[self documentView] setHidden:NO];
         interactionMode = newInteractionMode;
         if (interactionMode == SKNormalMode)
             [self disableNavigation];
@@ -981,6 +983,9 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
         } else if ((eventChar == 'a') && (modifiers == 0)) {
             [(SKMainWindowController *)[[self window] windowController] toggleAutoActualSize:self];
+        } else if ((eventChar == 'b') && (modifiers == 0)) {
+            NSView *documentView = [self documentView];
+            [documentView setHidden:[documentView isHidden] == NO];
         } else {
             [super keyDown:theEvent];
         }
