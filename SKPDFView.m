@@ -1524,12 +1524,19 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 }
 
 - (void)rotateWithEvent:(NSEvent *)theEvent {
+    if (interactionMode == SKPresentationMode)
+        return;
     if ([theEvent respondsToSelector:@selector(rotation)])
         gestureRotation -= [theEvent rotation];
     if (fabsf(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
         [self rotatePageAtIndex:gesturePageIndex by:90.0 * roundf(gestureRotation / 90.0)];
         gestureRotation -= 90.0 * roundf(gestureRotation / 90.0);
     }
+}
+
+- (void)magnifyWithEvent:(NSEvent *)theEvent {
+    if (interactionMode != SKPresentationMode && [[SKPDFView superclass] instancesRespondToSelector:_cmd])
+        [super magnifyWithEvent:theEvent];
 }
 
 - (void)checkSpellingStartingAtIndex:(int)anIndex onPage:(PDFPage *)page {
