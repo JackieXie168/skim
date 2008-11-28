@@ -669,12 +669,12 @@ static NSPoint pdfOffset = {0.0, 0.0};
             else
                 rv = [self loadSynctexFile:theFileName];
         } else {
-            theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
-            
-            if (SKFileExistsAtPath(theSyncFileName))
-                rv = [self loadPdfsyncFile:theSyncFileName];
-            else
-                rv = [self loadSynctexFile:theFileName];
+            rv = [self loadSynctexFile:theFileName];
+            if (rv == NO) {
+                theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
+                if (SKFileExistsAtPath(theSyncFileName))
+                    rv = [self loadPdfsyncFile:theSyncFileName];
+            }
         }
     }
     return rv;
