@@ -167,9 +167,13 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark -
 
 // Adobe Reader recognizes a path from the hyperref command \url{./test.pdf} as a file: URL, but PDFKit turns it into an http: URL (which of course doesn't work); I notice this because my collaborators use Adobe Reader 	 
-@interface PDFAnnotationLink (SKRelativePathFix) 	 
+@interface PDFAnnotation (SKRelativePathFix) 	 
 - (void)fixRelativeURLIfNeeded; 	 
 @end 	 
+
+@implementation PDFAnnotation (SKRelativePathFix) 	 
+- (void)fixRelativeURLIfNeeded {}
+@end
 
 @implementation PDFAnnotationLink (SKRelativePathFix) 	 
 
@@ -354,61 +358,49 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    NSArray *allAnnotations = [pdfPage annotations];
+    [[pdfPage annotations] makeObjectsPerformSelector:@selector(fixRelativeURLIfNeeded)];
     
-    if (allAnnotations) {
-        unsigned int i, count = [allAnnotations count];
-        
-        for (i = 0; i < count; i++) {
-            PDFAnnotation *annotation = [allAnnotations objectAtIndex: i];
-            if ([annotation isLink]) 	 
-                [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
-        }
-        
-        // activeAnnotation may be a leftover, and we don't want to outline it on the wrong page
-        if (activeAnnotation && [[activeAnnotation page] isEqual:pdfPage]) {
-            BOOL isLink = [activeAnnotation isLink];
-            float lineWidth = isLink ? 2.0 : 1.0;
-            NSRect bounds = [activeAnnotation bounds];
-            NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
-            if (isLink) {
-                CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, floorf(0.3 * NSHeight(rect)));
-                float color[4] = { 0.0, 0.0, 0.0, 0.1 };
-                CGContextSetFillColor(context, color);
-                CGContextBeginPath(context);
-                CGContextAddPath(context, path);
-                CGContextFillPath(context);
-                color[3] = 0.5;
-                CGContextSetStrokeColor(context, color);
-                CGContextSetLineWidth(context, lineWidth);
-                CGContextAddPath(context, path);
-                CGContextStrokePath(context);
-                CGPathRelease(path);
-            } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
-                NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-                SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMaxXEdgeMask);
-                point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
-                SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMinXEdgeMask);
-            } else if (editField == nil) {
-                float color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
-                CGContextSetStrokeColor(context, color);
-                CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
-                if ([activeAnnotation isResizable])
-                    SKCGContextDrawGrabHandles(context, *(CGRect *)&bounds, 4.0, dragMask);
-            }
-        }
-        if (highlightAnnotation && [[highlightAnnotation page] isEqual:pdfPage]) {
-            float color[4] = { 0.0, 0.0, 0.0, 1.0 };
-            NSRect bounds = [highlightAnnotation bounds];
-            NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
+    if ([[activeAnnotation page] isEqual:pdfPage]) {
+        BOOL isLink = [activeAnnotation isLink];
+        float lineWidth = isLink ? 2.0 : 1.0;
+        NSRect bounds = [activeAnnotation bounds];
+        NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
+        if (isLink) {
+            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, floorf(0.3 * NSHeight(rect)));
+            float color[4] = { 0.0, 0.0, 0.0, 0.1 };
+            CGContextSetFillColor(context, color);
+            CGContextBeginPath(context);
+            CGContextAddPath(context, path);
+            CGContextFillPath(context);
+            color[3] = 0.5;
             CGContextSetStrokeColor(context, color);
-            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
+            CGContextSetLineWidth(context, lineWidth);
+            CGContextAddPath(context, path);
+            CGContextStrokePath(context);
+            CGPathRelease(path);
+        } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
+            NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
+            SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMaxXEdgeMask);
+            point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
+            SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMinXEdgeMask);
+        } else if (editField == nil) {
+            float color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
+            CGContextSetStrokeColor(context, color);
+            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
+            if ([activeAnnotation isResizable])
+                SKCGContextDrawGrabHandles(context, *(CGRect *)&bounds, 4.0, dragMask);
         }
-                
+    }
+    
+    if ([[highlightAnnotation page] isEqual:pdfPage]) {
+        float color[4] = { 0.0, 0.0, 0.0, 1.0 };
+        NSRect bounds = [highlightAnnotation bounds];
+        NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
+        CGContextSetStrokeColor(context, color);
+        CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
     }
     
     if (readingBar) {
-        
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
         NSColor *nsColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey];
