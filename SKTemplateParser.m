@@ -936,7 +936,9 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 @end
 
 @implementation NSData (SKTemplateParser)
-- (NSString *)templateStringValue { return [[[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding] autorelease]; }
+- (NSString *)templateStringValue {
+    return [[[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding] autorelease] ?: [self description];
+}
 @end
 
 #pragma mark -
