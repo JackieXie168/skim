@@ -303,7 +303,7 @@
                 <cocoa key="File"/>
             </parameter>
             <parameter name="as" code="fltp" type="text" optional="yes"
-                description="The type of file to save. If this is set, this acts like Export. Should be one of &quot;PDF&quot;, &quot;PDF Bundle&quot;, &quot;PDF Without Notes&quot;, &quot;PDF With Embedded Notes&quot;, &quot;Skim Notes&quot;, &quot;Notes as Text&quot;, &quot;Notes as RTF&quot;, &quot;Notes as RTFD&quot;, and &quot;Notes as FDF&quot;.">
+                description="The type of file to save. If this is set, this acts like Export. Should be one of &quot;PDF&quot;, &quot;PDF Bundle&quot;, &quot;PDF Without Notes&quot;, &quot;PDF With Embedded Notes&quot;, &quot;Skim Notes&quot;, &quot;Notes as Text&quot;, &quot;Notes as RTF&quot;, &quot;Notes as RTFD&quot;, and &quot;Notes as FDF&quot;, or the name of a custom export template.">
                 <cocoa key="FileType"/>
             </parameter>
         </command>
