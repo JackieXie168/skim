@@ -154,7 +154,7 @@
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
-        } else if (data) {
+        } else if (data || skimFile == nil) {
             notes = [NSArray array];
         }
     }
