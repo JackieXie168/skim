@@ -864,7 +864,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     NSString *description = nil;
     if ([self respondsToSelector:@selector(stringValue)])
         description = [self performSelector:@selector(stringValue)];
-    if ([self respondsToSelector:@selector(string)])
+    else if ([self respondsToSelector:@selector(string)])
         description = [self performSelector:@selector(string)];
     return description ?: [self description];
 }
@@ -906,9 +906,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 #pragma mark -
 
-@interface NSAttributedString (SKTemplateParser)
-@end
-
 @implementation NSAttributedString (SKTemplateParser)
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
@@ -931,9 +928,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 @end
 
 #pragma mark -
-
-@interface NSData (SKTemplateParser)
-@end
 
 @implementation NSData (SKTemplateParser)
 - (NSString *)templateStringValue {
@@ -1015,9 +1009,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 #pragma mark -
 
-@interface NSNumber (SKTemplateParser)
-@end
-
 @implementation NSNumber (SKTemplateParser)
 - (BOOL)isNotEmpty { return [self isEqualToNumber:[NSNumber numberWithBool:NO]] == NO && [self isEqualToNumber:[NSNumber numberWithInt:0]] == NO; }
+@end
+
+#pragma mark -
+
+@implementation NSNull (SKTemplateParser)
+- (NSString *)templateStringValue{ return @""; }
+- (BOOL)isNotEmpty { return NO; }
 @end
