@@ -358,7 +358,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         [NSGraphicsContext restoreGraphicsState];
     }
     
-    [[pdfPage annotations] makeObjectsPerformSelector:@selector(fixRelativeURLIfNeeded)];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        [[pdfPage annotations] makeObjectsPerformSelector:@selector(fixRelativeURLIfNeeded)];
     
     if ([[activeAnnotation page] isEqual:pdfPage]) {
         BOOL isLink = [activeAnnotation isLink];
