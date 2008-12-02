@@ -434,7 +434,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             if (type == SKValueTemplateTagType) {
                 
                 if (keyValue)
-                    [result appendString:[keyValue templateStringValue]];
+                    [result appendString:[keyValue templateStringValue] ?: @""];
                 
             } else if (type == SKCollectionTemplateTagType) {
                 
@@ -469,16 +469,16 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     }
                     switch ([tag matchType]) {
                         case SKTemplateTagMatchEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] caseInsensitiveCompare:matchString] == NSOrderedSame;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
                             break;
                         case SKTemplateTagMatchContain:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
                             break;
                         case SKTemplateTagMatchSmaller:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
+                            isMatch = [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
                             break;
                         case SKTemplateTagMatchSmallerOrEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
                             break;
                         default:
                             isMatch = [keyValue isNotEmpty];
@@ -786,16 +786,16 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     }
                     switch ([tag matchType]) {
                         case SKTemplateTagMatchEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] caseInsensitiveCompare:matchString] == NSOrderedSame;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
                             break;
                         case SKTemplateTagMatchContain:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
                             break;
                         case SKTemplateTagMatchSmaller:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
+                            isMatch = [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
                             break;
                         case SKTemplateTagMatchSmallerOrEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
+                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
                             break;
                         default:
                             isMatch = [keyValue isNotEmpty];
@@ -870,7 +870,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 }
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
-    return [[[NSAttributedString alloc] initWithString:[self templateStringValue] attributes:attributes] autorelease];
+    return [[[NSAttributedString alloc] initWithString:[self templateStringValue] ?: @"" attributes:attributes] autorelease];
 }
 
 @end
