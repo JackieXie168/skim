@@ -399,25 +399,14 @@ static float SKPopUpMenuFontSize = 11.0;
     switching = YES;
     if ([self synchronizeZoom])
         [self setSynchronizeZoom:NO adjustPopup:NO];
-	
     if (flag) {
-		if (newScaleFactor < 0.01) {
-            newScaleFactor = 0.0;
-        } else {
-            unsigned int i = [self indexForScaleFactor:newScaleFactor];
-            [scalePopUpButton selectItemAtIndex:i];
-            newScaleFactor = SKDefaultScaleMenuFactors[i];
-        }
+		unsigned int i = [self indexForScaleFactor:newScaleFactor];
+        [scalePopUpButton selectItemAtIndex:i];
+        newScaleFactor = SKDefaultScaleMenuFactors[i];
     }
-    
-    if (newScaleFactor < 0.01) {
-        if ([self autoScales] == NO)
-            [self setAutoScales:YES];
-    } else {
-        if ([self autoScales])
-            [self setAutoScales:NO adjustPopup:NO];
-        [super setScaleFactor:newScaleFactor];
-    }
+    if ([self autoScales])
+        [self setAutoScales:NO adjustPopup:NO];
+    [super setScaleFactor:newScaleFactor];
     switching = savedSwitching;
 }
 
