@@ -1,5 +1,5 @@
 //
-//  BDSKZoomablePDFView.m
+//  SKSnapshotPDFView.m
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 07/23/05.
@@ -36,14 +36,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "BDSKZoomablePDFView.h"
+#import "SKSnapshotPDFView.h"
 #import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 
 
-@implementation BDSKZoomablePDFView
+@implementation SKSnapshotPDFView
 
 /* For genstrings:
     NSLocalizedStringFromTable(@"Auto", @"ZoomValues", @"Zoom popup entry")
@@ -334,7 +334,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
         [document printDocument:sender];
-    else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+    else if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [(id)super printDocument:sender];
 }
 
@@ -366,7 +366,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         return YES;
     } else if ([menuItem action] == @selector(printDocument:)) {
         return [[self document] allowsPrinting];
-    } else if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd]) {
         return [super validateMenuItem:menuItem];
     }
     return YES;
@@ -395,7 +395,7 @@ static float BDSKScaleMenuFontSize = 11.0;
 #pragma mark Gestures
 
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
-    if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+    if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super beginGestureWithEvent:theEvent];
     pinchZoomFactor = 1.0;
 }
@@ -404,7 +404,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     if (fabsf(pinchZoomFactor - 1.0) > 0.1)
         [self setScaleFactor:fmaxf(pinchZoomFactor * [self scaleFactor], BDSKDefaultScaleMenuFactors[1])];
     pinchZoomFactor = 1.0;
-    if ([[BDSKZoomablePDFView superclass] instancesRespondToSelector:_cmd])
+    if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
 }
 

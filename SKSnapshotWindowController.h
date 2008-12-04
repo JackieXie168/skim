@@ -40,10 +40,10 @@
 
 extern NSString *SKSnapshotCurrentSetupKey;
 
-@class BDSKZoomablePDFView, PDFDocument, PDFPage;
+@class SKSnapshotPDFView, PDFDocument, PDFPage;
 
 @interface SKSnapshotWindowController : NSWindowController {
-    IBOutlet BDSKZoomablePDFView* pdfView;
+    IBOutlet SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id delegate;
     NSString *pageLabel;
@@ -104,7 +104,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 
 @interface SKSnapshotWindow : NSWindow {
-	IBOutlet BDSKZoomablePDFView *pdfView;
+	IBOutlet SKSnapshotPDFView *pdfView;
 }
 @end
 
