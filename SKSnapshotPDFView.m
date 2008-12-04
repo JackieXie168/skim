@@ -71,34 +71,30 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 #pragma mark Popup button
 
+- (void)commonInitialization {
+    scalePopUpButton = nil;
+    autoFitPage = nil;
+    autoFitRect = NSZeroRect;
+    pinchZoomFactor = 1.0;
+    
+    [self makeScalePopUpButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                 name:NSViewFrameDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                 name:NSViewBoundsDidChangeNotification object:self];
+}
+
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        scalePopUpButton = nil;
-        autoFitPage = nil;
-        autoFitRect = NSZeroRect;
-        pinchZoomFactor = 1.0;
-        
-        [self makeScalePopUpButton];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
-                                                     name:NSViewFrameDidChangeNotification object:self];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
-                                                     name:NSViewBoundsDidChangeNotification object:self];
+        [self commonInitialization];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        scalePopUpButton = nil;
-        autoFitPage = nil;
-        autoFitRect = NSZeroRect;
-        pinchZoomFactor = 1.0;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
-                                                     name:NSViewFrameDidChangeNotification object:self];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
-                                                     name:NSViewBoundsDidChangeNotification object:self];
-        [self makeScalePopUpButton];
+        [self commonInitialization];
     }
     return self;
 }
@@ -353,8 +349,8 @@ static float BDSKScaleMenuFontSize = 11.0;
             break;
     }
     
-    unsigned int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
-    if (i != NSNotFound)
+    int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
+    if (i != -1)
         [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
     
     return menu;
@@ -428,10 +424,6 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 - (void)mouseUp:(NSEvent *)theEvent{
     [NSCursor pop];
-    [self mouseMoved:theEvent];
-}
-
-- (void)mouseMoved:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     if (NSPointInRect(mouseLoc, [[self documentView] visibleRect]))
         [[NSCursor openHandCursor] set];
@@ -440,12 +432,6 @@ static float BDSKScaleMenuFontSize = 11.0;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
-    [self dragWithEvent:theEvent];	
-    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
-}
-
-- (void)dragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
 	BOOL keepGoing = YES;
@@ -485,6 +471,9 @@ static float BDSKScaleMenuFontSize = 11.0;
         autoFitPage = [self currentPage];
         autoFitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:autoFitPage];
     }
+    
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
 }
 
 @end

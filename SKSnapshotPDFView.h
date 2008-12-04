@@ -55,7 +55,6 @@
 - (void)scalePopUpAction:(id)sender;
 - (NSScrollView *)scrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
-- (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)resetAutoFitRectIfNeeded;
 - (void)makeScalePopUpButton;
