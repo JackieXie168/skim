@@ -1,5 +1,5 @@
 //
-//  BDSKZoomablePDFView.h
+//  SKSnapshotPDFView.h
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 07/23/05.
@@ -40,7 +40,7 @@
 #import <Quartz/Quartz.h>
 
 
-@interface BDSKZoomablePDFView : PDFView {
+@interface SKSnapshotPDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
     PDFPage *autoFitPage;
     NSRect autoFitRect;

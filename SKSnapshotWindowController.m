@@ -41,7 +41,7 @@
 #import "SKPDFDocument.h"
 #import "SKBorderlessImageWindow.h"
 #import <Quartz/Quartz.h>
-#import "BDSKZoomablePDFView.h"
+#import "SKSnapshotPDFView.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKPDFView.h"
 #import "NSWindowController_SKExtensions.h"
@@ -244,7 +244,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
     
     if (autoFits && [pdfView respondsToSelector:@selector(setAutoFits:)])
-        [(BDSKZoomablePDFView *)pdfView setAutoFits:autoFits];
+        [(SKSnapshotPDFView *)pdfView setAutoFits:autoFits];
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
@@ -350,7 +350,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 - (NSDictionary *)currentSetup {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
-    BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(BDSKZoomablePDFView *)pdfView autoFits];
+    BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(SKSnapshotPDFView *)pdfView autoFits];
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], SKSnapshotPageKey, NSStringFromRect(rect), SKSnapshotRectKey, [NSNumber numberWithFloat:[pdfView scaleFactor]], SKSnapshotScaleFactorKey, [NSNumber numberWithBool:autoFits], SKSnapshotAutoFitsKey, [NSNumber numberWithBool:[[self window] isVisible]], SKSnapshotHasWindowKey, NSStringFromRect([[self window] frame]), SKSnapshotWindowFrameKey, nil];
 }
 
