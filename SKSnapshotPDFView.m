@@ -253,23 +253,14 @@ static float BDSKScaleMenuFontSize = 11.0;
 }
 
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
-    
 	if (flag) {
-		if (newScaleFactor < 0.01) {
-            newScaleFactor = 0.0;
-        } else {
-            unsigned int i = [self indexForScaleFactor:newScaleFactor];
-            [scalePopUpButton selectItemAtIndex:i];
-            newScaleFactor = BDSKDefaultScaleMenuFactors[i];
-        }
+		unsigned int i = [self indexForScaleFactor:newScaleFactor];
+        [scalePopUpButton selectItemAtIndex:i];
+        newScaleFactor = BDSKDefaultScaleMenuFactors[i];
     }
-    
-    if(newScaleFactor < 0.01){
-        [self setAutoFits:YES];
-    }else{
+    if ([self autoFits])
         [self setAutoFits:NO adjustPopup:NO];
-        [super setScaleFactor:newScaleFactor];
-    }
+    [super setScaleFactor:newScaleFactor];
 }
 
 - (void)setAutoScales:(BOOL)newAuto {}
