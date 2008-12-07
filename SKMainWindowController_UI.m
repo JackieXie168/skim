@@ -453,6 +453,10 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     }
 }
 
+- (void)copyPage:(id)sender {
+    [self tableView:thumbnailTableView copyRowsWithIndexes:[sender representedObject]];
+}
+
 - (void)showSnapshot:(id)sender {
     SKSnapshotWindowController *controller = [sender representedObject];
     if ([[controller window] isVisible])
@@ -471,8 +475,8 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
     NSMenu *menu = nil;
     if ([tv isEqual:thumbnailTableView]) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) target:thumbnailTableView];
-        [menuItem setRepresentedObject:[[pdfView document] pageAtIndex:row]];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) target:self];
+        [menuItem setRepresentedObject:[NSIndexSet indexSetWithIndex:row]];
     } else if ([tv isEqual:snapshotTableView]) {
         [snapshotTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         
