@@ -62,6 +62,34 @@ typedef NSInteger SKTemplateTagMatchType;
 
 #pragma mark -
 
+@interface SKPlaceholderTemplateTag : SKTemplateTag {
+    NSString *string;
+    int inlineOptions;
+}
+
+- (id)initWithString:(NSString *)aString atStartOfLine:(BOOL)flag;
+
+- (NSString *)string;
+- (NSArray *)templateArray;
+
+@end
+
+#pragma mark -
+
+@interface SKRichPlaceholderTemplateTag : SKTemplateTag {
+    NSAttributedString *attributedString;
+    int inlineOptions;
+}
+
+- (id)initWithAttributedString:(NSAttributedString *)anAttributedString atStartOfLine:(BOOL)flag;
+
+- (NSAttributedString *)attributedString;
+- (NSArray *)templateArray;
+
+@end
+
+#pragma mark -
+
 @interface SKValueTemplateTag : SKTemplateTag {
     NSString *keyPath;
 }
@@ -87,13 +115,13 @@ typedef NSInteger SKTemplateTagMatchType;
 #pragma mark -
 
 @interface SKCollectionTemplateTag : SKValueTemplateTag {
-    NSString *itemTemplateString;
-    NSString *separatorTemplateString;
-    NSMutableArray *itemTemplate;
-    NSMutableArray *separatorTemplate;
+    SKPlaceholderTemplateTag *itemPlaceholderTemplate;
+    SKPlaceholderTemplateTag *separatorPlaceholderTemplate;
+    NSArray *itemTemplate;
+    NSArray *separatorTemplate;
 }
 
-- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString;
+- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplate:(SKPlaceholderTemplateTag *)anItemTemplate separatorTemplate:(SKPlaceholderTemplateTag *)aSeparatorTemplate;
 
 - (NSArray *)itemTemplate;
 - (NSArray *)separatorTemplate;
@@ -103,13 +131,13 @@ typedef NSInteger SKTemplateTagMatchType;
 #pragma mark -
 
 @interface SKRichCollectionTemplateTag : SKValueTemplateTag {
-    NSAttributedString *itemTemplateAttributedString;
-    NSAttributedString *separatorTemplateAttributedString;
-    NSMutableArray *itemTemplate;
-    NSMutableArray *separatorTemplate;
+    SKRichPlaceholderTemplateTag *itemPlaceholderTemplate;
+    SKRichPlaceholderTemplateTag *separatorPlaceholderTemplate;
+    NSArray *itemTemplate;
+    NSArray *separatorTemplate;
 }
 
-- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateString;
+- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplate:(SKRichPlaceholderTemplateTag *)anItemTemplate separatorTemplate:(SKRichPlaceholderTemplateTag *)aSeparatorTemplate;
 
 - (NSArray *)itemTemplate;
 - (NSArray *)separatorTemplate;
