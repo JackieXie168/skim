@@ -227,8 +227,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     NSScanner *scanner = [[NSScanner alloc] initWithString:template];
     NSMutableArray *result = [[NSMutableArray alloc] init];
     id currentTag = nil;
-    BOOL inlineAtStart = (inlineOptions & SKTemplateInlineAtStart) != 0;
     BOOL inlineAtEnd = (inlineOptions & SKTemplateInlineAtEnd) != 0;
+    BOOL precedingNewline = (inlineOptions & SKTemplateInlineAtStart) == 0;
 
     [scanner setCharactersToBeSkipped:nil];
     
@@ -262,6 +262,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 [result addObject:currentTag];
                 [currentTag release];
                 
+                precedingNewline = NO;
+                
             } else if ([scanner scanString:COLLECTION_TAG_CLOSE_DELIM intoString:nil]) {
                 
                 SKPlaceholderTemplateTag *itemTemplate = nil, *separatorTemplate = nil;
@@ -273,7 +275,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 // collection template tag
                 // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                    wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] > 1 || inlineAtStart];
+                    wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
                     if (wsRange.location != NSNotFound) {
                         if (wsRange.length == [[currentTag text] length]) {
                             [result removeLastObject];
@@ -287,9 +289,10 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 endTag = endCollectionTagWithTag(tag);
                 // ignore the rest of an empty line after the tag
                 foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                if ([scanner scanString:endTag intoString:nil])
-                    continue;
-                if ([scanner scanUpToString:endTag intoString:&itemTemplateString] && [scanner scanString:endTag intoString:nil]) {
+                if ([scanner scanString:endTag intoString:nil]) {
+                    // ignore the the rest of an empty line after the currentTag
+                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                } else if ([scanner scanUpToString:endTag intoString:&itemTemplateString] && [scanner scanString:endTag intoString:nil]) {
                     // ignore whitespace before the tag. Should we also remove a newline?
                     wsRange = [itemTemplateString rangeOfTrailingEmptyLine];
                     if (wsRange.location != NSNotFound)
@@ -310,7 +313,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     [separatorTemplate release];
                     
                     // ignore the the rest of an empty line after the currentTag
-                    [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                     
                 }
                 
@@ -349,7 +352,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     // condition template tag
                     // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:[result count] > 1 || inlineAtStart];
+                        wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
                         if (wsRange.location != NSNotFound) {
                             if (wsRange.length == [[currentTag text] length]) {
                                 [result removeLastObject];
@@ -406,8 +409,9 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         
                         [subTemplates release];
                         [matchStrings release];
+                        
                         // ignore the the rest of an empty line after the currentTag
-                        [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                         
                     }
                     
@@ -545,8 +549,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     NSScanner *scanner = [[NSScanner alloc] initWithString:templateString];
     NSMutableArray *result = [[NSMutableArray alloc] init];
     id currentTag = nil;
-    BOOL inlineAtStart = (inlineOptions & SKTemplateInlineAtStart) != 0;
     BOOL inlineAtEnd = (inlineOptions & SKTemplateInlineAtEnd) != 0;
+    BOOL precedingNewline = (inlineOptions & SKTemplateInlineAtStart) == 0;
 
     [scanner setCharactersToBeSkipped:nil];
     
@@ -588,7 +592,9 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 currentTag = [[SKRichValueTemplateTag alloc] initWithKeyPath:tag attributes:attr];
                 [result addObject:currentTag];
                 [currentTag release];
-               
+                
+                precedingNewline = NO;
+                
             } else if ([scanner scanString:COLLECTION_TAG_CLOSE_DELIM intoString:nil]) {
                 
                 NSString *itemTemplateString = nil;
@@ -601,7 +607,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 // collection template tag
                 // ignore whitespace before the tag. Should we also remove a newline?
                 if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                    wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] > 1 || inlineAtStart];
+                    wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
                     if (wsRange.location != NSNotFound) {
                         if (wsRange.length == [[(SKRichTextTemplateTag *)currentTag attributedText] length]) {
                             [result removeLastObject];
@@ -615,8 +621,11 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 endTag = endCollectionTagWithTag(tag);
                 // ignore the rest of an empty line after the tag
                 foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                if ([scanner scanString:endTag intoString:nil])
+                if ([scanner scanString:endTag intoString:nil]) {
+                    // ignore the the rest of an empty line after the tag
+                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                     continue;
+                }
                 start = [scanner scanLocation];
                 if ([scanner scanUpToString:endTag intoString:&itemTemplateString] && [scanner scanString:endTag intoString:nil]) {
                     // ignore whitespace before the tag. Should we also remove a newline?
@@ -638,7 +647,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     [separatorTemplate release];
                     
                     // ignore the the rest of an empty line after the tag
-                    [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                     
                 }
                 
@@ -678,7 +687,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     // condition template tag
                     // ignore whitespace before the tag. Should we also remove a newline?
                     if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:[result count] > 1 || inlineAtStart];
+                        wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
                         if (wsRange.location != NSNotFound) {
                             if (wsRange.length == [[(SKRichTextTemplateTag *)currentTag attributedText] length]) {
                                 [result removeLastObject];
@@ -693,8 +702,11 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     altTag = altConditionTagWithTag(tag);
                     // ignore the rest of an empty line after the tag
                     foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                    if ([scanner scanString:endTag intoString:nil])
+                    if ([scanner scanString:endTag intoString:nil]) {
+                        // ignore the the rest of an empty line after the tag
+                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                         continue;
+                    }
                     start = [scanner scanLocation];
                     if ([scanner scanUpToString:endTag intoString:&subTemplateString] && [scanner scanString:endTag intoString:nil]) {
                         // ignore whitespace before the tag. Should we also remove a newline?
@@ -736,8 +748,9 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         
                         [subTemplates release];
                         [matchStrings release];
+                        
                         // ignore the the rest of an empty line after the tag
-                        [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                         
                     }
                     
