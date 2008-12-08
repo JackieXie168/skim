@@ -47,12 +47,12 @@ enum {
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateString:(NSString *)template;
-+ (NSArray *)arrayByParsingTemplateString:(NSString *)template isSubtemplate:(BOOL)isSubtemplate;
++ (NSArray *)arrayByParsingTemplateString:(NSString *)template inlineOptions:(int)inlineOptions;
 + (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 + (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template;
-+ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template isSubtemplate:(BOOL)isSubtemplate;
++ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template inlineOptions:(int)inlineOptions;
 + (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 @end
