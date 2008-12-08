@@ -116,13 +116,13 @@
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateString)
-        itemTemplate = [[SKTemplateParser arrayByParsingTemplateString:itemTemplateString] retain];
+        itemTemplate = [[SKTemplateParser arrayByParsingTemplateString:itemTemplateString isSubtemplate:YES] retain];
     return itemTemplate;
 }
 
 - (NSArray *)separatorTemplate {
     if (separatorTemplate == nil && separatorTemplateString)
-        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateString:separatorTemplateString] retain];
+        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateString:separatorTemplateString isSubtemplate:YES] retain];
     return separatorTemplate;
 }
 
@@ -154,13 +154,13 @@
 
 - (NSArray *)itemTemplate {
     if (itemTemplate == nil && itemTemplateAttributedString)
-        itemTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:itemTemplateAttributedString] retain];
+        itemTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:itemTemplateAttributedString isSubtemplate:YES] retain];
     return itemTemplate;
 }
 
 - (NSArray *)separatorTemplate {
     if (separatorTemplate == nil && separatorTemplateAttributedString)
-        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:separatorTemplateAttributedString] retain];
+        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:separatorTemplateAttributedString isSubtemplate:YES] retain];
     return separatorTemplate;
 }
 
@@ -202,7 +202,7 @@
 - (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
-         subtemplate = [[SKTemplateParser arrayByParsingTemplateString:subtemplate] retain];
+         subtemplate = [[SKTemplateParser arrayByParsingTemplateString:subtemplate isSubtemplate:YES] retain];
         [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;
@@ -217,7 +217,7 @@
 - (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
-        subtemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate] retain];
+        subtemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate isSubtemplate:YES] retain];
         [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;

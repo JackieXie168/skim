@@ -38,15 +38,21 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum {
+    SKTemplateInlineAtStart = 1,
+    SKTemplateInlineAtEnd = 2
+};
 
 @interface SKTemplateParser : NSObject
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateString:(NSString *)template;
++ (NSArray *)arrayByParsingTemplateString:(NSString *)template isSubtemplate:(BOOL)isSubtemplate;
 + (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 + (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template;
++ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template isSubtemplate:(BOOL)isSubtemplate;
 + (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex;
 
 @end
@@ -70,6 +76,7 @@
 @interface NSScanner (SKTemplateParser)
 
 - (BOOL)scanEmptyLine;
+- (BOOL)scanEmptyLineRequiringNewline:(BOOL)requireNL;
 
 @end
 
