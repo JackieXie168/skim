@@ -46,64 +46,6 @@
 
 #pragma mark -
 
-@implementation SKPlaceholderTemplateTag
-
-- (id)initWithString:(NSString *)aString atStartOfLine:(BOOL)flag {
-    if (self = [super init]) {
-        string = [aString copy];
-        inlineOptions = SKTemplateInlineAtEnd;
-        if (flag)
-            inlineOptions = SKTemplateInlineAtStart;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [string release];
-    [super dealloc];
-}
-
-- (NSString *)string {
-    return string;
-}
-
-- (NSArray *)templateArray {
-    return [SKTemplateParser arrayByParsingTemplateString:string inlineOptions:inlineOptions];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKRichPlaceholderTemplateTag
-
-- (id)initWithAttributedString:(NSAttributedString *)anAttributedString atStartOfLine:(BOOL)flag {
-    if (self = [super init]) {
-        attributedString = [anAttributedString copy];
-        inlineOptions = SKTemplateInlineAtEnd;
-        if (flag)
-            inlineOptions = SKTemplateInlineAtStart;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [attributedString release];
-    [super dealloc];
-}
-
-- (NSAttributedString *)attributedString {
-    return attributedString;
-}
-
-- (NSArray *)templateArray {
-    return [SKTemplateParser arrayByParsingTemplateAttributedString:attributedString inlineOptions:inlineOptions];
-}
-
-@end
-
-#pragma mark -
-
 @implementation SKValueTemplateTag
 
 - (id)initWithKeyPath:(NSString *)aKeyPath {
@@ -152,10 +94,10 @@
 
 @implementation SKCollectionTemplateTag
 
-- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplate:(SKPlaceholderTemplateTag *)anItemTemplate separatorTemplate:(SKPlaceholderTemplateTag *)aSeparatorTemplate {
+- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateString:(NSString *)anItemTemplateString separatorTemplateString:(NSString *)aSeparatorTemplateString {
     if (self = [super initWithKeyPath:aKeyPath]) {
-        itemPlaceholderTemplate = [anItemTemplate retain];
-        separatorPlaceholderTemplate = [aSeparatorTemplate retain];
+        itemTemplateString = [anItemTemplateString retain];
+        separatorTemplateString = [aSeparatorTemplateString retain];
         itemTemplate = nil;
         separatorTemplate = nil;
     }
@@ -163,8 +105,8 @@
 }
 
 - (void)dealloc {
-    [itemPlaceholderTemplate release];
-    [separatorPlaceholderTemplate release];
+    [itemTemplateString release];
+    [separatorTemplateString release];
     [itemTemplate release];
     [separatorTemplate release];
     [super dealloc];
@@ -173,14 +115,14 @@
 - (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
 
 - (NSArray *)itemTemplate {
-    if (itemTemplate == nil && itemPlaceholderTemplate)
-        itemTemplate = [[itemPlaceholderTemplate templateArray] retain];
+    if (itemTemplate == nil && itemTemplateString)
+        itemTemplate = [[SKTemplateParser arrayByParsingTemplateString:itemTemplateString isSubtemplate:YES] retain];
     return itemTemplate;
 }
 
 - (NSArray *)separatorTemplate {
-    if (separatorTemplate == nil && separatorPlaceholderTemplate)
-        separatorTemplate = [[separatorPlaceholderTemplate templateArray] retain];
+    if (separatorTemplate == nil && separatorTemplateString)
+        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateString:separatorTemplateString isSubtemplate:YES] retain];
     return separatorTemplate;
 }
 
@@ -190,10 +132,10 @@
 
 @implementation SKRichCollectionTemplateTag
 
-- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplate:(SKRichPlaceholderTemplateTag *)anItemTemplate separatorTemplate:(SKRichPlaceholderTemplateTag *)aSeparatorTemplate {
+- (id)initWithKeyPath:(NSString *)aKeyPath itemTemplateAttributedString:(NSAttributedString *)anItemTemplateAttributedString separatorTemplateAttributedString:(NSAttributedString *)aSeparatorTemplateAttributedString {
     if (self = [super initWithKeyPath:aKeyPath]) {
-        itemPlaceholderTemplate = [anItemTemplate retain];
-        separatorPlaceholderTemplate = [aSeparatorTemplate retain];
+        itemTemplateAttributedString = [anItemTemplateAttributedString retain];
+        separatorTemplateAttributedString = [aSeparatorTemplateAttributedString retain];
         itemTemplate = nil;
         separatorTemplate = nil;
     }
@@ -201,8 +143,8 @@
 }
 
 - (void)dealloc {
-    [itemPlaceholderTemplate release];
-    [separatorPlaceholderTemplate release];
+    [itemTemplateAttributedString release];
+    [separatorTemplateAttributedString release];
     [itemTemplate release];
     [separatorTemplate release];
     [super dealloc];
@@ -211,14 +153,14 @@
 - (SKTemplateTagType)type { return SKCollectionTemplateTagType; }
 
 - (NSArray *)itemTemplate {
-    if (itemTemplate == nil && itemPlaceholderTemplate)
-        itemTemplate = [[itemPlaceholderTemplate templateArray] retain];
+    if (itemTemplate == nil && itemTemplateAttributedString)
+        itemTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:itemTemplateAttributedString isSubtemplate:YES] retain];
     return itemTemplate;
 }
 
 - (NSArray *)separatorTemplate {
-    if (separatorTemplate == nil && separatorPlaceholderTemplate)
-        separatorTemplate = [[separatorPlaceholderTemplate templateArray] retain];
+    if (separatorTemplate == nil && separatorTemplateAttributedString)
+        separatorTemplate = [[SKTemplateParser arrayByParsingTemplateAttributedString:separatorTemplateAttributedString isSubtemplate:YES] retain];
     return separatorTemplate;
 }
 
@@ -260,7 +202,7 @@
 - (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
-         subtemplate = [subtemplate templateArray];
+        subtemplate = [SKTemplateParser arrayByParsingTemplateString:subtemplate isSubtemplate:YES];
         [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;
@@ -275,7 +217,7 @@
 - (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
-        subtemplate = [subtemplate templateArray];
+        subtemplate = [SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate isSubtemplate:YES];
         [subtemplates replaceObjectAtIndex:anIndex withObject:subtemplate];
     }
     return subtemplate;
