@@ -200,6 +200,36 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     return altTagRange;
 }
 
+static inline NSRange rangeOfLeadingEmptyLine(NSString *string, NSRange range) {
+    NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
+    NSRange wsRange = NSMakeRange(NSNotFound, 0);
+    unsigned int start = range.location;
+    if (firstCharRange.location != NSNotFound) {
+        unichar firstChar = [string characterAtIndex:firstCharRange.location];
+        unsigned int rangeEnd = NSMaxRange(firstCharRange);
+        if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
+            if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
+                wsRange = NSMakeRange(start, rangeEnd + 1 - start);
+            else 
+                wsRange = NSMakeRange(start, rangeEnd - start);
+        }
+    }
+    return wsRange;
+}
+
+static inline NSRange rangeOfTrailingEmptyLine(NSString *string, NSRange range) {
+    NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
+    NSRange wsRange = NSMakeRange(NSNotFound, 0);
+    unsigned int end = NSMaxRange(range);
+    if (lastCharRange.location != NSNotFound) {
+        unichar lastChar = [string characterAtIndex:lastCharRange.location];
+        unsigned int rangeEnd = NSMaxRange(lastCharRange);
+        if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
+            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
+    }
+    return wsRange;
+}
+
 #pragma mark Parsing string templates
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object {
@@ -367,7 +397,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
                 range.length = 0;
             } else {
-                wsRange = [string rangeOfLeadingEmptyLine];
+                wsRange = rangeOfLeadingEmptyLine(string, range);
                 if (wsRange.location != NSNotFound)
                     range.length = wsRange.location;
             }
@@ -377,7 +407,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
                 range.length = 0;
             } else {
-                wsRange = [string rangeOfTrailingEmptyLineInRange:range];
+                wsRange = rangeOfTrailingEmptyLine(string, range);
                 if (wsRange.location != NSNotFound)
                     range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
             }
@@ -687,7 +717,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
                 range.length = 0;
             } else {
-                wsRange = [string rangeOfLeadingEmptyLine];
+                wsRange = rangeOfLeadingEmptyLine(string, range);
                 if (wsRange.location != NSNotFound)
                     range.length = wsRange.location;
             }
@@ -697,7 +727,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
             if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
                 range.length = 0;
             } else {
-                wsRange = [string rangeOfTrailingEmptyLineInRange:range];
+                wsRange = rangeOfTrailingEmptyLine(string, range);
                 if (wsRange.location != NSNotFound)
                     range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
             }
@@ -925,73 +955,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 #pragma mark -
 
 @implementation NSString (SKTemplateParser)
-
 - (NSString *)templateStringValue{ return self; }
-
-#pragma mark Empty lines
-
-// whitespace at the beginning of the string up to and including a newline
-- (NSRange)rangeOfLeadingEmptyLine {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:YES];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfLeadingEmptyLineRequiringNewline:YES range:range];
-}
-
-- (NSRange)rangeOfLeadingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
-    NSRange firstCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int start = range.location;
-    if (firstCharRange.location == NSNotFound) {
-        if (requireNL == NO)
-            wsRange = range;
-    } else {
-        unichar firstChar = [self characterAtIndex:firstCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(firstCharRange);
-        if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
-            if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [self characterAtIndex:rangeEnd] == NSNewlineCharacter)
-                wsRange = NSMakeRange(start, rangeEnd + 1 - start);
-            else 
-                wsRange = NSMakeRange(start, rangeEnd - start);
-        }
-    }
-    return wsRange;
-}
-
-// whitespace at the end of the string after a newline
-- (NSRange)rangeOfTrailingEmptyLine {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:YES];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, [self length])];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range {
-    return [self rangeOfTrailingEmptyLineRequiringNewline:YES range:range];
-}
-
-- (NSRange)rangeOfTrailingEmptyLineRequiringNewline:(BOOL)requireNL range:(NSRange)range {
-    NSRange lastCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int end = NSMaxRange(range);
-    if (lastCharRange.location == NSNotFound) {
-        if (requireNL == NO)
-            wsRange = range;
-    } else {
-        unichar lastChar = [self characterAtIndex:lastCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(lastCharRange);
-        if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
-            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
-    }
-    return wsRange;
-}
-
 @end
 
 #pragma mark -
