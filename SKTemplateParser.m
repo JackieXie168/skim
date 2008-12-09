@@ -185,30 +185,17 @@ static inline NSString *compareConditionTagWithTag(NSString *tag, SKTemplateTagM
     return altTag;
 }
 
-static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, NSString *endDelim, BOOL requireNL,  NSString **argString, BOOL *foundNL) {
+static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, NSString *endDelim, NSString **argString) {
     NSRange altTagRange = [template rangeOfString:altTag];
-    if (altTagRange.location != NSNotFound) {
-        // ignore whitespaces before the tag
-        NSRange wsRange = [template rangeOfTrailingEmptyLineRequiringNewline:requireNL range:NSMakeRange(0, altTagRange.location)];
-        if (wsRange.location != NSNotFound) 
-            altTagRange = NSMakeRange(wsRange.location, NSMaxRange(altTagRange) - wsRange.location);
-        if (nil != endDelim) {
-            // find the end tag and the argument (match string)
-            NSRange endRange = [template rangeOfString:endDelim options:0 range:NSMakeRange(NSMaxRange(altTagRange), [template length] - NSMaxRange(altTagRange))];
-            if (endRange.location != NSNotFound) {
-                *argString = [template substringWithRange:NSMakeRange(NSMaxRange(altTagRange), endRange.location - NSMaxRange(altTagRange))];
-                altTagRange.length = NSMaxRange(endRange) - altTagRange.location;
-            } else {
-                *argString = @"";
-            }
+    if (altTagRange.location != NSNotFound && nil != endDelim) {
+        // find the end tag and the argument (match string)
+        NSRange endRange = [template rangeOfString:endDelim options:0 range:NSMakeRange(NSMaxRange(altTagRange), [template length] - NSMaxRange(altTagRange))];
+        if (endRange.location != NSNotFound) {
+            *argString = [template substringWithRange:NSMakeRange(NSMaxRange(altTagRange), endRange.location - NSMaxRange(altTagRange))];
+            altTagRange.length = NSMaxRange(endRange) - altTagRange.location;
+        } else {
+            *argString = @"";
         }
-        // ignore whitespaces after the tag, including a trailing newline 
-        wsRange = [template rangeOfLeadingEmptyLineRequiringNewline:requireNL range:NSMakeRange(NSMaxRange(altTagRange), [template length] - NSMaxRange(altTagRange))];
-        if (wsRange.location != NSNotFound)
-            altTagRange.length = NSMaxRange(wsRange) - altTagRange.location;
-        if (foundNL) *foundNL = wsRange.location != NSNotFound;
-    } else {
-        if (foundNL) *foundNL = NO;
     }
     return altTagRange;
 }
@@ -220,15 +207,13 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 }
 
 + (NSArray *)arrayByParsingTemplateString:(NSString *)template {
-    return [self arrayByParsingTemplateString:template inlineOptions:0];
+    return [self arrayByParsingTemplateString:template isSubtemplate:NO];
 }
 
-+ (NSArray *)arrayByParsingTemplateString:(NSString *)template inlineOptions:(int)inlineOptions {
++ (NSArray *)arrayByParsingTemplateString:(NSString *)template isSubtemplate:(BOOL)isSubtemplate {
     NSScanner *scanner = [[NSScanner alloc] initWithString:template];
     NSMutableArray *result = [[NSMutableArray alloc] init];
     id currentTag = nil;
-    BOOL inlineAtEnd = (inlineOptions & SKTemplateInlineAtEnd) != 0;
-    BOOL precedingNewline = (inlineOptions & SKTemplateInlineAtStart) == 0;
 
     [scanner setCharactersToBeSkipped:nil];
     
@@ -262,59 +247,24 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 [result addObject:currentTag];
                 [currentTag release];
                 
-                precedingNewline = NO;
-                
             } else if ([scanner scanString:COLLECTION_TAG_CLOSE_DELIM intoString:nil]) {
                 
-                SKPlaceholderTemplateTag *itemTemplate = nil, *separatorTemplate = nil;
-                NSString *itemTemplateString = nil;
+                NSString *itemTemplate = nil, *separatorTemplate = nil;
                 NSString *endTag;
-                NSRange sepTagRange, wsRange;
-                BOOL foundNL, nextFoundNL = NO;
+                NSRange sepTagRange;
                 
                 // collection template tag
-                // ignore whitespace before the tag. Should we also remove a newline?
-                if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                    wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
-                    if (wsRange.location != NSNotFound) {
-                        if (wsRange.length == [[currentTag text] length]) {
-                            [result removeLastObject];
-                            currentTag = [result lastObject];
-                        } else {
-                            [(SKTextTemplateTag *)currentTag setText:[[(SKTextTemplateTag *)currentTag text] substringToIndex:wsRange.location]];
-                        }
-                    }
-                }
-                
                 endTag = endCollectionTagWithTag(tag);
-                // ignore the rest of an empty line after the tag
-                foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                if ([scanner scanString:endTag intoString:nil]) {
-                    // ignore the the rest of an empty line after the currentTag
-                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                } else if ([scanner scanUpToString:endTag intoString:&itemTemplateString] && [scanner scanString:endTag intoString:nil]) {
-                    // ignore whitespace before the tag. Should we also remove a newline?
-                    wsRange = [itemTemplateString rangeOfTrailingEmptyLine];
-                    if (wsRange.location != NSNotFound)
-                        itemTemplateString = [itemTemplateString substringToIndex:wsRange.location];
-                    
-                    sepTagRange = altTemplateTagRange(itemTemplateString, sepCollectionTagWithTag(tag), nil, foundNL == NO, NULL, &nextFoundNL);
+                if ([scanner scanString:endTag intoString:nil] == NO && [scanner scanUpToString:endTag intoString:&itemTemplate] && [scanner scanString:endTag intoString:nil]) {
+                    sepTagRange = altTemplateTagRange(itemTemplate, sepCollectionTagWithTag(tag), nil, NULL);
                     if (sepTagRange.location != NSNotFound) {
-                        separatorTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:[itemTemplateString substringFromIndex:NSMaxRange(sepTagRange)] atStartOfLine:nextFoundNL];
-                        itemTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:[itemTemplateString substringToIndex:sepTagRange.location] atStartOfLine:foundNL];
-                    } else {
-                        itemTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:[itemTemplateString substringToIndex:sepTagRange.location] atStartOfLine:foundNL];
+                        separatorTemplate = [itemTemplate substringFromIndex:NSMaxRange(sepTagRange)];
+                        itemTemplate = [itemTemplate substringToIndex:sepTagRange.location];
                     }
                     
-                    currentTag = [(SKCollectionTemplateTag *)[SKCollectionTemplateTag alloc] initWithKeyPath:tag itemTemplate:itemTemplate separatorTemplate:separatorTemplate];
+                    currentTag = [(SKCollectionTemplateTag *)[SKCollectionTemplateTag alloc] initWithKeyPath:tag itemTemplateString:itemTemplate separatorTemplateString:separatorTemplate];
                     [result addObject:currentTag];
                     [currentTag release];
-                    [itemTemplate release];
-                    [separatorTemplate release];
-                    
-                    // ignore the the rest of an empty line after the currentTag
-                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                    
                 }
                 
             } else {
@@ -343,65 +293,34 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 if ([scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:nil]) {
                     
                     NSMutableArray *subTemplates, *matchStrings;
-                    SKPlaceholderTemplateTag *subTemplate = nil;
-                    NSString *subTemplateString = nil;
+                    NSString *subTemplate = nil;
                     NSString *endTag, *altTag;
-                    NSRange altTagRange, wsRange;
-                    BOOL foundNL, nextFoundNL = NO;
+                    NSRange altTagRange;
                     
                     // condition template tag
-                    // ignore whitespace before the tag. Should we also remove a newline?
-                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        wsRange = [[(SKTextTemplateTag *)currentTag text] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
-                        if (wsRange.location != NSNotFound) {
-                            if (wsRange.length == [[currentTag text] length]) {
-                                [result removeLastObject];
-                                currentTag = [result lastObject];
-                            } else {
-                                [(SKTextTemplateTag *)currentTag setText:[[(SKTextTemplateTag *)currentTag text] substringToIndex:wsRange.location]];
-                            }
-                        }
-                    }
-                    
                     endTag = endConditionTagWithTag(tag);
-                    // ignore the rest of an empty line after the tag
-                    foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                    if ([scanner scanString:endTag intoString:nil])
-                        continue;
-                    if ([scanner scanUpToString:endTag intoString:&subTemplateString] && [scanner scanString:endTag intoString:nil]) {
-                        // ignore whitespace before the currentTag. Should we also remove a newline?
-                        wsRange = [subTemplateString rangeOfTrailingEmptyLine];
-                        if (wsRange.location != NSNotFound)
-                            subTemplateString = [subTemplateString substringToIndex:wsRange.location];
+                    if ([scanner scanString:endTag intoString:nil] == NO && [scanner scanUpToString:endTag intoString:&subTemplate] && [scanner scanString:endTag intoString:nil]) {
                         
                         subTemplates = [[NSMutableArray alloc] init];
                         matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ?: @"", nil];
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
-                            altTagRange = altTemplateTagRange(subTemplateString, altTag, CONDITION_TAG_CLOSE_DELIM, foundNL == NO, &matchString, &nextFoundNL);
+                            altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
-                                subTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:[subTemplateString substringToIndex:altTagRange.location] atStartOfLine:foundNL];
-                                [subTemplates addObject:subTemplate];
-                                [subTemplate release];
+                                [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                                 [matchStrings addObject:matchString ?: @""];
-                                subTemplateString = [subTemplateString substringFromIndex:NSMaxRange(altTagRange)];
-                                foundNL = nextFoundNL;
-                                altTagRange = altTemplateTagRange(subTemplateString, altTag, CONDITION_TAG_CLOSE_DELIM, foundNL == NO, &matchString, &nextFoundNL);
+                                subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
+                                altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             }
                         }
                         
-                        altTagRange = altTemplateTagRange(subTemplateString, altConditionTagWithTag(tag), nil, foundNL == NO, NULL, &nextFoundNL);
+                        altTagRange = altTemplateTagRange(subTemplate, altConditionTagWithTag(tag), nil, NULL);
                         if (altTagRange.location != NSNotFound) {
-                            subTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:[subTemplateString substringToIndex:altTagRange.location] atStartOfLine:foundNL];
-                            [subTemplates addObject:subTemplate];
-                            [subTemplate release];
-                            subTemplateString = [subTemplateString substringFromIndex:NSMaxRange(altTagRange)];
-                            foundNL = nextFoundNL;
+                            [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
+                            subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
                         }
-                        subTemplate = [[SKPlaceholderTemplateTag alloc] initWithString:subTemplateString atStartOfLine:foundNL];
                         [subTemplates addObject:subTemplate];
-                        [subTemplate release];
                         
                         currentTag = [[SKConditionTemplateTag alloc] initWithKeyPath:tag matchType:matchType matchStrings:matchStrings subtemplates:subTemplates];
                         [result addObject:currentTag];
@@ -409,9 +328,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         
                         [subTemplates release];
                         [matchStrings release];
-                        
-                        // ignore the the rest of an empty line after the currentTag
-                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                         
                     }
                     
@@ -432,6 +348,46 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
         } // scan START_TAG_OPEN_DELIM
     } // while
     [scanner release];
+    
+    // remove whitespace before and after collection and condition tags up till newlines
+    int i, count = [result count];
+    
+    for (i = count - 1; i >= 0; i++) {
+        SKTemplateTag *tag = [result objectAtIndex:i];
+        
+        if ([tag type] != SKTextTemplateTagType) continue;
+        
+        SKTemplateTagType typeAfter = i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
+        SKTemplateTagType typeBefore = i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
+        NSString *string = [(SKTextTemplateTag *)tag text];
+        NSRange range = NSMakeRange(0, [string length]), wsRange;
+        
+        if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+            // remove whitespace at the end, just before the collection or condition tag
+            if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+                range.length = 0;
+            } else {
+                wsRange = [string rangeOfLeadingEmptyLine];
+                if (wsRange.location != NSNotFound)
+                    range.length = wsRange.location;
+            }
+        }
+        if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+            // remove whitespace and a newline at the start, just after the collection or condition tag
+            if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+                range.length = 0;
+            } else {
+                wsRange = [string rangeOfTrailingEmptyLineInRange:range];
+                if (wsRange.location != NSNotFound)
+                    range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
+            }
+        }
+        if (range.length == 0)
+            [result removeObjectAtIndex:i];
+        else if (range.length != [string length])
+            [(SKTextTemplateTag *)tag setText:[string substringWithRange:range]];
+    }
+    
     return [result autorelease];    
 }
 
@@ -541,16 +497,14 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 }
 
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template {
-    return [self arrayByParsingTemplateAttributedString:template inlineOptions:0];
+    return [self arrayByParsingTemplateAttributedString:template isSubtemplate:NO];
 }
 
-+ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template inlineOptions:(int)inlineOptions {
++ (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)template isSubtemplate:(BOOL)isSubtemplate {
     NSString *templateString = [template string];
     NSScanner *scanner = [[NSScanner alloc] initWithString:templateString];
     NSMutableArray *result = [[NSMutableArray alloc] init];
     id currentTag = nil;
-    BOOL inlineAtEnd = (inlineOptions & SKTemplateInlineAtEnd) != 0;
-    BOOL precedingNewline = (inlineOptions & SKTemplateInlineAtStart) == 0;
 
     [scanner setCharactersToBeSkipped:nil];
     
@@ -593,61 +547,31 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                 [result addObject:currentTag];
                 [currentTag release];
                 
-                precedingNewline = NO;
-                
             } else if ([scanner scanString:COLLECTION_TAG_CLOSE_DELIM intoString:nil]) {
                 
                 NSString *itemTemplateString = nil;
-                SKRichPlaceholderTemplateTag *itemTemplate = nil, *separatorTemplate = nil;
-                NSAttributedString *itemTemplateAttrString = nil;
+                NSAttributedString *itemTemplate = nil, *separatorTemplate = nil;
                 NSString *endTag;
-                NSRange sepTagRange, wsRange;
-                BOOL foundNL, nextFoundNL = NO;
+                NSRange sepTagRange;
                 
                 // collection template tag
-                // ignore whitespace before the tag. Should we also remove a newline?
-                if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                    wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
-                    if (wsRange.location != NSNotFound) {
-                        if (wsRange.length == [[(SKRichTextTemplateTag *)currentTag attributedText] length]) {
-                            [result removeLastObject];
-                            currentTag = [result lastObject];
-                        } else {
-                            [(SKRichTextTemplateTag *)currentTag setAttributedText:[[(SKRichTextTemplateTag *)currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
-                        }
-                    }
-                }
-                
                 endTag = endCollectionTagWithTag(tag);
-                // ignore the rest of an empty line after the tag
-                foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                if ([scanner scanString:endTag intoString:nil]) {
-                    // ignore the the rest of an empty line after the tag
-                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                if ([scanner scanString:endTag intoString:nil])
                     continue;
-                }
                 start = [scanner scanLocation];
                 if ([scanner scanUpToString:endTag intoString:&itemTemplateString] && [scanner scanString:endTag intoString:nil]) {
                     // ignore whitespace before the tag. Should we also remove a newline?
-                    wsRange = [itemTemplateString rangeOfTrailingEmptyLine];
-                    itemTemplateAttrString = [template attributedSubstringFromRange:NSMakeRange(start, [itemTemplateString length] - wsRange.length)];
+                    itemTemplate = [template attributedSubstringFromRange:NSMakeRange(start, [itemTemplateString length])];
                     
-                    sepTagRange = altTemplateTagRange([itemTemplateAttrString string], sepCollectionTagWithTag(tag), nil, foundNL == NO, NULL, &nextFoundNL);
+                    sepTagRange = altTemplateTagRange([itemTemplate string], sepCollectionTagWithTag(tag), nil, NULL);
                     if (sepTagRange.location != NSNotFound) {
-                        separatorTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:[itemTemplateAttrString attributedSubstringFromRange:NSMakeRange(NSMaxRange(sepTagRange), [itemTemplateAttrString length] - NSMaxRange(sepTagRange))] atStartOfLine:nextFoundNL];
-                        itemTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:[itemTemplateAttrString attributedSubstringFromRange:NSMakeRange(0, sepTagRange.location)] atStartOfLine:foundNL];
-                    } else {
-                        itemTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:itemTemplateAttrString atStartOfLine:foundNL];
+                        separatorTemplate = [itemTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(sepTagRange), [itemTemplate length] - NSMaxRange(sepTagRange))];
+                        itemTemplate = [itemTemplate attributedSubstringFromRange:NSMakeRange(0, sepTagRange.location)];
                     }
                     
-                    currentTag = [(SKRichCollectionTemplateTag *)[SKRichCollectionTemplateTag alloc] initWithKeyPath:tag itemTemplate:itemTemplate separatorTemplate:separatorTemplate];
+                    currentTag = [(SKRichCollectionTemplateTag *)[SKRichCollectionTemplateTag alloc] initWithKeyPath:tag itemTemplateAttributedString:itemTemplate separatorTemplateAttributedString:separatorTemplate];
                     [result addObject:currentTag];
                     [currentTag release];
-                    [itemTemplate release];
-                    [separatorTemplate release];
-                    
-                    // ignore the the rest of an empty line after the tag
-                    precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                     
                 }
                 
@@ -678,69 +602,39 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                     
                     NSMutableArray *subTemplates, *matchStrings;
                     NSString *subTemplateString = nil;
-                    SKRichPlaceholderTemplateTag *subTemplate = nil;
-                    NSAttributedString *subTemplateAttrString = nil;
+                    NSAttributedString *subTemplate = nil;
                     NSString *endTag, *altTag;
-                    NSRange altTagRange, wsRange;
-                    BOOL foundNL, nextFoundNL = NO;
+                    NSRange altTagRange;
                     
                     // condition template tag
-                    // ignore whitespace before the tag. Should we also remove a newline?
-                    if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        wsRange = [[[(SKRichTextTemplateTag *)currentTag attributedText] string] rangeOfTrailingEmptyLineRequiringNewline:precedingNewline == NO];
-                        if (wsRange.location != NSNotFound) {
-                            if (wsRange.length == [[(SKRichTextTemplateTag *)currentTag attributedText] length]) {
-                                [result removeLastObject];
-                                currentTag = [result lastObject];
-                            } else {
-                                [(SKRichTextTemplateTag *)currentTag setAttributedText:[[(SKRichTextTemplateTag *)currentTag attributedText] attributedSubstringFromRange:NSMakeRange(0, wsRange.location)]];
-                            }
-                        }
-                    }
-                    
                     endTag = endConditionTagWithTag(tag);
                     altTag = altConditionTagWithTag(tag);
-                    // ignore the rest of an empty line after the tag
-                    foundNL = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
-                    if ([scanner scanString:endTag intoString:nil]) {
-                        // ignore the the rest of an empty line after the tag
-                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
+                    if ([scanner scanString:endTag intoString:nil])
                         continue;
-                    }
                     start = [scanner scanLocation];
                     if ([scanner scanUpToString:endTag intoString:&subTemplateString] && [scanner scanString:endTag intoString:nil]) {
-                        // ignore whitespace before the tag. Should we also remove a newline?
-                        wsRange = [subTemplateString rangeOfTrailingEmptyLine];
-                        subTemplateAttrString = [template attributedSubstringFromRange:NSMakeRange(start, [subTemplateString length] - wsRange.length)];
+                        subTemplate = [template attributedSubstringFromRange:NSMakeRange(start, [subTemplateString length])];
                         
                         subTemplates = [[NSMutableArray alloc] init];
                         matchStrings = [[NSMutableArray alloc] initWithObjects:matchString ?: @"", nil];
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
-                            altTagRange = altTemplateTagRange([subTemplateAttrString string], altTag, CONDITION_TAG_CLOSE_DELIM, foundNL == NO, &matchString, &nextFoundNL);
+                            altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
-                                subTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:[subTemplateAttrString attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)] atStartOfLine:foundNL];
-                                [subTemplates addObject:subTemplate];
-                                [subTemplate release];
+                                [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
                                 [matchStrings addObject:matchString ?: @""];
-                                subTemplateAttrString = [subTemplateAttrString attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplateAttrString length] - NSMaxRange(altTagRange))];
-                                foundNL = nextFoundNL;
-                                altTagRange = altTemplateTagRange([subTemplateAttrString string], altTag, CONDITION_TAG_CLOSE_DELIM, foundNL == NO, &matchString, &nextFoundNL);
+                                subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
+                                altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
                             }
                         }
                         
-                        altTagRange = altTemplateTagRange([subTemplateAttrString string], altConditionTagWithTag(tag), nil, foundNL == NO, NULL, &nextFoundNL);
+                        altTagRange = altTemplateTagRange([subTemplate string], altConditionTagWithTag(tag), nil, NULL);
                         if (altTagRange.location != NSNotFound) {
-                            subTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:[subTemplateAttrString attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)] atStartOfLine:foundNL];
-                            [subTemplates addObject:subTemplate];
-                            [subTemplate release];
-                            subTemplateAttrString = [subTemplateAttrString attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplateAttrString length] - NSMaxRange(altTagRange))];
-                            foundNL = nextFoundNL;
+                            [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
+                            subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
                         }
-                        subTemplate = [[SKRichPlaceholderTemplateTag alloc] initWithAttributedString:subTemplateAttrString atStartOfLine:foundNL];
                         [subTemplates addObject:subTemplate];
-                        [subTemplate release];
                         
                         currentTag = [[SKRichConditionTemplateTag alloc] initWithKeyPath:tag matchType:matchType matchStrings:matchStrings subtemplates:subTemplates];
                         [result addObject:currentTag];
@@ -748,9 +642,6 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                         
                         [subTemplates release];
                         [matchStrings release];
-                        
-                        // ignore the the rest of an empty line after the tag
-                        precedingNewline = [scanner scanEmptyLineRequiringNewline:inlineAtEnd];
                         
                     }
                     
@@ -776,6 +667,46 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     } // while
     
     [scanner release];
+    
+    // remove whitespace before and after collection and condition tags up till newlines
+    int i, count = [result count];
+    
+    for (i = count - 1; i >= 0; i++) {
+        SKTemplateTag *tag = [result objectAtIndex:i];
+        
+        if ([tag type] != SKTextTemplateTagType) continue;
+        
+        SKTemplateTagType typeAfter = i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
+        SKTemplateTagType typeBefore = i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
+        NSAttributedString *attrString = [(SKRichTextTemplateTag *)tag attributedText];
+        NSString *string = [attrString string];
+        NSRange range = NSMakeRange(0, [string length]), wsRange;
+        
+        if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+            // remove whitespace at the end, just before the collection or condition tag
+            if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+                range.length = 0;
+            } else {
+                wsRange = [string rangeOfLeadingEmptyLine];
+                if (wsRange.location != NSNotFound)
+                    range.length = wsRange.location;
+            }
+        }
+        if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+            // remove whitespace and a newline at the beginning, just after the collection or condition tag
+            if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+                range.length = 0;
+            } else {
+                wsRange = [string rangeOfTrailingEmptyLineInRange:range];
+                if (wsRange.location != NSNotFound)
+                    range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
+            }
+        }
+        if (range.length == 0)
+            [result removeObjectAtIndex:i];
+        else if (range.length != [string length])
+            [(SKRichTextTemplateTag *)tag setAttributedText:[attrString attributedSubstringFromRange:range]];
+    }
     
     return [result autorelease];    
 }
