@@ -200,34 +200,61 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     return altTagRange;
 }
 
-static inline NSRange rangeOfLeadingEmptyLine(NSString *string, NSRange range) {
-    NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int start = range.location;
-    if (firstCharRange.location != NSNotFound) {
-        unichar firstChar = [string characterAtIndex:firstCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(firstCharRange);
-        if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
-            if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
-                wsRange = NSMakeRange(start, rangeEnd + 1 - start);
-            else 
-                wsRange = NSMakeRange(start, rangeEnd - start);
+static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateTagType typeBefore, SKTemplateTagType typeAfter, BOOL isSubtemplate) {
+    NSRange range = NSMakeRange(0, [string length]);
+    BOOL first = NO, last = NO;
+    
+    if (typeAfter == -1) {
+        if (isSubtemplate) {
+            typeAfter = SKCollectionTemplateTagType;
+        } else {
+            typeAfter = SKValueTemplateTagType;
+            last = YES;
         }
     }
-    return wsRange;
-}
-
-static inline NSRange rangeOfTrailingEmptyLine(NSString *string, NSRange range) {
-    NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
-    NSRange wsRange = NSMakeRange(NSNotFound, 0);
-    unsigned int end = NSMaxRange(range);
-    if (lastCharRange.location != NSNotFound) {
-        unichar lastChar = [string characterAtIndex:lastCharRange.location];
-        unsigned int rangeEnd = NSMaxRange(lastCharRange);
-        if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
-            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
+    if (typeBefore == -1) {
+        if (isSubtemplate) {
+            typeBefore = SKCollectionTemplateTagType;
+        } else {
+            typeBefore = SKValueTemplateTagType;
+            first = YES;
+        }
     }
-    return wsRange;
+    
+    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+        // remove whitespace at the end, just before the collection or condition tag
+        if (first && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+            range.length = 0;
+        } else {
+            NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
+            if (lastCharRange.location != NSNotFound) {
+                unichar lastChar = [string characterAtIndex:lastCharRange.location];
+                unsigned int rangeEnd = NSMaxRange(lastCharRange);
+                if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
+                    range.length = rangeEnd;
+            }
+        }
+    }
+    if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+        // remove whitespace and a newline at the start, just after the collection or condition tag
+        if (last && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+            range.length = 0;
+        } else {
+            NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
+            if (firstCharRange.location != NSNotFound) {
+                unichar firstChar = [string characterAtIndex:firstCharRange.location];
+                unsigned int rangeEnd = NSMaxRange(firstCharRange);
+                if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
+                    if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
+                        range = NSMakeRange(rangeEnd + 1, NSMaxRange(range) - rangeEnd - 1);
+                    else 
+                        range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
+                }
+            }
+        }
+    }
+    
+    return range;
 }
 
 #pragma mark Parsing string templates
@@ -387,31 +414,9 @@ static inline NSRange rangeOfTrailingEmptyLine(NSString *string, NSRange range) 
         
         if ([tag type] != SKTextTemplateTagType) continue;
         
-        SKTemplateTagType typeAfter = i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
-        SKTemplateTagType typeBefore = i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
         NSString *string = [(SKTextTemplateTag *)tag text];
-        NSRange range = NSMakeRange(0, [string length]), wsRange;
+        NSRange range = range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
         
-        if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
-            // remove whitespace at the end, just before the collection or condition tag
-            if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
-                range.length = 0;
-            } else {
-                wsRange = rangeOfLeadingEmptyLine(string, range);
-                if (wsRange.location != NSNotFound)
-                    range.length = wsRange.location;
-            }
-        }
-        if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
-            // remove whitespace and a newline at the start, just after the collection or condition tag
-            if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
-                range.length = 0;
-            } else {
-                wsRange = rangeOfTrailingEmptyLine(string, range);
-                if (wsRange.location != NSNotFound)
-                    range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
-            }
-        }
         if (range.length == 0)
             [result removeObjectAtIndex:i];
         else if (range.length != [string length])
@@ -706,32 +711,10 @@ static inline NSRange rangeOfTrailingEmptyLine(NSString *string, NSRange range) 
         
         if ([tag type] != SKTextTemplateTagType) continue;
         
-        SKTemplateTagType typeAfter = i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
-        SKTemplateTagType typeBefore = i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : isSubtemplate ? SKCollectionTemplateTagType : SKValueTemplateTagType;
         NSAttributedString *attrString = [(SKRichTextTemplateTag *)tag attributedText];
         NSString *string = [attrString string];
-        NSRange range = NSMakeRange(0, [string length]), wsRange;
+        NSRange range = range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
         
-        if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
-            // remove whitespace at the end, just before the collection or condition tag
-            if (isSubtemplate == NO && i == 0 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
-                range.length = 0;
-            } else {
-                wsRange = rangeOfLeadingEmptyLine(string, range);
-                if (wsRange.location != NSNotFound)
-                    range.length = wsRange.location;
-            }
-        }
-        if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
-            // remove whitespace and a newline at the beginning, just after the collection or condition tag
-            if (isSubtemplate == NO && i == count - 1 && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
-                range.length = 0;
-            } else {
-                wsRange = rangeOfTrailingEmptyLine(string, range);
-                if (wsRange.location != NSNotFound)
-                    range = NSMakeRange(NSMaxRange(wsRange), NSMaxRange(range) - NSMaxRange(wsRange));
-            }
-        }
         if (range.length == 0)
             [result removeObjectAtIndex:i];
         else if (range.length != [string length])
