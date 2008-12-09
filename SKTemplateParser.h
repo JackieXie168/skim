@@ -70,12 +70,3 @@ enum {
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes;
 
 @end
-
-#pragma mark -
-
-@interface NSScanner (SKTemplateParser)
-
-- (BOOL)scanEmptyLine;
-- (BOOL)scanEmptyLineRequiringNewline:(BOOL)requireNL;
-
-@end

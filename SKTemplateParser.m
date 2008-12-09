@@ -877,39 +877,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 #pragma mark -
 
-@implementation NSScanner (SKTemplateParser)
-
-- (BOOL)scanEmptyLine {
-    return [self scanEmptyLineRequiringNewline:NO];
-}
-
-- (BOOL)scanEmptyLineRequiringNewline:(BOOL)requireNL {
-    BOOL foundEndOfLine = NO;
-    BOOL foundWhitespace = NO;
-    int startLoc = [self scanLocation];
-    
-    // [self scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:nil] is much more sensible, but NSScanner creates an autoreleased inverted character set every time you use it, so it's pretty inefficient
-    foundWhitespace = [self scanUpToCharactersFromSet:[NSCharacterSet nonWhitespaceCharacterSet] intoString:nil];
-
-    if ([self isAtEnd]) {
-        foundEndOfLine = foundWhitespace;
-    } else {
-        foundEndOfLine = [self scanString:@"\r\n" intoString:nil];
-        if (foundEndOfLine == NO) {
-            unichar nextChar = [[self string] characterAtIndex:[self scanLocation]];
-            if (foundEndOfLine = [[NSCharacterSet newlineCharacterSet] characterIsMember:nextChar])
-                [self setScanLocation:[self scanLocation] + 1];
-        }
-    }
-    if (foundEndOfLine == NO && (requireNL == YES || foundWhitespace == YES))
-        [self setScanLocation:startLoc];
-    return foundEndOfLine;
-}
-
-@end
-
-#pragma mark -
-
 @implementation NSAttributedString (SKTemplateParser)
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
