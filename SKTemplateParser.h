@@ -38,10 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
-    SKTemplateInlineAtStart = 1,
-    SKTemplateInlineAtEnd = 2
-};
 
 @interface SKTemplateParser : NSObject
 
