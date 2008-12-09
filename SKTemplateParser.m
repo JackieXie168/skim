@@ -223,34 +223,30 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     
     if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
         // remove whitespace at the end, just before the collection or condition tag
-        if (first && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
+        NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
+        if (lastCharRange.location != NSNotFound) {
+            unichar lastChar = [string characterAtIndex:lastCharRange.location];
+            unsigned int rangeEnd = NSMaxRange(lastCharRange);
+            if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
+                range.length = rangeEnd;
+        } else if (first) {
             range.length = 0;
-        } else {
-            NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
-            if (lastCharRange.location != NSNotFound) {
-                unichar lastChar = [string characterAtIndex:lastCharRange.location];
-                unsigned int rangeEnd = NSMaxRange(lastCharRange);
-                if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
-                    range.length = rangeEnd;
-            }
         }
     }
     if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
         // remove whitespace and a newline at the start, just after the collection or condition tag
-        if (last && [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet]].length == 0) {
-            range.length = 0;
-        } else {
-            NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
-            if (firstCharRange.location != NSNotFound) {
-                unichar firstChar = [string characterAtIndex:firstCharRange.location];
-                unsigned int rangeEnd = NSMaxRange(firstCharRange);
-                if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
-                    if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
-                        range = NSMakeRange(rangeEnd + 1, NSMaxRange(range) - rangeEnd - 1);
-                    else 
-                        range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
-                }
+        NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
+        if (firstCharRange.location != NSNotFound) {
+            unichar firstChar = [string characterAtIndex:firstCharRange.location];
+            unsigned int rangeEnd = NSMaxRange(firstCharRange);
+            if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
+                if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
+                    range = NSMakeRange(rangeEnd + 1, NSMaxRange(range) - rangeEnd - 1);
+                else 
+                    range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
             }
+        } else if (last) {
+            range.length = 0;
         }
     }
     
