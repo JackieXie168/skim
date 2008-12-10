@@ -200,6 +200,21 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
     return altTagRange;
 }
 
+static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, SKTemplateTagMatchType matchType) {
+    switch (matchType) {
+        case SKTemplateTagMatchEqual:
+            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
+        case SKTemplateTagMatchContain:
+            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+        case SKTemplateTagMatchSmaller:
+            return [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
+        case SKTemplateTagMatchSmallerOrEqual:
+            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
+        default:
+            return [keyValue isNotEmpty];
+    }
+}
+
 static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateTagType typeBefore, SKTemplateTagType typeAfter, BOOL isSubtemplate) {
     NSRange range = NSMakeRange(0, [string length]);
     
@@ -456,44 +471,24 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             } else {
                 
                 NSString *matchString = nil;
-                BOOL isMatch;
                 NSArray *matchStrings = [tag matchStrings];
                 unsigned int i, count = [matchStrings count];
                 NSArray *subtemplate = nil;
                 
                 for (i = 0; i < count; i++) {
                     matchString = [matchStrings objectAtIndex:i];
-                    if ([matchString hasPrefix:@"$"]) {
+                    if ([matchString hasPrefix:@"$"])
                         matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue] ?: @"";
-                    }
-                    switch ([tag matchType]) {
-                        case SKTemplateTagMatchEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
-                            break;
-                        case SKTemplateTagMatchContain:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
-                            break;
-                        case SKTemplateTagMatchSmaller:
-                            isMatch = [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
-                            break;
-                        case SKTemplateTagMatchSmallerOrEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
-                            break;
-                        default:
-                            isMatch = [keyValue isNotEmpty];
-                            break;
-                    }
-                    if (isMatch) {
+                    if (matchesCondition(keyValue, matchString, [tag matchType])) {
                         subtemplate = [tag subtemplateAtIndex:i];
                         break;
                     }
                 }
-                if (subtemplate == nil && [[tag subtemplates] count] > count) {
+                if (subtemplate == nil && [[tag subtemplates] count] > count)
                     subtemplate = [tag subtemplateAtIndex:count];
-                }
                 if (subtemplate != nil) {
-                    keyValue = [self stringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex];
-                    [result appendString:keyValue];
+                    if (keyValue = [self stringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex])
+                        [result appendString:keyValue];
                 }
                 
             }
@@ -747,7 +742,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             } else {
                 
                 NSString *matchString = nil;
-                BOOL isMatch;
                 NSArray *matchStrings = [tag matchStrings];
                 unsigned int i, count = [matchStrings count];
                 NSArray *subtemplate = nil;
@@ -756,37 +750,18 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 subtemplate = nil;
                 for (i = 0; i < count; i++) {
                     matchString = [matchStrings objectAtIndex:i];
-                    if ([matchString hasPrefix:@"$"]) {
+                    if ([matchString hasPrefix:@"$"])
                         matchString = [[object templateValueForKeyPath:[matchString substringFromIndex:1]] templateStringValue] ?: @"";
-                    }
-                    switch ([tag matchType]) {
-                        case SKTemplateTagMatchEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
-                            break;
-                        case SKTemplateTagMatchContain:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
-                            break;
-                        case SKTemplateTagMatchSmaller:
-                            isMatch = [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
-                            break;
-                        case SKTemplateTagMatchSmallerOrEqual:
-                            isMatch = [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
-                            break;
-                        default:
-                            isMatch = [keyValue isNotEmpty];
-                            break;
-                    }
-                    if (isMatch) {
+                    if (matchesCondition(keyValue, matchString, [tag matchType])) {
                         subtemplate = [tag subtemplateAtIndex:i];
                         break;
                     }
                 }
-                if (subtemplate == nil && [[tag subtemplates] count] > count) {
+                if (subtemplate == nil && [[tag subtemplates] count] > count)
                     subtemplate = [tag subtemplateAtIndex:count];
-                }
                 if (subtemplate != nil) {
-                    tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex];
-                    [result appendAttributedString:tmpAttrStr];
+                    if (tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex])
+                        [result appendAttributedString:tmpAttrStr];
                 }
                 
             }
