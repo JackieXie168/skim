@@ -255,7 +255,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 #pragma mark Parsing string templates
 
-+ (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object {
++ (NSString *)stringByParsingTemplateString:(NSString *)template usingObject:(id)object {
     return [self stringFromTemplateArray:[self arrayByParsingTemplateString:template] usingObject:object atIndex:1];
 }
 
@@ -524,7 +524,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 #pragma mark Parsing attributed string templates
 
-+ (NSAttributedString *)attributedStringByParsingTemplate:(NSAttributedString *)template usingObject:(id)object {
++ (NSAttributedString *)attributedStringByParsingTemplateAttributedString:(NSAttributedString *)template usingObject:(id)object {
     return [self attributedStringFromTemplateArray:[self arrayByParsingTemplateAttributedString:template] usingObject:object atIndex:1];
 }
 

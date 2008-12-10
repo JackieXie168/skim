@@ -48,7 +48,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
     NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
     NSError *error = nil;
     NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
-    NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
+    NSString *string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
     [templateString release];
     return string;
 }
@@ -68,7 +68,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
     } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"docx"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"odt"] != NSOrderedSame) {
@@ -83,7 +83,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+        NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
         fileWrapper = [attrString RTFDFileWrapperFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
         [templateAttrString release];
     }
