@@ -185,16 +185,16 @@ static inline NSString *compareConditionTagWithTag(NSString *tag, SKTemplateTagM
     return altTag;
 }
 
-static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, NSString *endDelim, NSString **argString) {
+static inline NSRange altConditionTagRange(NSString *template, NSString *altTag, NSString **argString) {
     NSRange altTagRange = [template rangeOfString:altTag];
-    if (altTagRange.location != NSNotFound && nil != endDelim) {
+    if (altTagRange.location != NSNotFound) {
         // find the end tag and the argument (match string)
-        NSRange endRange = [template rangeOfString:endDelim options:0 range:NSMakeRange(NSMaxRange(altTagRange), [template length] - NSMaxRange(altTagRange))];
+        NSRange endRange = [template rangeOfString:CONDITION_TAG_CLOSE_DELIM options:0 range:NSMakeRange(NSMaxRange(altTagRange), [template length] - NSMaxRange(altTagRange))];
         if (endRange.location != NSNotFound) {
             *argString = [template substringWithRange:NSMakeRange(NSMaxRange(altTagRange), endRange.location - NSMaxRange(altTagRange))];
             altTagRange.length = NSMaxRange(endRange) - altTagRange.location;
         } else {
-            *argString = @"";
+            altTagRange = NSMakeRange(NSNotFound, 0);
         }
     }
     return altTagRange;
@@ -202,26 +202,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateTagType typeBefore, SKTemplateTagType typeAfter, BOOL isSubtemplate) {
     NSRange range = NSMakeRange(0, [string length]);
-    BOOL first = NO, last = NO;
     
-    if (typeAfter == -1) {
-        if (isSubtemplate) {
-            typeAfter = SKCollectionTemplateTagType;
-        } else {
-            typeAfter = SKValueTemplateTagType;
-            last = YES;
-        }
-    }
-    if (typeBefore == -1) {
-        if (isSubtemplate) {
-            typeBefore = SKCollectionTemplateTagType;
-        } else {
-            typeBefore = SKValueTemplateTagType;
-            first = YES;
-        }
-    }
-    
-    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+    if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType || (isSubtemplate && typeAfter == -1)) {
         // remove whitespace at the end, just before the collection or condition tag
         NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
         if (lastCharRange.location != NSNotFound) {
@@ -229,11 +211,11 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             unsigned int rangeEnd = NSMaxRange(lastCharRange);
             if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
                 range.length = rangeEnd;
-        } else if (first) {
+        } else if (typeBefore == -1) {
             range.length = 0;
         }
     }
-    if (typeBefore == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType) {
+    if (typeBefore == SKCollectionTemplateTagType || typeBefore == SKConditionTemplateTagType || (isSubtemplate && typeBefore == -1)) {
         // remove whitespace and a newline at the start, just after the collection or condition tag
         NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
         if (firstCharRange.location != NSNotFound) {
@@ -245,7 +227,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 else 
                     range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
             }
-        } else if (last) {
+        } else if (typeAfter == -1) {
             range.length = 0;
         }
     }
@@ -310,7 +292,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 // collection template tag
                 endTag = endCollectionTagWithTag(tag);
                 if ([scanner scanString:endTag intoString:nil] == NO && [scanner scanUpToString:endTag intoString:&itemTemplate] && [scanner scanString:endTag intoString:nil]) {
-                    sepTagRange = altTemplateTagRange(itemTemplate, sepCollectionTagWithTag(tag), nil, NULL);
+                    sepTagRange = [itemTemplate rangeOfString:sepCollectionTagWithTag(tag)];
                     if (sepTagRange.location != NSNotFound) {
                         separatorTemplate = [itemTemplate substringFromIndex:NSMaxRange(sepTagRange)];
                         itemTemplate = [itemTemplate substringToIndex:sepTagRange.location];
@@ -360,16 +342,16 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
-                            altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
+                            altTagRange = altConditionTagRange(subTemplate, altTag, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                                 [matchStrings addObject:matchString ?: @""];
                                 subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
-                                altTagRange = altTemplateTagRange(subTemplate, altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
+                                altTagRange = altConditionTagRange(subTemplate, altTag, &matchString);
                             }
                         }
                         
-                        altTagRange = altTemplateTagRange(subTemplate, altConditionTagWithTag(tag), nil, NULL);
+                        altTagRange = [subTemplate rangeOfString:altConditionTagWithTag(tag)];
                         if (altTagRange.location != NSNotFound) {
                             [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                             subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
@@ -591,7 +573,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     // ignore whitespace before the tag. Should we also remove a newline?
                     itemTemplate = [template attributedSubstringFromRange:NSMakeRange(start, [itemTemplateString length])];
                     
-                    sepTagRange = altTemplateTagRange([itemTemplate string], sepCollectionTagWithTag(tag), nil, NULL);
+                    sepTagRange = [[itemTemplate string] rangeOfString:sepCollectionTagWithTag(tag)];
                     if (sepTagRange.location != NSNotFound) {
                         separatorTemplate = [itemTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(sepTagRange), [itemTemplate length] - NSMaxRange(sepTagRange))];
                         itemTemplate = [itemTemplate attributedSubstringFromRange:NSMakeRange(0, sepTagRange.location)];
@@ -648,16 +630,16 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                         
                         if (matchType != SKTemplateTagMatchOther) {
                             altTag = compareConditionTagWithTag(tag, matchType);
-                            altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
+                            altTagRange = altConditionTagRange([subTemplate string], altTag, &matchString);
                             while (altTagRange.location != NSNotFound) {
                                 [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
                                 [matchStrings addObject:matchString ?: @""];
                                 subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
-                                altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITION_TAG_CLOSE_DELIM, &matchString);
+                                altTagRange = altConditionTagRange([subTemplate string], altTag, &matchString);
                             }
                         }
                         
-                        altTagRange = altTemplateTagRange([subTemplate string], altConditionTagWithTag(tag), nil, NULL);
+                        altTagRange = [[subTemplate string] rangeOfString:altConditionTagWithTag(tag)];
                         if (altTagRange.location != NSNotFound) {
                             [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
                             subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
