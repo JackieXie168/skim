@@ -277,7 +277,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                [(SKTextTemplateTag *)currentTag setText:[[(SKTextTemplateTag *)currentTag text] stringByAppendingString:beforeText]];
+                [(SKTextTemplateTag *)currentTag appendText:beforeText];
             } else {
                 currentTag = [[SKTextTemplateTag alloc] initWithText:beforeText];
                 [result addObject:currentTag];
@@ -389,7 +389,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     
                     // an open delimiter without a close delimiter, so no template tag. Rewind
                     if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        [(SKTextTemplateTag *)currentTag setText:[[(SKTextTemplateTag *)currentTag text] stringByAppendingString:START_TAG_OPEN_DELIM]];
+                        [(SKTextTemplateTag *)currentTag appendText:START_TAG_OPEN_DELIM];
                     } else {
                         currentTag = [[SKTextTemplateTag alloc] initWithText:START_TAG_OPEN_DELIM];
                         [result addObject:currentTag];
@@ -545,17 +545,12 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         NSString *tag = nil;
         int start;
         NSDictionary *attr = nil;
-        NSMutableAttributedString *tmpAttrStr = nil;
         
         start = [scanner scanLocation];
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                tmpAttrStr = [[(SKRichTextTemplateTag *)currentTag attributedText] mutableCopy];
-                [tmpAttrStr appendAttributedString:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
-                [tmpAttrStr fixAttributesInRange:NSMakeRange(0, [tmpAttrStr length])];
-                [(SKRichTextTemplateTag *)currentTag setAttributedText:tmpAttrStr];
-                [tmpAttrStr release];
+                [(SKRichTextTemplateTag *)currentTag appendAttributedText:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
             } else {
                 currentTag = [[SKRichTextTemplateTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start, [beforeText length])]];
                 [result addObject:currentTag];
@@ -682,11 +677,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     
                     // a START_TAG_OPEN_DELIM without COLLECTION_TAG_CLOSE_DELIM, so no template tag. Rewind
                     if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
-                        tmpAttrStr = [[(SKRichTextTemplateTag *)currentTag attributedText] mutableCopy];
-                        [tmpAttrStr appendAttributedString:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
-                        [tmpAttrStr fixAttributesInRange:NSMakeRange(0, [tmpAttrStr length])];
-                        [(SKRichTextTemplateTag *)currentTag setAttributedText:tmpAttrStr];
-                        [tmpAttrStr release];
+                        [(SKRichTextTemplateTag *)currentTag appendAttributedText:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
                     } else {
                         currentTag = [[SKRichTextTemplateTag alloc] initWithAttributedText:[template attributedSubstringFromRange:NSMakeRange(start - [START_TAG_OPEN_DELIM length], [START_TAG_OPEN_DELIM length])]];
                         [result addObject:currentTag];

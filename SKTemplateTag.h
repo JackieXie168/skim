@@ -149,6 +149,8 @@ typedef NSInteger SKTemplateTagMatchType;
 - (NSString *)text;
 - (void)setText:(NSString *)newText;
 
+- (void)appendText:(NSString *)newText;
+
 @end
 
 #pragma mark -
@@ -161,5 +163,7 @@ typedef NSInteger SKTemplateTagMatchType;
 
 - (NSAttributedString *)attributedText;
 - (void)setAttributedText:(NSAttributedString *)newAttributedText;
+
+- (void)appendAttributedText:(NSAttributedString *)newAttributedText;
 
 @end
