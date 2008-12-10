@@ -677,7 +677,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     // remove whitespace before and after collection and condition tags up till newlines
     int i, count = [result count];
     
-    for (i = count - 1; i >= 0; i++) {
+    for (i = count - 1; i >= 0; i--) {
         SKTemplateTag *tag = [result objectAtIndex:i];
         
         if ([tag type] != SKTextTemplateTagType) continue;
