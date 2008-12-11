@@ -780,14 +780,9 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     return YES;
 }
 
-- (id)safeValueForKeyPath:(NSString *)keyPath {
-    id value = nil;
-    @try{ value = [self valueForKeyPath:keyPath]; }
-    @catch (id exception) { value = nil; }
-    return value;
-}
-
 - (id)templateValueForKeyPath:(NSString *)keyPath {
+    id value = nil;
+    NSString *trailingKeyPath = nil;
     unsigned int atIndex = [keyPath rangeOfString:@"@"].location;
     if (atIndex != NSNotFound) {
         unsigned int dotIndex = [keyPath rangeOfString:@"." options:0 range:NSMakeRange(atIndex + 1, [keyPath length] - atIndex - 1)].location;
@@ -795,11 +790,15 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             static NSSet *arrayOperators = nil;
             if (arrayOperators == nil)
                 arrayOperators = [[NSSet alloc] initWithObjects:@"@avg", @"@max", @"@min", @"@sum", @"@distinctUnionOfArrays", @"@distinctUnionOfObjects", @"@distinctUnionOfSets", @"@unionOfArrays", @"@unionOfObjects", @"@unionOfSets", nil];
-            if ([arrayOperators containsObject:[keyPath substringWithRange:NSMakeRange(atIndex, dotIndex - atIndex)]] == NO)
-                return [[self safeValueForKeyPath:[keyPath substringToIndex:dotIndex]] templateValueForKeyPath:[keyPath substringFromIndex:dotIndex + 1]];
+            if ([arrayOperators containsObject:[keyPath substringWithRange:NSMakeRange(atIndex, dotIndex - atIndex)]] == NO) {
+                trailingKeyPath = [keyPath substringFromIndex:dotIndex + 1];
+                keyPath = [keyPath substringToIndex:dotIndex];
+            }
         }
     }
-    return [self safeValueForKeyPath:keyPath];
+    @try{ value = [self valueForKeyPath:keyPath]; }
+    @catch(id exception) { value = nil; }
+    return trailingKeyPath ? [value templateValueForKeyPath:trailingKeyPath] : value;
 }
 
 - (NSString *)templateStringValue {
