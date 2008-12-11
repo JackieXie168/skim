@@ -802,12 +802,11 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 }
 
 - (NSString *)templateStringValue {
-    NSString *description = nil;
     if ([self respondsToSelector:@selector(stringValue)])
-        description = [self performSelector:@selector(stringValue)];
-    else if ([self respondsToSelector:@selector(string)])
-        description = [self performSelector:@selector(string)];
-    return description ?: [self description];
+        return [(id)self stringValue] ?: @"";
+    if ([self respondsToSelector:@selector(string)])
+        return [(id)self string] ?: @"";
+    return [self description];
 }
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
