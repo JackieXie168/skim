@@ -534,7 +534,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         
         if ([scanner scanString:START_TAG_OPEN_DELIM intoString:nil]) {
             
-            attr = [template attributesAtIndex:[scanner scanLocation] - 1 effectiveRange:NULL];
+            attr = [template attributesAtIndex:[scanner scanLocation] - [START_TAG_OPEN_DELIM length] effectiveRange:NULL];
             start = [scanner scanLocation];
             
             // scan the key, must be letters and dots. We don't allow extra spaces
