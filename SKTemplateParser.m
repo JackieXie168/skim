@@ -445,7 +445,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             if (type == SKValueTemplateTagType) {
                 
                 if (keyValue)
-                    [result appendString:[keyValue templateStringValue] ?: @""];
+                    [result appendString:[keyValue templateStringValue]];
                 
             } else if (type == SKCollectionTemplateTagType) {
                 
@@ -810,7 +810,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 }
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
-    return [[[NSAttributedString alloc] initWithString:[self templateStringValue] ?: @"" attributes:attributes] autorelease];
+    return [[[NSAttributedString alloc] initWithString:[self templateStringValue] attributes:attributes] autorelease];
 }
 
 @end
