@@ -86,56 +86,36 @@ static NSCharacterSet *invertedKeyCharacterSet = nil;
     invertedKeyCharacterSet = [[keyCharacterSet invertedSet] copy];
 }
 
-static inline NSString *endCollectionTagWithKeyPath(NSString *keyPath) {
-    static NSMutableDictionary *endCollectionDict = nil;
-    if (nil == endCollectionDict)
-        endCollectionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *endTag = [endCollectionDict objectForKey:keyPath];
+static inline NSString *templateTagWithKeyPathAndDelims(NSMutableDictionary **dict, NSString *keyPath, NSString *openDelim, NSString *closeDelim) {
+    NSString *endTag = [*dict objectForKey:keyPath];
     if (nil == endTag) {
-        endTag = [NSString stringWithFormat:@"%@%@%@", END_TAG_OPEN_DELIM, keyPath, COLLECTION_TAG_CLOSE_DELIM];
-        [endCollectionDict setObject:endTag forKey:keyPath];
+        if (*dict == nil)
+            *dict = [[NSMutableDictionary alloc] init];
+        endTag = [[NSString alloc] initWithFormat:@"%@%@%@", openDelim, keyPath, closeDelim];
+        [*dict setObject:endTag forKey:keyPath];
+        [endTag release];
     }
     return endTag;
+}
+
+static inline NSString *endCollectionTagWithKeyPath(NSString *keyPath) {
+    static NSMutableDictionary *endCollectionDict = nil;
+    return templateTagWithKeyPathAndDelims(&endCollectionDict, keyPath, END_TAG_OPEN_DELIM, COLLECTION_TAG_CLOSE_DELIM);
 }
 
 static inline NSString *sepCollectionTagWithKeyPath(NSString *keyPath) {
     static NSMutableDictionary *sepCollectionDict = nil;
-    if (nil == sepCollectionDict)
-        sepCollectionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *altTag = [sepCollectionDict objectForKey:keyPath];
-    if (nil == altTag) {
-        altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, COLLECTION_TAG_CLOSE_DELIM];
-        [sepCollectionDict setObject:altTag forKey:keyPath];
-    }
-    return altTag;
+    return templateTagWithKeyPathAndDelims(&sepCollectionDict, keyPath, ALT_TAG_OPEN_DELIM, COLLECTION_TAG_CLOSE_DELIM);
 }
 
 static inline NSString *endConditionTagWithKeyPath(NSString *keyPath) {
     static NSMutableDictionary *endConditionDict = nil;
-    if (nil == endConditionDict)
-        endConditionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *endTag = [endConditionDict objectForKey:keyPath];
-    if (nil == endTag) {
-        endTag = [NSString stringWithFormat:@"%@%@%@", END_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_CLOSE_DELIM];
-        [endConditionDict setObject:endTag forKey:keyPath];
-    }
-    return endTag;
+    return templateTagWithKeyPathAndDelims(&endConditionDict, keyPath, END_TAG_OPEN_DELIM, CONDITION_TAG_CLOSE_DELIM);
 }
 
 static inline NSString *altConditionTagWithKeyPath(NSString *keyPath) {
     static NSMutableDictionary *altConditionDict = nil;
-    if (nil == altConditionDict)
-        altConditionDict = [[NSMutableDictionary alloc] init];
-    
-    NSString *altTag = [altConditionDict objectForKey:keyPath];
-    if (nil == altTag) {
-        altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_CLOSE_DELIM];
-        [altConditionDict setObject:altTag forKey:keyPath];
-    }
-    return altTag;
+    return templateTagWithKeyPathAndDelims(&altConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_CLOSE_DELIM);
 }
 
 static inline NSString *compareConditionTagWithKeyPath(NSString *keyPath, SKTemplateTagMatchType matchType) {
@@ -143,46 +123,18 @@ static inline NSString *compareConditionTagWithKeyPath(NSString *keyPath, SKTemp
     static NSMutableDictionary *containConditionDict = nil;
     static NSMutableDictionary *smallerConditionDict = nil;
     static NSMutableDictionary *smallerOrEqualConditionDict = nil;
-    NSString *altTag = nil;
     switch (matchType) {
         case SKTemplateTagMatchEqual:
-            if (nil == equalConditionDict)
-                equalConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [equalConditionDict objectForKey:keyPath];
-            if (nil == altTag) {
-                altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_EQUAL];
-                [equalConditionDict setObject:altTag forKey:keyPath];
-            }
-            break;
+            return templateTagWithKeyPathAndDelims(&equalConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_EQUAL);
         case SKTemplateTagMatchContain:
-            if (nil == containConditionDict)
-                containConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [containConditionDict objectForKey:keyPath];
-            if (nil == altTag) {
-                altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_CONTAIN];
-                [containConditionDict setObject:altTag forKey:keyPath];
-            }
-            break;
+            return templateTagWithKeyPathAndDelims(&containConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_CONTAIN);
         case SKTemplateTagMatchSmaller:
-            if (nil == smallerConditionDict)
-                smallerConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [smallerConditionDict objectForKey:keyPath];
-            if (nil == altTag) {
-                altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_SMALLER];
-                [smallerConditionDict setObject:altTag forKey:keyPath];
-            }
-            break;
+            return templateTagWithKeyPathAndDelims(&smallerOrEqualConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_SMALLER_OR_EQUAL);
         case SKTemplateTagMatchSmallerOrEqual:
-            if (nil == smallerOrEqualConditionDict)
-                smallerOrEqualConditionDict = [[NSMutableDictionary alloc] init];
-            altTag = [smallerOrEqualConditionDict objectForKey:keyPath];
-            if (nil == altTag) {
-                altTag = [NSString stringWithFormat:@"%@%@%@", ALT_TAG_OPEN_DELIM, keyPath, CONDITION_TAG_SMALLER_OR_EQUAL];
-                [smallerOrEqualConditionDict setObject:altTag forKey:keyPath];
-            }
-            break;
+            return templateTagWithKeyPathAndDelims(&smallerConditionDict, keyPath, ALT_TAG_OPEN_DELIM, CONDITION_TAG_SMALLER);
+        default:
+            return nil;
     }
-    return altTag;
 }
 
 static inline NSRange altConditionTagRange(NSString *template, NSString *altTag, NSString **argString) {
@@ -200,7 +152,7 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
     return altTagRange;
 }
 
-static inline id templateValueForKeyPath(id object, NSString *keyPath, int anIndex) {
+static id templateValueForKeyPath(id object, NSString *keyPath, int anIndex) {
     if ([keyPath hasPrefix:@"#"] && anIndex > 0) {
         object = [NSNumber numberWithInt:anIndex];
         if ([keyPath length] == 1)
@@ -228,7 +180,9 @@ static inline id templateValueForKeyPath(id object, NSString *keyPath, int anInd
     }
     @try{ value = [object valueForKeyPath:keyPath]; }
     @catch(id exception) { value = nil; }
-    return trailingKeyPath ? templateValueForKeyPath(value, trailingKeyPath, 0) : value;
+    if (trailingKeyPath)
+        value = templateValueForKeyPath(value, trailingKeyPath, 0);
+    return value;
 }
 
 static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, SKTemplateTagMatchType matchType) {
