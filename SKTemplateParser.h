@@ -59,8 +59,6 @@
 
 - (BOOL)isNotEmpty;
 
-- (id)templateValueForKeyPath:(NSString *)keyPath;
-
 - (NSString *)templateStringValue;
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes;
 
