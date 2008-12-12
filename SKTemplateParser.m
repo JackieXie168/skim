@@ -560,7 +560,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 start = [scanner scanLocation];
                 [scanner scanUpToString:endTag intoString:&itemTemplateString];
                 if ([scanner scanString:endTag intoString:nil]) {
-                    // ignore whitespace before the tag. Should we also remove a newline?
                     itemTemplate = [template attributedSubstringFromRange:NSMakeRange(start, [itemTemplateString length])];
                     
                     sepTagRange = [[itemTemplate string] rangeOfString:sepCollectionTagWithTag(tag)];
