@@ -323,19 +323,17 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 NSString *matchString = @"";
                 SKTemplateTagMatchType matchType = SKTemplateTagMatchOther;
                 
-                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:nil])
                     matchType = SKTemplateTagMatchEqual;
-                } else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:nil])
                     matchType = SKTemplateTagMatchContain;
-                } else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:nil])
                     matchType = SKTemplateTagMatchSmallerOrEqual;
-                } else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:nil])
                     matchType = SKTemplateTagMatchSmaller;
-                }
+                
+                if (matchType != SKTemplateTagMatchOther)
+                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
                 
                 if ([scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:nil]) {
                     
@@ -582,19 +580,17 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 NSString *matchString = @"";
                 SKTemplateTagMatchType matchType = SKTemplateTagMatchOther;
                 
-                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                if ([scanner scanString:CONDITION_TAG_EQUAL intoString:nil])
                     matchType = SKTemplateTagMatchEqual;
-                } else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_CONTAIN intoString:nil])
                     matchType = SKTemplateTagMatchContain;
-                } else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_SMALLER_OR_EQUAL intoString:nil])
                     matchType = SKTemplateTagMatchSmallerOrEqual;
-                } else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:nil]) {
-                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
+                else if ([scanner scanString:CONDITION_TAG_SMALLER intoString:nil])
                     matchType = SKTemplateTagMatchSmaller;
-                }
+                
+                if (matchType != SKTemplateTagMatchOther)
+                    [scanner scanUpToString:CONDITION_TAG_CLOSE_DELIM intoString:&matchString];
                 
                 if ([scanner scanString:CONDITION_TAG_CLOSE_DELIM intoString:nil]) {
                     
