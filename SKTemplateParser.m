@@ -39,7 +39,6 @@
 #import "SKTemplateParser.h"
 #import "SKTemplateTag.h"
 #import "NSCharacterSet_SKExtensions.h"
-#import "NSString_SKExtensions.h"
 #import "SKRuntime.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
@@ -186,17 +185,31 @@ static id templateValueForKeyPath(id object, NSString *keyPath, int anIndex) {
 }
 
 static inline BOOL matchesCondition(NSString *keyValue, NSString *matchString, SKTemplateTagMatchType matchType) {
-    switch (matchType) {
-        case SKTemplateTagMatchEqual:
-            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" caseInsensitiveCompare:matchString] == NSOrderedSame;
-        case SKTemplateTagMatchContain:
-            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
-        case SKTemplateTagMatchSmaller:
-            return [matchString isEqualToString:@""] ? NO : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] == NSOrderedAscending;
-        case SKTemplateTagMatchSmallerOrEqual:
-            return [matchString isEqualToString:@""] ? NO == [keyValue isNotEmpty] : [[keyValue templateStringValue] ?: @"" localizedCaseInsensitiveNumericCompare:matchString] != NSOrderedDescending;
-        default:
-            return [keyValue isNotEmpty];
+    if ([matchString isEqualToString:@""]) {
+        switch (matchType) {
+            case SKTemplateTagMatchEqual:
+            case SKTemplateTagMatchContain:
+            case SKTemplateTagMatchSmallerOrEqual:
+                return NO == [keyValue isNotEmpty];
+            case SKTemplateTagMatchSmaller:
+                return NO;
+            default:
+                return [keyValue isNotEmpty];
+        }
+    } else {
+        NSString *stringValue = [keyValue templateStringValue] ?: @"";
+        switch (matchType) {
+            case SKTemplateTagMatchEqual:
+                return [stringValue caseInsensitiveCompare:matchString] == NSOrderedSame;
+            case SKTemplateTagMatchContain:
+                return [stringValue rangeOfString:matchString options:NSCaseInsensitiveSearch].location != NSNotFound;
+            case SKTemplateTagMatchSmaller:
+                return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] == NSOrderedAscending;
+            case SKTemplateTagMatchSmallerOrEqual:
+                return [stringValue compare:matchString options:NSCaseInsensitiveSearch | NSNumericSearch] != NSOrderedDescending;
+            default:
+                return NO;
+        }
     }
 }
 
