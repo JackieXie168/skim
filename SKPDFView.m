@@ -71,7 +71,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKLineInspector.h"
 
-#define ANNOTATION_MODE_COUNT 8
+#define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
