@@ -303,49 +303,33 @@
 
 - (void)setFrame:(NSRect)frame {
     [super setFrame:frame];
-    if (resizing)
-        return;
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self trackMouseOvers];
 }
 
 - (void)setFrameSize:(NSSize)size {
     [super setFrameSize:size];
-    if (resizing)
-        return;
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self trackMouseOvers];
 }
  
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
-    if (resizing)
-        return;
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self trackMouseOvers];
 }
  
 - (void)setBoundsSize:(NSSize)size {
     [super setBoundsSize:size];
-    if (resizing)
-        return;
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self trackMouseOvers];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self window] && trackingRect)
+    if ([self window] && trackingRect) {
         [self removeTrackingRect:trackingRect];
+        trackingRect = 0;
+    }
 }
 
 - (void)viewDidMoveToWindow {
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    [self trackMouseOvers];
 }
 
 - (void)resizeWithEvent:(NSEvent *)theEvent {
@@ -391,8 +375,8 @@
 	} // end of mouse-tracking loop
     
     [contentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
-    [self trackMouseOvers];
     resizing = NO;
+    [self trackMouseOvers];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -415,9 +399,11 @@
 }
 
 - (void)trackMouseOvers {
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    if ([self window] && resizing == NO) {
+        if (trackingRect)
+            [self removeTrackingRect:trackingRect];
+        trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NSMouseInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds], [self isFlipped])];
+    }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
