@@ -41,7 +41,6 @@
 
 @interface BDSKDragImageView : NSImageView {
 	id delegate;
-	BOOL highlight;
 } 
 
 - (id)delegate;
@@ -52,8 +51,6 @@
 @end
 
 @interface NSObject (BDSKDragImageViewDelegate)
-- (NSDragOperation)dragImageView:(BDSKDragImageView *)view validateDrop:(id <NSDraggingInfo>)sender;
-- (BOOL)dragImageView:(BDSKDragImageView *)view acceptDrop:(id <NSDraggingInfo>)sender;
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
 - (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view;

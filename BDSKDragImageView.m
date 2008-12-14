@@ -37,25 +37,8 @@
  */
 
 #import "BDSKDragImageView.h"
-#import "NSBezierPath_BDSKExtensions.h"
 
 @implementation BDSKDragImageView
-
-- (id)initWithFrame:(NSRect)frameRect {
-	if (self = [super initWithFrame:frameRect]) {
-		delegate = nil;
-		highlight = NO;
-	}
-	return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-	if (self = [super initWithCoder:decoder]) {
-		delegate = nil;
-		highlight = NO;
-	}
-	return self;
-}
 
 - (id)delegate {
     return delegate;
@@ -109,36 +92,6 @@
 	}
     
     return [menu numberOfItems] ? menu : nil;
-}
-
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender{
-    NSDragOperation dragOp = NSDragOperationNone;
-	if ([self isEditable] && [delegate respondsToSelector:@selector(dragImageView:validateDrop:)])
-		dragOp = [delegate dragImageView:self validateDrop:sender];
-	if (dragOp != NSDragOperationNone) {
-		highlight = YES;
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-		[self setNeedsDisplay:YES];
-	}
-	return dragOp;
-}
-
-- (void)draggingExited:(id <NSDraggingInfo>)sender{
-    highlight = NO;
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-	[self setNeedsDisplay:YES];
-}
-
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    highlight = NO;
-    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
-	[self setNeedsDisplay:YES];
-	if ([delegate respondsToSelector:@selector(dragImageView:acceptDrop:)])
-		return [delegate dragImageView:self acceptDrop:sender];
-	return NO;
-}
-
-- (void)concludeDragOperation:(id <NSDraggingInfo>)sender {
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -213,16 +166,6 @@
 
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
-}
-
-- (void)drawRect:(NSRect)aRect {
-	[super drawRect:aRect];
-	
-	if (highlight == NO) return;
-	
-	[[NSColor alternateSelectedControlColor] set];
-	[NSBezierPath setDefaultLineWidth:2.0];
-	[NSBezierPath strokeRoundRectInRect:NSInsetRect(aRect, 2.0, 2.0) radius:5.0];
 }
 
 @end

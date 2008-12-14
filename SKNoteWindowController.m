@@ -279,27 +279,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 #pragma mark BDSKDragImageView delegate protocol
 
-- (NSDragOperation)dragImageView:(BDSKDragImageView *)view validateDrop:(id <NSDraggingInfo>)sender;
-{
-    if ([[sender draggingSource] isEqual:view] == NO &&
-        [NSImage canInitWithPasteboard:[sender draggingPasteboard]] &&
-        [self isNoteType])
-        return NSDragOperationCopy;
-    else
-        return NSDragOperationNone;
-}
-
-- (BOOL)dragImageView:(BDSKDragImageView *)view acceptDrop:(id <NSDraggingInfo>)sender;
-{
-    NSImage *image = [[NSImage alloc] initWithPasteboard:[sender draggingPasteboard]];
-    
-    if (image) {
-        [(SKNPDFAnnotationNote *)note setImage:image];
-        [image release];
-        return YES;
-    } else return NO;
-}
-
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
