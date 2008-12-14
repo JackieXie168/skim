@@ -42,10 +42,11 @@
 @class PDFView, SKNavigationToolTipView, SKNavigationButton;
 
 @interface SKNavigationWindow : SKAnimatedBorderlessWindow {
-    NSMutableArray *buttons;
+    NSButton *zoomButton;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)moveToScreen:(NSScreen *)screen;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
 @end
 
 
@@ -76,48 +77,39 @@
     NSString *toolTip;
     NSString *alternateToolTip;
 }
-- (NSString *)currentToolTip;
+
+- (NSBezierPath *)path;
+- (void)setPath:(NSBezierPath *)newPath;
+
+- (NSBezierPath *)alternatePath;
+- (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
+
 - (NSString *)alternateToolTip;
 - (void)setAlternateToolTip:(NSString *)string;
+
+- (NSString *)currentToolTip;
+
++ (NSBezierPath *)nextButtonPath;
++ (NSBezierPath *)previousButtonPath;
++ (NSBezierPath *)zoomButtonPath;
++ (NSBezierPath *)alternateZoomButtonPath;
++ (NSBezierPath *)closeButtonPath;
++ (NSBezierPath *)separatorButtonPath;
+
 @end
 
 
-@interface SKNavigationButtonCell : NSButtonCell
-- (NSBezierPath *)pathWithFrame:(NSRect)cellFrame;
-@end
+@interface SKNavigationButtonCell : NSButtonCell {
+    NSBezierPath *path;
+    NSBezierPath *alternatePath;
+}
 
+- (NSBezierPath *)path;
+- (void)setPath:(NSBezierPath *)newPath;
 
-@interface SKNavigationNextButton : SKNavigationButton
-@end
+- (NSBezierPath *)alternatePath;
+- (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
 
-@interface SKNavigationNextButtonCell : SKNavigationButtonCell
-@end
+- (NSBezierPath *)currentPath;
 
-
-@interface SKNavigationPreviousButton : SKNavigationButton
-@end
-
-@interface SKNavigationPreviousButtonCell : SKNavigationButtonCell
-@end
-
-
-@interface SKNavigationZoomButton : SKNavigationButton
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-@end
-
-@interface SKNavigationZoomButtonCell : SKNavigationButtonCell
-@end
-
-
-@interface SKNavigationCloseButton : SKNavigationButton
-@end
-
-@interface SKNavigationCloseButtonCell : SKNavigationButtonCell
-@end
-
-
-@interface SKNavigationSeparatorButton : SKNavigationButton
-@end
-
-@interface SKNavigationSeparatorButtonCell : SKNavigationButtonCell
 @end
