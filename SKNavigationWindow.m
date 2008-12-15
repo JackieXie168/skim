@@ -50,6 +50,15 @@
 #define LABEL_OFFSET 10.0
 #define LABEL_TEXT_MARGIN 2.0
 
+
+static inline NSBezierPath *nextButtonPath(NSSize size);
+static inline NSBezierPath *previousButtonPath(NSSize size);
+static inline NSBezierPath *zoomButtonPath(NSSize size);
+static inline NSBezierPath *alternateZoomButtonPath(NSSize size);
+static inline NSBezierPath *closeButtonPath(NSSize size);
+static inline NSBezierPath *separatorButtonPath(NSSize size);
+
+
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(PDFView *)pdfView {
@@ -73,7 +82,7 @@
         [button setTarget:controller];
         [button setAction:@selector(doGoToPreviousPage:)];
         [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
-        [button setPath:[SKNavigationButton previousButtonPath]];
+        [button setPath:previousButtonPath(rect.size)];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -81,13 +90,13 @@
         [button setTarget:controller];
         [button setAction:@selector(doGoToNextPage:)];
         [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
-        [button setPath:[SKNavigationButton nextButtonPath]];
+        [button setPath:nextButtonPath(rect.size)];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
         button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setPath:[SKNavigationButton separatorButtonPath]];
+        [button setPath:separatorButtonPath(rect.size)];
         [button setEnabled:NO];
         [[self contentView] addSubview:button];
         
@@ -98,8 +107,8 @@
         [button setAction:@selector(toggleAutoActualSize:)];
         [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
         [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
-        [button setPath:[SKNavigationButton zoomButtonPath]];
-        [button setAlternatePath:[SKNavigationButton alternateZoomButtonPath]];
+        [button setPath:zoomButtonPath(rect.size)];
+        [button setAlternatePath:alternateZoomButtonPath(rect.size)];
         [button setState:[pdfView autoScales]];
         [button setButtonType:NSPushOnPushOffButton];
         [[self contentView] addSubview:button];
@@ -110,7 +119,7 @@
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
         button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setPath:[SKNavigationButton separatorButtonPath]];
+        [button setPath:separatorButtonPath(rect.size)];
         [button setEnabled:NO];
         [[self contentView] addSubview:button];
         
@@ -120,7 +129,7 @@
         [button setTarget:controller];
         [button setAction:@selector(exitFullScreen:)];
         [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
-        [button setPath:[SKNavigationButton closeButtonPath]];
+        [button setPath:closeButtonPath(rect.size)];
         [[self contentView] addSubview:button];
     }
     return self;
@@ -311,12 +320,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 + (Class)cellClass { return [SKNavigationButtonCell class]; }
 
-- (void)dealloc {
-    [toolTip release];
-    [alternateToolTip release];
-    [super dealloc];
-}
-
 - (NSBezierPath *)path {
     return [(SKNavigationButtonCell *)[self cell] path];
 }
@@ -334,15 +337,63 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (NSString *)toolTip {
-    return toolTip;
+    return [(SKNavigationButtonCell *)[self cell] toolTip];
 }
 
 // we don't use the superclass's ivar because we don't want the system toolTips
 - (void)setToolTip:(NSString *)string {
+    [(SKNavigationButtonCell *)[self cell] setToolTip:string];
+    [self setShowsBorderOnlyWhileMouseInside:[string length] > 0];
+}
+
+- (NSString *)alternateToolTip {
+    return [(SKNavigationButtonCell *)[self cell] alternateToolTip];
+}
+
+- (void)setAlternateToolTip:(NSString *)string {
+    [(SKNavigationButtonCell *)[self cell] setAlternateToolTip:string];
+}
+
+- (void)viewDidMoveToWindow {
+    // fix for a Tiger bug when a button is added to a window, it does not reset the tracking rects
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [self showsBorderOnlyWhileMouseInside]) {
+        [self setShowsBorderOnlyWhileMouseInside:NO];
+        [self setShowsBorderOnlyWhileMouseInside:YES];
+    }
+    [super viewDidMoveToWindow];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKNavigationButtonCell
+
+- (id)initTextCell:(NSString *)aString {
+    if (self = [super initTextCell:@""]) {
+		[self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
+        [self setBordered:NO];
+        [self setButtonType:NSMomentaryPushInButton];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [toolTip release];
+    [alternateToolTip release];
+    [path release];
+    [alternatePath release];
+    [super dealloc];
+}
+
+- (NSString *)toolTip {
+    return toolTip;
+}
+
+- (void)setToolTip:(NSString *)string {
     if (toolTip != string) {
         [toolTip release];
         toolTip = [string retain];
-        [self setShowsBorderOnlyWhileMouseInside:[toolTip length] > 0];
     }
 }
 
@@ -357,19 +408,65 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     }
 }
 
-- (void)viewDidMoveToWindow {
-    // fix for a Tiger bug when a button is added to a window, it does not reset the tracking rects
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [self showsBorderOnlyWhileMouseInside]) {
-        [self setShowsBorderOnlyWhileMouseInside:NO];
-        [self setShowsBorderOnlyWhileMouseInside:YES];
-    }
-    [super viewDidMoveToWindow];
+- (NSBezierPath *)path {
+    return path;
 }
+
+- (void)setPath:(NSBezierPath *)newPath {
+    if (path != newPath) {
+        [path release];
+        path = [newPath retain];
+    }
+}
+
+- (NSBezierPath *)alternatePath {
+    return alternatePath;
+}
+
+- (void)setAlternatePath:(NSBezierPath *)newAlternatePath {
+    if (alternatePath != newAlternatePath) {
+        [alternatePath release];
+        alternatePath = [newAlternatePath retain];
+    }
+}
+
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] set];
+    [([self state] == NSOnState && [self alternatePath] ? [self alternatePath] : [self path]) fill];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    NSString *currentToolTip = [self state] == NSOnState && alternateToolTip ? alternateToolTip : toolTip;
+    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:currentToolTip forView:[self controlView]];
+    [super mouseEntered:theEvent];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:[self controlView]])
+        [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
+    [super mouseExited:theEvent];
+}
+
+- (void)setState:(int)state {
+    int oldState = [self state];
+    NSView *button = [self controlView];
+    [super setState:state];
+    if (oldState != state && [[button window] isVisible]) {
+        if (alternatePath)
+            [button setNeedsDisplay:YES];
+        if (alternateToolTip && [[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:button]) {
+            NSString *currentToolTip = [self state] == NSOnState && alternateToolTip ? alternateToolTip : toolTip;
+            [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:currentToolTip forView:button];
+        }
+    }
+}
+
+@end
 
 #pragma mark Button paths
 
-+ (NSBezierPath *)nextButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *nextButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSRect rect = NSInsetRect(bounds, 10.0, 10.0);
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect))];
@@ -379,8 +476,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return path;
 }
 
-+ (NSBezierPath *)previousButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *previousButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSRect rect = NSInsetRect(bounds, 10.0, 10.0);
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(NSMinX(rect), NSMidY(rect))];
@@ -390,8 +487,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return path;
 }
 
-+ (NSBezierPath *)zoomButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *zoomButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
     float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
@@ -428,8 +525,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return path;
 }
 
-+ (NSBezierPath *)alternateZoomButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
     float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
@@ -466,8 +563,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return path;
 }
 
-+ (NSBezierPath *)closeButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *closeButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPath];
     float radius = 2.0, halfWidth = 0.5 * NSWidth(bounds) - 15.0, halfHeight = 0.5 * NSHeight(bounds) - 15.0;
     
@@ -491,86 +588,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     return path;
 }
 
-+ (NSBezierPath *)separatorButtonPath {
-    NSRect bounds = NSMakeRect(0.0, 0.0, SEP_WIDTH, BUTTON_HEIGHT);
+static inline NSBezierPath *separatorButtonPath(NSSize size) {
+    NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(bounds) - 0.5, NSMinY(bounds), 1.0, NSHeight(bounds))];
     return path;
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKNavigationButtonCell
-
-- (id)initTextCell:(NSString *)aString {
-    if (self = [super initTextCell:@""]) {
-		[self setBezelStyle:NSShadowlessSquareBezelStyle]; // this is mainly to make it selectable
-        [self setBordered:NO];
-        [self setButtonType:NSMomentaryPushInButton];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [path release];
-    [alternatePath release];
-    [super dealloc];
-}
-
-- (NSBezierPath *)path {
-    return path;
-}
-
-- (void)setPath:(NSBezierPath *)newPath {
-    if (path != newPath) {
-        [path release];
-        path = [newPath retain];
-    }
-}
-
-- (NSBezierPath *)alternatePath {
-    return alternatePath;
-}
-
-- (void)setAlternatePath:(NSBezierPath *)newAlternatePath {
-    if (alternatePath != newAlternatePath) {
-        [alternatePath release];
-        alternatePath = [newAlternatePath retain];
-    }
-}
-
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] set];
-    [([self state] == NSOnState && [self alternatePath] ? [self alternatePath] : [self path]) fill];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    SKNavigationButton *button = (SKNavigationButton *)[self controlView];
-    NSString *toolTip = [self state] == NSOnState && [button alternateToolTip] ? [button alternateToolTip] : [button toolTip];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:button];
-    [super mouseEntered:theEvent];
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    SKNavigationButton *button = (SKNavigationButton *)[self controlView];
-    if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:button])
-        [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:button];
-    [super mouseExited:theEvent];
-}
-
-- (void)setState:(int)state {
-    int oldState = [self state];
-    SKNavigationButton *button = (SKNavigationButton *)[self controlView];
-    [super setState:state];
-    if (oldState != state && [[button window] isVisible]) {
-        if ([button alternatePath])
-            [button setNeedsDisplay:YES];
-        if ([button alternateToolTip] && [[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:button]) {
-            NSString *toolTip = [self state] == NSOnState && [button alternateToolTip] ? [button alternateToolTip] : [button toolTip];
-            [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:button];
-        }
-    }
-}
-
-@end
