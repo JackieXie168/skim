@@ -509,16 +509,15 @@ static inline NSBezierPath *zoomButtonPath(NSSize size) {
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
     [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
     [transform translateXBy:centerX yBy:centerY];
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
+    
+    int i;
+    for (i = 0; i < 4; i++) {
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+    }
     
     [path setWindingRule:NSEvenOddWindingRule];
     
@@ -547,16 +546,15 @@ static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
     [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
     [transform translateXBy:centerX yBy:centerY];
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
-    [arrow transformUsingAffineTransform:transform];
-    [path appendBezierPath:arrow];
+    
+    int i;
+    for (i = 0; i < 4; i++) {
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+    }
     
     [path setWindingRule:NSEvenOddWindingRule];
     
