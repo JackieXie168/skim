@@ -145,6 +145,12 @@
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [zoomButton setState:[[notification object] autoScales] ? NSOnState : NSOffState];
+    if ([self isVisible]) {
+        [zoomButton setNeedsDisplay:YES];
+        SKNavigationToolTipWindow *toolTipWindow = [SKNavigationToolTipWindow sharedToolTipWindow];
+        if ([[toolTipWindow view] isEqual:zoomButton])
+            [toolTipWindow showToolTip:[zoomButton currentToolTip] forView:zoomButton];
+    }
 }
 
 @end
@@ -355,17 +361,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
         [self setShowsBorderOnlyWhileMouseInside:YES];
     }
     [super viewDidMoveToWindow];
-}
-
-- (void)setState:(int)state {
-    BOOL changed = state != [self state];
-    [super setState:state];
-    if (changed && [[self window] isVisible]) {
-        if ([self alternatePath])
-            [self setNeedsDisplay:YES];
-        if (alternateToolTip && NSPointInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds]))
-            [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
-    }
 }
 
 #pragma mark Button paths
