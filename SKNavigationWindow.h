@@ -73,10 +73,7 @@
 @end
 
 
-@interface SKNavigationButton : NSButton {
-    NSString *toolTip;
-    NSString *alternateToolTip;
-}
+@interface SKNavigationButton : NSButton
 
 - (NSBezierPath *)path;
 - (void)setPath:(NSBezierPath *)newPath;
@@ -87,20 +84,21 @@
 - (NSString *)alternateToolTip;
 - (void)setAlternateToolTip:(NSString *)string;
 
-+ (NSBezierPath *)nextButtonPath;
-+ (NSBezierPath *)previousButtonPath;
-+ (NSBezierPath *)zoomButtonPath;
-+ (NSBezierPath *)alternateZoomButtonPath;
-+ (NSBezierPath *)closeButtonPath;
-+ (NSBezierPath *)separatorButtonPath;
-
 @end
 
 
 @interface SKNavigationButtonCell : NSButtonCell {
+    NSString *toolTip;
+    NSString *alternateToolTip;
     NSBezierPath *path;
     NSBezierPath *alternatePath;
 }
+
+- (NSString *)toolTip;
+- (void)setToolTip:(NSString *)string;
+
+- (NSString *)alternateToolTip;
+- (void)setAlternateToolTip:(NSString *)string;
 
 - (NSBezierPath *)path;
 - (void)setPath:(NSBezierPath *)newPath;
