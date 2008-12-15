@@ -87,8 +87,6 @@
 - (NSString *)alternateToolTip;
 - (void)setAlternateToolTip:(NSString *)string;
 
-- (NSString *)currentToolTip;
-
 + (NSBezierPath *)nextButtonPath;
 + (NSBezierPath *)previousButtonPath;
 + (NSBezierPath *)zoomButtonPath;
@@ -109,7 +107,5 @@
 
 - (NSBezierPath *)alternatePath;
 - (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
-
-- (NSBezierPath *)currentPath;
 
 @end
