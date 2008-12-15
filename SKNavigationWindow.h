@@ -42,7 +42,7 @@
 @class PDFView, SKNavigationToolTipView, SKNavigationButton;
 
 @interface SKNavigationWindow : SKAnimatedBorderlessWindow {
-    NSButton *zoomButton;
+    SKNavigationButton *zoomButton;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)moveToScreen:(NSScreen *)screen;
