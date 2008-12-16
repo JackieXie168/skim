@@ -129,6 +129,10 @@ static inline NSBezierPath *separatorButtonPath(NSSize size);
     return self;
 }
 
+- (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen {
+    return [self initWithPDFView:nil];
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [zoomButton release];
