@@ -1,5 +1,5 @@
 //
-//  SKPSProgressController.h
+//  SKConversionProgressController.h
 // Skim
 //
 //  Created by Adam Maxwell on 12/6/06.

@@ -43,7 +43,7 @@
 #import "SKMainWindowController.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
-#import "SKPSProgressController.h"
+#import "SKConversionProgressController.h"
 #import "SKFindController.h"
 #import "BDAlias.h"
 #import "NSUserDefaultsController_SKExtensions.h"
