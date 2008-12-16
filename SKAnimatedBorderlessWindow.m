@@ -60,6 +60,14 @@
     return [self initWithContentRect:contentRect screen:nil];
 }
 
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+    return [self initWithContentRect:contentRect screen:nil];
+}
+
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation screen:(NSScreen *)screen {
+    return [self initWithContentRect:contentRect screen:screen];
+}
+
 - (void)dealloc {
     [self stopAnimation];
     [super dealloc];

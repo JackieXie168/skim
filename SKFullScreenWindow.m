@@ -55,6 +55,14 @@
     return self;
 }
 
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+    return [self initWithScreen:nil];
+}
+
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation screen:(NSScreen *)screen {
+    return [self initWithScreen:screen];
+}
+
 - (void)stopAnimation {
     [animation stopAnimation];
     [animation release];

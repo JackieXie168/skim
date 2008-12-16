@@ -615,6 +615,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return self;
 }
 
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+    return [self init];
+}
+
 - (BOOL)canBecomeMainWindow { return NO; }
 - (BOOL)canBecomeKeyWindow { return NO; }
 
