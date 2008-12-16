@@ -251,7 +251,7 @@
 		F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* SKSnapshotPDFView.m */; };
 		F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */; };
 		F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */; };
-		F97751630B37461000DF673B /* SKPSProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKPSProgressController.m */; };
+		F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKConversionProgressController.m */; };
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
 		F9CDD67B0B837A7F006363C3 /* SKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */; };
 		F9F220890C14BDFF00041284 /* UKFileWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F220860C14BDFF00041284 /* UKFileWatcher.m */; };
@@ -933,8 +933,8 @@
 		F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKHeaderPopUpButton.m; sourceTree = "<group>"; };
 		F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSBitmapImageRep_SKExtensions.h; sourceTree = "<group>"; };
 		F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSBitmapImageRep_SKExtensions.m; sourceTree = "<group>"; };
-		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
-		F97751620B37461000DF673B /* SKPSProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPSProgressController.m; sourceTree = "<group>"; };
+		F97751610B37461000DF673B /* SKConversionProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKConversionProgressController.h; sourceTree = "<group>"; };
+		F97751620B37461000DF673B /* SKConversionProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKConversionProgressController.m; sourceTree = "<group>"; };
 		F98E24BE0B702D9400914AF0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F9F220840C14BD9C00041284 /* UKFileWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UKFileWatcher.h; sourceTree = "<group>"; };
 		F9F220860C14BDFF00041284 /* UKFileWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UKFileWatcher.m; sourceTree = "<group>"; };
@@ -1233,8 +1233,8 @@
 				CE05A7360E9024ED0060BB07 /* SKPresentationOptionsSheetController.m */,
 				CE209FA70C9D38C6007C72F9 /* SKProgressController.h */,
 				CE209FA80C9D38C6007C72F9 /* SKProgressController.m */,
-				F97751610B37461000DF673B /* SKPSProgressController.h */,
-				F97751620B37461000DF673B /* SKPSProgressController.m */,
+				F97751610B37461000DF673B /* SKConversionProgressController.h */,
+				F97751620B37461000DF673B /* SKConversionProgressController.m */,
 				CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */,
 				CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */,
 				CEAE39040CA43E7300849B0F /* SKSheetController.h */,
@@ -2003,7 +2003,7 @@
 				F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */,
 				F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */,
 				F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */,
-				F97751630B37461000DF673B /* SKPSProgressController.m in Sources */,
+				F97751630B37461000DF673B /* SKConversionProgressController.m in Sources */,
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
 				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,

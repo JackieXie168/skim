@@ -1,5 +1,5 @@
 //
-//  SKPSProgressController.m
+//  SKConversionProgressController.m
 //  Skim
 //
 //  Created by Adam Maxwell on 12/6/06.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPSProgressController.h"
+#import "SKConversionProgressController.h"
 #import "NSString_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "Files_SKExtensions.h"
