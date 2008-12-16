@@ -107,3 +107,7 @@
 - (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
 
 @end
+
+
+@interface SKNavigationSeparator : NSView
+@end
