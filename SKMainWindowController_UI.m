@@ -283,18 +283,14 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         if (NSEqualRects(screenFrame, [fullScreenWindow frame]) == NO) {
             [fullScreenWindow setFrame:screenFrame display:NO];
             if ([self isFullScreen]) {
-                if ([[leftSideWindow screen] isEqual:screen] == NO) {
-                    [leftSideWindow orderOut:self];
-                    [leftSideWindow moveToScreen:screen];
-                    [leftSideWindow collapse];
-                    [leftSideWindow orderFront:self];
-                }
-                if ([[rightSideWindow screen] isEqual:screen] == NO) {
-                    [rightSideWindow orderOut:self];
-                    [leftSideWindow moveToScreen:screen];
-                    [rightSideWindow collapse];
-                    [rightSideWindow orderFront:self];
-                }
+                [leftSideWindow orderOut:self];
+                [leftSideWindow moveToScreen:screen];
+                [leftSideWindow collapse];
+                [leftSideWindow orderFront:self];
+                [rightSideWindow orderOut:self];
+                [leftSideWindow moveToScreen:screen];
+                [rightSideWindow collapse];
+                [rightSideWindow orderFront:self];
             }
             [pdfView layoutDocumentView];
             [pdfView setNeedsDisplay:YES];
