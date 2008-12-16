@@ -255,10 +255,9 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 
 - (void)windowDidChangeScreen:(NSNotification *)notification {
     if ([[notification object] isEqual:[self window]]) {
+        NSScreen *screen = [fullScreenWindow screen];
+        [fullScreenWindow setFrame:[screen frame] display:NO];
         if ([self isFullScreen]) {
-            NSScreen *screen = [fullScreenWindow screen];
-            [fullScreenWindow setFrame:[screen frame] display:NO];
-            
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 [leftSideWindow orderOut:self];
                 [leftSideWindow moveToScreen:screen];
@@ -271,11 +270,35 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
                 [rightSideWindow collapse];
                 [rightSideWindow orderFront:self];
             }
-        } else if ([self isPresentation]) {
-            [fullScreenWindow setFrame:[[fullScreenWindow screen] frame] display:NO];
         }
         [pdfView layoutDocumentView];
         [pdfView setNeedsDisplay:YES];
+    }
+}
+
+- (void)windowDidMove:(NSNotification *)notification {
+    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:fullScreenWindow]) {
+        NSScreen *screen = [fullScreenWindow screen];
+        NSRect screenFrame = [screen frame];
+        if (NSEqualRects(screenFrame, [fullScreenWindow frame]) == NO) {
+            [fullScreenWindow setFrame:screenFrame display:NO];
+            if ([self isFullScreen]) {
+                if ([[leftSideWindow screen] isEqual:screen] == NO) {
+                    [leftSideWindow orderOut:self];
+                    [leftSideWindow moveToScreen:screen];
+                    [leftSideWindow collapse];
+                    [leftSideWindow orderFront:self];
+                }
+                if ([[rightSideWindow screen] isEqual:screen] == NO) {
+                    [rightSideWindow orderOut:self];
+                    [leftSideWindow moveToScreen:screen];
+                    [rightSideWindow collapse];
+                    [rightSideWindow orderFront:self];
+                }
+            }
+            [pdfView layoutDocumentView];
+            [pdfView setNeedsDisplay:YES];
+        }
     }
 }
 
