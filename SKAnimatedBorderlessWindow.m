@@ -56,6 +56,10 @@
     return self;
 }
 
+- (id)initWithContentRect:(NSRect)contentRect {
+    return [self initWithContentRect:contentRect screen:nil];
+}
+
 - (void)dealloc {
     [self stopAnimation];
     [super dealloc];
