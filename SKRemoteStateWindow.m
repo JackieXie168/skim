@@ -80,10 +80,6 @@ static id sharedRemoteStateWindow = nil;
     return sharedRemoteStateWindow;
 }
 
-- (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen {
-    return [self init];
-}
-
 - (id)retain { return self; }
 
 - (id)autorelease { return self; }

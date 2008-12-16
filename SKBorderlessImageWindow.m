@@ -55,10 +55,6 @@
     return self;
 }
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
-    return [self initWithContentRect:contentRect image:nil];
-}
-
 - (BOOL)canBecomeMainWindow { return NO; }
 
 - (BOOL)canBecomeKeyWindow { return NO; }

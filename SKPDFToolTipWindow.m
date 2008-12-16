@@ -106,10 +106,6 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     return sharedToolTipWindow;
 }
 
-- (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen {
-    return [self init];
-}
-
 - (void)dealloc {
     [font release];
     [backgroundColor release];
