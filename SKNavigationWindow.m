@@ -95,9 +95,7 @@ static inline NSBezierPath *separatorButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
-        button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setPath:separatorButtonPath(rect.size)];
-        [button setEnabled:NO];
+        button = [[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -118,9 +116,7 @@ static inline NSBezierPath *separatorButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
-        button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setPath:separatorButtonPath(rect.size)];
-        [button setEnabled:NO];
+        button = [[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -431,7 +427,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] set];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] setFill];
     [([self state] == NSOnState && [self alternatePath] ? [self alternatePath] : [self path]) fill];
 }
 
@@ -459,6 +455,18 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
             [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:currentToolTip forView:button];
         }
     }
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKNavigationSeparator
+
+- (void)drawRect:(NSRect)rect {
+    NSRect bounds = [self bounds];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.6] setFill];
+    [NSBezierPath fillRect:NSMakeRect(NSMidX(bounds) - 0.5, NSMinY(bounds), 1.0, NSHeight(bounds))];
 }
 
 @end
@@ -583,11 +591,5 @@ static inline NSBezierPath *closeButtonPath(NSSize size) {
     
     [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)]];
     
-    return path;
-}
-
-static inline NSBezierPath *separatorButtonPath(NSSize size) {
-    NSRect bounds = {NSZeroPoint, size};
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(bounds) - 0.5, NSMinY(bounds), 1.0, NSHeight(bounds))];
     return path;
 }
