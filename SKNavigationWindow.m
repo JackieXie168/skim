@@ -95,8 +95,7 @@ static inline NSBezierPath *separatorButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
-        button = [[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease];
-        [[self contentView] addSubview:button];
+        [[self contentView] addSubview:[[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease]];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
@@ -116,8 +115,7 @@ static inline NSBezierPath *separatorButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
-        button = [[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease];
-        [[self contentView] addSubview:button];
+        [[self contentView] addSubview:[[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease]];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
