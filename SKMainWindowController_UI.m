@@ -357,7 +357,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return fmaxf(1.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmaxf([tv rowHeight], fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifier] width], 
@@ -367,7 +367,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return fmaxf(32.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmaxf([tv rowHeight], fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
     return [tv rowHeight];
 }

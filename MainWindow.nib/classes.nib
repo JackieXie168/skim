@@ -80,19 +80,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSWindowController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -242,6 +242,8 @@
 				<key>toggleAutoActualSize</key>
 				<string>id</string>
 				<key>toggleAutoScale</key>
+				<string>id</string>
+				<key>toggleCaseInsensitiveNoteSearch</key>
 				<string>id</string>
 				<key>toggleCaseInsensitiveSearch</key>
 				<string>id</string>
@@ -403,7 +405,7 @@
 				<key>snapshotArrayController</key>
 				<string>NSArrayController</string>
 				<key>snapshotTableView</key>
-				<string>SKSnapshotTableView</string>
+				<string>SKThumbnailTableView</string>
 				<key>snapshotView</key>
 				<string>NSView</string>
 				<key>splitView</key>
@@ -465,14 +467,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSnapshotTableView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKThumbnailTableView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSTextFieldCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -505,6 +499,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -523,14 +525,6 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSScrollView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -555,6 +549,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSImageCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>BDSKCollapsibleView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>BDSKContainerView</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -586,14 +588,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>BDSKCollapsibleView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>BDSKContainerView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
