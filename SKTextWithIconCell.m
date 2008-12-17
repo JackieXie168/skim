@@ -52,14 +52,6 @@ NSString *SKTextWithIconCellStringKey = @"string";
 
 // Init and dealloc
 
-- (id)init {
-    if (self = [super initTextCell:@""]) {
-        [self setEditable:YES];
-        [self setScrollable:YES];
-    }
-    return self;
-}
-
 - (void)dealloc {
     [icon release];
     [super dealloc];
