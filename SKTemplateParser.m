@@ -38,8 +38,6 @@
 
 #import "SKTemplateParser.h"
 #import "SKTemplateTag.h"
-#import "NSCharacterSet_SKExtensions.h"
-#import "SKRuntime.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
 #define END_TAG_OPEN_DELIM              @"</$"
@@ -73,16 +71,18 @@
 
 static NSCharacterSet *keyCharacterSet = nil;
 static NSCharacterSet *invertedKeyCharacterSet = nil;
+static NSCharacterSet *nonWhitespaceCharacterSet = nil;
 
 + (void)initialize {
-    OBINITIALIZE;
-    
-    NSMutableCharacterSet *tmpSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+    NSMutableCharacterSet *tmpSet = [NSCharacterSet characterSetWithRange:NSMakeRange('a', 26)];
+    [tmpSet addCharactersInRange:NSMakeRange('A', 26)];
+    [tmpSet addCharactersInRange:NSMakeRange('0', 10)];
     [tmpSet addCharactersInString:@".-_@#"];
     keyCharacterSet = [tmpSet copy];
-    [tmpSet release];
     
     invertedKeyCharacterSet = [[keyCharacterSet invertedSet] copy];
+    
+    nonWhitespaceCharacterSet = [[[NSCharacterSet whitespaceCharacterSet] invertedSet] copy];
 }
 
 static inline NSString *templateTagWithKeyPathAndDelims(NSMutableDictionary **dict, NSString *keyPath, NSString *openDelim, NSString *closeDelim) {
@@ -218,7 +218,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     
     if (typeAfter == SKCollectionTemplateTagType || typeAfter == SKConditionTemplateTagType || (isSubtemplate && typeAfter == -1)) {
         // remove whitespace at the end, just before the collection or condition tag
-        NSRange lastCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
+        NSRange lastCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:NSBackwardsSearch range:range];
         if (lastCharRange.location != NSNotFound) {
             unichar lastChar = [string characterAtIndex:lastCharRange.location];
             unsigned int rangeEnd = NSMaxRange(lastCharRange);
@@ -230,7 +230,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     }
     if (typeBefore == SKCollectionTemplateTagType || typeBefore == SKConditionTemplateTagType || (isSubtemplate && typeBefore == -1)) {
         // remove whitespace and a newline at the start, just after the collection or condition tag
-        NSRange firstCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
+        NSRange firstCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:0 range:range];
         if (firstCharRange.location != NSNotFound) {
             unichar firstChar = [string characterAtIndex:firstCharRange.location];
             unsigned int rangeEnd = NSMaxRange(firstCharRange);
