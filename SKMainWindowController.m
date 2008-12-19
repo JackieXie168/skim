@@ -629,7 +629,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
     NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier];
     id cell = [tableColumn dataCell];
-    float labelWidth = 0.0;
+    float labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
     NSEnumerator *labelEnum = [pageLabels objectEnumerator];
     NSString *label;
     
@@ -660,6 +660,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self updatePageColumnWidthForTableView:thumbnailTableView];
     [self updatePageColumnWidthForTableView:snapshotTableView];
     [self updatePageColumnWidthForTableView:outlineView];
+    [self updatePageColumnWidthForTableView:noteOutlineView];
+    [self updatePageColumnWidthForTableView:findTableView];
+    [self updatePageColumnWidthForTableView:groupedFindTableView];
     
     // this uses the pageLabels
     [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
