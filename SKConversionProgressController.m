@@ -120,6 +120,16 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @implementation SKConversionProgressController
 
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData
+{
+    return [[[[SKPSProgressController alloc] init] autorelease] PDFDataWithPostScriptData:psData];
+}
+
++ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile
+{
+    return [[[[SKDVIProgressController alloc] init] autorelease] PDFDataWithDVIFile:psData];
+}
+
 - (void)awakeFromNib
 {
     if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
