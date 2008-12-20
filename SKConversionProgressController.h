@@ -43,6 +43,8 @@
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField *textField;
 }
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
++ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;
 @end

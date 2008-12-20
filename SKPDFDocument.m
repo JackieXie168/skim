@@ -601,10 +601,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     
-    if (SKIsPostScriptDocumentType(docType)) {
-        SKPSProgressController *psProgressController = [[[SKPSProgressController alloc] init] autorelease];
-        data = [psProgressController PDFDataWithPostScriptData:data];
-    }
+    if (SKIsPostScriptDocumentType(docType))
+        data = [SKConversionProgressController PDFDataWithPostScriptData:data];
     
     if (data)
         pdfDoc = [[PDFDocument alloc] initWithData:data];
@@ -712,17 +710,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
     } else if (SKIsPostScriptDocumentType(docType)) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            SKPSProgressController *psProgressController = [[SKPSProgressController alloc] init];
-            if (data = [[psProgressController PDFDataWithPostScriptData:data] retain])
+            if (data = [[SKConversionProgressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
-            [psProgressController autorelease];
         }
     } else if (SKIsDVIDocumentType(docType)) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            SKDVIProgressController *dviProgressController = [[SKDVIProgressController alloc] init];
-            if (data = [[dviProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
+            if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
-            [dviProgressController autorelease];
         }
     }
     
