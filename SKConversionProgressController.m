@@ -135,11 +135,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender {}
 
-@end
-
-
-@implementation SKConversionProgressController (Private)
-
 - (int)runModalConversionWithInfo:(NSDictionary *)info {
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
@@ -253,11 +248,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return [(id)pdfData autorelease];
 }
 
-@end
-
-
-@implementation SKPSProgressController (Private)
-
 - (void)doConversionWithInfo:(NSDictionary *)info;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
@@ -359,12 +349,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
     return [pdfData autorelease];
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKDVIProgressController (Private)
 
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
