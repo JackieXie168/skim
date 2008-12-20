@@ -127,7 +127,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile
 {
-    return [[[[SKDVIProgressController alloc] init] autorelease] PDFDataWithDVIFile:psData];
+    return [[[[SKDVIProgressController alloc] init] autorelease] PDFDataWithDVIFile:dviFile];
 }
 
 - (void)awakeFromNib
