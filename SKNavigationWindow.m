@@ -56,7 +56,6 @@ static inline NSBezierPath *previousButtonPath(NSSize size);
 static inline NSBezierPath *zoomButtonPath(NSSize size);
 static inline NSBezierPath *alternateZoomButtonPath(NSSize size);
 static inline NSBezierPath *closeButtonPath(NSSize size);
-static inline NSBezierPath *separatorButtonPath(NSSize size);
 
 
 @implementation SKNavigationWindow
