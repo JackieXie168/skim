@@ -224,7 +224,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             unsigned int rangeEnd = NSMaxRange(lastCharRange);
             if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
                 range.length = rangeEnd;
-        } else if (typeBefore == -1) {
+        } else if (isSubtemplate == NO && typeBefore == -1) {
             range.length = 0;
         }
     }
@@ -240,7 +240,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 else 
                     range = NSMakeRange(rangeEnd, NSMaxRange(range) - rangeEnd);
             }
-        } else if (typeAfter == -1) {
+        } else if (isSubtemplate == NO && typeAfter == -1) {
             range.length = 0;
         }
     }
@@ -402,7 +402,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         if ([tag type] != SKTextTemplateTagType) continue;
         
         NSString *string = [(SKTextTemplateTag *)tag text];
-        NSRange range = range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
+        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
         
         if (range.length == 0)
             [result removeObjectAtIndex:i];
@@ -655,7 +655,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         
         NSAttributedString *attrString = [(SKRichTextTemplateTag *)tag attributedText];
         NSString *string = [attrString string];
-        NSRange range = range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
+        NSRange range = rangeAfterRemovingEmptyLines(string, i > 0 ? [(SKTemplateTag *)[result objectAtIndex:i - 1] type] : -1, i < count - 1 ? [(SKTemplateTag *)[result objectAtIndex:i + 1] type] : -1, isSubtemplate);
         
         if (range.length == 0)
             [result removeObjectAtIndex:i];
