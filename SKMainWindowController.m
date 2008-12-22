@@ -2933,7 +2933,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [currentSel addSelection:sel];
     
     if (scroll && firstSel) {
-        [pdfView setCurrentSelection:currentSel];
         PDFPage *page = [[currentSel pages] objectAtIndex:0];
         NSRect rect = NSIntersectionRect(NSInsetRect([currentSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
         [pdfView scrollRect:rect inPageToVisible:page];
