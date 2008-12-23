@@ -172,7 +172,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return rv;
 }
 
-- (void)doConversionWithInfo:(NSDictionary *)info {}   
+- (void)doConversionWithInfo:(NSDictionary *)info { [self stopModalOnMainThread:NO]; }   
  
 - (void)stopModalOnMainThread:(BOOL)success {
     int val = (success ? SKConversionSucceeded : SKConversionFailed);
