@@ -301,12 +301,7 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:findTableView]) {
-        [self updateFindResultHighlights:YES];
-        
-        if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-            [self hideLeftSideWindow];
-    } else if ([[aNotification object] isEqual:groupedFindTableView]) {
+    if ([[aNotification object] isEqual:findTableView] || [[aNotification object] isEqual:groupedFindTableView]) {
         [self updateFindResultHighlights:YES];
         
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
