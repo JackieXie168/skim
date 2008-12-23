@@ -76,7 +76,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         URLDownload = nil;
         filePath = nil;
         fileIcon = nil;
-        expectedContentLength = -1;
+        expectedContentLength = NSURLResponseUnknownLength;
         receivedContentLength = 0;
         progressIndicator = nil;
         status = SKDownloadStatusUndefined;
@@ -242,7 +242,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         return;
     }
     
-    [self setExpectedContentLength:-1];
+    [self setExpectedContentLength:NSURLResponseUnknownLength];
     [self setReceivedContentLength:0];
     URLDownload = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
     [URLDownload setDeletesFileUponFailure:NO];
