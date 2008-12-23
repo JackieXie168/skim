@@ -726,13 +726,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [self setPDFData:data];
             [self setPDFDoc:pdfDoc];
             [pdfDoc release];
-            [data release];
             fileChangedOnDisk = NO;
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         } else {
             [self setPDFData:nil];
         }
+        [data release];
     }
     
     if (didRead == NO && outError != NULL)
