@@ -707,6 +707,10 @@
                 description="The rich extended text of an anchored note.">
                 <cocoa key="richText"/>
             </property>
+            <property name="extended RTF" code="XRTF" type="any"
+                description="RTF for the rich extended text of an anchored note.">
+                <cocoa key="richTextRTF"/>
+            </property>
             <property name="icon" code="iimg" type="icon type"
                 description="The icon type of an anchored note.">
                 <cocoa key="scriptingIconType"/>

@@ -148,6 +148,18 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
 }
 
+- (id)richTextRTF {
+    NSData *data = [textStorage RTFFromRange:NSMakeRange(0, [textStorage length]) documentAttributes:NULL];
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:data];
+}
+
+- (void)setRichTextRTF:(id)newRTF {
+    NSData *data = [newRTF isKindOfClass:[NSAppleEventDescriptor class]] ? [newRTF data] : nil;
+    NSAttributedString *attrString = data ? [[[NSAttributedString alloc] initWithRTF:data documentAttributes:nil] autorelease] : nil;
+    if (attrString)
+        [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:attrString];
+}
+
 #pragma mark Accessibility
 
 - (NSArray *)accessibilityAttributeNames {

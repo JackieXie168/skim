@@ -404,6 +404,10 @@ enum {
     return [NSNull null];
 }
 
+- (id)richTextRTF {
+    return [NSNull null];
+}
+
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
     if ([self isMovable]) {
         NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
