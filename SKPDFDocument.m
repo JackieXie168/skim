@@ -74,6 +74,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKApplication.h"
 #import "NSResponder_SKExtensions.h"
+#import "SKRuntime.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 
@@ -2061,6 +2062,17 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 
 @implementation NSWindow (SKScriptingExtensions)
+
+static id (*originalDocument)(id, SEL) = NULL;
+
+- (id)replacementDocument {
+    id document = originalDocument(self, _cmd);
+    return [[NSApp orderedDocuments] containsObject:document] ? document : [NSNull null];
+}
+
++ (void)load {
+    originalDocument = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(document), @selector(replacementDocument));
+}
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];
