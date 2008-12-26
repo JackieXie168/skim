@@ -179,6 +179,9 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="get RTF for">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="get index for">
 				<cocoa method=""/>
 			</responds-to>
@@ -649,6 +652,9 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="get RTF for">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="get index for">
 				<cocoa method=""/>
 			</responds-to>
@@ -762,6 +768,9 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get RTF for">
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get index for">
