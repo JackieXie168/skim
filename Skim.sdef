@@ -675,6 +675,10 @@
                 description="The text of the note. Attributes are ignored.">
                 <cocoa key="textContents"/>
             </contents>
+            <property name="RTF" code="RTF " type="any" access="r"
+                description="The RTF text for the note.">
+                <cocoa key="RTFContents"/>
+            </property>
             <property name="color" code="colr" type="RGBA color"
                 description="The color of the note. Can be given as a list of (red, green, blue, alpha), a standard color (e.g. red), or a default color (e.g. text note color).">
                 <cocoa key="color"/>
@@ -1291,6 +1295,25 @@
             </parameter>
             <result type="rich text"
                 description="The text of the object."/>
+        </command>
+
+        <command name="get RTF for" code="SKIMRTFt"
+            description="Get RTF data for the text of a document, page, note, or selection.">
+            <synonym name="RTF for"/>
+            <cocoa class="SKRTFCommand"/>
+            <direct-parameter
+                description="The document, page, note or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the text.">
+                <cocoa key="Page"/>
+            </parameter>
+            <result type="any"
+                description="RTF data for the text of the object."/>
         </command>
 
         <command name="get index for" code="SKIMIndx"
