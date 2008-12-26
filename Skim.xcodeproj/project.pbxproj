@@ -115,6 +115,7 @@
 		CE4EC87F0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */; };
 		CE4EC8830B7E6E920091F228 /* CIImage_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */; };
 		CE4EC88C0B7E6EDB0091F228 /* SKSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */; };
+		CE4EDE3A0F0538B700447C6A /* SKRTFCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EDE390F0538B700447C6A /* SKRTFCommand.m */; };
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
 		CE51630B0EAB5A1A009FA237 /* SKSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */; };
 		CE5163380EAB5EE2009FA237 /* Segment_Cap.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */; };
@@ -607,6 +608,8 @@
 		CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIImage_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE4EC88A0B7E6EDB0091F228 /* SKSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSplitView.h; sourceTree = "<group>"; };
 		CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSplitView.m; sourceTree = "<group>"; };
+		CE4EDE380F0538B700447C6A /* SKRTFCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRTFCommand.h; sourceTree = "<group>"; };
+		CE4EDE390F0538B700447C6A /* SKRTFCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRTFCommand.m; sourceTree = "<group>"; };
 		CE4F96AE0CFB49B100DBEA14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CE4F96B20CFB49C200DBEA14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CE4F96B80CFB49D700DBEA14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ru; path = ru.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -1427,6 +1430,8 @@
 				CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */,
 				CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */,
 				CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */,
+				CE4EDE380F0538B700447C6A /* SKRTFCommand.h */,
+				CE4EDE390F0538B700447C6A /* SKRTFCommand.m */,
 				CE4643D60DF6B63500CFD8D2 /* SKTextCommand.h */,
 				CE4643D70DF6B63500CFD8D2 /* SKTextCommand.m */,
 			);
@@ -2146,6 +2151,7 @@
 				CED6A3120EADF37800E8CD11 /* NSImageCell_SKExtensions.m in Sources */,
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
+				CE4EDE3A0F0538B700447C6A /* SKRTFCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
