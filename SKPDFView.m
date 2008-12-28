@@ -105,6 +105,8 @@ static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateC
 static NSString *SKDefaultFreeTextNoteContentsKey = @"SKDefaultFreeTextNoteContents";
 static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteContents";
 
+static NSString *SKReadingBarNumberOfLinesKey = @"SKReadingBarNumberOfLines";
+
 static void *SKPDFViewDefaultsObservationContext = (void *)@"SKPDFViewDefaultsObservationContext";
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
@@ -686,6 +688,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         readingBar = nil;
     } else {
         readingBar = [[SKReadingBar alloc] initWithPage:[self currentPage]];
+        [readingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
         [readingBar goToNextLine];
         [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
         [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
@@ -2919,6 +2922,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
     if (numberOfLines > 0) {
         [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [readingBar setNumberOfLines:numberOfLines];
+        [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
         [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, [readingBar page], SKPDFViewNewPageKey, nil]];
@@ -3695,6 +3699,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (numberOfLines > 0 && numberOfLines != (int)[readingBar numberOfLines]) {
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [readingBar setNumberOfLines:numberOfLines];
+            [[NSUserDefaults standardUserDefaults] setInteger:numberOfLines forKey:SKReadingBarNumberOfLinesKey];
             [self setNeedsDisplayInRect:[readingBar currentBoundsForBox:[self displayBox]] ofPage:[readingBar page]];
             [self setNeedsDisplay:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
