@@ -223,7 +223,8 @@ void SKSwizzlePDFDisplayViewMethods() {
         originalResetCursorRects = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacementResetCursorRects);
         originalPasswordEntered = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacementPasswordEntered);
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"] ||
+            (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [[NSUserDefaults standardUserDefaults] objectForKey:@"SKDisableExtendedPDFViewAccessibility"] != nil)) return;
         
         originalAccessibilityAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacementAccessibilityAttributeNames);
         originalAccessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames);
