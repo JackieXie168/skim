@@ -39,7 +39,6 @@
 #import "SKFDFParser.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSScanner_SKExtensions.h"
-#import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>
@@ -372,7 +371,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
                 NSRange r = [da rangeOfString:@"/" options:NSBackwardsSearch range:NSMakeRange(0, location)];
                 if (r.location != NSNotFound) {
                     [scanner setScanLocation:NSMaxRange(r)];
-                    if ([scanner scanCharactersFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] intoString:&fontName] &&
+                    if ([scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:&fontName] &&
                         [scanner scanFloat:&fontSize] &&
                         [scanner scanString:@"Tf" intoString:NULL] &&
                         [scanner scanLocation] == location + 2) {
