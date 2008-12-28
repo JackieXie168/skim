@@ -223,15 +223,17 @@ void SKSwizzlePDFDisplayViewMethods() {
         originalResetCursorRects = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacementResetCursorRects);
         originalPasswordEntered = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacementPasswordEntered);
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"] ||
-            (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [[NSUserDefaults standardUserDefaults] objectForKey:@"SKDisableExtendedPDFViewAccessibility"] != nil)) return;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
         originalAccessibilityAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeNames), (IMP)replacementAccessibilityAttributeNames);
-        originalAccessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames);
         originalAccessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacementAccessibilityAttributeValue);
         originalAccessibilityHitTest = (id (*)(id, SEL, NSPoint))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityHitTest:), (IMP)replacementAccessibilityHitTest);
         originalAccessibilityFocusedUIElement = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityFocusedUIElement), (IMP)replacementAccessibilityFocusedUIElement);
             
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [[NSUserDefaults standardUserDefaults] objectForKey:@"SKDisableExtendedPDFViewAccessibility"] != nil) return;
+        
+        originalAccessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacementAccessibilityParameterizedAttributeNames);
+        
         SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)replacementAccessibilityRangeForPositionAttributeForParameter, "@@:@");
         SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)replacementAccessibilityRTFForRangeAttributeForParameter, "@@:@");
         SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)replacementAccessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
