@@ -51,6 +51,8 @@
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
+        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
+            [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     }
     return self;
 }
