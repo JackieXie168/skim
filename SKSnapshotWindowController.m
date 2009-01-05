@@ -345,6 +345,8 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
+        [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehavior];
 }
 
 - (NSDictionary *)currentSetup {
