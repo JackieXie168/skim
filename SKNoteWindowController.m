@@ -260,7 +260,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
-        [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehavior];
+        [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehaviorDefault];
 }
 
 - (void)statusBarClicked:(id)sender {
