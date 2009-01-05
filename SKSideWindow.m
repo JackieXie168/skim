@@ -73,6 +73,8 @@
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:YES];
         [self setLevel:NSFloatingWindowLevel];
+        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
+            [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     }
     return self;
 }
