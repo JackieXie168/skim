@@ -73,6 +73,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setHidesOnDeactivate:YES];
         [self setMovableByWindowBackground:YES];
+        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
+            [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
