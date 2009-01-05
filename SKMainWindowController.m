@@ -1203,10 +1203,15 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (IBAction)selectColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isSkimNote]) {
-        NSColor *color = [annotation color];
+        BOOL isFill = (GetCurrentKeyModifiers() & optionKey) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
+        NSColor *color = (isFill ? [(id)annotation interiorColor] : [annotation color]) ?: [NSColor clearColor];
         NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
-        if (newColor && [color isEqual:newColor] == NO)
-            [annotation setColor:newColor];
+        if (newColor && [color isEqual:newColor] == NO) {
+            if (isFill)
+                [(id)annotation setInteriorColor:newColor];
+            else
+                [annotation setColor:newColor];
+        }
     }
 }
 
