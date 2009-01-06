@@ -2426,6 +2426,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
+        [fullScreenWindow setExcludedFromWindowsMenu:NO];
     }
         
     // explicitly set window frame; screen may have moved, or may be nil (in which case [fullScreenWindow frame] is wrong, which is weird); the first time through this method, [fullScreenWindow screen] is nil
@@ -2477,6 +2478,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [fullScreenWindow recalculateKeyViewLoop];
     [mainWindow orderOut:self];    
     [fullScreenWindow setDelegate:self];
+    [NSApp addWindowsItem:fullScreenWindow title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
 }
 
 - (void)saveNormalSetup {
