@@ -44,26 +44,36 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 @implementation NSDocument (SKExtensions)
 
+static NSSet *richTextTypes = nil;
+static NSSet *supportedRichTextTypes = nil;
+
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
-    NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
-    NSError *error = nil;
-    NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
-    NSString *string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
-    [templateString release];
+    if (richTextTypes == nil)
+        richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
+    NSString *fileType = [[templateFile pathExtension] lowercaseString];
+    NSString *string = nil;
+    if ([richTextTypes containsObject:fileType] == NO) {
+        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSError *error = nil;
+        NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
+        string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
+        [templateString release];
+    }
     return string;
 }
 
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
-    static NSSet *richTextTypes = nil;
-    if (richTextTypes == nil) {
+    if (richTextTypes == nil)
+        richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
+    if (supportedRichTextTypes == nil) {
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
+            supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
         else
-            richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
+            supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
     }
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
-    if ([richTextTypes containsObject:fileType]) {
+    if ([supportedRichTextTypes containsObject:fileType]) {
         NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
@@ -71,7 +81,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
-    } else if ([fileType caseInsensitiveCompare:@"rtfd"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"docx"] != NSOrderedSame && [fileType caseInsensitiveCompare:@"odt"] != NSOrderedSame) {
+    } else if ([richTextTypes containsObject:fileType] == NO) {
         data = [[self notesStringUsingTemplateFile:templateFile] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     }
     return data;
