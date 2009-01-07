@@ -1736,7 +1736,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
     PDFPage *page = [pdfView currentSelectionPage] ?: [pdfView currentPage];
     if (NSIsEmptyRect(rect))
-        rect = [[pdfView currentSelectionPage] foregroundBox];
+        rect = [page foregroundBox];
     [self cropPageAtIndex:[page pageIndex] toRect:rect];
 }
 
