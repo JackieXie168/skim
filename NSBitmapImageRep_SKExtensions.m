@@ -163,9 +163,57 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
     // right margin
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
-            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 1), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
                 iRight = i; // final
                 break;
+            }
+        }
+    }
+    
+    // check top margin if necessary
+    if (jTop == MARGIN) {
+        for (j = 0; j < MARGIN; j++) {
+            for (i = MARGIN; i < iMax; i++) {            
+                if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(0, j - 1), MIN(jMax - 1, j + 5), backgroundPixel)) {
+                    jTop = j; // final
+                    break;
+                }
+            }
+        }
+    }
+    
+    // check bottom margin if necessary
+    if (jBottom == jMax - 1) {
+        for (j = jMax + MARGIN - 1; j > jMax - 1; j--) {
+            for (i = MARGIN; i < iMax; i++) {            
+                if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax + MARGIN - 1, j + 1), backgroundPixel)) {
+                    jBottom = j; // final
+                    break;
+                }
+            }
+        }
+    }
+    
+    // check left margin if necessary
+    if (iLeft == MARGIN) {
+        for (i = 0; i < MARGIN; i++) {
+            for (j = jTop; j <= jBottom; j++) {            
+                if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(0, i - 1), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
+                    iLeft = i; // final
+                    break;
+                }
+            }
+        }
+    }
+    
+    // check right margin if necessary
+    if (iRight == iMax - 1) {
+        for (i = iMax + MARGIN - 1; i > iMax - 1; i--) {
+            for (j = jTop; j <= jBottom; j++) {            
+                if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax + MARGIN - 1, i + 1), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
+                    iRight = i; // final
+                    break;
+                }
             }
         }
     }
