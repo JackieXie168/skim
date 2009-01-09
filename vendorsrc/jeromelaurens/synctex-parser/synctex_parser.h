@@ -1,5 +1,5 @@
 /* 
-Copyright (c) 2008 jerome DOT laurens AT u-bourgogne DOT fr
+Copyright (c) 2008-2009 jerome DOT laurens AT u-bourgogne DOT fr
 
 This file is part of the SyncTeX package.
 
