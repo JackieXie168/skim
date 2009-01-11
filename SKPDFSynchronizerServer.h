@@ -1,10 +1,10 @@
 //
-//  SKPDFSynchronizer.h
+//  SKPDFSynchronizerServer.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 4/21/07.
+//  Created by Christiaan Hofman on 1/11/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,38 +37,42 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "synctex_parser.h"
 
 
-@protocol SKPDFSynchronizerClient
-- (void)setServerProxy:(byref id)anObject;
-- (oneway void)foundLine:(int)line inFile:(bycopy NSString *)file;
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped;
+@protocol SKPDFSynchronizerServer
+- (oneway void)stopRunning; 
+- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
+- (oneway void)findPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file;
 @end
 
 
-@interface SKPDFSynchronizer : NSObject <SKPDFSynchronizerClient> {
-    id delegate;
+@interface SKPDFSynchronizerServer : NSObject <SKPDFSynchronizerServer> {
+    NSString *fileName;
+    NSString *syncFileName;
+    NSDate *lastModDate;
+    BOOL isPdfsync;
     
-    id server;
-    id serverProxy;
+    NSMutableArray *pages;
+    NSMutableDictionary *lines;
+    
+    NSMutableDictionary *filenames;
+    synctex_scanner_t scanner;
+    
+    id clientProxy;
     NSConnection *connection;
+    BOOL stopRunning;
+    struct SKServerFlags *serverFlags;
 }
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+// this sets up the background thread and connects back to the client, blocks until it's fully set up
+- (void)startDOServerForPorts:(NSArray *)ports;
+
+// these 4 accessors are thread safe
+- (BOOL)shouldKeepRunning;
+- (void)setShouldKeepRunning:(BOOL)flag;
 
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
-- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file;
-
-- (void)stopDOServer;
-
-@end
-
-
-@interface NSObject (SKPDFSynchronizerDelegate)
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped;
 @end

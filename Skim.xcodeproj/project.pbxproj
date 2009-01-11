@@ -52,6 +52,7 @@
 		CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0EB4D50DD054DC0034DF92 /* NSInvocation_SKExtensions.m */; };
 		CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE0ECCD40DE71868006EEDDB /* Templates */; };
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
+		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
@@ -474,6 +475,8 @@
 		CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDocument_SKExtensions.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
 		CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Leopard.xcconfig"; sourceTree = "<group>"; };
+		CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizerServer.h; sourceTree = "<group>"; };
+		CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizerServer.m; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1403,6 +1406,8 @@
 				CE5FA1660C909886008BE480 /* SKFDFParser.m */,
 				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
 				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
+				CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */,
+				CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */,
 				CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */,
 				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
 			);
@@ -2152,6 +2157,7 @@
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
 				CE4EDE3A0F0538B700447C6A /* SKRTFCommand.m in Sources */,
+				CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
