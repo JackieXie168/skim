@@ -189,7 +189,7 @@ struct SKServerFlags {
         if (NO == [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]])
             [self setShouldKeepRunning:NO];
         OSMemoryBarrier();
-    } while (serverFlags->serverReady == 0 && serverFlags->shouldKeepRunning == 0);
+    } while (serverFlags->serverReady == 0 && serverFlags->shouldKeepRunning == 1);
 }
 
 #pragma mark | Server protocol
