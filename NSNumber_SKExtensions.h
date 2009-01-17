@@ -42,6 +42,7 @@
 @interface NSNumber (SKExtensions)
 
 - (NSNumber *)numberByAddingOne;
+- (NSNumber *)numberBySubstractingOne;
 
 - (NSString *)romanNumeralValue;
 - (NSString *)alphaCounterValue;
