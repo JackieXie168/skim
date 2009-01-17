@@ -1322,7 +1322,7 @@
                 description="The page on which to get the text.">
                 <cocoa key="Page"/>
             </parameter>
-            <result type="rich text"
+            <result type="text"
                 description="The text of the object."/>
         </command>
 
