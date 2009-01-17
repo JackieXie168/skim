@@ -1336,8 +1336,8 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 @heading Weblocaties
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
-@item @uref{http://apps.sourceforge.net/mediawiki/skim/, Skim Wiki}
-@item @uref{http://apps.sourceforge.net/mediawiki/skim/index.php?title=FAQ, Skim FAQ}
+@item @uref{http://apps.sourceforge.net/mediawiki/skim-app/, Skim Wiki}
+@item @uref{http://apps.sourceforge.net/mediawiki/skim-app/index.php?title=FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online kopie van deze handleiding}
 @end itemize
 
