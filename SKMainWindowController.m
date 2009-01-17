@@ -788,6 +788,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
                 [[secondaryPdfView documentView] scrollRectToVisible:[secondaryPdfView convertRect:[secondaryPdfView convertRect:secondaryVisibleRect fromPage:secondaryPage] toView:[secondaryPdfView documentView]]];
             }
             [[pdfView window] enableFlushWindow];
+            [[pdfView window] flushWindow];
         }
         
         // the number of pages may have changed
