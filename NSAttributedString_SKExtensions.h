@@ -46,4 +46,6 @@
 - (NSString *)xmlString;
 - (NSData *)RTFRepresentation;
 
+- (id)scriptingRTF;
+
 @end
