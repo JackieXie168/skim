@@ -53,22 +53,21 @@
     
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
-    NSTextStorage *textStorage = nil;
-    NSAttributedString *attrString = nil;
+    NSString *string = nil;
     
     if ([dPO isKindOfClass:[SKPDFDocument class]]) {
-        attrString = page ? [page attributedString] : [[[dPO pdfDocument] selectionForEntireDocument] attributedString];
+        string = page ? [page string] : [[dPO pdfDocument] string];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
-            textStorage = [dPO richText];
+            string = [dPO string];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         if (page == nil || [page isEqual:[dPO page]])
-            textStorage = [dPO textContents];
+            string = [dPO string];
     } else {
-        attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
+        string = [[PDFSelection selectionWithSpecifier:dP onPage:page] string];
     }
     
-    return textStorage ?: attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
+    return string ?: @"";
 }
 
 @end
