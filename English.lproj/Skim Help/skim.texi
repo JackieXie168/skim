@@ -1331,8 +1331,8 @@ Check the Skim Wiki for more details, in particular about how to set up various 
 @heading Online Resources
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
-@item @uref{http://apps.sourceforge.net/mediawiki/skim/, Skim Wiki}
-@item @uref{http://apps.sourceforge.net/mediawiki/skim/index.php?title=FAQ, Skim FAQ}
+@item @uref{http://apps.sourceforge.net/mediawiki/skim-app/, Skim Wiki}
+@item @uref{http://apps.sourceforge.net/mediawiki/skim-app/index.php?title=FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online copy of this manual}
 @end itemize
 
