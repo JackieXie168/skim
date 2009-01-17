@@ -48,6 +48,10 @@
     return [NSNumber numberWithInt:[self intValue] + 1];
 }
 
+- (NSNumber *)numberBySubstractingOne {
+    return [NSNumber numberWithInt:[self intValue] - 1];
+}
+
 inline static NSString *romanNumeralForDigit(unsigned digit, NSString *i, NSString *v, NSString *x) {
     switch (digit) {
         case 1: return i;
