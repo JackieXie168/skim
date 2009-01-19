@@ -41,6 +41,8 @@
 #import "SKPDFDocument.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSAttributedString_SKExtensions.h"
+#import "SKRichTextFormat.h"
 
 
 @implementation SKTextCommand
@@ -48,26 +50,37 @@
 - (id)performDefaultImplementation {
     id dP = [self directParameter];
     id dPO = nil;
-    if ([dP isKindOfClass:[NSArray class]] == NO)
+    if ([dP respondsToSelector:@selector(objectsByEvaluatingSpecifier)])
         dPO = [dP objectsByEvaluatingSpecifier];
     
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
-    NSString *string = nil;
+    NSAttributedString *attributedString = nil;
+    NSData *data = nil;
     
     if ([dPO isKindOfClass:[SKPDFDocument class]]) {
-        string = page ? [page string] : [[dPO pdfDocument] string];
+        attributedString = page ? [page attributedString] : [dPO richText];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
-            string = [dPO string];
+            attributedString = [dPO attributedString];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         if (page == nil || [page isEqual:[dPO page]])
-            string = [dPO string];
+            attributedString = [dPO textContents];
+    } else if ([dP isKindOfClass:[NSAppleEventDescriptor class]]) {
+        if ([dP descriptorType] == 'RTF ')
+            data = [dP data];
     } else {
-        string = [[PDFSelection selectionWithSpecifier:dP onPage:page] string];
+        attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return string ?: @"";
+    if (data == nil)
+        data = [attributedString RTFRepresentation];
+    if (data) {
+        NSScriptObjectSpecifier *containerRef = [[[[SKRichTextFormat alloc] initWithData:data] autorelease] objectSpecifier];
+        if (containerRef)
+            return [[[NSPropertySpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"richText"] autorelease];
+    }
+    return nil;
 }
 
 @end

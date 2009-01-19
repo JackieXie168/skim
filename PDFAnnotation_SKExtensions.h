@@ -109,7 +109,6 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;
-- (id)richTextRTF;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;

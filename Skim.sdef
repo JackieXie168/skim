@@ -22,6 +22,10 @@
                 description="Lines in a TeX source file.">
                 <cocoa key="lines"/>
             </element>
+            <element type="rich text format" access="r" hidden="yes"
+                description="Rich text formats.">
+                <cocoa key="richText"/>
+            </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The name of the application."/>
             <property name="frontmost" code="pisf" type="boolean" access="r"
@@ -177,9 +181,6 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get text for">
-				<cocoa method=""/>
-			</responds-to>
-			<responds-to name="get RTF for">
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get index for">
@@ -672,9 +673,6 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="get RTF for">
-				<cocoa method=""/>
-			</responds-to>
 			<responds-to name="get index for">
 				<cocoa method=""/>
 			</responds-to>
@@ -729,10 +727,6 @@
                 description="The rich extended text of an anchored note.">
                 <cocoa key="richText"/>
             </property>
-            <property name="extended RTF" code="XRTF" type="any"
-                description="RTF for the rich extended text of an anchored note.">
-                <cocoa key="richTextRTF"/>
-            </property>
             <property name="icon" code="iimg" type="icon type"
                 description="The icon type of an anchored note.">
                 <cocoa key="scriptingIconType"/>
@@ -786,9 +780,6 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="get RTF for">
-				<cocoa method=""/>
-			</responds-to>
 			<responds-to name="get index for">
 				<cocoa method=""/>
 			</responds-to>
@@ -810,6 +801,19 @@
                 description="the line number.">
                 <cocoa key="scriptingIndex"/>
             </property>
+        </class>
+
+        <class name="rich text format" plural="rich text formats" code="RTFt" hidden="yes"
+            description="Rich text format, encoding rich text.">
+            <cocoa class="SKRichTextFormat"/>
+            <property name="name" code="pnam" type="text" access="r"
+                description="The name for the rich text format.">
+                <cocoa key="name"/>
+            </property>
+            <contents name="text" code="ctxt" type="rich text" access="r"
+                description="The rich text representation of the rich text format.">
+                <cocoa key="richText"/>
+            </contents>
         </class>
 
         <record-type name="PDF view settings" code="VSet">
@@ -1308,7 +1312,7 @@
         </command>
 
         <command name="get text for" code="SKIMText"
-            description="Get the text of a document, page, note, or selection.">
+            description="Get the text of a document, page, note, selection, or raw RTF data.">
             <synonym name="text for"/>
             <cocoa class="SKTextCommand"/>
             <direct-parameter
@@ -1317,32 +1321,14 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
+                <type type="any"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
                 description="The page on which to get the text.">
                 <cocoa key="Page"/>
             </parameter>
-            <result type="text"
-                description="The text of the object."/>
-        </command>
-
-        <command name="get RTF for" code="SKIMRTFt"
-            description="Get RTF data for the text of a document, page, note, or selection.">
-            <synonym name="RTF for"/>
-            <cocoa class="SKRTFCommand"/>
-            <direct-parameter
-                description="The document, page, note or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-                <type type="specifier" list="yes"/>
-            </direct-parameter>
-            <parameter name="on" type="page" code="on  " optional="yes"
-                description="The page on which to get the text.">
-                <cocoa key="Page"/>
-            </parameter>
-            <result type="any"
-                description="RTF data for the text of the object."/>
+            <result type="specifier"
+                description="The rich text of the object."/>
         </command>
 
         <command name="get index for" code="SKIMIndx"

@@ -681,4 +681,9 @@ static id sharedApplicationController = nil;
     return [[NSUserDefaults standardUserDefaults] setInteger:SKIconTypeFromScriptingIconType(type) forKey:SKAnchoredNoteIconTypeKey];
 }
 
+- (id)valueInRichTextWithName:(NSString *)name {
+    NSData *data = [name dataUsingEncoding:NSUTF8StringEncoding];
+    return [[[NSTextStorage alloc] initWithRTF:data documentAttributes:nil] autorelease];
+}
+
 @end

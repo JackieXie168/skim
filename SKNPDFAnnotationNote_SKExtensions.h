@@ -55,5 +55,4 @@ extern NSString *SKPDFAnnotationRichTextKey;
 @interface SKNPDFAnnotationNote (SKExtensions)
 + (NSDictionary *)textToNoteSkimNoteProperties:(NSDictionary *)properties;
 - (void)setRichText:(id)newText;
-- (void)setRichTextRTF:(id)newRTF;
 @end
