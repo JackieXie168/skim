@@ -1,10 +1,10 @@
 //
-//  NSData_SKExtensions.h
+//  SKRichTextFormat.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/8/07.
+//  Created by Christiaan Hofman on 1/19/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,25 +39,20 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSData (SKExtensions)
+@interface SKRichTextFormat : NSObject {
+    NSData *data;
+    NSString *name;
+}
 
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength;
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask;
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange;
+- (id)initWithData:(NSData *)aData;
+- (id)initWithName:(NSString *)aName;
 
-- (NSData *)md5Signature;
-- (NSString *)hexString;
-- (NSString *)xmlString;
+- (NSString *)name;
+- (NSTextStorage *)richText;
 
-- (id)initWithBase64String:(NSString *)base64String;
-- (id)initWithBase64String:(NSString *)base64String withNewlines:(BOOL)encodedWithNewlines;
-- (NSString *)base64String;
-- (NSString *)base64StringWithNewlines:(BOOL)encodeWithNewlines;
+@end
 
-+ (NSData *)dataWithPointAsQDPoint:(NSPoint)point;
-+ (NSData *)dataWithRectAsQDRect:(NSRect)rect;
 
-- (NSPoint)pointValueAsQDPoint;
-- (NSRect)rectValueAsQDRect;
-
+@interface NSApplication (SKRichTextFormat)
+- (SKRichTextFormat *)valueInRichTextWithName:(NSString *)name;
 @end
