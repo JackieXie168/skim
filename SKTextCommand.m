@@ -67,8 +67,7 @@
         if (page == nil || [page isEqual:[dPO page]])
             attributedString = [dPO textContents];
     } else if ([dP isKindOfClass:[NSAppleEventDescriptor class]]) {
-        if ([dP descriptorType] == 'RTF ')
-            data = [dP data];
+        data = [dP data];
     } else {
         attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
