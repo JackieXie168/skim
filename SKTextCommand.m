@@ -74,12 +74,7 @@
     
     if (data == nil)
         data = [attributedString RTFRepresentation];
-    if (data) {
-        NSScriptObjectSpecifier *containerRef = [[[[SKRichTextFormat alloc] initWithData:data] autorelease] objectSpecifier];
-        if (containerRef)
-            return [[[NSPropertySpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"richText"] autorelease];
-    }
-    return nil;
+    return data ? [SKRichTextFormat richTextSpecifierWithData:data] : nil;
 }
 
 @end
