@@ -41,7 +41,6 @@
 
 @interface SKRichTextFormat : NSObject {
     NSData *data;
-    NSString *name;
 }
 
 - (id)initWithData:(NSData *)aData;
