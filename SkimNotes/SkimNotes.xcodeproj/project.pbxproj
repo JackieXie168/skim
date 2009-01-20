@@ -173,6 +173,7 @@
 		CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase_Prefix.pch; sourceTree = "<group>"; };
 		CEA5F5870E2CF63000F65088 /* SKNCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNCompatibility.h; sourceTree = "<group>"; };
 		CEA5F5E40E2D0FDB00F65088 /* SkimNotes.hdoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SkimNotes.hdoc; sourceTree = "<group>"; };
+		CEB540910F261E9D00723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/SkimNotes.strings; sourceTree = "<group>"; };
 		CEBA2B550E0566B00000B2E6 /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBA2B5A0E0566DF0000B2E6 /* SKNAgentListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNAgentListener.h; sourceTree = "<group>"; };
 		CEBA2B5B0E0566DF0000B2E6 /* SKNAgentListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNAgentListener.m; sourceTree = "<group>"; };
@@ -528,6 +529,7 @@
 				Spanish,
 				cs,
 				ru,
+				zh_TW,
 			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* SkimNotes */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
@@ -701,6 +703,7 @@
 				CE3907B80E082CAD0015B0B7 /* Spanish */,
 				CE3907BA0E082CB40015B0B7 /* ru */,
 				CE5A82DD0E6C5403008C0AA9 /* Italian */,
+				CEB540910F261E9D00723C1F /* zh_TW */,
 			);
 			name = SkimNotes.strings;
 			sourceTree = "<group>";

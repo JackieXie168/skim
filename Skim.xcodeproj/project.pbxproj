@@ -814,6 +814,26 @@
 		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarColors.tiff; sourceTree = "<group>"; };
 		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarFonts.tiff; sourceTree = "<group>"; };
 		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ToolbarLines.tiff; sourceTree = "<group>"; };
+		CEB53FF10F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/BookmarkSheet.nib; sourceTree = "<group>"; };
+		CEB53FF20F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = zh_TW; path = zh_TW.lproj/Credits.rtf; sourceTree = "<group>"; };
+		CEB53FF30F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
+		CEB53FF40F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		CEB53FF50F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CEB53FF60F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/InfoWindow.nib; sourceTree = "<group>"; };
+		CEB53FF70F261D1400723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/LineInspector.nib; sourceTree = "<group>"; };
+		CEB53FF80F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEB53FF90F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		CEB53FFA0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/NotesPanel.nib; sourceTree = "<group>"; };
+		CEB53FFB0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CEB53FFC0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/NoteWindow.nib; sourceTree = "<group>"; };
+		CEB53FFD0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PageSheet.nib; sourceTree = "<group>"; };
+		CEB53FFE0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PasswordSheet.nib; sourceTree = "<group>"; };
+		CEB53FFF0F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
+		CEB540000F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PrintAccessoryView.nib; sourceTree = "<group>"; };
+		CEB540010F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
+		CEB540020F261D1500723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/ScaleSheet.nib; sourceTree = "<group>"; };
+		CEB540450F261D1700723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/TransitionSheet.nib; sourceTree = "<group>"; };
+		CEB540460F261D1700723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CEB72B890C4A189D000350F9 /* SKTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionController.h; sourceTree = "<group>"; };
 		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TransitionShading.tiff; sourceTree = "<group>"; };
 		CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmark.h; sourceTree = "<group>"; };
@@ -1742,6 +1762,7 @@
 				Spanish,
 				ru,
 				cs,
+				zh_TW,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* Skim */;
 			projectDirPath = "";
@@ -2220,6 +2241,7 @@
 				CE68C6740CEF89E100B082F1 /* German */,
 				CE4F96F40CFB4AC200DBEA14 /* ru */,
 				CE5A822F0E6C42A7008C0AA9 /* Italian */,
+				CEB53FF50F261D1400723C1F /* zh_TW */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2234,6 +2256,7 @@
 				CE68C6320CEF892400B082F1 /* German */,
 				CE4F96B20CFB49C200DBEA14 /* ru */,
 				CE5A821D0E6C41FD008C0AA9 /* Italian */,
+				CEB53FF90F261D1500723C1F /* zh_TW */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -2248,6 +2271,7 @@
 				CE68C6710CEF89D200B082F1 /* German */,
 				CE4F96F10CFB4ABA00DBEA14 /* ru */,
 				CE5A822E0E6C429D008C0AA9 /* Italian */,
+				CEB53FF20F261D1400723C1F /* zh_TW */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -2262,6 +2286,7 @@
 				CE68C64D0CEF898200B082F1 /* German */,
 				CE4F96CD0CFB4A3700DBEA14 /* ru */,
 				CE5A82260E6C4252008C0AA9 /* Italian */,
+				CEB540010F261D1500723C1F /* zh_TW */,
 			);
 			name = ReadNotesAccessoryView.nib;
 			sourceTree = "<group>";
@@ -2276,6 +2301,7 @@
 				CE68C64A0CEF897500B082F1 /* German */,
 				CE4F96CA0CFB4A2F00DBEA14 /* ru */,
 				CE5A82230E6C4231008C0AA9 /* Italian */,
+				CEB53FF40F261D1400723C1F /* zh_TW */,
 			);
 			name = FindPanel.nib;
 			sourceTree = "<group>";
@@ -2290,6 +2316,7 @@
 				CE68C6560CEF899600B082F1 /* German */,
 				CE4F96D60CFB4A5400DBEA14 /* ru */,
 				CE5A82280E6C4268008C0AA9 /* Italian */,
+				CEB53FFB0F261D1500723C1F /* zh_TW */,
 			);
 			name = NoteTypeSheet.nib;
 			sourceTree = "<group>";
@@ -2313,6 +2340,7 @@
 				CE68C6770CEF89ED00B082F1 /* German */,
 				CE4F96F70CFB4ACA00DBEA14 /* ru */,
 				CE5A82300E6C42B1008C0AA9 /* Italian */,
+				CEB53FF80F261D1500723C1F /* zh_TW */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2327,6 +2355,7 @@
 				CE68C6380CEF894900B082F1 /* German */,
 				CE4F96B80CFB49D700DBEA14 /* ru */,
 				CE5A821E0E6C4207008C0AA9 /* Italian */,
+				CEB53FFC0F261D1500723C1F /* zh_TW */,
 			);
 			name = NoteWindow.nib;
 			sourceTree = "<group>";
@@ -2341,6 +2370,7 @@
 				CE68C62F0CEF891B00B082F1 /* German */,
 				CE4F96AE0CFB49B100DBEA14 /* ru */,
 				CE5A821C0E6C41F4008C0AA9 /* Italian */,
+				CEB53FF60F261D1400723C1F /* zh_TW */,
 			);
 			name = InfoWindow.nib;
 			sourceTree = "<group>";
@@ -2355,6 +2385,7 @@
 				CE68C67A0CEF89F300B082F1 /* German */,
 				CE4F96FA0CFB4AD400DBEA14 /* ru */,
 				CE5A82310E6C42BF008C0AA9 /* Italian */,
+				CEB540460F261D1700723C1F /* zh_TW */,
 			);
 			name = ZoomValues.strings;
 			sourceTree = "<group>";
@@ -2369,6 +2400,7 @@
 				CE68C6470CEF896E00B082F1 /* German */,
 				CE4F96C70CFB4A1900DBEA14 /* ru */,
 				CE5A82220E6C4228008C0AA9 /* Italian */,
+				CEB53FFA0F261D1500723C1F /* zh_TW */,
 			);
 			name = NotesPanel.nib;
 			sourceTree = "<group>";
@@ -2383,6 +2415,7 @@
 				CE6DC8260D68B354003A072F /* ru */,
 				CE6DC8270D68B36E003A072F /* Spanish */,
 				CE5A82250E6C4247008C0AA9 /* Italian */,
+				CEB540000F261D1500723C1F /* zh_TW */,
 			);
 			name = PrintAccessoryView.nib;
 			sourceTree = "<group>";
@@ -2397,6 +2430,7 @@
 				CE68C6440CEF896800B082F1 /* German */,
 				CE4F96C40CFB4A1100DBEA14 /* ru */,
 				CE5A82210E6C421F008C0AA9 /* Italian */,
+				CEB53FF70F261D1400723C1F /* zh_TW */,
 			);
 			name = LineInspector.nib;
 			sourceTree = "<group>";
@@ -2411,6 +2445,7 @@
 				CE68C6410CEF896100B082F1 /* German */,
 				CE4F96C10CFB4A0600DBEA14 /* ru */,
 				CE5A82200E6C4218008C0AA9 /* Italian */,
+				CEB53FFF0F261D1500723C1F /* zh_TW */,
 			);
 			name = PreferenceWindow.nib;
 			sourceTree = "<group>";
@@ -2425,6 +2460,7 @@
 				CE68C65F0CEF89A900B082F1 /* German */,
 				CE4F96DF0CFB4A7800DBEA14 /* ru */,
 				CE5A82240E6C423D008C0AA9 /* Italian */,
+				CEB53FF30F261D1400723C1F /* zh_TW */,
 			);
 			name = DownloadsWindow.nib;
 			sourceTree = "<group>";
@@ -2439,6 +2475,7 @@
 				CE68C6620CEF89B100B082F1 /* German */,
 				CE4F96E20CFB4A8400DBEA14 /* ru */,
 				CE5A82290E6C4272008C0AA9 /* Italian */,
+				CEB540450F261D1700723C1F /* zh_TW */,
 			);
 			name = TransitionSheet.nib;
 			sourceTree = "<group>";
@@ -2453,6 +2490,7 @@
 				CE68C6650CEF89B800B082F1 /* German */,
 				CE4F96E50CFB4A9700DBEA14 /* ru */,
 				CE5A822A0E6C427A008C0AA9 /* Italian */,
+				CEB53FFD0F261D1500723C1F /* zh_TW */,
 			);
 			name = PageSheet.nib;
 			sourceTree = "<group>";
@@ -2467,6 +2505,7 @@
 				CE68C6680CEF89BF00B082F1 /* German */,
 				CE4F96E80CFB4AA000DBEA14 /* ru */,
 				CE5A822B0E6C4283008C0AA9 /* Italian */,
+				CEB540020F261D1500723C1F /* zh_TW */,
 			);
 			name = ScaleSheet.nib;
 			sourceTree = "<group>";
@@ -2481,6 +2520,7 @@
 				CE68C66B0CEF89C500B082F1 /* German */,
 				CE4F96EB0CFB4AAB00DBEA14 /* ru */,
 				CE5A822C0E6C428B008C0AA9 /* Italian */,
+				CEB53FFE0F261D1500723C1F /* zh_TW */,
 			);
 			name = PasswordSheet.nib;
 			sourceTree = "<group>";
@@ -2495,6 +2535,7 @@
 				CE68C66E0CEF89CC00B082F1 /* German */,
 				CE4F96EE0CFB4AB300DBEA14 /* ru */,
 				CE5A822D0E6C4292008C0AA9 /* Italian */,
+				CEB53FF10F261D1400723C1F /* zh_TW */,
 			);
 			name = BookmarkSheet.nib;
 			sourceTree = "<group>";

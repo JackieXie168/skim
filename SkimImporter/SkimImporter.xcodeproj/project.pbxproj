@@ -87,6 +87,8 @@
 		CE4F972B0CFB4B9D00DBEA14 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE68C69E0CEF8A3C00B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/schema.strings; sourceTree = "<group>"; };
 		CE68C6A10CEF8A4300B082F1 /* German */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CEB540AF0F261F1F00723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CEB540B00F261F1F00723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/schema.strings; sourceTree = "<group>"; };
 		CEC4BE480CA90A9000299397 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/schema.strings; sourceTree = "<group>"; };
 		CEC4BE4B0CA90A9700299397 /* Spanish */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Spanish; path = Spanish.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CECD97A20C57A4050026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/schema.strings; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				Spanish,
 				ru,
 				cs,
+				zh_TW,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* SkimImporter */;
 			projectDirPath = "";
@@ -380,6 +383,7 @@
 				CEC4BE4B0CA90A9700299397 /* Spanish */,
 				CE68C6A10CEF8A4300B082F1 /* German */,
 				CE4F972B0CFB4B9D00DBEA14 /* ru */,
+				CEB540AF0F261F1F00723C1F /* zh_TW */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -394,6 +398,7 @@
 				CEC4BE480CA90A9000299397 /* Spanish */,
 				CE68C69E0CEF8A3C00B082F1 /* German */,
 				CE4F97280CFB4B9300DBEA14 /* ru */,
+				CEB540B00F261F1F00723C1F /* zh_TW */,
 			);
 			name = schema.strings;
 			sourceTree = "<group>";
