@@ -46,7 +46,6 @@
     if (self = [super init]) {
         if (aData) {
             data = [aData retain];
-            name = nil;
         } else {
             [self release];
             self = nil;
@@ -56,21 +55,14 @@
 }
 
 - (id)initWithName:(NSString *)aName {
-    if (self = [super init]) {
-        if (aName) {
-            name = [aName retain];
-            data = nil;
-        } else {
-            [self release];
-            self = nil;
-        }
-    }
+    NSData *aData = [[NSData alloc] initWithBase64String:aName withNewlines:NO];
+    self = [self initWithData:aData];
+    [aData release];
     return self;
 }
 
 - (void)dealloc {
     [data release];
-    [name release];
     [super dealloc];
 }
 
@@ -80,15 +72,11 @@
 }
 
 - (NSString *)name {
-    if (name == nil)
-        name = [[data base64StringWithNewlines:NO] retain];
-    return name;
+    return [data base64StringWithNewlines:NO];
 }
 
 - (NSTextStorage *)richText {
-    if (data == nil)
-        data = [[NSData alloc] initWithBase64String:name withNewlines:NO];
-    return data ? [[[NSTextStorage alloc] initWithRTF:data documentAttributes:nil] autorelease] : nil;
+    return [[[NSTextStorage alloc] initWithRTF:data documentAttributes:nil] autorelease];
 }
 
 @end
