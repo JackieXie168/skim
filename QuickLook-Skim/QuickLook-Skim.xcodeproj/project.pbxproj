@@ -43,6 +43,7 @@
 		CE4F80E90CFB06EE00DBEA14 /* SKQLConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKQLConverter.h; sourceTree = "<group>"; };
 		CE4F80EA0CFB06EE00DBEA14 /* SKQLConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKQLConverter.m; sourceTree = "<group>"; };
 		CE82D0AA0ED347B100020950 /* Ink.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Ink.png; sourceTree = "<group>"; };
+		CEB5409B0F261EEF00723C1F /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CEC7BCDA0CF7639E008CCD63 /* StrikeOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StrikeOut.png; sourceTree = "<group>"; };
 		CEC7BCDB0CF7639E008CCD63 /* Note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Note.png; sourceTree = "<group>"; };
 		CEC7BCDC0CF7639E008CCD63 /* Line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Line.png; sourceTree = "<group>"; };
@@ -210,6 +211,7 @@
 				Italian,
 				ru,
 				Spanish,
+				zh_TW,
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* QuickLookSkim */;
 			projectDirPath = "";
@@ -276,6 +278,7 @@
 				CECB026C0DC5EB3B0000B16B /* German */,
 				CECB026D0DC5EB3E0000B16B /* ru */,
 				CECB027F0DC5EB5D0000B16B /* Spanish */,
+				CEB5409B0F261EEF00723C1F /* zh_TW */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
