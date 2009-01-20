@@ -1210,6 +1210,7 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="TeX line"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
                 <cocoa key="To"/>
             </parameter>
@@ -1235,6 +1236,7 @@
             </parameter>
             <parameter name="from" code="from" optional="yes"
                 description="The selection to search from.">
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
                 <cocoa key="From"/>
             </parameter>
@@ -1257,11 +1259,13 @@
             <cocoa class="SKJoinCommand"/>
             <direct-parameter
                 description="The selection to add to.">
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="to" code="to  " optional="yes"
                 description="The selection to add.">
                 <cocoa key="To"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </parameter>
             <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
@@ -1297,6 +1301,7 @@
                 <type type="document"/>
                 <type type="page"/>
                 <type type="note"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
@@ -1320,6 +1325,7 @@
                 <type type="document"/>
                 <type type="page"/>
                 <type type="note"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
                 <type type="any"/>
             </direct-parameter>
@@ -1340,6 +1346,7 @@
                 <type type="document"/>
                 <type type="page"/>
                 <type type="note"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
@@ -1364,6 +1371,7 @@
                 <type type="document"/>
                 <type type="page"/>
                 <type type="note"/>
+                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <result
