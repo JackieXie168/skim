@@ -42,6 +42,14 @@
 
 @implementation SKRichTextFormat
 
++ (id)richTextSpecifierWithData:(NSData *)aData {
+    SKRichTextFormat *rtf = [[self alloc] initWithData:aData];
+    NSScriptObjectSpecifier *rtfSpecifier = [rtf objectSpecifier];
+    NSPropertySpecifier *richTextSpecifier = rtfSpecifier ? [[[NSPropertySpecifier alloc] initWithContainerClassDescription:[rtfSpecifier keyClassDescription] containerSpecifier:rtfSpecifier key:@"richText"] autorelease] : nil;
+    [rtf release];
+    return richTextSpecifier;
+}
+
 - (id)initWithData:(NSData *)aData {
     if (self = [super init]) {
         if (aData) {
