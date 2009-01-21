@@ -1297,10 +1297,7 @@
             <synonym name="bounds for"/>
             <cocoa class="SKBoundsCommand"/>
             <direct-parameter
-                description="The document, page, note or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
+                description="The document, page, note, or selection.">
                 <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
@@ -1321,10 +1318,6 @@
             <synonym name="text for"/>
             <cocoa class="SKTextCommand"/>
             <direct-parameter
-                description="The document, page, note or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
                 <type type="specifier"/>
                 <type type="specifier" list="yes"/>
                 <type type="any"/>
@@ -1343,9 +1336,6 @@
             <synonym name="index for"/>
             <direct-parameter
                 description="The document, page, note, or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
                 <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
@@ -1368,9 +1358,6 @@
             <synonym name="pages for"/>
             <direct-parameter
                 description="The document, page, note, or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
                 <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
