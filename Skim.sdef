@@ -493,7 +493,7 @@
                 description="The size in points of the first character.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="RTF" code="RTF " type="any"
+            <property name="RTF" code="RTF " type="RTF"
                 description="The raw RTF data.">
                 <cocoa key="scriptingRTF"/>
             </property>
@@ -520,7 +520,7 @@
                 description="The size in points of the first character.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="RTF" code="RTF " type="any"
+            <property name="RTF" code="RTF " type="RTF"
                 description="The raw RTF data.">
                 <cocoa key="scriptingRTF"/>
             </property>
@@ -547,7 +547,7 @@
                 description="The size in points of the first character.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="RTF" code="RTF " type="any"
+            <property name="RTF" code="RTF " type="RTF"
                 description="The raw RTF data.">
                 <cocoa key="scriptingRTF"/>
             </property>
@@ -574,7 +574,7 @@
                 description="The size in points of the first character.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="RTF" code="RTF " type="any"
+            <property name="RTF" code="RTF " type="RTF"
                 description="The raw RTF data.">
                 <cocoa key="scriptingRTF"/>
             </property>
@@ -601,7 +601,7 @@
                 description="The size in points of the first character.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="RTF" code="RTF " type="any"
+            <property name="RTF" code="RTF " type="RTF"
                 description="The raw RTF data.">
                 <cocoa key="scriptingRTF"/>
             </property>
@@ -1052,6 +1052,18 @@
             <cocoa class="NSColor"/>
         </value-type>
 
+        <value-type name="RTF" code="RTF ">
+            <cocoa class="NSData"/>
+        </value-type>
+
+        <value-type name="PDF" code="PDF ">
+            <cocoa class="NSData"/>
+        </value-type>
+
+        <value-type name="TIFF picture" code="TIFF">
+            <cocoa class="NSData"/>
+        </value-type>
+
         <enumeration name="standard color" code="ClrE">
             <enumerator name="red" code="Red "
                 description="Red color."/>
@@ -1373,9 +1385,13 @@
                 description="The bounds for the picture.">
                 <cocoa key="Bounds"/>
             </parameter>
-            <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes"
+            <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes" hidden="yes"
                 description="Whether to return TIFF data. By default returns PDF data.">
                 <cocoa key="AsTIFF"/>
+            </parameter>
+            <parameter name="as" type="type" code="rtyp" optional="yes"
+                description="The type of data to return. Currently 'PDF' and 'TIFF picture' are supported. Defaults to PDF.">
+                <cocoa key="Type"/>
             </parameter>
             <result type="any"
                 description="The PDF or TIFF data of the picture."/>

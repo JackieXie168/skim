@@ -46,6 +46,12 @@
 - (NSString *)xmlString;
 - (NSData *)RTFRepresentation;
 
+@end
+
+
+@interface NSTextStorage (SKExtensions)
+
 - (id)scriptingRTF;
+- (void)setScriptingRTF:(id)data;
 
 @end

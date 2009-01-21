@@ -556,12 +556,15 @@ static BOOL usesSequentialPageNumbering = NO;
 	NSDictionary *args = [command evaluatedArguments];
     NSData *boundsData = [args objectForKey:@"Bounds"];
     id asTIFFNumber = [args objectForKey:@"AsTIFF"];
+    id asTypeNumber = [args objectForKey:@"Type"];
     NSRect bounds = [boundsData respondsToSelector:@selector(rectValueAsQDRect)] ? [boundsData rectValueAsQDRect] : NSZeroRect;
+    FourCharCode asType = [asTypeNumber respondsToSelector:@selector(unsignedLongValue)] ? [asTypeNumber unsignedLongValue] : 0; 
     BOOL asTIFF = [asTIFFNumber respondsToSelector:@selector(boolValue)] ? [asTIFFNumber boolValue] : NO; 
+    
     NSData *data = nil;
     DescType type = 0;
     
-    if (asTIFF) {
+    if (asTIFF || asType == 'TIFF') {
         data = [self TIFFDataForRect:bounds];
         type = 'TIFF';
     } else {
