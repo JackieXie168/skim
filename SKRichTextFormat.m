@@ -84,7 +84,8 @@
 }
 
 - (NSTextStorage *)richText {
-    return [[[NSTextStorage alloc] initWithRTF:data documentAttributes:nil] autorelease];
+    NSError *error;
+    return [[[NSTextStorage alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:&error] autorelease];
 }
 
 @end
