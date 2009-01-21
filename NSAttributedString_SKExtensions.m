@@ -60,10 +60,22 @@
     return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:nil];
 }
 
+@end
+
+
+@implementation NSTextStorage (SKExtensions)
+
 #pragma mark Scripting support
 
 - (id)scriptingRTF {
-    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:[self RTFRepresentation]];
+    return [self RTFRepresentation];
+}
+
+- (void)setScriptingRTF:(id)data {
+    NSError *error;
+    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:&error] autorelease];
+    if (attrString)
+        [self setAttributedString:attrString];
 }
 
 @end

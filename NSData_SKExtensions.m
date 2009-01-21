@@ -240,4 +240,28 @@
     return rect;
 }
 
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    return [descriptor data];
+}
+
+- (id)scriptingRtfDescriptor {
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:self];
+}
+
++ (id)scriptingPdfWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    return [descriptor data];
+}
+
+- (id)scriptingPdfDescriptor {
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'PDF ' data:self];
+}
+
++ (id)scriptingTiffPictureWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    return [descriptor data];
+}
+
+- (id)scriptingTiffPictureDescriptor {
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'TIFF' data:self];
+}
+
 @end

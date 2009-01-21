@@ -60,4 +60,11 @@
 - (NSPoint)pointValueAsQDPoint;
 - (NSRect)rectValueAsQDRect;
 
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingRtfDescriptor;
++ (id)scriptingPdfWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingPdfDescriptor;
++ (id)scriptingTiffPictureWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingTiffPictureDescriptor;
+
 @end
