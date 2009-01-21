@@ -60,6 +60,17 @@
     return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:nil];
 }
 
+#pragma mark Scripting support
+
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor {
+    NSError *error;
+    return [[[self alloc] initWithData:[descriptor data] options:[NSDictionary dictionary] documentAttributes:NULL error:&error] autorelease];
+}
+
+- (id)scriptingRtfDescriptor {
+    return [NSAppleEventDescriptor descriptorWithDescriptorType:'RTF ' data:[self RTFRepresentation]];
+}
+
 @end
 
 
@@ -68,12 +79,10 @@
 #pragma mark Scripting support
 
 - (id)scriptingRTF {
-    return [self RTFRepresentation];
+    return self;
 }
 
-- (void)setScriptingRTF:(id)data {
-    NSError *error;
-    NSAttributedString *attrString = [[[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionary] documentAttributes:NULL error:&error] autorelease];
+- (void)setScriptingRTF:(id)attrString {
     if (attrString)
         [self setAttributedString:attrString];
 }

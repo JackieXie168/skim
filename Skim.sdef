@@ -474,6 +474,14 @@
 
         <cocoa name="NSTextSuite"/>
 
+        <value-type name="RGBA color" code="RGBA">
+            <cocoa class="NSColor"/>
+        </value-type>
+
+        <value-type name="RTF" code="RTF ">
+            <cocoa class="NSAttributedString"/>
+        </value-type>
+
         <class name="rich text" plural="rich text" code="ricT"
             description="Rich (styled) text">
             <cocoa class="NSTextStorage"/>
@@ -1048,14 +1056,6 @@
             </property>
         </record-type>
 
-        <value-type name="RGBA color" code="RGBA">
-            <cocoa class="NSColor"/>
-        </value-type>
-
-        <value-type name="RTF" code="RTF ">
-            <cocoa class="NSData"/>
-        </value-type>
-
         <value-type name="PDF" code="PDF ">
             <cocoa class="NSData"/>
         </value-type>
@@ -1389,7 +1389,7 @@
                 description="Whether to return TIFF data. By default returns PDF data.">
                 <cocoa key="AsTIFF"/>
             </parameter>
-            <parameter name="as" type="type" code="rtyp" optional="yes"
+            <parameter name="astype" type="type" code="rtyp" optional="yes"
                 description="The type of data to return. Currently 'PDF' and 'TIFF picture' are supported. Defaults to PDF.">
                 <cocoa key="Type"/>
             </parameter>
