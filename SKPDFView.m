@@ -877,7 +877,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             if ([pboardType isEqualToString:NSStringPboardType])
                 attrString = [[[NSMutableAttributedString alloc] initWithString:[pboard stringForType:NSStringPboardType]] autorelease];
             else if ([pboardType isEqualToString:NSRTFPboardType])
-                attrString = [[[NSMutableAttributedString alloc] initWithRTF:[pboard dataForType:NSStringPboardType] documentAttributes:NULL] autorelease];
+                attrString = [[[NSMutableAttributedString alloc] initWithRTF:[pboard dataForType:NSRTFPboardType] documentAttributes:NULL] autorelease];
             if (isPlainText || [pboardType isEqualToString:NSStringPboardType]) {
                 NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
                 float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
