@@ -1330,7 +1330,7 @@
                 description="The document, page, note, selection, or raw RTF data.">
                 <type type="specifier"/>
                 <type type="specifier" list="yes"/>
-                <type type="any"/>
+                <type type="RTF"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
                 description="The page on which to get the text.">

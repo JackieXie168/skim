@@ -53,10 +53,8 @@
     if ([dP respondsToSelector:@selector(objectsByEvaluatingSpecifier)])
         dPO = [dP objectsByEvaluatingSpecifier];
     
-    NSDictionary *args = [self evaluatedArguments];
-    PDFPage *page = [args objectForKey:@"Page"];
+    PDFPage *page = [[self evaluatedArguments] objectForKey:@"Page"];
     NSAttributedString *attributedString = nil;
-    NSData *data = nil;
     
     if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         attributedString = page ? [page attributedString] : [dPO richText];
@@ -66,15 +64,13 @@
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         if (page == nil || [page isEqual:[dPO page]])
             attributedString = [dPO textContents];
-    } else if ([dP isKindOfClass:[NSAppleEventDescriptor class]]) {
-        data = [dP data];
+    } else if ([dP isKindOfClass:[NSAttributedString class]]) {
+        attributedString = dP;
     } else {
         attributedString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    if (data == nil)
-        data = [attributedString RTFRepresentation];
-    return data ? [SKRichTextFormat richTextSpecifierWithData:data] : nil;
+    return [SKRichTextFormat richTextSpecifierWithData:[attributedString RTFRepresentation]];
 }
 
 @end
