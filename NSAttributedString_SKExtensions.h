@@ -46,12 +46,15 @@
 - (NSString *)xmlString;
 - (NSData *)RTFRepresentation;
 
++ (id)scriptingRtfWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingRtfDescriptor;
+
 @end
 
 
 @interface NSTextStorage (SKExtensions)
 
 - (id)scriptingRTF;
-- (void)setScriptingRTF:(id)data;
+- (void)setScriptingRTF:(id)attrString;
 
 @end
