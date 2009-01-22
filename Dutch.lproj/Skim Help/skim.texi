@@ -112,9 +112,9 @@ Control-Cmd-\key\
 
 @settitle Skim Help
 
-@ifnottex
 @c DO NOT LOCALIZE THE NEXT LINE
 @node Top
+@c THIS SHOULD CORRESPOND TO CFBundleHelpBookFolder IN Infoplist.strings OR Info.plist
 @top Skim Help
 
 @box{topframe}
