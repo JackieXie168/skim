@@ -45,7 +45,7 @@
 + (id)richTextSpecifierWithData:(NSData *)aData {
     SKRichTextFormat *rtf = [[self alloc] initWithData:aData];
     NSScriptObjectSpecifier *rtfSpecifier = [rtf objectSpecifier];
-    NSPropertySpecifier *richTextSpecifier = rtfSpecifier ? [[[NSPropertySpecifier alloc] initWithContainerClassDescription:[rtfSpecifier keyClassDescription] containerSpecifier:rtfSpecifier key:@"richTextFormat"] autorelease] : nil;
+    NSPropertySpecifier *richTextSpecifier = rtfSpecifier ? [[[NSPropertySpecifier alloc] initWithContainerClassDescription:[rtfSpecifier keyClassDescription] containerSpecifier:rtfSpecifier key:@"richText"] autorelease] : nil;
     [rtf release];
     return richTextSpecifier;
 }
@@ -76,7 +76,7 @@
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     NSScriptClassDescription *containerClassDescription = (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApp class]];
-    return [[[NSNameSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"richText" name:[self name]] autorelease];
+    return [[[NSNameSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"richTextFormat" name:[self name]] autorelease];
 }
 
 - (NSString *)name {
