@@ -24,7 +24,7 @@
             </element>
             <element type="rich text format" access="r" hidden="yes"
                 description="Rich text formats.">
-                <cocoa key="richText"/>
+                <cocoa key="richTextFormat"/>
             </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The name of the application."/>
