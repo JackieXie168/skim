@@ -55,5 +55,5 @@
 
 
 @interface NSApplication (SKRichTextFormat)
-- (SKRichTextFormat *)valueInRichTextWithName:(NSString *)name;
+- (SKRichTextFormat *)valueInRichTextFormatWithName:(NSString *)name;
 @end

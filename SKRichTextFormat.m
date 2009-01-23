@@ -93,7 +93,7 @@
 
 @implementation NSApplication (SKRichTextFormat)
 
-- (SKRichTextFormat *)valueInRichTextWithName:(NSString *)name {
+- (SKRichTextFormat *)valueInRichTextFormatWithName:(NSString *)name {
     return [[[SKRichTextFormat alloc] initWithName:name] autorelease];
 }
 
