@@ -628,6 +628,20 @@
                 <cocoa key="filename"/>
             </property>
         </class>
+
+        <class name="rich text format" plural="rich text formats" code="RTFt" hidden="yes"
+            description="Rich text format, encoding rich text.">
+            <cocoa class="SKRichTextFormat"/>
+            <property name="name" code="pnam" type="text" access="r"
+                description="The name for the rich text format.">
+                <cocoa key="name"/>
+            </property>
+            <contents name="rich text" code="ricT" type="rich text" access="r"
+                description="The rich text representation of the rich text format.">
+                <cocoa key="richText"/>
+            </contents>
+        </class>
+
     </suite>
 
 
@@ -809,19 +823,6 @@
                 description="the line number.">
                 <cocoa key="scriptingIndex"/>
             </property>
-        </class>
-
-        <class name="rich text format" plural="rich text formats" code="RTFt" hidden="yes"
-            description="Rich text format, encoding rich text.">
-            <cocoa class="SKRichTextFormat"/>
-            <property name="name" code="pnam" type="text" access="r"
-                description="The name for the rich text format.">
-                <cocoa key="name"/>
-            </property>
-            <contents name="rich text" code="ricT" type="rich text" access="r"
-                description="The rich text representation of the rich text format.">
-                <cocoa key="richText"/>
-            </contents>
         </class>
 
         <record-type name="PDF view settings" code="VSet">
