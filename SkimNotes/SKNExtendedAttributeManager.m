@@ -315,7 +315,8 @@ static id sharedNoSplitManager = nil;
     if ((options & kSKNXattrNoSplitData) == 0 && namePrefix && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
-        value = [self bzipData:value];
+        if ((options & kSKNXattrNoCompress) == 0)
+            value = [self bzipData:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
@@ -373,7 +374,7 @@ static id sharedNoSplitManager = nil;
         success = NO;
     } else {
         // if we don't split and the data is too long, compress the data using bzip to save space
-        if (((options & kSKNXattrNoSplitData) != 0 || namePrefix == nil) && [data length] > MAX_XATTR_LENGTH)
+        if (((options & kSKNXattrNoSplitData) != 0 || namePrefix == nil) && (options & kSKNXattrNoCompress) == 0 && [data length] > MAX_XATTR_LENGTH)
             data = [self bzipData:data];
         
         success = [self setExtendedAttributeNamed:attr toValue:data atPath:path options:options error:error];
