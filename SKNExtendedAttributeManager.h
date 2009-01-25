@@ -51,13 +51,15 @@
     @constant    kSKNXattrCreateOnly   Setting will fail if the attribute already exists.
     @constant    kSKNXattrReplaceOnly  Setting will fail if the attribute does not exist.
     @constant    kSKNXattrNoSplitData  Don't split data objects into segments.
+    @constant    kSKNXattrNoCompress   Don't compress data to reduce space for long attributes.
 */
 enum {
     kSKNXattrDefault     = 0,
     kSKNXattrNoFollow    = 1 << 1,
     kSKNXattrCreateOnly  = 1 << 2,
     kSKNXattrReplaceOnly = 1 << 3,
-    kSKNXattrNoSplitData = 1 << 4
+    kSKNXattrNoSplitData = 1 << 4,
+    kSKNXattrNoCompress  = 1 << 5,
 };
 typedef int SKNXattrFlags;
 
