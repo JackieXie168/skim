@@ -77,6 +77,8 @@
 #import "SKRuntime.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
+#define OPEN_META_TAGS_KEY @"com.apple.metadata:kOMUserTags"
+#define OPEN_META_RATING_KEY @"com.apple.metadata:kOMStarRating"
 
 NSString *SKPDFDocumentWillSaveNotification = @"SKPDFDocumentWillSaveNotification";
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
@@ -93,6 +95,8 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)setPDFData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
+- (void)setOpenMetaTags:(NSArray *)array;
+- (void)setOpenMetaRating:(double)rating;
 - (void)setPassword:(NSString *)newPassword;
 
 - (void)tryToUnlockDocument:(PDFDocument *)document;
@@ -126,6 +130,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [pdfDocument release];
     [password release];
     [noteDicts release];
+    [openMetaTags release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
     [progressController release];
@@ -165,6 +170,12 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
+    
+    [mainController setOpenMetaTags:openMetaTags];
+    [self setOpenMetaTags:nil];
+    
+    [mainController setOpenMetaRating:openMetaRating];
+    [self setOpenMetaRating:0.0];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
@@ -350,7 +361,19 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                                      informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
                 [alert runModal];
             }
+            /*
+            SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
             
+            if ([[self tags] count])
+                [eam setExtendedAttributeNamed:OPEN_META_TAGS_KEY toPropertyListValue:[self tags] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
+            else
+                [eam removeExtendedAttribute:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+            
+            if ([self rating] > 0.0)
+                [eam setExtendedAttributeNamed:OPEN_META_RATING_KEY toPropertyListValue:[NSNumber numberWithDouble:[self rating]] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
+            else
+                [eam removeExtendedAttribute:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+            */
             if (success)
                 [[NSDistributedNotificationCenter defaultCenter]
                     postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
@@ -519,10 +542,16 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
             [self tryToUnlockDocument:pdfDocument];
         [[self mainWindowController] setPdfDocument:pdfDocument];
         [self setPDFDoc:nil];
-        if (noteDicts) {
-            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
-            [self setNoteDicts:nil];
-        }
+        
+        [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
+        [self setNoteDicts:nil];
+        
+        [[self mainWindowController] setOpenMetaTags:openMetaTags];
+        [self setOpenMetaTags:nil];
+        
+        [[self mainWindowController] setOpenMetaRating:openMetaRating];
+        [self setOpenMetaRating:0.0];
+        
         [[self undoManager] removeAllActions];
         // file watching could have been disabled if the file was deleted
         if (watchedFile == nil && fileUpdateTimer == nil)
@@ -585,6 +614,17 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     }
 }
 
+- (void)setOpenMetaTags:(NSArray *)array {
+    if (openMetaTags != array) {
+        [openMetaTags autorelease];
+        openMetaTags = [array retain];
+    }
+}
+
+- (void)setOpenMetaRating:(double)rating {
+    openMetaRating = rating;
+}
+
 - (void)setPassword:(NSString *)newPassword {
     if (password != newPassword) {
         [password release];
@@ -639,6 +679,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [self setPDFData:nil];
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
+    [self setOpenMetaTags:nil];
+    [self setOpenMetaRating:0.0];
     
     if (SKIsPDFDocumentType(docType)) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
@@ -682,6 +724,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         }
                     }
                 }
+            }
+            if (pdfDoc) {
+                array = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+                if ([array count])
+                    [self setOpenMetaTags:array];
+                NSNumber *number = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+                if (number && [number doubleValue] > 0.0)
+                    [self setOpenMetaRating:[number doubleValue]];
             }
         }
     } else if (SKIsPDFBundleDocumentType(docType)) {
@@ -1801,6 +1851,22 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     [[self pdfView] removeAnnotation:note];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+}
+
+- (NSArray *)tags {
+    return [[self mainWindowController] tags];
+}
+
+- (void)setTags:(NSArray *)newTags {
+    [[self mainWindowController] setTags:newTags];
+}
+
+- (double)rating {
+    return [[self mainWindowController] rating];
+}
+
+- (void)setRating:(double)newRating {
+    [[self mainWindowController] setRating:newRating];
 }
 
 - (PDFPage *)currentPage {

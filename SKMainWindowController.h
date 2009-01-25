@@ -171,6 +171,9 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSTimer                     *snapshotTimer;
     float                       roundedSnapshotThumbnailSize;
     
+    NSMutableArray              *tags;
+    double                      rating;
+    
     NSWindow                    *mainWindow;
     SKFullScreenWindow          *fullScreenWindow;
     SKSideWindow                *leftSideWindow;
@@ -385,6 +388,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(unsigned int)theIndex;
 - (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex;
 
+- (NSArray *)tags;
+- (void)setTags:(NSArray *)newTags;
+
+- (double)rating;
+- (void)setRating:(double)newRating;
+
 - (NSArray *)selectedNotes;
 
 - (unsigned int)pageNumber;
@@ -448,6 +457,9 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
+
+- (void)setOpenMetaTags:(NSArray *)tags;
+- (void)setOpenMetaRating:(double)rating;
 
 - (void)setInitialSetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;

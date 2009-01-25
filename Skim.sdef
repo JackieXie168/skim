@@ -153,6 +153,15 @@
                 description="The attributes of the PDF document.">
                 <cocoa key="documentAttributes"/>
             </property>
+            <property name="tags" code="Tags" hidden="yes"
+                description="The tags of the PDF document.">
+                <type type="text" list="yes"/>
+                <cocoa key="tags"/>
+            </property>
+            <property name="rating" type="real" code="Rate" hidden="yes"
+                description="The rating of the PDF document.">
+                <cocoa key="rating"/>
+            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
