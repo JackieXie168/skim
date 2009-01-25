@@ -231,6 +231,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
+        tags = [[NSArray alloc] init];
+        rating = 0.0;
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
@@ -270,6 +272,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 	[thumbnails release];
 	[notes release];
 	[snapshots release];
+	[tags release];
     [pageLabels release];
     [pageLabel release];
 	CFRelease(rowHeights);
@@ -842,6 +845,18 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
 }
 
+
+- (void)setOpenMetaTags:(NSArray *)newTags {
+    if (tags != newTags) {
+        [tags release];
+        tags = [newTags retain] ?: [[NSArray alloc] init];
+    }
+}
+
+- (void)setOpenMetaRating:(double)newRating {
+    rating = newRating;
+}
+
 - (SKPDFView *)pdfView {
     return pdfView;
 }
@@ -1181,6 +1196,34 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex {
     [groupedSearchResults removeObjectAtIndex:theIndex];
+}
+
+- (NSArray *)tags {
+    return tags;
+}
+
+- (void)setTags:(NSArray *)newTags {
+    if (newTags == nil) newTags = [NSArray array];
+    if (tags != newTags) {
+        NSUndoManager *undoManager = [[self document] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setTags:tags];
+        [undoManager setActionName:NSLocalizedString(@"Edit Tags", @"Undo action name")];
+        [tags release];
+        tags = [newTags retain];
+    }
+}
+
+- (double)rating {
+    return rating;
+}
+
+- (void)setRating:(double)newRating {
+    if (fabs(rating - newRating) > 0.0) {
+        NSUndoManager *undoManager = [[self document] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setRating:rating];
+        [undoManager setActionName:NSLocalizedString(@"Edit Rating", @"Undo action name")];
+        rating = newRating;
+    }
 }
 
 #pragma mark Actions

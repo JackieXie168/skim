@@ -76,6 +76,8 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     // temporary variables:
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
+    NSArray *openMetaTags;
+    double openMetaRating;
     
     SKProgressController *progressController;
     
@@ -136,6 +138,10 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex;
+- (NSArray *)tags;
+- (void)setTags:(NSArray *)newTags;
+- (double)rating;
+- (void)setRating:(double)newRating;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
