@@ -327,7 +327,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     OSMemoryBarrier();
     if (convertingPS)
         [super cancel:sender];
-    else if (taskShouldStop)
+    else if (taskShouldStop == 0)
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&taskShouldStop);
     else
         [self converterWasStopped];
@@ -355,6 +355,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return [pdfData autorelease];
 }
 
+- (BOOL)shouldKeepRunning {
+    OSMemoryBarrier();
+    return taskShouldStop == 0;
+}
+
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
@@ -369,31 +374,20 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSInvocation *invocation;
     
-    OSMemoryBarrier();
-    if (SKFileExistsAtPath(dviFile) && taskShouldStop == 0) {
+    if (SKFileExistsAtPath(dviFile) && [self shouldKeepRunning]) {
         
         NSTask *task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
         
-        invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
-        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+        if (task) {
+            invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
+            [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
-        OSMemoryBarrier();
-        if (task && taskShouldStop == 0) {
-            while ([task isRunning]) {
-                OSMemoryBarrier();
-                if (taskShouldStop) {
-                    if ([task isRunning])
-                        [task terminate];
-                    break;
-                } else {
-                    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-                }
-            }
-            if ([task isRunning]) {
+            while ([task isRunning] && [self shouldKeepRunning])
+                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if ([task isRunning])
                 [task terminate];
-            } else {
-                success = (0 == [task terminationStatus]);
-            }
+            else if ([self shouldKeepRunning])
+                success = ([task terminationStatus] == 0);
         }
         
         [task release];
