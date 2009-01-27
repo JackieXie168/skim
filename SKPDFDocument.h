@@ -130,18 +130,17 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (SKPDFSynchronizer *)synchronizer;
 
 - (NSArray *)snapshots;
-- (NSArray *)pages;
 
+- (NSArray *)tags;
+- (double)rating;
+
+- (NSArray *)pages;
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
 - (NSArray *)notes;
 - (void)insertInNotes:(PDFAnnotation *)newNote;
 - (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex;
 - (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex;
-- (NSArray *)tags;
-- (void)setTags:(NSArray *)newTags;
-- (double)rating;
-- (void)setRating:(double)newRating;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;

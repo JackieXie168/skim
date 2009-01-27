@@ -1732,6 +1732,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self mainWindowController] snapshots];
 }
 
+- (NSArray *)tags {
+    return [[self mainWindowController] tags];
+}
+
+- (double)rating {
+    return [[self mainWindowController] rating];
+}
+
 #pragma mark Passwords
 
 - (const char *)keychainServiceName {
@@ -1869,22 +1877,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     [[self pdfView] removeAnnotation:note];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
-}
-
-- (NSArray *)tags {
-    return [[self mainWindowController] tags];
-}
-
-- (void)setTags:(NSArray *)newTags {
-    [[self mainWindowController] setTags:newTags];
-}
-
-- (double)rating {
-    return [[self mainWindowController] rating];
-}
-
-- (void)setRating:(double)newRating {
-    [[self mainWindowController] setRating:newRating];
 }
 
 - (PDFPage *)currentPage {
