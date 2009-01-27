@@ -325,18 +325,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (IBAction)cancel:(id)sender
 {
     OSMemoryBarrier();
-    if (convertingPS) {
+    if (convertingPS)
         [super cancel:sender];
-    } else {
-        BOOL wasRunning = NO;
-        @synchronized(self) {
-            wasRunning = [task isRunning];
-            if (wasRunning)
-                [task terminate];
-        }
-        if (wasRunning == NO)
-            [self converterWasStopped];
-    }
+    else if (taskShouldStop)
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&taskShouldStop);
+    else
+        [self converterWasStopped];
 }
 
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
@@ -344,6 +338,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSMutableData *pdfData = nil;
     
     if (dviToolPath) {
+        taskShouldStop = 0;
         pdfData = [[NSMutableData alloc] init];
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, SKPSProgressDviFileKey, pdfData, SKPSProgressPdfDataKey, dviToolPath, SKPSProgressDviToolPathKey, nil];
@@ -370,29 +365,38 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
     NSString *outFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
     NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
-    BOOL success = SKFileExistsAtPath(dviFile);
+    BOOL success = NO;
     
     NSInvocation *invocation;
     
-    if (success) {
+    OSMemoryBarrier();
+    if (SKFileExistsAtPath(dviFile) && taskShouldStop == 0) {
         
-        @synchronized(self) {
-            task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
-        }
+        NSTask *task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
         
         invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
-        if (success) {
-            [task waitUntilExit];
-            [task terminate];
-            success = 0 == [task terminationStatus];
+        OSMemoryBarrier();
+        if (task && taskShouldStop == 0) {
+            while ([task isRunning]) {
+                OSMemoryBarrier();
+                if (taskShouldStop) {
+                    if ([task isRunning])
+                        [task terminate];
+                    break;
+                } else {
+                    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+                }
+            }
+            if ([task isRunning]) {
+                [task terminate];
+            } else {
+                success = (0 == [task terminationStatus]);
+            }
         }
-    }
-    
-    @synchronized(self) {
+        
         [task release];
-        task = nil;
     }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;

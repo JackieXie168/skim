@@ -58,8 +58,8 @@
 
 
 @interface SKDVIProgressController : SKPSProgressController {
-    NSTask *task;
     volatile int32_t convertingPS;
+    volatile int32_t taskShouldStop;
 }
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 @end
