@@ -779,8 +779,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             NSArray *array = nil;
             NSNumber *number = nil;
             if (SKIsPDFBundleDocumentType(docType)) {
-                NSString *infoPath = [[[absoluteURL path] stringByAppendingPathComponent:BUNDLE_DATA_FILENAME] stringByAppendingPathExtension:@"plist"];
-                NSData *infoData = [NSData dataWithContentsOfFile:infoPath options:0 error:NULL];
+                NSData *infoData = [NSData dataWithContentsOfFile:[[[absoluteURL path] stringByAppendingPathComponent:BUNDLE_DATA_FILENAME] stringByAppendingPathExtension:@"plist"]];
                 if (infoData) {
                     NSString *errorString = nil;
                     NSDictionary *info = [NSPropertyListSerialization propertyListFromData:infoData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:&errorString];
