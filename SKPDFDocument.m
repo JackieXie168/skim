@@ -728,14 +728,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     }
                 }
             }
-            if (pdfDoc) {
-                array = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
-                if ([array count])
-                    [self setOpenMetaTags:array];
-                NSNumber *number = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
-                if (number && [number doubleValue] > 0.0)
-                    [self setOpenMetaRating:[number doubleValue]];
-            }
         }
     } else if (SKIsPDFBundleDocumentType(docType)) {
         NSString *path = [absoluteURL path];
@@ -783,6 +775,30 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             fileChangedOnDisk = NO;
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            
+            NSArray *array = nil;
+            NSNumber *number = nil;
+            if (SKIsPDFBundleDocumentType(docType)) {
+                NSString *infoPath = [[[absoluteURL path] stringByAppendingPathComponent:BUNDLE_DATA_FILENAME] stringByAppendingPathExtension:@"plist"];
+                NSData *infoData = [NSData dataWithContentsOfFile:infoPath options:0 error:NULL];
+                if (infoData) {
+                    NSString *errorString = nil;
+                    NSDictionary *info = [NSPropertyListSerialization propertyListFromData:infoData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:&errorString];
+                    if (info == nil) {
+                        [errorString release];
+                    } else if ([info isKindOfClass:[NSDictionary class]]) {
+                        array =[info objectForKey:@"Tags"];
+                        number = [info objectForKey:@"Rating"];
+                    }
+                }
+            } else {
+                array = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+                number = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+            }
+            if ([array isKindOfClass:[NSArray class]] && [array count])
+                [self setOpenMetaTags:array];
+            if ([number respondsToSelector:@selector(doubleValue)] && [number doubleValue] > 0.0)
+                [self setOpenMetaRating:[number doubleValue]];
         } else {
             [self setPDFData:nil];
         }

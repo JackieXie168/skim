@@ -56,6 +56,8 @@ static NSString *SKInfoFileNameKey = @"FileName";
 static NSString *SKInfoFileSizeKey = @"FileSize";
 static NSString *SKInfoPhysicalSizeKey = @"PhysicalSize";
 static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
+static NSString *SKInfoTagsKey = @"Tags";
+static NSString *SKInfoRatingKey = @"Rating";
 
 @implementation SKInfoWindowController
 
@@ -230,6 +232,10 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:SKInfoPhysicalSizeKey];
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:SKInfoLogicalSizeKey];
+    if ([doc respondsToSelector:@selector(tags)] && [[(SKPDFDocument *)doc tags] count] > 0)
+        [dictionary setValue:[(SKPDFDocument *)doc tags] forKey:SKInfoTagsKey];
+    if ([doc respondsToSelector:@selector(rating)] && [(SKPDFDocument *)doc rating] > 0.0)
+        [dictionary setValue:[NSNumber numberWithDouble:[(SKPDFDocument *)doc rating]] forKey:SKInfoRatingKey];
     
     return dictionary;
 }
