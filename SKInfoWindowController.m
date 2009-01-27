@@ -232,9 +232,9 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:SKInfoFileSizeKey];
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:SKInfoPhysicalSizeKey];
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:SKInfoLogicalSizeKey];
-    if ([doc respondsToSelector:@selector(tags)] && [[(SKPDFDocument *)doc tags] count] > 0)
-        [dictionary setValue:[(SKPDFDocument *)doc tags] forKey:SKInfoTagsKey];
-    if ([doc respondsToSelector:@selector(rating)] && [(SKPDFDocument *)doc rating] > 0.0)
+    if ([doc respondsToSelector:@selector(tags)])
+        [dictionary setValue:[(SKPDFDocument *)doc tags] ?: [NSArray array] forKey:SKInfoTagsKey];
+    if ([doc respondsToSelector:@selector(rating)])
         [dictionary setValue:[NSNumber numberWithDouble:[(SKPDFDocument *)doc rating]] forKey:SKInfoRatingKey];
     
     return dictionary;
