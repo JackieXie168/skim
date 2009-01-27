@@ -363,7 +363,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 [alert runModal];
             }
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKSaveOpenMetaTagsKey]) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKSaveOpenMetaTagsKey] || saveOperation != NSSaveOperation) {
                 SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
                 
                 if ([[self tags] count])
