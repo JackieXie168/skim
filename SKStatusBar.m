@@ -75,11 +75,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         leftCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
-		[leftCell setFont:[NSFont labelFontOfSize:0]];
+		[leftCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [leftCell setAlignment:NSLeftTextAlignment];
         [leftCell setControlView:self];
         rightCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
-		[rightCell setFont:[NSFont labelFontOfSize:0]];
+		[rightCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
 		progressIndicator = nil;
