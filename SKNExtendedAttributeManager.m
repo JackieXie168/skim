@@ -315,8 +315,7 @@ static id sharedNoSplitManager = nil;
     if ((options & kSKNXattrNoSplitData) == 0 && namePrefix && [value length] > MAX_XATTR_LENGTH) {
                     
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
-        if ((options & kSKNXattrNoCompress) == 0)
-            value = [self bzipData:value];
+        value = [self bzipData:value];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = [namePrefix stringByAppendingString:UNIQUE_VALUE];
