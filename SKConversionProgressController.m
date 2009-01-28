@@ -375,9 +375,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     NSInvocation *invocation;
     
     if (SKFileExistsAtPath(dviFile) && [self shouldKeepRunning]) {
-        
-        NSTask *task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
-        
+        NSTask *task = [NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
         if (task) {
             invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
             [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
@@ -389,8 +387,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
             else if ([self shouldKeepRunning])
                 success = ([task terminationStatus] == 0);
         }
-        
-        [task release];
     }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
