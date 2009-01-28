@@ -43,11 +43,11 @@
 #import "NSInvocation_SKExtensions.h"
 #import <libkern/OSAtomic.h>
 
-static NSString *SKPSProgressProviderKey = @"provider";
-static NSString *SKPSProgressConsumerKey = @"consumer";
-static NSString *SKPSProgressDviFileKey = @"dviFile";
-static NSString *SKPSProgressPdfDataKey = @"pdfData";
-static NSString *SKPSProgressDviToolPathKey = @"dviToolPath";
+static NSString *SKConversionProgressProviderKey = @"provider";
+static NSString *SKConversionProgressConsumerKey = @"consumer";
+static NSString *SKConversionProgressDviFileKey = @"dviFile";
+static NSString *SKConversionProgressPdfDataKey = @"pdfData";
+static NSString *SKConversionProgressDviToolPathKey = @"dviToolPath";
 
 static NSString *SKDviConversionCommandKey = @"SKDviConversionCommand";
 
@@ -243,7 +243,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     CFMutableDataRef pdfData = CFDataCreateMutable(CFGetAllocator((CFDataRef)psData), 0);
     CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKPSProgressProviderKey, (id)consumer, SKPSProgressConsumerKey, nil];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKConversionProgressProviderKey, (id)consumer, SKConversionProgressConsumerKey, nil];
     
     int rv = [self runModalConversionWithInfo:dictionary];
     
@@ -262,8 +262,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    CGDataProviderRef provider = (void *)[info objectForKey:SKPSProgressProviderKey];
-    CGDataConsumerRef consumer = (void *)[info objectForKey:SKPSProgressConsumerKey];
+    CGDataProviderRef provider = (void *)[info objectForKey:SKConversionProgressProviderKey];
+    CGDataConsumerRef consumer = (void *)[info objectForKey:SKConversionProgressConsumerKey];
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
     
     [self stopModalOnMainThread:success];
@@ -341,7 +341,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         taskShouldStop = 0;
         pdfData = [[NSMutableData alloc] init];
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, SKPSProgressDviFileKey, pdfData, SKPSProgressPdfDataKey, dviToolPath, SKPSProgressDviToolPathKey, nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, SKConversionProgressDviFileKey, pdfData, SKConversionProgressPdfDataKey, dviToolPath, SKConversionProgressDviToolPathKey, nil];
         
         int rv = [self runModalConversionWithInfo:dictionary];
         
@@ -363,8 +363,8 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *dviFile = [info objectForKey:SKPSProgressDviFileKey];
-    NSString *commandPath = [info objectForKey:SKPSProgressDviToolPathKey];
+    NSString *dviFile = [info objectForKey:SKConversionProgressDviFileKey];
+    NSString *commandPath = [info objectForKey:SKConversionProgressDviToolPathKey];
     NSString *commandName = [commandPath lastPathComponent];
     NSString *tmpDir = SKUniqueTemporaryDirectory();
     BOOL outputPS = [commandName isEqualToString:@"dvips"];
@@ -390,7 +390,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
     
     NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
-    NSMutableData *pdfData = [info objectForKey:SKPSProgressPdfDataKey];
+    NSMutableData *pdfData = [info objectForKey:SKConversionProgressPdfDataKey];
     
     if (outputPS && success) {
         NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
@@ -402,7 +402,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)outData);
         CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKPSProgressProviderKey, (id)consumer, SKPSProgressConsumerKey, nil];
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, SKConversionProgressProviderKey, (id)consumer, SKConversionProgressConsumerKey, nil];
         
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&convertingPS);
         
