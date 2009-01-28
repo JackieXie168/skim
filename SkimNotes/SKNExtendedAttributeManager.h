@@ -63,6 +63,24 @@ enum {
 };
 typedef int SKNXattrFlags;
 
+/*!
+    @discussion  Error domain for the extended attribute manager used for non-POSIX errors.
+*/
+extern NSString *SKNSkimNotesErrorDomain;
+
+/*!
+    @enum        SKNErrorCodes 
+    @abstract    Error codes in the SKNSkimNotesErrorDomain.
+    @discussion  These error codes are the non-POSIX errors returned by the extended attribute manager.  Apart from these, also errors from NSPOSIXErrorDomain can be returned.
+    @constant    SKNReassembleAttributeFailedError  Fragments could not be reassembled to a combined value.
+    @constant    SKNPlistSerializationFailedError   Property list serialization failed. Uses the description from NSPropertyListSerialization.
+    @constant    SKNPlistDeserializationFailedError Property list deserialization failed. Uses the description from NSPropertyListSerialization.
+*/
+enum {
+    SKNReassembleAttributeFailedError  = 1,
+    SKNPlistSerializationFailedError   = 2,
+    SKNPlistDeserializationFailedError = 3
+};
 
 /*!
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
