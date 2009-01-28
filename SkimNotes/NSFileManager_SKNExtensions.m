@@ -102,7 +102,7 @@
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
-        } else if (data || [error code] == ENOATTR) {
+        } else if (data || ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
             notes = [NSArray array];
         }
     }
@@ -118,7 +118,7 @@
     if ([aURL isFileURL]) {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (string == nil && [error code] == ENOATTR)
+        if (string == nil && [[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)
             string = [NSString string];
     }
     if (string == nil && outError) 
@@ -133,7 +133,7 @@
     if ([aURL isFileURL]) {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (data == nil && [error code] == ENOATTR)
+        if (data == nil && [[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)
             data = [NSData data];
     }
     if(data == nil && outError) 
