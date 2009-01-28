@@ -57,12 +57,12 @@
         SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
         
         // first remove all old notes
-        if ([eam removeExtendedAttribute:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error] == NO) {
+        if ([eam removeExtendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error] == NO) {
             // should we set success to NO and return an error?
             //NSLog(@"%@: %@", self, error);
         }
-        [eam removeExtendedAttribute:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:NULL];
-        [eam removeExtendedAttribute:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:NULL];
+        [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:NULL];
+        [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:NULL];
         
         if ([notes count]) {
             if ([eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:path options:kSKNXattrDefault error:&error] == NO) {

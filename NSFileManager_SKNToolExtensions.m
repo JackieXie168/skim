@@ -210,13 +210,13 @@
             error1 = error2 = error3 = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Could not remove notes file", NSLocalizedDescriptionKey, nil]];
     } else {
         SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
-        success1 = [eam removeExtendedAttribute:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error1];
+        success1 = [eam removeExtendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error1];
         if (success1 == NO && [[error1 domain] isEqualToString:NSPOSIXErrorDomain] && [error1 code] == ENOATTR)
             success1 = YES;
-        success2 = [eam removeExtendedAttribute:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error2];
+        success2 = [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error2];
         if (success2 == NO && [[error2 domain] isEqualToString:NSPOSIXErrorDomain] && [error2 code] == ENOATTR)
             success2 = YES;
-        success3 = [eam removeExtendedAttribute:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error3];
+        success3 = [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error3];
         if (success3 == NO && [[error3 domain] isEqualToString:NSPOSIXErrorDomain] && [error3 code] == ENOATTR)
             success3 = YES;
     }
