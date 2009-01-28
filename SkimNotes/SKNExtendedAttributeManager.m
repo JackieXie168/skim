@@ -49,7 +49,7 @@
 #define WRAPPER_KEY_SUFFIX      @"_has_wrapper"
 #define FRAGMENTS_KEY_SUFFIX    @"_number_of_fragments"
 
-static NSString *SKNErrorDomain = @"SKNErrorDomain";
+NSString *SKNSkimNotesErrorDomain = @"SKNSkimNotesErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
 // private methods to (un)compress data
@@ -263,7 +263,7 @@ static id sharedNoSplitManager = nil;
         [attribute release];
         attribute = success ? [[self bunzipData:buffer] retain] : nil;
         
-        if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        if (success == NO && NULL != error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNReassembleAttributeFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, SKNLocalizedString(@"Failed to reassemble attribute value.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     return [attribute autorelease];
 }
@@ -286,7 +286,7 @@ static id sharedNoSplitManager = nil;
                                                            format:NULL 
                                                  errorDescription:&errorString];
         if (nil == plist) {
-            if (error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
+            if (error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNPlistDeserializationFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
             [errorString release];
         }
     }
@@ -368,7 +368,7 @@ static id sharedNoSplitManager = nil;
                                                     errorDescription:&errorString];
     BOOL success;
     if (nil == data) {
-        if (error) *error = [NSError errorWithDomain:SKNErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
+        if (error) *error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNPlistDeserializationFailedError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
         [errorString release];
         success = NO;
     } else {
