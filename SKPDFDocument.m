@@ -369,12 +369,12 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                 if ([[self tags] count])
                     [eam setExtendedAttributeNamed:OPEN_META_TAGS_KEY toPropertyListValue:[self tags] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
                 else
-                    [eam removeExtendedAttribute:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+                    [eam removeExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
                 
                 if ([self rating] > 0.0)
                     [eam setExtendedAttributeNamed:OPEN_META_RATING_KEY toPropertyListValue:[NSNumber numberWithDouble:[self rating]] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
                 else
-                    [eam removeExtendedAttribute:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+                    [eam removeExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             }
             
             if (success)
