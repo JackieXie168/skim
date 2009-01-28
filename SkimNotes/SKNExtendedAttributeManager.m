@@ -381,7 +381,7 @@ static id sharedNoSplitManager = nil;
     return success;
 }
 
-- (BOOL)removeExtendedAttribute:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (BOOL)removeExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
     NSParameterAssert(path != nil);
     const char *fsPath = [path fileSystemRepresentation];

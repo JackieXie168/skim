@@ -59,7 +59,7 @@ enum {
     kSKNXattrCreateOnly  = 1 << 2,
     kSKNXattrReplaceOnly = 1 << 3,
     kSKNXattrNoSplitData = 1 << 4,
-    kSKNXattrNoCompress  = 1 << 5,
+    kSKNXattrNoCompress  = 1 << 5
 };
 typedef int SKNXattrFlags;
 
@@ -197,7 +197,7 @@ enum {
     @param      error Error object describing the error if <code>nil</code> was returned.
     @result     Returns <code>NO</code> if an error occurred.
 */
-- (BOOL)removeExtendedAttribute:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
+- (BOOL)removeExtendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
     @abstract   Removes all extended attributes at the specified path.
