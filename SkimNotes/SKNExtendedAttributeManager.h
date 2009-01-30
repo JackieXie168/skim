@@ -61,7 +61,7 @@ enum {
     kSKNXattrNoSplitData = 1 << 4,
     kSKNXattrNoCompress  = 1 << 5
 };
-typedef int SKNXattrFlags;
+typedef NSInteger SKNXattrFlags;
 
 /*!
     @discussion  Error domain for the extended attribute manager used for non-POSIX errors.
