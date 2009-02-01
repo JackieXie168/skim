@@ -60,65 +60,63 @@
 }
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
-    float red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0;
-    switch ([descriptor numberOfItems]) {
-        case 0:
-            switch ([descriptor enumCodeValue]) {
-                case SKScriptingColorRed: return [NSColor redColor];
-                case SKScriptingColorGreen: return [NSColor greenColor];
-                case SKScriptingColorBlue: return [NSColor blueColor];
-                case SKScriptingColorYellow: return [NSColor yellowColor];
-                case SKScriptingColorMagenta: return [NSColor magentaColor];
-                case SKScriptingColorCyan: return [NSColor cyanColor];
-                case SKScriptingColorDarkRed: return [NSColor colorWithCalibratedRed:0.5 green:0.0 blue:0.0 alpha:1.0];
-                case SKScriptingColorDarkGreen: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.0 alpha:1.0];
-                case SKScriptingColorDarkBlue: return [NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.5 alpha:1.0];
-                case SKScriptingColorBanana: return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
-                case SKScriptingColorTurquoise: return [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:1.0 alpha:1.0];
-                case SKScriptingColorViolet: return [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:1.0 alpha:1.0];
-                case SKScriptingColorOrange: return [NSColor orangeColor];
-                case SKScriptingColorDeepPink: return [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.5 alpha:1.0];
-                case SKScriptingColorSpringGreen: return [NSColor colorWithCalibratedRed:0.0 green:1.0 blue:0.5 alpha:1.0];
-                case SKScriptingColorAqua: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:1.0 alpha:1.0];
-                case SKScriptingColorLime: return [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:0.0 alpha:1.0];
-                case SKScriptingColorDarkViolet: return [NSColor colorWithCalibratedRed:0.5 green:0.0 blue:1.0 alpha:1.0];
-                case SKScriptingColorPurple: return [NSColor purpleColor];
-                case SKScriptingColorTeal: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.5 alpha:1.0];
-                case SKScriptingColorOlive: return [NSColor colorWithCalibratedRed:0.5 green:0.5 blue:0.0 alpha:1.0];
-                case SKScriptingColorBrown: return [NSColor brownColor];
-                case SKScriptingColorBlack: return [NSColor blackColor];
-                case SKScriptingColorWhite: return [NSColor whiteColor];
-                case SKScriptingColorGray: return [NSColor grayColor];
-                case SKScriptingColorDarkGray: return [NSColor darkGrayColor];
-                case SKScriptingColorLightGray: return [NSColor lightGrayColor];
-                case SKScriptingColorClear: return [NSColor clearColor];
-                default:
-                {
-                    NSString *string = [descriptor stringValue];
-                    if (string) {
-                        NSColor *color = [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]];
-                        return [color isKindOfClass:[NSColor class]] ? color : nil;
-                    } else
-                        return nil;
-                }
-            }
-            break;
-        case 4:
-            alpha = (float)[[descriptor descriptorAtIndex:4] int32Value] / 65535.0f;
-        case 3:
-            red = (float)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
+    if ([descriptor numberOfItems] > 0) {
+        float red, green, blue, alpha;
+        red = green = blue = (float)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
+        if ([descriptor numberOfItems] > 2) {
             green = (float)[[descriptor descriptorAtIndex:2] int32Value] / 65535.0f;
             blue = (float)[[descriptor descriptorAtIndex:3] int32Value] / 65535.0f;
-            break;
-        case 2:
+        }
+        if ([descriptor numberOfItems] == 2)
             alpha = (float)[[descriptor descriptorAtIndex:2] int32Value] / 65535.0f;
-        case 1:
-            red = green = blue = (float)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
-            break;
-        default:
-            return nil;
+        else if ([descriptor numberOfItems] > 3)
+            alpha = (float)[[descriptor descriptorAtIndex:4] int32Value] / 65535.0f;
+        else
+            alpha= 1.0;
+        return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
+    } else {
+        switch ([descriptor enumCodeValue]) {
+            case SKScriptingColorRed: return [NSColor redColor];
+            case SKScriptingColorGreen: return [NSColor greenColor];
+            case SKScriptingColorBlue: return [NSColor blueColor];
+            case SKScriptingColorYellow: return [NSColor yellowColor];
+            case SKScriptingColorMagenta: return [NSColor magentaColor];
+            case SKScriptingColorCyan: return [NSColor cyanColor];
+            case SKScriptingColorDarkRed: return [NSColor colorWithCalibratedRed:0.5 green:0.0 blue:0.0 alpha:1.0];
+            case SKScriptingColorDarkGreen: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.0 alpha:1.0];
+            case SKScriptingColorDarkBlue: return [NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.5 alpha:1.0];
+            case SKScriptingColorBanana: return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
+            case SKScriptingColorTurquoise: return [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:1.0 alpha:1.0];
+            case SKScriptingColorViolet: return [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:1.0 alpha:1.0];
+            case SKScriptingColorOrange: return [NSColor orangeColor];
+            case SKScriptingColorDeepPink: return [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.5 alpha:1.0];
+            case SKScriptingColorSpringGreen: return [NSColor colorWithCalibratedRed:0.0 green:1.0 blue:0.5 alpha:1.0];
+            case SKScriptingColorAqua: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:1.0 alpha:1.0];
+            case SKScriptingColorLime: return [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:0.0 alpha:1.0];
+            case SKScriptingColorDarkViolet: return [NSColor colorWithCalibratedRed:0.5 green:0.0 blue:1.0 alpha:1.0];
+            case SKScriptingColorPurple: return [NSColor purpleColor];
+            case SKScriptingColorTeal: return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.5 alpha:1.0];
+            case SKScriptingColorOlive: return [NSColor colorWithCalibratedRed:0.5 green:0.5 blue:0.0 alpha:1.0];
+            case SKScriptingColorBrown: return [NSColor brownColor];
+            case SKScriptingColorBlack: return [NSColor blackColor];
+            case SKScriptingColorWhite: return [NSColor whiteColor];
+            case SKScriptingColorGray: return [NSColor grayColor];
+            case SKScriptingColorDarkGray: return [NSColor darkGrayColor];
+            case SKScriptingColorLightGray: return [NSColor lightGrayColor];
+            case SKScriptingColorClear: return [NSColor clearColor];
+            default:
+            {
+                // Cocoa Scripting defines coercions from string to color for some standard color names
+                NSString *string = [descriptor stringValue];
+                if (string) {
+                    NSColor *color = [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:string toClass:[NSColor class]];
+                    // We should check the return value, because NSScriptCoercionHandler returns the input when it fails rather than nil, stupid
+                    return [color isKindOfClass:[NSColor class]] ? color : nil;
+                }
+            }
+        }
+        return nil;
     }
-    return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
 }
 
 - (id)scriptingRgbaColorDescriptor;
