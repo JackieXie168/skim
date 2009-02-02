@@ -100,59 +100,21 @@ NSString *SKTextWithIconCellStringKey = @"string";
         srcRect.size = [img size];
         
         NSRect drawFrame = iconRect;
+        float ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
+        drawFrame.size.width = ratio * srcRect.size.width;
+        drawFrame.size.height = ratio * srcRect.size.height;
         
-        // NSImage will use the largest rep if it doesn't find an exact size match; we can improve on that by choosing the next larger one with respect to our drawing rect, and scaling it down.
-        NSBitmapImageRep *rep = [img bestImageRepForSize:drawFrame.size device:nil];
+        drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
         
-        // draw the image rep directly to avoid creating a new NSImage and adding the rep to it
-        if (0 && rep) {
-            
-            srcRect.size = [rep size];
-            float ratio = fminf(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
-            drawFrame.size.width = ratio * srcRect.size.width;
-            drawFrame.size.height = ratio * srcRect.size.height;
-            
-            drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
-            
-            CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-            CGContextSaveGState(context);
-            CGContextClipToRect(context, *(CGRect *)&drawFrame);
-            CGContextSetAllowsAntialiasing(context, true);
-            CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-            
-            // draw into a new layer so we preserve the background of the tableview
-            CGContextBeginTransparencyLayer(context, NULL);
-            
-            if ([controlView isFlipped]) {
-                CGContextTranslateCTM(context, 0, NSMaxY(drawFrame));
-                CGContextScaleCTM(context, 1, -1);
-                drawFrame.origin.y = 0;
-                [rep drawInRect:drawFrame];
-            } else {
-                [rep drawInRect:drawFrame];
-            }
-            
-            CGContextEndTransparencyLayer(context);
-            CGContextRestoreGState(context);
-            
-        } else {
-            
-            float ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
-            drawFrame.size.width = ratio * srcRect.size.width;
-            drawFrame.size.height = ratio * srcRect.size.height;
-            
-            drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
-            
-            NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-            [ctxt saveGraphicsState];
-            
-            // this is the critical part that NSImageCell doesn't do
-            [ctxt setImageInterpolation:NSImageInterpolationHigh];
-            
-            [img drawFlipped:[controlView isFlipped] inRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
-            
-            [ctxt restoreGraphicsState];
-        }
+        NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
+        [ctxt saveGraphicsState];
+        
+        // this is the critical part that NSImageCell doesn't do
+        [ctxt setImageInterpolation:NSImageInterpolationHigh];
+        
+        [img drawFlipped:[controlView isFlipped] inRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+        
+        [ctxt restoreGraphicsState];
     }
 }
 
