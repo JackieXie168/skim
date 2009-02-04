@@ -1255,7 +1255,6 @@
             </parameter>
             <parameter name="from" code="from" optional="yes"
                 description="The selection to search from.">
-                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
                 <cocoa key="From"/>
             </parameter>
@@ -1274,17 +1273,15 @@
         </command>
 
         <command name="join" code="SKIMJoin"
-            description="Get the pages of a document, page, note, or selection.">
+            description="Join selection(s).">
             <cocoa class="SKJoinCommand"/>
             <direct-parameter
                 description="The selection to add to.">
-                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="to" code="to  " optional="yes"
                 description="The selection to add.">
                 <cocoa key="To"/>
-                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
             </parameter>
             <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
@@ -1317,7 +1314,9 @@
             <cocoa class="SKBoundsCommand"/>
             <direct-parameter
                 description="The document, page, note, or selection.">
-                <type type="specifier"/>
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
@@ -1338,7 +1337,9 @@
             <cocoa class="SKTextCommand"/>
             <direct-parameter
                 description="The document, page, note, selection, or raw RTF data.">
-                <type type="specifier"/>
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
                 <type type="specifier" list="yes"/>
                 <type type="RTF"/>
             </direct-parameter>
@@ -1356,7 +1357,9 @@
             <synonym name="index for"/>
             <direct-parameter
                 description="The document, page, note, or selection.">
-                <type type="specifier"/>
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
@@ -1378,7 +1381,9 @@
             <synonym name="pages for"/>
             <direct-parameter
                 description="The document, page, note, or selection.">
-                <type type="specifier"/>
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
             <result
