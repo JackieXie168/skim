@@ -1988,50 +1988,49 @@ static NSSize tinyImageSize = {16.0, 16.0};
 }
 
 - (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
-    [NSGraphicsContext saveGraphicsState];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:0.0 yBy:NSMaxY(dstRect)];
-    [transform scaleXBy:1.0 yBy:-1.0];
-    [transform translateXBy:0.0 yBy:-NSMinY(dstRect)];
-    [transform concat];
-    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    [NSGraphicsContext restoreGraphicsState];
+    [self drawMirrored:NO andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
 - (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
-    if (isFlipped)
-        [self drawFlippedInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    else
-        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    [self drawMirrored:NO andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
 - (void)drawMirroredInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
-    [NSGraphicsContext saveGraphicsState];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:NSMaxX(dstRect) yBy:0.0];
-    [transform scaleXBy:-1.0 yBy:1.0];
-    [transform translateXBy:-NSMinX(dstRect) yBy:0.0];
-    [transform concat];
-    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    [NSGraphicsContext restoreGraphicsState];
+    [self drawMirrored:YES andFlipped:NO inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
 - (void)drawMirroredAndFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
-    [NSGraphicsContext saveGraphicsState];
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:NSMaxX(dstRect) yBy:NSMaxY(dstRect)];
-    [transform scaleXBy:-1.0 yBy:-1.0];
-    [transform translateXBy:-NSMinX(dstRect) yBy:-NSMinY(dstRect)];
-    [transform concat];
-    [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    [NSGraphicsContext restoreGraphicsState];
+    [self drawMirrored:YES andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
 - (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
-    if (isFlipped)
-        [self drawMirroredAndFlippedInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    else
-        [self drawMirroredInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    [self drawMirrored:YES andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
+}
+
+- (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+    if (isMirrored || isFlipped) {
+        float dx1 = 0.0, dx2 = 0.0, dy1 = 0.0, dy2 = 0.0, sx = 1.0, sy = 1.0;
+        if (isFlipped) {
+            sx = -1.0;
+            dx1 = NSMaxX(dstRect);
+            dx2 = -NSMinX(dstRect);
+        }
+        if (isMirrored) {
+            sy = -1.0;
+            dy1 = NSMaxY(dstRect);
+            dy2 = -NSMinY(dstRect);
+        }
+        [NSGraphicsContext saveGraphicsState];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform translateXBy:dx1 yBy:dy1];
+        [transform scaleXBy:sx yBy:sy];
+        [transform translateXBy:dx2 yBy:dy2];
+        [transform concat];
+        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+        [NSGraphicsContext restoreGraphicsState];
+    } else {
+        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
+    }
 }
 
 @end
