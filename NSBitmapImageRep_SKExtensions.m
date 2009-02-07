@@ -42,14 +42,14 @@
 
 // allow for a slight margin around the image; maybe caused by a shadow (found this in testing)
 static const int MARGIN = 2;
-static const unsigned EPSILON = 2;
+static const unsigned char EPSILON = 2;
 static const int THRESHOLD = 8;
 
 static inline BOOL differentPixels( const unsigned char *p1, const unsigned char *p2, unsigned count )
 {
     unsigned i;    
     for (i = 0; i < count; i++) {
-        if (abs(p2[i] - p1[i]) > EPSILON)
+        if ((p2[i] > p1[i] && p2[i] - p1[i] > EPSILON) || (p1[i] > p2[i] && p1[i] - p2[i] > EPSILON))
             return YES;
     }
     return NO;
