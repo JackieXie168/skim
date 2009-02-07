@@ -414,6 +414,7 @@ static SKLineInspector *sharedLineInspector = nil;
     [path stroke];
     [image unlockFocus];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
+	[image release];
 }
 
 - (void)sendActionToTarget:(SEL)selector {
