@@ -48,8 +48,11 @@ NSString *SKDownloadDirectory() {
         FSRef pathRef;
         CFURLRef downloadsURL;
         
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
+#endif
             err = FSFindFolder(kUserDomain, kDownloadsFolderType, TRUE, &pathRef);
+#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
         } else {
             ICInstance inst;
             ICAttr junk = 0;
@@ -75,6 +78,7 @@ NSString *SKDownloadDirectory() {
             CFRelease(downloadsURL);
         }
     }
+#endif
     return downloadsDirectory;
 }
 
