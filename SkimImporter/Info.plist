@@ -11,7 +11,6 @@
 			<string>MDImporter</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
 				<string>net.sourceforge.skim-app.skimnotes</string>
 			</array>
