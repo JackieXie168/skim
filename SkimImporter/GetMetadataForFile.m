@@ -77,9 +77,8 @@ Boolean GetMetadataForFile(void* thisInterface,
     
     BOOL isSkimNotes = UTTypeConformsTo(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"));
     BOOL isPDFBundle = isSkimNotes == NO && UTTypeConformsTo(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"));
-    BOOL isPDF = isSkimNotes == NO && isPDFBundle == NO && UTTypeConformsTo(contentTypeUTI, kUTTypePDF);
     NSFileManager *fm = [NSFileManager defaultManager];
-    Boolean success = [fm fileExistsAtPath:(NSString *)pathToFile] && (isSkimNotes || isPDFBundle || isPDF);
+    Boolean success = [fm fileExistsAtPath:(NSString *)pathToFile] && (isSkimNotes || isPDFBundle);
     
     if (success) {
         NSURL *fileURL = [NSURL fileURLWithPath:(NSString *)pathToFile];
@@ -91,9 +90,6 @@ Boolean GetMetadataForFile(void* thisInterface,
         if (isSkimNotes) {
             notes = [fm readSkimNotesFromSkimFileAtURL:fileURL error:NULL];
             sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        } else if (isPDF) {
-            notes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-            GetTextAndAttributesForPDFFile(fileURL, &pdfText, &info);
         } else if (isPDFBundle) {
             notes = [fm readSkimNotesFromPDFBundleAtURL:fileURL error:NULL];
             NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
