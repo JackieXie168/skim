@@ -685,6 +685,7 @@ static BOOL IsAliasFolderAtPath(NSString *path)
 			[alert release];
 			return;
 		}
+        [alert release];
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterWillRestartNotification object:self];
