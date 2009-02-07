@@ -433,6 +433,8 @@ static id sharedNoSplitManager = nil;
                     }
                 }
             }
+            
+            [attribute release];
         }
     }
     
