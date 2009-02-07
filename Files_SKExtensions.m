@@ -48,11 +48,11 @@ NSString *SKDownloadDirectory() {
         FSRef pathRef;
         CFURLRef downloadsURL;
         
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
 #endif
             err = FSFindFolder(kUserDomain, kDownloadsFolderType, TRUE, &pathRef);
-#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
         } else {
             ICInstance inst;
             ICAttr junk = 0;
@@ -73,12 +73,12 @@ NSString *SKDownloadDirectory() {
                 ICStop(inst);
             }
         }
+#endif
         if(err == noErr && (downloadsURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef))) {
             downloadsDirectory = (NSString *)CFURLCopyFileSystemPath(downloadsURL, kCFURLPOSIXPathStyle);
             CFRelease(downloadsURL);
         }
     }
-#endif
     return downloadsDirectory;
 }
 
