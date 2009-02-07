@@ -97,7 +97,7 @@ Boolean GetMetadataForFile(void* thisInterface,
         } else if (isPDFBundle) {
             notes = [fm readSkimNotesFromPDFBundleAtURL:fileURL error:NULL];
             NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
-            pdfText = [NSString stringWithContentsOfFile:textPath];
+            pdfText = [NSString stringWithContentsOfFile:textPath encoding:NSUTF8StringEncoding error:NULL];
             NSString *plistPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.plist"];
             NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
             info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
