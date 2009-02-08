@@ -1054,7 +1054,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [scriptString appendFormat:@"make new attachment at after last character with properties {file name:\"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
-        [scriptString appendString:@"end tell\n"];
     }
     
     if (scriptString) {
