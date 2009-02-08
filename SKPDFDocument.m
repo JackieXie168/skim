@@ -1025,28 +1025,34 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (status == noErr)
         mailAppName = [[[(NSURL *)mailAppURL path] lastPathComponent] stringByDeletingPathExtension];
     
+    NSString *subject = [self displayName];
+    
     if ([mailAppName rangeOfString:@"Entourage" options:NSCaseInsensitiveSearch].length) {
         scriptString = [NSMutableString stringWithString:@"tell application \"Microsoft Entourage\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new draft window with properties {subject:\"%@\"}\n", [self displayName]];
+        [scriptString appendFormat:@"set m to make new draft window with properties {subject:\"%@\"}\n", subject];
         [scriptString appendString:@"tell m\n"];
+        //[scriptString appendFormat:@"set content to \"%@\"\n", body];
         [scriptString appendFormat:@"make new attachment with properties {file:POSIX file \"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     } else if ([mailAppName rangeOfString:@"Mailsmith" options:NSCaseInsensitiveSearch].length) {
         scriptString = [NSMutableString stringWithString:@"tell application \"Mailsmith\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new message window with properties {subject:\"%@\"}\n", [self displayName]];
+        [scriptString appendFormat:@"set m to make new message window with properties {subject:\"%@\"}\n", subject];
         [scriptString appendString:@"tell m\n"];
+        //[scriptString appendFormat:@"set contents to \"%@\"\n", body];
         [scriptString appendFormat:@"make new enclosure with properties {file:POSIX file \"%@\"}\n", fileName];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     } else {
         scriptString = [NSMutableString stringWithString:@"tell application \"Mail\"\n"];
         [scriptString appendString:@"activate\n"];
-        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n", [self displayName]];
+        [scriptString appendFormat:@"set m to make new outgoing message with properties {subject:\"%@\", visible:true}\n", subject];
+        //[scriptString appendFormat:@"set content of m to \"%@\"\n", body];
         [scriptString appendString:@"tell content of m\n"];
         [scriptString appendFormat:@"make new attachment at after last character with properties {file name:\"%@\"}\n", fileName];
+        [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
         [scriptString appendString:@"end tell\n"];
     }
