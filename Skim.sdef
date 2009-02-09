@@ -1404,7 +1404,7 @@
                 description="Whether to return TIFF data. By default returns PDF data.">
                 <cocoa key="AsTIFF"/>
             </parameter>
-            <parameter name="astype" type="type" code="rtyp" optional="yes"
+            <parameter name="as" type="type" code="rtyp" optional="yes"
                 description="The type of data to return. Currently 'PDF' and 'TIFF picture' are supported. Defaults to PDF.">
                 <cocoa key="Type"/>
             </parameter>
