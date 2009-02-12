@@ -43,7 +43,7 @@
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
 #define SEPARATION          2.0
-#define VERTICAL_OFFSET     0.0
+#define VERTICAL_OFFSET     1.0
 #define PROGRESSBAR_WIDTH   100.0
 
 

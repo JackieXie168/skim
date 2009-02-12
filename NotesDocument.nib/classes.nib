@@ -11,6 +11,8 @@
 				<string>id</string>
 				<key>searchNotes</key>
 				<string>id</string>
+				<key>toggleCaseInsensitiveSearch</key>
+				<string>id</string>
 				<key>toggleStatusBar</key>
 				<string>id</string>
 			</dict>
@@ -57,6 +59,14 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSApplication</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

@@ -1970,7 +1970,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (IBAction)toggleStatusBar:(id)sender {
     if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 22.0)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
