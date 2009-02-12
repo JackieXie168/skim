@@ -43,6 +43,7 @@
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
 #define SEPARATION          2.0
+#define VERTICAL_OFFSET     0.0
 #define PROGRESSBAR_WIDTH   100.0
 
 
@@ -193,7 +194,8 @@
 		textRect.size.width = 0.0;
 	
     float height = fmaxf([leftCell cellSize].height, [rightCell cellSize].height);
-    textRect = SKCenterRectVertically(textRect, height, [self isFlipped]);
+    textRect = SKCenterRectVertically(textRect, height, NO);
+    textRect.origin.y += VERTICAL_OFFSET;
     
 	[leftCell drawWithFrame:textRect inView:self];
 	[rightCell drawWithFrame:textRect inView:self];
@@ -412,7 +414,7 @@
         if (size.width < 0.01) size.width = PROGRESSBAR_WIDTH;
         NSDivideRect([self bounds], &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
         NSDivideRect(rect, &rect, &ignored, size.width, NSMaxXEdge);
-        rect.origin.y = floorf(NSMidY(rect) - 0.5 * size.height);
+        rect.origin.y = floorf(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
         rect.size.height = size.height;
 		[progressIndicator setFrame:rect];
 		
