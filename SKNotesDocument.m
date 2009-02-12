@@ -112,7 +112,7 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
     [statusBar retain];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
         [self toggleStatusBar:nil];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
@@ -329,6 +329,10 @@ static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
+    if (statusBar == nil) {
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 22.0)];
+        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+    }
     [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:1.0];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowNotesStatusBarKey];
 }
