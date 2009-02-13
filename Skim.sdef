@@ -930,12 +930,12 @@
                 description="Whether the document allows copying.">
                 <cocoa key="AllowsCopying"/>
             </property>
-            <property name="tags" code="Tags"
+            <property name="tags" code="Tags" access="r"
                 description="Open Meta tags.">
                 <cocoa key="Tags"/>
                 <type type="text" list="yes"/>
             </property>
-            <property name="rating" code="Rate" type="real"
+            <property name="rating" code="Rate" type="real" access="r"
                 description="Open Meta rating.">
                 <cocoa key="Rating"/>
             </property>
