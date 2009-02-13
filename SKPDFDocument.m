@@ -87,7 +87,6 @@ static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
 static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
-static NSString *SKSaveOpenMetaTagsKey = @"SKSaveOpenMetaTags";
 
 static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
 
@@ -361,20 +360,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
                                                    otherButton:nil
                                      informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
                 [alert runModal];
-            }
-            
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKSaveOpenMetaTagsKey] || saveOperation != NSSaveOperation) {
-                SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
-                
-                if ([[self tags] count])
-                    [eam setExtendedAttributeNamed:OPEN_META_TAGS_KEY toPropertyListValue:[self tags] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
-                else
-                    [eam removeExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
-                
-                if ([self rating] > 0.0)
-                    [eam setExtendedAttributeNamed:OPEN_META_RATING_KEY toPropertyListValue:[NSNumber numberWithDouble:[self rating]] atPath:[absoluteURL path] options:kSKNXattrNoCompress error:NULL];
-                else
-                    [eam removeExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             }
             
             if (success)
