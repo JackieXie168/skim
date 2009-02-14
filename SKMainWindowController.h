@@ -275,6 +275,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (PDFDocument *)pdfDocument;
 - (void)setPdfDocument:(PDFDocument *)document;
 
+- (SKProgressController *)progressController;
+
 - (NSArray *)notes;
 - (unsigned int)countOfNotes;
 - (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex;
@@ -335,6 +337,11 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (SKFindPaneState)findPaneState;
 - (void)setFindPaneState:(SKFindPaneState)newFindPaneState;
 
+- (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
+- (void)showRightSideWindowOnScreen:(NSScreen *)screen;
+- (void)hideLeftSideWindow;
+- (void)hideRightSideWindow;
+
 - (BOOL)leftSidePaneIsOpen;
 - (BOOL)rightSidePaneIsOpen;
 
@@ -383,6 +390,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (NSDictionary *)currentSetup;
 - (void)applyPDFSettings:(NSDictionary *)setup;
 - (NSDictionary *)currentPDFSettings;
+
+- (void)goToDestination:(PDFDestination *)destination;
+- (void)goToPage:(PDFPage *)page;
+
+- (void)updateLeftStatus;
+- (void)updateRightStatus;
 
 @end
 
