@@ -63,25 +63,6 @@
 #import "SKPDFOutline.h"
 
 
-@interface SKMainWindowController (SKPrivateActions)
-
-- (SKProgressController *)progressController;
-
-- (void)goToDestination:(PDFDestination *)destination;
-- (void)goToPage:(PDFPage *)page;
-
-- (void)updateLeftStatus;
-- (void)updateRightStatus;
-
-- (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
-- (void)showRightSideWindowOnScreen:(NSScreen *)screen;
-- (void)hideLeftSideWindow;
-- (void)hideRightSideWindow;
-
-@end
-
-#pragma mark -
-
 @implementation SKMainWindowController (Actions)
 
 - (IBAction)changeColor:(id)sender{

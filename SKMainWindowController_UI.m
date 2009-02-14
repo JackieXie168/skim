@@ -80,21 +80,12 @@ static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
 - (void)selectSelectedNote:(id)sender;
 - (void)goToSelectedOutlineItem:(id)sender;
 
-- (void)updateLeftStatus;
-- (void)updateRightStatus;
-
 - (void)updatePageNumber;
 - (void)updatePageLabel;
 
 - (void)updateNoteFilterPredicate;
 
 - (void)updateFindResultHighlights:(BOOL)scroll;
-
-- (void)hideLeftSideWindow;
-- (void)hideRightSideWindow;
-
-- (void)goToPage:(PDFPage *)page;
-- (void)goToDestination:(PDFDestination *)destination;
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
