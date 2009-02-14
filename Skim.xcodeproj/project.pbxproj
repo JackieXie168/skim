@@ -75,6 +75,7 @@
 		CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEB900B86206400D0DA12 /* FindPanel.nib */; };
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
+		CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
 		CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.m */; };
 		CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3363CD0E26E378005F99E6 /* libz.dylib */; };
@@ -523,6 +524,8 @@
 		CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKFindFieldEditor.m; sourceTree = "<group>"; };
 		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
+		CE32531D0F4723EA0021BADD /* SKMainWindowController_Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_Actions.h; sourceTree = "<group>"; };
+		CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController_Actions.m; sourceTree = "<group>"; };
 		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser.m; sourceTree = "<group>"; };
@@ -1249,6 +1252,8 @@
 				CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */,
 				4530D7ED0B27AAD6007C59F4 /* SKMainWindowController.h */,
 				4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */,
+				CE32531D0F4723EA0021BADD /* SKMainWindowController_Actions.h */,
+				CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */,
 				CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */,
 				CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */,
 				CEE54F6A0DA3FB060037169F /* SKMainWindowController_Toolbar.h */,
@@ -2180,6 +2185,7 @@
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
 				CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */,
 				CEC3154F0F24AC02008D2C75 /* SKRichTextFormat.m in Sources */,
+				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
