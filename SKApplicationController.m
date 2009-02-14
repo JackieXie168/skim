@@ -74,7 +74,7 @@
 #import "NSMenu_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
-#define WIKI_URL    @"http://apps.sourceforge.net/mediawiki/skim/"
+#define WIKI_URL    @"http://apps.sourceforge.net/mediawiki/skim-app/"
 
 #define INITIAL_USER_DEFAULTS_FILENAME  @"InitialUserDefaults"
 #define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
