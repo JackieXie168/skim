@@ -208,7 +208,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                             indices = [endSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
                             endIndex = count ? indices[count - 1] : -1;
                         } else {
-                            endIndex = [[textStorage valueForKey:key] count];
+                            endIndex = [[textStorage valueForKey:key] count] - 1;
                         }
                         if (startIndex >= 0 && endIndex >= 0) {
                             NSRange range = NSMakeRange(MIN(startIndex, endIndex), MAX(startIndex, endIndex) + 1 - MIN(startIndex, endIndex));
