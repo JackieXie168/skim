@@ -5,7 +5,6 @@
 #ifdef __OBJC__
 
     #import <Cocoa/Cocoa.h>
-    #import <objc/objc-class.h>
     #import <Quartz/Quartz.h>
 
     #ifndef NSAppKitVersionNumber10_4
@@ -18,7 +17,7 @@
     #if defined (DEBUG)
 
         #define log_method() \
-          NSLog(@"%@[%@ %@] (%@ line %d)", CLS_GETINFO((struct objc_class *)(self->isa), CLS_META) ? @"+" : @"-", \
+          NSLog(@"%@[%@ %@] (%@ line %d)", (id)[self class] == (id)self ? @"+" : @"-", \
           [self class], NSStringFromSelector(_cmd), __SKFILENAMEASNSSTRING, __LINE__)
 
         #define log_function() \
