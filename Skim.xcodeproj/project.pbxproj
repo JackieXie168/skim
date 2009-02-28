@@ -2581,6 +2581,7 @@
 		CE592C5F0B9239C600C113DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				PRODUCT_NAME = DiskImage;
 			};
 			name = Debug;
 		};
