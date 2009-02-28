@@ -167,6 +167,12 @@
 	[path fill];
     [NSGraphicsContext restoreGraphicsState];
 
+    if ([[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView) {
+		[NSGraphicsContext saveGraphicsState];
+		NSSetFocusRingStyle(NSFocusRingOnly);
+        [NSBezierPath fillRect:cellFrame];
+		[NSGraphicsContext restoreGraphicsState];
+    }
 }    
 
 - (void)setIndicatorImage:(NSImage *)image {
