@@ -56,6 +56,7 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
 static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferenceWindowDefaultsObservationContext";
+static void *SKPreferenceWindowUpdaterObservationContext = (void *)@"SKPreferenceWindowUpdaterObservationContext";
 
 @implementation SKPreferenceController
 
@@ -79,12 +80,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
         [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:SKPreferenceWindowDefaultsObservationContext];
+        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:SKPreferenceWindowUpdaterObservationContext];
+        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:SKPreferenceWindowUpdaterObservationContext];
     }
     return sharedPrefenceController;
 }
 
 - (void)dealloc {
     [sudc removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
+    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"automaticallyChecksForUpdates"];
+    [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"updateCheckInterval"];
     [resettableKeys release];
     [super dealloc];
 }
@@ -96,6 +101,24 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)release {}
 
 - (unsigned)retainCount { return UINT_MAX; }
+
+- (void)updateUpdateIntervalPopUpButton {
+    int tag = 0;
+    if ([[SUUpdater sharedUpdater] automaticallyChecksForUpdates])
+        tag = [[SUUpdater sharedUpdater] updateCheckInterval];
+    if ([updateIntervalPopUpButton selectItemWithTag:tag] == NO) {
+        int i, iMax = [updateIntervalPopUpButton numberOfItems];
+        int itemTag = 0;
+        for (i = 0; i < iMax; i++) {
+            itemTag = [[updateIntervalPopUpButton itemAtIndex:i] tag];
+            if (itemTag >= tag) {
+                [[SUUpdater sharedUpdater] setUpdateCheckInterval:itemTag];
+                return;
+            }
+        }
+        [[SUUpdater sharedUpdater] setUpdateCheckInterval:itemTag];
+    }
+}
 
 - (void)updateRevertButtons {
     NSDictionary *initialValues = [sudc initialValues];
@@ -126,6 +149,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [texEditorPopUpButton selectItemAtIndex:idx];
     
     [self updateRevertButtons];
+    
+    [self updateUpdateIntervalPopUpButton];
     
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
@@ -212,8 +237,12 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (IBAction)changeUpdateInterval:(id)sender {
     int checkInterval = [[sender selectedItem] tag];
-    if (checkInterval)
-       [[SUUpdater sharedUpdater] scheduleCheckWithInterval:checkInterval];
+    if (checkInterval > 0) {
+        [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:YES];
+        [[SUUpdater sharedUpdater] setUpdateCheckInterval:checkInterval];
+    } else {
+        [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:NO];
+    }
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
@@ -294,6 +323,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
             [self updateRevertButtons];
         }
+    } else if (context == SKPreferenceWindowUpdaterObservationContext) {
+        [self updateUpdateIntervalPopUpButton];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
