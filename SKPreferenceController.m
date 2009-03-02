@@ -58,6 +58,11 @@ static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferenceWindowDefaultsObservationContext";
 static void *SKPreferenceWindowUpdaterObservationContext = (void *)@"SKPreferenceWindowUpdaterObservationContext";
 
+@interface SKPreferenceController (Private)
+- (void)synchronizeUpdateInterval;
+- (void)updateRevertButtons;
+@end
+
 @implementation SKPreferenceController
 
 static SKPreferenceController *sharedPrefenceController = nil;
@@ -76,6 +81,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super initWithWindowNibName:@"PreferenceWindow"])) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
+        
+        [self synchronizeUpdateInterval];
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
@@ -102,30 +109,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (unsigned)retainCount { return UINT_MAX; }
 
-- (void)updateUpdateIntervalPopUpButton {
-    int tag = 0;
-    if ([[SUUpdater sharedUpdater] automaticallyChecksForUpdates])
-        tag = [[SUUpdater sharedUpdater] updateCheckInterval];
-    if ([updateIntervalPopUpButton selectItemWithTag:tag] == NO) {
-        int i, iMax = [updateIntervalPopUpButton numberOfItems];
-        int itemTag = 0;
-        for (i = 0; i < iMax; i++) {
-            itemTag = [[updateIntervalPopUpButton itemAtIndex:i] tag];
-            if (itemTag >= tag) {
-                [[SUUpdater sharedUpdater] setUpdateCheckInterval:itemTag];
-                return;
-            }
-        }
-        [[SUUpdater sharedUpdater] setUpdateCheckInterval:itemTag];
-    }
-}
-
-- (void)updateRevertButtons {
-    NSDictionary *initialValues = [sudc initialValues];
-    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
-    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
-}
-
 #define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 
 - (void)windowDidLoad {
@@ -149,8 +132,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [texEditorPopUpButton selectItemAtIndex:idx];
     
     [self updateRevertButtons];
-    
-    [self updateUpdateIntervalPopUpButton];
     
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
@@ -201,6 +182,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [[self window] endEditingFor:nil];
 }
 
+#pragma mark Accessors
+
 - (unsigned int)countOfSizes {
     return sizeof(SKDefaultFontSizes) / sizeof(float);
 }
@@ -216,6 +199,18 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)setCustomTeXEditor:(BOOL)flag {
     isCustomTeXEditor = flag;
 }
+
+- (int)updateInterval {
+    return updateInterval;
+}
+
+- (void)setUpdateInterval:(int)interval {
+    if (interval > 0)
+        [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
+    [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0];
+}
+
+#pragma mark Actions
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
     if ([sender state] == NSOnState) {
@@ -233,16 +228,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     }
     [thumbnailSizeSlider sizeToFit];
     [snapshotSizeSlider sizeToFit];
-}
-
-- (IBAction)changeUpdateInterval:(id)sender {
-    int checkInterval = [[sender selectedItem] tag];
-    if (checkInterval > 0) {
-        [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:YES];
-        [[SUUpdater sharedUpdater] setUpdateCheckInterval:checkInterval];
-    } else {
-        [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:NO];
-    }
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
@@ -326,10 +311,43 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [self updateRevertButtons];
         }
     } else if (context == SKPreferenceWindowUpdaterObservationContext) {
-        [self updateUpdateIntervalPopUpButton];
+        [self willChangeValueForKey:@"updateInterval"];
+        [self synchronizeUpdateInterval];
+        [self didChangeValueForKey:@"updateInterval"];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+#pragma mark Private
+
+- (void)synchronizeUpdateInterval {
+    static NSIndexSet *updateIntervals = nil;
+    if (updateIntervals = nil) {
+        NSMutableIndexSet *intervals = [NSMutableIndexSet indexSet];
+        int i = [updateIntervalPopUpButton numberOfItems];
+        while (--i > 0)
+            [intervals addIndex:[[updateIntervalPopUpButton itemAtIndex:i] tag]];
+        updateIntervals = [intervals copy];
+    }
+    
+    unsigned int i = 0;
+    if ([[SUUpdater sharedUpdater] automaticallyChecksForUpdates]) {
+        i = [[SUUpdater sharedUpdater] updateCheckInterval];
+        if ([updateIntervals containsIndex:i] == NO) {
+            i = [updateIntervals indexGreaterThanIndex:i/2];
+            if (i == NSNotFound)
+                i = [updateIntervals lastIndex];
+            [[SUUpdater sharedUpdater] setUpdateCheckInterval:i];
+        }
+    }
+    updateInterval = i;
+}
+
+- (void)updateRevertButtons {
+    NSDictionary *initialValues = [sudc initialValues];
+    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
+    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
 }
 
 @end
