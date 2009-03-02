@@ -274,11 +274,13 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [sudc revertToInitialValuesForKeys:keys];
         else
             [sudc revertToInitialValues:nil];
+        /*
         if (tabID == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
             int checkInterval = [sud integerForKey:SUScheduledCheckIntervalKey];
             if (checkInterval)
                [[SUUpdater sharedUpdater] scheduleCheckWithInterval:checkInterval];
         }
+        */
     }
 }
 
