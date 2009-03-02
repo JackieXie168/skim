@@ -42,6 +42,7 @@
 
 @interface SKPreferenceController : NSWindowController {
     IBOutlet NSTabView *tabView;
+    IBOutlet NSPopUpButton *updateIntervalPopUpButton;
     IBOutlet NSSlider *thumbnailSizeSlider;
     IBOutlet NSSlider *snapshotSizeSlider;
     IBOutlet NSPopUpButton *texEditorPopUpButton;

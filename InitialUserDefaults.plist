@@ -266,10 +266,6 @@
         <false/>
         <key>SKAutoCloseDownloadsWindow</key>
         <false/>
-        <key>SUCheckAtStartup</key>
-        <false/>
-        <key>SUScheduledCheckInterval</key>
-        <integer>86400</integer>
         <key>SKShouldSetCreatorCode</key>
         <false/>
         <key>SKShowStatusBar</key>
