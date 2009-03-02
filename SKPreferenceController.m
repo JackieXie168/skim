@@ -259,13 +259,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [sudc revertToInitialValuesForKeys:keys];
         else
             [sudc revertToInitialValues:nil];
-        /*
-        if (tabID == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
-            int checkInterval = [sud integerForKey:SUScheduledCheckIntervalKey];
-            if (checkInterval)
-               [[SUUpdater sharedUpdater] scheduleCheckWithInterval:checkInterval];
+        if (tabID == nil || [tabID isEqualToString:@"general"]) {
+            NSTimeInterval interval = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"SUScheduledCheckInterval"] doubleValue]];
+            [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
+            [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0.0];
         }
-        */
     }
 }
 
