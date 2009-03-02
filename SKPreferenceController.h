@@ -57,6 +57,7 @@
     IBOutlet SKFontWell *anchoredNoteFontWell;
     NSDictionary *resettableKeys;
     BOOL isCustomTeXEditor;
+    int updateInterval;
     NSUserDefaults *sud;
     NSUserDefaultsController *sudc;
 }
@@ -69,8 +70,10 @@
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
 
+- (int)updateInterval;
+- (void)setUpdateInterval:(int)interval;
+
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
 - (IBAction)changeTeXEditorPreset:(id)sender;
 
 - (IBAction)revertPDFViewSettings:(id)sender;
