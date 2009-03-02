@@ -82,8 +82,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
         
-        [self synchronizeUpdateInterval];
-        
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
         [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:SKPreferenceWindowDefaultsObservationContext];
@@ -132,6 +130,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [texEditorPopUpButton selectItemAtIndex:idx];
     
     [self updateRevertButtons];
+    
+    [self willChangeValueForKey:@"updateInterval"];
+    [self synchronizeUpdateInterval];
+    [self didChangeValueForKey:@"updateInterval"];
     
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
@@ -321,7 +323,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)synchronizeUpdateInterval {
     static NSIndexSet *updateIntervals = nil;
-    if (updateIntervals = nil) {
+    if (updateIntervals == nil) {
         NSMutableIndexSet *intervals = [NSMutableIndexSet indexSet];
         int i = [updateIntervalPopUpButton numberOfItems];
         while (--i > 0)
