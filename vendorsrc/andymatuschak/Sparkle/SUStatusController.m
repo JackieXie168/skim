@@ -84,11 +84,6 @@
 	[actionButton setKeyEquivalent:isDefault ? @"\r" : @""];
 }
 
-- (BOOL)progressBarShouldAnimate
-{
-	return YES;
-}
-
 - (void)setButtonEnabled:(BOOL)enabled
 {
 	[actionButton setEnabled:enabled];
@@ -114,6 +109,7 @@
 	if (value < 0) value = 0;
 	maxProgressValue = value;
 	[self setProgressValue:0];
+	[progressBar setIndeterminate:value <= 0];
 	[progressBar startAnimation:self];
 }
 
