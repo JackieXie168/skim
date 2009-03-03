@@ -51,7 +51,7 @@ static NSColor *deselectedColor = nil;
 
 + (void)initialize
 {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     selectedShadow = [[NSShadow alloc] init];
     [selectedShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];

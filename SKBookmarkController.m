@@ -96,7 +96,7 @@ static NSString *SKBookmarkPropertiesObservationContext = @"SKBookmarkProperties
 static unsigned int maxRecentDocumentsCount = 0;
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     maxRecentDocumentsCount = [[NSUserDefaults standardUserDefaults] integerForKey:SKMaximumDocumentPageHistoryCountKey];
     if (maxRecentDocumentsCount == 0)

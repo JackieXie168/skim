@@ -204,7 +204,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 @implementation SKPDFView
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     NSArray *sendTypes = [NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil];
     [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:nil];

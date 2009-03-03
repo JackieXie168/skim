@@ -69,7 +69,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     [self setKeys:keys triggerChangeNotificationsForDependentKey:@"canRemove"];
     [self setKeys:keys triggerChangeNotificationsForDependentKey:@"canResume"];
     [self setKeys:[self infoKeys] triggerChangeNotificationsForDependentKey:@"info"];
-    OBINITIALIZE;
+    SKINITIALIZE;
 }
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id)aDelegate {

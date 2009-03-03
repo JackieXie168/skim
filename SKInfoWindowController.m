@@ -64,7 +64,7 @@ static NSString *SKInfoRatingKey = @"Rating";
 static SKInfoWindowController *sharedInstance = nil;
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     SKBoolStringTransformer *transformer = [[SKBoolStringTransformer alloc] init];
     [NSValueTransformer setValueTransformer:transformer forName:@"SKBoolStringTransformer"];

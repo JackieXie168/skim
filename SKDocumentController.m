@@ -137,7 +137,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 #define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SK##name##DocumentTypeName : SK##name##DocumentTypeUTI
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     SKPDFDocumentTypeName = NSPDFPboardType;
     DEFINE_DOCUMENT_TYPE(PDF);

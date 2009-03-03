@@ -58,7 +58,7 @@ static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
 @implementation SKColorSwatch
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     [self exposeBinding:SKColorSwatchColorsKey];
 }

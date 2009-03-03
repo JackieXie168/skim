@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-#define OBINITIALIZE \
+#define SKINITIALIZE \
     do { \
         static BOOL hasBeenInitialized = NO; \
         [super initialize]; \

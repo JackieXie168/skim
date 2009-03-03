@@ -82,7 +82,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 
 + (void)initialize {
     [self setKeys:[NSArray arrayWithObjects:SKSnapshotWindowPageLabelKey, SKSnapshotWindowHasWindowKey, nil] triggerChangeNotificationsForDependentKey:SKSnapshotWindowPageAndWindowKey];
-    OBINITIALIZE;
+    SKINITIALIZE;
 }
 
 - (void)dealloc {
