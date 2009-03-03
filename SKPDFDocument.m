@@ -97,7 +97,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)setNoteDicts:(NSArray *)array;
 - (void)setOpenMetaTags:(NSArray *)array;
 - (void)setOpenMetaRating:(double)rating;
-- (void)setPassword:(NSString *)newPassword;
 
 - (void)tryToUnlockDocument:(PDFDocument *)document;
 
@@ -128,7 +127,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [watchedFile release];
     [pdfData release];
     [pdfDocument release];
-    [password release];
     [noteDicts release];
     [openMetaTags release];
     [readNotesAccessoryView release];
@@ -613,13 +611,6 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     openMetaRating = rating;
 }
 
-- (void)setPassword:(NSString *)newPassword {
-    if (password != newPassword) {
-        [password release];
-        password = [newPassword retain];
-    }
-}
-
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
 {
     BOOL didRead = NO;
@@ -937,8 +928,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     if (didConvert) {
         pdfDoc = [[PDFDocument alloc] initWithData:pdfData];
-        if ([pdfDoc isLocked] && password)
-            [pdfDoc unlockWithPassword:password];
+        if ([pdfDoc isLocked])
+            [self tryToUnlockDocument:pdfDoc];
         count = [pdfDoc pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDoc pageAtIndex:i];
@@ -1746,8 +1737,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([[self pdfDocument] isLocked])
         return;
     
-    [self setPassword:aPassword];
-    
     int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption != NSAlertAlternateReturn) {
         const char *serviceName = [self keychainServiceName];
@@ -1787,7 +1776,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
                 } else if(err == errSecItemNotFound){
                     // password not on keychain, so add it
-                    passwordData = [password UTF8String];
+                    passwordData = [aPassword UTF8String];
                     err = SecKeychainAddGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, strlen(passwordData), passwordData, &itemRef);    
                     if (err == noErr && comment != NULL) {
                         SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(comment), (char *)comment } };
@@ -1816,8 +1805,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 data = [NSData dataWithBytes:passwordData length:passwordLength];
                 SecKeychainItemFreeContent(NULL, passwordData);
                 aPassword = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-                if ([document unlockWithPassword:aPassword])
-                    [self setPassword:aPassword];
+                [document unlockWithPassword:aPassword];
             }
         }
     }
