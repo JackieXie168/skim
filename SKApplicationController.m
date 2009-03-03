@@ -94,7 +94,7 @@ static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
 @implementation SKApplicationController
 
 + (void)initialize{
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     // load the default values for the user defaults
     NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIAL_USER_DEFAULTS_FILENAME ofType:@"plist"];

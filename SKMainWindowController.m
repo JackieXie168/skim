@@ -204,7 +204,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 @implementation SKMainWindowController
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     [NSValueTransformer setValueTransformer:[NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName]
                                     forName:SKUnarchiveFromDataArrayTransformerName];

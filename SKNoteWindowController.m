@@ -91,7 +91,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     [self makeNoteIcons];
 }
 

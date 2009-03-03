@@ -59,7 +59,7 @@ static NSString *SKLineWellExclusiveKey = @"exclusive";
 @implementation SKLineWell
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     
     [self exposeBinding:SKLineWellLineWidthKey];
     [self exposeBinding:SKLineWellStyleKey];

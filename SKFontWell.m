@@ -74,7 +74,7 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontNameKey];
     [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontSizeKey];
     
-    OBINITIALIZE;
+    SKINITIALIZE;
 }
 
 + (Class)cellClass {

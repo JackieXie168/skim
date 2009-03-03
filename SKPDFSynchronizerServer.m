@@ -66,7 +66,7 @@ struct SKServerFlags {
 @implementation SKPDFSynchronizerServer
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     SKPDFSynchronizerTexExtensions = [[NSArray alloc] initWithObjects:@"tex", @"ltx", @"latex", @"ctx", @"lyx", nil];
 }
 

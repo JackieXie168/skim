@@ -89,7 +89,7 @@ static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
 
 + (void)initialize {
-    OBINITIALIZE;
+    SKINITIALIZE;
     SKBookmarkClass = self;
     defaultPlaceholderBookmark = (SKPlaceholderBookmark *)NSAllocateObject([SKPlaceholderBookmark class], 0, NSDefaultMallocZone());
 }
