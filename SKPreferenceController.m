@@ -131,9 +131,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     [self updateRevertButtons];
     
-    [self willChangeValueForKey:@"updateInterval"];
     [self synchronizeUpdateInterval];
-    [self didChangeValueForKey:@"updateInterval"];
     
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
     [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
@@ -311,9 +309,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [self updateRevertButtons];
         }
     } else if (context == SKPreferenceWindowUpdaterObservationContext) {
-        [self willChangeValueForKey:@"updateInterval"];
         [self synchronizeUpdateInterval];
-        [self didChangeValueForKey:@"updateInterval"];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -341,7 +337,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [[SUUpdater sharedUpdater] setUpdateCheckInterval:i];
         }
     }
+    
+    [self willChangeValueForKey:@"updateInterval"];
     updateInterval = i;
+    [self didChangeValueForKey:@"updateInterval"];
 }
 
 - (void)updateRevertButtons {
