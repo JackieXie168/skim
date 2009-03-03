@@ -318,28 +318,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
 #pragma mark Private
 
 - (void)synchronizeUpdateInterval {
-    static NSIndexSet *updateIntervals = nil;
-    if (updateIntervals == nil) {
-        NSMutableIndexSet *intervals = [NSMutableIndexSet indexSet];
-        int i = [updateIntervalPopUpButton numberOfItems];
-        while (--i > 0)
-            [intervals addIndex:[[updateIntervalPopUpButton itemAtIndex:i] tag]];
-        updateIntervals = [intervals copy];
-    }
-    
-    unsigned int i = 0;
-    if ([[SUUpdater sharedUpdater] automaticallyChecksForUpdates]) {
-        i = [[SUUpdater sharedUpdater] updateCheckInterval];
-        if ([updateIntervals containsIndex:i] == NO) {
-            i = [updateIntervals indexGreaterThanIndex:i/2];
-            if (i == NSNotFound)
-                i = [updateIntervals lastIndex];
-            [[SUUpdater sharedUpdater] setUpdateCheckInterval:i];
-        }
-    }
-    
     [self willChangeValueForKey:@"updateInterval"];
-    updateInterval = i;
+    updateInterval = [[SUUpdater sharedUpdater] updateCheckInterval];
     [self didChangeValueForKey:@"updateInterval"];
 }
 
