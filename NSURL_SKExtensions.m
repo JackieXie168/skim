@@ -43,20 +43,20 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 @implementation NSURL (SKExtensions)
 
-static id (*originalInitFileURLWithPath)(id, SEL, id) = NULL;
-static id (*originalInitWithString)(id, SEL, id) = NULL;
+static id (*original_initFileURLWithPath)(id, SEL, id) = NULL;
+static id (*original_initWithString)(id, SEL, id) = NULL;
 
-- (id)replacementInitFileURLWithPath:(NSString *)path {
-    return path == nil ? nil : originalInitFileURLWithPath(self, _cmd, path);
+- (id)replacement_initFileURLWithPath:(NSString *)path {
+    return path == nil ? nil : original_initFileURLWithPath(self, _cmd, path);
 }
 
-- (id)replacementInitWithString:(NSString *)URLString {
-    return URLString == nil ? nil : originalInitWithString(self, _cmd, URLString);
+- (id)replacement_initWithString:(NSString *)URLString {
+    return URLString == nil ? nil : original_initWithString(self, _cmd, URLString);
 }
 
 + (void)load {
-    originalInitFileURLWithPath = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacementInitFileURLWithPath:));
-    originalInitWithString = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacementInitWithString:));
+    original_initFileURLWithPath = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initFileURLWithPath:), @selector(replacement_initFileURLWithPath:));
+    original_initWithString = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(initWithString:), @selector(replacement_initWithString:));
 }
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {

@@ -2129,15 +2129,15 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 @implementation NSWindow (SKScriptingExtensions)
 
-static id (*originalDocument)(id, SEL) = NULL;
+static id (*original_document)(id, SEL) = NULL;
 
-- (id)replacementDocument {
-    id document = originalDocument(self, _cmd);
+- (id)replacement_document {
+    id document = original_document(self, _cmd);
     return [[NSApp orderedDocuments] containsObject:document] ? document : [NSNull null];
 }
 
 + (void)load {
-    originalDocument = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(document), @selector(replacementDocument));
+    original_document = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(document), @selector(replacement_document));
 }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {

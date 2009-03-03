@@ -108,26 +108,26 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 
 static CFMutableDictionaryRef lineRectsDict = NULL;
 
-static void (*originalDealloc)(id, SEL) = NULL;
-static void (*originalDrawWithBoxInContext)(id, SEL, CGPDFBox, CGContextRef) = NULL;
+static void (*original_dealloc)(id, SEL) = NULL;
+static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) = NULL;
 
 - (void)replacementDealloc {
     CFDictionaryRemoveValue(lineRectsDict, self);
-    originalDealloc(self, _cmd);
+    original_dealloc(self, _cmd);
 }
 
 // fix a bug in PDFKit, the color space sometimes is not correct
-- (void)replacementDrawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
+- (void)replacement_drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
     SKCGContextSetDefaultRGBColorSpace(context);
-    originalDrawWithBoxInContext(self, _cmd, box, context);
+    original_drawWithBox_inContext(self, _cmd, box, context);
     CGContextRestoreGState(context);
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        originalDrawWithBoxInContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacementDrawWithBox:inContext:));
+        original_drawWithBox_inContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 

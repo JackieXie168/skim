@@ -42,7 +42,7 @@
 
 @implementation NSCharacterSet (SKExtensions)
 
-+ (id)replacementNewlineCharacterSet {
++ (id)replacement_newlineCharacterSet {
     static NSCharacterSet *newlineCharacterSet = nil;
     if (newlineCharacterSet == nil) {
         NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
@@ -62,7 +62,7 @@
 }
 
 + (void)load {
-    SKAddClassMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacementNewlineCharacterSet));
+    SKAddClassMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacement_newlineCharacterSet));
 }
 
 @end
