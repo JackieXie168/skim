@@ -48,10 +48,10 @@
 
 @implementation PDFDocument (SKExtensions)
 
-static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
+static id (*original_getPrintOperationForPrintInfo_autoRotate)(id, SEL, id, BOOL) = NULL;
 
-- (NSPrintOperation *)replacementGetPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
-    NSPrintOperation *printOperation = originalGetPrintOperationForPrintInfo(self, _cmd, printInfo, autoRotate);
+- (NSPrintOperation *)replacement_getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate {
+    NSPrintOperation *printOperation = original_getPrintOperationForPrintInfo_autoRotate(self, _cmd, printInfo, autoRotate);
     BOOL suppressPrintPanel = [[[[printOperation printInfo] dictionary] objectForKey:@"SKSuppressPrintPanel"] boolValue];
     
     if (suppressPrintPanel) {
@@ -72,7 +72,7 @@ static id (*originalGetPrintOperationForPrintInfo)(id, SEL, id, BOOL) = NULL;
 }
 
 + (void)load {
-    originalGetPrintOperationForPrintInfo = (id (*)(id, SEL, id, BOOL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacementGetPrintOperationForPrintInfo:autoRotate:));
+    original_getPrintOperationForPrintInfo_autoRotate = (id (*)(id, SEL, id, BOOL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(getPrintOperationForPrintInfo:autoRotate:), @selector(replacement_getPrintOperationForPrintInfo:autoRotate:));
 }
 
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {

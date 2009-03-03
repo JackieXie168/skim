@@ -427,18 +427,18 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 
 @implementation NSWindow (SKTypeAheadHelperExtensions)
 
-static BOOL (*originalMakeFirstResponder)(id, SEL, id) = NULL;
+static BOOL (*original_makeFirstResponder)(id, SEL, id) = NULL;
 
-- (BOOL)replacementMakeFirstResponder:(NSResponder *)aResponder {
+- (BOOL)replacement_makeFirstResponder:(NSResponder *)aResponder {
     id oldFirstResponder = [self firstResponder];
-    BOOL success = originalMakeFirstResponder(self, _cmd, aResponder);
+    BOOL success = original_makeFirstResponder(self, _cmd, aResponder);
     if (oldFirstResponder != [self firstResponder])
         [[NSNotificationCenter defaultCenter] postNotificationName:SKWindowDidChangeFirstResponderNotification object:self];
     return success;
 }
 
 + (void)load {
-    originalMakeFirstResponder = (typeof(originalMakeFirstResponder))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacementMakeFirstResponder:));
+    original_makeFirstResponder = (typeof(original_makeFirstResponder))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacement_makeFirstResponder:));
 }
 
 @end

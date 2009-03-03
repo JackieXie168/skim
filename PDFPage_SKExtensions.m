@@ -69,15 +69,15 @@ static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
 
 // A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
 static CFMutableDictionaryRef bboxCache = NULL;
-static void (*originalDealloc)(id, SEL) = NULL;
+static void (*original_dealloc)(id, SEL) = NULL;
 
-- (void)replacementDealloc {
+- (void)replacement_dealloc {
     CFDictionaryRemoveValue(bboxCache, self);
-    originalDealloc(self, _cmd);
+    original_dealloc(self, _cmd);
 }
 
 + (void)load {
-    originalDealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
     bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
 }
 

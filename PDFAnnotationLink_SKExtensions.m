@@ -49,20 +49,20 @@
 
 // override these Leopard methods to avoid showing the standard tool tips over our own
 
-static id (*originalToolTip)(id, SEL) = NULL;
-static id (*originalToolTipNoLabel)(id, SEL) = NULL;
+static id (*original_toolTip)(id, SEL) = NULL;
+static id (*original_toolTipNoLabel)(id, SEL) = NULL;
 
-- (NSString *)replacementToolTip {
-    return ([self URL] || [self destination] || originalToolTip == NULL) ? nil : originalToolTip(self, _cmd);
+- (NSString *)replacement_toolTip {
+    return ([self URL] || [self destination] || original_toolTip == NULL) ? nil : original_toolTip(self, _cmd);
 }
 
-- (NSString *)replacementToolTipNoLabel {
-    return ([self URL] || [self destination] || originalToolTipNoLabel == NULL) ? nil : originalToolTipNoLabel(self, _cmd);
+- (NSString *)replacement_toolTipNoLabel {
+    return ([self URL] || [self destination] || original_toolTipNoLabel == NULL) ? nil : original_toolTipNoLabel(self, _cmd);
 }
 
 + (void)load {
-    originalToolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTip));
-    originalToolTipNoLabel = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacementToolTipNoLabel));
+    original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
+    original_toolTipNoLabel = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTipNoLabel), @selector(replacement_toolTipNoLabel));
 }
 
 - (BOOL)isLink { return YES; }
@@ -81,8 +81,8 @@ static id (*originalToolTipNoLabel)(id, SEL) = NULL;
 
 - (id)accessibilityTitleAttribute {
     NSString *title = nil;
-    if (originalToolTip != NULL)
-        title = originalToolTip(self, _cmd);
+    if (original_toolTip != NULL)
+        title = original_toolTip(self, _cmd);
     if (title == nil)
         title = [self contents];
     return title;
