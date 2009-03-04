@@ -7,6 +7,36 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>openPDF</key>
+				<string>id</string>
+				<key>searchNotes</key>
+				<string>id</string>
+				<key>toggleCaseInsensitiveSearch</key>
+				<string>id</string>
+				<key>toggleStatusBar</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKNotesDocument</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>arrayController</key>
+				<string>NSArrayController</string>
+				<key>outlineView</key>
+				<string>SKNoteOutlineView</string>
+				<key>searchField</key>
+				<string>NSSearchField</string>
+				<key>statusBar</key>
+				<string>SKStatusBar</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSDocument</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
 				<key>dismissNoteTypeSheet</key>
 				<string>id</string>
 				<key>displayAllNoteTypes</key>
@@ -69,6 +99,14 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSApplication</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>deleteBookmark</key>
@@ -114,11 +152,11 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSMenu</string>
+			<string>NSWindowController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
-			<string>NSObject</string>
+			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -268,6 +306,8 @@
 				<key>toggleAutoActualSize</key>
 				<string>id</string>
 				<key>toggleAutoScale</key>
+				<string>id</string>
+				<key>toggleCaseInsensitiveNoteSearch</key>
 				<string>id</string>
 				<key>toggleCaseInsensitiveSearch</key>
 				<string>id</string>
@@ -429,7 +469,7 @@
 				<key>snapshotArrayController</key>
 				<string>NSArrayController</string>
 				<key>snapshotTableView</key>
-				<string>SKSnapshotTableView</string>
+				<string>SKThumbnailTableView</string>
 				<key>snapshotView</key>
 				<string>NSView</string>
 				<key>splitView</key>
@@ -462,11 +502,11 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSWindowController</string>
+			<string>NSMenu</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -486,14 +526,6 @@
 			<string>NSObject</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>SKSnapshotTableView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKThumbnailTableView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -543,6 +575,11 @@
 			<string>SUUpdater</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>delegate</key>
+				<string>id</string>
+			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
 		</dict>
@@ -614,6 +651,14 @@
 			<string>NSControl</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>SKBookmarkOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>editBookmarks</key>
@@ -651,14 +696,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>BDSKContainerView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>SKBookmarkOutlineView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>SKOutlineView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

@@ -259,6 +259,17 @@ static id sharedApplicationController = nil;
     }
 }
 
+#pragma mark Updater
+
+- (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(SUUpdater *)updater {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SUScheduledCheckInterval"]) {
+        // the user already used an older version of Skim and Sparkle
+        [updater setAutomaticallyChecksForUpdates:[[NSUserDefaults standardUserDefaults] integerForKey:@"SUScheduledCheckInterval"] > 0];
+        return NO;
+    }
+    return YES;
+}
+
 #pragma mark Services Support
 
 - (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
