@@ -900,7 +900,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         return;
     }
     
-    if (pdfDocWithoutNotes && [pdfDocWithoutNotes unlockWithPassword:[[controller textField] stringValue]] == NO) {
+    if (pdfDocWithoutNotes && [pdfDocWithoutNotes unlockWithPassword:[controller stringValue]] == NO) {
         [[controller window] orderOut:self];
         
         SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
