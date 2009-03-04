@@ -291,8 +291,6 @@
             <string>SKAutoSaveSkimNotes</string>
             <string>SKSnapshotsOnTop</string>
             <string>SKSavePasswordOption</string>
-            <string>SUCheckAtStartup</string>
-            <string>SUScheduledCheckInterval</string>
         </array>
         <key>display</key>
         <array>
