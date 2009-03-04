@@ -75,6 +75,7 @@
 #import "SKApplication.h"
 #import "NSResponder_SKExtensions.h"
 #import "SKRuntime.h"
+#import "SKTextFieldSheetController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define OPEN_META_TAGS_KEY @"com.apple.metadata:kOMUserTags"
@@ -98,7 +99,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
 - (void)setOpenMetaTags:(NSArray *)array;
 - (void)setOpenMetaRating:(double)rating;
 
-- (void)tryToUnlockDocument:(PDFDocument *)document;
+- (BOOL)tryToUnlockDocument:(PDFDocument *)document;
 
 - (void)checkFileUpdatesIfNeeded;
 - (void)stopCheckingFileUpdates;
@@ -891,9 +892,26 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        contextInfo:NULL];		
 }
 
-- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertAlternateReturn)
+- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
+    
+    if (returnCode == NSCancelButton) {
+        [pdfDocWithoutNotes release];
         return;
+    }
+    
+    if (pdfDocWithoutNotes && [pdfDocWithoutNotes unlockWithPassword:[[controller textField] stringValue]] == NO) {
+        [[controller window] orderOut:self];
+        
+        SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+        
+        [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
+            modalDelegate:self 
+           didEndSelector:@selector(convertNotesPasswordSheetDidEnd:returnCode:contextInfo:)
+              contextInfo:pdfDocWithoutNotes];
+        
+        return;
+    }
     
     [[[self windowForSheet] attachedSheet] orderOut:self];
         
@@ -927,12 +945,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     if (didConvert) {
-        pdfDoc = [[PDFDocument alloc] initWithData:pdfData];
-        if ([pdfDoc isLocked])
-            [self tryToUnlockDocument:pdfDoc];
-        count = [pdfDoc pageCount];
+        if (pdfDocWithoutNotes == nil)
+            pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
+        if ([pdfDocWithoutNotes isLocked])
+            [self tryToUnlockDocument:pdfDocWithoutNotes];
+        count = [pdfDocWithoutNotes pageCount];
         for (i = 0; i < count; i++) {
-            PDFPage *page = [pdfDoc pageAtIndex:i];
+            PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
             NSEnumerator *annEnum = [[[[page annotations] copy] autorelease] objectEnumerator];
             PDFAnnotation *annotation;
             
@@ -942,13 +961,36 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             }
         }
         
-        [self setPDFDataUndoable:[pdfDoc dataRepresentation]];
-        [pdfDoc release];
+        [self setPDFDataUndoable:[pdfDocWithoutNotes dataRepresentation]];
         
         [[self undoManager] setActionName:NSLocalizedString(@"Convert Notes", @"Undo action name")];
     }
     
+    [pdfDocWithoutNotes release];
+    
     [[self progressController] endSheet];
+}
+
+- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertAlternateReturn)
+        return;
+    
+    PDFDocument *pdfDocWithoutNotes = nil;
+    
+    if ([[self pdfDocument] isEncrypted]) {
+        pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
+        if ([pdfDocWithoutNotes isLocked] && [self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
+            SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
+            
+            [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
+                modalDelegate:self 
+               didEndSelector:@selector(convertNotesPasswordSheetDidEnd:returnCode:contextInfo:)
+                  contextInfo:pdfDocWithoutNotes];
+            
+            return;
+        }
+    }
+    [self convertNotesPasswordSheetDidEnd:nil returnCode:NSOKButton contextInfo:pdfDocWithoutNotes];
 }
 
 - (IBAction)convertNotes:(id)sender {
@@ -1791,7 +1833,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)tryToUnlockDocument:(PDFDocument *)document {
+- (BOOL)tryToUnlockDocument:(PDFDocument *)document {
     if (NSAlertAlternateReturn != [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey]) {
         const char *serviceName = [self keychainServiceName];
         if (serviceName != NULL) {
@@ -1805,10 +1847,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 data = [NSData dataWithBytes:passwordData length:passwordLength];
                 SecKeychainItemFreeContent(NULL, passwordData);
                 aPassword = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-                [document unlockWithPassword:aPassword];
+                return [document unlockWithPassword:aPassword];
             }
         }
     }
+    return NO;
 }
 
 #pragma mark Scripting support
