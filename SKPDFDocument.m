@@ -980,6 +980,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if ([[self pdfDocument] isEncrypted]) {
         pdfDocWithoutNotes = [[PDFDocument alloc] initWithData:pdfData];
         if ([pdfDocWithoutNotes isLocked] && [self tryToUnlockDocument:pdfDocWithoutNotes] == NO) {
+            [[[self windowForSheet] attachedSheet] orderOut:self];
+            
             SKPasswordSheetController *passwordSheetController = [[[SKPasswordSheetController alloc] init] autorelease];
             
             [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window]
