@@ -79,7 +79,7 @@ static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
 static NSString *SKBookmarkChildrenKey = @"children";
 static NSString *SKBookmarkLabelKey = @"label";
 
-static NSString *SKBookmarkPropertiesObservationContext = @"SKBookmarkPropertiesObservationContext";
+static char SKBookmarkPropertiesObservationContext;
 
 
 @interface SKBookmarkController (SKPrivate)
@@ -486,9 +486,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *bm;
     while (bm = [bmEnum nextObject]) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
-            [bm addObserver:self forKeyPath:SKBookmarkLabelKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKBookmarkPropertiesObservationContext];
+            [bm addObserver:self forKeyPath:SKBookmarkLabelKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
-                [bm addObserver:self forKeyPath:SKBookmarkChildrenKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKBookmarkPropertiesObservationContext];
+                [bm addObserver:self forKeyPath:SKBookmarkChildrenKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
                 [self startObservingBookmarks:[bm children]];
             }
         }
@@ -526,7 +526,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKBookmarkPropertiesObservationContext) {
+    if (context == &SKBookmarkPropertiesObservationContext) {
         SKBookmark *bookmark = (SKBookmark *)object;
         id newValue = [change objectForKey:NSKeyValueChangeNewKey];
         id oldValue = [change objectForKey:NSKeyValueChangeOldKey];

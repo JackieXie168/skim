@@ -71,7 +71,7 @@ static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
-static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWindowDefaultsObservationContext";
+static char SKSnaphotWindowDefaultsObservationContext;
 
 @interface SKSnapshotWindowController (SKPrivate) 
 - (void)setPageLabel:(NSString *)newPageLabel;
@@ -100,7 +100,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:SKSnaphotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:&SKSnaphotWindowDefaultsObservationContext];
 }
 
 - (void)windowDidExpose:(NSNotification *)notification {
@@ -568,7 +568,7 @@ static void *SKSnaphotWindowDefaultsObservationContext = (void *)@"SKSnaphotWind
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKSnaphotWindowDefaultsObservationContext) {
+    if (context == &SKSnaphotWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKSnapshotsOnTopKey]) {
             BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];

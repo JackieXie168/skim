@@ -60,10 +60,10 @@ static NSString *SKGenericNoteWindowFrameAutosaveName = @"SKGenericNoteWindow";
 
 static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
 
-static void *SKNoteWindowPageObservationContext = (void *)@"SKNoteWindowPageObservationContext";
-static void *SKNoteWindowBoundsObservationContext = (void *)@"SKNoteWindowBoundsObservationContext";
-static void *SKNoteWindowDefaultsObservationContext = (void *)@"SKNoteWindowDefaultsObservationContext";
-static void *SKNoteWindowStringObservationContext = (void *)@"SKNoteWindowStringObservationContext";
+static char SKNoteWindowPageObservationContext;
+static char SKNoteWindowBoundsObservationContext;
+static char SKNoteWindowDefaultsObservationContext;
+static char SKNoteWindowStringObservationContext;
 
 @implementation SKNoteWindowController
 
@@ -106,11 +106,11 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKKeepNoteWindowsOnTopKey];
         forceOnTop = NO;
         
-        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:SKNoteWindowPageObservationContext];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:SKNoteWindowBoundsObservationContext];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:SKNoteWindowStringObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:&SKNoteWindowPageObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:&SKNoteWindowBoundsObservationContext];
+        [note addObserver:self forKeyPath:SKNPDFAnnotationStringKey options:0 context:&SKNoteWindowStringObservationContext];
         if ([self isNoteType])
-            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:SKNoteWindowDefaultsObservationContext];
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKAnchoredNoteFontNameKey, SKAnchoredNoteFontSizeKey, nil] context:&SKNoteWindowDefaultsObservationContext];
     }
     return self;
 }
@@ -313,7 +313,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKNoteWindowDefaultsObservationContext) {
+    if (context == &SKNoteWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
@@ -322,9 +322,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             if (font)
                 [textView setFont:font];
         }
-    } else if (context == SKNoteWindowBoundsObservationContext || context == SKNoteWindowPageObservationContext) {
+    } else if (context == &SKNoteWindowBoundsObservationContext || context == &SKNoteWindowPageObservationContext) {
         [self updateStatusMessage];
-    } else if (context == SKNoteWindowStringObservationContext) {
+    } else if (context == &SKNoteWindowStringObservationContext) {
         [self synchronizeWindowTitleWithDocumentName];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

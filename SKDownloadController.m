@@ -52,7 +52,7 @@
 
 static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
 
-static NSString *SKDownloadPropertiesObservationContext = @"SKDownloadPropertiesObservationContext";
+static char SKDownloadPropertiesObservationContext;
 
 static NSString *SKDownloadControllerDownloadsKey = @"downloads";
 
@@ -408,8 +408,8 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)startObservingDownloads:(NSArray *)newDownloads {
     NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newDownloads count])];
-    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadFileNameKey options:0 context:SKDownloadPropertiesObservationContext];
-    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadStatusKey options:0 context:SKDownloadPropertiesObservationContext];
+    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadFileNameKey options:0 context:&SKDownloadPropertiesObservationContext];
+    [newDownloads addObserver:self toObjectsAtIndexes:indexes forKeyPath:SKDownloadStatusKey options:0 context:&SKDownloadPropertiesObservationContext];
 }
 
 - (void)endObservingDownloads:(NSArray *)oldDownloads {
@@ -419,7 +419,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKDownloadPropertiesObservationContext) {
+    if (context == &SKDownloadPropertiesObservationContext) {
         if ([keyPath isEqualToString:SKDownloadFileNameKey]) {
             [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
         } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {

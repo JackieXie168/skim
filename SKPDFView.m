@@ -107,7 +107,7 @@ static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteConte
 
 static NSString *SKReadingBarNumberOfLinesKey = @"SKReadingBarNumberOfLines";
 
-static void *SKPDFViewDefaultsObservationContext = (void *)@"SKPDFViewDefaultsObservationContext";
+static char SKPDFViewDefaultsObservationContext;
 
 static unsigned int moveReadingBarModifiers = NSAlternateKeyMask;
 static unsigned int resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
@@ -265,7 +265,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
                                                  name:PDFViewScaleChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
-        context:SKPDFViewDefaultsObservationContext];
+        context:&SKPDFViewDefaultsObservationContext];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -2417,7 +2417,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKPDFViewDefaultsObservationContext) {
+    if (context == &SKPDFViewDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
             if (readingBar) {

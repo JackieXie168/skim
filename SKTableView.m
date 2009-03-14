@@ -43,7 +43,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 
-static void *SKTableViewDefaultsObservationContext = (void *)@"SKTableViewDefaultsObservationContext";
+static char SKTableViewDefaultsObservationContext;
 
 
 @implementation SKTableView
@@ -65,14 +65,14 @@ static void *SKTableViewDefaultsObservationContext = (void *)@"SKTableViewDefaul
         NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
         if (fontSize)
             [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:SKTableViewDefaultsObservationContext];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:&SKTableViewDefaultsObservationContext];
     }
     if ([[SKTableView superclass] instancesRespondToSelector:_cmd])
         [super awakeFromNib];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKTableViewDefaultsObservationContext) {
+    if (context == &SKTableViewDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKTableFontSizeKey]) {
             [self setFont:[NSFont systemFontOfSize:[[NSUserDefaults standardUserDefaults] floatForKey:SKTableFontSizeKey]]];

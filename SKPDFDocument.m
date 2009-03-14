@@ -89,7 +89,7 @@ static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
 static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
 static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
 
-static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDefaultsObservationContext";
+static char SKPDFDocumentDefaultsObservationContext;
 
 @interface SKPDFDocument (SKPrivate)
 
@@ -176,7 +176,7 @@ static void *SKPDFDocumentDefaultsObservationContext = (void *)@"SKPDFDocumentDe
     [mainController setOpenMetaRating:openMetaRating];
     [self setOpenMetaRating:0.0];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:SKPDFDocumentDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveDocumentNotification:) 
@@ -1470,7 +1470,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 #pragma mark Notification observation
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKPDFDocumentDefaultsObservationContext) {
+    if (context == &SKPDFDocumentDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
             [self checkFileUpdatesIfNeeded];
