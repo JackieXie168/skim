@@ -54,8 +54,8 @@ NSString *SKFontWellFontKey = @"font";
 NSString *SKFontWellActionKey = @"action";
 NSString *SKFontWellTargetKey = @"target";
 
-static NSString *SKFontWellFontNameObservationContext = @"SKFontWellFontNameObservationContext";
-static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObservationContext";
+static char SKFontWellFontNameObservationContext;
+static char SKFontWellFontSizeObservationContext;
 
 
 @interface SKFontWell (SKPrivate)
@@ -335,9 +335,9 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
         
         void *context = NULL;
         if ([bindingName isEqualToString:SKFontWellFontNameKey])
-            context = SKFontWellFontNameObservationContext;
+            context = &SKFontWellFontNameObservationContext;
         else if ([bindingName isEqualToString:SKFontWellFontSizeKey])
-            context = SKFontWellFontSizeObservationContext;
+            context = &SKFontWellFontSizeObservationContext;
         
         [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
@@ -361,9 +361,9 @@ static NSString *SKFontWellFontSizeObservationContext = @"SKFontWellFontSizeObse
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
-    if (context == SKFontWellFontNameObservationContext)
+    if (context == &SKFontWellFontNameObservationContext)
         key = SKFontWellFontNameKey;
-    else if (context == SKFontWellFontSizeObservationContext)
+    else if (context == &SKFontWellFontSizeObservationContext)
         key = SKFontWellFontSizeKey;
     
     if (key) {

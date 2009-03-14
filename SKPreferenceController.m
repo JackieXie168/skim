@@ -55,8 +55,8 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 
 static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
 
-static void *SKPreferenceWindowDefaultsObservationContext = (void *)@"SKPreferenceWindowDefaultsObservationContext";
-static void *SKPreferenceWindowUpdaterObservationContext = (void *)@"SKPreferenceWindowUpdaterObservationContext";
+static char SKPreferenceWindowDefaultsObservationContext;
+static char SKPreferenceWindowUpdaterObservationContext;
 
 @interface SKPreferenceController (Private)
 - (void)synchronizeUpdateInterval;
@@ -84,9 +84,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
-        [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:SKPreferenceWindowDefaultsObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:SKPreferenceWindowUpdaterObservationContext];
-        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:SKPreferenceWindowUpdaterObservationContext];
+        [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKPreferenceWindowDefaultsObservationContext];
+        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
+        [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
     }
     return sharedPrefenceController;
 }
@@ -303,12 +303,12 @@ static SKPreferenceController *sharedPrefenceController = nil;
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKPreferenceWindowDefaultsObservationContext) {
+    if (context == &SKPreferenceWindowDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
             [self updateRevertButtons];
         }
-    } else if (context == SKPreferenceWindowUpdaterObservationContext) {
+    } else if (context == &SKPreferenceWindowUpdaterObservationContext) {
         [self synchronizeUpdateInterval];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

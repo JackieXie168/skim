@@ -138,9 +138,9 @@ static NSString *SKMainWindowPageIndexKey = @"pageIndex";
 
 static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
-static void *SKNPDFAnnotationPropertiesObservationContext = (void *)@"SKNPDFAnnotationPropertiesObservationContext";
+static char SKNPDFAnnotationPropertiesObservationContext;
 
-static void *SKMainWindowDefaultsObservationContext = (void *)@"SKMainWindowDefaultsObservationContext";
+static char SKMainWindowDefaultsObservationContext;
 
 NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
@@ -2231,7 +2231,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
                                   SKShouldAntiAliasKey, SKGreekingThresholdKey, 
                                   SKTableFontSizeKey, nil]
-        context:SKMainWindowDefaultsObservationContext];
+        context:&SKMainWindowDefaultsObservationContext];
 }
 
 - (void)unregisterAsObserver {
@@ -2257,7 +2257,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *key;
         while (key = [keyEnumerator nextObject]) {
             // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
-            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:SKNPDFAnnotationPropertiesObservationContext];
+            [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKNPDFAnnotationPropertiesObservationContext];
         }
     }
 }
@@ -2295,7 +2295,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == SKMainWindowDefaultsObservationContext) {
+    if (context == &SKMainWindowDefaultsObservationContext) {
         
         // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];
@@ -2349,7 +2349,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self updatePageColumnWidthForTableView:outlineView];
         }
         
-    } else if (context == SKNPDFAnnotationPropertiesObservationContext) {
+    } else if (context == &SKNPDFAnnotationPropertiesObservationContext) {
         
         // The value of some note's property has changed
         PDFAnnotation *note = (PDFAnnotation *)object;
