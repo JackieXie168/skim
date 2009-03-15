@@ -369,7 +369,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect bounds = [activeAnnotation bounds];
         NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
         if (isLink) {
-            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, floorf(0.3 * NSHeight(rect)));
+            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(NSRectToCGRect(rect), floorf(0.3 * NSHeight(rect)));
             float color[4] = { 0.0, 0.0, 0.0, 0.1 };
             CGContextSetFillColor(context, color);
             CGContextBeginPath(context);
@@ -383,15 +383,15 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
             CGPathRelease(path);
         } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
             NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-            SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMaxXEdgeMask);
+            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMaxXEdgeMask);
             point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
-            SKCGContextDrawGrabHandle(context, *(CGPoint *)&point, 4.0, dragMask == BDSKMinXEdgeMask);
+            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMinXEdgeMask);
         } else if (editField == nil) {
             float color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
             CGContextSetStrokeColor(context, color);
-            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
+            CGContextStrokeRectWithWidth(context, NSRectToCGRect(rect), lineWidth);
             if ([activeAnnotation isResizable])
-                SKCGContextDrawGrabHandles(context, *(CGRect *)&bounds, 4.0, dragMask);
+                SKCGContextDrawGrabHandles(context, NSRectToCGRect(bounds), 4.0, dragMask);
         }
     }
     
@@ -400,7 +400,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect bounds = [highlightAnnotation bounds];
         NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
         CGContextSetStrokeColor(context, color);
-        CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
+        CGContextStrokeRectWithWidth(context, NSRectToCGRect(rect), 1.0);
     }
     
     if (readingBar) {
@@ -414,17 +414,17 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         if (invert) {
             NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
             if (NSEqualRects(rect, NSZeroRect) || [[readingBar page] isEqual:pdfPage] == NO) {
-                CGContextFillRect(context, *(CGRect *)&bounds);
+                CGContextFillRect(context, NSRectToCGRect(bounds));
             } else {
                 NSRect outRect, ignored;
                 NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge);
-                CGContextFillRect(context, *(CGRect *)&outRect);
+                CGContextFillRect(context, NSRectToCGRect(outRect));
                 NSDivideRect(bounds, &outRect, &ignored, NSMinY(rect) - NSMinY(bounds), NSMinYEdge);
-                CGContextFillRect(context, *(CGRect *)&outRect);
+                CGContextFillRect(context, NSRectToCGRect(outRect));
             }
         } else if ([[readingBar page] isEqual:pdfPage]) {
             CGContextSetBlendMode(context, kCGBlendModeMultiply);        
-            CGContextFillRect(context, *(CGRect *)&rect);
+            CGContextFillRect(context, NSRectToCGRect(rect));
         }
     }
     
@@ -432,22 +432,22 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, float 
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         float color[4] = { 0.0, 0.0, 0.0, 1.0 };
         CGContextSetStrokeColor(context, color);
-        CGContextStrokeRect(context, *(CGRect *)&rect);
+        CGContextStrokeRect(context, NSRectToCGRect(rect));
     } else if (toolMode == SKSelectToolMode && (didSelect || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         float color[4] = { 0.0, 0.0, 0.0, 0.6 };
         float radius = 4.0 / [self scaleFactor];
         CGContextBeginPath(context);
-        CGContextAddRect(context, *(CGRect *)&bounds);
-        CGContextAddRect(context, *(CGRect *)&selectionRect);
+        CGContextAddRect(context, NSRectToCGRect(bounds));
+        CGContextAddRect(context, NSRectToCGRect(selectionRect));
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
         if ([pdfPage pageIndex] != selectionPageIndex) {
             color[3] = 0.3;
             CGContextSetFillColor(context, color);
-            CGContextFillRect(context, *(CGRect *)&selectionRect);
+            CGContextFillRect(context, NSRectToCGRect(selectionRect));
         }
-        SKCGContextDrawGrabHandles(context, *(CGRect *)&selectionRect, radius, [pdfPage isEqual:[self currentPage]] ? dragMask : 0);
+        SKCGContextDrawGrabHandles(context, NSRectToCGRect(selectionRect), radius, [pdfPage isEqual:[self currentPage]] ? dragMask : 0);
     }
     
     CGContextRestoreGState(context);
