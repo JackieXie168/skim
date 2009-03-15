@@ -51,7 +51,7 @@
 - (void)fillPathVertically:(BOOL)isVertical withStartColor:(CIColor *)startColor endColor:(CIColor *)endColor;
 {
     NSRect bounds = [self bounds];
-    CGRect aRect = *(CGRect*)&bounds;
+    CGRect aRect = NSRectToCGRect(bounds);
     CGPoint startPoint = aRect.origin;
     CGPoint endPoint = startPoint;
     
@@ -80,7 +80,7 @@
 - (void)fillPathWithHorizontalGradientFromColor:(CIColor *)fgStartColor toColor:(CIColor *)fgEndColor blendedAtTop:(BOOL)top ofVerticalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
     NSRect bounds = [self bounds];
-    CGRect aRect = *(CGRect*)&bounds;
+    CGRect aRect = NSRectToCGRect(bounds);
     
     CIImage *image = [CIImage imageInRect:aRect withHorizontalGradientFromColor:fgStartColor toColor:fgEndColor blendedAtTop:top ofVerticalGradientFromColor:bgStartColor toColor:bgEndColor];
     
@@ -97,7 +97,7 @@
 - (void)fillPathWithVerticalGradientFromColor:(CIColor *)fgStartColor toColor:(CIColor *)fgEndColor blendedAtRight:(BOOL)right ofHorizontalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
     NSRect bounds = [self bounds];
-    CGRect aRect = *(CGRect*)&bounds;
+    CGRect aRect = NSRectToCGRect(bounds);
     
     CIImage *image = [CIImage imageInRect:aRect withVerticalGradientFromColor:fgStartColor toColor:fgEndColor blendedAtRight:right ofHorizontalGradientFromColor:bgStartColor toColor:bgEndColor];
     
@@ -114,7 +114,7 @@
 - (void)fillPathWithColor:(CIColor *)fgColor blendedAtRight:(BOOL)right ofVerticalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
     NSRect bounds = [self bounds];
-    CGRect aRect = *(CGRect*)&bounds;
+    CGRect aRect = NSRectToCGRect(bounds);
     
     CIImage *image = [CIImage imageInRect:aRect withColor:fgColor blendedAtRight:right ofVerticalGradientFromColor:bgStartColor toColor:bgEndColor];
     

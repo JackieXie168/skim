@@ -117,7 +117,7 @@
         [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
         [NSGraphicsContext restoreGraphicsState];
     }
-    CGContextDrawLayerInRect(currentContext, *(CGRect *)&aRect, dividerLayer);
+    CGContextDrawLayerInRect(currentContext, NSRectToCGRect(aRect), dividerLayer);
     
     if (blendEnds) {
         NSRect endRect, ignored;
@@ -134,7 +134,7 @@
             [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:[self isVertical] withStartColor:[[self class] endColor] endColor:[CIColor clearColor]];
             [NSGraphicsContext restoreGraphicsState];
         }
-        CGContextDrawLayerInRect(currentContext, *(CGRect *)&endRect, minBlendLayer);
+        CGContextDrawLayerInRect(currentContext, NSRectToCGRect(endRect), minBlendLayer);
         
         NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMaxYEdge : NSMaxXEdge);
         if (NULL == maxBlendLayer) {
@@ -148,7 +148,7 @@
             [[NSBezierPath bezierPathWithRect:rectToFill] fillPathVertically:[self isVertical] withStartColor:[CIColor clearColor] endColor:[[self class] startColor]];
             [NSGraphicsContext restoreGraphicsState];
         }
-        CGContextDrawLayerInRect(currentContext, *(CGRect *)&endRect, maxBlendLayer);
+        CGContextDrawLayerInRect(currentContext, NSRectToCGRect(endRect), maxBlendLayer);
     }
     
     [NSGraphicsContext saveGraphicsState];

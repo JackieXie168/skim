@@ -593,7 +593,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     CIImage *currentImage = [self currentImage];
     if (currentImage) {
         NSRect bounds = [self bounds];
-        [[self ciContext] drawImage:currentImage inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
+        [[self ciContext] drawImage:currentImage inRect:NSRectToCGRect(bounds) fromRect:NSRectToCGRect(bounds)];
     }
     
     glFlush();

@@ -164,7 +164,7 @@
     
     if (NULL == layer) {
         NSSize layerSize = bounds.size;
-        layer = CGLayerCreateWithContext(viewContext, *(CGSize *)&layerSize, NULL);
+        layer = CGLayerCreateWithContext(viewContext, NSSizeToCGSize(layerSize), NULL);
         
         CGContextRef layerContext = CGLayerGetContext(layer);
         [NSGraphicsContext saveGraphicsState];
@@ -179,7 +179,7 @@
     // normal blend mode is copy
     CGContextSaveGState(viewContext);
     CGContextSetBlendMode(viewContext, kCGBlendModeNormal);
-    CGContextDrawLayerInRect(viewContext, *(CGRect *)&bounds, layer);
+    CGContextDrawLayerInRect(viewContext, NSRectToCGRect(bounds), layer);
     CGContextRestoreGState(viewContext);
 
     NSRect textRect, ignored;
