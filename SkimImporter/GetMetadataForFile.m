@@ -109,14 +109,12 @@ Boolean GetMetadataForFile(void* thisInterface,
         if (notes) {
             NSEnumerator *noteEnum = [notes objectEnumerator];
             NSDictionary *note;
-            NSMutableArray *noteContents = [[NSMutableArray alloc] init];
             while (note = [noteEnum nextObject]) {
                 NSString *contents = [note objectForKey:@"contents"];
                 if (contents) {
                     if ([textContent length])
                         [textContent appendString:@"\n\n"];
                     [textContent appendString:contents];
-                    [noteContents addObject:contents];
                 }
                 NSString *text = [[note objectForKey:@"text"] string];
                 if (text) {
@@ -125,8 +123,6 @@ Boolean GetMetadataForFile(void* thisInterface,
                     [textContent appendString:text];
                 }
             }
-            CFDictionarySetValue(attributes, CFSTR("net_sourceforge_skim_app_notes"), noteContents);
-            [noteContents release];
         }
         
         if ([pdfText length]) {
@@ -144,6 +140,8 @@ Boolean GetMetadataForFile(void* thisInterface,
                 CFDictionarySetValue(attributes, kMDItemAuthors, value);
             if (value = [info objectForKey:@"Keywords"])
                 CFDictionarySetValue(attributes, kMDItemKeywords, value);
+            if (value = [info objectForKey:@"Creator"])
+                CFDictionarySetValue(attributes, kMDItemCreator, value);
             if (value = [info objectForKey:@"Producer"])
                 CFDictionarySetValue(attributes, kMDItemEncodingApplications, value);
             if (value = [info objectForKey:@"Version"])
