@@ -39,6 +39,8 @@
 #import "SKRuntime.h"
 #import <objc/objc-runtime.h>
 
+#define WEAK_NULL NULL
+
 // wrappers around 10.5 only functions, use 10.4 API when the function is not defined
 
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
@@ -48,15 +50,15 @@
 extern void _objc_flush_caches(Class);
 
 static inline Class SK_object_getClass(id object) {
-    return object_getClass != kUnresolvedCFragSymbolAddress ? object_getClass(object) : object->isa;
+    return object_getClass != WEAK_NULL ? object_getClass(object) : object->isa;
 }
 
 static inline IMP SK_method_getImplementation(Method aMethod) {
-    return method_getImplementation != kUnresolvedCFragSymbolAddress ? method_getImplementation(aMethod) : aMethod->method_imp;
+    return method_getImplementation != WEAK_NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
 }
 
 static inline const char *SK_method_getTypeEncoding(Method aMethod) {
-    return method_getTypeEncoding != kUnresolvedCFragSymbolAddress ? method_getTypeEncoding(aMethod) : aMethod->method_types;
+    return method_getTypeEncoding != WEAK_NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
 }
 
 // generic implementation for class_addMethod/class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
@@ -96,7 +98,7 @@ static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
 }
 
 static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_replaceMethod != kUnresolvedCFragSymbolAddress)
+    if (class_replaceMethod != WEAK_NULL)
         return class_replaceMethod(aClass, selector, methodImp, methodTypes);
     else
         return _SK_class_addMethod(aClass, selector, methodImp, methodTypes, YES);
