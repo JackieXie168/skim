@@ -47,6 +47,8 @@
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 
+#define WEAK_NULL NULL
+
 #pragma mark Private Core Graphics types and functions
 
 typedef int CGSConnection;
@@ -101,10 +103,10 @@ extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHand
 #pragma mark Check whether the above functions are actually defined at run time
 
 static BOOL CoreGraphicsServicesTransitionsDefined() {
-    return _CGSDefaultConnection != (void *)kUnresolvedCFragSymbolAddress &&
-           CGSNewTransition != (void *)kUnresolvedCFragSymbolAddress &&
-           CGSInvokeTransition != (void *)kUnresolvedCFragSymbolAddress &&
-           CGSReleaseTransition != (void *)kUnresolvedCFragSymbolAddress;
+    return _CGSDefaultConnection != WEAK_NULL &&
+           CGSNewTransition != WEAK_NULL &&
+           CGSInvokeTransition != WEAK_NULL &&
+           CGSReleaseTransition != WEAK_NULL;
 }
 
 #pragma mark -
