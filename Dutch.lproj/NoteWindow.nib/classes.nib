@@ -46,6 +46,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSApplication</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSMenuItem</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -119,6 +127,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSActionCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -174,6 +190,14 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSCell</string>
 		</dict>
 	</array>
 	<key>IBVersion</key>
