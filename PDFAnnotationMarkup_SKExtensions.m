@@ -111,7 +111,7 @@ static CFMutableDictionaryRef lineRectsDict = NULL;
 static void (*original_dealloc)(id, SEL) = NULL;
 static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) = NULL;
 
-- (void)replacementDealloc {
+- (void)replacement_dealloc {
     CFDictionaryRemoveValue(lineRectsDict, self);
     original_dealloc(self, _cmd);
 }
