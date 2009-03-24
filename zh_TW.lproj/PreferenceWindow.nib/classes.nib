@@ -74,6 +74,8 @@
 				<string>SKFontWell</string>
 				<key>thumbnailSizeSlider</key>
 				<string>NSSlider</string>
+				<key>updateIntervalPopUpButton</key>
+				<string>NSPopUpButton</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
