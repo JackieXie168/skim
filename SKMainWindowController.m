@@ -1201,28 +1201,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     return tags;
 }
 
-- (void)setTags:(NSArray *)newTags {
-    if (newTags == nil) newTags = [NSArray array];
-    if (tags != newTags) {
-        NSUndoManager *undoManager = [[self document] undoManager];
-        [[undoManager prepareWithInvocationTarget:self] setTags:tags];
-        [undoManager setActionName:NSLocalizedString(@"Edit Tags", @"Undo action name")];
-        [tags release];
-        tags = [newTags retain];
-    }
-}
-
 - (double)rating {
     return rating;
-}
-
-- (void)setRating:(double)newRating {
-    if (fabs(rating - newRating) > 0.0) {
-        NSUndoManager *undoManager = [[self document] undoManager];
-        [[undoManager prepareWithInvocationTarget:self] setRating:rating];
-        [undoManager setActionName:NSLocalizedString(@"Edit Rating", @"Undo action name")];
-        rating = newRating;
-    }
 }
 
 #pragma mark Full Screen support

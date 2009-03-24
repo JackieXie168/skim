@@ -313,10 +313,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex;
 
 - (NSArray *)tags;
-- (void)setTags:(NSArray *)newTags;
-
 - (double)rating;
-- (void)setRating:(double)newRating;
 
 - (NSArray *)selectedNotes;
 
