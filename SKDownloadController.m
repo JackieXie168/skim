@@ -50,14 +50,14 @@
 #define RESUME_COLUMN   2
 #define CANCEL_COLUMN   3
 
-static NSString *SKDownloadsWindowFrameAutosaveName = @"SKDownloadsWindow";
+#define SKDownloadsWindowFrameAutosaveName @"SKDownloadsWindow"
 
 static char SKDownloadPropertiesObservationContext;
 
-static NSString *SKDownloadControllerDownloadsKey = @"downloads";
+#define SKDownloadControllerDownloadsKey @"downloads"
 
-static NSString *SKDownloadsWindowCancelColumnIdentifier = @"cancel";
-static NSString *SKDownloadsWindowResumeColumnIdentifier = @"resume";
+#define SKDownloadsWindowCancelColumnIdentifier @"cancel"
+#define SKDownloadsWindowResumeColumnIdentifier @"resume"
 
 @interface SKDownloadController (SKPrivate)
 - (void)startObservingDownloads:(NSArray *)newDownloads;

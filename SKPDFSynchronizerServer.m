@@ -53,7 +53,7 @@
 // Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
 static NSPoint pdfOffset = {0.0, 0.0};
 
-static NSString *SKPDFSynchronizerPdfsyncExtension = @"pdfsync";
+#define SKPDFSynchronizerPdfsyncExtension @"pdfsync"
 static NSArray *SKPDFSynchronizerTexExtensions = nil;
 
 struct SKServerFlags {

@@ -60,8 +60,8 @@ NSString *SKPDFPageActionKey = @"action";
 NSString *SKPDFPageActionCrop = @"crop";
 NSString *SKPDFPageActionRotate = @"rotate";
 
-static NSString *SKAutoCropBoxMarginWidthKey = @"SKAutoCropBoxMarginWidth";
-static NSString *SKAutoCropBoxMarginHeightKey = @"SKAutoCropBoxMarginHeight";
+#define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
+#define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
 
 @implementation PDFPage (SKExtensions) 
 

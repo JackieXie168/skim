@@ -39,7 +39,7 @@
 #import "SKTypeSelectHelper.h"
 #import "SKRuntime.h"
 
-static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChangeFirstResponderNotification";
+#define SKWindowDidChangeFirstResponderNotification @"SKWindowDidChangeFirstResponderNotification"
 
 #define REPEAT_CHARACTER 0x2F
 #define CANCEL_CHARACTER 0x1B

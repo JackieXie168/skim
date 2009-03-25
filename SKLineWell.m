@@ -48,13 +48,13 @@ NSString *SKLineWellDashPatternKey = @"dashPattern";
 NSString *SKLineWellStartLineStyleKey = @"startLineStyle";
 NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
-static NSString *SKLineWellDisplayStyleKey = @"displayStyle";
-static NSString *SKLineWellActiveKey = @"active";
-static NSString *SKLineWellActionKey = @"action";
-static NSString *SKLineWellTargetKey = @"target";
+#define SKLineWellDisplayStyleKey @"displayStyle"
+#define SKLineWellActiveKey @"active"
+#define SKLineWellActionKey @"action"
+#define SKLineWellTargetKey @"target"
 
-static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecomeActiveNotification";
-static NSString *SKLineWellExclusiveKey = @"exclusive";
+#define SKLineWellWillBecomeActiveNotification @"SKLineWellWillBecomeActiveNotification"
+#define SKLineWellExclusiveKey @"exclusive"
 
 @implementation SKLineWell
 

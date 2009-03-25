@@ -39,7 +39,7 @@
 #import "SKNotesPanelController.h"
 #import "SKMainWindowController.h"
 
-static NSString *SKNotesPanelFrameAutosaveName = @"SKNotesPanel";
+#define SKNotesPanelFrameAutosaveName @"SKNotesPanel"
 
 @implementation SKNotesPanelController
 

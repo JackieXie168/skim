@@ -62,19 +62,19 @@
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
 
-static NSString *SKNotesDocumentWindowFrameAutosaveName = @"SKNotesDocumentWindow";
+#define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
-static NSString *SKNotesDocumentToolbarIdentifier = @"SKNotesDocumentToolbarIdentifier";
-static NSString *SKNotesDocumentSearchToolbarItemIdentifier = @"SKNotesDocumentSearchToolbarItemIdentifier";
-static NSString *SKNotesDocumentOpenPDFToolbarItemIdentifier = @"SKNotesDocumentOpenPDFToolbarItemIdentifier";
+#define SKNotesDocumentToolbarIdentifier @"SKNotesDocumentToolbarIdentifier"
+#define SKNotesDocumentSearchToolbarItemIdentifier @"SKNotesDocumentSearchToolbarItemIdentifier"
+#define SKNotesDocumentOpenPDFToolbarItemIdentifier @"SKNotesDocumentOpenPDFToolbarItemIdentifier"
 
-static NSString *SKLastExportedNotesTypeKey = @"SKLastExportedNotesType";
+#define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
-static NSString *SKNotesDocumentNotesKey = @"notes";
+#define SKNotesDocumentNotesKey @"notes"
 
-static NSString *SKNotesDocumentNoteColumnIdentifier = @"note";
-static NSString *SKNotesDocumentTypeColumnIdentifier = @"type";
-static NSString *SKNotesDocumentPageColumnIdentifier = @"page";
+#define SKNotesDocumentNoteColumnIdentifier @"note"
+#define SKNotesDocumentTypeColumnIdentifier @"type"
+#define SKNotesDocumentPageColumnIdentifier @"page"
 
 @implementation SKNotesDocument
 

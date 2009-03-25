@@ -45,15 +45,15 @@
 #import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
-static NSString *SKPreferenceInitialUserDefaultsFileName = @"InitialUserDefaults";
-static NSString *SKPreferenceResettableKeysKey = @"ResettableKeys";
+#define SKPreferenceInitialUserDefaultsFileName @"InitialUserDefaults"
+#define SKPreferenceResettableKeysKey @"ResettableKeys"
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX", @"TeXMaker", @"AlphaX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor", @"texmaker", @"alphac"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line", @"\"%file\" -line %line", @"+%line \"%file\""};
 
-static NSString *SKPreferenceWindowFrameAutosaveName = @"SKPreferenceWindow";
+#define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
 static char SKPreferenceWindowDefaultsObservationContext;
 static char SKPreferenceWindowUpdaterObservationContext;
@@ -162,7 +162,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
         [textNoteFontWell setHasTextColor:YES];
-        [textNoteFontWell bind:SKFontWellTextColorKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
+        [textNoteFontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
     }
 }
 

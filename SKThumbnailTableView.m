@@ -41,8 +41,8 @@
 #import "SKTypeSelectHelper.h"
 #import "NSColor_SKExtensions.h"
 
-static NSString *SKScrollerWillScrollNotification = @"SKScrollerWillScrollNotification";
-static NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotification";
+#define SKScrollerWillScrollNotification @"SKScrollerWillScrollNotification"
+#define SKScrollerDidScrollNotification @"SKScrollerDidScrollNotification"
 
 @interface NSScroller (SKExtensions)
 @end

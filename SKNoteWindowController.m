@@ -55,10 +55,10 @@
 #define SIZE_OFFSET 32.0
 #define EM_DASH_CHARACTER 0x2014
 
-static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
-static NSString *SKGenericNoteWindowFrameAutosaveName = @"SKGenericNoteWindow";
+#define SKNoteWindowFrameAutosaveName @"SKNoteWindow"
+#define SKGenericNoteWindowFrameAutosaveName @"SKGenericNoteWindow"
 
-static NSString *SKKeepNoteWindowsOnTopKey = @"SKKeepNoteWindowsOnTop";
+#define SKKeepNoteWindowsOnTopKey @"SKKeepNoteWindowsOnTop"
 
 static char SKNoteWindowPageObservationContext;
 static char SKNoteWindowBoundsObservationContext;
