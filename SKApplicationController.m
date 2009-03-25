@@ -84,11 +84,11 @@
 #define VIEW_MENU_INDEX 4
 #define BOOKMARKS_MENU_INDEX 8
 
-static NSString *SKCurrentDocumentSetupKey = @"currentDocumentSetup";
+#define SKCurrentDocumentSetupKey @"currentDocumentSetup"
 
-static NSString *SKSpotlightVersionInfoKey = @"SKSpotlightVersionInfo";
-static NSString *SKSpotlightLastImporterVersionKey = @"lastImporterVersion";
-static NSString *SKSpotlightLastSysVersionKey = @"lastSysVersion";
+#define SKSpotlightVersionInfoKey @"SKSpotlightVersionInfo"
+#define SKSpotlightLastImporterVersionKey @"lastImporterVersion"
+#define SKSpotlightLastSysVersionKey @"lastSysVersion"
 
 
 @implementation SKApplicationController

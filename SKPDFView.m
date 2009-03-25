@@ -94,18 +94,18 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
-static NSString *SKSmallMagnificationWidthKey = @"SKSmallMagnificationWidth";
-static NSString *SKSmallMagnificationHeightKey = @"SKSmallMagnificationHeight";
-static NSString *SKLargeMagnificationWidthKey = @"SKLargeMagnificationWidth";
-static NSString *SKLargeMagnificationHeightKey = @"SKLargeMagnificationHeight";
-static NSString *SKMoveReadingBarModifiersKey = @"SKMoveReadingBarModifiers";
-static NSString *SKResizeReadingBarModifiersKey = @"SKResizeReadingBarModifiers";
-static NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContentsFromEnclosedText";
+#define SKSmallMagnificationWidthKey @"SKSmallMagnificationWidth"
+#define SKSmallMagnificationHeightKey @"SKSmallMagnificationHeight"
+#define SKLargeMagnificationWidthKey @"SKLargeMagnificationWidth"
+#define SKLargeMagnificationHeightKey @"SKLargeMagnificationHeight"
+#define SKMoveReadingBarModifiersKey @"SKMoveReadingBarModifiers"
+#define SKResizeReadingBarModifiersKey @"SKResizeReadingBarModifiers"
+#define SKDisableUpdateContentsFromEnclosedTextKey @"SKDisableUpdateContentsFromEnclosedText"
 
-static NSString *SKDefaultFreeTextNoteContentsKey = @"SKDefaultFreeTextNoteContents";
-static NSString *SKDefaultAnchoredNoteContentsKey = @"SKDefaultAnchoredNoteContents";
+#define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
+#define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 
-static NSString *SKReadingBarNumberOfLinesKey = @"SKReadingBarNumberOfLines";
+#define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
 static char SKPDFViewDefaultsObservationContext;
 

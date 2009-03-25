@@ -57,19 +57,19 @@
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
-static NSString *SKSnapshotPageKey = @"page";
-static NSString *SKSnapshotRectKey = @"rect";
-static NSString *SKSnapshotScaleFactorKey = @"scaleFactor";
-static NSString *SKSnapshotAutoFitsKey = @"autoFits";
-static NSString *SKSnapshotHasWindowKey = @"hasWindow";
-static NSString *SKSnapshotWindowFrameKey = @"windowFrame";
+#define SKSnapshotPageKey @"page"
+#define SKSnapshotRectKey @"rect"
+#define SKSnapshotScaleFactorKey @"scaleFactor"
+#define SKSnapshotAutoFitsKey @"autoFits"
+#define SKSnapshotHasWindowKey @"hasWindow"
+#define SKSnapshotWindowFrameKey @"windowFrame"
 
-static NSString *SKSnapshotWindowPageLabelKey = @"pageLabel";
-static NSString *SKSnapshotWindowHasWindowKey = @"hasWindow";
-static NSString *SKSnapshotWindowPageAndWindowKey = @"pageAndWindow";
+#define SKSnapshotWindowPageLabelKey @"pageLabel"
+#define SKSnapshotWindowHasWindowKey @"hasWindow"
+#define SKSnapshotWindowPageAndWindowKey @"pageAndWindow"
 
-static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
-static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
+#define SKSnapshotWindowFrameAutosaveName @"SKSnapshotWindow"
+#define SKSnapshotViewChangedNotification @"SKSnapshotViewChangedNotification"
 
 static char SKSnaphotWindowDefaultsObservationContext;
 

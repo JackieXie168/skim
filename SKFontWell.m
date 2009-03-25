@@ -39,20 +39,20 @@
 #import "SKFontWell.h"
 #import "SKRuntime.h"
 
-static NSString *SKNSFontPanelDescriptorsPboardType = @"NSFontPanelDescriptorsPboardType";
-static NSString *SKNSFontPanelFamiliesPboardType = @"NSFontPanelFamiliesPboardType";
-static NSString *SKNSFontCollectionFontDescriptors = @"NSFontCollectionFontDescriptors";
+#define SKNSFontPanelDescriptorsPboardType @"NSFontPanelDescriptorsPboardType"
+#define SKNSFontPanelFamiliesPboardType @"NSFontPanelFamiliesPboardType"
+#define SKNSFontCollectionFontDescriptors @"NSFontCollectionFontDescriptors"
 
-static NSString *SKFontWellWillBecomeActiveNotification = @"SKFontWellWillBecomeActiveNotification";
+#define SKFontWellWillBecomeActiveNotification @"SKFontWellWillBecomeActiveNotification"
 
-NSString *SKFontWellFontNameKey = @"fontName";
-NSString *SKFontWellFontSizeKey = @"fontSize";
-NSString *SKFontWellTextColorKey = @"textColor";
-NSString *SKFontWellHasTextColorKey = @"hasTextColor";
+#define SKFontWellFontNameKey @"fontName"
+#define SKFontWellFontSizeKey @"fontSize"
+#define SKFontWellTextColorKey @"textColor"
+#define SKFontWellHasTextColorKey @"hasTextColor"
 
-NSString *SKFontWellFontKey = @"font";
-NSString *SKFontWellActionKey = @"action";
-NSString *SKFontWellTargetKey = @"target";
+#define SKFontWellFontKey @"font"
+#define SKFontWellActionKey @"action"
+#define SKFontWellTargetKey @"target"
 
 static char SKFontWellFontNameObservationContext;
 static char SKFontWellFontSizeObservationContext;

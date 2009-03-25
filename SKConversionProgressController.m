@@ -43,13 +43,13 @@
 #import "NSInvocation_SKExtensions.h"
 #import <libkern/OSAtomic.h>
 
-static NSString *SKConversionProgressProviderKey = @"provider";
-static NSString *SKConversionProgressConsumerKey = @"consumer";
-static NSString *SKConversionProgressDviFileKey = @"dviFile";
-static NSString *SKConversionProgressPdfDataKey = @"pdfData";
-static NSString *SKConversionProgressDviToolPathKey = @"dviToolPath";
+#define SKConversionProgressProviderKey @"provider"
+#define SKConversionProgressConsumerKey @"consumer"
+#define SKConversionProgressDviFileKey @"dviFile"
+#define SKConversionProgressPdfDataKey @"pdfData"
+#define SKConversionProgressDviToolPathKey @"dviToolPath"
 
-static NSString *SKDviConversionCommandKey = @"SKDviConversionCommand";
+#define SKDviConversionCommandKey @"SKDviConversionCommand"
 
 enum {
     SKConversionSucceeded = 0,

@@ -84,10 +84,10 @@
 NSString *SKPDFDocumentWillSaveNotification = @"SKPDFDocumentWillSaveNotification";
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
-static NSString *SKLastExportedTypeKey = @"SKLastExportedType";
-static NSString *SKAutoReloadFileUpdateKey = @"SKAutoReloadFileUpdate";
-static NSString *SKAutoRotatePrintedPagesKey = @"SKAutoRotatePrintedPages";
-static NSString *SKDisableReloadAlertKey = @"SKDisableReloadAlert";
+#define SKLastExportedTypeKey @"SKLastExportedType"
+#define SKAutoReloadFileUpdateKey @"SKAutoReloadFileUpdate"
+#define SKAutoRotatePrintedPagesKey @"SKAutoRotatePrintedPages"
+#define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
 static char SKPDFDocumentDefaultsObservationContext;
 

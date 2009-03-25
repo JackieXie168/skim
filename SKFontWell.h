@@ -38,15 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKFontWellFontNameKey;
-extern NSString *SKFontWellFontSizeKey;
-extern NSString *SKFontWellTextColorKey;
-extern NSString *SKFontWellHasTextColorKey;
-
-extern NSString *SKFontWellFontKey;
-extern NSString *SKFontWellActionKey;
-extern NSString *SKFontWellTargetKey;
-
 @interface SKFontWell : NSButton {
     id target;
     SEL action;

@@ -44,11 +44,11 @@
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
-NSString *SKColorSwatchColorsKey = @"colors";
+#define SKColorSwatchColorsKey @"colors"
 
-static NSString *SKColorSwatchTargetKey = @"target";
-static NSString *SKColorSwatchActionKey = @"action";
-static NSString *SKColorSwatchAutoresizesKey = @"autoResizes";
+#define SKColorSwatchTargetKey @"target"
+#define SKColorSwatchActionKey @"action"
+#define SKColorSwatchAutoresizesKey @"autoResizes"
 
 
 @interface SKAccessibilityColorSwatchElement : SKAccessibilityIndexedFauxUIElement

@@ -41,23 +41,23 @@
 #import <Quartz/Quartz.h>
 #import "SKRuntime.h"
 
-static NSString *SKInfoWindowFrameAutosaveName = @"SKInfoWindow";
+#define SKInfoWindowFrameAutosaveName @"SKInfoWindow"
 
-static NSString *SKInfoVersionKey = @"Version";
-static NSString *SKInfoPageCountKey = @"PageCount";
-static NSString *SKInfoPageSizeKey = @"PageSize";
-static NSString *SKInfoPageWidthKey = @"PageWidth";
-static NSString *SKInfoPageHeightKey = @"PageHeight";
-static NSString *SKInfoKeywordsStringKey = @"KeywordsString";
-static NSString *SKInfoEncryptedKey = @"Encrypted";
-static NSString *SKInfoAllowsPrintingKey = @"AllowsPrinting";
-static NSString *SKInfoAllowsCopyingKey = @"AllowsCopying";
-static NSString *SKInfoFileNameKey = @"FileName";
-static NSString *SKInfoFileSizeKey = @"FileSize";
-static NSString *SKInfoPhysicalSizeKey = @"PhysicalSize";
-static NSString *SKInfoLogicalSizeKey = @"LogicalSize";
-static NSString *SKInfoTagsKey = @"Tags";
-static NSString *SKInfoRatingKey = @"Rating";
+#define SKInfoVersionKey @"Version"
+#define SKInfoPageCountKey @"PageCount"
+#define SKInfoPageSizeKey @"PageSize"
+#define SKInfoPageWidthKey @"PageWidth"
+#define SKInfoPageHeightKey @"PageHeight"
+#define SKInfoKeywordsStringKey @"KeywordsString"
+#define SKInfoEncryptedKey @"Encrypted"
+#define SKInfoAllowsPrintingKey @"AllowsPrinting"
+#define SKInfoAllowsCopyingKey @"AllowsCopying"
+#define SKInfoFileNameKey @"FileName"
+#define SKInfoFileSizeKey @"FileSize"
+#define SKInfoPhysicalSizeKey @"PhysicalSize"
+#define SKInfoLogicalSizeKey @"LogicalSize"
+#define SKInfoTagsKey @"Tags"
+#define SKInfoRatingKey @"Rating"
 
 @implementation SKInfoWindowController
 

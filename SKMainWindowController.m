@@ -106,47 +106,47 @@
 
 #define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
 
-NSString *SKMainWindowPageLabelsKey = @"pageLabels";
-NSString *SKMainWindowSearchResultsKey = @"searchResults";
-NSString *SKMainWindowGroupedSearchResultsKey = @"groupedSearchResults";
-NSString *SKMainWindowNotesKey = @"notes";
-NSString *SKMainWindowThumbnailsKey = @"thumbnails";
-NSString *SKMainWindowSnapshotsKey = @"snapshots";
+#define SKMainWindowPageLabelsKey @"pageLabels"
+#define SKMainWindowSearchResultsKey @"searchResults"
+#define SKMainWindowGroupedSearchResultsKey @"groupedSearchResults"
+#define SKMainWindowNotesKey @"notes"
+#define SKMainWindowThumbnailsKey @"thumbnails"
+#define SKMainWindowSnapshotsKey @"snapshots"
 
-NSString *SKMainWindowPageColumnIdentifier = @"page";
-static NSString *SKMainWindowNoteColumnIdentifer = @"note";
+#define SKMainWindowPageColumnIdentifier @"page"
+#define SKMainWindowNoteColumnIdentifer @"note"
 
-static NSString *SKMainWindowRelevanceColumnIdentifer = @"relevance";
-static NSString *SKMainWindowResultsColumnIdentifer = @"results";
+#define SKMainWindowRelevanceColumnIdentifer @"relevance"
+#define SKMainWindowResultsColumnIdentifer @"results"
 
-static NSString *SKMainWindowPageNumberKey = @"pageNumber";
-static NSString *SKMainWindowPageLabelKey = @"pageLabel";
+#define SKMainWindowPageNumberKey @"pageNumber"
+#define SKMainWindowPageLabelKey @"pageLabel"
 
-static NSString *SKMainWindowFrameKey = @"windowFrame";
-static NSString *SKMainWindowLeftSidePaneWidthKey = @"leftSidePaneWidth";
-static NSString *SKMainWindowRightSidePaneWidthKey = @"rightSidePaneWidth";
-static NSString *SKMainWindowScaleFactorKey = @"scaleFactor";
-static NSString *SKMainWindowAutoScalesKey = @"autoScales";
-static NSString *SKMainWindowDisplayPageBreaksKey = @"displaysPageBreaks";
-static NSString *SKMainWindowDisplayAsBookKey = @"displaysAsBook"; 
-static NSString *SKMainWindowDisplayModeKey = @"displayMode";
-static NSString *SKMainWindowDisplayBoxKey = @"displayBox" ;
-static NSString *SKMainWindowHasHorizontalScrollerKey = @"hasHorizontalScroller";
-static NSString *SKMainWindowHasVerticalScrollerKey = @"hasVerticalScroller";
-static NSString *SKMainWindowAutoHidesScrollersKey = @"autoHidesScrollers";
-static NSString *SKMainWindowPageIndexKey = @"pageIndex";
+#define SKMainWindowFrameKey @"windowFrame"
+#define SKMainWindowLeftSidePaneWidthKey @"leftSidePaneWidth"
+#define SKMainWindowRightSidePaneWidthKey @"rightSidePaneWidth"
+#define SKMainWindowScaleFactorKey @"scaleFactor"
+#define SKMainWindowAutoScalesKey @"autoScales"
+#define SKMainWindowDisplayPageBreaksKey @"displaysPageBreaks"
+#define SKMainWindowDisplayAsBookKey @"displaysAsBook" 
+#define SKMainWindowDisplayModeKey @"displayMode"
+#define SKMainWindowDisplayBoxKey @"displayBox"
+#define SKMainWindowHasHorizontalScrollerKey @"hasHorizontalScroller"
+#define SKMainWindowHasVerticalScrollerKey @"hasVerticalScroller"
+#define SKMainWindowAutoHidesScrollersKey @"autoHidesScrollers"
+#define SKMainWindowPageIndexKey @"pageIndex"
 
-static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
+#define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
 static char SKNPDFAnnotationPropertiesObservationContext;
 
 static char SKMainWindowDefaultsObservationContext;
 
-NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
-NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
+#define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
+#define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
-static NSString *SKUsesDrawersKey = @"SKUsesDrawers";
-static NSString *SKDisableAnimatedSearchHighlightKey = @"SKDisableAnimatedSearchHighlight";
+#define SKUsesDrawersKey @"SKUsesDrawers"
+#define SKDisableAnimatedSearchHighlightKey @"SKDisableAnimatedSearchHighlight"
 
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
@@ -259,7 +259,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)dealloc {
     [self stopObservingNotes:[self notes]];
     [undoGroupOldPropertiesPerNote release];
-    @try { [colorSwatch unbind:SKColorSwatchColorsKey]; }
+    @try { [colorSwatch unbind:@"colors"]; }
     @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];

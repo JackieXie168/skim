@@ -53,31 +53,31 @@
 #import "SKRuntime.h"
 #import "SKDocumentController.h"
 
-static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
+#define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
-static NSString *SKBookmarksToolbarIdentifier = @"SKBookmarksToolbarIdentifier";
-static NSString *SKBookmarksNewFolderToolbarItemIdentifier = @"SKBookmarksNewFolderToolbarItemIdentifier";
-static NSString *SKBookmarksNewSeparatorToolbarItemIdentifier = @"SKBookmarksNewSeparatorToolbarItemIdentifier";
-static NSString *SKBookmarksDeleteToolbarItemIdentifier = @"SKBookmarksDeleteToolbarItemIdentifier";
+#define SKBookmarksToolbarIdentifier @"SKBookmarksToolbarIdentifier"
+#define SKBookmarksNewFolderToolbarItemIdentifier @"SKBookmarksNewFolderToolbarItemIdentifier"
+#define SKBookmarksNewSeparatorToolbarItemIdentifier @"SKBookmarksNewSeparatorToolbarItemIdentifier"
+#define SKBookmarksDeleteToolbarItemIdentifier @"SKBookmarksDeleteToolbarItemIdentifier"
 
-static NSString *SKBookmarksWindowFrameAutosaveName = @"SKBookmarksWindow";
+#define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 
-static NSString *SKBookmarksWindowLabelColumnIdentifer = @"label";
-static NSString *SKBookmarksWindowFileColumnIdentifer = @"file";
-static NSString *SKBookmarksWindowPageColumnIdentifer = @"page";
+#define SKBookmarksWindowLabelColumnIdentifer @"label"
+#define SKBookmarksWindowFileColumnIdentifer @"file"
+#define SKBookmarksWindowPageColumnIdentifer @"page"
 
-static NSString *SKMaximumDocumentPageHistoryCountKey = @"SKMaximumDocumentPageHistoryCount";
+#define SKMaximumDocumentPageHistoryCountKey @"SKMaximumDocumentPageHistoryCount"
 
-static NSString *SKBookmarkControllerBookmarksKey = @"bookmarks";
-static NSString *SKBookmarkControllerRecentDocumentsKey = @"recentDocuments";
+#define SKBookmarkControllerBookmarksKey @"bookmarks"
+#define SKBookmarkControllerRecentDocumentsKey @"recentDocuments"
 
-static NSString *SKRecentDocumentPageIndexKey = @"pageIndex";
-static NSString *SKRecentDocumentAliasKey = @"alias";
-static NSString *SKRecentDocumentAliasDataKey = @"_BDAlias";
-static NSString *SKRecentDocumentSnapshotsKey = @"snapshots";
+#define SKRecentDocumentPageIndexKey @"pageIndex"
+#define SKRecentDocumentAliasKey @"alias"
+#define SKRecentDocumentAliasDataKey @"_BDAlias"
+#define SKRecentDocumentSnapshotsKey @"snapshots"
 
-static NSString *SKBookmarkChildrenKey = @"children";
-static NSString *SKBookmarkLabelKey = @"label";
+#define SKBookmarkChildrenKey @"children"
+#define SKBookmarkLabelKey @"label"
 
 static char SKBookmarkPropertiesObservationContext;
 

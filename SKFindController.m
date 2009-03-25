@@ -41,7 +41,7 @@
 #import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
 
-static NSString *SKFindPanelFrameAutosaveName = @"SKFindPanel";
+#define SKFindPanelFrameAutosaveName @"SKFindPanel"
 
 @implementation SKFindController
 

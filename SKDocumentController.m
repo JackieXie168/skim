@@ -49,33 +49,35 @@
 #import "BDAlias.h"
 #import "SKMainWindowController.h"
 
-static NSString *SKAutosaveIntervalKey = @"SKAutosaveInterval";
+#define SKAutosaveIntervalKey @"SKAutosaveInterval"
 
 
 // See CFBundleTypeName in Info.plist
-static NSString *SKPDFDocumentTypeName = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
-static NSString *SKPDFBundleDocumentTypeName = @"PDF Bundle";
-static NSString *SKEmbeddedPDFDocumentTypeName = @"PDF With Embedded Notes";
-static NSString *SKBarePDFDocumentTypeName = @"PDF Without Notes";
-static NSString *SKNotesDocumentTypeName = @"Skim Notes";
-static NSString *SKNotesTextDocumentTypeName = @"Notes as Text";
-static NSString *SKNotesRTFDocumentTypeName = @"Notes as RTF";
-static NSString *SKNotesRTFDDocumentTypeName = @"Notes as RTFD";
-static NSString *SKNotesFDFDocumentTypeName = @"Notes as FDF";
-static NSString *SKPostScriptDocumentTypeName = @"PostScript document";
-static NSString *SKDVIDocumentTypeName = @"DVI document";
+#define SKPDFDocumentTypeName NSPDFPboardType
+#define SKPDFBundleDocumentTypeName @"PDF Bundle"
+#define SKEmbeddedPDFDocumentTypeName @"PDF With Embedded Notes"
+#define SKBarePDFDocumentTypeName @"PDF Without Notes"
+#define SKNotesDocumentTypeName @"Skim Notes"
+#define SKNotesTextDocumentTypeName @"Notes as Text"
+#define SKNotesRTFDocumentTypeName @"Notes as RTF"
+#define SKNotesRTFDDocumentTypeName @"Notes as RTFD"
+#define SKNotesFDFDocumentTypeName @"Notes as FDF"
+#define SKPostScriptDocumentTypeName @"PostScript document"
+#define SKDVIDocumentTypeName @"DVI document"
 
-static NSString *SKPDFDocumentTypeUTI = @"com.adobe.pdf";
-static NSString *SKPDFBundleDocumentTypeUTI = @"net.sourceforge.skim-app.pdfd";
-static NSString *SKEmbeddedPDFDocumentTypeUTI = @"net.sourceforge.skim-app.embedded.pdf";
-static NSString *SKBarePDFDocumentTypeUTI = @"net.sourceforge.skim-app.bare.pdf";
-static NSString *SKNotesDocumentTypeUTI = @"net.sourceforge.skim-app.skimnotes";
-static NSString *SKNotesTextDocumentTypeUTI = @"public.plain-text";
-static NSString *SKNotesRTFDocumentTypeUTI = @"public.rtf";
-static NSString *SKNotesRTFDDocumentTypeUTI = @"com.apple.rtfd";
-static NSString *SKNotesFDFDocumentTypeUTI = @"com.adobe.fdf"; // I don't know the UTI for fdf, is there one?
-static NSString *SKPostScriptDocumentTypeUTI = @"com.adobe.postscript";
-static NSString *SKDVIDocumentTypeUTI = @"net.sourceforge.skim-app.dvi"; // I don't know the UTI for dvi, is there one?
+#define SKPDFDocumentTypeUTI @"com.adobe.pdf"
+#define SKPDFBundleDocumentTypeUTI @"net.sourceforge.skim-app.pdfd"
+#define SKEmbeddedPDFDocumentTypeUTI @"net.sourceforge.skim-app.embedded.pdf"
+#define SKBarePDFDocumentTypeUTI @"net.sourceforge.skim-app.bare.pdf"
+#define SKNotesDocumentTypeUTI @"net.sourceforge.skim-app.skimnotes"
+#define SKNotesTextDocumentTypeUTI @"public.plain-text"
+#define SKNotesRTFDocumentTypeUTI @"public.rtf"
+#define SKNotesRTFDDocumentTypeUTI @"com.apple.rtfd"
+// I don't know the UTI for fdf, is there one?
+#define SKNotesFDFDocumentTypeUTI @"com.adobe.fdf"
+#define SKPostScriptDocumentTypeUTI @"com.adobe.postscript"
+// I don't know the UTI for dvi, is there one?
+#define SKDVIDocumentTypeUTI @"net.sourceforge.skim-app.dvi"
 
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = nil;
@@ -139,7 +141,6 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 + (void)initialize {
     SKINITIALIZE;
     
-    SKPDFDocumentTypeName = NSPDFPboardType;
     DEFINE_DOCUMENT_TYPE(PDF);
     DEFINE_DOCUMENT_TYPE(PDFBundle);
     DEFINE_DOCUMENT_TYPE(EmbeddedPDF);

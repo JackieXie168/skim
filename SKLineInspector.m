@@ -48,13 +48,13 @@ NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDas
 NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
 NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
 
-static NSString *SKLineInspectorLineWidthKey = @"lineWidth";
-static NSString *SKLineInspectorStyleKey = @"style";
-static NSString *SKLineInspectorDashPatternKey = @"dashPattern";
-static NSString *SKLineInspectorStartLineStyleKey = @"startLineStyle";
-static NSString *SKLineInspectorEndLineStyleKey = @"endLineStyle";
+#define SKLineInspectorLineWidthKey @"lineWidth"
+#define SKLineInspectorStyleKey @"style"
+#define SKLineInspectorDashPatternKey @"dashPattern"
+#define SKLineInspectorStartLineStyleKey @"startLineStyle"
+#define SKLineInspectorEndLineStyleKey @"endLineStyle"
 
-static NSString *SKLineInspectorFrameAutosaveName = @"SKLineInspector";
+#define SKLineInspectorFrameAutosaveName @"SKLineInspector"
 
 @implementation SKLineInspector
 

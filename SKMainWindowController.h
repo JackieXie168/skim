@@ -71,18 +71,6 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-extern NSString *SKMainWindowPageLabelsKey;
-extern NSString *SKMainWindowSearchResultsKey;
-extern NSString *SKMainWindowGroupedSearchResultsKey;
-extern NSString *SKMainWindowNotesKey;
-extern NSString *SKMainWindowThumbnailsKey;
-extern NSString *SKMainWindowSnapshotsKey;
-
-extern NSString *SKLeftSidePaneWidthKey;
-extern NSString *SKRightSidePaneWidthKey;
-
-extern NSString *SKMainWindowPageColumnIdentifier;
-
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;

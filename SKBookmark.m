@@ -41,18 +41,18 @@
 #import "NSImage_SKExtensions.h"
 #import "SKRuntime.h"
 
-static NSString *SKBookmarkTypeBookmarkString = @"bookmark";
-static NSString *SKBookmarkTypeSessionString = @"session";
-static NSString *SKBookmarkTypeFolderString = @"folder";
-static NSString *SKBookmarkTypeSeparatorString = @"separator";
+#define SKBookmarkTypeBookmarkString @"bookmark"
+#define SKBookmarkTypeSessionString @"session"
+#define SKBookmarkTypeFolderString @"folder"
+#define SKBookmarkTypeSeparatorString @"separator"
 
-static NSString *SKBookmarkPropertiesKey = @"properties";
+#define SKBookmarkPropertiesKey @"properties"
 
-static NSString *SKBookmarkChildrenKey = @"children";
-static NSString *SKBookmarkLabelKey = @"label";
-static NSString *SKBookmarkPageIndexKey = @"pageIndex";
-static NSString *SKBookmarkAliasDataKey = @"_BDAlias";
-static NSString *SKBookmarkTypeKey = @"type";
+#define SKBookmarkChildrenKey @"children"
+#define SKBookmarkLabelKey @"label"
+#define SKBookmarkPageIndexKey @"pageIndex"
+#define SKBookmarkAliasDataKey @"_BDAlias"
+#define SKBookmarkTypeKey @"type"
 
 @interface SKPlaceholderBookmark : SKBookmark
 @end

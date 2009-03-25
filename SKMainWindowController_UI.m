@@ -66,14 +66,21 @@
 #import "SKLineInspector.h"
 #import "SKPDFOutline.h"
 
-static NSString *SKMainWindowLabelColumnIdentifier = @"label";
-static NSString *SKMainWindowNoteColumnIdentifier = @"note";
-static NSString *SKMainWindowTypeColumnIdentifier = @"type";
-static NSString *SKMainWindowImageColumnIdentifier = @"image";
+#define SKMainWindowNotesKey @"notes"
+#define SKMainWindowSnapshotsKey @"snapshots"
+
+#define SKMainWindowPageColumnIdentifier @"page"
+#define SKMainWindowLabelColumnIdentifier @"label"
+#define SKMainWindowNoteColumnIdentifier @"note"
+#define SKMainWindowTypeColumnIdentifier @"type"
+#define SKMainWindowImageColumnIdentifier @"image"
+
+#define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
+#define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 
-static NSString *SKDisableTableToolTipsKey = @"SKDisableTableToolTips";
+#define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
 @interface SKMainWindowController (SKPrivateMain)
 
