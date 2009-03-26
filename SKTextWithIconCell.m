@@ -39,43 +39,54 @@
 #import "SKTextWithIconCell.h"
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKRuntime.h"
 
-// Almost all of this code is copy-and-paste from OmniAppKit/OATextWithIconCell, with some simplifications for features we're not interested in
-
-NSString *SKTextWithIconCellImageKey = @"image";
 NSString *SKTextWithIconCellStringKey = @"string";
+NSString *SKTextWithIconCellImageKey = @"image";
 
 #define BORDER_BETWEEN_EDGE_AND_IMAGE (2.0)
 #define BORDER_BETWEEN_IMAGE_AND_TEXT (2.0)
+#define IMAGE_OFFSET (1.0)
+
+static id nonNullObjectValueForKey(id object, NSString *key) {
+    id value = [object valueForKey:key];
+    return [value isEqual:[NSNull null]] ? nil : value;
+}
 
 @implementation SKTextWithIconCell
 
-// Init and dealloc
+static SKTextWithIconFormatter *textWithIconFormatter = nil;
 
-- (void)dealloc {
-    [icon release];
-    [super dealloc];
++ (void)initialize {
+    SKINITIALIZE;
+    textWithIconFormatter = [[SKTextWithIconFormatter alloc] init];
 }
 
-// NSCopying protocol
+- (id)init {
+    if (self = [super initTextCell:@""]) {
+        [self setFormatter:textWithIconFormatter];
+    }
+    return self;
+}
 
-- (id)copyWithZone:(NSZone *)zone {
-    SKTextWithIconCell *copy = [super copyWithZone:zone];
-    copy->icon = [icon retain];
-    return copy;
+- (id)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        if ([self formatter] == nil)
+            [self setFormatter:textWithIconFormatter];
+    }
+    return self;
 }
 
 - (NSSize)cellSize {
     NSSize cellSize = [super cellSize];
-    cellSize.width += [icon size].width + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
+    cellSize.width += cellSize.height - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT;
     return cellSize;
 }
 
 - (NSRect)textRectForBounds:(NSRect)aRect {
-    float imageWidth = NSHeight(aRect) - 1;
     NSRect ignored, textRect = aRect;
     
-    NSDivideRect(aRect, &ignored, &textRect, BORDER_BETWEEN_EDGE_AND_IMAGE + imageWidth + BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
+    NSDivideRect(aRect, &ignored, &textRect, NSHeight(aRect) - 1 + BORDER_BETWEEN_EDGE_AND_IMAGE + BORDER_BETWEEN_IMAGE_AND_TEXT, NSMinXEdge);
     
     return textRect;
 }
@@ -118,18 +129,17 @@ NSString *SKTextWithIconCellStringKey = @"string";
     }
 }
 
-- (void)drawWithFrame:(NSRect)aRect inView:(NSView *)controlView {
+- (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
     // let super draw the text, but vertically center the text for tall cells, because NSTextFieldCell aligns at the top
     NSRect textRect = [self textRectForBounds:aRect];
     if (NSHeight(textRect) > [self cellSize].height + 2.0)
         textRect = SKCenterRectVertically(textRect, [self cellSize].height + 2.0, [controlView isFlipped]);
-    [super drawWithFrame:textRect inView:controlView];
+    [super drawInteriorWithFrame:textRect inView:controlView];
     
     // Draw the image
     NSRect imageRect = [self iconRectForBounds:aRect];
-    float imageHeight = 0.0;
-    imageHeight = NSHeight(aRect) - 1;
-    imageRect = SKCenterRectVertically(imageRect, imageHeight, [controlView isFlipped]);
+    imageRect = SKCenterRectVertically(imageRect, NSWidth(imageRect), [controlView isFlipped]);
+    imageRect.origin.y += [controlView isFlipped] ? -IMAGE_OFFSET : IMAGE_OFFSET;
     [self drawIconWithFrame:imageRect inView:controlView];
 }
 
@@ -137,31 +147,36 @@ NSString *SKTextWithIconCellStringKey = @"string";
     [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
-- (void)setObjectValue:(id<NSCopying>)obj {
-    NSImage *image;
-    NSString *string;
-    @try {
-        image = [(id)obj valueForKey:SKTextWithIconCellImageKey];
-        string = [(id)obj valueForKey:SKTextWithIconCellStringKey];
-        [self setIcon:image];
-        [super setObjectValue:string];
-    }
-    @catch (id exception) {
-        [super setObjectValue:obj];
-    }
+- (void)setObjectValue:(id <NSCopying>)obj {
+    // the objectValue should be an object that's KVC compliant for the "string" and "image" keys
+    
+    // this can happen initially from the init, as there's no initializer passing an objectValue
+    if ([(id)obj isKindOfClass:[NSString class]])
+        obj = [NSDictionary dictionaryWithObjectsAndKeys:obj, SKTextWithIconCellStringKey, nil];
+    
+    // we should not set a derived value such as the string here, otherwise NSTableView will call tableView:setObjectValue:forTableColumn:row: whenever a cell is selected
+    [super setObjectValue:obj];
 }
-
-// API
 
 - (NSImage *)icon {
-    return icon;
+    return nonNullObjectValueForKey([self objectValue], SKTextWithIconCellImageKey);
 }
 
-- (void)setIcon:(NSImage *)anIcon {
-    if (anIcon != icon) {
-        [icon release];
-        icon = [anIcon retain];
-    }
+@end
+
+#pragma mark -
+
+@implementation SKTextWithIconFormatter
+
+- (NSString *)stringForObjectValue:(id)obj {
+    return [obj isKindOfClass:[NSString class]] ? obj : nonNullObjectValueForKey(obj, SKTextWithIconCellStringKey);
+}
+
+- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
+    // even though 'string' is reported as immutable, it's actually changed after this method returns and before it's returned by the control!
+    string = [[string copy] autorelease];
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:string, SKTextWithIconCellStringKey, nil];
+    return YES;
 }
 
 @end

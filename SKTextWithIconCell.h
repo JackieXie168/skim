@@ -38,14 +38,21 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKTextWithIconCellImageKey;
 extern NSString *SKTextWithIconCellStringKey;
+extern NSString *SKTextWithIconCellImageKey;
 
-@interface SKTextWithIconCell : NSTextFieldCell {
-    NSImage *icon;
-}
+@interface SKTextWithIconCell : NSTextFieldCell
 
 - (NSImage *)icon;
-- (void)setIcon:(NSImage *)anIcon;
 
+- (NSRect)textRectForBounds:(NSRect)aRect;
+- (NSRect)iconRectForBounds:(NSRect)aRect;
+
+- (void)drawIconWithFrame:(NSRect)iconRect inView:(NSView *)controlView;
+
+@end
+
+#pragma mark -
+
+@interface SKTextWithIconFormatter : NSFormatter
 @end
