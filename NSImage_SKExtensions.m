@@ -2010,12 +2010,12 @@ static NSSize tinyImageSize = {16.0, 16.0};
 - (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
     if (isMirrored || isFlipped) {
         float dx1 = 0.0, dx2 = 0.0, dy1 = 0.0, dy2 = 0.0, sx = 1.0, sy = 1.0;
-        if (isFlipped) {
+        if (isMirrored) {
             sx = -1.0;
             dx1 = NSMaxX(dstRect);
             dx2 = -NSMinX(dstRect);
         }
-        if (isMirrored) {
+        if (isFlipped) {
             sy = -1.0;
             dy1 = NSMaxY(dstRect);
             dy2 = -NSMinY(dstRect);
