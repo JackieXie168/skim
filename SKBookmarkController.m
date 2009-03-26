@@ -616,16 +616,16 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:@"label"]) {
+    if ([tcID isEqualToString:LABEL_COLUMNID]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
-    } else if ([tcID isEqualToString:@"file"]) {
+    } else if ([tcID isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
             int count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         } else {
             return [item path];
         }
-    } else if ([tcID isEqualToString:@"page"]) {
+    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [[item pageNumber] stringValue];
     }
     return nil;
@@ -633,11 +633,10 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:@"label"]) {
-        if (object == nil)
-            object = @"";
-        if ([object isEqualToString:[item label]] == NO)
-            [item setLabel:object];
+    if ([tcID isEqualToString:LABEL_COLUMNID]) {
+        NSString *newlabel = [object valueForKey:SKTextWithIconCellStringKey] ?: @"";
+        if ([newlabel isEqualToString:[item label]] == NO)
+            [item setLabel:newlabel];
     }
 }
 
@@ -702,7 +701,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 #pragma mark NSOutlineView delegate methods
 
 - (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if ([[tableColumn identifier] isEqualToString:@"file"]) {
+    if ([[tableColumn identifier] isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession)
             [cell setTextColor:[NSColor disabledControlTextColor]];
         else
@@ -711,17 +710,17 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    return [[tableColumn identifier] isEqualToString:@"label"] && [item bookmarkType] != SKBookmarkTypeSeparator;
+    return [[tableColumn identifier] isEqualToString:LABEL_COLUMNID] && [item bookmarkType] != SKBookmarkTypeSeparator;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation {
     NSString *tcID = [tc identifier];
     
-    if ([tcID isEqualToString:@"label"]) {
+    if ([tcID isEqualToString:LABEL_COLUMNID]) {
         return [item label];
-    } else if ([tcID isEqualToString:@"file"]) {
+    } else if ([tcID isEqualToString:FILE_COLUMNID]) {
         return [item path];
-    } else if ([tcID isEqualToString:@"page"]) {
+    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [[item pageNumber] stringValue];
     }
     return nil;

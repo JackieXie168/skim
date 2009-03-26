@@ -48,11 +48,6 @@ NSString *SKTextWithIconCellImageKey = @"image";
 #define BORDER_BETWEEN_IMAGE_AND_TEXT (2.0)
 #define IMAGE_OFFSET (1.0)
 
-static id nonNullObjectValueForKey(id object, NSString *key) {
-    id value = [object valueForKey:key];
-    return [value isEqual:[NSNull null]] ? nil : value;
-}
-
 @implementation SKTextWithIconCell
 
 static SKTextWithIconFormatter *textWithIconFormatter = nil;
@@ -159,7 +154,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
 }
 
 - (NSImage *)icon {
-    return nonNullObjectValueForKey([self objectValue], SKTextWithIconCellImageKey);
+    return [[self objectValue] valueForKey:SKTextWithIconCellImageKey];
 }
 
 @end
@@ -169,7 +164,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
 @implementation SKTextWithIconFormatter
 
 - (NSString *)stringForObjectValue:(id)obj {
-    return [obj isKindOfClass:[NSString class]] ? obj : nonNullObjectValueForKey(obj, SKTextWithIconCellStringKey);
+    return [obj isKindOfClass:[NSString class]] ? obj : [obj valueForKey:SKTextWithIconCellStringKey];
 }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
