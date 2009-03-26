@@ -48,13 +48,13 @@ NSString *SKLineWellDashPatternKey = @"dashPattern";
 NSString *SKLineWellStartLineStyleKey = @"startLineStyle";
 NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
-#define SKLineWellDisplayStyleKey @"displayStyle"
-#define SKLineWellActiveKey @"active"
-#define SKLineWellActionKey @"action"
-#define SKLineWellTargetKey @"target"
+#define DISPLAYSTYLE_KEY @"displayStyle"
+#define ACTIVE_KEY @"active"
+#define ACTION_KEY @"action"
+#define TARGET_KEY @"target"
 
 #define SKLineWellWillBecomeActiveNotification @"SKLineWellWillBecomeActiveNotification"
-#define SKLineWellExclusiveKey @"exclusive"
+#define EXCLUSIVE_KEY @"exclusive"
 
 @implementation SKLineWell
 
@@ -108,10 +108,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
             dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
             startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
             endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
-            displayStyle = [decoder decodeIntForKey:SKLineWellDisplayStyleKey];
-            active = [decoder decodeBoolForKey:SKLineWellActiveKey];
-            action = NSSelectorFromString([decoder decodeObjectForKey:SKLineWellActionKey]);
-            target = [decoder decodeObjectForKey:SKLineWellTargetKey];
+            displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
+            active = [decoder decodeBoolForKey:ACTIVE_KEY];
+            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+            target = [decoder decodeObjectForKey:TARGET_KEY];
         } else {
             [decoder decodeValueOfObjCType:@encode(float) at:&lineWidth];
             [decoder decodeValueOfObjCType:@encode(NSInteger) at:&style];
@@ -136,10 +136,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
         [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
         [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
-        [coder encodeInt:displayStyle forKey:SKLineWellDisplayStyleKey];
-        [coder encodeBool:active forKey:SKLineWellActiveKey];
-        [coder encodeObject:NSStringFromSelector(action) forKey:SKLineWellActionKey];
-        [coder encodeConditionalObject:target forKey:SKLineWellTargetKey];
+        [coder encodeInt:displayStyle forKey:DISPLAYSTYLE_KEY];
+        [coder encodeBool:active forKey:ACTIVE_KEY];
+        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+        [coder encodeConditionalObject:target forKey:TARGET_KEY];
     } else {
         [coder encodeValueOfObjCType:@encode(float) at:&lineWidth];
         [coder encodeValueOfObjCType:@encode(NSInteger) at:&style];
@@ -416,7 +416,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)lineWellWillBecomeActive:(NSNotification *)notification {
     id sender = [notification object];
     if (sender != self && [self isActive]) {
-        if ([[[notification userInfo] valueForKey:SKLineWellExclusiveKey] boolValue])
+        if ([[[notification userInfo] valueForKey:EXCLUSIVE_KEY] boolValue])
             [self deactivate];
         else
             [sender existsActiveLineWell];
@@ -435,7 +435,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         existsActiveLineWell = NO;
         
         [nc postNotificationName:SKLineWellWillBecomeActiveNotification object:self
-                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], SKLineWellExclusiveKey, nil]];
+                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], EXCLUSIVE_KEY, nil]];
         
         if (existsActiveLineWell) {
             [self takeValueForKey:SKLineWellLineWidthKey from:inspector];

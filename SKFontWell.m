@@ -45,14 +45,14 @@
 
 #define SKFontWellWillBecomeActiveNotification @"SKFontWellWillBecomeActiveNotification"
 
-#define SKFontWellFontNameKey @"fontName"
-#define SKFontWellFontSizeKey @"fontSize"
-#define SKFontWellTextColorKey @"textColor"
-#define SKFontWellHasTextColorKey @"hasTextColor"
+#define FONTNAME_KEY     @"fontName"
+#define FONTSIZE_KEY     @"fontSize"
+#define TEXTCOLOR_KEY    @"textColor"
+#define HASTEXTCOLOR_KEY @"hasTextColor"
 
-#define SKFontWellFontKey @"font"
-#define SKFontWellActionKey @"action"
-#define SKFontWellTargetKey @"target"
+#define FONT_KEY         @"font"
+#define ACTION_KEY       @"action"
+#define TARGET_KEY       @"target"
 
 static char SKFontWellFontNameObservationContext;
 static char SKFontWellFontSizeObservationContext;
@@ -67,12 +67,12 @@ static char SKFontWellFontSizeObservationContext;
 @implementation SKFontWell
 
 + (void)initialize {
-    [self exposeBinding:SKFontWellFontNameKey];
-    [self exposeBinding:SKFontWellFontSizeKey];
-    [self exposeBinding:SKFontWellTextColorKey];
+    [self exposeBinding:FONTNAME_KEY];
+    [self exposeBinding:FONTSIZE_KEY];
+    [self exposeBinding:TEXTCOLOR_KEY];
     
-    [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontNameKey];
-    [self setKeys:[NSArray arrayWithObjects:SKFontWellFontKey, nil] triggerChangeNotificationsForDependentKey:SKFontWellFontSizeKey];
+    [self setKeys:[NSArray arrayWithObjects:FONT_KEY, nil] triggerChangeNotificationsForDependentKey:FONTNAME_KEY];
+    [self setKeys:[NSArray arrayWithObjects:FONT_KEY, nil] triggerChangeNotificationsForDependentKey:FONTSIZE_KEY];
     
     SKINITIALIZE;
 }
@@ -82,11 +82,11 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (Class)valueClassForBinding:(NSString *)binding {
-    if ([binding isEqualToString:SKFontWellFontNameKey])
+    if ([binding isEqualToString:FONTNAME_KEY])
         return [NSString class];
-    else if ([binding isEqualToString:SKFontWellFontNameKey])
+    else if ([binding isEqualToString:FONTNAME_KEY])
         return [NSNumber class];
-    else if ([binding isEqualToString:SKFontWellTextColorKey])
+    else if ([binding isEqualToString:TEXTCOLOR_KEY])
         return [NSColor class];
     else
         return [super valueClassForBinding:binding];
@@ -122,8 +122,8 @@ static char SKFontWellFontSizeObservationContext;
 			[newCell release];
 		}
         if ([decoder allowsKeyedCoding]) {
-            action = NSSelectorFromString([decoder decodeObjectForKey:SKFontWellActionKey]);
-            target = [decoder decodeObjectForKey:SKFontWellTargetKey];
+            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+            target = [decoder decodeObjectForKey:TARGET_KEY];
         } else {
             action = NSSelectorFromString([decoder decodeObject]);
             target = [decoder decodeObject];
@@ -136,8 +136,8 @@ static char SKFontWellFontSizeObservationContext;
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:NSStringFromSelector(action) forKey:SKFontWellActionKey];
-        [coder encodeConditionalObject:target forKey:SKFontWellTargetKey];
+        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+        [coder encodeConditionalObject:target forKey:TARGET_KEY];
     } else {
         [coder encodeObject:NSStringFromSelector(action)];
         [coder encodeConditionalObject:target];
@@ -145,8 +145,8 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)dealloc {
-    [self unbind:SKFontWellFontNameKey];
-    [self unbind:SKFontWellFontSizeKey];
+    [self unbind:FONTNAME_KEY];
+    [self unbind:FONTSIZE_KEY];
     [bindingInfo release];
     if ([self isActive])
         [self deactivate];
@@ -170,14 +170,14 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)notifyBinding {
-    NSDictionary *info = [self infoForBinding:SKFontWellFontNameKey];
+    NSDictionary *info = [self infoForBinding:FONTNAME_KEY];
     [[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
-    info = [self infoForBinding:SKFontWellFontSizeKey];
+    info = [self infoForBinding:FONTSIZE_KEY];
     [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
 }
 
 - (void)notifyTextColorBinding {
-    NSDictionary *info = [self infoForBinding:SKFontWellTextColorKey];
+    NSDictionary *info = [self infoForBinding:TEXTCOLOR_KEY];
     if (info) {
         id value = [self textColor];
         NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
@@ -325,7 +325,7 @@ static char SKFontWellFontSizeObservationContext;
 #pragma mark Binding support
 
 - (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if ([bindingName isEqualToString:SKFontWellFontNameKey] || [bindingName isEqualToString:SKFontWellFontSizeKey]) {
+    if ([bindingName isEqualToString:FONTNAME_KEY] || [bindingName isEqualToString:FONTSIZE_KEY]) {
         
         if ([bindingInfo objectForKey:bindingName])
             [self unbind:bindingName];
@@ -334,9 +334,9 @@ static char SKFontWellFontSizeObservationContext;
 		[bindingInfo setObject:bindingsData forKey:bindingName];
         
         void *context = NULL;
-        if ([bindingName isEqualToString:SKFontWellFontNameKey])
+        if ([bindingName isEqualToString:FONTNAME_KEY])
             context = &SKFontWellFontNameObservationContext;
-        else if ([bindingName isEqualToString:SKFontWellFontSizeKey])
+        else if ([bindingName isEqualToString:FONTSIZE_KEY])
             context = &SKFontWellFontSizeObservationContext;
         
         [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
@@ -348,7 +348,7 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)unbind:(NSString *)bindingName {
-    if ([bindingName isEqualToString:SKFontWellFontNameKey] || [bindingName isEqualToString:SKFontWellFontSizeKey]) {
+    if ([bindingName isEqualToString:FONTNAME_KEY] || [bindingName isEqualToString:FONTSIZE_KEY]) {
         
         NSDictionary *info = [self infoForBinding:bindingName];
         [[info objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
@@ -362,9 +362,9 @@ static char SKFontWellFontSizeObservationContext;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSString *key = nil;
     if (context == &SKFontWellFontNameObservationContext)
-        key = SKFontWellFontNameKey;
+        key = FONTNAME_KEY;
     else if (context == &SKFontWellFontSizeObservationContext)
-        key = SKFontWellFontSizeKey;
+        key = FONTSIZE_KEY;
     
     if (key) {
         NSDictionary *info = [self infoForBinding:key];
@@ -469,8 +469,8 @@ static char SKFontWellFontSizeObservationContext;
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
         if ([decoder allowsKeyedCoding]) {
-            [self setTextColor:[decoder decodeObjectForKey:SKFontWellTextColorKey]];
-            [self setHasTextColor:[decoder decodeBoolForKey:SKFontWellHasTextColorKey]];
+            [self setTextColor:[decoder decodeObjectForKey:TEXTCOLOR_KEY]];
+            [self setHasTextColor:[decoder decodeBoolForKey:HASTEXTCOLOR_KEY]];
         } else {
             [self setTextColor:[decoder decodeObject]];
             [decoder decodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];
@@ -483,8 +483,8 @@ static char SKFontWellFontSizeObservationContext;
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeConditionalObject:textColor forKey:SKFontWellTextColorKey];
-        [coder encodeObject:textColor forKey:SKFontWellHasTextColorKey];
+        [coder encodeConditionalObject:textColor forKey:TEXTCOLOR_KEY];
+        [coder encodeObject:textColor forKey:HASTEXTCOLOR_KEY];
     } else {
         [coder encodeObject:textColor];
         [coder encodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];

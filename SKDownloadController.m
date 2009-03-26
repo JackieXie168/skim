@@ -50,14 +50,14 @@
 #define RESUME_COLUMN   2
 #define CANCEL_COLUMN   3
 
+#define RESUME_COLUMNID @"resume"
+#define CANCEL_COLUMNID @"cancel"
+
 #define SKDownloadsWindowFrameAutosaveName @"SKDownloadsWindow"
 
+#define DOWNLOADS_KEY @"downloads"
+
 static char SKDownloadPropertiesObservationContext;
-
-#define SKDownloadControllerDownloadsKey @"downloads"
-
-#define SKDownloadsWindowCancelColumnIdentifier @"cancel"
-#define SKDownloadsWindowResumeColumnIdentifier @"resume"
 
 @interface SKDownloadController (SKPrivate)
 - (void)startObservingDownloads:(NSArray *)newDownloads;
@@ -111,7 +111,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (aURL) {
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
         int row = [self countOfDownloads];
-        [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] addObject:download];
+        [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
         [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
@@ -195,7 +195,7 @@ static SKDownloadController *sharedDownloadController = nil;
     }
     
     if (download)
-        [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] removeObject:download];
+        [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
 }
 
 - (IBAction)paste:(id)sender {
@@ -267,7 +267,7 @@ static SKDownloadController *sharedDownloadController = nil;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
             [[download retain] autorelease];
-            [[self mutableArrayValueForKey:SKDownloadControllerDownloadsKey] removeObject:download];
+            [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
             // for the document to note that the file has been deleted
             [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
             if ([self countOfDownloads] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
@@ -313,7 +313,7 @@ static SKDownloadController *sharedDownloadController = nil;
     NSString *identifier = [tableColumn identifier];
     SKDownload *download = [self objectInDownloadsAtIndex:row];
     
-    if ([identifier isEqualToString:SKDownloadsWindowCancelColumnIdentifier]) {
+    if ([identifier isEqualToString:CANCEL_COLUMNID]) {
         if ([download canCancel]) {
             [cell setImage:[NSImage imageNamed:@"Cancel"]];
             [cell setAction:@selector(cancelDownload:)];
@@ -327,7 +327,7 @@ static SKDownloadController *sharedDownloadController = nil;
             [cell setAction:NULL];
             [cell setTarget:nil];
         }
-    } else if ([identifier isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
+    } else if ([identifier isEqualToString:RESUME_COLUMNID]) {
         if ([download canResume]) {
             [cell setImage:[NSImage imageNamed:@"Resume"]];
             [cell setAction:@selector(resumeDownload:)];
@@ -342,12 +342,12 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation {
     NSString *toolTip = nil;
-    if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowCancelColumnIdentifier]) {
+    if ([[tableColumn identifier] isEqualToString:CANCEL_COLUMNID]) {
         if ([[self objectInDownloadsAtIndex:row] canCancel])
             toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");
         else if ([[self objectInDownloadsAtIndex:row] canRemove])
             toolTip = NSLocalizedString(@"Remove download", @"Tool tip message");
-    } else if ([[tableColumn identifier] isEqualToString:SKDownloadsWindowResumeColumnIdentifier]) {
+    } else if ([[tableColumn identifier] isEqualToString:RESUME_COLUMNID]) {
         if ([[self objectInDownloadsAtIndex:row] canResume])
             toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
     }

@@ -48,11 +48,11 @@ NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDas
 NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
 NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
 
-#define SKLineInspectorLineWidthKey @"lineWidth"
-#define SKLineInspectorStyleKey @"style"
-#define SKLineInspectorDashPatternKey @"dashPattern"
-#define SKLineInspectorStartLineStyleKey @"startLineStyle"
-#define SKLineInspectorEndLineStyleKey @"endLineStyle"
+#define LINEWIDTH_KEY       @"lineWidth"
+#define STYLE_KEY           @"style"
+#define DASHPATTERN_KEY     @"dashPattern"
+#define STARTLINESTYLE_KEY  @"startLineStyle"
+#define ENDLINESTYLE_KEY    @"endLineStyle"
 
 #define SKLineInspectorFrameAutosaveName @"SKLineInspector"
 
@@ -102,11 +102,11 @@ static SKLineInspector *sharedLineInspector = nil;
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
     [lineWell setCanActivate:NO];
-    [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:SKLineInspectorLineWidthKey options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:self withKeyPath:SKLineInspectorStyleKey options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:self withKeyPath:SKLineInspectorDashPatternKey options:nil];
-    [lineWell bind:SKLineWellStartLineStyleKey toObject:self withKeyPath:SKLineInspectorStartLineStyleKey options:nil];
-    [lineWell bind:SKLineWellEndLineStyleKey toObject:self withKeyPath:SKLineInspectorEndLineStyleKey options:nil];
+    [lineWell bind:SKLineWellLineWidthKey toObject:self withKeyPath:LINEWIDTH_KEY options:nil];
+    [lineWell bind:SKLineWellStyleKey toObject:self withKeyPath:STYLE_KEY options:nil];
+    [lineWell bind:SKLineWellDashPatternKey toObject:self withKeyPath:DASHPATTERN_KEY options:nil];
+    [lineWell bind:SKLineWellStartLineStyleKey toObject:self withKeyPath:STARTLINESTYLE_KEY options:nil];
+    [lineWell bind:SKLineWellEndLineStyleKey toObject:self withKeyPath:ENDLINESTYLE_KEY options:nil];
     
     SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
     [dashPatternField setFormatter:formatter];
@@ -504,9 +504,9 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:SKLineInspectorLineWidthKey]) {
+    if ([key isEqualToString:LINEWIDTH_KEY]) {
         [self setValue:[NSNumber numberWithFloat:0.0] forKey:key];
-    } else if ([key isEqualToString:SKLineInspectorStyleKey] || [key isEqualToString:SKLineInspectorStartLineStyleKey] || [key isEqualToString:SKLineInspectorEndLineStyleKey]) {
+    } else if ([key isEqualToString:STYLE_KEY] || [key isEqualToString:STARTLINESTYLE_KEY] || [key isEqualToString:ENDLINESTYLE_KEY]) {
         [self setValue:[NSNumber numberWithInt:0] forKey:key];
     } else {
         [super setNilValueForKey:key];

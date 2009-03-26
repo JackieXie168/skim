@@ -70,11 +70,11 @@
 
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
-#define SKNotesDocumentNotesKey @"notes"
+#define NOTES_KEY @"notes"
 
-#define SKNotesDocumentNoteColumnIdentifier @"note"
-#define SKNotesDocumentTypeColumnIdentifier @"type"
-#define SKNotesDocumentPageColumnIdentifier @"page"
+#define NOTE_COLUMNID @"note"
+#define TYPE_COLUMNID @"type"
+#define PAGE_COLUMNID @"page"
 
 @implementation SKNotesDocument
 
@@ -120,8 +120,8 @@
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
-    [[[outlineView tableColumnWithIdentifier:SKNotesDocumentNoteColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:SKNotesDocumentPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [outlineView setAutoresizesOutlineColumn: NO];
     
@@ -234,7 +234,7 @@
             [newNotes addObject:note];
             [note release];
         }
-        [[self mutableArrayValueForKey:SKNotesDocumentNotesKey] setArray:newNotes];
+        [[self mutableArrayValueForKey:NOTES_KEY] setArray:newNotes];
         [outlineView reloadData];
         didRead = YES;
     }
@@ -343,7 +343,7 @@
 
 - (void)autoSizeNoteRows:(id)sender {
     float rowHeight = [outlineView rowHeight];
-    NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:SKNotesDocumentNoteColumnIdentifier];
+    NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
     float indentation = [outlineView indentationPerLevel];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
@@ -439,11 +439,11 @@
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
+    if ([tcID isEqualToString:NOTE_COLUMNID]) {
         return [item type] ? (id)[item string] : (id)[item text];
-    } else if([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
+    } else if([tcID isEqualToString:TYPE_COLUMNID]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item type], SKAnnotationTypeImageCellTypeKey, nil];
-    } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
+    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
         return [item type] ? [NSString stringWithFormat:@"%u", [item pageIndex] + 1] : nil;
     }
     return nil;
@@ -461,11 +461,11 @@
         NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
         NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
         NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
-        if ([tcID isEqualToString:SKNotesDocumentTypeColumnIdentifier]) {
+        if ([tcID isEqualToString:TYPE_COLUMNID]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
-        } else if ([tcID isEqualToString:SKNotesDocumentNoteColumnIdentifier]) {
+        } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
             [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-        } else if ([tcID isEqualToString:SKNotesDocumentPageColumnIdentifier]) {
+        } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
             if (oldTableColumn == nil)
                 ascending = NO;
         }

@@ -44,11 +44,11 @@
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
-#define SKColorSwatchColorsKey @"colors"
+#define COLORS_KEY      @"colors"
 
-#define SKColorSwatchTargetKey @"target"
-#define SKColorSwatchActionKey @"action"
-#define SKColorSwatchAutoresizesKey @"autoResizes"
+#define TARGET_KEY      @"target"
+#define ACTION_KEY      @"action"
+#define AUTORESIZES_KEY @"autoResizes"
 
 
 @interface SKAccessibilityColorSwatchElement : SKAccessibilityIndexedFauxUIElement
@@ -60,11 +60,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 + (void)initialize {
     SKINITIALIZE;
     
-    [self exposeBinding:SKColorSwatchColorsKey];
+    [self exposeBinding:COLORS_KEY];
 }
 
 - (Class)valueClassForBinding:(NSString *)binding {
-    if ([binding isEqualToString:SKColorSwatchColorsKey])
+    if ([binding isEqualToString:COLORS_KEY])
         return [NSArray class];
     else
         return [super valueClassForBinding:binding];
@@ -95,10 +95,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         if ([decoder allowsKeyedCoding]) {
-            colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:SKColorSwatchColorsKey]];
-            action = NSSelectorFromString([decoder decodeObjectForKey:SKColorSwatchActionKey]);
-            target = [decoder decodeObjectForKey:SKColorSwatchTargetKey];
-            autoResizes = [decoder decodeBoolForKey:SKColorSwatchAutoresizesKey];
+            colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:COLORS_KEY]];
+            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+            target = [decoder decodeObjectForKey:TARGET_KEY];
+            autoResizes = [decoder decodeBoolForKey:AUTORESIZES_KEY];
         } else {
             colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObject]];
             action = NSSelectorFromString([decoder decodeObject]);
@@ -113,10 +113,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:colors forKey:SKColorSwatchColorsKey];
-        [coder encodeObject:NSStringFromSelector(action) forKey:SKColorSwatchActionKey];
-        [coder encodeConditionalObject:target forKey:SKColorSwatchTargetKey];
-        [coder encodeBool:autoResizes forKey:SKColorSwatchAutoresizesKey];
+        [coder encodeObject:colors forKey:COLORS_KEY];
+        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+        [coder encodeConditionalObject:target forKey:TARGET_KEY];
+        [coder encodeBool:autoResizes forKey:AUTORESIZES_KEY];
     } else {
         [coder encodeObject:colors];
         [coder encodeObject:NSStringFromSelector(action)];
@@ -126,8 +126,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)dealloc {
-    if ([self infoForBinding:SKColorSwatchColorsKey])
-        [self unbind:SKColorSwatchColorsKey];
+    if ([self infoForBinding:COLORS_KEY])
+        [self unbind:COLORS_KEY];
     [colors release];
     [super dealloc];
 }
@@ -320,7 +320,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)notifyColorsChanged {
-    NSDictionary *info = [self infoForBinding:SKColorSwatchColorsKey];
+    NSDictionary *info = [self infoForBinding:COLORS_KEY];
     id observedObject = [info objectForKey:NSObservedObjectKey];
     NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
     if (observedObject && observedKeyPath) {
@@ -394,11 +394,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
     if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
         if (draggedIndex != -1 && [self isEnabled]) {
-            [self willChangeValueForKey:SKColorSwatchColorsKey];
+            [self willChangeValueForKey:COLORS_KEY];
             [colors removeObjectAtIndex:draggedIndex];
             if (autoResizes)
                 [self sizeToFit];
-            [self didChangeValueForKey:SKColorSwatchColorsKey];
+            [self didChangeValueForKey:COLORS_KEY];
             [self notifyColorsChanged];
             [self setNeedsDisplay:YES];
         }
@@ -449,7 +449,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     int i = isCopy ? insertionIndex : highlightedIndex;
     
     if (i != -1 && color) {
-        [self willChangeValueForKey:SKColorSwatchColorsKey];
+        [self willChangeValueForKey:COLORS_KEY];
         if (isCopy) {
             [colors insertObject:color atIndex:i];
             if (autoResizes)
@@ -457,7 +457,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         } else {
             [colors replaceObjectAtIndex:i withObject:color];
         }
-        [self didChangeValueForKey:SKColorSwatchColorsKey];
+        [self didChangeValueForKey:COLORS_KEY];
         [self notifyColorsChanged];
     }
     

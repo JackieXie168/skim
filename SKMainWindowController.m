@@ -106,35 +106,35 @@
 
 #define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
 
-#define SKMainWindowPageLabelsKey @"pageLabels"
-#define SKMainWindowSearchResultsKey @"searchResults"
-#define SKMainWindowGroupedSearchResultsKey @"groupedSearchResults"
-#define SKMainWindowNotesKey @"notes"
-#define SKMainWindowThumbnailsKey @"thumbnails"
-#define SKMainWindowSnapshotsKey @"snapshots"
+#define PAGELABELS_KEY              @"pageLabels"
+#define SEARCHRESULTS_KEY           @"searchResults"
+#define GROUPEDSEARCHRESULTS_KEY    @"groupedSearchResults"
+#define NOTES_KEY                   @"notes"
+#define THUMBNAILS_KEY              @"thumbnails"
+#define SNAPSHOTS_KEY               @"snapshots"
 
-#define SKMainWindowPageColumnIdentifier @"page"
-#define SKMainWindowNoteColumnIdentifer @"note"
+#define PAGE_COLUMNID @"page"
+#define NOTE_COLUMNID @"note"
 
-#define SKMainWindowRelevanceColumnIdentifer @"relevance"
-#define SKMainWindowResultsColumnIdentifer @"results"
+#define RELEVANCE_COLUMNID  @"relevance"
+#define RESULTS_COLUMNID    @"results"
 
-#define SKMainWindowPageNumberKey @"pageNumber"
-#define SKMainWindowPageLabelKey @"pageLabel"
+#define PAGENUMBER_KEY  @"pageNumber"
+#define PAGELABEL_KEY   @"pageLabel"
 
-#define SKMainWindowFrameKey @"windowFrame"
-#define SKMainWindowLeftSidePaneWidthKey @"leftSidePaneWidth"
-#define SKMainWindowRightSidePaneWidthKey @"rightSidePaneWidth"
-#define SKMainWindowScaleFactorKey @"scaleFactor"
-#define SKMainWindowAutoScalesKey @"autoScales"
-#define SKMainWindowDisplayPageBreaksKey @"displaysPageBreaks"
-#define SKMainWindowDisplayAsBookKey @"displaysAsBook" 
-#define SKMainWindowDisplayModeKey @"displayMode"
-#define SKMainWindowDisplayBoxKey @"displayBox"
-#define SKMainWindowHasHorizontalScrollerKey @"hasHorizontalScroller"
-#define SKMainWindowHasVerticalScrollerKey @"hasVerticalScroller"
-#define SKMainWindowAutoHidesScrollersKey @"autoHidesScrollers"
-#define SKMainWindowPageIndexKey @"pageIndex"
+#define SKMainWindowFrameKey        @"windowFrame"
+#define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
+#define RIGHTSIDEPANEWIDTH_KEY      @"rightSidePaneWidth"
+#define SCALEFACTOR_KEY             @"scaleFactor"
+#define AUTOSCALES_KEY              @"autoScales"
+#define DISPLAYPAGEBREAKS_KEY       @"displaysPageBreaks"
+#define DISPLAYASBOOK_KEY           @"displaysAsBook" 
+#define DISPLAYMODE_KEY             @"displayMode"
+#define DISPLAYBOX_KEY              @"displayBox"
+#define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
+#define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
+#define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
+#define PAGEINDEX_KEY               @"pageIndex"
 
 #define SKMainWindowFrameAutosaveName @"SKMainWindow"
 
@@ -213,7 +213,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
-    if ([key isEqualToString:SKMainWindowPageNumberKey] || [key isEqualToString:SKMainWindowPageLabelKey])
+    if ([key isEqualToString:PAGENUMBER_KEY] || [key isEqualToString:PAGELABEL_KEY])
         return NO;
     else
         return [super automaticallyNotifiesObserversForKey:key];
@@ -343,10 +343,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[noteSearchField cell] setSearchMenuTemplate:menu];
     [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
-    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
-    [[[noteOutlineView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    [[[findTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
-    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
+    [[[noteOutlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[findTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[groupedFindTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [noteOutlineView setDoubleAction:@selector(selectSelectedNote:)];
     [noteOutlineView setTarget:self];
@@ -416,8 +416,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [pdfView setDelegate:self];
     
-    NSNumber *leftWidth = [savedNormalSetup objectForKey:SKMainWindowLeftSidePaneWidthKey] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
-    NSNumber *rightWidth = [savedNormalSetup objectForKey:SKMainWindowRightSidePaneWidthKey] ?: [sud objectForKey:SKRightSidePaneWidthKey];
+    NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
+    NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
     if (leftWidth && rightWidth) {
         float width = [leftWidth floatValue];
@@ -468,7 +468,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSSortDescriptor *countDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKGroupedSearchResultCountKey ascending:NO] autorelease];
     [groupedFindArrayController setSortDescriptors:[NSArray arrayWithObjects:countDescriptor, nil]];
-    [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] dataCell] setEnabled:NO];
+    [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] dataCell] setEnabled:NO];
         
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
@@ -491,7 +491,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Go to page?
     unsigned int pageIndex = NSNotFound;
     if (hasWindowSetup)
-        pageIndex = [[savedNormalSetup objectForKey:SKMainWindowPageIndexKey] unsignedIntValue];
+        pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
@@ -504,7 +504,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Open snapshots?
     NSArray *snapshotSetups = nil;
     if (hasWindowSetup)
-        snapshotSetups = [savedNormalSetup objectForKey:SKMainWindowSnapshotsKey];
+        snapshotSetups = [savedNormalSetup objectForKey:SNAPSHOTS_KEY];
     else if ([sud boolForKey:SKRememberSnapshotsKey])
         snapshotSetups = [[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]];
     if ([snapshotSetups count])
@@ -549,14 +549,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:SKMainWindowFrameKey];
-    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:SKMainWindowLeftSidePaneWidthKey];
-    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:SKMainWindowRightSidePaneWidthKey];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:SKMainWindowPageIndexKey];
+    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:PAGEINDEX_KEY];
     if ([snapshots count])
-        [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SKMainWindowSnapshotsKey];
+        [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SNAPSHOTS_KEY];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, nil]];
     } else {
         [setup addEntriesFromDictionary:[self currentPDFSettings]];
     }
@@ -566,17 +566,17 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
-    if (number = [setup objectForKey:SKMainWindowScaleFactorKey])
+    if (number = [setup objectForKey:SCALEFACTOR_KEY])
         [pdfView setScaleFactor:[number floatValue]];
-    if (number = [setup objectForKey:SKMainWindowAutoScalesKey])
+    if (number = [setup objectForKey:AUTOSCALES_KEY])
         [pdfView setAutoScales:[number boolValue]];
-    if (number = [setup objectForKey:SKMainWindowDisplayPageBreaksKey])
+    if (number = [setup objectForKey:DISPLAYPAGEBREAKS_KEY])
         [pdfView setDisplaysPageBreaks:[number boolValue]];
-    if (number = [setup objectForKey:SKMainWindowDisplayAsBookKey])
+    if (number = [setup objectForKey:DISPLAYASBOOK_KEY])
         [pdfView setDisplaysAsBook:[number boolValue]];
-    if (number = [setup objectForKey:SKMainWindowDisplayModeKey])
+    if (number = [setup objectForKey:DISPLAYMODE_KEY])
         [pdfView setDisplayMode:[number intValue]];
-    if (number = [setup objectForKey:SKMainWindowDisplayBoxKey])
+    if (number = [setup objectForKey:DISPLAYBOX_KEY])
         [pdfView setDisplayBox:[number intValue]];
 }
 
@@ -585,14 +585,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     if ([self isPresentation]) {
         [setup setDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:SKMainWindowHasHorizontalScrollerKey, SKMainWindowHasVerticalScrollerKey, SKMainWindowAutoHidesScrollersKey, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, nil]];
     } else {
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:SKMainWindowDisplayPageBreaksKey];
-        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:SKMainWindowDisplayAsBookKey];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:SKMainWindowDisplayBoxKey];
-        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SKMainWindowScaleFactorKey];
-        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:SKMainWindowAutoScalesKey];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:SKMainWindowDisplayModeKey];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYPAGEBREAKS_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYASBOOK_KEY];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:DISPLAYBOX_KEY];
+        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTOSCALES_KEY];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:DISPLAYMODE_KEY];
     }
     
     return setup;
@@ -629,7 +629,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
-    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:SKMainWindowPageColumnIdentifier];
+    NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
     id cell = [tableColumn dataCell];
     float labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
     NSEnumerator *labelEnum = [pageLabels objectEnumerator];
@@ -651,11 +651,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     unsigned int i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
-    [self willChangeValueForKey:SKMainWindowPageLabelsKey];
+    [self willChangeValueForKey:PAGELABELS_KEY];
     [pageLabels removeAllObjects];
     for (i = 0; i < count; i++)
         [pageLabels addObject:[[pdfDoc pageAtIndex:i] displayLabel]];
-    [self didChangeValueForKey:SKMainWindowPageLabelsKey];
+    [self didChangeValueForKey:PAGELABELS_KEY];
     
     [self updatePageLabel];
     
@@ -805,7 +805,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     PDFAnnotation *annotation;
     NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
-    NSMutableArray *observableNotes = [self mutableArrayValueForKey:SKMainWindowNotesKey];
+    NSMutableArray *observableNotes = [self mutableArrayValueForKey:NOTES_KEY];
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
@@ -863,9 +863,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)updatePageNumber {
     unsigned int number = [[pdfView currentPage] pageIndex] + 1;
     if (pageNumber != number) {
-        [self willChangeValueForKey:SKMainWindowPageNumberKey];
+        [self willChangeValueForKey:PAGENUMBER_KEY];
         pageNumber = number;
-        [self didChangeValueForKey:SKMainWindowPageNumberKey];
+        [self didChangeValueForKey:PAGENUMBER_KEY];
     }
 }
 
@@ -885,10 +885,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)updatePageLabel {
     NSString *label = [[pdfView currentPage] displayLabel];
     if (label != pageLabel) {
-        [self willChangeValueForKey:SKMainWindowPageLabelKey];
+        [self willChangeValueForKey:PAGELABEL_KEY];
         [pageLabel release];
         pageLabel = [label retain];
-        [self didChangeValueForKey:SKMainWindowPageLabelKey];
+        [self didChangeValueForKey:PAGELABEL_KEY];
     }
 }
 
@@ -1050,7 +1050,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)removeAllObjectsFromNotes {
     if ([notes count]) {
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [notes count])];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowNotesKey];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
         
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
         NSWindowController *wc = [wcEnum nextObject];
@@ -1065,7 +1065,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
         [notes removeAllObjects];
         
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowNotesKey];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
         [noteOutlineView reloadData];
     }
 }
@@ -1093,9 +1093,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)removeAllObjectsFromThumbnails {
     if ([thumbnails count]) {
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowThumbnailsKey];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
         [thumbnails removeAllObjects];
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowThumbnailsKey];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
     }
 }
 
@@ -1123,13 +1123,13 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)removeAllObjectsFromSnapshots {
     if ([snapshots count]) {
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [snapshots count])];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowSnapshotsKey];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SNAPSHOTS_KEY];
         
         [dirtySnapshots removeAllObjects];
         
         [snapshots removeAllObjects];
         
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SKMainWindowSnapshotsKey];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:SNAPSHOTS_KEY];
     }
 }
 
@@ -1385,9 +1385,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([self isPresentation] == NO && [self isFullScreen] == NO) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
         [savedNormalSetup setDictionary:[self currentPDFSettings]];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:SKMainWindowHasHorizontalScrollerKey];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:SKMainWindowHasVerticalScrollerKey];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:SKMainWindowAutoHidesScrollersKey];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     }
     
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
@@ -1437,9 +1437,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
-    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasHorizontalScrollerKey] boolValue]];
-    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:SKMainWindowHasVerticalScrollerKey] boolValue]];
-    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:SKMainWindowAutoHidesScrollersKey] boolValue]];
+    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
+    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HASVERTICALSCROLLER_KEY] boolValue]];
+    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];
     
     [self hideLeftSideWindow];
     
@@ -1937,28 +1937,28 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (findPanelFind == NO) {
         NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
         [findArrayController removeObjects:searchResults];
-        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
+        [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
+        [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
         [[groupedFindTableView headerView] setNeedsDisplay:YES];
         [groupedFindArrayController removeObjects:groupedSearchResults];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
         [[statusBar progressIndicator] setDoubleValue:0.0];
         [statusBar startAnimation:self];
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self willChangeValueForKey:SEARCHRESULTS_KEY];
+        [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
     }
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
-        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [[[findTableView tableColumnWithIdentifier:SKMainWindowResultsColumnIdentifer] headerCell] setStringValue:message];
+        [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+        [self didChangeValueForKey:SEARCHRESULTS_KEY];
+        [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
-        [[[groupedFindTableView tableColumnWithIdentifier:SKMainWindowRelevanceColumnIdentifer] headerCell] setStringValue:message];
+        [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
         [[groupedFindTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
@@ -1969,10 +1969,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
     [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
     if ([pageIndex unsignedIntValue] % 50 == 0) {
-        [self didChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
-        [self didChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowSearchResultsKey];
-        [self willChangeValueForKey:SKMainWindowGroupedSearchResultsKey];
+        [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
+        [self didChangeValueForKey:SEARCHRESULTS_KEY];
+        [self willChangeValueForKey:SEARCHRESULTS_KEY];
+        [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
     }
 }
 
@@ -2135,11 +2135,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
     
     [controller setThumbnail:image];
-    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] addObject:controller];
+    [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
 }
 
 - (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller {
-    [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObject:controller];
+    [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
 }
 
 - (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller {
@@ -2493,7 +2493,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)resetThumbnails {
     unsigned i, count = [pageLabels count];
-    [self willChangeValueForKey:SKMainWindowThumbnailsKey];
+    [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
@@ -2516,7 +2516,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [thumbnail release];
         }
     }
-    [self didChangeValueForKey:SKMainWindowThumbnailsKey];
+    [self didChangeValueForKey:THUMBNAILS_KEY];
     [self allThumbnailsNeedUpdate];
 }
 

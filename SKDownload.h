@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+// these are the keys used for the info
 extern NSString *SKDownloadFileNameKey;
 extern NSString *SKDownloadStatusKey;
 extern NSString *SKDownloadProgressIndicatorKey;

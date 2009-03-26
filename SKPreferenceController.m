@@ -45,8 +45,8 @@
 #import "NSView_SKExtensions.h"
 #import <Sparkle/Sparkle.h>
 
-#define SKPreferenceInitialUserDefaultsFileName @"InitialUserDefaults"
-#define SKPreferenceResettableKeysKey @"ResettableKeys"
+#define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
+#define RESETTABLEKEYS_KEY @"ResettableKeys"
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX", @"TeXMaker", @"AlphaX"};
@@ -79,8 +79,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (id)init {
     if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super initWithWindowNibName:@"PreferenceWindow"])) {
-        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:SKPreferenceInitialUserDefaultsFileName ofType:@"plist"];
-        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:SKPreferenceResettableKeysKey] retain];
+        NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
+        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY] retain];
         
         sud = [NSUserDefaults standardUserDefaults];
         sudc = [NSUserDefaultsController sharedUserDefaultsController];
