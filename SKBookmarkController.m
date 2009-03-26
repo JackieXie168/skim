@@ -55,29 +55,29 @@
 
 #define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
-#define SKBookmarksToolbarIdentifier @"SKBookmarksToolbarIdentifier"
-#define SKBookmarksNewFolderToolbarItemIdentifier @"SKBookmarksNewFolderToolbarItemIdentifier"
+#define SKBookmarksToolbarIdentifier                 @"SKBookmarksToolbarIdentifier"
+#define SKBookmarksNewFolderToolbarItemIdentifier    @"SKBookmarksNewFolderToolbarItemIdentifier"
 #define SKBookmarksNewSeparatorToolbarItemIdentifier @"SKBookmarksNewSeparatorToolbarItemIdentifier"
-#define SKBookmarksDeleteToolbarItemIdentifier @"SKBookmarksDeleteToolbarItemIdentifier"
+#define SKBookmarksDeleteToolbarItemIdentifier       @"SKBookmarksDeleteToolbarItemIdentifier"
 
 #define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 
-#define SKBookmarksWindowLabelColumnIdentifer @"label"
-#define SKBookmarksWindowFileColumnIdentifer @"file"
-#define SKBookmarksWindowPageColumnIdentifer @"page"
+#define LABEL_COLUMNID @"label"
+#define FILE_COLUMNID  @"file"
+#define PAGE_COLUMNID  @"page"
 
 #define SKMaximumDocumentPageHistoryCountKey @"SKMaximumDocumentPageHistoryCount"
 
-#define SKBookmarkControllerBookmarksKey @"bookmarks"
-#define SKBookmarkControllerRecentDocumentsKey @"recentDocuments"
+#define BOOKMARKS_KEY       @"bookmarks"
+#define RECENTDOCUMENTS_KEY @"recentDocuments"
 
-#define SKRecentDocumentPageIndexKey @"pageIndex"
-#define SKRecentDocumentAliasKey @"alias"
-#define SKRecentDocumentAliasDataKey @"_BDAlias"
-#define SKRecentDocumentSnapshotsKey @"snapshots"
+#define PAGEINDEX_KEY @"pageIndex"
+#define ALIAS_KEY     @"alias"
+#define ALIASDATA_KEY @"_BDAlias"
+#define SNAPSHOTS_KEY @"snapshots"
 
-#define SKBookmarkChildrenKey @"children"
-#define SKBookmarkLabelKey @"label"
+#define CHILDREN_KEY @"children"
+#define LABEL_KEY    @"label"
 
 static char SKBookmarkPropertiesObservationContext;
 
@@ -133,8 +133,8 @@ static SKBookmarkController *sharedBookmarkController = nil;
                 NSLog(@"Error deserializing: %@", error);
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                [recentDocuments addObjectsFromArray:[plist objectForKey:SKBookmarkControllerRecentDocumentsKey]];
-                NSEnumerator *dictEnum = [[plist objectForKey:SKBookmarkControllerBookmarksKey] objectEnumerator];
+                [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
+                NSEnumerator *dictEnum = [[plist objectForKey:BOOKMARKS_KEY] objectEnumerator];
                 NSDictionary *dict;
                 
                 while (dict = [dictEnum nextObject]) {
@@ -187,9 +187,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
     
     [[self window] setTitle:NSLocalizedString(@"Bookmarks", @"window title")];
     
-    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowLabelColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Label", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowFileColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
-    [[[outlineView tableColumnWithIdentifier:SKBookmarksWindowPageColumnIdentifer] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:LABEL_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Label", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:FILE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"File", @"Table header title")];
+    [[[outlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
@@ -299,10 +299,10 @@ static SKBookmarkController *sharedBookmarkController = nil;
     unsigned int idx = NSNotFound, i, iMax = [recentDocuments count];
     for (i = 0; i < iMax; i++) {
         NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
-        BDAlias *alias = [info valueForKey:SKRecentDocumentAliasKey];
+        BDAlias *alias = [info valueForKey:ALIAS_KEY];
         if (alias == nil) {
-            alias = [BDAlias aliasWithData:[info valueForKey:SKRecentDocumentAliasDataKey]];
-            [info setValue:alias forKey:SKRecentDocumentAliasKey];
+            alias = [BDAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
+            [info setValue:alias forKey:ALIAS_KEY];
         }
         if ([[alias fullPathNoUI] isEqualToString:path]) {
             idx = i;
@@ -322,7 +322,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
     if (alias) {
-        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], SKRecentDocumentPageIndexKey, [alias aliasData], SKRecentDocumentAliasDataKey, alias, SKRecentDocumentAliasKey, [setups count] ? setups : nil, SKRecentDocumentSnapshotsKey, nil];
+        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGEINDEX_KEY, [alias aliasData], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
         [recentDocuments insertObject:bm atIndex:0];
         if ([recentDocuments count] > maxRecentDocumentsCount)
             [recentDocuments removeLastObject];
@@ -333,14 +333,14 @@ static SKBookmarkController *sharedBookmarkController = nil;
     if (path == nil)
         return NSNotFound;
     unsigned int idx = [self indexOfRecentDocumentAtPath:path];
-    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:SKRecentDocumentPageIndexKey] unsignedIntValue];
+    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntValue];
 }
 
 - (NSArray *)snapshotsAtPath:(NSString *)path {
     if (path == nil)
         return nil;
     unsigned int idx = [self indexOfRecentDocumentAtPath:path];
-    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SKRecentDocumentSnapshotsKey];
+    NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SNAPSHOTS_KEY];
     return [setups count] ? setups : nil;
 }
 
@@ -486,9 +486,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *bm;
     while (bm = [bmEnum nextObject]) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
-            [bm addObserver:self forKeyPath:SKBookmarkLabelKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
+            [bm addObserver:self forKeyPath:LABEL_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
-                [bm addObserver:self forKeyPath:SKBookmarkChildrenKey options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
+                [bm addObserver:self forKeyPath:CHILDREN_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
                 [self startObservingBookmarks:[bm children]];
             }
         }
@@ -500,9 +500,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
     SKBookmark *bm;
     while (bm = [bmEnum nextObject]) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
-            [bm removeObserver:self forKeyPath:SKBookmarkLabelKey];
+            [bm removeObserver:self forKeyPath:LABEL_KEY];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
-                [bm removeObserver:self forKeyPath:SKBookmarkChildrenKey];
+                [bm removeObserver:self forKeyPath:CHILDREN_KEY];
                 [self stopObservingBookmarks:[bm children]];
             }
         }
@@ -511,16 +511,16 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (void)setChildren:(NSArray *)newChildren ofBookmark:(SKBookmark *)bookmark {
     [self endEditing];
-    [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] setArray:newChildren];
+    [[bookmark mutableArrayValueForKey:CHILDREN_KEY] setArray:newChildren];
 }
 
 - (void)insertObjects:(NSArray *)newChildren inChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
-    [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] insertObjects:newChildren atIndexes:indexes];
+    [[bookmark mutableArrayValueForKey:CHILDREN_KEY] insertObjects:newChildren atIndexes:indexes];
 }
 
 - (void)removeObjectsFromChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
     [self endEditing];
-    [[bookmark mutableArrayValueForKey:SKBookmarkChildrenKey] removeObjectsAtIndexes:indexes];
+    [[bookmark mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
 }
 
 #pragma mark KVO
@@ -537,7 +537,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
         
         switch ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntValue]) {
             case NSKeyValueChangeSetting:
-                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     NSMutableArray *old = [NSMutableArray arrayWithArray:oldValue];
                     NSMutableArray *new = [NSMutableArray arrayWithArray:newValue];
                     [old removeObjectsInArray:newValue];
@@ -545,24 +545,24 @@ static SKBookmarkController *sharedBookmarkController = nil;
                     [self stopObservingBookmarks:old];
                     [self startObservingBookmarks:new];
                     [[[self undoManager] prepareWithInvocationTarget:self] setChildren:oldValue ofBookmark:bookmark];
-                } else if ([keyPath isEqualToString:SKBookmarkLabelKey]) {
+                } else if ([keyPath isEqualToString:LABEL_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
                 }
                 break;
             case NSKeyValueChangeInsertion:
-                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self startObservingBookmarks:newValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
             case NSKeyValueChangeRemoval:
-                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:oldValue inChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
             case NSKeyValueChangeReplacement:
-                if ([keyPath isEqualToString:SKBookmarkChildrenKey]) {
+                if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
                     [self startObservingBookmarks:newValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
@@ -580,8 +580,8 @@ static SKBookmarkController *sharedBookmarkController = nil;
 #pragma mark Notification handlers
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
-    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:SKRecentDocumentAliasKey];
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[bookmarkRoot children] valueForKey:@"properties"], SKBookmarkControllerBookmarksKey, recentDocuments, SKBookmarkControllerRecentDocumentsKey, nil];
+    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[bookmarkRoot children] valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENTDOCUMENTS_KEY, nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];

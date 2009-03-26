@@ -80,15 +80,15 @@
 #define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
 #define RESETTABLE_KEYS_KEY             @"ResettableKeys"
 
-#define FILE_MENU_INDEX 1
-#define VIEW_MENU_INDEX 4
+#define FILE_MENU_INDEX      1
+#define VIEW_MENU_INDEX      4
 #define BOOKMARKS_MENU_INDEX 8
 
-#define SKCurrentDocumentSetupKey @"currentDocumentSetup"
+#define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
-#define SKSpotlightVersionInfoKey @"SKSpotlightVersionInfo"
-#define SKSpotlightLastImporterVersionKey @"lastImporterVersion"
-#define SKSpotlightLastSysVersionKey @"lastSysVersion"
+#define SKSpotlightVersionInfoKey           @"SKSpotlightVersionInfo"
+#define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
+#define SKSpotlightLastSysVersionKey        @"lastSysVersion"
 
 
 @implementation SKApplicationController
@@ -165,7 +165,7 @@ static id sharedApplicationController = nil;
 }
 
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] setObject:[[(SKApplication *)NSApp allOrderedDocuments] valueForKey:SKCurrentDocumentSetupKey] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[(SKApplication *)NSApp allOrderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 

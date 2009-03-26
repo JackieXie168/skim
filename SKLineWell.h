@@ -40,7 +40,7 @@
 #import <Quartz/Quartz.h>
 
 extern NSString *SKLineStylePboardType;
-
+// these keys are used in the userInfo dictionary of this pboard type
 extern NSString *SKLineWellLineWidthKey;
 extern NSString *SKLineWellStyleKey;
 extern NSString *SKLineWellDashPatternKey;

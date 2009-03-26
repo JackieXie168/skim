@@ -57,16 +57,14 @@
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
-#define SKSnapshotPageKey @"page"
-#define SKSnapshotRectKey @"rect"
-#define SKSnapshotScaleFactorKey @"scaleFactor"
-#define SKSnapshotAutoFitsKey @"autoFits"
-#define SKSnapshotHasWindowKey @"hasWindow"
-#define SKSnapshotWindowFrameKey @"windowFrame"
-
-#define SKSnapshotWindowPageLabelKey @"pageLabel"
-#define SKSnapshotWindowHasWindowKey @"hasWindow"
-#define SKSnapshotWindowPageAndWindowKey @"pageAndWindow"
+#define PAGE_KEY            @"page"
+#define RECT_KEY            @"rect"
+#define SCALEFACTOR_KEY     @"scaleFactor"
+#define AUTOFITS_KEY        @"autoFits"
+#define WINDOWFRAME_KEY     @"windowFrame"
+#define HASWINDOW_KEY       @"hasWindow"
+#define PAGELABEL_KEY       @"pageLabel"
+#define PAGEANDWINDOW_KEY   @"pageAndWindow"
 
 #define SKSnapshotWindowFrameAutosaveName @"SKSnapshotWindow"
 #define SKSnapshotViewChangedNotification @"SKSnapshotViewChangedNotification"
@@ -81,7 +79,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 @implementation SKSnapshotWindowController
 
 + (void)initialize {
-    [self setKeys:[NSArray arrayWithObjects:SKSnapshotWindowPageLabelKey, SKSnapshotWindowHasWindowKey, nil] triggerChangeNotificationsForDependentKey:SKSnapshotWindowPageAndWindowKey];
+    [self setKeys:[NSArray arrayWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil] triggerChangeNotificationsForDependentKey:PAGEANDWINDOW_KEY];
     SKINITIALIZE;
 }
 
@@ -253,14 +251,14 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
     [self setPdfDocument:pdfDocument
-             scaleFactor:[[setup objectForKey:SKSnapshotScaleFactorKey] floatValue]
-          goToPageNumber:[[setup objectForKey:SKSnapshotPageKey] unsignedIntValue]
-                    rect:NSRectFromString([setup objectForKey:SKSnapshotRectKey])
-                autoFits:[[setup objectForKey:SKSnapshotAutoFitsKey] boolValue]];
+             scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] floatValue]
+          goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue]
+                    rect:NSRectFromString([setup objectForKey:RECT_KEY])
+                autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]];
     
-    if ([setup objectForKey:SKSnapshotWindowFrameKey])
-        [[self window] setFrame:NSRectFromString([setup objectForKey:SKSnapshotWindowFrameKey]) display:NO];
-    if ([[setup objectForKey:SKSnapshotHasWindowKey] boolValue])
+    if ([setup objectForKey:WINDOWFRAME_KEY])
+        [[self window] setFrame:NSRectFromString([setup objectForKey:WINDOWFRAME_KEY]) display:NO];
+    if ([[setup objectForKey:HASWINDOW_KEY] boolValue])
         [self performSelector:@selector(showWindow:) withObject:self afterDelay:0.0];
 }
 
@@ -353,7 +351,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(SKSnapshotPDFView *)pdfView autoFits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], SKSnapshotPageKey, NSStringFromRect(rect), SKSnapshotRectKey, [NSNumber numberWithFloat:[pdfView scaleFactor]], SKSnapshotScaleFactorKey, [NSNumber numberWithBool:autoFits], SKSnapshotAutoFitsKey, [NSNumber numberWithBool:[[self window] isVisible]], SKSnapshotHasWindowKey, NSStringFromRect([[self window] frame]), SKSnapshotWindowFrameKey, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
 }
 
 #pragma mark Actions

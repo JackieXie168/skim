@@ -66,16 +66,16 @@
 #import "SKLineInspector.h"
 #import "SKPDFOutline.h"
 
-#define SKMainWindowNotesKey @"notes"
-#define SKMainWindowSnapshotsKey @"snapshots"
+#define NOTES_KEY       @"notes"
+#define SNAPSHOTS_KEY   @"snapshots"
 
-#define SKMainWindowPageColumnIdentifier @"page"
-#define SKMainWindowLabelColumnIdentifier @"label"
-#define SKMainWindowNoteColumnIdentifier @"note"
-#define SKMainWindowTypeColumnIdentifier @"type"
-#define SKMainWindowImageColumnIdentifier @"image"
+#define PAGE_COLUMNID   @"page"
+#define LABEL_COLUMNID  @"label"
+#define NOTE_COLUMNID   @"note"
+#define TYPE_COLUMNID   @"type"
+#define IMAGE_COLUMNID  @"image"
 
-#define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
+#define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
@@ -343,7 +343,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifier] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
                                      fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
@@ -353,7 +353,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             return fmaxf([tv rowHeight], fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:SKMainWindowImageColumnIdentifier] width], 
+        NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
                                      fminf(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
@@ -369,7 +369,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([tv isEqual:snapshotTableView]) {
         NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
         [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
-        [[self mutableArrayValueForKey:SKMainWindowSnapshotsKey] removeObjectsInArray:controllers];
+        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObjectsInArray:controllers];
     }
 }
 
@@ -573,18 +573,18 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
-        if([tcID isEqualToString:SKMainWindowLabelColumnIdentifier]) {
+        if([tcID isEqualToString:LABEL_COLUMNID]) {
             return [(SKPDFOutline *)item label];
-        } else if([tcID isEqualToString:SKMainWindowPageColumnIdentifier]) {
+        } else if([tcID isEqualToString:PAGE_COLUMNID]) {
             return [(SKPDFOutline *)item pageLabel];
         }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
-        if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifier])
+        if ([tcID isEqualToString:NOTE_COLUMNID])
             return [item type] ? (id)[item string] : (id)[item text];
-        else if([tcID isEqualToString:SKMainWindowTypeColumnIdentifier])
+        else if([tcID isEqualToString:TYPE_COLUMNID])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
-        else if([tcID isEqualToString:SKMainWindowPageColumnIdentifier])
+        else if([tcID isEqualToString:PAGE_COLUMNID])
             return [[item page] displayLabel];
     }
     return nil;
@@ -592,7 +592,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
+        if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
             if ([item type] && [object isEqualToString:[item string]] == NO)
                 [item setString:object];
         }
@@ -603,7 +603,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
+        if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
             if ([item type] == nil) {
                 if ([pdfView hideNotes] == NO) {
                     PDFAnnotation *annotation = [(SKNoteText *)item note];
@@ -633,11 +633,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:ascending] autorelease];
             NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationBoundsKey ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
-            if ([tcID isEqualToString:SKMainWindowTypeColumnIdentifier]) {
+            if ([tcID isEqualToString:TYPE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:SKMainWindowNoteColumnIdentifier]) {
+            } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:SKMainWindowPageColumnIdentifier]) {
+            } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
             }
@@ -665,7 +665,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:SKMainWindowNoteColumnIdentifier]) {
+    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         return [item string];
     }
     return nil;
@@ -870,7 +870,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)autoSizeNoteRows:(id)sender {
     float rowHeight = [noteOutlineView rowHeight];
-    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:SKMainWindowNoteColumnIdentifier];
+    NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
     float indentation = [noteOutlineView indentationPerLevel];
     float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
@@ -1485,7 +1485,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     
     if ([annotation isSkimNote]) {
         updatingNoteSelection = YES;
-        [[self mutableArrayValueForKey:SKMainWindowNotesKey] addObject:annotation];
+        [[self mutableArrayValueForKey:NOTES_KEY] addObject:annotation];
         [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
         updatingNoteSelection = NO;
         [noteOutlineView reloadData];
@@ -1521,7 +1521,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
         
         updatingNoteSelection = YES;
-        [[self mutableArrayValueForKey:SKMainWindowNotesKey] removeObject:annotation];
+        [[self mutableArrayValueForKey:NOTES_KEY] removeObject:annotation];
         [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
         updatingNoteSelection = NO;
         [noteOutlineView reloadData];
