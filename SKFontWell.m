@@ -169,7 +169,7 @@ static char SKFontWellFontSizeObservationContext;
     [self deactivate];
 }
 
-- (void)notifyBinding {
+- (void)notifyFontBinding {
     NSDictionary *info = [self infoForBinding:FONTNAME_KEY];
     [[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
     info = [self infoForBinding:FONTSIZE_KEY];
@@ -181,7 +181,7 @@ static char SKFontWellFontSizeObservationContext;
     if (info) {
         id value = [self textColor];
         NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-        if (transformerName) {
+        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
             NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
             value = [valueTransformer reverseTransformedValue:value]; 
         }
@@ -192,7 +192,7 @@ static char SKFontWellFontSizeObservationContext;
 - (void)changeFontFromFontManager:(id)sender {
     if ([self isActive]) {
         [self setFont:[sender convertFont:[self font]]];
-        [self notifyBinding];
+        [self notifyFontBinding];
         [self sendAction:[self action] to:[self target]];
     }
 }
@@ -430,12 +430,12 @@ static char SKFontWellFontSizeObservationContext;
         }
     }
     @catch (id exception) {
-        NSLog(@"Ignroing exception %@ when dropping on SKFontWell failed", exception);
+        NSLog(@"Ignoring exception %@ when dropping on SKFontWell failed", exception);
     }
     
     if (droppedFont) {
         [self setFont:droppedFont];
-        [self notifyBinding];
+        [self notifyFontBinding];
         [self sendAction:[self action] to:[self target]];
     }
     

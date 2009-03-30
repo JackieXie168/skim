@@ -326,7 +326,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if (observedObject && observedKeyPath) {
         id value = [[colors copy] autorelease];
         NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-        if (transformerName) {
+        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
             NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
             value = [valueTransformer reverseTransformedValue:value]; 
         }
