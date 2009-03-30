@@ -54,7 +54,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
-        contentView = [coder decodeObjectForKey:@"contentView"];
+        contentView = [decoder decodeObjectForKey:@"contentView"];
 	}
 	return self;
 }
