@@ -44,26 +44,6 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
 @implementation SKSnapshotPageCell
 
-static NSShadow *selectedShadow = nil;
-static NSShadow *deselectedShadow = nil;
-static NSColor *selectedColor = nil;
-static NSColor *deselectedColor = nil;
-
-+ (void)initialize
-{
-    SKINITIALIZE;
-    
-    selectedShadow = [[NSShadow alloc] init];
-    [selectedShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
-    [selectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
-    deselectedShadow = [[NSShadow alloc] init];
-    [deselectedShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
-    [deselectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
-    
-    selectedColor = [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] copy];
-    deselectedColor = [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] copy];
-}
-
 - (id)copyWithZone:(NSZone *)aZone {
     SKSnapshotPageCell *copy = [super copyWithZone:aZone];
     copy->hasWindow = hasWindow;
@@ -94,19 +74,37 @@ static NSColor *deselectedColor = nil;
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
     [super drawInteriorWithFrame:textRect inView:controlView];
     if (hasWindow) {
-        BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
         float radius = 2.0;
         NSBezierPath *path = [NSBezierPath bezierPath];
-        NSShadow *aShadow;
+        NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
         NSColor *fillColor;
+        NSBackgroundStyle backgroundStyle = NSBackgroundStyleLight;
         
-        if (isSelected) {
-            aShadow = selectedShadow;
-            fillColor = selectedColor;
-        } else {
-            aShadow = deselectedShadow;
-            fillColor = deselectedColor;
+        if ([self respondsToSelector:@selector(interiorBackgroundStyle)])
+            backgroundStyle = [self interiorBackgroundStyle];
+        else if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
+            backgroundStyle = NSBackgroundStyleDark;
+        
+        switch (backgroundStyle) {
+            case NSBackgroundStyleDark:
+                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+                fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+                break;
+            case NSBackgroundStyleLowered:
+                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.3333]];
+                fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+                break;
+            case NSBackgroundStyleRaised:
+                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.3]];
+                fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
+                break;
+            case NSBackgroundStyleLight:
+            default:
+                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+                fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
+                break;
         }
+        [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
         NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
         imageRect.origin.x += 4.0;
