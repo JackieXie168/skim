@@ -99,9 +99,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:&SKSnaphotWindowDefaultsObservationContext];
-}
-
-- (void)windowDidExpose:(NSNotification *)notification {
+    // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
     [self setHasWindow:YES];
 }
 
