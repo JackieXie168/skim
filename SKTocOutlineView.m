@@ -45,14 +45,30 @@
 
 + (BOOL)usesDefaultFontSize { return YES; }
 
+- (id)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
+        if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
+            [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
+        else
+            [self setBackgroundColor:[NSColor tableBackgroundColor]];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
+            [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
+        else
+            [self setBackgroundColor:[NSColor tableBackgroundColor]];
+    }
+    return self;
+}
+
 - (void)dealloc {
     if (trackingRects != NULL)
         CFRelease(trackingRects);
     [super dealloc];
-}
-
-- (NSColor *)backgroundColor {
-    return [NSColor tableBackgroundColor];
 }
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
@@ -60,10 +76,19 @@
     int row;
     NSRect rect;
     
-    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-        color = [NSColor alternateSelectedControlColor];
-    else
-        color = [NSColor secondarySelectedTableColor];
+    if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)]) {
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            color = [NSColor colorWithCalibratedRed:0.296719 green:0.489387 blue:0.823514 alpha:1.0];
+        else if ([[self window] isKeyWindow])
+            color = [NSColor colorWithCalibratedRed:0.659915 green:0.709033 blue:0.788708 alpha:1.0];
+        else
+            color = [NSColor colorWithCalibratedRed:0.496086 green:0.496086 blue:0.496086 alpha:1.0];
+    } else {
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            color = [NSColor alternateSelectedControlColor];
+        else
+            color = [NSColor secondarySelectedTableColor];
+    }
     
     [NSGraphicsContext saveGraphicsState];
     
@@ -83,16 +108,9 @@
         }
     }
     
-    row = [self selectedRow];
-    if (row != -1) {
-        rect = [self rectOfRow:row];
-        if (NSIntersectsRect(rect, clipRect)) {
-            [color setFill];
-            [NSBezierPath fillRect:rect];
-        }
-    }
-    
     [NSGraphicsContext restoreGraphicsState];
+    
+    [super highlightSelectionInClipRect:clipRect];
 }
 
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
