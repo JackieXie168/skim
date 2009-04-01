@@ -96,12 +96,12 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
     NSRect rect;
     
     if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)]) {
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            color = [NSColor colorWithCalibratedRed:0.27945 green:0.456809 blue:0.724422 alpha:1.0];
-        else if ([[self window] isKeyWindow])
-            color = [NSColor colorWithCalibratedRed:0.548913 green:0.604532 blue:0.727840 alpha:1.0];
+        if ([[self window] isKeyWindow] == NO)
+            color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
+        else if ([[self window] firstResponder] == self)
+            color = [NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0];
         else
-            color = [NSColor colorWithCalibratedRed:0.623545 green:0.623545 blue:0.623545 alpha:1.0];
+            color = [NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0];
     } else {
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
             color = [NSColor alternateSelectedControlColor];
