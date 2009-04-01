@@ -100,7 +100,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
                 break;
             case NSBackgroundStyleLight:
             default:
-                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+                [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.2]];
                 fillColor = [NSColor colorWithCalibratedWhite:0.0 alpha:0.8];
                 break;
         }
