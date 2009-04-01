@@ -78,11 +78,11 @@
     
     if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)]) {
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            color = [NSColor colorWithCalibratedRed:0.296719 green:0.489387 blue:0.823514 alpha:1.0];
+            color = [NSColor colorWithCalibratedRed:0.27945 green:0.456809 blue:0.724422 alpha:1.0];
         else if ([[self window] isKeyWindow])
-            color = [NSColor colorWithCalibratedRed:0.659915 green:0.709033 blue:0.788708 alpha:1.0];
+            color = [NSColor colorWithCalibratedRed:0.548913 green:0.604532 blue:0.727840 alpha:1.0];
         else
-            color = [NSColor colorWithCalibratedRed:0.496086 green:0.496086 blue:0.496086 alpha:1.0];
+            color = [NSColor colorWithCalibratedRed:0.623545 green:0.623545 blue:0.623545 alpha:1.0];
     } else {
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
             color = [NSColor alternateSelectedControlColor];
