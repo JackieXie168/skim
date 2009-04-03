@@ -45,6 +45,13 @@
 
 + (BOOL)usesDefaultFontSize { return YES; }
 
++ (float)rowHeightForFont:(NSFont *)font {
+    float rowHeight = [super rowHeightForFont:font];
+    if ([self instancesRespondToSelector:@selector(setSelectionHighlightStyle:)])
+        rowHeight += 2.0;
+    return rowHeight;
+}
+
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])

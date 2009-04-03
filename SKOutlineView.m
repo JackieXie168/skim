@@ -50,6 +50,10 @@ static char SKOutlineViewDefaultsObservationContext;
 
 + (BOOL)usesDefaultFontSize { return NO; }
 
++ (float)rowHeightForFont:(NSFont *)font {
+    return [NSLayoutManager defaultViewLineHeightForFont:font];
+}
+
 - (void)dealloc {
     if ([[self class] usesDefaultFontSize]) {
         @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
@@ -241,7 +245,7 @@ static char SKOutlineViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
+    [self setRowHeight:[[self class] rowHeightForFont:font]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
