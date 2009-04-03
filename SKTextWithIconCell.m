@@ -142,6 +142,24 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
     [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
+- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+    NSUInteger hit = [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
+    // super returns 0 for button clicks, so -[NSTableView mouseDown:] doesn't track the cell
+    NSRect iconRect = [self iconRectForBounds:cellFrame];
+    NSPoint mouseLoc = [controlView convertPoint:[event locationInWindow] fromView:nil];
+    if (NSMouseInRect(mouseLoc, iconRect, [controlView isFlipped])) {
+        hit = NSCellHitContentArea;
+    } else {
+        NSRect textRect = [self textRectForBounds:cellFrame];
+        float textWidth = [super cellSize].width;
+        if (textWidth < NSWidth(textRect))
+            textRect.size.width = textWidth;
+        if (NSMouseInRect(mouseLoc, textRect, [controlView isFlipped]))
+            hit = NSCellHitContentArea | NSCellHitEditableTextArea;
+    }
+    return hit;
+}
+
 - (void)setObjectValue:(id <NSCopying>)obj {
     // the objectValue should be an object that's KVC compliant for the "string" and "image" keys
     
