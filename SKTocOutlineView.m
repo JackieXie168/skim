@@ -77,7 +77,7 @@
     NSRect rect;
     
     if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)]) {
-        if ([[self window] isKeyWindow] == NO)
+        if ([[self window] isMainWindow] == NO)
             color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
         else if ([[self window] firstResponder] == self)
             color = [NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0];
