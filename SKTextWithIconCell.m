@@ -152,7 +152,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
     } else {
         NSRect textRect = [self textRectForBounds:cellFrame];
         float textWidth = [super cellSize].width;
-        if (textWidth < NSWidth(textRect))
+        if (textWidth < NSWidth(textRect) && [[self stringValue] length])
             textRect.size.width = textWidth;
         if (NSMouseInRect(mouseLoc, textRect, [controlView isFlipped]))
             hit = NSCellHitContentArea | NSCellHitEditableTextArea;
