@@ -45,7 +45,6 @@
 }
 
 + (BOOL)usesDefaultFontSize;
-+ (float)rowHeightForFont:(NSFont *)font;
 
 - (NSArray *)selectedItems;
 
