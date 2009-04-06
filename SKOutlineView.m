@@ -241,10 +241,7 @@ static char SKOutlineViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    float rowHeight = [NSLayoutManager defaultViewLineHeightForFont:font];
-    if ([self respondsToSelector:@selector(selectionHighlightStyle)] && [self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
-        rowHeight += 2.0;
-    [self setRowHeight:rowHeight];
+    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font] + 2.0];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
