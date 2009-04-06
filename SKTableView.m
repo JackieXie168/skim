@@ -212,7 +212,7 @@ static char SKTableViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
+    [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font] + 2.0];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
