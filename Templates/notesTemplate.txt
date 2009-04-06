@@ -1,4 +1,4 @@
-<$notes.@arraySortedByPageIndex>
+<$notes.@arraySortedByPageIndexAndBounds>
 * <$type.typeName/>, page <$page.label?><$page.label/><?$page.label?><$pageIndex.numberByAddingOne/></$page.label?>
 
 <$string?>
@@ -9,4 +9,4 @@
 <$text/>
 
 </$text?>
-</$notes.@arraySortedByPageIndex>
+</$notes.@arraySortedByPageIndexAndBounds>
