@@ -45,12 +45,14 @@
 
 + (BOOL)usesDefaultFontSize { return YES; }
 
+#define TIGER_BACKGROUNDCOLOR [NSColor colorWithCalibratedRed:0.905882 green:0.929412 blue:0.964706 alpha:1.0]
+
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
             [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
         else
-            [self setBackgroundColor:[NSColor tableBackgroundColor]];
+            [self setBackgroundColor:TIGER_BACKGROUNDCOLOR];
     }
     return self;
 }
@@ -60,7 +62,7 @@
         if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
             [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
         else
-            [self setBackgroundColor:[NSColor tableBackgroundColor]];
+            [self setBackgroundColor:TIGER_BACKGROUNDCOLOR];
     }
     return self;
 }
@@ -75,8 +77,9 @@
     NSColor *color;
     int row;
     NSRect rect;
+    BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
     
-    if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)]) {
+    if (supportsSourceList) {
         if ([[self window] isMainWindow] == NO)
             color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
         else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
@@ -87,7 +90,7 @@
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
             color = [NSColor alternateSelectedControlColor];
         else
-            color = [NSColor secondarySelectedTableColor];
+            color = [NSColor colorWithCalibratedRed:0.724706 green:0.743529 blue:0.771765 alpha:1.0];
     }
     
     [NSGraphicsContext saveGraphicsState];
@@ -108,9 +111,19 @@
         }
     }
     
+    row = [self selectedRow];
+    if (row != -1 && supportsSourceList == NO) {
+        rect = [self rectOfRow:row];
+        if (NSIntersectsRect(rect, clipRect)) {
+            [color setFill];
+            NSRectFill([self rectOfRow:row]);
+        }
+    }
+
     [NSGraphicsContext restoreGraphicsState];
     
-    [super highlightSelectionInClipRect:clipRect];
+    if (supportsSourceList)
+        [super highlightSelectionInClipRect:clipRect];
 }
 
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {
