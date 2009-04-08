@@ -79,10 +79,14 @@
 		[leftCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [leftCell setAlignment:NSLeftTextAlignment];
         [leftCell setControlView:self];
+        if ([leftCell respondsToSelector:@selector(setBackgroundStyle:)])
+            [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
         rightCell = [[SKStatusTextFieldCell alloc] initTextCell:@""];
 		[rightCell setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
+        if ([rightCell respondsToSelector:@selector(setBackgroundStyle:)])
+            [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
 		progressIndicator = nil;
         layer = NULL;
         leftTrackingRectTag = 0;
