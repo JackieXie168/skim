@@ -794,7 +794,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
         
         // the number of pages may have changed
-        [self synchronizeWindowTitleWithDocumentName];
+        [self handleChangedHistoryNotification:nil];
+        [self handlePageChangedNotification:nil];
         [self updateLeftStatus];
         [self updateRightStatus];
     }
