@@ -122,7 +122,7 @@ extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
 
 #pragma mark -
 
-extern BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint startPoint, NSPoint endPoint, float delta);
+extern BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint startPoint, NSPoint endPoint, float pointDelta, float lineDelta);
 
 #pragma mark -
 

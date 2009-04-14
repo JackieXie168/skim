@@ -118,7 +118,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], 4.0);
+    float delta = fmaxf(2.0, 0.5 * [self lineWidth]);
+    return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], 4.0, delta);
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
