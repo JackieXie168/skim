@@ -115,7 +115,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (BOOL)hitTest:(NSPoint)point {
     NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
-    float delta = fmaxf(4.0, 0.5 * [self lineWidth]);
+    float delta = fmaxf(2.0, 0.5 * [self lineWidth]);
     
     if ([super hitTest:point]) {
         NSEnumerator *pathEnum = [[self paths] objectEnumerator];
@@ -127,7 +127,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
             for (i = 0; i < iMax; i++) {
                 prevPoint = nextPoint;
                 nextPoint = [path associatedPointForElementAtIndex:i];
-                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta))
+                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, 4.0, delta))
                     return YES;
             }
         }
