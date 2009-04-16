@@ -75,7 +75,7 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
         buffer = stackBuffer;
     }
     
-    NSCAssert1(buffer != NULL, @"failed to allocate memory for string of length %d", length);
+    NSCAssert1(buffer != NULL, @"failed to allocate memory for string of length %ld", (long)length);
     
     BOOL isFirst = NO, wasHyphen = NO;
     CFIndex bufCnt = 0;

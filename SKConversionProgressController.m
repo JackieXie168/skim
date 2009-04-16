@@ -277,7 +277,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (void)processingPostScriptPage:(NSNumber *)page;
 {
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %d", @"PS conversion progress message"), [page intValue]] stringByAppendingEllipsis]];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %ld", @"PS conversion progress message"), (long)[page intValue]] stringByAppendingEllipsis]];
 }
 
 - (void)showPostScriptConversionMessage:(NSString *)message;

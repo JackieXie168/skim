@@ -74,7 +74,7 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
     NSUInteger digit, offset, number = [self unsignedIntValue];
     
     if (number >= 5000)
-        [NSException raise:@"Roman Numeral Exception" format:@"The number %i is too big to represent as a roman numeral.", number];
+        [NSException raise:@"Roman Numeral Exception" format:@"The number %lu is too big to represent as a roman numeral.", (unsigned long)number];
     
     for (offset = 0; number > 0 && offset < 7; offset += 2) {
         digit = number % 10;

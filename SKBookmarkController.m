@@ -207,7 +207,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
             message = [bookmark path];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
             NSInteger count = [bookmark countOfChildren];
-            message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
+            message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
         }
     }
     [statusBar setLeftStringValue:message ?: @""];
@@ -621,7 +621,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     } else if ([tcID isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
             NSInteger count = [item countOfChildren];
-            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
+            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
         } else {
             return [item path];
         }

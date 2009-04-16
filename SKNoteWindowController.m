@@ -129,7 +129,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)updateStatusMessage {
     NSRect bounds = [note bounds];
-    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] displayLabel], (NSInteger)NSMidX(bounds), (NSInteger)NSMidY(bounds)]];
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%ld, %ld)", @"Status message"), [[note page] displayLabel], (long)NSMidX(bounds), (long)NSMidY(bounds)]];
 }
 
 - (void)windowDidLoad {
@@ -305,7 +305,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSInteger i = 0;
         NSFileManager *fm = [NSFileManager defaultManager];
         while ([fm fileExistsAtPath:path])
-            path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
+            path = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
         if ([[image TIFFRepresentation] writeToFile:path atomically:YES])
             return [NSArray arrayWithObjects:[path lastPathComponent], nil];
     }

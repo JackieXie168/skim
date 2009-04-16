@@ -214,7 +214,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     
     if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKPDFDocument *)doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
-        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:SKInfoVersionKey];
+        [dictionary setValue:[NSString stringWithFormat: @"%ld.%ld", (long)[pdfDoc majorVersion], (long)[pdfDoc minorVersion]] forKey:SKInfoVersionKey];
         [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];
         if ([pdfDoc pageCount]) {
             NSSize cropSize = [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size;

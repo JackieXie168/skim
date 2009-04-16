@@ -213,7 +213,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
     if ([pdfView document])
-        return [NSString stringWithFormat:NSLocalizedString(@"%@ (page %i of %i)", @"Window title format"), displayName, [self pageNumber], [[pdfView document] pageCount]];
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ (page %ld of %ld)", @"Window title format"), displayName, (long)[self pageNumber], (long)[[pdfView document] pageCount]];
     else
         return displayName;
 }
@@ -414,7 +414,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [string appendString:@"* "];
             [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
             [string appendString:@": "];
-            [string appendFormat:NSLocalizedString(@"%i Results", @""), [matches count]];
+            [string appendFormat:NSLocalizedString(@"%ld Results", @""), (long)[matches count]];
             [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
             idx = [rowIndexes indexGreaterThanIndex:idx];
         }
