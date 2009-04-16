@@ -64,7 +64,7 @@
     NSInteger i = 0;
     
     while ([fm fileExistsAtPath:path])
-        path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
+        path = [[basePath stringByAppendingFormat:@"-%ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
     
     [[image TIFFRepresentation] writeToFile:path atomically:YES];
     [[NSWorkspace sharedWorkspace] openTempFile:path];

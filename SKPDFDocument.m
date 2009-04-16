@@ -808,10 +808,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
     NSMutableString *annots = [NSMutableString string];
     for (i = 0; i < count; i++) {
-        [string appendFormat:@"%i 0 obj<<%@>>\nendobj\n", i + 1, [[[self notes] objectAtIndex:i] fdfString]];
-        [annots appendFormat:@"%i 0 R ", i + 1];
+        [string appendFormat:@"%ld 0 obj<<%@>>\nendobj\n", (long)(i + 1), [[[self notes] objectAtIndex:i] fdfString]];
+        [annots appendFormat:@"%ld 0 R ", (long)(i + 1)];
     }
-    [string appendFormat:@"%i 0 obj<<", i + 1];
+    [string appendFormat:@"%ld 0 obj<<", (long)(i + 1)];
     [string appendFDFName:SKFDFFDFKey];
     [string appendString:@"<<"];
     [string appendFDFName:SKFDFAnnotationsKey];
@@ -829,7 +829,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [string appendString:@">>\nendobj\n"];
     [string appendString:@"trailer\n<<"];
     [string appendFDFName:SKFDFRootKey];
-    [string appendFormat:@" %i 0 R", i + 1];
+    [string appendFormat:@" %ld 0 R", (long)(i + 1)];
     [string appendString:@">>\n"];
     [string appendString:@"%%EOF\n"];
     return string;
@@ -1559,7 +1559,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 break;
             nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
             if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
-                NSString *lineString = [NSString stringWithFormat:@"%d", line + 1];
+                NSString *lineString = [NSString stringWithFormat:@"%ld", (long)(line + 1)];
                 [cmdString replaceCharactersInRange:range withString:lineString];
                 range.length = [lineString length];
             }

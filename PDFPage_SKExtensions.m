@@ -246,7 +246,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSImage *image = [self thumbnailWithSize:size forBox:kPDFDisplayBoxCropBox];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-    NSString *filename = [NSString stringWithFormat:@"page_%u.tiff", [self pageIndex] + 1];
+    NSString *filename = [NSString stringWithFormat:@"page_%lu.tiff", (unsigned long)([self pageIndex] + 1)];
     [wrapper setFilename:filename];
     [wrapper setPreferredFilename:filename];
 
@@ -405,7 +405,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSString *)sequentialLabel {
-    return [NSString stringWithFormat:@"%u", [self pageIndex] + 1];
+    return [NSString stringWithFormat:@"%lu", (unsigned long)([self pageIndex] + 1)];
 }
 
 - (NSString *)displayLabel {

@@ -601,7 +601,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 #pragma mark UI updating
 
 - (void)updateLeftStatus {
-    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Page %i of %i", @"Status message"), [self pageNumber], [[pdfView document] pageCount]];
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Page %ld of %ld", @"Status message"), (long)[self pageNumber], (long)[[pdfView document] pageCount]];
     [statusBar setLeftStringValue:message];
 }
 
@@ -622,7 +622,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
             message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (NSInteger)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (NSInteger)NSHeight(selRect), (NSInteger)NSMinX(selRect), (NSInteger)NSMinY(selRect)];
+            message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) pt", (long)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(selRect), (long)NSMinX(selRect), (long)NSMinY(selRect)];
         }
     }
     [statusBar setRightStringValue:message];
@@ -1954,7 +1954,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
-        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]];
+        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%ld Results", @"Message in search table header"), (long)[searchResults count]];
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];
         [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];

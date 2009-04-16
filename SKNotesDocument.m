@@ -444,7 +444,7 @@
     } else if([tcID isEqualToString:TYPE_COLUMNID]) {
         return [NSDictionary dictionaryWithObjectsAndKeys:[item type], SKAnnotationTypeImageCellTypeKey, nil];
     } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [item type] ? [NSString stringWithFormat:@"%u", [item pageIndex] + 1] : nil;
+        return [item type] ? [NSString stringWithFormat:@"%lu", (unsigned long)([item pageIndex] + 1)] : nil;
     }
     return nil;
 }

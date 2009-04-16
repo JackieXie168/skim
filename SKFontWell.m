@@ -243,7 +243,7 @@ static char SKFontWellFontSizeObservationContext;
 - (void)fontChanged {
     if ([self isActive])
         [[NSFontManager sharedFontManager] setSelectedFont:[self font] isMultiple:NO];
-    [self setTitle:[NSString stringWithFormat:@"%@ %i", [[self font] displayName], (NSInteger)[self fontSize]]];
+    [self setTitle:[NSString stringWithFormat:@"%@ %li", [[self font] displayName], (long)[self fontSize]]];
     [self setNeedsDisplay:YES];
 }
 

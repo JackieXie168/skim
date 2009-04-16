@@ -465,7 +465,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSImage *image = [self thumbnailWithSize:size];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-    NSString *filename = [NSString stringWithFormat:@"snapshot_page_%u.tiff", [self pageIndex] + 1];
+    NSString *filename = [NSString stringWithFormat:@"snapshot_page_%lu.tiff",(unsigned long)( [self pageIndex] + 1)];
     [wrapper setFilename:filename];
     [wrapper setPreferredFilename:filename];
 

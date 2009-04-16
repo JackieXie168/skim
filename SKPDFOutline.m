@@ -118,7 +118,7 @@
     if (page)
         return [page displayLabel];
     else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(pageIndex)])
-        return [NSString stringWithFormat:@"%u", [(PDFActionRemoteGoTo *)[outline action] pageIndex] + 1];
+        return [NSString stringWithFormat:@"%lu", (unsigned long)([(PDFActionRemoteGoTo *)[outline action] pageIndex] + 1)];
     else
         return nil;
 }

@@ -73,7 +73,7 @@
 
 - (id)page {
     NSUInteger pageIndex = [self pageIndex];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%u", pageIndex + 1], @"label", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%lu", (unsigned long)(pageIndex + 1)], @"label", nil];
 }
 
 - (NSArray *)texts {

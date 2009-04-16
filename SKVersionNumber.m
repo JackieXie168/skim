@@ -52,7 +52,7 @@
             
             if ([scanner scanInt:&component] && component >= 0) {
             
-                [mutableVersionString appendFormat:@"%@%i", sep, component];
+                [mutableVersionString appendFormat:@"%@%ld", sep, (long)component];
                 
                 componentCount++;
                 components = realloc(components, sizeof(*components) * componentCount);

@@ -739,7 +739,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
         return [NSNumber numberWithInt:[self isActive]];
     } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-        return [NSString stringWithFormat:@"%@ %i", NSLocalizedString(@"line width", @"Accessibility description"), (NSInteger)[self lineWidth]];
+        return [NSString stringWithFormat:@"%@ %ld", NSLocalizedString(@"line width", @"Accessibility description"), (long)[self lineWidth]];
     } else if ([attribute isEqualToString:NSAccessibilityHelpAttribute]) {
         return [self toolTip];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {

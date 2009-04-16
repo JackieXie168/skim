@@ -320,7 +320,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%i>", [self class], label, [self path], pageIndex];
+    return [NSString stringWithFormat:@"<%@: label=%@, path=%@, page=%lu>", [self class], label, [self path], (unsigned long)pageIndex];
 }
 
 - (NSDictionary *)properties {
