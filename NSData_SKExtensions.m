@@ -102,7 +102,7 @@
 - (NSData *)md5Signature {
     EVP_MD_CTX md5context;
     unsigned char signature[EVP_MAX_MD_SIZE];
-    NSUInteger signatureLength = 0;
+    unsigned int signatureLength = 0;
     
     EVP_DigestInit(&md5context, EVP_md5());
     EVP_DigestUpdate(&md5context, [self bytes], [self length]);
