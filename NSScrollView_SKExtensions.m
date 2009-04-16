@@ -78,7 +78,7 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
         NSView *view;
         NSScroller *horizScroller = [self horizontalScroller];
         NSRect viewFrame, horizScrollerFrame = [horizScroller frame];
-        float height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
+        CGFloat height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
         BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[placards lastObject] superview] superview];
         
         if ([edgeView isDescendantOf:self] == NO) {

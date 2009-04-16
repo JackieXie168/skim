@@ -189,7 +189,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 }
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
-    unsigned int headerLength = 5;
+    NSUInteger headerLength = 5;
     
     static NSData *pdfHeaderData = nil;
     if (nil == pdfHeaderData) {

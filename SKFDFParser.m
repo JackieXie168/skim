@@ -304,8 +304,8 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
     
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationLineStylesKey, &array)) {
-        int startStyle = kPDFLineStyleNone;
-        int endStyle = kPDFLineStyleNone;
+        NSInteger startStyle = kPDFLineStyleNone;
+        NSInteger endStyle = kPDFLineStyleNone;
         if (CGPDFArrayGetCount(array) == 2) {
             if (CGPDFArrayGetName(array, 0, &name)) {
                 startStyle = SKPDFLineStyleFromFDFLineStyle(name);
@@ -365,9 +365,9 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
         if (da) {
             NSScanner *scanner = [NSScanner scannerWithString:da];
             NSString *fontName;
-            float fontSize;
+            CGFloat fontSize;
             if ([scanner scanUpToString:@"Tf" intoString:NULL] && [scanner isAtEnd] == NO) {
-                unsigned location = [scanner scanLocation];
+                NSUInteger location = [scanner scanLocation];
                 NSRange r = [da rangeOfString:@"/" options:NSBackwardsSearch range:NSMakeRange(0, location)];
                 if (r.location != NSNotFound) {
                     [scanner setScanLocation:NSMaxRange(r)];
@@ -394,7 +394,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
 
 + (NSArray *)noteDictionariesFromFDFData:(NSData *)data {
     const char *pdfHeader = "%PDF";
-    unsigned pdfHeaderLength = strlen(pdfHeader);
+    NSUInteger pdfHeaderLength = strlen(pdfHeader);
     NSMutableArray *notes = nil;
     
     if ([data length] > pdfHeaderLength) {

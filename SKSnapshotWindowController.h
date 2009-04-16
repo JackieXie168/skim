@@ -52,7 +52,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
     BOOL forceOnTop;
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup;
 
 - (BOOL)isPageVisible:(PDFPage *)page;
@@ -66,7 +66,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (NSImage *)thumbnail;
 - (void)setThumbnail:(NSImage *)newThumbnail;
 
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 - (NSString *)pageLabel;
 - (BOOL)hasWindow;
 - (NSDictionary *)pageAndWindow;
@@ -76,10 +76,10 @@ extern NSString *SKSnapshotCurrentSetupKey;
 - (BOOL)forceOnTop;
 - (void)setForceOnTop:(BOOL)flag;
 
-- (NSImage *)thumbnailWithSize:(float)size;
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+- (NSImage *)thumbnailWithSize:(CGFloat)size;
+- (NSImage *)thumbnailWithSize:(CGFloat)size shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
-- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size;
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
 - (NSAttributedString *)thumbnailAttachment;
 - (NSAttributedString *)thumbnail512Attachment;
 - (NSAttributedString *)thumbnail256Attachment;

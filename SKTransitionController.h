@@ -71,7 +71,7 @@ typedef enum _SKAnimationTransitionStyle {
     NSMutableDictionary *filters;
     
     SKAnimationTransitionStyle transitionStyle;
-    float duration;
+    CGFloat duration;
     BOOL shouldRestrict;
 }
 
@@ -85,8 +85,8 @@ typedef enum _SKAnimationTransitionStyle {
 - (SKAnimationTransitionStyle)transitionStyle;
 - (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
 
-- (float)duration;
-- (void)setDuration:(float)newDuration;
+- (CGFloat)duration;
+- (void)setDuration:(CGFloat)newDuration;
 
 - (BOOL)shouldRestrict;
 - (void)setShouldRestrict:(BOOL)flag;

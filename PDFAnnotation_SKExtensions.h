@@ -73,12 +73,12 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (NSString *)fdfString;
 
 - (PDFDestination *)destination;
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 
 - (PDFBorderStyle)borderStyle;
 - (void)setBorderStyle:(PDFBorderStyle)style;
-- (float)lineWidth;
-- (void)setLineWidth:(float)width;
+- (CGFloat)lineWidth;
+- (void)setLineWidth:(CGFloat)width;
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)pattern;
 
@@ -112,10 +112,10 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;
-- (float)fontSize;
+- (CGFloat)fontSize;
 - (NSColor *)scriptingFontColor;
 - (FourCharCode)scriptingBorderStyle;
-- (void)setScriptingBorderStyle:(int)style;
+- (void)setScriptingBorderStyle:(NSInteger)style;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
 - (FourCharCode)scriptingStartLineStyle;

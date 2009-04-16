@@ -87,7 +87,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
 }
 
 - (NSRect)iconRectForBounds:(NSRect)aRect {
-    float imageWidth = NSHeight(aRect) - 1;
+    CGFloat imageWidth = NSHeight(aRect) - 1;
     NSRect ignored, imageRect = aRect;
     
     NSDivideRect(aRect, &ignored, &imageRect, BORDER_BETWEEN_EDGE_AND_IMAGE, NSMinXEdge);
@@ -106,7 +106,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
         srcRect.size = [img size];
         
         NSRect drawFrame = iconRect;
-        float ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
+        CGFloat ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
         drawFrame.size.width = ratio * srcRect.size.width;
         drawFrame.size.height = ratio * srcRect.size.height;
         
@@ -138,7 +138,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
     [self drawIconWithFrame:imageRect inView:controlView];
 }
 
-- (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(int)selStart length:(int)selLength {
+- (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(NSInteger)selStart length:(NSInteger)selLength {
     [super selectWithFrame:[self textRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
@@ -151,7 +151,7 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
         hit = NSCellHitContentArea;
     } else {
         NSRect textRect = [self textRectForBounds:cellFrame];
-        float textWidth = [super cellSize].width;
+        CGFloat textWidth = [super cellSize].width;
         if (textWidth < NSWidth(textRect) && [[self stringValue] length])
             textRect.size.width = textWidth;
         if (NSMouseInRect(mouseLoc, textRect, [controlView isFlipped]))

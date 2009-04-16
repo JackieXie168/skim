@@ -75,7 +75,7 @@
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     NSColor *color;
-    int row;
+    NSInteger row;
     NSRect rect;
     BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
     
@@ -98,7 +98,7 @@
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
-        int i, count = MIN((int)[rows count], 5);
+        NSInteger i, count = MIN((NSInteger)[rows count], 5);
         
         for (i = 0; i < count; i++) {
             row = [[rows objectAtIndex:i] intValue];
@@ -131,7 +131,7 @@
     [self setNeedsDisplay:YES];
 }
 
-- (void)deselectRow:(int)row {
+- (void)deselectRow:(NSInteger)row {
     [super deselectRow:row];
     [self setNeedsDisplay:YES];
 }
@@ -157,9 +157,9 @@
     if ([self window]) {
         NSRange rowRange = [self rowsInRect:[self visibleRect]];
         NSRange columnRange = [self columnsInRect:[self visibleRect]];
-        unsigned int row, column;
+        NSUInteger row, column;
         NSTableColumn *tableColumn;
-        int userData;
+        NSInteger userData;
         NSTrackingRectTag tag;
         
         for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
@@ -219,10 +219,10 @@
 
 - (void)mouseEntered:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
-        int userData = (int)[theEvent userData];
-        int numCols = [self numberOfColumns];
-		int column = userData % numCols;
-		int row = userData / numCols;
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
         if (column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
@@ -232,10 +232,10 @@
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
-        int userData = (int)[theEvent userData];
-        int numCols = [self numberOfColumns];
-		int column = userData % numCols;
-		int row = userData / numCols;
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
         if (column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];

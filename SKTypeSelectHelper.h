@@ -44,7 +44,7 @@ enum {
     SKSubstringMatch,
     SKFullStringMatch
 };
-typedef int SKTypeSelectMatchOption;
+typedef NSInteger SKTypeSelectMatchOption;
 
 @interface SKTypeSelectHelper : NSObject {
     id dataSource;
@@ -98,8 +98,8 @@ typedef int SKTypeSelectMatchOption;
 @interface NSObject (SKTypeSelectDataSource)
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper; // required
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper; // required
-- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex; // required
+- (NSUInteger)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper; // required
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(NSUInteger)itemIndex; // required
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString; // optional
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString; // optional

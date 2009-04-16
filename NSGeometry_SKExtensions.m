@@ -72,40 +72,40 @@ NSRect SKConstrainRect(NSRect rect, NSRect boundary) {
 }
 
 NSRect SKIntersectionRect(NSRect rect, NSRect boundary) {
-    float minX = fminf(fmaxf(NSMinX(rect), NSMinX(boundary)), NSMaxX(boundary));
-    float maxX = fmaxf(fminf(NSMaxX(rect), NSMaxX(boundary)), NSMinX(boundary));
-    float minY = fminf(fmaxf(NSMinY(rect), NSMinY(boundary)), NSMaxY(boundary));
-    float maxY = fmaxf(fminf(NSMaxY(rect), NSMaxY(boundary)), NSMinY(boundary));
+    CGFloat minX = SKMin(SKMax(NSMinX(rect), NSMinX(boundary)), NSMaxX(boundary));
+    CGFloat maxX = SKMax(SKMin(NSMaxX(rect), NSMaxX(boundary)), NSMinX(boundary));
+    CGFloat minY = SKMin(SKMax(NSMinY(rect), NSMinY(boundary)), NSMaxY(boundary));
+    CGFloat maxY = SKMax(SKMin(NSMaxY(rect), NSMaxY(boundary)), NSMinY(boundary));
     return NSMakeRect(minX, minY, maxX - minX, maxY - minY);
 }
 
 NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped) {
     rect.origin.x += 0.5 * (NSWidth(rect) - size.width);
     rect.origin.y += 0.5 * (NSHeight(rect) - size.height);
-    rect.origin.y = flipped ? ceilf(rect.origin.y)  : floorf(rect.origin.y);
+    rect.origin.y = flipped ? ceilf(rect.origin.y)  : SKFloor(rect.origin.y);
     rect.size = size;
     return rect;
 }
 
-NSRect SKCenterRectVertically(NSRect rect, float height, BOOL flipped) {
+NSRect SKCenterRectVertically(NSRect rect, CGFloat height, BOOL flipped) {
     rect.origin.y += 0.5 * (NSHeight(rect) - height);
-    rect.origin.y = flipped ? ceilf(rect.origin.y)  : floorf(rect.origin.y);
+    rect.origin.y = flipped ? ceilf(rect.origin.y)  : SKFloor(rect.origin.y);
     rect.size.height = height;
     return rect;
 }
 
-NSRect SKCenterRectHorizontally(NSRect rect, float width) {
-    rect.origin.x += floorf(0.5 * (NSWidth(rect) - width));
+NSRect SKCenterRectHorizontally(NSRect rect, CGFloat width) {
+    rect.origin.x += SKFloor(0.5 * (NSWidth(rect) - width));
     rect.size.width = width;
     return rect;
 }
 
-BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoint, float pointDelta, float lineDelta) {
-    if (point.x < fminf(aPoint.x, bPoint.x) - pointDelta || point.y < fminf(aPoint.y, bPoint.y) - pointDelta || point.x > fmaxf(aPoint.x, bPoint.x) + pointDelta || point.y > fmaxf(aPoint.y, bPoint.y) + pointDelta)
+BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint aPoint, NSPoint bPoint, CGFloat pointDelta, CGFloat lineDelta) {
+    if (point.x < SKMin(aPoint.x, bPoint.x) - pointDelta || point.y < SKMin(aPoint.y, bPoint.y) - pointDelta || point.x > SKMax(aPoint.x, bPoint.x) + pointDelta || point.y > SKMax(aPoint.y, bPoint.y) + pointDelta)
         return NO;
     
     NSPoint relPoint = SKSubstractPoints(bPoint, aPoint);
-    float extProduct = ( point.x - aPoint.x ) * relPoint.y - ( point.y - aPoint.y ) * relPoint.x;
+    CGFloat extProduct = ( point.x - aPoint.x ) * relPoint.y - ( point.y - aPoint.y ) * relPoint.x;
     
     return extProduct * extProduct < lineDelta * lineDelta * ( relPoint.x * relPoint.x + relPoint.y * relPoint.y );
 }

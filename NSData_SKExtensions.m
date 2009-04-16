@@ -43,21 +43,21 @@
 
 @implementation NSData (SKExtensions)
 
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength {
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength {
     return [self indexOfBytes:patternBytes length:patternLength options:0 range:NSMakeRange(0, [self length])];
 }
 
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask {
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask {
     return [self indexOfBytes:patternBytes length:patternLength options:mask range:NSMakeRange(0, [self length])];
 }
 
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange {
-    unsigned int selfLength = [self length];
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask range:(NSRange)searchRange {
+    NSUInteger selfLength = [self length];
     if (searchRange.location > selfLength || NSMaxRange(searchRange) > selfLength)
         [NSException raise:NSRangeException format:@"Range {%u,%u} exceeds length %u", searchRange.location, searchRange.length, selfLength];
     
-    unsigned const char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
-    unsigned const char firstPatternByte = *(const char *)patternBytes;
+    const unsigned char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
+    const unsigned char firstPatternByte = *(const char *)patternBytes;
     BOOL backward = (mask & NSBackwardsSearch) != 0;
     
     if (patternLength == 0)
@@ -102,7 +102,7 @@
 - (NSData *)md5Signature {
     EVP_MD_CTX md5context;
     unsigned char signature[EVP_MAX_MD_SIZE];
-    unsigned int signatureLength = 0;
+    NSUInteger signatureLength = 0;
     
     EVP_DigestInit(&md5context, EVP_md5());
     EVP_DigestUpdate(&md5context, [self bytes], [self length]);
@@ -114,7 +114,7 @@
 
 - (NSString *)hexString {
     const char *inputBytes, *inputBytesPtr;
-    unsigned int inputBytesLength, outputBufferLength;
+    NSUInteger inputBytesLength, outputBufferLength;
     unichar *outputBuffer, *outputBufferEnd;
     unichar *outputBufferPtr;
     const char hexChars[] = "0123456789abcdef";
@@ -163,7 +163,7 @@
     // Decode into an NSMutableData
     NSMutableData *data = [[NSMutableData alloc] init];
     char inbuf[512];
-    int inlen;
+    NSInteger inlen;
     while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0)
         [data appendBytes:inbuf length:inlen];
     

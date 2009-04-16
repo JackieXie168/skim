@@ -44,6 +44,6 @@
 - (void)makeTexturedRounded;
 - (NSInteger)selectedTag;
 - (void)setEnabledForAllSegments:(BOOL)enabled;
-- (void)setToolTip:(NSString *)toolTip forSegment:(int)segment;
+- (void)setToolTip:(NSString *)toolTip forSegment:(NSInteger)segment;
 
 @end

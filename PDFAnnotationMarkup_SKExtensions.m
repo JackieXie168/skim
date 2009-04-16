@@ -77,7 +77,7 @@ static NSArray *createPointsFromStrings(NSArray *strings)
 {
     if (strings == nil)
         return nil;
-    int i, iMax = [strings count];
+    NSInteger i, iMax = [strings count];
     NSMutableArray *points = [[NSMutableArray alloc] initWithCapacity:iMax];
     for (i = 0; i < iMax; i++) {
         NSPoint p = NSPointFromString([strings objectAtIndex:i]);
@@ -145,7 +145,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) =
     return CFDictionaryContainsKey(lineRectsDict, self);
 }
 
-+ (NSColor *)defaultSkimNoteColorForMarkupType:(int)markupType
++ (NSColor *)defaultSkimNoteColorForMarkupType:(NSInteger)markupType
 {
     switch (markupType) {
         case kPDFMarkupTypeUnderline:
@@ -158,7 +158,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) =
     return nil;
 }
 
-- (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
+- (id)initSkimNoteWithBounds:(NSRect)bounds markupType:(NSInteger)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initSkimNoteWithBounds:bounds]) {
         [self setMarkupType:type];
         
@@ -179,10 +179,10 @@ static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) =
 }
 
 static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
-    float w = fmaxf(NSWidth(rect2), NSWidth(rect1));
-    float h = fmaxf(NSHeight(rect2), NSHeight(rect1));
+    CGFloat w = SKMax(NSWidth(rect2), NSWidth(rect1));
+    CGFloat h = SKMax(NSHeight(rect2), NSHeight(rect1));
     // first check the vertical position; allow sub/superscripts
-    if (fabsf(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && fabsf(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
+    if (SKAbs(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && SKAbs(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
         return NO;
     // compare horizontal position
     // rect1 before rect2
@@ -195,7 +195,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return YES;
 }
 
-- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(int)type {
+- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
     NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
@@ -206,13 +206,13 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;
         if (selection) {
-            unsigned i, iMax = [selection safeNumberOfRangesOnPage:page];
+            NSUInteger i, iMax = [selection safeNumberOfRangesOnPage:page];
             NSRect lineRect = NSZeroRect;
             NSRect charRect = NSZeroRect;
             NSRect lastCharRect = NSZeroRect;
             for (i = 0; i < iMax; i++) {
                 NSRange range = [selection safeRangeAtIndex:i onPage:page];
-                unsigned int j, jMax = NSMaxRange(range);
+                NSUInteger j, jMax = NSMaxRange(range);
                 for (j = range.location; j < jMax; j++) {
                     lastCharRect = charRect;
                     charRect = [page characterBoundsAtIndex:j];
@@ -283,7 +283,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSArray *quadPoints = [self quadrilateralPoints];
     NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
 
-    unsigned j, jMax = [quadPoints count] / 4;
+    NSUInteger j, jMax = [quadPoints count] / 4;
     CFMutableArrayRef lines = [self lineRects];
     
     CFArrayRemoveAllValues(lines);
@@ -296,7 +296,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [quadPoints getObjects:values range:range];
         
         NSPoint points[4];
-        unsigned i = 0;
+        NSUInteger i = 0;
         for (i = 0; i < 4; i++)
             points[i] = [values[i] pointValue];
         
@@ -314,7 +314,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     
     PDFSelection *sel, *selection = nil;
     CFMutableArrayRef lines = [self lineRects];
-    unsigned i, iMax = CFArrayGetCount(lines);
+    NSUInteger i, iMax = CFArrayGetCount(lines);
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
@@ -338,7 +338,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [self regenerateLineRects];
     
     CFMutableArrayRef lines = [self lineRects];
-    unsigned i = CFArrayGetCount(lines);
+    NSUInteger i = CFArrayGetCount(lines);
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
@@ -350,7 +350,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (NSRect)displayRectForBounds:(NSRect)bounds {
     bounds = [super displayRectForBounds:bounds];
     if ([self markupType] == kPDFMarkupTypeHighlight) {
-        float delta = 0.03 * NSHeight(bounds);
+        CGFloat delta = 0.03 * NSHeight(bounds);
         bounds.origin.y -= delta;
         bounds.size.height += delta;
     }
@@ -406,7 +406,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSMutableArray *pointLists = [NSMutableArray array];
     NSMutableArray *pointValues;
     NSPoint point;
-    int i, j, iMax = [[self quadrilateralPoints] count] / 4;
+    NSInteger i, j, iMax = [[self quadrilateralPoints] count] / 4;
     for (i = 0; i < iMax; i++) {
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (j = 0; j < 4; j++) {

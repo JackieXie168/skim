@@ -45,10 +45,10 @@
 #define WINDOW_SIZE 60.0
 
 @interface SKRemoteStateView : NSView {
-    int remoteState;
+    NSInteger remoteState;
 }
-- (int)remoteState;
-- (void)setRemoteState:(int)newRemoteState;
+- (NSInteger)remoteState;
+- (void)setRemoteState:(NSInteger)newRemoteState;
 @end
 
 
@@ -86,15 +86,15 @@ static id sharedRemoteStateWindow = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
-- (float)defaultAlphaValue { return ALPHA_VALUE; }
+- (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
 
 - (NSTimeInterval)autoHideTimeInterval {
     return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
 }
 
-- (void)showWithType:(int)remoteState atPoint:(NSPoint)point {
+- (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point {
     if ([self autoHideTimeInterval] > 0.0) {
         [self stopAnimation];
         
@@ -105,7 +105,7 @@ static id sharedRemoteStateWindow = nil;
     }
 }
 
-+ (void)showWithType:(int)remoteState atPoint:(NSPoint)point {
++ (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point {
     [[self sharedRemoteStateWindow] showWithType:remoteState atPoint:point];
 }
 
@@ -115,11 +115,11 @@ static id sharedRemoteStateWindow = nil;
 
 @implementation SKRemoteStateView
 
-- (int)remoteState {
+- (NSInteger)remoteState {
     return remoteState;
 }
 
-- (void)setRemoteState:(int)newRemoteState {
+- (void)setRemoteState:(NSInteger)newRemoteState {
     remoteState = newRemoteState;
     [self setNeedsDisplay:YES];
 }

@@ -45,5 +45,5 @@ enum {
 };
 
 @interface SKRemoteStateWindow : SKAnimatedBorderlessWindow
-+ (void)showWithType:(int)remoteState atPoint:(NSPoint)point;
++ (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point;
 @end

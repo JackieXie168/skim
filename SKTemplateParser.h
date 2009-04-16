@@ -44,12 +44,12 @@
 + (NSString *)stringByParsingTemplateString:(NSString *)templateString usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateString:(NSString *)templateString;
 + (NSArray *)arrayByParsingTemplateString:(NSString *)templateString isSubtemplate:(BOOL)isSubtemplate;
-+ (NSString *)stringFromTemplateArray:(NSArray *)templateArray usingObject:(id)object atIndex:(int)anIndex;
++ (NSString *)stringFromTemplateArray:(NSArray *)templateArray usingObject:(id)object atIndex:(NSInteger)anIndex;
 
 + (NSAttributedString *)attributedStringByParsingTemplateAttributedString:(NSAttributedString *)templateAttrString usingObject:(id)object;
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)templateAttrString;
 + (NSArray *)arrayByParsingTemplateAttributedString:(NSAttributedString *)templateAttrString isSubtemplate:(BOOL)isSubtemplate;
-+ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)templateArray usingObject:(id)object atIndex:(int)anIndex;
++ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)templateArray usingObject:(id)object atIndex:(NSInteger)anIndex;
 
 @end
 

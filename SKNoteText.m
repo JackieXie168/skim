@@ -60,7 +60,7 @@
 
 - (NSString *)string { return [[self text] string]; }
 
-- (unsigned int)pageIndex { return [note pageIndex]; }
+- (NSUInteger)pageIndex { return [note pageIndex]; }
 
 - (NSAttributedString *)text { return [note text]; }
 

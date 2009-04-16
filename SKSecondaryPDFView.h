@@ -46,7 +46,7 @@
     PDFView *synchronizedPDFView;
     BOOL synchronizeZoom;
     BOOL switching;
-    float pinchZoomFactor;
+    CGFloat pinchZoomFactor;
 }
 
 - (PDFView *)synchronizedPDFView;

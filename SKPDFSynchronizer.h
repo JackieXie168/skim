@@ -41,8 +41,8 @@
 
 @protocol SKPDFSynchronizerClient
 - (void)setServerProxy:(byref id)anObject;
-- (oneway void)foundLine:(int)line inFile:(bycopy NSString *)file;
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped;
+- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
 @end
 
 
@@ -60,8 +60,8 @@
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
-- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file;
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file;
 
 - (void)stopDOServer;
 
@@ -69,6 +69,6 @@
 
 
 @interface NSObject (SKPDFSynchronizerDelegate)
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
 @end

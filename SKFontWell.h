@@ -53,8 +53,8 @@
 - (NSString *)fontName;
 - (void)setFontName:(NSString *)fontName;
 
-- (float)fontSize;
-- (void)setFontSize:(float)pointSize;
+- (CGFloat)fontSize;
+- (void)setFontSize:(CGFloat)pointSize;
 
 - (NSColor *)textColor;
 - (void)setTextColor:(NSColor *)newTextColor;

@@ -46,14 +46,14 @@
 #define SEPARATOR_LEFT_INDENT 20.0
 #define SEPARATOR_RIGHT_INDENT 2.0
 
-- (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect {
+- (void)drawRow:(NSInteger)rowIndex clipRect:(NSRect)clipRect {
     if ([[self delegate] respondsToSelector:@selector(outlineView:drawSeparatorRowForItem:)] &&
         [[self delegate] outlineView:self drawSeparatorRowForItem:[self itemAtRow:rowIndex]]) {
-        float indent = [self levelForItem:[self itemAtRow:rowIndex]] * [self indentationPerLevel];
+        CGFloat indent = [self levelForItem:[self itemAtRow:rowIndex]] * [self indentationPerLevel];
         NSRect rect = [self rectOfRow:rowIndex];
         [[NSColor gridColor] setStroke];
         [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, floorf(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, floorf(NSMidY(rect)) + 0.5)];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, SKFloor(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, SKFloor(NSMidY(rect)) + 0.5)];
     } else {
         [super drawRow:rowIndex clipRect:clipRect];
     }

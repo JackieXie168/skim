@@ -147,10 +147,10 @@
 }
 
 - (void)getLeftFrame:(NSRect *)leftFrame rightFrame:(NSRect *)rightFrame {
-    float leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
-    float rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
+    CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
+    CGFloat rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
     NSRect ignored, rect = [self bounds];
-    float rightMargin = RIGHT_MARGIN;
+    CGFloat rightMargin = RIGHT_MARGIN;
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
     NSDivideRect(rect, &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
@@ -187,7 +187,7 @@
     CGContextRestoreGState(viewContext);
 
     NSRect textRect, ignored;
-    float rightMargin = RIGHT_MARGIN;
+    CGFloat rightMargin = RIGHT_MARGIN;
 
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
@@ -197,7 +197,7 @@
 	if (textRect.size.width < 0.0)
 		textRect.size.width = 0.0;
 	
-    float height = fmaxf([leftCell cellSize].height, [rightCell cellSize].height);
+    CGFloat height = SKMax([leftCell cellSize].height, [rightCell cellSize].height);
     textRect = SKCenterRectVertically(textRect, height, NO);
     textRect.origin.y += VERTICAL_OFFSET;
     
@@ -209,11 +209,11 @@
 	return [self superview] && [self isHidden] == NO;
 }
 
-- (void)toggleBelowView:(NSView *)view offset:(float)offset {
+- (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset {
 	NSRect viewFrame = [view frame];
 	NSView *contentView = [view superview];
 	NSRect statusRect = [contentView bounds];
-	float shiftHeight = NSHeight([self frame]) + offset;
+	CGFloat shiftHeight = NSHeight([self frame]) + offset;
 	statusRect.size.height = NSHeight([self frame]);
 	
 	if ([self superview]) {
@@ -353,27 +353,27 @@
     [self setRightTarget:newTarget];
 }
 
-- (int)leftState {
+- (NSInteger)leftState {
     return [leftCell state];
 }
 
-- (void)setLeftState:(int)newState {
+- (void)setLeftState:(NSInteger)newState {
     [leftCell setState:newState];
 }
 
-- (int)rightState {
+- (NSInteger)rightState {
     return [rightCell state];
 }
 
-- (void)setRightState:(int)newState {
+- (void)setRightState:(NSInteger)newState {
     [rightCell setState:newState];
 }
 
-- (int)state {
+- (NSInteger)state {
     return [self rightState];
 }
 
-- (void)setState:(int)newState {
+- (void)setState:(NSInteger)newState {
     [self setRightState:newState];
 }
 
@@ -397,7 +397,7 @@
 		[progressIndicator removeFromSuperview];
 		progressIndicator = nil;
 	} else {
-		if (progressIndicator && (int)[progressIndicator style] == style)
+		if (progressIndicator && (NSInteger)[progressIndicator style] == style)
 			return;
 		if(progressIndicator == nil) {
             progressIndicator = [[NSProgressIndicator alloc] init];
@@ -418,7 +418,7 @@
         if (size.width < 0.01) size.width = PROGRESSBAR_WIDTH;
         NSDivideRect([self bounds], &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
         NSDivideRect(rect, &rect, &ignored, size.width, NSMaxXEdge);
-        rect.origin.y = floorf(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
+        rect.origin.y = SKFloor(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
         rect.size.height = size.height;
 		[progressIndicator setFrame:rect];
 		

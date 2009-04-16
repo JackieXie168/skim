@@ -79,7 +79,7 @@
     if ([theEvent clickCount] > 1 && [[self delegate] respondsToSelector:@selector(splitView:doubleClickedDividerAt:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSArray *subviews = [self subviews];
-        int i, count = [subviews count];
+        NSInteger i, count = [subviews count];
         id view;
         NSRect divRect;
 
@@ -155,13 +155,13 @@
     
     // Draw the handle
     NSPoint startPoint, endPoint;
-    float handleSize = 20.0;
+    CGFloat handleSize = 20.0;
     NSColor *darkColor = [NSColor colorWithCalibratedWhite:0.6 alpha:1.0];
     NSColor *lightColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
     
     [NSBezierPath setDefaultLineWidth:1.0];
     if ([self isVertical]) {
-        handleSize = fminf(handleSize, 2.0 * floorf(0.5 * NSHeight(aRect)));
+        handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSHeight(aRect)));
         startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
         endPoint = NSMakePoint(startPoint.x, startPoint.y + handleSize);
         [darkColor set];
@@ -177,7 +177,7 @@
         endPoint.x += 2.0;
         [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     } else {
-        handleSize = fminf(handleSize, 2.0 * floorf(0.5 * NSWidth(aRect)));
+        handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSWidth(aRect)));
         startPoint = NSMakePoint(NSMidX(aRect) - 0.5 * handleSize, NSMinY(aRect) + 1.5);
         endPoint = NSMakePoint(startPoint.x + handleSize, startPoint.y);
         [darkColor set];
@@ -197,7 +197,7 @@
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (float)dividerThickness {
+- (CGFloat)dividerThickness {
 	return 6.0;
 }
 

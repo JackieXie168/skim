@@ -62,7 +62,7 @@
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    float r, g, b, a = 0.0;
+    CGFloat r, g, b, a = 0.0;
     [[self interiorColor] getRed:&r green:&g blue:&b alpha:&a];
     if (a > 0.0) {
         [fdfString appendFDFName:SKFDFAnnotationInteriorColorKey];

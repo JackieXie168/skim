@@ -111,11 +111,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [pdfView convertRect:rect fromPage:page];
-    float scale = [pdfView scaleFactor];
-	float maxX = ceilf(NSMaxX(aRect) + scale);
-	float maxY = ceilf(NSMaxY(aRect) + scale);
-	float minX = floorf(NSMinX(aRect) - scale);
-	float minY = floorf(NSMinY(aRect) - scale);
+    CGFloat scale = [pdfView scaleFactor];
+	CGFloat maxX = ceilf(NSMaxX(aRect) + scale);
+	CGFloat maxY = ceilf(NSMaxY(aRect) + scale);
+	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
+	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
 	
     aRect = NSIntersectionRect([pdfView bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
     if (NSIsEmptyRect(aRect) == NO)
@@ -209,7 +209,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [[self delegate] performSelector:@selector(snapshotControllerDidFinishSetup:) withObject:self afterDelay:0.1];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {
     [self window];
     
     [pdfView setScaleFactor:factor];
@@ -266,7 +266,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
-    unsigned first, last, idx = [page pageIndex];
+    NSUInteger first, last, idx = [page pageIndex];
     
     first = [[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES] pageIndex];
     last = [[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES] pageIndex];
@@ -304,7 +304,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     return [[pdfView currentPage] pageIndex];
 }
 
@@ -363,7 +363,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (IBAction)doZoomToPhysicalSize:(id)sender {
-    float scaleFactor = 1.0;
+    CGFloat scaleFactor = 1.0;
     NSScreen *screen = [[self window] screen];
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
@@ -389,7 +389,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return YES;
     } else if (action == @selector(toggleAutoScale:)) {
@@ -401,19 +401,19 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Thumbnails
 
-- (NSImage *)thumbnailWithSize:(float)size {
-    float shadowBlurRadius = roundf(size / 32.0);
-    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+- (NSImage *)thumbnailWithSize:(CGFloat)size {
+    CGFloat shadowBlurRadius = SKRound(size / 32.0);
+    CGFloat shadowOffset = - ceilf(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
+- (NSImage *)thumbnailWithSize:(CGFloat)size shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
-    float scaleX, scaleY;
+    CGFloat scaleX, scaleY;
     NSSize thumbnailSize;
     NSImage *image;
     
@@ -422,9 +422,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if (isScaled) {
         if (NSHeight(bounds) > NSWidth(bounds))
-            thumbnailSize = NSMakeSize(roundf((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
+            thumbnailSize = NSMakeSize(SKRound((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
-            thumbnailSize = NSMakeSize(size, roundf((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
+            thumbnailSize = NSMakeSize(size, SKRound((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
         scaleX = (thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds);
         scaleY = (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds);
     } else {
@@ -461,7 +461,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     return [image autorelease];
 }
 
-- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size {
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size {
     NSImage *image = [self thumbnailWithSize:size];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
@@ -506,8 +506,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)getMiniRect:(NSRect *)miniRect maxiRect:(NSRect *)maxiRect forDockingRect:(NSRect)dockRect {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect clipRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
-    float thumbRatio = NSHeight(clipRect) / NSWidth(clipRect);
-    float dockRatio = NSHeight(dockRect) / NSWidth(dockRect);
+    CGFloat thumbRatio = NSHeight(clipRect) / NSWidth(clipRect);
+    CGFloat dockRatio = NSHeight(dockRect) / NSWidth(dockRect);
     
     clipRect = [pdfView convertRect:clipRect toView:nil];
     clipRect.origin = [[self window] convertBaseToScreen:clipRect.origin];
@@ -586,7 +586,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 @implementation SKSnapshotWindow
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
     if (self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation]) {
         [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
     }

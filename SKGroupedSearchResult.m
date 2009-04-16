@@ -42,11 +42,11 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 
 @implementation SKGroupedSearchResult
 
-+ (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(unsigned int)aMaxCount {
++ (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount {
     return [[[self alloc] initWithPage:aPage maxCount:aMaxCount] autorelease];
 }
 
-- (id)initWithPage:(PDFPage *)aPage maxCount:(unsigned int)aMaxCount {
+- (id)initWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount {
     if (self = [super init]) {
         page = [aPage retain];
         maxCount = aMaxCount;
@@ -65,15 +65,15 @@ NSString *SKGroupedSearchResultCountKey = @"count";
     return page;
 }
 
-- (unsigned int)count {
+- (NSUInteger)count {
     return [matches count];
 }
 
-- (unsigned int)maxCount {
+- (NSUInteger)maxCount {
     return maxCount;
 }
 
-- (void)setMaxCount:(unsigned int)newMaxCount {
+- (void)setMaxCount:(NSUInteger)newMaxCount {
     maxCount = newMaxCount;
 }
 

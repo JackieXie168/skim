@@ -42,11 +42,11 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 
 @interface SKColorSwatch : NSControl {
     NSMutableArray *colors;
-    int highlightedIndex;
-    int insertionIndex;
-    int focusedIndex;
-    int clickedIndex;
-    int draggedIndex;
+    NSInteger highlightedIndex;
+    NSInteger insertionIndex;
+    NSInteger focusedIndex;
+    NSInteger clickedIndex;
+    NSInteger draggedIndex;
     
     SEL action;
     id target;
@@ -57,12 +57,12 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 - (NSArray *)colors;
 - (void)setColors:(NSArray *)newColors;
 
-- (int)clickedColorIndex;
+- (NSInteger)clickedColorIndex;
 - (NSColor *)color;
 
 - (BOOL)autoResizes;
 - (void)setAutoResizes:(BOOL)flag;
 
-- (int)colorIndexAtPoint:(NSPoint)point;
+- (NSInteger)colorIndexAtPoint:(NSPoint)point;
 
 @end

@@ -98,7 +98,7 @@ enum {
 - (NSString *)fdfString {
     NSMutableString *fdfString = [NSMutableString string];
     NSRect bounds = [self bounds];
-    float r, g, b, a = 0.0;
+    CGFloat r, g, b, a = 0.0;
     PDFBorder *border = [self border];
     NSString *contents = [self contents];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
@@ -109,7 +109,7 @@ enum {
     [fdfString appendFDFName:SKFDFAnnotationBoundsKey];
     [fdfString appendFormat:@"[%f %f %f %f]", NSMinX(bounds), NSMinY(bounds), NSMaxX(bounds), NSMaxY(bounds)];
     [fdfString appendFDFName:SKFDFAnnotationPageIndexKey];
-    [fdfString appendFormat:@" %i", [self pageIndex]];
+    [fdfString appendFormat:@" %lu", (unsigned long)[self pageIndex]];
     [fdfString appendFDFName:SKFDFAnnotationFlagsKey];
     [fdfString appendString:@" 4"];
     if (a > 0.0) {
@@ -144,7 +144,7 @@ enum {
     return [[[PDFDestination alloc] initWithPage:[self page] atPoint:point] autorelease];
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     PDFPage *page = [self page];
     return page ? [page pageIndex] : NSNotFound;
 }
@@ -162,11 +162,11 @@ enum {
     [border release];
 }
 
-- (float)lineWidth {
+- (CGFloat)lineWidth {
     return [[self border] lineWidth];
 }
 
-- (void)setLineWidth:(float)width {
+- (void)setLineWidth:(CGFloat)width {
     PDFBorder *border = nil;
     if (width > 0.0) {
         border = [[self border] copyWithZone:[self zone]];
@@ -257,7 +257,7 @@ enum {
             } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
                 id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
                 PDFSelection *selection;
-                int markupType = 0;
+                NSInteger markupType = 0;
                 
                 if (selSpec == nil) {
                     [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -330,7 +330,7 @@ enum {
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-	unsigned idx = [[[self page] notes] indexOfObjectIdenticalTo:self];
+	NSUInteger idx = [[[self page] notes] indexOfObjectIdenticalTo:self];
     if (idx != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
         return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" index:idx] autorelease];
@@ -428,7 +428,7 @@ enum {
     return (id)[NSNull null];
 }
 
-- (float)fontSize {
+- (CGFloat)fontSize {
     return 0;
 }
 
@@ -440,7 +440,7 @@ enum {
     return SKScriptingBorderStyleFromBorderStyle([self borderStyle]);
 }
 
-- (void)setScriptingBorderStyle:(int)borderStyle {
+- (void)setScriptingBorderStyle:(NSInteger)borderStyle {
     [self setBorderStyle:SKBorderStyleFromScriptingBorderStyle(borderStyle)];
 }
 

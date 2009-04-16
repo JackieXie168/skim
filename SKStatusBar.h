@@ -58,7 +58,7 @@ typedef NSInteger SKProgressIndicatorStyle;
 + (CIColor *)lowerColor;
 + (CIColor *)upperColor;
 
-- (void)toggleBelowView:(NSView *)view offset:(float)offset;
+- (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset;
 
 - (BOOL)isVisible;
 
@@ -86,14 +86,14 @@ typedef NSInteger SKProgressIndicatorStyle;
 - (id)rightTarget;
 - (void)setRightTarget:(id)newTarget;
 
-- (int)leftState;
-- (void)setLeftState:(int)newState;
+- (NSInteger)leftState;
+- (void)setLeftState:(NSInteger)newState;
 
-- (int)rightState;
-- (void)setRightState:(int)newState;
+- (NSInteger)rightState;
+- (void)setRightState:(NSInteger)newState;
 
-- (int)state;
-- (void)setState:(int)newState;
+- (NSInteger)state;
+- (void)setState:(NSInteger)newState;
 
 - (NSFont *)font;
 - (void)setFont:(NSFont *)fontObject;

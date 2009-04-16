@@ -51,13 +51,13 @@
 }
 
 - (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys context:(void *)context {
-    int i, iMax = [keys count];
+    NSInteger i, iMax = [keys count];
     for (i = 0; i < iMax; i++)
         [self addObserver:anObserver forKey:[keys objectAtIndex:i] context:context];
 }
 
 - (void)removeObserver:(NSObject *)anObserver forKeys:(NSArray *)keys {
-    int i, iMax = [keys count];
+    NSInteger i, iMax = [keys count];
     for (i = 0; i < iMax; i++)
         [self removeObserver:anObserver forKey:[keys objectAtIndex:i]];
 }
@@ -67,7 +67,7 @@
 }
 
 - (void)revertToInitialValuesForKeys:(NSArray *)keys {
-    int i, iMax = [keys count];
+    NSInteger i, iMax = [keys count];
     for (i = 0; i < iMax; i++) {
         NSString *key = [keys objectAtIndex:i];
         [[self values] setValue:[[self initialValues] objectForKey:key] forKey:key];

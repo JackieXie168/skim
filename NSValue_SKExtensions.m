@@ -44,16 +44,16 @@
 - (NSComparisonResult)boundsCompare:(NSValue *)aValue {
     NSRect rect1 = [self rectValue];
     NSRect rect2 = [aValue rectValue];
-    float top1 = NSMaxY(rect1);
-    float top2 = NSMaxY(rect2);
+    CGFloat top1 = NSMaxY(rect1);
+    CGFloat top2 = NSMaxY(rect2);
     
     if (top1 > top2)
         return NSOrderedAscending;
     else if (top1 < top2)
         return NSOrderedDescending;
     
-    float left1 = NSMinX(rect1);
-    float left2 = NSMinX(rect2);
+    CGFloat left1 = NSMinX(rect1);
+    CGFloat left2 = NSMinX(rect2);
     
     if (left1 < left2)
         return NSOrderedAscending;
@@ -84,27 +84,27 @@
     return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
 }
 
-- (float)rectX {
+- (CGFloat)rectX {
     return [self rectValue].origin.x;
 }
 
-- (float)rectY {
+- (CGFloat)rectY {
     return [self rectValue].origin.y;
 }
 
-- (float)rectWidth {
+- (CGFloat)rectWidth {
     return [self rectValue].size.width;
 }
 
-- (float)rectHeight {
+- (CGFloat)rectHeight {
     return [self rectValue].size.height;
 }
 
-- (float)pointX {
+- (CGFloat)pointX {
     return [self pointValue].x;
 }
 
-- (float)pointY {
+- (CGFloat)pointY {
     return [self pointValue].y;
 }
 

@@ -65,7 +65,7 @@
     NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
     id doc;
     NSMutableArray *documents = [NSMutableArray array];
-    unsigned pageCount = [[document pdfDocument] pageCount];
+    NSUInteger pageCount = [[document pdfDocument] pageCount];
     while (doc = [docEnum nextObject]) {
         if ([doc respondsToSelector:@selector(pdfDocument)] && doc != document && [[doc pdfDocument] pageCount] == pageCount)
             [documents addObject:doc];
@@ -79,14 +79,14 @@
         [[notesDocumentPopUpButton lastItem] setRepresentedObject:doc];
     }
     
-    int docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:currentDoc];
+    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:currentDoc];
     [notesDocumentPopUpButton selectItemAtIndex:docIndex == -1 ? 0 : docIndex];
     [currentDoc release];
 }
 
 - (void)windowDidLoad {
     NSArray *filterNames = [SKTransitionController transitionFilterNames];
-    int i, count = [filterNames count];
+    NSInteger i, count = [filterNames count];
     for (i = 0; i < count; i++) {
         NSString *name = [filterNames objectAtIndex:i];
         [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
@@ -119,12 +119,12 @@
     [transitionStylePopUpButton selectItemWithTag:style];
 }
 
-- (float)duration {
+- (CGFloat)duration {
     [self window];
-    return fmaxf([transitionDurationField floatValue], 0.0);
+    return SKMax([transitionDurationField floatValue], 0.0);
 }
 
-- (void)setDuration:(float)newDuration {
+- (void)setDuration:(CGFloat)newDuration {
     [self window];
     [transitionDurationField setFloatValue:newDuration];
     [transitionDurationSlider setFloatValue:newDuration];
@@ -137,7 +137,7 @@
 
 - (void)setShouldRestrict:(BOOL)flag {
     [self window];
-    [transitionExtentMatrix selectCellWithTag:(int)flag];
+    [transitionExtentMatrix selectCellWithTag:(NSInteger)flag];
 }
 
 - (SKPDFDocument *)notesDocument {
@@ -147,7 +147,7 @@
 
 - (void)setNotesDocument:(SKPDFDocument *)newNotesDocument {
     [self window];
-    int docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:newNotesDocument];
+    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:newNotesDocument];
     [notesDocumentPopUpButton selectItemAtIndex:docIndex > 0 ? docIndex : 0];
 }
 

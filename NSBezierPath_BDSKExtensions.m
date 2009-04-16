@@ -44,23 +44,23 @@
 // code from http://www.cocoadev.com/index.pl?NSBezierPathCategory
 // removed UK rect function calls, changed spacing/alignment
 
-+ (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)fillRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
     [p fill];
 }
 
 
-+ (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)strokeRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
     [p stroke];
 }
 
-+ (NSBezierPath *)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius
++ (NSBezierPath *)bezierPathWithRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, 0.5f * fminf(NSHeight(rect), NSWidth(rect)));
+    radius = SKMin(radius, 0.5f * SKMin(NSHeight(rect), NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -88,23 +88,23 @@
     return path;
 }
 
-+ (void)fillLeftRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithLeftRoundRectInRect:rect radius:radius];
     [p fill];
 }
 
 
-+ (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithLeftRoundRectInRect:rect radius:radius];
     [p stroke];
 }
 
-+ (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(float)radius
++ (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, fminf(0.5f * NSHeight(rect), NSWidth(rect)));
+    radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -131,23 +131,23 @@
     return path;
 }
 
-+ (void)fillRightRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)fillRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithRightRoundRectInRect:rect radius:radius];
     [p fill];
 }
 
 
-+ (void)strokeRightRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)strokeRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithRightRoundRectInRect:rect radius:radius];
     [p stroke];
 }
 
-+ (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(float)radius
++ (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, fminf(0.5f * NSHeight(rect), NSWidth(rect)));
+    radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -174,23 +174,23 @@
     return path;
 }
 
-+ (void)fillTopRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)fillTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithTopRoundRectInRect:rect radius:radius];
     [p fill];
 }
 
 
-+ (void)strokeTopRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)strokeTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithTopRoundRectInRect:rect radius:radius];
     [p stroke];
 }
 
-+ (NSBezierPath *)bezierPathWithTopRoundRectInRect:(NSRect)rect radius:(float)radius
++ (NSBezierPath *)bezierPathWithTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, fminf(NSHeight(rect), 0.5f * NSWidth(rect)));
+    radius = SKMin(radius, SKMin(NSHeight(rect), 0.5f * NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -217,23 +217,23 @@
     return path;
 }
 
-+ (void)fillBottomRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)fillBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithBottomRoundRectInRect:rect radius:radius];
     [p fill];
 }
 
 
-+ (void)strokeBottomRoundRectInRect:(NSRect)rect radius:(float)radius
++ (void)strokeBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     NSBezierPath *p = [self bezierPathWithBottomRoundRectInRect:rect radius:radius];
     [p stroke];
 }
 
-+ (NSBezierPath *)bezierPathWithBottomRoundRectInRect:(NSRect)rect radius:(float)radius
++ (NSBezierPath *)bezierPathWithBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fminf(radius, fminf(NSHeight(rect), 0.5f * NSWidth(rect)));
+    radius = SKMin(radius, SKMin(NSHeight(rect), 0.5f * NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -260,7 +260,7 @@
     return path;
 }
 
-+ (void)drawHighlightInRect:(NSRect)rect radius:(float)radius lineWidth:(float)lineWidth color:(NSColor *)color
++ (void)drawHighlightInRect:(NSRect)rect radius:(CGFloat)radius lineWidth:(CGFloat)lineWidth color:(NSColor *)color
 {
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(rect, 0.5 * lineWidth, 0.5 * lineWidth) radius:radius];
     [path setLineWidth:lineWidth];
@@ -285,7 +285,7 @@
 
 + (NSBezierPath *)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect
 {
-    float radius = 0.5f * rect.size.height;
+    CGFloat radius = 0.5f * rect.size.height;
     NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
@@ -312,11 +312,11 @@
 }
 
 + (NSBezierPath *)bezierPathWithStarInRect:(NSRect)rect{
-    float centerX = NSMidX(rect);
-    float centerY = NSMidY(rect);
-    float radiusX = 0.5 * NSWidth(rect);
-    float radiusY = 0.5 * NSHeight(rect);
-    int i = 0;
+    CGFloat centerX = NSMidX(rect);
+    CGFloat centerY = NSMidY(rect);
+    CGFloat radiusX = 0.5 * NSWidth(rect);
+    CGFloat radiusY = 0.5 * NSHeight(rect);
+    NSInteger i = 0;
     NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
@@ -330,11 +330,11 @@
 }
 
 + (NSBezierPath *)bezierPathWithInvertedStarInRect:(NSRect)rect{
-    float centerX = NSMidX(rect);
-    float centerY = NSMidY(rect);
-    float radiusX = 0.5 * NSWidth(rect);
-    float radiusY = 0.5 * NSHeight(rect);
-    int i;
+    CGFloat centerX = NSMidX(rect);
+    CGFloat centerY = NSMidY(rect);
+    CGFloat radiusX = 0.5 * NSWidth(rect);
+    CGFloat radiusY = 0.5 * NSHeight(rect);
+    NSInteger i;
     NSBezierPath *path = [self bezierPath];
     
     [path removeAllPoints];
@@ -347,7 +347,7 @@
     return path;
 }
 
-- (NSPoint)associatedPointForElementAtIndex:(unsigned int)anIndex {
+- (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex {
     NSPoint points[3];
     if (NSCurveToBezierPathElement == [self elementAtIndex:anIndex associatedPoints:points])
         return points[2];
@@ -359,16 +359,16 @@
     NSRect bounds = [self bounds];
     if (NSIsEmptyRect(bounds) && [self elementCount]) {
         NSPoint point, minPoint = NSZeroPoint, maxPoint = NSZeroPoint;
-        unsigned int i, count = [self elementCount];
+        NSUInteger i, count = [self elementCount];
         for (i = 0; i < count; i++) {
             point = [self associatedPointForElementAtIndex:i];
             if (i == 0) {
                 minPoint = maxPoint = point;
             } else {
-                minPoint.x = fminf(minPoint.x, point.x);
-                minPoint.y = fminf(minPoint.y, point.y);
-                maxPoint.x = fmaxf(maxPoint.x, point.x);
-                maxPoint.y = fmaxf(maxPoint.y, point.y);
+                minPoint.x = SKMin(minPoint.x, point.x);
+                minPoint.y = SKMin(minPoint.y, point.y);
+                maxPoint.x = SKMax(maxPoint.x, point.x);
+                maxPoint.y = SKMax(maxPoint.y, point.y);
             }
         }
         bounds = NSMakeRect(minPoint.x - 0.1, minPoint.y - 0.1, maxPoint.x - minPoint.x + 0.2, maxPoint.y - minPoint.y + 0.2);

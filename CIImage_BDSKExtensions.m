@@ -95,7 +95,7 @@ static NSString *endColorKey = @"inputColor1";
     return [self imageInRect:aRect withLinearGradientFromPoint:startPoint toPoint:endPoint fromColor:startColor toColor:endColor];
 }
 
-+ (CIImage *)imageWithGaussianGradientWithCenter:(CGPoint)center radius:(float)radius fromColor:(CIColor *)startColor toColor:(CIColor *)endColor;
++ (CIImage *)imageWithGaussianGradientWithCenter:(CGPoint)center radius:(CGFloat)radius fromColor:(CIColor *)startColor toColor:(CIColor *)endColor;
 {
     static CIFilter *gaussianFilter = nil;
     if (gaussianFilter == nil)
@@ -112,7 +112,7 @@ static NSString *endColorKey = @"inputColor1";
 
 + (CIImage *)imageInRect:(CGRect)aRect withHorizontalGradientFromColor:(CIColor *)fgStartColor toColor:(CIColor *)fgEndColor blendedAtTop:(BOOL)top ofVerticalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
-    float radius = 0.5f * CGRectGetWidth(aRect);
+    CGFloat radius = 0.5f * CGRectGetWidth(aRect);
     CGPoint center = CGPointMake(CGRectGetMidX(aRect), top ? CGRectGetMaxY(aRect) : CGRectGetMinY(aRect));
     
     CIImage *foreground = [self imageInRect:aRect withHorizontalGradientFromColor:fgStartColor toColor:fgEndColor];
@@ -124,7 +124,7 @@ static NSString *endColorKey = @"inputColor1";
 
 + (CIImage *)imageInRect:(CGRect)aRect withVerticalGradientFromColor:(CIColor *)fgStartColor toColor:(CIColor *)fgEndColor blendedAtRight:(BOOL)right ofHorizontalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
-    float radius = 0.5f * CGRectGetHeight(aRect);
+    CGFloat radius = 0.5f * CGRectGetHeight(aRect);
     CGPoint center = CGPointMake(right ? CGRectGetMaxX(aRect) : CGRectGetMinX(aRect), CGRectGetMidY(aRect));
     
     CIImage *foreground = [self imageInRect:aRect withVerticalGradientFromColor:fgStartColor toColor:fgEndColor];
@@ -136,8 +136,8 @@ static NSString *endColorKey = @"inputColor1";
 
 + (CIImage *)imageInRect:(CGRect)aRect withColor:(CIColor *)fgColor blendedAtRight:(BOOL)right ofVerticalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
-    float startWhite = right ? 1.0 : 0.0;
-    float endWhite = 1.0 - startWhite;
+    CGFloat startWhite = right ? 1.0 : 0.0;
+    CGFloat endWhite = 1.0 - startWhite;
     
     CIImage *foreground = [self imageWithConstantColor:fgColor];
     CIImage *background = [self imageInRect:aRect withVerticalGradientFromColor:bgStartColor toColor:bgEndColor];
@@ -148,8 +148,8 @@ static NSString *endColorKey = @"inputColor1";
 
 + (CIImage *)imageInRect:(CGRect)aRect withColor:(CIColor *)fgColor blendedAtTop:(BOOL)top ofHorizontalGradientFromColor:(CIColor *)bgStartColor toColor:(CIColor *)bgEndColor;
 {
-    float startWhite = top ? 1.0 : 0.0;
-    float endWhite = 1.0 - startWhite;
+    CGFloat startWhite = top ? 1.0 : 0.0;
+    CGFloat endWhite = 1.0 - startWhite;
     
     CIImage *foreground = [self imageWithConstantColor:fgColor];
     CIImage *background = [self imageInRect:aRect withHorizontalGradientFromColor:bgStartColor toColor:bgEndColor];
@@ -171,7 +171,7 @@ static NSString *endColorKey = @"inputColor1";
     return [blendFilter valueForKey:@"outputImage"];
 }
 
-- (CIImage *)blurredImageWithBlurRadius:(float)radius;
+- (CIImage *)blurredImageWithBlurRadius:(CGFloat)radius;
 {
     static CIFilter *gaussianBlurFilter = nil;
     if (gaussianBlurFilter == nil)
@@ -217,7 +217,7 @@ static NSString *endColorKey = @"inputColor1";
 
 @implementation CIColor (BDSKExtensions)
 
-+ (CIColor *)colorWithWhite:(float)white
++ (CIColor *)colorWithWhite:(CGFloat)white
 {
     return [self colorWithRed:white green:white blue:white];
 }

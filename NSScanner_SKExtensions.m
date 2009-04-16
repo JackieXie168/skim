@@ -43,7 +43,7 @@
 @implementation NSScanner (SKExtensions)
 
 - (BOOL)scanCharacter:(unichar *)ch {
-    int location, length = [[self string] length];
+    NSInteger location, length = [[self string] length];
     unichar character = 0;
     BOOL success = NO;
     for (location = [self scanLocation]; success == NO && location < length; location++) {
@@ -59,7 +59,7 @@
 }
 
 - (BOOL)peekCharacter:(unichar *)ch {
-    int location, length = [[self string] length];
+    NSInteger location, length = [[self string] length];
     unichar character = 0;
     BOOL success = NO;
     for (location = [self scanLocation]; success == NO && location < length; location++) {

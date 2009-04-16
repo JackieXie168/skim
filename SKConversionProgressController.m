@@ -57,7 +57,7 @@ enum {
 };
 
 @interface SKConversionProgressController (Private)
-- (int)runModalConversionWithInfo:(NSDictionary *)info;
+- (NSInteger)runModalConversionWithInfo:(NSDictionary *)info;
 - (void)doConversionWithInfo:(NSDictionary *)info;
 - (void)stopModalOnMainThread:(BOOL)success;
 - (void)conversionCompleted:(BOOL)didComplete;
@@ -145,11 +145,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender {}
 
-- (int)runModalConversionWithInfo:(NSDictionary *)info {
+- (NSInteger)runModalConversionWithInfo:(NSDictionary *)info {
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     BOOL didDetach = NO;
-    int rv = 0;
+    NSInteger rv = 0;
     
     while (1) {
         
@@ -175,7 +175,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)doConversionWithInfo:(NSDictionary *)info { [self stopModalOnMainThread:NO]; }   
  
 - (void)stopModalOnMainThread:(BOOL)success {
-    int val = (success ? SKConversionSucceeded : SKConversionFailed);
+    NSInteger val = (success ? SKConversionSucceeded : SKConversionFailed);
     NSInvocation *invocation = [NSInvocation invocationWithTarget:NSApp selector:@selector(stopModalWithCode:) argument:&val];
     [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 }
@@ -206,7 +206,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [cancelButton setAction:action];
     NSRect frame = [cancelButton frame];
     [cancelButton sizeToFit];
-    float width = fmaxf(NSWidth([cancelButton frame]), 90.0);
+    CGFloat width = SKMax(NSWidth([cancelButton frame]), 90.0);
     frame.origin.x = NSMaxX(frame) - width;
     frame.size.width = width;
     [cancelButton setFrame:frame];
@@ -245,7 +245,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, PROVIDER_KEY, (id)consumer, CONSUMER_KEY, nil];
     
-    int rv = [self runModalConversionWithInfo:dictionary];
+    NSInteger rv = [self runModalConversionWithInfo:dictionary];
     
     CGDataProviderRelease(provider);
     CGDataConsumerRelease(consumer);
@@ -298,7 +298,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:DVICONVERSIONCOMMAND_KEY];
         NSString *commandName = [commandPath lastPathComponent];
         NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
-        int i = 0, iMax = [paths count];
+        NSInteger i = 0, iMax = [paths count];
         NSFileManager *fm = [NSFileManager defaultManager];
         NSArray *supportedTools = [NSArray arrayWithObjects:@"dvipdfmx", @"dvipdfm", @"dvipdf", @"dvips", nil];
         NSEnumerator *toolEnum = [supportedTools objectEnumerator];
@@ -343,7 +343,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, DVIFILE_KEY, pdfData, PDFPATH_KEY, dviToolPath, DVITOOLPATH_KEY, nil];
         
-        int rv = [self runModalConversionWithInfo:dictionary];
+        NSInteger rv = [self runModalConversionWithInfo:dictionary];
         
         if (rv != SKConversionSucceeded) {
             [pdfData release];

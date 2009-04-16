@@ -40,31 +40,31 @@
 
 
 @interface SKPDFSyncRecord : NSObject {
-    int recordIndex;
-    int pageIndex;
+    NSInteger recordIndex;
+    NSInteger pageIndex;
     NSPoint point;
     NSString *file;
-    int line;
+    NSInteger line;
 }
 
-- (id)initWithRecordIndex:(int)aRecordIndex;
+- (id)initWithRecordIndex:(NSInteger)aRecordIndex;
 
-- (int)recordIndex;
+- (NSInteger)recordIndex;
 
-- (int)pageIndex;
-- (void)setPageIndex:(int)newPageIndex;
+- (NSInteger)pageIndex;
+- (void)setPageIndex:(NSInteger)newPageIndex;
 
 - (NSPoint)point;
 - (void)setPoint:(NSPoint)newPoint;
 
-- (float)x;
-- (float)y;
+- (CGFloat)x;
+- (CGFloat)y;
 
 - (NSString *)file;
 - (void)setFile:(NSString *)newFile;
 
-- (int)line;
-- (void)setLine:(int)newLine;
+- (NSInteger)line;
+- (void)setLine:(NSInteger)newLine;
 
 @end
 
@@ -73,5 +73,5 @@
 @interface SKPDFSyncRecords : NSObject {
     NSMutableDictionary *records;
 }
-- (SKPDFSyncRecord *)recordForIndex:(int)recordIndex;
+- (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex;
 @end

@@ -60,7 +60,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     userAttentionDisabled = flag;
 }
 
-- (int)requestUserAttention:(NSRequestUserAttentionType)requestType {
+- (NSInteger)requestUserAttention:(NSRequestUserAttentionType)requestType {
     return userAttentionDisabled ? 0 : [super requestUserAttention:requestType];
 }
 
@@ -98,15 +98,15 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
     NSWindowController *mainWindowController = [[[[aWindow windowController] document] windowControllers] objectAtIndex:0];
-    int numberOfItems = [windowsMenu numberOfItems];
-    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
+    NSInteger numberOfItems = [windowsMenu numberOfItems];
+    NSInteger itemIndex = [windowsMenu indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
     if (itemIndex != -1) {
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
         NSString *title = [item title];
         
         if ([windowController document] == nil) {
-            int anIndex = numberOfItems;
+            NSInteger anIndex = numberOfItems;
             while (anIndex--) {
                 NSMenuItem *anItem = [windowsMenu itemAtIndex:anIndex];
                 if ([anItem isSeparatorItem] ||
@@ -128,8 +128,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
         } else if ([windowController isEqual:mainWindowController]) {
             NSMutableArray *subitems = [NSMutableArray array];
             NSMenuItem *anItem;
-            int anIndex = numberOfItems;
-            int nextIndex = numberOfItems;
+            NSInteger anIndex = numberOfItems;
+            NSInteger nextIndex = numberOfItems;
             
             while (anIndex--) {
                 anItem = [windowsMenu itemAtIndex:anIndex];
@@ -180,8 +180,8 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:nextIndex];
             
         } else {
-            int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window] andAction:@selector(makeKeyAndOrderFront:)];
-            int anIndex = mainIndex;
+            NSInteger mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window] andAction:@selector(makeKeyAndOrderFront:)];
+            NSInteger anIndex = mainIndex;
             
             [item setIndentationLevel:1];
             
@@ -208,7 +208,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 }
 
 - (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
-    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
+    NSInteger itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow andAction:@selector(makeKeyAndOrderFront:)];
     
     [super addWindowsItem:aWindow title:aString filename:isFilename];
     
@@ -236,7 +236,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
 
 - (NSArray *)orderedDocuments {
     NSMutableArray *orderedDocuments = [[[super orderedDocuments] mutableCopy] autorelease];
-    int i = [orderedDocuments count];
+    NSInteger i = [orderedDocuments count];
     
     while (i--)
         if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKPDFDocument class]] == NO)

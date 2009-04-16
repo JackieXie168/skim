@@ -306,7 +306,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [self hideLeftSideWindow];
     } else if ([[aNotification object] isEqual:thumbnailTableView]) {
         if (updatingThumbnailSelection == NO) {
-            int row = [thumbnailTableView selectedRow];
+            NSInteger row = [thumbnailTableView selectedRow];
             if (row != -1)
                 [self goToPage:[[pdfView document] pageAtIndex:row]];
             
@@ -314,7 +314,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 [self hideLeftSideWindow];
         }
     } else if ([[aNotification object] isEqual:snapshotTableView]) {
-        int row = [snapshotTableView selectedRow];
+        NSInteger row = [snapshotTableView selectedRow];
         if (row != -1) {
             SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
             if ([[controller window] isVisible])
@@ -324,11 +324,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
-- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
 
-- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
-- (BOOL)tableView:(NSTableView *)tv commandSelectRow:(int)row {
+- (BOOL)tableView:(NSTableView *)tv commandSelectRow:(NSInteger)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:kPDFDisplayBoxCropBox];
         
@@ -340,27 +340,27 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
+- (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     fminf(thumbSize.height, roundedThumbnailSize));
+                                     SKMin(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return fmaxf([tv rowHeight], fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return SKMax([tv rowHeight], SKMin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     fminf(thumbSize.height, roundedSnapshotThumbnailSize));
+                                     SKMin(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return fmaxf([tv rowHeight], fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return SKMax([tv rowHeight], SKMin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
     return [tv rowHeight];
 }
@@ -382,7 +382,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:thumbnailTableView]) {
-        unsigned int idx = [rowIndexes firstIndex];
+        NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *pdfData = [page dataRepresentation];
@@ -394,7 +394,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
     } else if ([tv isEqual:findTableView]) {
         NSMutableString *string = [NSMutableString string];
-        unsigned int idx = [rowIndexes firstIndex];
+        NSUInteger idx = [rowIndexes firstIndex];
         while (idx != NSNotFound) {
             PDFSelection *match = [searchResults objectAtIndex:idx];
             [string appendString:@"* "];
@@ -407,7 +407,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [pboard setString:string forType:NSStringPboardType];
     } else if ([tv isEqual:groupedFindTableView]) {
         NSMutableString *string = [NSMutableString string];
-        unsigned int idx = [rowIndexes firstIndex];
+        NSUInteger idx = [rowIndexes firstIndex];
         while (idx != NSNotFound) {
             SKGroupedSearchResult *result = [groupedSearchResults objectAtIndex:idx];
             NSArray *matches = [result matches];
@@ -438,7 +438,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
-- (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+- (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:findTableView]) {
         return YES;
     } else if ([tv isEqual:groupedFindTableView]) {
@@ -447,7 +447,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+- (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:findTableView]) {
         PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
         [self showToolTipForDestination:dest];
@@ -457,7 +457,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
-- (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+- (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
     if ([tv isEqual:findTableView]) {
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     } else if ([tv isEqual:groupedFindTableView]) {
@@ -483,7 +483,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [controller miniaturize];
 }
 
-- (NSMenu *)tableView:(NSTableView *)tv menuForTableColumn:(NSTableColumn *)tableColumn row:(int)row {
+- (NSMenu *)tableView:(NSTableView *)tv menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSMenu *menu = nil;
     if ([tv isEqual:thumbnailTableView]) {
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
@@ -530,7 +530,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 #pragma mark NSOutlineView datasource protocol
 
-- (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
+- (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
@@ -544,7 +544,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return 0;
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item{
+- (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
             item = pdfOutline;
@@ -690,11 +690,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
-- (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:noteOutlineView]) {
-        float rowHeight = 0.0;
+        CGFloat rowHeight = 0.0;
         if (CFDictionaryContainsKey(rowHeights, (const void *)item))
-            rowHeight = *(float *)CFDictionaryGetValue(rowHeights, (const void *)item);
+            rowHeight = *(CGFloat *)CFDictionaryGetValue(rowHeights, (const void *)item);
         else if ([item type] == nil)
             rowHeight = 85.0;
         return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
@@ -709,7 +709,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(float)newHeight byItem:(id)item {
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
     CFDictionarySetValue(rowHeights, (const void *)item, &newHeight);
 }
 
@@ -812,7 +812,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSNumber *rowNumber;
         
         while (rowNumber = [rowEnum nextObject]) {
-            int row = [self outlineRowForPageIndex:[rowNumber intValue]];
+            NSInteger row = [self outlineRowForPageIndex:[rowNumber intValue]];
             if (row != -1)
                 [array addObject:[NSNumber numberWithInt:row]];
         }
@@ -848,7 +848,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)editNoteFromTable:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
-    int row = [noteOutlineView rowForItem:annotation];
+    NSInteger row = [noteOutlineView rowForItem:annotation];
     [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     [noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
 }
@@ -869,11 +869,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)autoSizeNoteRows:(id)sender {
-    float rowHeight = [noteOutlineView rowHeight];
+    CGFloat rowHeight = [noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    float indentation = [noteOutlineView indentationPerLevel];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
+    CGFloat indentation = [noteOutlineView indentationPerLevel];
+    CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
     NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
@@ -885,14 +885,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [(NSMutableArray *)items addObjectsFromArray:[[self notes] valueForKeyPath:@"@unionOfArrays.texts"]];
     }
     
-    int i, count = [items count];
+    NSInteger i, count = [items count];
     
     for (i = 0; i < count; i++) {
         id item = [items objectAtIndex:i];
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        float height = fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0);
+        CGFloat height = SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0);
         CFDictionarySetValue(rowHeights, (const void *)item, &height);
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
@@ -909,7 +909,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         
         NSMutableArray *items = [NSMutableArray array];
         NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
-        unsigned int row = [rowIndexes firstIndex];
+        NSUInteger row = [rowIndexes firstIndex];
         while (row != NSNotFound) {
             [items addObject:[noteOutlineView itemAtRow:row]];
             row = [rowIndexes indexGreaterThanIndex:row];
@@ -965,7 +965,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
     if ([ov isEqual:noteOutlineView]) {
-        int i, count = [noteOutlineView numberOfRows];
+        NSInteger i, count = [noteOutlineView numberOfRows];
         NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) {
             id item = [noteOutlineView itemAtRow:i];
@@ -974,7 +974,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
         return texts;
     } else if ([ov isEqual:outlineView]) {
-        int i, count = [outlineView numberOfRows];
+        NSInteger i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
             [array addObject:[[(SKPDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
@@ -1018,7 +1018,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 #pragma mark SKSplitView delegate protocol
 
-- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
+- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(NSInteger)offset{
     if ([sender isEqual:splitView]) {
         if (offset == 0)
             [self toggleLeftSidePane:self];
@@ -1036,7 +1036,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             if(lastSecondaryPdfViewPaneHeight <= 0.0)
                 lastSecondaryPdfViewPaneHeight = 200.0; // a reasonable value to start
             if (lastSecondaryPdfViewPaneHeight > 0.5 * NSHeight(primaryFrame))
-                lastSecondaryPdfViewPaneHeight = floorf(0.5 * NSHeight(primaryFrame));
+                lastSecondaryPdfViewPaneHeight = SKFloor(0.5 * NSHeight(primaryFrame));
             primaryFrame.size.height -= lastSecondaryPdfViewPaneHeight;
             secondaryFrame.size.height = lastSecondaryPdfViewPaneHeight;
         }
@@ -1060,7 +1060,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             NSRect leftFrame = [leftView frame];
             NSRect mainFrame = [mainView frame];
             NSRect rightFrame = [rightView frame];
-            float contentWidth = NSWidth([sender frame]) - 2 * [sender dividerThickness];
+            CGFloat contentWidth = NSWidth([sender frame]) - 2 * [sender dividerThickness];
             
             if (NSWidth(leftFrame) <= 1.0)
                 leftFrame.size.width = 0.0;
@@ -1068,9 +1068,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 rightFrame.size.width = 0.0;
             
             if (contentWidth < NSWidth(leftFrame) + NSWidth(rightFrame)) {
-                float resizeFactor = contentWidth / (oldSize.width - [sender dividerThickness]);
-                leftFrame.size.width = floorf(resizeFactor * NSWidth(leftFrame));
-                rightFrame.size.width = floorf(resizeFactor * NSWidth(rightFrame));
+                CGFloat resizeFactor = contentWidth / (oldSize.width - [sender dividerThickness]);
+                leftFrame.size.width = SKFloor(resizeFactor * NSWidth(leftFrame));
+                rightFrame.size.width = SKFloor(resizeFactor * NSWidth(rightFrame));
             }
             
             mainFrame.size.width = contentWidth - NSWidth(leftFrame) - NSWidth(rightFrame);
@@ -1089,13 +1089,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             NSView *secondaryView = [[sender subviews] objectAtIndex:1];
             NSRect primaryFrame = [primaryView frame];
             NSRect secondaryFrame = [secondaryView frame];
-            float contentHeight = NSHeight([sender frame]) - [sender dividerThickness];
+            CGFloat contentHeight = NSHeight([sender frame]) - [sender dividerThickness];
             
             if (NSHeight(secondaryFrame) <= 1.0)
                 secondaryFrame.size.height = 0.0;
             
             if (contentHeight < NSHeight(secondaryFrame))
-                secondaryFrame.size.height = floorf(NSHeight(secondaryFrame) * contentHeight / (oldSize.height - [sender dividerThickness]));
+                secondaryFrame.size.height = SKFloor(NSHeight(secondaryFrame) * contentHeight / (oldSize.height - [sender dividerThickness]));
             
             primaryFrame.size.height = contentHeight - NSHeight(secondaryFrame);
             primaryFrame.origin.x = NSMaxY(secondaryFrame) + [sender dividerThickness];
@@ -1251,7 +1251,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     } else if (action == @selector(doZoomOut:)) {
         return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(doZoomToSelection:)) {
@@ -1403,9 +1403,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
     [zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [zoomInActualOutButton setEnabled:fabsf([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [zoomInActualOutButton setEnabled:SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
     [zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
-    [zoomActualButton setEnabled:fabsf([pdfView scaleFactor] - 1.0 ) > 0.01];
+    [zoomActualButton setEnabled:SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {

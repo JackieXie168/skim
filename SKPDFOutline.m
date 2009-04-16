@@ -72,13 +72,13 @@
     return parent;
 }
 
-- (unsigned int)numberOfChildren {
+- (NSUInteger)numberOfChildren {
     return [outline numberOfChildren];
 }
 
-- (SKPDFOutline *)childAtIndex:(unsigned int)anIndex {
+- (SKPDFOutline *)childAtIndex:(NSUInteger)anIndex {
     if (children == nil) {
-        int i, count = [outline numberOfChildren];
+        NSInteger i, count = [outline numberOfChildren];
         children = [[NSMutableArray alloc] initWithCapacity:count];
         for (i = 0; i < count; i++) {
             SKPDFOutline *child = [[[self class] alloc] initWithOutline:[outline childAtIndex:i] parent:self];

@@ -60,7 +60,7 @@ enum {
     NSString *filePath;
     NSImage *fileIcon;
     NSProgressIndicator *progressIndicator;
-    int status;
+    NSInteger status;
     id delegate;
 }
 
@@ -69,7 +69,7 @@ enum {
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (int)status;
+- (NSInteger)status;
 
 - (NSURL *)URL;
 

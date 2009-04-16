@@ -41,9 +41,9 @@
 
 @interface NSData (SKExtensions)
 
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength;
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask;
-- (unsigned)indexOfBytes:(const void *)patternBytes length:(unsigned int)patternLength options:(int)mask range:(NSRange)searchRange;
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength;
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask;
+- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask range:(NSRange)searchRange;
 
 - (NSData *)md5Signature;
 - (NSString *)hexString;

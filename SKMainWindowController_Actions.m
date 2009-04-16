@@ -165,7 +165,7 @@
 
 - (IBAction)createNewNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
-        int type = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
+        NSInteger type = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
         [pdfView addAnnotationWithType:type];
     } else NSBeep();
 }
@@ -173,7 +173,7 @@
 - (IBAction)createNewTextNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
-        int type = [sender tag];
+        NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [textNoteButton tag]) {
             [textNoteButton setTag:type];
@@ -186,7 +186,7 @@
 - (IBAction)createNewCircleNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
-        int type = [sender tag];
+        NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [circleNoteButton tag]) {
             [circleNoteButton setTag:type];
@@ -199,7 +199,7 @@
 - (IBAction)createNewMarkupNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
         BOOL isButtonClick = [sender respondsToSelector:@selector(selectedSegment)];
-        int type = [sender tag];
+        NSInteger type = [sender tag];
         [pdfView addAnnotationWithType:type];
         if (isButtonClick == NO && type != [markupNoteButton tag]) {
             [markupNoteButton setTag:type];
@@ -376,7 +376,7 @@
 }
 
 - (IBAction)goToPreviousNextFirstLastPage:(id)sender {
-    int tag = [sender selectedTag];
+    NSInteger tag = [sender selectedTag];
     if (tag == -1)
         [pdfView goToPreviousPage:sender];
     else if (tag == 1)
@@ -388,7 +388,7 @@
         
 }
 
-- (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)pageSheetDidEnd:(SKPageSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
         [self setPageLabel:[controller stringValue]];
 }
@@ -422,7 +422,7 @@
 
 - (IBAction)goToMarkedPage:(id)sender {
     PDFDocument *pdfDoc = [pdfView document];
-    unsigned int currentPageIndex = [[pdfView currentPage] pageIndex];
+    NSUInteger currentPageIndex = [[pdfView currentPage] pageIndex];
     if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0) {
         NSBeep();
     } else if (beforeMarkedPageIndex != NSNotFound) {
@@ -446,7 +446,7 @@
 }
 
 - (IBAction)doZoomToPhysicalSize:(id)sender {
-    float scaleFactor = 1.0;
+    CGFloat scaleFactor = 1.0;
     NSScreen *screen = [[self window] screen];
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
@@ -465,7 +465,7 @@
     NSRect selRect = [pdfView currentSelectionRect];
     if (NSIsEmptyRect(selRect) == NO) {
         NSRect bounds = [pdfView bounds];
-        float scale = 1.0;
+        CGFloat scale = 1.0;
         bounds.size.width -= [NSScroller scrollerWidth];
         bounds.size.height -= [NSScroller scrollerWidth];
         if (NSWidth(bounds) * NSHeight(selRect) > NSWidth(selRect) * NSHeight(bounds))
@@ -498,15 +498,15 @@
 - (IBAction)alternateZoomToFit:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     NSRect frame = [pdfView frame];
-    float scaleFactor = [pdfView scaleFactor];
+    CGFloat scaleFactor = [pdfView scaleFactor];
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
-        float width = NSWidth([pdfView convertRect:[[pdfView documentView] bounds] fromView:[pdfView documentView]]) / scaleFactor;
+        CGFloat width = NSWidth([pdfView convertRect:[[pdfView documentView] bounds] fromView:[pdfView documentView]]) / scaleFactor;
         [pdfView setScaleFactor:NSWidth(frame) / width];
     } else {
         // zoom to height
         NSRect pageRect = [[pdfView currentPage] boundsForBox:[pdfView displayBox]];
-        float height = NSHeight([pdfView convertRect:pageRect fromPage:[pdfView currentPage]]) / scaleFactor;
+        CGFloat height = NSHeight([pdfView convertRect:pageRect fromPage:[pdfView currentPage]]) / scaleFactor;
         if ([pdfView displaysPageBreaks])
             height += 10.0;
         [pdfView setScaleFactor:NSHeight(frame) / height];
@@ -516,7 +516,7 @@
 }
 
 - (IBAction)zoomInActualOut:(id)sender {
-    int tag = [sender selectedTag];
+    NSInteger tag = [sender selectedTag];
     if (tag == -1)
         [pdfView zoomOut:sender];
     else if (tag == 0)
@@ -543,7 +543,7 @@
         [self doAutoScale:sender];
 }
 
-- (void)rotatePageAtIndex:(unsigned int)idx by:(int)rotation {
+- (void)rotatePageAtIndex:(NSUInteger)idx by:(NSInteger)rotation {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
@@ -556,14 +556,14 @@
             object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKPDFPageActionRotate, SKPDFPageActionKey, page, SKPDFPagePageKey, nil]];
 }
 
-- (void)rotateAllBy:(int)rotation {
+- (void)rotateAllBy:(NSInteger)rotation {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllBy:-rotation];
     [undoManager setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
     [[self document] undoableActionDoesntDirtyDocument];
     
     PDFPage *page = [pdfView currentPage];
-    int i, count = [[pdfView document] pageCount];
+    NSInteger i, count = [[pdfView document] pageCount];
     for (i = 0; i < count; i++)
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + rotation];
     [pdfView layoutDocumentView];
@@ -595,7 +595,7 @@
     [self rotateAllBy:[sender selectedSegment] == 0 ? -90 : 90];
 }
 
-- (void)cropPageAtIndex:(unsigned int)anIndex toRect:(NSRect)rect {
+- (void)cropPageAtIndex:(NSUInteger)anIndex toRect:(NSRect)rect {
     NSRect oldRect = [[[pdfView document] pageAtIndex:anIndex] boundsForBox:kPDFDisplayBoxCropBox];
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:anIndex toRect:oldRect];
@@ -625,8 +625,8 @@
     PDFPage *currentPage = [pdfView currentPage];
     NSRect visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
     
-    int i, count = [[pdfView document] pageCount];
-    int rectCount = [rects count];
+    NSInteger i, count = [[pdfView document] pageCount];
+    NSInteger rectCount = [rects count];
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
@@ -656,7 +656,7 @@
     BOOL emptySelection = NSIsEmptyRect(rect[0]);
     
     if (emptySelection) {
-        int i, j, count = [[pdfView document] pageCount];
+        NSInteger i, j, count = [[pdfView document] pageCount];
         rect[0] = rect[1] = NSZeroRect;
         
         [[self progressController] setMaxValue:(double)MIN(18, count)];
@@ -670,7 +670,7 @@
                 [[self progressController] incrementBy:1.0];
             }
         } else {
-            int start[3] = {0, count / 2 - 3, count - 6};
+            NSInteger start[3] = {0, count / 2 - 3, count - 6};
             for (j = 0; j < 3; j++) {
                 for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
@@ -678,10 +678,10 @@
                 }
             }
         }
-        float w = fmaxf(NSWidth(rect[0]), NSWidth(rect[1]));
-        float h = fmaxf(NSHeight(rect[0]), NSHeight(rect[1]));
+        CGFloat w = SKMax(NSWidth(rect[0]), NSWidth(rect[1]));
+        CGFloat h = SKMax(NSHeight(rect[0]), NSHeight(rect[1]));
         for (j = 0; j < 2; j++)
-            rect[j] = NSMakeRect(floorf(NSMidX(rect[j]) - 0.5 * w), floorf(NSMidY(rect[j]) - 0.5 * h), w, h);
+            rect[j] = NSMakeRect(SKFloor(NSMidX(rect[j]) - 0.5 * w), SKFloor(NSMidY(rect[j]) - 0.5 * h), w, h);
         rectArray = [NSArray arrayWithObjects:[NSValue valueWithRect:rect[0]], [NSValue valueWithRect:rect[1]], nil];
     } else {
         rectArray = [NSArray arrayWithObject:[NSValue valueWithRect:rect[0]]];
@@ -698,7 +698,7 @@
 - (IBAction)autoCropAll:(id)sender {
     NSMutableArray *rectArray = [NSMutableArray array];
     PDFDocument *pdfDoc = [pdfView document];
-    int i, iMax = [[pdfView document] pageCount];
+    NSInteger i, iMax = [[pdfView document] pageCount];
     
 	[[self progressController] setMaxValue:(double)iMax];
 	[[self progressController] setDoubleValue:0.0];
@@ -719,7 +719,7 @@
 - (IBAction)smartAutoCropAll:(id)sender {
     NSMutableArray *rectArray = [NSMutableArray array];
     PDFDocument *pdfDoc = [pdfView document];
-    int i, iMax = [pdfDoc pageCount];
+    NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
     
 	[[self progressController] setMaxValue:1.1 * iMax];
@@ -729,8 +729,8 @@
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
-        size.width = fmaxf(size.width, NSWidth(bbox));
-        size.height = fmaxf(size.height, NSHeight(bbox));
+        size.width = SKMax(size.width, NSWidth(bbox));
+        size.height = SKMax(size.height, NSHeight(bbox));
         [[self progressController] incrementBy:1.0];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -767,7 +767,7 @@
 }
 
 - (IBAction)changeScaleFactor:(id)sender {
-    int scale = [sender intValue];
+    NSInteger scale = [sender intValue];
 
 	if (scale >= 10.0 && scale <= 500.0 ) {
 		[pdfView setScaleFactor:scale / 100.0f];
@@ -775,7 +775,7 @@
 	}
 }
 
-- (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
         [pdfView setScaleFactor:[[controller textField] intValue]];
 }
@@ -792,7 +792,7 @@
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    int newToolMode = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
+    NSInteger newToolMode = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
     [pdfView setToolMode:newToolMode];
 }
 
@@ -835,7 +835,7 @@
     }
     
     PDFDisplayMode displayMode = [pdfView displayMode];
-    float scaleFactor = [[self pdfView] scaleFactor];
+    CGFloat scaleFactor = [[self pdfView] scaleFactor];
     BOOL autoScales = [[self pdfView] autoScales];
     BOOL isSingleRow;
     
@@ -876,7 +876,7 @@
     [[self window] setFrame:frame display:[[self window] isVisible]];
 }
 
-- (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         [pdfView takePasswordFrom:[controller textField]];
         if ([[pdfView document] isLocked] == NO)
@@ -893,12 +893,12 @@
           contextInfo:NULL];
 }
 
-- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)bookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *path = [[self document] fileName];
         NSString *label = [controller stringValue];
-        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
+        NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
         [bmController addBookmarkForPath:path pageIndex:pageIndex label:label toFolder:[controller selectedFolder]];
     }
 }
@@ -914,7 +914,7 @@
           contextInfo:NULL];
 }
 
-- (void)setupBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)setupBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSDictionary *setup = [[self document] currentDocumentSetup];
@@ -934,7 +934,7 @@
           contextInfo:NULL];
 }
 
-- (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)sessionBookmarkSheetDidEnd:(SKBookmarkSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *label = [controller stringValue];
@@ -965,7 +965,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
-- (void)presentationSheetDidEnd:(SKPresentationOptionsSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)presentationSheetDidEnd:(SKPresentationOptionsSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         SKTransitionController *transitions = [pdfView transitionController];
         [transitions setTransitionStyle:[controller transitionStyle]];
@@ -1042,7 +1042,7 @@
             if(lastLeftSidePaneWidth <= 0.0)
                 lastLeftSidePaneWidth = 250.0; // a reasonable value to start
             if (lastLeftSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-                lastLeftSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
+                lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth(pdfFrame));
             pdfFrame.size.width -= lastLeftSidePaneWidth;
             sideFrame.size.width = lastLeftSidePaneWidth;
         }
@@ -1092,7 +1092,7 @@
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-                lastRightSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
+                lastRightSidePaneWidth = SKFloor(0.5 * NSWidth(pdfFrame));
             pdfFrame.size.width -= lastRightSidePaneWidth;
             sideFrame.size.width = lastRightSidePaneWidth;
         }
@@ -1140,7 +1140,7 @@
         
         NSRect frame1, frame2, tmpFrame = [pdfSplitView bounds];
         
-        NSDivideRect(tmpFrame, &frame1, &frame2, roundf(0.7 * NSHeight(tmpFrame)), NSMaxYEdge);
+        NSDivideRect(tmpFrame, &frame1, &frame2, SKRound(0.7 * NSHeight(tmpFrame)), NSMaxYEdge);
         NSDivideRect(frame2, &tmpFrame, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
         
         [pdfEdgeView setFrame:frame1];

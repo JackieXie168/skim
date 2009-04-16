@@ -52,8 +52,8 @@
 
 - (SKPDFOutline *)parent;
 
-- (unsigned int)numberOfChildren;
-- (SKPDFOutline *)childAtIndex:(unsigned int)anIndex;
+- (NSUInteger)numberOfChildren;
+- (SKPDFOutline *)childAtIndex:(NSUInteger)anIndex;
 
 - (NSString *)label;
 

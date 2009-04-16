@@ -55,7 +55,7 @@
     return NSRectFromString([properties valueForKey:SKNPDFAnnotationBoundsKey]);
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     return [[properties valueForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
 }
 
@@ -72,7 +72,7 @@
 }
 
 - (id)page {
-    unsigned int pageIndex = [self pageIndex];
+    NSUInteger pageIndex = [self pageIndex];
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%u", pageIndex + 1], @"label", nil];
 }
 

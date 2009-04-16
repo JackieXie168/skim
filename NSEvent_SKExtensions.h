@@ -49,6 +49,6 @@ enum {
 @end
 
 @interface NSEvent (SKLeopardGestures)
-- (float)magnification;
-- (float)rotation;
+- (CGFloat)magnification;
+- (CGFloat)rotation;
 @end

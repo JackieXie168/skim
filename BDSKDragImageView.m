@@ -61,7 +61,7 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *basePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SkimNote"];
     NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
-    int i = 0;
+    NSInteger i = 0;
     
     while ([fm fileExistsAtPath:path])
         path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
@@ -83,7 +83,7 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [[[super menuForEvent:theEvent] copy] autorelease];
-	int i = [menu numberOfItems];
+	NSInteger i = [menu numberOfItems];
     
     while (i-- > 0) {
 		NSMenuItem *item = (NSMenuItem *)[menu itemAtIndex:i];
@@ -122,8 +122,8 @@
 						if ([delegate respondsToSelector:@selector(dragImageForDragImageView:)]) {
 							dragImage = [delegate dragImageForDragImageView:self];
                             NSSize imageSize = [dragImage size];
-                            dragPoint.x -= floorf(0.5 * imageSize.width);
-                            dragPoint.y -= floorf(0.5 * imageSize.height);
+                            dragPoint.x -= SKFloor(0.5 * imageSize.width);
+                            dragPoint.y -= SKFloor(0.5 * imageSize.height);
 						}
                         if (dragImage == nil) {
                             NSRect rect = [self bounds];
@@ -164,7 +164,7 @@
 	return nil;
 }    
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
+- (NSUInteger)draggingSourceOperationMaskForLocal:(BOOL)isLocal{ 
     return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy; 
 }
 

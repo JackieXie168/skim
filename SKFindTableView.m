@@ -70,9 +70,9 @@
     if ([self window]) {
         NSRange rowRange = [self rowsInRect:[self visibleRect]];
         NSRange columnRange = [self columnsInRect:[self visibleRect]];
-        unsigned int row, column;
+        NSUInteger row, column;
         NSTableColumn *tableColumn;
-        int userData;
+        NSInteger userData;
         NSTrackingRectTag tag;
         
         for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
@@ -120,10 +120,10 @@
 
 - (void)mouseEntered:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
-        int userData = (int)[theEvent userData];
-        int numCols = [self numberOfColumns];
-		int column = userData % numCols;
-		int row = userData / numCols;
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
         [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
 	}
@@ -131,10 +131,10 @@
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
-        int userData = (int)[theEvent userData];
-        int numCols = [self numberOfColumns];
-		int column = userData % numCols;
-		int row = userData / numCols;
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
         NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
         [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
 	}

@@ -100,7 +100,7 @@ static SKInfoWindowController *sharedInstance = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];
@@ -203,7 +203,7 @@ static inline
 NSString *SKSizeString(NSSize size, NSSize altSize) {
     BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
     NSString *units = useMetric ? @"cm" : @"in";
-    float factor = useMetric ? 0.035277778 : 0.013888889;
+    CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
     return [NSString stringWithFormat:@"%.1f x %.1f %@  (%.1f x %.1f %@)", size.width * factor, size.height * factor, units, altSize.width * factor, altSize.height * factor, units];
 }
 

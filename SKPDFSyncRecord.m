@@ -41,7 +41,7 @@
 
 @implementation SKPDFSyncRecord
 
-- (id)initWithRecordIndex:(int)aRecordIndex {
+- (id)initWithRecordIndex:(NSInteger)aRecordIndex {
     if (self = [super init]) {
         recordIndex = aRecordIndex;
         pageIndex = NSNotFound;
@@ -57,15 +57,15 @@
     [super dealloc];
 }
 
-- (int)recordIndex {
+- (NSInteger)recordIndex {
     return recordIndex;
 }
 
-- (int)pageIndex {
+- (NSInteger)pageIndex {
     return pageIndex;
 }
 
-- (void)setPageIndex:(int)newPageIndex {
+- (void)setPageIndex:(NSInteger)newPageIndex {
     if (pageIndex != newPageIndex) {
         pageIndex = newPageIndex;
     }
@@ -79,11 +79,11 @@
     point = newPoint;
 }
 
-- (float)x {
+- (CGFloat)x {
     return point.x;
 }
 
-- (float)y {
+- (CGFloat)y {
     return point.y;
 }
 
@@ -98,11 +98,11 @@
     }
 }
 
-- (int)line {
+- (NSInteger)line {
     return line;
 }
 
-- (void)setLine:(int)newLine {
+- (void)setLine:(NSInteger)newLine {
     line = newLine;
 }
 
@@ -124,7 +124,7 @@
     [super dealloc];
 }
 
-- (SKPDFSyncRecord *)recordForIndex:(int)recordIndex {
+- (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex {
     NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
     SKPDFSyncRecord *record = [records objectForKey:recordNumber];
     if (record == nil) {

@@ -40,7 +40,7 @@
 
 
 static inline NSPoint SKIntegralPoint(NSPoint point) {
-    return NSMakePoint(roundf(point.x), roundf(point.y));
+    return NSMakePoint(SKRound(point.x), SKRound(point.y));
 }
 
 static inline NSPoint SKAddPoints(NSPoint aPoint, NSPoint bPoint) {
@@ -71,32 +71,32 @@ static inline NSPoint SKCenterPoint(NSRect rect) {
     return NSMakePoint(NSMidX(rect), NSMidY(rect));
 }
 
-static inline NSSize SKMakeSquareSize(float width) {
+static inline NSSize SKMakeSquareSize(CGFloat width) {
     return NSMakeSize(width, width);
 }
 
 static inline NSRect SKRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
-    rect.origin.x = fminf(aPoint.x, bPoint.x);
-    rect.origin.y = fminf(aPoint.y, bPoint.y);
-    rect.size.width = fmaxf(aPoint.x, bPoint.x) - NSMinX(rect);
-    rect.size.height = fmaxf(aPoint.y, bPoint.y) - NSMinY(rect);
+    rect.origin.x = SKMin(aPoint.x, bPoint.x);
+    rect.origin.y = SKMin(aPoint.y, bPoint.y);
+    rect.size.width = SKMax(aPoint.x, bPoint.x) - NSMinX(rect);
+    rect.size.height = SKMax(aPoint.y, bPoint.y) - NSMinY(rect);
     return rect;
 }
 
 static inline NSRect SKIntegralRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
-    rect.origin.x = floorf(fminf(aPoint.x, bPoint.x));
-    rect.origin.y = floorf(fminf(aPoint.y, bPoint.y));
-    rect.size.width = ceilf(fmaxf(aPoint.x, bPoint.x) - NSMinX(rect));
-    rect.size.height = ceilf(fmaxf(aPoint.y, bPoint.y) - NSMinY(rect));
+    rect.origin.x = SKFloor(SKMin(aPoint.x, bPoint.x));
+    rect.origin.y = SKFloor(SKMin(aPoint.y, bPoint.y));
+    rect.size.width = ceilf(SKMax(aPoint.x, bPoint.x) - NSMinX(rect));
+    rect.size.height = ceilf(SKMax(aPoint.y, bPoint.y) - NSMinY(rect));
     return rect;
 }
 
 static inline NSRect SKRectFromCenterAndPoint(NSPoint center, NSPoint point) {
     NSRect rect;
-    rect.size.width = 2.0 * fabsf(center.x - point.x);
-    rect.size.height = 2.0 * fabsf(center.y - point.y);
+    rect.size.width = 2.0 * SKAbs(center.x - point.x);
+    rect.size.height = 2.0 * SKAbs(center.y - point.y);
     rect.origin.x = center.x - 0.5 * NSWidth(rect);
     rect.origin.y = center.y - 0.5 * NSHeight(rect);
     return rect;
@@ -117,32 +117,32 @@ extern NSRect SKConstrainRect(NSRect rect, NSRect boundary);
 extern NSRect SKIntersectionRect(NSRect rect, NSRect boundary);
 
 extern NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped);
-extern NSRect SKCenterRectVertically(NSRect rect, float height, BOOL flipped);
-extern NSRect SKCenterRectHorizontally(NSRect rect, float width);
+extern NSRect SKCenterRectVertically(NSRect rect, CGFloat height, BOOL flipped);
+extern NSRect SKCenterRectHorizontally(NSRect rect, CGFloat width);
 
 #pragma mark -
 
-extern BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint startPoint, NSPoint endPoint, float pointDelta, float lineDelta);
+extern BOOL SKPointNearLineFromPointToPoint(NSPoint point, NSPoint startPoint, NSPoint endPoint, CGFloat pointDelta, CGFloat lineDelta);
 
 #pragma mark -
 
 static inline
 Rect SKQDRectFromNSRect(NSRect nsRect) {
     Rect qdRect;
-    qdRect.left = round(NSMinX(nsRect));
-    qdRect.bottom = round(NSMinY(nsRect));
-    qdRect.right = round(NSMaxX(nsRect));
-    qdRect.top = round(NSMaxY(nsRect));
+    qdRect.left = SKRound(NSMinX(nsRect));
+    qdRect.bottom = SKRound(NSMinY(nsRect));
+    qdRect.right = SKRound(NSMaxX(nsRect));
+    qdRect.top = SKRound(NSMaxY(nsRect));
     return qdRect;
 }
 
 static inline
 NSRect SKNSRectFromQDRect(Rect qdRect) {
     NSRect nsRect;
-    nsRect.origin.x = (float)qdRect.left;
-    nsRect.origin.y = (float)qdRect.bottom;
-    nsRect.size.width = (float)(qdRect.right - qdRect.left);
-    nsRect.size.height = (float)(qdRect.top - qdRect.bottom);
+    nsRect.origin.x = (CGFloat)qdRect.left;
+    nsRect.origin.y = (CGFloat)qdRect.bottom;
+    nsRect.size.width = (CGFloat)(qdRect.right - qdRect.left);
+    nsRect.size.height = (CGFloat)(qdRect.top - qdRect.bottom);
     return nsRect;
 }
 
@@ -150,15 +150,15 @@ NSRect SKNSRectFromQDRect(Rect qdRect) {
 static inline
 Point SKQDPointFromNSPoint(NSPoint nsPoint) {
     Point qdPoint;
-    qdPoint.h = round(nsPoint.x);
-    qdPoint.v = round(nsPoint.y);
+    qdPoint.h = SKRound(nsPoint.x);
+    qdPoint.v = SKRound(nsPoint.y);
     return qdPoint;
 }
 
 static inline
 NSPoint SKNSPointFromQDPoint(Point qdPoint) {
     NSPoint nsPoint;
-    nsPoint.x = (float)qdPoint.h;
-    nsPoint.y = (float)qdPoint.v;
+    nsPoint.x = (CGFloat)qdPoint.h;
+    nsPoint.y = (CGFloat)qdPoint.v;
     return nsPoint;
 }

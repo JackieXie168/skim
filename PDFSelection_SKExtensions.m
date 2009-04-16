@@ -47,8 +47,8 @@
 #define ELLIPSIS_CHARACTER 0x2026
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
-- (int)numberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
+- (NSInteger)numberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
 @end
 
 
@@ -74,7 +74,7 @@
 	NSRange foundRange;
     NSDictionary *attributes;
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-	float fontSize = fontSizeNumber ? [fontSizeNumber floatValue] : 0.0;
+	CGFloat fontSize = fontSizeNumber ? [fontSizeNumber floatValue] : 0.0;
     
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];
@@ -119,24 +119,24 @@
     return destination;
 }
 
-- (int)safeNumberOfRangesOnPage:(PDFPage *)page {
+- (NSInteger)safeNumberOfRangesOnPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
         return [self numberOfRangesOnPage:page];
     else
         return 0;
 }
 
-- (NSRange)safeRangeAtIndex:(int)anIndex onPage:(PDFPage *)page {
+- (NSRange)safeRangeAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
         return [self rangeAtIndex:anIndex onPage:page];
     else
         return NSMakeRange(NSNotFound, 0);
 }
 
-static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, unsigned int anIndex) {
-    unsigned int length = [string length];
+static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
+    NSUInteger length = [string length];
     NSRange range = NSMakeRange(0, 0);
-    unsigned int i, iMax = [substrings count];
+    NSUInteger i, iMax = [substrings count];
     
     if (anIndex >= iMax)
         return NSMakeRange(NSNotFound, 0);
@@ -172,7 +172,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         while (dict = [dictEnum nextObject]) {
             NSTextStorage *containerText = [dict objectForKey:@"text"];
             CFArrayRef textRanges = (CFArrayRef)[dict objectForKey:@"ranges"];
-            unsigned int ri, numRanges = CFArrayGetCount(textRanges);
+            NSUInteger ri, numRanges = CFArrayGetCount(textRanges);
             CFMutableArrayRef ranges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
             
             for (ri = 0; ri < numRanges; ri++) {
@@ -184,7 +184,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     textStorage = [[NSTextStorage alloc] initWithAttributedString:[containerText attributedSubstringFromRange:textRange]];
                 
                 // now get the ranges, which can be any kind of specifier
-                int startIndex, endIndex, i, count, *indices;
+                NSInteger startIndex, endIndex, i, count, *indices;
                 CFMutableArrayRef tmpRanges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
                 
                 if ([specifier isKindOfClass:[NSPropertySpecifier class]]) {
@@ -220,7 +220,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     indices = [specifier indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
                     NSRange range = NSMakeRange(0, 0);
                     for (i = 0; i < count; i++) {
-                        unsigned int idx = indices[i];
+                        NSUInteger idx = indices[i];
                         if (range.length = 0 || idx > NSMaxRange(range)) {
                             if (range.length)
                                 CFArrayAppendValue(tmpRanges, &range);
@@ -244,7 +244,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                             if (continuous) {
                                 CFArrayAppendValue(ranges, &range);
                             } else {
-                                unsigned int j;
+                                NSUInteger j;
                                 for (j = range.location; j < NSMaxRange(range); j++) {
                                     NSRange r = NSMakeRange(j, 1);
                                     CFArrayAppendValue(ranges, &r);
@@ -277,7 +277,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                 CFArrayAppendValue(ranges, &range);
                             } else {
                                 if (endIndex == -1) endIndex = startIndex;
-                                int j;
+                                NSInteger j;
                                 for (j = startIndex; j <= endIndex; j++) {
                                     range = rangeOfSubstringOfStringAtIndex(string, substrings, j);
                                     if (range.location == NSNotFound)
@@ -379,20 +379,20 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         while (dict = [dictEnum nextObject]) {
             id container = [dict objectForKey:@"container"];
             CFArrayRef ranges = (CFArrayRef)[dict objectForKey:@"ranges"];
-            unsigned int i, numRanges = CFArrayGetCount(ranges);
+            NSUInteger i, numRanges = CFArrayGetCount(ranges);
             
             if ([container isKindOfClass:[SKPDFDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
                 
                 PDFDocument *document = [container pdfDocument];
-                unsigned int aPageIndex = (aPage ? [aPage pageIndex] : NSNotFound), page, numPages = [document pageCount];
-                unsigned int *pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(unsigned int));
+                NSUInteger aPageIndex = (aPage ? [aPage pageIndex] : NSNotFound), page, numPages = [document pageCount];
+                NSUInteger *pageLengths = NSZoneMalloc(NSDefaultMallocZone(), numPages * sizeof(NSUInteger));
                 
                 for (page = 0; page < numPages; page++)
                     pageLengths[page] = NSNotFound;
                 
                 for (i = 0; i < numRanges; i++) {
                     NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
-                    unsigned int pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
+                    NSUInteger pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     
                     for (page = 0; (page < numPages) && (pageStart < NSMaxRange(range)); page++) {
                         if (pageLengths[page] == NSNotFound)
@@ -474,7 +474,7 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
     NSEnumerator *pageEnum = [[self pages] objectEnumerator];
     PDFPage *page;
     while (page = [pageEnum nextObject]) {
-        unsigned int i, iMax = [self safeNumberOfRangesOnPage:page];
+        NSUInteger i, iMax = [self safeNumberOfRangesOnPage:page];
         NSRange lastRange = NSMakeRange(0, 0);
         for (i = 0; i < iMax; i++) {
             NSRange range = [self safeRangeAtIndex:i onPage:page];

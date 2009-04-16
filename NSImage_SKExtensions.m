@@ -827,7 +827,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarCropBoxImage unlockFocus];
     [toolbarCropBoxImage setName:SKImageNameToolbarCropBox];
     
-    float outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
+    CGFloat outStartGray = 0.925, outEndGray = 1.0, inStartGray = 0.868, inEndGray = 1.0;
     
     toolbarLeftPaneImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 17.0)];
     [toolbarLeftPaneImage lockFocus];
@@ -1987,29 +1987,29 @@ static NSSize tinyImageSize = {16.0, 16.0};
     return image;
 }
 
-- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:NO andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:NO andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawMirroredInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawMirroredInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:YES andFlipped:NO inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawMirroredAndFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawMirroredAndFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:YES andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:YES andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(float)delta {
+- (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     if (isMirrored || isFlipped) {
-        float dx1 = 0.0, dx2 = 0.0, dy1 = 0.0, dy2 = 0.0, sx = 1.0, sy = 1.0;
+        CGFloat dx1 = 0.0, dx2 = 0.0, dy1 = 0.0, dy2 = 0.0, sx = 1.0, sy = 1.0;
         if (isMirrored) {
             sx = -1.0;
             dx1 = NSMaxX(dstRect);

@@ -53,7 +53,7 @@
 @end
 
 @interface NSEvent (BDSKGesturesPrivate)
-- (float)magnification;
+- (CGFloat)magnification;
 @end
 
 @interface SKSecondaryPDFView (SKPrivate)
@@ -63,7 +63,7 @@
 
 - (void)setSynchronizeZoom:(BOOL)newSync adjustPopup:(BOOL)flag;
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
-- (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
+- (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 
 - (void)startObservingSynchronizedPDFView;
 - (void)stopObservingSynchronizedPDFView;
@@ -98,8 +98,8 @@
     NSLocalizedStringFromTable(@"800%", @"ZoomValues", @"Zoom popup entry")
 */   
 static NSString *SKDefaultScaleMenuLabels[] = {@"=", @"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
-static float SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
-static float SKPopUpMenuFontSize = 11.0;
+static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
+static CGFloat SKPopUpMenuFontSize = 11.0;
 
 - (void)commonInitialization {
     scalePopUpButton = nil;
@@ -146,11 +146,11 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
-    float scale = [self scaleFactor];
-	float maxX = ceilf(NSMaxX(aRect) + scale);
-	float maxY = ceilf(NSMaxY(aRect) + scale);
-	float minX = floorf(NSMinX(aRect) - scale);
-	float minY = floorf(NSMinY(aRect) - scale);
+    CGFloat scale = [self scaleFactor];
+	CGFloat maxX = ceilf(NSMaxX(aRect) + scale);
+	CGFloat maxY = ceilf(NSMaxY(aRect) + scale);
+	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
+	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
 	
     aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
     if (NSIsEmptyRect(aRect) == NO)
@@ -165,12 +165,12 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)reloadPagePopUpButton {
     PDFDocument *pdfDoc = [self document];
-    unsigned i, count = [pagePopUpButton numberOfItems];
+    NSUInteger i, count = [pagePopUpButton numberOfItems];
     NSString *label;
-    float width, maxWidth = 0.0;
+    CGFloat width, maxWidth = 0.0;
     NSSize size = NSMakeSize(1000.0, 1000.0);
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[pagePopUpButton font], NSFontAttributeName, nil];
-    unsigned maxIndex = 0;
+    NSUInteger maxIndex = 0;
     
     while (count--)
         [pagePopUpButton removeItemAtIndex:count];
@@ -214,13 +214,13 @@ static float SKPopUpMenuFontSize = 11.0;
         // set a suitable font, the control size is 0, 1 or 2
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKPopUpMenuFontSize - controlSize]];
 
-        unsigned cnt, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuLabels) / sizeof(NSString *));
+        NSUInteger cnt, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuLabels) / sizeof(NSString *));
         id curItem;
         NSString *label;
-        float width, maxWidth = 0.0;
+        CGFloat width, maxWidth = 0.0;
         NSSize size = NSMakeSize(1000.0, 1000.0);
         NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[scalePopUpButton font], NSFontAttributeName, nil];
-        unsigned maxIndex = 0;
+        NSUInteger maxIndex = 0;
         
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
@@ -359,8 +359,8 @@ static float SKPopUpMenuFontSize = 11.0;
     switching = savedSwitching;
 }
 
-- (unsigned int)lowerIndexForScaleFactor:(float)scaleFactor {
-    unsigned int i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+- (NSUInteger)lowerIndexForScaleFactor:(CGFloat)scaleFactor {
+    NSUInteger i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
     for (i = count - 1; i > 1; i--) {
         if (scaleFactor * 1.01 > SKDefaultScaleMenuFactors[i])
             return i;
@@ -368,8 +368,8 @@ static float SKPopUpMenuFontSize = 11.0;
     return 2;
 }
 
-- (unsigned int)upperIndexForScaleFactor:(float)scaleFactor {
-    unsigned int i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
+- (NSUInteger)upperIndexForScaleFactor:(CGFloat)scaleFactor {
+    NSUInteger i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
     for (i = 2; i < count; i++) {
         if (scaleFactor * 0.99 < SKDefaultScaleMenuFactors[i])
             return i;
@@ -377,14 +377,14 @@ static float SKPopUpMenuFontSize = 11.0;
     return count - 1;
 }
 
-- (unsigned int)indexForScaleFactor:(float)scaleFactor {
-    unsigned int lower = [self lowerIndexForScaleFactor:scaleFactor], upper = [self upperIndexForScaleFactor:scaleFactor];
+- (NSUInteger)indexForScaleFactor:(CGFloat)scaleFactor {
+    NSUInteger lower = [self lowerIndexForScaleFactor:scaleFactor], upper = [self upperIndexForScaleFactor:scaleFactor];
     if (upper > lower && scaleFactor < 0.5 * (SKDefaultScaleMenuFactors[lower] + SKDefaultScaleMenuFactors[upper]))
         return lower;
     return upper;
 }
 
-- (void)setScaleFactor:(float)newScaleFactor {
+- (void)setScaleFactor:(CGFloat)newScaleFactor {
     BOOL savedSwitching = switching;
     switching = YES;
     if ([self synchronizeZoom] || savedSwitching)
@@ -394,13 +394,13 @@ static float SKPopUpMenuFontSize = 11.0;
     switching = savedSwitching;
 }
 
-- (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
+- (void)setScaleFactor:(CGFloat)newScaleFactor adjustPopup:(BOOL)flag {
     BOOL savedSwitching = switching;
     switching = YES;
     if ([self synchronizeZoom])
         [self setSynchronizeZoom:NO adjustPopup:NO];
     if (flag) {
-		unsigned int i = [self indexForScaleFactor:newScaleFactor];
+		NSUInteger i = [self indexForScaleFactor:newScaleFactor];
         [scalePopUpButton selectItemAtIndex:i];
         newScaleFactor = SKDefaultScaleMenuFactors[i];
     }
@@ -411,14 +411,14 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomIn:(id)sender{
-    unsigned int numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
-    unsigned int i = [self lowerIndexForScaleFactor:[self scaleFactor]];
+    NSUInteger numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
     if (i < numberOfDefaultItems - 1) i++;
     [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
 }
 
 - (IBAction)zoomOut:(id)sender{
-    unsigned int i = [self upperIndexForScaleFactor:[self scaleFactor]];
+    NSUInteger i = [self upperIndexForScaleFactor:[self scaleFactor]];
     if (i > 2) i--;
     [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
 }
@@ -426,15 +426,15 @@ static float SKPopUpMenuFontSize = 11.0;
 - (BOOL)canZoomIn{
     if ([super canZoomIn] == NO)
         return NO;
-    unsigned int numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(float));
-    unsigned int i = [self lowerIndexForScaleFactor:[self scaleFactor]];
+    NSUInteger numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
     return i < numberOfDefaultItems - 1;
 }
 
 - (BOOL)canZoomOut{
     if ([super canZoomOut] == NO)
         return NO;
-    unsigned int i = [self upperIndexForScaleFactor:[self scaleFactor]];
+    NSUInteger i = [self upperIndexForScaleFactor:[self scaleFactor]];
     return i > 2;
 }
 
@@ -471,7 +471,7 @@ static float SKPopUpMenuFontSize = 11.0;
             break;
     }
     
-    int i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
+    NSInteger i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
     if (i == -1)
         i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
     if (i != -1) {
@@ -536,8 +536,8 @@ static float SKPopUpMenuFontSize = 11.0;
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if (fabsf(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:fmaxf(pinchZoomFactor * [self scaleFactor], SKDefaultScaleMenuFactors[2])];
+    if (SKAbs(pinchZoomFactor - 1.0) > 0.1)
+        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKDefaultScaleMenuFactors[2])];
     pinchZoomFactor = 1.0;
     if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
@@ -545,9 +545,9 @@ static float SKPopUpMenuFontSize = 11.0;
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
     if ([theEvent respondsToSelector:@selector(magnification)]) {
-        pinchZoomFactor *= 1.0 + fmaxf(-0.5, fminf(1.0 , [theEvent magnification]));
-        float scaleFactor = pinchZoomFactor * [self scaleFactor];
-        unsigned int i = [self indexForScaleFactor:fmaxf(scaleFactor, SKDefaultScaleMenuFactors[2])];
+        pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
+        CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
+        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKDefaultScaleMenuFactors[2])];
         if (i != [self indexForScaleFactor:[self scaleFactor]]) {
             [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
             pinchZoomFactor = scaleFactor / [self scaleFactor];
@@ -586,7 +586,7 @@ static float SKPopUpMenuFontSize = 11.0;
             {
 				NSPoint	newLocation;
 				NSRect	newVisibleRect;
-				float	xDelta, yDelta;
+				CGFloat	xDelta, yDelta;
 				
 				newLocation = [theEvent locationInWindow];
 				xDelta = initialLocation.x - newLocation.x;

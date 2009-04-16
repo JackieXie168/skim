@@ -23,7 +23,7 @@
 - (NSString *)type;
 - (NSRect)bounds;
 - (NSString *)contents;
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 - (NSString *)string;
 - (NSAttributedString *)text;
 

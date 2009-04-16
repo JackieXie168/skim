@@ -64,7 +64,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     NSScreen *screen = [[pdfView window] screen];
     if (screen == nil)
         screen = [NSScreen mainScreen];
-    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
+    CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + OFFSET, width, BUTTON_HEIGHT + 2 * MARGIN);
     if (self = [super initWithContentRect:contentRect screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
@@ -207,7 +207,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
 
@@ -442,8 +442,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     [super mouseExited:theEvent];
 }
 
-- (void)setState:(int)state {
-    int oldState = [self state];
+- (void)setState:(NSInteger)state {
+    NSInteger oldState = [self state];
     NSView *button = [self controlView];
     [super setState:state];
     if (oldState != state && [[button window] isVisible]) {
@@ -497,7 +497,7 @@ static inline NSBezierPath *previousButtonPath(NSSize size) {
 static inline NSBezierPath *zoomButtonPath(NSSize size) {
     NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
-    float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
+    CGFloat centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
     [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 19.0, 19.0)]];
     
@@ -520,7 +520,7 @@ static inline NSBezierPath *zoomButtonPath(NSSize size) {
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
     
-    int i;
+    NSInteger i;
     for (i = 0; i < 4; i++) {
         [path appendBezierPath:arrow];
         [arrow transformUsingAffineTransform:transform];
@@ -534,7 +534,7 @@ static inline NSBezierPath *zoomButtonPath(NSSize size) {
 static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
     NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
-    float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
+    CGFloat centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
     [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 19.0, 19.0)]];
     
@@ -557,7 +557,7 @@ static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
     [transform rotateByDegrees:45.0];
     [transform translateXBy:-centerX yBy:-centerY];
     
-    int i;
+    NSInteger i;
     for (i = 0; i < 4; i++) {
         [path appendBezierPath:arrow];
         [arrow transformUsingAffineTransform:transform];
@@ -571,7 +571,7 @@ static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
 static inline NSBezierPath *closeButtonPath(NSSize size) {
     NSRect bounds = {NSZeroPoint, size};
     NSBezierPath *path = [NSBezierPath bezierPath];
-    float radius = 2.0, halfWidth = 0.5 * NSWidth(bounds) - 15.0, halfHeight = 0.5 * NSHeight(bounds) - 15.0;
+    CGFloat radius = 2.0, halfWidth = 0.5 * NSWidth(bounds) - 15.0, halfHeight = 0.5 * NSHeight(bounds) - 15.0;
     
     [path moveToPoint:NSMakePoint(radius, radius)];
     [path appendBezierPathWithArcWithCenter:NSMakePoint(halfWidth, 0.0) radius:radius startAngle:90.0 endAngle:-90.0 clockwise:YES];

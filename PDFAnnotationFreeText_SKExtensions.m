@@ -47,8 +47,8 @@
 NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 
 @interface PDFAnnotationFreeText (SKNPDFAnnotationFreeTextPrivateDeclarations)
-- (int)rotation;
-- (void)setRotation:(int)rotation;
+- (NSInteger)rotation;
+- (void)setRotation:(NSInteger)rotation;
 @end
 
 
@@ -78,7 +78,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
     [fdfString appendFormat:@"(/%@ %f Tf", [[self font] fontName], [[self font] pointSize]];
     if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO) {
-        float r = 0.0, g = 0.0, b = 0.0, a;
+        CGFloat r = 0.0, g = 0.0, b = 0.0, a;
         [[self fontColor] getRed:&r green:&g blue:&b alpha:&a];
         [fdfString appendFormat:@" %f %f %f rg", r, g, b];
     }
@@ -146,11 +146,11 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
         [self setFont:font];
 }
 
-- (float)fontSize {
+- (CGFloat)fontSize {
     return [[self font] pointSize];
 }
 
-- (void)setFontSize:(float)pointSize {
+- (void)setFontSize:(CGFloat)pointSize {
     NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (font)
         [self setFont:font];

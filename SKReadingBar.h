@@ -43,8 +43,8 @@
 @interface SKReadingBar : NSObject {
     PDFPage *page;
     NSArray *lineRects;
-    int currentLine;
-    unsigned int numberOfLines;
+    NSInteger currentLine;
+    NSUInteger numberOfLines;
 }
 
 - (id)initWithPage:(PDFPage *)aPage;
@@ -52,12 +52,12 @@
 - (PDFPage *)page;
 - (void)setPage:(PDFPage *)newPage;
 
-- (int)currentLine;
-- (void)setCurrentLine:(int)lineIndex;
-- (int)currentLastLine;
+- (NSInteger)currentLine;
+- (void)setCurrentLine:(NSInteger)lineIndex;
+- (NSInteger)currentLastLine;
 
-- (unsigned int)numberOfLines;
-- (void)setNumberOfLines:(unsigned int)number;
+- (NSUInteger)numberOfLines;
+- (void)setNumberOfLines:(NSUInteger)number;
 
 - (NSRect)currentBounds;
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box;

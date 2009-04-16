@@ -85,7 +85,7 @@ static char SKOutlineViewDefaultsObservationContext;
 - (NSArray *)selectedItems {
     NSMutableArray *items = [NSMutableArray array];
     NSIndexSet *indexes = [self selectedRowIndexes];
-    unsigned int idx = [indexes firstIndex];
+    NSUInteger idx = [indexes firstIndex];
     
     while (idx != NSNotFound) {
         [items addObject:[self itemAtRow:idx]];
@@ -123,7 +123,7 @@ static char SKOutlineViewDefaultsObservationContext;
 
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
-	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
@@ -201,8 +201,8 @@ static char SKOutlineViewDefaultsObservationContext;
     
     if ([[self delegate] respondsToSelector:@selector(outlineView:menuForTableColumn:item:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        int row = [self rowAtPoint:mouseLoc];
-        int column = [self columnAtPoint:mouseLoc];
+        NSInteger row = [self rowAtPoint:mouseLoc];
+        NSInteger column = [self columnAtPoint:mouseLoc];
         if (row != -1 && column != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             menu = [[self delegate] outlineView:self menuForTableColumn:tableColumn item:[self itemAtRow:row]];
@@ -241,7 +241,7 @@ static char SKOutlineViewDefaultsObservationContext;
             [cell setFont:font];
     }
     
-    float rowHeight = [NSLayoutManager defaultViewLineHeightForFont:font];
+    CGFloat rowHeight = [NSLayoutManager defaultViewLineHeightForFont:font];
     if ([self respondsToSelector:@selector(selectionHighlightStyle)] && [self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
         rowHeight += 2.0;
     [self setRowHeight:rowHeight];
@@ -256,11 +256,11 @@ static char SKOutlineViewDefaultsObservationContext;
     return nil;
 }
 
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)aTypeSelectHelper {
+- (NSUInteger)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)aTypeSelectHelper {
     return [[self selectedRowIndexes] lastIndex];
 }
 
-- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper selectItemAtIndex:(NSUInteger)itemIndex {
     [self selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
     [self scrollRowToVisible:itemIndex];
 }

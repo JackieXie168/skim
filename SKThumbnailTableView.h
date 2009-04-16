@@ -54,5 +54,5 @@
 
 @interface NSObject (SKThumbnailTableViewDelegate)
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
-- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(int)rowIndex;
+- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 @end

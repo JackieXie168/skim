@@ -51,8 +51,8 @@
 
 #pragma mark Private Core Graphics types and functions
 
-typedef int CGSConnection;
-typedef int CGSWindow;
+typedef NSInteger CGSConnection;
+typedef NSInteger CGSWindow;
 
 typedef enum _CGSTransitionType {
     CGSNone,
@@ -91,14 +91,14 @@ typedef struct _CGSTransitionSpec {
     CGSTransitionType type;
     CGSTransitionOption option;
     CGSWindow wid; // Can be 0 for full-screen
-    float *backColour; // Null for black otherwise pointer to 3 float array with RGB value
+    CGFloat *backColour; // Null for black otherwise pointer to 3 CGFloat array with RGB value
 } CGSTransitionSpec;
 
 extern CGSConnection _CGSDefaultConnection(void) __attribute__((weak_import));
 
-extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, int *pTransitionHandle) __attribute__((weak_import));
-extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration) __attribute__((weak_import));
-extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle) __attribute__((weak_import));
+extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, NSInteger *pTransitionHandle) __attribute__((weak_import));
+extern OSStatus CGSInvokeTransition(const CGSConnection cid, NSInteger transitionHandle, CGFloat duration) __attribute__((weak_import));
+extern OSStatus CGSReleaseTransition(const CGSConnection cid, NSInteger transitionHandle) __attribute__((weak_import));
 
 #pragma mark Check whether the above functions are actually defined at run time
 
@@ -161,11 +161,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     transitionStyle = style;
 }
 
-- (float)duration {
+- (CGFloat)duration {
     return duration;
 }
 
-- (void)setDuration:(float)newDuration {
+- (void)setDuration:(CGFloat)newDuration {
     duration = newDuration;
 }
 
@@ -214,7 +214,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     return [cropFilter valueForKey:@"outputImage"];
 }
 
-- (CIImage *)translateImage:(CIImage *)image xBy:(float)dx yBy:(float)dy {
+- (CIImage *)translateImage:(CIImage *)image xBy:(CGFloat)dx yBy:(CGFloat)dy {
     CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
     NSAffineTransform *affineTransform = [NSAffineTransform transform];
     [affineTransform translateXBy:dx yBy:dy];
@@ -226,8 +226,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
     CIFilter *scalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
     CGRect extent = [image extent];
-    float xScale = size.width / CGRectGetWidth(extent);
-    float yScale = size.height / CGRectGetHeight(extent);
+    CGFloat xScale = size.width / CGRectGetWidth(extent);
+    CGFloat yScale = size.height / CGRectGetHeight(extent);
     [scalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
     [scalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
     [scalingFilter setValue:image forKey:@"inputImage"];
@@ -249,7 +249,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             NSRect extent = shouldRestrict ? rect : bounds;
             value = [CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)];
         } else if ([key isEqualToString:@"inputAngle"]) {
-            float angle = forward ? 0.0 : M_PI;
+            CGFloat angle = forward ? 0.0 : M_PI;
             if ([filterName isEqualToString:@"CIPageCurlTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithFloat:angle];
@@ -338,8 +338,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
                 
                 finalImage = [self newCurrentImage];
                 
-                float dx = NSMinX(bounds) - NSMinX(imageRect);
-                float dy = NSMinY(bounds) - NSMinY(imageRect);
+                CGFloat dx = NSMinX(bounds) - NSMinX(imageRect);
+                CGFloat dy = NSMinY(bounds) - NSMinY(imageRect);
                 initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
                 finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
                 
@@ -355,7 +355,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             }
             
             // declare our variables  
-            int handle = -1;
+            NSInteger handle = -1;
             CGSTransitionSpec spec;
             // specify our specifications
             spec.unknown1 = 0;

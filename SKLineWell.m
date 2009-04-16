@@ -113,7 +113,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
             action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
             target = [decoder decodeObjectForKey:TARGET_KEY];
         } else {
-            [decoder decodeValueOfObjCType:@encode(float) at:&lineWidth];
+            [decoder decodeValueOfObjCType:@encode(CGFloat) at:&lineWidth];
             [decoder decodeValueOfObjCType:@encode(NSInteger) at:&style];
             dashPattern = [[decoder decodeObject] retain];
             [decoder decodeValueOfObjCType:@encode(NSInteger) at:&startLineStyle];
@@ -141,7 +141,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
         [coder encodeConditionalObject:target forKey:TARGET_KEY];
     } else {
-        [coder encodeValueOfObjCType:@encode(float) at:&lineWidth];
+        [coder encodeValueOfObjCType:@encode(CGFloat) at:&lineWidth];
         [coder encodeValueOfObjCType:@encode(NSInteger) at:&style];
         [coder encodeObject:dashPattern];
         [coder encodeValueOfObjCType:@encode(NSInteger) at:&startLineStyle];
@@ -181,9 +181,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSRect bounds = [self bounds];
     
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-        float offset = 0.5 * lineWidth - floorf(0.5 * lineWidth);
-        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset);
-        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset);
+        CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
+        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
+        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
         
         switch (startLineStyle) {
             case kPDFLineStyleNone:
@@ -246,23 +246,23 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                 break;
         }
     } else if ([self displayStyle] == SKLineWellDisplayStyleSimpleLine) {
-        float offset = 0.5 * lineWidth - floorf(0.5 * lineWidth);
-        [path moveToPoint:NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset)];
-        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), roundf(NSMidY(bounds)) - offset)];
+        CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
+        [path moveToPoint:NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
+        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
     } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
-        float inset = 7.0 + 0.5 * lineWidth;
+        CGFloat inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];
     } else {
-        float inset = 7.0 + 0.5 * lineWidth;
+        CGFloat inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithOvalInRect:NSInsetRect(bounds, inset, inset)];
     }
     
     [path setLineWidth:lineWidth];
     
     if (style == kPDFBorderStyleDashed) {
-        int i, count = [dashPattern count];
+        NSInteger i, count = [dashPattern count];
         if (count) {
-            float pattern[count];
+            CGFloat pattern[count];
             for (i = 0; i < count; i++)
                 pattern[i] = [[dashPattern objectAtIndex:i] floatValue];
             [path setLineDash:pattern count:count phase:0.0];
@@ -357,7 +357,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [self setHighlighted:YES];
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
-        unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+        NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
 		BOOL keepOn = YES;
         while (keepOn) {
 			theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -561,12 +561,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
 }
 
-- (float)lineWidth {
+- (CGFloat)lineWidth {
     return lineWidth;
 }
 
-- (void)setLineWidth:(float)width {
-    if (fabsf(lineWidth - width) > 0.00001) {
+- (void)setLineWidth:(CGFloat)width {
+    if (SKAbs(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self changedValueForKey:SKLineWellLineWidthKey];
     }
@@ -739,7 +739,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
         return [NSNumber numberWithInt:[self isActive]];
     } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-        return [NSString stringWithFormat:@"%@ %i", NSLocalizedString(@"line width", @"Accessibility description"), (int)[self lineWidth]];
+        return [NSString stringWithFormat:@"%@ %i", NSLocalizedString(@"line width", @"Accessibility description"), (NSInteger)[self lineWidth]];
     } else if ([attribute isEqualToString:NSAccessibilityHelpAttribute]) {
         return [self toolTip];
     } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {

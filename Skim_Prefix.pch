@@ -47,3 +47,21 @@
     #endif
 
 #endif
+
+#if __LP64__
+#define SKRound(f)      round(f)
+#define SKFloor(f)      floor(f)
+#define SKCeil(f)       ceil(f)
+#define SKTrunc(f)      trunc(f)
+#define SKAbs(f)        fabs(f)
+#define SKMin(f1, f2)   fmin(f1, f2)
+#define SKMax(f1, f2)   fmax(f1, f2)
+#else
+#define SKRound(f)      roundf(f)
+#define SKFloor(f)      floorf(f)
+#define SKCeil(f)       ceilf(f)
+#define SKTrunc(f)      truncf(f)
+#define SKAbs(f)        fabsf(f)
+#define SKMin(f1, f2)   fminf(f1, f2)
+#define SKMax(f1, f2)   fmaxf(f1, f2)
+#endif

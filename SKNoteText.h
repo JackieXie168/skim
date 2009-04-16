@@ -51,7 +51,7 @@
 
 - (NSString *)type;
 - (id)page;
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 - (NSString *)string;
 - (NSAttributedString *)text;
 

@@ -57,7 +57,7 @@
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
 - (NSRectEdge)edge;
-- (int)state;
+- (NSInteger)state;
 - (BOOL)isEnabled;
 - (void)setEnabled:(BOOL)flag;
 

@@ -48,7 +48,7 @@
 #import "SKCFCallBacks.h"
 #import "SKRuntime.h"
 
-#define PDFSYNC_TO_PDF(coord) ((float)coord / 65536.0)
+#define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
 
 // Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
 static NSPoint pdfOffset = {0.0, 0.0};
@@ -305,8 +305,8 @@ struct SKServerFlags {
         SKPDFSyncRecords *records = [[SKPDFSyncRecords alloc] init];
         NSMutableArray *files = [[NSMutableArray alloc] init];
         NSString *file;
-        int recordIndex, line, pageIndex;
-        float x, y;
+        NSInteger recordIndex, line, pageIndex;
+        CGFloat x, y;
         SKPDFSyncRecord *record;
         NSMutableArray *array;
         unichar ch;
@@ -355,7 +355,7 @@ struct SKServerFlags {
                         case 's':
                             // start of a new page, the scanned integer should always equal [pages count]+1
                             if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
-                            while (pageIndex > (int)[pages count]) {
+                            while (pageIndex > (NSInteger)[pages count]) {
                                 array = [[NSMutableArray alloc] init];
                                 [pages addObject:array];
                                 [array release];
@@ -410,7 +410,7 @@ struct SKServerFlags {
     return rv;
 }
 
-- (BOOL)pdfsyncFindFileLine:(int *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (BOOL)pdfsyncFindFileLine:(NSInteger *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
     BOOL rv = NO;
     if (pageIndex < [pages count]) {
         
@@ -435,7 +435,7 @@ struct SKServerFlags {
                 afterRecord = record;
                 break;
             } else {
-                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabsf(p.x - point.x)]];
+                [atRecords setObject:record forKey:[NSNumber numberWithFloat:SKAbs(p.x - point.x)]];
             }
         }
         
@@ -471,7 +471,7 @@ struct SKServerFlags {
     return rv;
 }
 
-- (BOOL)pdfsyncFindPage:(unsigned int *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(int)line inFile:(NSString *)file {
+- (BOOL)pdfsyncFindPage:(NSUInteger *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(NSInteger)line inFile:(NSString *)file {
     BOOL rv = NO;
     if ([lines objectForKey:file]) {
         
@@ -484,7 +484,7 @@ struct SKServerFlags {
         while (record = [recordEnum nextObject]) {
             if ([record pageIndex] == NSNotFound)
                 continue;
-            int l = [record line];
+            NSInteger l = [record line];
             if (l < line) {
                 beforeRecord = record;
             } else if (l > line) {
@@ -499,8 +499,8 @@ struct SKServerFlags {
         if (atRecord) {
             record = atRecord;
         } else if (beforeRecord && afterRecord) {
-            int beforeLine = [beforeRecord line];
-            int afterLine = [afterRecord line];
+            NSInteger beforeLine = [beforeRecord line];
+            NSInteger afterLine = [afterRecord line];
             if (beforeLine - line > line - afterLine)
                 record = afterRecord;
             else
@@ -545,7 +545,7 @@ struct SKServerFlags {
     return rv;
 }
 
-- (BOOL)synctexFindFileLine:(int *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (BOOL)synctexFindFileLine:(NSInteger *)linePtr file:(NSString **)filePtr forLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
     BOOL rv = NO;
     if (synctex_edit_query(scanner, (int)pageIndex + 1, point.x, NSMaxY(bounds) - point.y) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
@@ -558,13 +558,13 @@ struct SKServerFlags {
     return rv;
 }
 
-- (BOOL)synctexFindPage:(unsigned int *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(int)line inFile:(NSString *)file {
+- (BOOL)synctexFindPage:(NSUInteger *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(NSInteger)line inFile:(NSString *)file {
     BOOL rv = NO;
     NSString *filename = [filenames objectForKey:file] ?: [file lastPathComponent];
-    if (synctex_display_query(scanner, [filename fileSystemRepresentation], line + 1, 0) > 0) {
+    if (synctex_display_query(scanner, [filename fileSystemRepresentation], (int)line + 1, 0) > 0) {
         synctex_node_t node = synctex_next_result(scanner);
         if (node) {
-            unsigned int page = synctex_node_page(node);
+            NSUInteger page = synctex_node_page(node);
             *pageIndexPtr = MAX(page, 1u) - 1;
             *pointPtr = NSMakePoint(synctex_node_visible_h(node), synctex_node_visible_v(node));
             rv = YES;
@@ -606,9 +606,9 @@ struct SKServerFlags {
 
 #pragma mark || Server protocol
 
-- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
     if ([self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
-        int foundLine = 0;
+        NSInteger foundLine = 0;
         NSString *foundFile = nil;
         BOOL success = NO;
         
@@ -622,9 +622,9 @@ struct SKServerFlags {
     }
 }
 
-- (oneway void)findPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file {
+- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file {
     if (file && [self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
-        unsigned int foundPageIndex = NSNotFound;
+        NSUInteger foundPageIndex = NSNotFound;
         NSPoint foundPoint = NSZeroPoint;
         BOOL success = NO;
         
