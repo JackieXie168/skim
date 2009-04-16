@@ -78,10 +78,10 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	}
 }
 
-- (unsigned int) clickCountEnabledButtons {
+- (NSUInteger) clickCountEnabledButtons {
 	return clickCountEnabledButtons;
 }
-- (void) setClickCountEnabledButtons: (unsigned int)value {
+- (void) setClickCountEnabledButtons: (NSUInteger)value {
 	clickCountEnabledButtons = value;
 }
 
@@ -110,7 +110,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	NSTimeInterval eventTimePoint = [[values objectAtIndex: 1] doubleValue];
 	
 	BOOL finishedClicking = NO;
-	int finalClickCount = eventClickCount;	
+	NSInteger finalClickCount = eventClickCount;	
 	
 	@synchronized(self) {
 		finishedClicking = (event != lastClickCountEvent || fabs(eventTimePoint - lastClickCountEventTime) < 0.001);

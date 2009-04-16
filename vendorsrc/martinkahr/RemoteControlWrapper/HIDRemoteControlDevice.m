@@ -107,7 +107,7 @@
 
 - (void) setCookieMappingInDictionary: (NSMutableDictionary*) cookieToButtonMapping {
 }
-- (int) remoteIdSwitchCookie {
+- (NSInteger) remoteIdSwitchCookie {
 	return 0;
 }
 
@@ -343,7 +343,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 	
 		//printf("%d %d %d\n", event.elementCookie, event.value, event.longValue);		
 		
-		if (((int)event.elementCookie)!=5) {
+		if (((NSInteger)event.elementCookie)!=5) {
 			sumOfValues+=event.value;
 			[cookieString appendString:[NSString stringWithFormat:@"%d_", event.elementCookie]];
 		}
@@ -436,7 +436,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 			if (object == nil || ![object isKindOfClass:[NSNumber class]]) continue;			
 			usagePage = [object longValue];
 
-			[allCookies addObject: [NSNumber numberWithInt:(int)cookie]];
+			[allCookies addObject: [NSNumber numberWithInt:(NSInteger)cookie]];
 		}
 	} else {
 		return NO;

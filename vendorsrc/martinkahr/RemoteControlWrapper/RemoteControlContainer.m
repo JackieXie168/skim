@@ -40,7 +40,7 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 }
 
 - (void) dealloc {
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] removeObserver: self forKeyPath:@"listeningToRemote"];
 	}	
@@ -52,7 +52,7 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 - (void) reset {
 	[self willChangeValueForKey:@"listeningToRemote"];
     listeningToRemote = NO;
-    unsigned int i;
+    NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		if ([[remoteControls objectAtIndex: i] isListeningToRemote]) {
 			listeningToRemote = YES;
@@ -74,7 +74,7 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 	return NO;	
 }
 
-- (unsigned int) count {
+- (NSUInteger) count {
 	return [remoteControls count];
 }
 
@@ -87,7 +87,7 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 }
 
 - (void) setListeningToRemote: (BOOL) value {
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] setListeningToRemote: value];
 	}
@@ -98,13 +98,13 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 }
 
 - (IBAction) startListening: (id) sender {
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] startListening: sender];
 	}	
 }
 - (IBAction) stopListening: (id) sender {
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] stopListening: sender];
 	}	
@@ -112,14 +112,14 @@ NSString *RemoteControlContainerObservationContext = @"RemoteControlContainerObs
 
 - (BOOL) isOpenInExclusiveMode {
 	BOOL mode = YES;
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		mode = mode && ([[remoteControls objectAtIndex: i] isOpenInExclusiveMode]);
 	}
 	return mode;	
 }
 - (void) setOpenInExclusiveMode: (BOOL) value {
-	unsigned int i;
+	NSUInteger i;
 	for(i=0; i < [remoteControls count]; i++) {
 		[[remoteControls objectAtIndex: i] setOpenInExclusiveMode:value];
 	}	

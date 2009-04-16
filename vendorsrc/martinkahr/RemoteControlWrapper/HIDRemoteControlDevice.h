@@ -44,7 +44,7 @@
 	BOOL openInExclusiveMode;
 	BOOL processesBacklog;	
 	
-	int supportedButtonEvents;
+	NSInteger supportedButtonEvents;
 }
 
 // When your application needs to much time on the main thread when processing an event other events
