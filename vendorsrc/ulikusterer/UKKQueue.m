@@ -28,10 +28,10 @@
 @interface UKWatchedPath : NSObject
 {
     NSString *path;
-    int fd;
+    NSInteger fd;
 }
 + (id)watchedPathWithPath:(NSString *)fullPath;
-- (int)fileDescriptor;
+- (NSInteger)fileDescriptor;
 - (NSString *)path;
 @end
 
@@ -181,7 +181,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 //		2004-03-13	UK	Documented.
 // -----------------------------------------------------------------------------
 
--(int)  queueFD
+-(NSInteger)  queueFD
 {
 	return queueFD;
 }
@@ -234,7 +234,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
         if ([watchedPaths containsObject:watchedPath] == NO) {
             
             // this will be closed when watchedPath is dealloced
-            int					fd = [watchedPath fileDescriptor];
+            NSInteger					fd = [watchedPath fileDescriptor];
 
             if( fd >= 0 )
             {
@@ -318,9 +318,9 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 
 -(void)		watcherThread: (id)sender
 {
-	int					n;
+	NSInteger					n;
     struct kevent		ev;
-	int					theFD = queueFD;	// So we don't have to risk accessing iVars when the thread is terminated.
+	NSInteger					theFD = queueFD;	// So we don't have to risk accessing iVars when the thread is terminated.
     
     while( keepThreadRunning )
     {
@@ -443,7 +443,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 @implementation UKWatchedPath
 
 // open() is documented to return -1 in case of an error and >=0 for success
-static const int UNOPENED_DESCRIPTOR = -2;
+static const NSInteger UNOPENED_DESCRIPTOR = -2;
 
 - (id)initWatchedPathWithPath:(NSString *)fullPath;
 {
@@ -470,10 +470,10 @@ static const int UNOPENED_DESCRIPTOR = -2;
     [super dealloc];
 }
 
-- (unsigned int)hash { return [path hash]; }
+- (NSUInteger)hash { return [path hash]; }
 // implement in terms of -isEqualToString: since that's what NSPathStore2 uses
 - (BOOL)isEqual:(id)other { return [other isKindOfClass:[self class]] ? [path isEqualToString:[other path]] : NO; }
-- (int)fileDescriptor { 
+- (NSInteger)fileDescriptor { 
     if (fd == UNOPENED_DESCRIPTOR)
         fd = open([path fileSystemRepresentation], O_EVTONLY, 0);
     return fd; 

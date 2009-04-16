@@ -43,11 +43,11 @@
 	NSTimeInterval lastHoldEventTime;	
 	
 	// state for multi click
-	unsigned int clickCountEnabledButtons;
+	NSUInteger clickCountEnabledButtons;
 	NSTimeInterval maxClickTimeDifference;
 	NSTimeInterval lastClickCountEventTime;	
 	RemoteControlEventIdentifier lastClickCountEvent;
-	unsigned int eventClickCount;	
+	NSUInteger eventClickCount;	
 }
 
 - (id) init;
@@ -71,8 +71,8 @@
 - (BOOL) clickCountingEnabled;
 - (void) setClickCountingEnabled: (BOOL) value;
 
-- (unsigned int) clickCountEnabledButtons;
-- (void) setClickCountEnabledButtons: (unsigned int)value;
+- (NSUInteger) clickCountEnabledButtons;
+- (void) setClickCountEnabledButtons: (NSUInteger)value;
 
 // the maximum time difference till which clicks are recognized as multi clicks
 - (NSTimeInterval) maximumClickCountTimeDifference;
@@ -85,6 +85,6 @@
  */
 @interface NSObject(MultiClickRemoteBehaviorDelegate)
 
-- (void) remoteButton: (RemoteControlEventIdentifier)buttonIdentifier pressedDown: (BOOL) pressedDown clickCount: (unsigned int) count;
+- (void) remoteButton: (RemoteControlEventIdentifier)buttonIdentifier pressedDown: (BOOL) pressedDown clickCount: (NSUInteger) count;
 
 @end

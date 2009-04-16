@@ -75,14 +75,14 @@
 
 @interface UKKQueue : NSObject <UKFileWatcher>
 {
-	int				queueFD;			// The actual queue ID (Unix file descriptor).
+	NSInteger				queueFD;			// The actual queue ID (Unix file descriptor).
 	NSMutableSet*   watchedPaths;		// List of NSStrings containing the paths we're watching.
 	BOOL			keepThreadRunning;	// Termination criterion of our thread.
 }
 
 +(id)	sharedFileWatcher;      // Returns a singleton, a shared kqueue object Handy if you're subscribing to the notifications. Use this, or just create separate objects using alloc/init. Whatever floats your boat.
 
--(int)  queueFD;		// I know you unix geeks want this...
+-(NSInteger)  queueFD;		// I know you unix geeks want this...
 
 // High-level file watching: (use UKFileWatcher protocol methods instead, where possible!)
 -(void) addPathToQueue: (NSString*)path;

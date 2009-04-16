@@ -40,8 +40,8 @@
 	
 }
 
-- (void) mapRemoteButton: (RemoteControlEventIdentifier) remoteButtonIdentifier defaultKeycode: (unsigned int) defaultKeycode defaultModifiers: (unsigned int) defaultModifiers;
+- (void) mapRemoteButton: (RemoteControlEventIdentifier) remoteButtonIdentifier defaultKeycode: (NSUInteger) defaultKeycode defaultModifiers: (NSUInteger) defaultModifiers;
 
-- (BOOL)registerHotKeyCode: (unsigned int) keycode modifiers: (unsigned int) modifiers remoteEventIdentifier: (RemoteControlEventIdentifier) identifier;
+- (BOOL)registerHotKeyCode: (NSUInteger) keycode modifiers: (NSUInteger) modifiers remoteEventIdentifier: (RemoteControlEventIdentifier) identifier;
 
 @end
