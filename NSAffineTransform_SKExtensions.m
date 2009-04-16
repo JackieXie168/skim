@@ -47,20 +47,20 @@
     
     minPoint = maxPoint = [self transformPoint:SKBottomLeftPoint(aRect)];
     point = [self transformPoint:SKBottomRightPoint(aRect)];
-    minPoint.x = fminf(minPoint.x, point.x);
-    minPoint.y = fminf(minPoint.y, point.y);
-    maxPoint.x = fmaxf(maxPoint.x, point.x);
-    maxPoint.y = fmaxf(maxPoint.y, point.y);
+    minPoint.x = SKMin(minPoint.x, point.x);
+    minPoint.y = SKMin(minPoint.y, point.y);
+    maxPoint.x = SKMax(maxPoint.x, point.x);
+    maxPoint.y = SKMax(maxPoint.y, point.y);
     point = [self transformPoint:SKTopLeftPoint(aRect)];
-    minPoint.x = fminf(minPoint.x, point.x);
-    minPoint.y = fminf(minPoint.y, point.y);
-    maxPoint.x = fmaxf(maxPoint.x, point.x);
-    maxPoint.y = fmaxf(maxPoint.y, point.y);
+    minPoint.x = SKMin(minPoint.x, point.x);
+    minPoint.y = SKMin(minPoint.y, point.y);
+    maxPoint.x = SKMax(maxPoint.x, point.x);
+    maxPoint.y = SKMax(maxPoint.y, point.y);
     point = [self transformPoint:SKTopRightPoint(aRect)];
-    minPoint.x = fminf(minPoint.x, point.x);
-    minPoint.y = fminf(minPoint.y, point.y);
-    maxPoint.x = fmaxf(maxPoint.x, point.x);
-    maxPoint.y = fmaxf(maxPoint.y, point.y);
+    minPoint.x = SKMin(minPoint.x, point.x);
+    minPoint.y = SKMin(minPoint.y, point.y);
+    maxPoint.x = SKMax(maxPoint.x, point.x);
+    maxPoint.y = SKMax(maxPoint.y, point.y);
     
     return SKIntegralRectFromPoints(minPoint, maxPoint);
 }

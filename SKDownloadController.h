@@ -60,9 +60,9 @@
 - (IBAction)dismissDownloadsPreferences:(id)sender;
 
 - (NSArray *)downloads;
-- (unsigned int)countOfDownloads;
-- (SKDownload *)objectInDownloadsAtIndex:(unsigned int)anIndex;
-- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex;
-- (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex;
+- (NSUInteger)countOfDownloads;
+- (SKDownload *)objectInDownloadsAtIndex:(NSUInteger)anIndex;
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
 
 @end

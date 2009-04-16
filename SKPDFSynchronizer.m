@@ -115,22 +115,22 @@
 
 #pragma mark | API
 
-- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex {
+- (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex {
     [serverProxy findFileAndLineForLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
 }
 
-- (void)findPageAndLocationForLine:(int)line inFile:(NSString *)file {
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file {
     [serverProxy findPageAndLocationForLine:line inFile:file];
 }
 
 #pragma mark | Client protocol
 
-- (oneway void)foundLine:(int)line inFile:(bycopy NSString *)file {
+- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file {
     if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped {
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped {
     if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:isFlipped:)])
         [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex isFlipped:isFlipped];
 }

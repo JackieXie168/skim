@@ -685,7 +685,7 @@
     if ([[mainWindow toolbar] customizationPaletteIsRunning]) {
         return NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {

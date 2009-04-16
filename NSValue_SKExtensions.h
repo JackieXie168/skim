@@ -48,11 +48,11 @@
 - (NSString *)originString;
 - (NSString *)sizeString;
 - (NSString *)midPointString;
-- (float)rectX;
-- (float)rectY;
-- (float)rectWidth;
-- (float)rectHeight;
-- (float)pointX;
-- (float)pointY;
+- (CGFloat)rectX;
+- (CGFloat)rectY;
+- (CGFloat)rectWidth;
+- (CGFloat)rectHeight;
+- (CGFloat)pointX;
+- (CGFloat)pointY;
 
 @end

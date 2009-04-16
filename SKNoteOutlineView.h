@@ -61,7 +61,7 @@
 
 @interface NSObject (SKNoteOutlineViewDelegate)
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(float)newHeight byItem:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 - (void)outlineViewInsertNewline:(NSOutlineView *)anOutlineView;

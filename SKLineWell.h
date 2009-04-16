@@ -56,7 +56,7 @@ enum {
 typedef NSInteger SKLineWellDisplayStyle;
 
 @interface SKLineWell : NSControl {
-    float lineWidth;
+    CGFloat lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;
     PDFLineStyle startLineStyle;
@@ -87,8 +87,8 @@ typedef NSInteger SKLineWellDisplayStyle;
 - (SKLineWellDisplayStyle)displayStyle;
 - (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle;
 
-- (float)lineWidth;
-- (void)setLineWidth:(float)width;
+- (CGFloat)lineWidth;
+- (void)setLineWidth:(CGFloat)width;
 - (PDFBorderStyle)style;
 - (void)setStyle:(PDFBorderStyle)newStyle;
 - (NSArray *)dashPattern;

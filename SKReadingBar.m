@@ -76,23 +76,23 @@
     } 
 }
 
-- (int)currentLine {
+- (NSInteger)currentLine {
     return currentLine;
 }
 
-- (void)setCurrentLine:(int)lineIndex {
+- (void)setCurrentLine:(NSInteger)lineIndex {
     currentLine = lineIndex;
 }
 
-- (int)currentLastLine {
+- (NSInteger)currentLastLine {
     return MIN([lineRects count], currentLine + numberOfLines) - 1;
 }
 
-- (unsigned int)numberOfLines {
+- (NSUInteger)numberOfLines {
     return numberOfLines;
 }
 
-- (void)setNumberOfLines:(unsigned int)number {
+- (void)setNumberOfLines:(NSUInteger)number {
     numberOfLines = number;
 }
 
@@ -100,7 +100,7 @@
     if (page == nil || currentLine == -1)
         return NSZeroRect;
     NSRect rect = NSZeroRect;
-    int i, lastLine = [self currentLastLine];
+    NSInteger i, lastLine = [self currentLastLine];
     for (i = currentLine; i <= lastLine; i++)
         rect = NSUnionRect(rect, [[lineRects objectAtIndex:i] rectValue]);
     return rect;
@@ -118,7 +118,7 @@
 
 - (BOOL)goToNextLine {
     BOOL didMove = NO;
-    if (currentLine < (int)[lineRects count] - (int)numberOfLines) {
+    if (currentLine < (NSInteger)[lineRects count] - (NSInteger)numberOfLines) {
         ++currentLine;
         didMove = YES;
     } else if ([self goToNextPage]) {
@@ -135,7 +135,7 @@
         --currentLine;
         didMove =  YES;
     } else if ([self goToPreviousPage]) {
-        currentLine = MAX(0, (int)[lineRects count] - (int)numberOfLines);
+        currentLine = MAX(0, (NSInteger)[lineRects count] - (NSInteger)numberOfLines);
         didMove = YES;
     }
     return didMove;
@@ -144,7 +144,7 @@
 - (BOOL)goToNextPage {
     BOOL didMove = NO;
     PDFDocument *doc = [page document];
-    int i = [page pageIndex], iMax = [doc pageCount];
+    NSInteger i = [page pageIndex], iMax = [doc pageCount];
     
     while (++i < iMax) {
         PDFPage *nextPage = [doc pageAtIndex:i];
@@ -165,7 +165,7 @@
 - (BOOL)goToPreviousPage {
     BOOL didMove = NO;
     PDFDocument *doc = [page document];
-    int i = [doc indexForPage:page];
+    NSInteger i = [doc indexForPage:page];
     
     while (i-- > 0) {
         PDFPage *prevPage = [doc pageAtIndex:i];

@@ -41,7 +41,7 @@
 
 @implementation SKLine
 
-- (id)initWithIndex:(int)anIndex {
+- (id)initWithIndex:(NSInteger)anIndex {
     if (self = [super init]) {
         index = anIndex;
     }
@@ -53,11 +53,11 @@
     return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:index] autorelease];
 }
 
-- (int)index {
+- (NSInteger)index {
     return index;
 }
 
-- (int)scriptingIndex {
+- (NSInteger)scriptingIndex {
     return index + 1;
 }
 
@@ -66,11 +66,11 @@
 
 @implementation NSObject (SKLine)
 
-- (unsigned int)countOfLines {
-    return UINT_MAX;
+- (NSUInteger)countOfLines {
+    return NSUIntegerMax;
 }
 
-- (SKLine *)objectInLinesAtIndex:(unsigned int)anIndex {
+- (SKLine *)objectInLinesAtIndex:(NSUInteger)anIndex {
     return [[[SKLine alloc] initWithIndex:anIndex] autorelease];
 }
 

@@ -151,7 +151,7 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
     return altTagRange;
 }
 
-static id templateValueForKeyPath(id object, NSString *keyPath, int anIndex) {
+static id templateValueForKeyPath(id object, NSString *keyPath, NSInteger anIndex) {
     if ([keyPath hasPrefix:@"#"] && anIndex > 0) {
         object = [NSNumber numberWithInt:anIndex];
         if ([keyPath length] == 1)
@@ -164,9 +164,9 @@ static id templateValueForKeyPath(id object, NSString *keyPath, int anIndex) {
         return nil;
     id value = nil;
     NSString *trailingKeyPath = nil;
-    unsigned int atIndex = [keyPath rangeOfString:@"@"].location;
+    NSUInteger atIndex = [keyPath rangeOfString:@"@"].location;
     if (atIndex != NSNotFound) {
-        unsigned int dotIndex = [keyPath rangeOfString:@"." options:0 range:NSMakeRange(atIndex + 1, [keyPath length] - atIndex - 1)].location;
+        NSUInteger dotIndex = [keyPath rangeOfString:@"." options:0 range:NSMakeRange(atIndex + 1, [keyPath length] - atIndex - 1)].location;
         if (dotIndex != NSNotFound) {
             static NSSet *arrayOperators = nil;
             if (arrayOperators == nil)
@@ -221,7 +221,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         NSRange lastCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:NSBackwardsSearch range:range];
         if (lastCharRange.location != NSNotFound) {
             unichar lastChar = [string characterAtIndex:lastCharRange.location];
-            unsigned int rangeEnd = NSMaxRange(lastCharRange);
+            NSUInteger rangeEnd = NSMaxRange(lastCharRange);
             if ([[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar])
                 range.length = rangeEnd;
         } else if (isSubtemplate == NO && typeBefore == -1) {
@@ -233,7 +233,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         NSRange firstCharRange = [string rangeOfCharacterFromSet:nonWhitespaceCharacterSet options:0 range:range];
         if (firstCharRange.location != NSNotFound) {
             unichar firstChar = [string characterAtIndex:firstCharRange.location];
-            unsigned int rangeEnd = NSMaxRange(firstCharRange);
+            NSUInteger rangeEnd = NSMaxRange(firstCharRange);
             if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
                 if (firstChar == NSCarriageReturnCharacter && rangeEnd < NSMaxRange(range) && [string characterAtIndex:rangeEnd] == NSNewlineCharacter)
                     range = NSMakeRange(rangeEnd + 1, NSMaxRange(range) - rangeEnd - 1);
@@ -268,7 +268,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     while (![scanner isAtEnd]) {
         NSString *beforeText = nil;
         NSString *keyPath = @"";
-        int start;
+        NSInteger start;
                 
         if ([scanner scanUpToString:START_TAG_OPEN_DELIM intoString:&beforeText]) {
             if (currentTag && [(SKTemplateTag *)currentTag type] == SKTextTemplateTagType) {
@@ -394,7 +394,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     [scanner release];
     
     // remove whitespace before and after collection and condition tags up till newlines
-    int i, count = [result count];
+    NSInteger i, count = [result count];
     
     for (i = count - 1; i >= 0; i--) {
         SKTemplateTag *tag = [result objectAtIndex:i];
@@ -413,7 +413,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     return [result autorelease];    
 }
 
-+ (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex {
++ (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(NSInteger)anIndex {
     NSEnumerator *tagEnum = [template objectEnumerator];
     id tag;
     NSMutableString *result = [[NSMutableString alloc] init];
@@ -441,7 +441,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     NSEnumerator *itemE = [keyValue objectEnumerator];
                     id nextItem, item = [itemE nextObject];
                     NSArray *itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
-                    int idx = 0;
+                    NSInteger idx = 0;
                     while (item) {
                         nextItem = [itemE nextObject];
                         if (nextItem == nil)
@@ -457,7 +457,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
                 NSString *matchString = nil;
                 NSArray *matchStrings = [tag matchStrings];
-                unsigned int i, count = [matchStrings count];
+                NSUInteger i, count = [matchStrings count];
                 NSArray *subtemplate = nil;
                 
                 for (i = 0; i < count; i++) {
@@ -505,7 +505,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     while (![scanner isAtEnd]) {
         NSString *beforeText = nil;
         NSString *keyPath = @"";
-        int start;
+        NSInteger start;
         NSDictionary *attr = nil;
         
         start = [scanner scanLocation];
@@ -646,7 +646,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     [scanner release];
     
     // remove whitespace before and after collection and condition tags up till newlines
-    int i, count = [result count];
+    NSInteger i, count = [result count];
     
     for (i = count - 1; i >= 0; i--) {
         SKTemplateTag *tag = [result objectAtIndex:i];
@@ -666,7 +666,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     return [result autorelease];    
 }
 
-+ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(int)anIndex {
++ (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(NSInteger)anIndex {
     NSEnumerator *tagEnum = [template objectEnumerator];
     id tag;
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
@@ -695,7 +695,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                     NSEnumerator *itemE = [keyValue objectEnumerator];
                     id nextItem, item = [itemE nextObject];
                     NSArray *itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
-                    int idx = 0;
+                    NSInteger idx = 0;
                     while (item) {
                         nextItem = [itemE nextObject];
                         if (nextItem == nil)
@@ -711,7 +711,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
                 NSString *matchString = nil;
                 NSArray *matchStrings = [tag matchStrings];
-                unsigned int i, count = [matchStrings count];
+                NSUInteger i, count = [matchStrings count];
                 NSArray *subtemplate = nil;
                 
                 count = [matchStrings count];
@@ -776,7 +776,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 
 - (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
     NSMutableAttributedString *attributedString = [self mutableCopy];
-    unsigned idx = 0, length = [self length];
+    NSUInteger idx = 0, length = [self length];
     NSRange range = NSMakeRange(0, length);
     NSDictionary *attrs;
     [attributedString addAttributes:attributes range:range];

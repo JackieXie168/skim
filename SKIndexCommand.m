@@ -54,7 +54,7 @@
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
     BOOL last = [[args objectForKey:@"Last"] boolValue];
-    unsigned int idx = NSNotFound;
+    NSUInteger idx = NSNotFound;
     
     if ([dPO isKindOfClass:[SKPDFDocument class]]) {
         idx = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
@@ -66,7 +66,7 @@
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];
         if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0])) {
-            unsigned int count = [selection safeNumberOfRangesOnPage:page];
+            NSUInteger count = [selection safeNumberOfRangesOnPage:page];
             if (count > 0) {
                 NSRange range = [selection safeRangeAtIndex:last ? count - 1 : 0 onPage:page];
                 if (range.length) {
@@ -76,7 +76,7 @@
         }
     }
     
-    return [NSNumber numberWithInt:idx == NSNotFound ? 0 : (int)idx + 1];
+    return [NSNumber numberWithInt:idx == NSNotFound ? 0 : (NSInteger)idx + 1];
 }
 
 @end

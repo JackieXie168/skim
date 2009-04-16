@@ -140,11 +140,11 @@ static id sharedApplicationController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)awakeFromNib {
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
-    int i, count = [viewMenu numberOfItems];
+    NSInteger i, count = [viewMenu numberOfItems];
     
     for (i = 0; i < count; i++) {
         NSMenuItem *menuItem = [viewMenu itemAtIndex:i];
@@ -154,7 +154,7 @@ static id sharedApplicationController = nil;
     
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
         NSMenu *fileMenu = [[[NSApp mainMenu] itemAtIndex:FILE_MENU_INDEX] submenu];
-        unsigned int idx = [fileMenu indexOfItemWithTarget:nil andAction:@selector(runPageLayout:)];
+        NSUInteger idx = [fileMenu indexOfItemWithTarget:nil andAction:@selector(runPageLayout:)];
         if (idx != NSNotFound)
             [fileMenu removeItemAtIndex:idx];
     }
@@ -361,7 +361,7 @@ static id sharedApplicationController = nil;
     
     if ([bm isKindOfClass:[SKBookmark class]]) {
         NSArray *bookmarks = [bm children];
-        int i = [menu numberOfItems], numBookmarks = [bookmarks count];
+        NSInteger i = [menu numberOfItems], numBookmarks = [bookmarks count];
         while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
             [menu removeItemAtIndex:i];
         if ([menu numberOfItems] > 0 && numBookmarks > 0)
@@ -395,7 +395,7 @@ static id sharedApplicationController = nil;
             if ([[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey] > 0.0) {
                 NSRect rect = [[NSScreen mainScreen] frame];
                 NSPoint point = NSMakePoint(NSMidX(rect), NSMidY(rect));
-                int type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
+                NSInteger type = remoteScrolling ? SKRemoteStateScroll : SKRemoteStateResize;
                 [SKRemoteStateWindow showWithType:type atPoint:point];
             }
         } else {

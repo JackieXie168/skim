@@ -61,10 +61,10 @@
     }
 }
 
-- (void)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
+- (void)resizeRow:(NSInteger)row withEvent:(NSEvent *)theEvent {
     id item = [self itemAtRow:row];
     NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
+    CGFloat startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
 	BOOL keepGoing = YES;
 	
     [[NSCursor resizeUpDownCursor] push];
@@ -75,7 +75,7 @@
 			case NSLeftMouseDragged:
             {
                 NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                float currentHeight = fmaxf([self rowHeight], startHeight + currentPoint.y - startPoint.y);
+                CGFloat currentHeight = SKMax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
                 
                 [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
                 [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
@@ -97,7 +97,7 @@
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        int row = [self rowAtPoint:mouseLoc];
+        NSInteger row = [self rowAtPoint:mouseLoc];
         
         if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
             NSRect ignored, rect;
@@ -113,7 +113,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
-	unsigned modifiers = [theEvent standardModifierFlags];
+	NSUInteger modifiers = [theEvent standardModifierFlags];
     
     if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifiers == 0) {
         if ([[self delegate] respondsToSelector:@selector(outlineViewInsertNewline:)])
@@ -136,7 +136,7 @@
         if (visibleRows.length == 0)
             return;
         
-        unsigned int row;
+        NSUInteger row;
         BOOL isFirstResponder = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
         
         [NSGraphicsContext saveGraphicsState];
@@ -150,8 +150,8 @@
             BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
             NSColor *color = [NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7];
             NSRect rect = [self rectOfRow:row];
-            float x = ceilf(NSMidX(rect));
-            float y = NSMaxY(rect) - 1.5;
+            CGFloat x = ceilf(NSMidX(rect));
+            CGFloat y = NSMaxY(rect) - 1.5;
             
             [color set];
             [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
@@ -181,7 +181,7 @@
         [super resetCursorRects];
 
         NSRange visibleRows = [self rowsInRect:[self visibleRect]];
-        unsigned int row;
+        NSUInteger row;
         
         if (visibleRows.length == 0)
             return;
@@ -220,7 +220,7 @@
     if (searchString && [searchString isEqualToString:@""] == NO) {
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
         NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
-        unsigned int options = NSDiacriticInsensitivePredicateOption;
+        NSUInteger options = NSDiacriticInsensitivePredicateOption;
         if (caseInsensitive)
             options |= NSCaseInsensitivePredicateOption;
         NSPredicate *stringPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
@@ -286,7 +286,7 @@
 - (NSArray *)noteTypes {
     NSMutableArray *types = [NSMutableArray array];
     NSMenu *menu = [self noteTypeMenu];
-    int i;
+    NSInteger i;
     
     for (i = 0; i < NUMBER_OF_TYPES; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
@@ -298,7 +298,7 @@
 
 - (void)setNoteTypes:(NSArray *)types {
     NSMenu *menu = [self noteTypeMenu];
-    int i;
+    NSInteger i;
     
     for (i = 0; i < NUMBER_OF_TYPES; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
@@ -318,16 +318,16 @@
 
 - (IBAction)displayAllNoteTypes:(id)sender {
     NSMenu *menu = [self noteTypeMenu];
-    int i;
+    NSInteger i;
     for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[menu itemAtIndex:i] setState:NSOnState];
     [self noteTypesUpdated];
 }
 
-- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         NSMenu *menu = [self noteTypeMenu];
-        int i;
+        NSInteger i;
         for (i = 0; i < NUMBER_OF_TYPES; i++)
             [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellWithTag:i] state]];
         [self noteTypesUpdated];
@@ -341,7 +341,7 @@
     }
     
     NSMenu *menu = [self noteTypeMenu];
-    int i;
+    NSInteger i;
     for (i = 0; i < NUMBER_OF_TYPES; i++)
         [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
 	

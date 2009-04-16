@@ -53,5 +53,5 @@
 @end
 
 @interface NSObject (SKSplitViewExtendedDelegate)
-- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset;
+- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(NSInteger)offset;
 @end

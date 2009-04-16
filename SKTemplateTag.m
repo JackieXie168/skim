@@ -199,7 +199,7 @@
     return matchStrings;
 }
 
-- (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
+- (NSArray *)subtemplateAtIndex:(NSUInteger)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
         subtemplate = [SKTemplateParser arrayByParsingTemplateString:subtemplate isSubtemplate:YES];
@@ -214,7 +214,7 @@
 
 @implementation SKRichConditionTemplateTag
 
-- (NSArray *)subtemplateAtIndex:(unsigned)anIndex {
+- (NSArray *)subtemplateAtIndex:(NSUInteger)anIndex {
     id subtemplate = [subtemplates objectAtIndex:anIndex];
     if ([subtemplate isKindOfClass:[NSArray class]] == NO) {
         subtemplate = [SKTemplateParser arrayByParsingTemplateAttributedString:subtemplate isSubtemplate:YES];

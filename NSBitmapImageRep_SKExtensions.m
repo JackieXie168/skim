@@ -41,13 +41,13 @@
 @implementation NSBitmapImageRep (SKExtensions)
 
 // allow for a slight margin around the image; maybe caused by a shadow (found this in testing)
-static const int MARGIN = 2;
+static const NSInteger MARGIN = 2;
 static const unsigned char EPSILON = 2;
-static const int THRESHOLD = 8;
+static const NSInteger THRESHOLD = 8;
 
-static inline BOOL differentPixels( const unsigned char *p1, const unsigned char *p2, unsigned count )
+static inline BOOL differentPixels( const unsigned char *p1, const unsigned char *p2, NSUInteger count )
 {
-    unsigned i;    
+    NSUInteger i;    
     for (i = 0; i < count; i++) {
         if ((p2[i] > p1[i] && p2[i] - p1[i] > EPSILON) || (p1[i] > p2[i] && p1[i] - p2[i] > EPSILON))
             return YES;
@@ -57,21 +57,21 @@ static inline BOOL differentPixels( const unsigned char *p1, const unsigned char
 
 typedef struct _SKBitmapData {
     unsigned char *data;
-    int bytesPerRow;
-    int samplesPerPixel;
+    NSInteger bytesPerRow;
+    NSInteger samplesPerPixel;
 } SKBitmapData;
 
-static inline void getPixelFromBitmapData(SKBitmapData *bitmap, int x, int y, unsigned char pixel[])
+static inline void getPixelFromBitmapData(SKBitmapData *bitmap, NSInteger x, NSInteger y, unsigned char pixel[])
 {    
-    int spp = bitmap->samplesPerPixel;
+    NSInteger spp = bitmap->samplesPerPixel;
     unsigned char *ptr = &(bitmap->data[(bitmap->bytesPerRow * y) + (x * spp)]);
     while (spp--)
         *pixel++ = *ptr++;
 }
 
-static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
+static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, NSInteger x, NSInteger y, NSInteger minX, NSInteger maxX, NSInteger minY, NSInteger maxY, unsigned char backgroundPixel[])
 {
-    int i, j, count = 0;
+    NSInteger i, j, count = 0;
     unsigned char pixel[bitmap->samplesPerPixel];
     
     getPixelFromBitmapData(bitmap, x, y, pixel);
@@ -92,19 +92,19 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
 
 - (NSRect)foregroundRect;
 {    
-    int i, iMax = [self pixelsWide] - MARGIN;
-    int j, jMax = [self pixelsHigh] - MARGIN;
+    NSInteger i, iMax = [self pixelsWide] - MARGIN;
+    NSInteger j, jMax = [self pixelsHigh] - MARGIN;
     
-    int bytesPerRow = [self bytesPerRow];
-    int samplesPerPixel = [self samplesPerPixel];
+    NSInteger bytesPerRow = [self bytesPerRow];
+    NSInteger samplesPerPixel = [self samplesPerPixel];
     unsigned char pixel[samplesPerPixel];
     
     memset(pixel, 0, samplesPerPixel);
     
-    int iLeft = iMax;
-    int jTop = jMax;
-    int iRight = MARGIN - 1;
-    int jBottom = MARGIN - 1;
+    NSInteger iLeft = iMax;
+    NSInteger jTop = jMax;
+    NSInteger iRight = MARGIN - 1;
+    NSInteger jBottom = MARGIN - 1;
     
     unsigned char *bitmapData = [self bitmapData];
     

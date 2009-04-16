@@ -43,19 +43,19 @@ extern NSString *SKGroupedSearchResultCountKey;
 
 @interface SKGroupedSearchResult : NSObject {
     PDFPage *page;
-    unsigned int maxCount;
+    NSUInteger maxCount;
     NSMutableArray *matches;
 }
 
-+ (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(unsigned int)aMaxCount;
-- (id)initWithPage:(PDFPage *)aPage maxCount:(unsigned int)aMaxCount;
++ (id)groupedSearchResultWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
+- (id)initWithPage:(PDFPage *)aPage maxCount:(NSUInteger)aMaxCount;
 
 - (PDFPage *)page;
 
-- (unsigned int)count;
+- (NSUInteger)count;
 
-- (unsigned int)maxCount;
-- (void)setMaxCount:(unsigned int)newMaxCount;
+- (NSUInteger)maxCount;
+- (void)setMaxCount:(NSUInteger)newMaxCount;
 
 - (NSArray *)matches;
 - (void)addMatch:(PDFSelection *)match;

@@ -61,7 +61,7 @@
     return [self objectValueForKey:SKDownloadFileNameKey];
 }
 
-- (int)status {
+- (NSInteger)status {
     return [[self objectValueForKey:SKDownloadStatusKey] intValue];
 }
 

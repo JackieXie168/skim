@@ -134,12 +134,12 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (double)rating;
 
 - (NSArray *)pages;
-- (unsigned int)countOfPages;
-- (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
+- (NSUInteger)countOfPages;
+- (PDFPage *)objectInPagesAtIndex:(NSUInteger)index;
 - (NSArray *)notes;
 - (void)insertInNotes:(PDFAnnotation *)newNote;
-- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex;
-- (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex;
+- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;

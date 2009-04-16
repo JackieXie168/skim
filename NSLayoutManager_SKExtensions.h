@@ -41,6 +41,6 @@
 
 @interface NSLayoutManager (SKExtensions)
 
-+ (float)defaultViewLineHeightForFont:(NSFont *)theFont;
++ (CGFloat)defaultViewLineHeightForFont:(NSFont *)theFont;
 
 @end

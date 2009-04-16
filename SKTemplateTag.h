@@ -129,7 +129,7 @@ typedef NSInteger SKTemplateTagMatchType;
 - (SKTemplateTagMatchType)matchType;
 - (NSArray *)matchStrings;
 - (NSArray *)subtemplates;
-- (NSArray *)subtemplateAtIndex:(unsigned)index;
+- (NSArray *)subtemplateAtIndex:(NSUInteger)index;
 
 @end
 

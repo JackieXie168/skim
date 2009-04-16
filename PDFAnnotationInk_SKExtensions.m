@@ -90,7 +90,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    int i, iMax;
+    NSInteger i, iMax;
     NSRect bounds = [self bounds];
     [fdfString appendFDFName:SKFDFAnnotationInkListKey];
     [fdfString appendString:@"["];
@@ -115,13 +115,13 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (BOOL)hitTest:(NSPoint)point {
     NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
-    float delta = fmaxf(2.0, 0.5 * [self lineWidth]);
+    CGFloat delta = SKMax(2.0, 0.5 * [self lineWidth]);
     
     if ([super hitTest:point]) {
         NSEnumerator *pathEnum = [[self paths] objectEnumerator];
         NSBezierPath *path;
         NSPoint prevPoint, nextPoint = NSZeroPoint;
-        int i, iMax;
+        NSInteger i, iMax;
         while (path = [pathEnum nextObject]) {
             iMax = [path elementCount];
             for (i = 0; i < iMax; i++) {
@@ -136,7 +136,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 }
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
-    float lineWidth = [self lineWidth];
+    CGFloat lineWidth = [self lineWidth];
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSRect rect = NSZeroRect;
@@ -152,7 +152,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    int i, iMax;
+    NSInteger i, iMax;
     while (path = [pathEnum nextObject]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
@@ -190,7 +190,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSEnumerator *pathEnum = [[self paths] objectEnumerator];
     NSBezierPath *path;
     NSPoint point;
-    int i, iMax;
+    NSInteger i, iMax;
     while (path = [pathEnum nextObject]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];

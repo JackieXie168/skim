@@ -75,7 +75,7 @@ static SKFindController *sharedFindController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
@@ -178,8 +178,8 @@ static SKFindController *sharedFindController = nil;
     }
 }
 
-- (int)findOptions {
-	int options = 0;
+- (NSInteger)findOptions {
+	NSInteger options = 0;
 	
     if (ignoreCase)
         options |= NSCaseInsensitiveSearch;

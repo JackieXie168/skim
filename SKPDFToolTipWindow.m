@@ -120,7 +120,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (NSFont *)font {
     return font;
@@ -171,7 +171,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     [self orderOut:self];
 }
 
-- (float)defaultAlphaValue { return ALPHA_VALUE; }
+- (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
 
 - (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
@@ -233,8 +233,8 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             
             if ([selection string]) {
                 NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
-                float top = ceilf(fmaxf(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
-                float left = floorf(fminf(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
+                CGFloat top = ceilf(SKMax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
+                CGFloat left = SKFloor(SKMin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
                 if (top < NSMaxY(sourceRect))
                     sourceRect.origin.y = top - NSHeight(sourceRect);
                 if (left > NSMinX(sourceRect))
@@ -249,8 +249,8 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page displayLabel]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
             
-            labelRect.size.width = floorf(NSWidth(labelRect));
-            labelRect.size.height = 2.0 * floorf(0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
+            labelRect.size.width = SKFloor(NSWidth(labelRect));
+            labelRect.size.height = 2.0 * SKFloor(0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
             labelRect.origin.x = NSWidth(sourceRect) - NSWidth(labelRect) - 0.5 * NSHeight(labelRect) - TEXT_MARGIN_X;
             labelRect.origin.y = TEXT_MARGIN_Y;
             labelRect = NSIntegralRect(labelRect);
@@ -280,7 +280,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         text = [annotation text];
         string = [text string];
-        unsigned int i = 0, l = [string length];
+        NSUInteger i = 0, l = [string length];
         NSRange r = NSMakeRange(0, l);
         
         while (i != NSNotFound) {
@@ -317,7 +317,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         NSRect textRect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
         
-        textRect.size.height = fminf(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
+        textRect.size.height = SKMin(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
         textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
         
         image = [[NSImage alloc] initWithSize:NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size];
@@ -379,8 +379,8 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
 @end
 
 
-static inline float SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect) {
-    float dx, dy;
+static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect) {
+    CGFloat dx, dy;
 
     if (point.x < NSMinX(rect))
         dx = NSMinX(rect) - point.x;
@@ -406,7 +406,7 @@ static inline float SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect)
     NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
     NSScreen *aScreen;
     NSScreen *screen = nil;
-    float distanceSquared = FLT_MAX;
+    CGFloat distanceSquared = FLT_MAX;
     
     while (aScreen = [screenEnum nextObject]) {
         NSRect frame = [aScreen frame];
@@ -414,7 +414,7 @@ static inline float SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect)
         if (NSPointInRect(point, frame))
             return aScreen;
         
-        float aDistanceSquared = SKSquaredDistanceFromPointToRect(point, frame);
+        CGFloat aDistanceSquared = SKSquaredDistanceFromPointToRect(point, frame);
         if (aDistanceSquared < distanceSquared) {
             distanceSquared = aDistanceSquared;
             screen = aScreen;

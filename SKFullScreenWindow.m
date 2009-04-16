@@ -74,7 +74,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     unichar ch = [theEvent firstCharacter];
-	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (modifierFlags == 0) {
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];

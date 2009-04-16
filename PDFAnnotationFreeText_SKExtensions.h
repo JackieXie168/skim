@@ -44,7 +44,7 @@ extern NSString *SKPDFAnnotationScriptingFontColorKey;
 @interface PDFAnnotationFreeText (SKExtensions)
 
 - (void)setFontName:(NSString *)fontName;
-- (void)setFontSize:(float)pointSize;
+- (void)setFontSize:(CGFloat)pointSize;
 - (void)setScriptingFontColor:(NSColor *)newScriptingFontColor;
 
 @end

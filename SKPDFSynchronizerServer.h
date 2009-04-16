@@ -42,8 +42,8 @@
 
 @protocol SKPDFSynchronizerServer
 - (oneway void)stopRunning; 
-- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(unsigned int)pageIndex;
-- (oneway void)findPageAndLocationForLine:(int)line inFile:(bycopy NSString *)file;
+- (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
+- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file;
 @end
 
 

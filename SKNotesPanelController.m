@@ -72,7 +72,7 @@ static SKNotesPanelController *sharedController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];

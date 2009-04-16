@@ -73,7 +73,7 @@
 
 - (void)willClose {}
 
-- (float)defaultAlphaValue { return ALPHA_VALUE; }
+- (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
 
 - (NSTimeInterval)fadeInDuration { return FADE_IN_DURATION; }
 

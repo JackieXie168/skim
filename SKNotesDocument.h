@@ -58,10 +58,10 @@
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
  
 - (NSArray *)notes;
-- (unsigned int)countOfNotes;
-- (NSDictionary *)objectInNotesAtIndex:(unsigned int)index;
-- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned int)index;
+- (NSUInteger)countOfNotes;
+- (NSDictionary *)objectInNotesAtIndex:(NSUInteger)index;
+- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(NSUInteger)index;
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)index;
 
 - (void)setupToolbar:(NSWindowController *)aController;
 

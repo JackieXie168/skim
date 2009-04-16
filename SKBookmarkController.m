@@ -93,7 +93,7 @@ static char SKBookmarkPropertiesObservationContext;
 
 @implementation SKBookmarkController
 
-static unsigned int maxRecentDocumentsCount = 0;
+static NSUInteger maxRecentDocumentsCount = 0;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -174,7 +174,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setupToolbar];
@@ -199,14 +199,14 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (void)updateStatus {
-    int row = [outlineView selectedRow];
+    NSInteger row = [outlineView selectedRow];
     NSString *message = @"";
     if (row != -1) {
         SKBookmark *bookmark = [outlineView itemAtRow:row];
         if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
             message = [bookmark path];
         } else if ([bookmark bookmarkType] == SKBookmarkTypeFolder) {
-            int count = [bookmark countOfChildren];
+            NSInteger count = [bookmark countOfChildren];
             message = count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         }
     }
@@ -234,7 +234,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return minimalCover;
 }
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder {
+- (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder {
     if (folder == nil) folder = bookmarkRoot;
     SKBookmark *bookmark = [SKBookmark bookmarkWithPath:path pageIndex:pageIndex label:label];
     if (bookmark)
@@ -295,8 +295,8 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return recentDocuments;
 }
 
-- (unsigned int)indexOfRecentDocumentAtPath:(NSString *)path {
-    unsigned int idx = NSNotFound, i, iMax = [recentDocuments count];
+- (NSUInteger)indexOfRecentDocumentAtPath:(NSString *)path {
+    NSUInteger idx = NSNotFound, i, iMax = [recentDocuments count];
     for (i = 0; i < iMax; i++) {
         NSMutableDictionary *info = [recentDocuments objectAtIndex:i];
         BDAlias *alias = [info valueForKey:ALIAS_KEY];
@@ -312,11 +312,11 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return idx;
 }
 
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups {
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups {
     if (path == nil)
         return;
     
-    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
     if (idx != NSNotFound)
         [recentDocuments removeObjectAtIndex:idx];
     
@@ -329,17 +329,17 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
 }
 
-- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
+- (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return NSNotFound;
-    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
     return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntValue];
 }
 
 - (NSArray *)snapshotsAtPath:(NSString *)path {
     if (path == nil)
         return nil;
-    unsigned int idx = [self indexOfRecentDocumentAtPath:path];
+    NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
     NSArray *setups = idx == NSNotFound ? nil : [[recentDocuments objectAtIndex:idx] objectForKey:SNAPSHOTS_KEY];
     return [setups count] ? setups : nil;
 }
@@ -399,7 +399,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     
     while (bm = [bmEnum nextObject]) {
         if ([bm bookmarkType] == SKBookmarkTypeSession) {
-            int i = [bm countOfChildren];
+            NSInteger i = [bm countOfChildren];
             while (i--)
                 [self openBookmark:[bm objectInChildrenAtIndex:i]];
         } else if ([bm bookmarkType] == SKBookmarkTypeBookmark) {
@@ -409,7 +409,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (IBAction)doubleClickBookmark:(id)sender {
-    int row = [outlineView clickedRow];
+    NSInteger row = [outlineView clickedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
     if (bm && [bm bookmarkType] == SKBookmarkTypeBookmark)
         [self openBookmarks:[NSArray arrayWithObject:bm]];
@@ -417,9 +417,9 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 - (IBAction)insertBookmarkFolder:(id)sender {
     SKBookmark *folder = [SKBookmark bookmarkFolderWithLabel:NSLocalizedString(@"Folder", @"default folder name")];
-    int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
+    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = bookmarkRoot;
-    unsigned int idx = [bookmarkRoot countOfChildren];
+    NSUInteger idx = [bookmarkRoot countOfChildren];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
@@ -433,16 +433,16 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
     [item insertObject:folder inChildrenAtIndex:idx];
     
-    int row = [outlineView rowForItem:folder];
+    NSInteger row = [outlineView rowForItem:folder];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     [outlineView editColumn:0 row:row withEvent:nil select:YES];
 }
 
 - (IBAction)insertBookmarkSeparator:(id)sender {
     SKBookmark *separator = [SKBookmark bookmarkSeparator];
-    int rowIndex = [[outlineView selectedRowIndexes] lastIndex];
+    NSInteger rowIndex = [[outlineView selectedRowIndexes] lastIndex];
     SKBookmark *item = bookmarkRoot;
-    unsigned int idx = [bookmarkRoot countOfChildren];
+    NSUInteger idx = [bookmarkRoot countOfChildren];
     
     if (rowIndex != NSNotFound) {
         SKBookmark *selectedItem = [outlineView itemAtRow:rowIndex];
@@ -456,7 +456,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     }
     [item insertObject:separator inChildrenAtIndex:idx];
     
-    int row = [outlineView rowForItem:separator];
+    NSInteger row = [outlineView rowForItem:separator];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
@@ -601,7 +601,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 #pragma mark NSOutlineView datasource methods
 
-- (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
+- (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil) item = bookmarkRoot;
     return [item bookmarkType] == SKBookmarkTypeFolder ? [item countOfChildren] : 0;
 }
@@ -610,7 +610,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return [item bookmarkType] == SKBookmarkTypeFolder;
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
+- (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item {
     return [(item ?: bookmarkRoot) objectInChildrenAtIndex:anIndex];
 }
 
@@ -620,7 +620,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
         return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconCellStringKey, [item icon], SKTextWithIconCellImageKey, nil];
     } else if ([tcID isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
-            int count = [item countOfChildren];
+            NSInteger count = [item countOfChildren];
             return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%i items", @"Bookmark folder description"), count];
         } else {
             return [item path];
@@ -647,7 +647,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return YES;
 }
 
-- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(int)anIndex {
+- (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
@@ -666,7 +666,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return NSDragOperationNone;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(int)anIndex {
+- (BOOL)outlineView:(NSOutlineView *)ov acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)anIndex {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
@@ -679,7 +679,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
         [self endEditing];
 		while (bookmark = [bmEnum nextObject]) {
             SKBookmark *parent = [bookmark parent];
-            int bookmarkIndex = [[parent children] indexOfObject:bookmark];
+            NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {
                 if (anIndex > bookmarkIndex)
                     anIndex--;
@@ -736,7 +736,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     [self endEditing];
     while (item = [itemEnum  nextObject]) {
         SKBookmark *parent = [item parent];
-        unsigned int itemIndex = [[parent children] indexOfObject:item];
+        NSUInteger itemIndex = [[parent children] indexOfObject:item];
         if (itemIndex != NSNotFound)
             [parent removeObjectFromChildrenAtIndex:itemIndex];
     }
@@ -751,7 +751,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    int i, count = [outlineView numberOfRows];
+    NSInteger i, count = [outlineView numberOfRows];
     NSMutableArray *labels = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         NSString *label = [[outlineView itemAtRow:i] label];

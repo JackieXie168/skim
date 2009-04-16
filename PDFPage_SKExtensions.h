@@ -57,11 +57,11 @@ extern NSString *SKPDFPageActionRotate;
 - (NSRect)foregroundBox;
 
 - (NSImage *)image;
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box;
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect;
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect;
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box;
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect;
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect;
 
-- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size;
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
 - (NSAttributedString *)thumbnailAttachment;
 - (NSAttributedString *)thumbnail512Attachment;
 - (NSAttributedString *)thumbnail256Attachment;
@@ -74,15 +74,15 @@ extern NSString *SKPDFPageActionRotate;
 
 - (NSArray *)lineRects;
 
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 - (NSString *)sequentialLabel;
 - (NSString *)displayLabel;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKPDFDocument *)containingDocument;
-- (unsigned int)index;
-- (int)rotationAngle;
-- (void)setRotationAngle:(int)angle;
+- (NSUInteger)index;
+- (NSInteger)rotationAngle;
+- (void)setRotationAngle:(NSInteger)angle;
 - (NSData *)boundsAsQDRect;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)mediaBoundsAsQDRect;
@@ -91,8 +91,8 @@ extern NSString *SKPDFPageActionRotate;
 - (NSTextStorage *)richText;
 - (NSArray *)notes;
 - (void)insertInNotes:(id)newNote;
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
-- (void)removeFromNotesAtIndex:(unsigned int)index;
+- (void)insertInNotes:(id)newNote atIndex:(NSUInteger)index;
+- (void)removeFromNotesAtIndex:(NSUInteger)index;
 
 - (id)handleGrabScriptCommand:(NSScriptCommand *)command;
 

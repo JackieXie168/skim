@@ -74,7 +74,7 @@
 - (void)drawRect:(NSRect)aRect {
 	NSRect rect = [self bounds];
 	NSRect edgeRect;
-	int edge = 4;
+	NSInteger edge = 4;
 	
 	while (--edge >= 0) {
 		if ((edges & (1 << edge)) == 0)
@@ -85,11 +85,11 @@
 	}
 }
 
-- (int)edges {
+- (NSInteger)edges {
 	return edges;
 }
 
-- (void)setEdges:(int)mask {
+- (void)setEdges:(NSInteger)mask {
 	if (mask != edges) {
 		edges = mask;
 		[contentView setFrame:[self contentRect]];
@@ -110,7 +110,7 @@
 }
 
 - (void)setEdgeColor:(NSColor *)aColor {
-	int count = 4;
+	NSInteger count = 4;
 	[edgeColors removeAllObjects];
 	while (count--) 
 		[edgeColors addObject:aColor];
@@ -131,7 +131,7 @@
 - (NSRect)contentRect {
 	NSRect rect = [self bounds];
 	NSRect edgeRect;
-	int edge = 4;
+	NSInteger edge = 4;
 	
 	while (--edge >= 0) {
 		if (edges & (1 << edge))

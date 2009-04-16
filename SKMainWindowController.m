@@ -398,7 +398,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];
     
-    int windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
+    NSInteger windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
     if (hasWindowSetup) {
         NSString *rectString = [savedNormalSetup objectForKey:SKMainWindowFrameKey];
         if (rectString)
@@ -420,7 +420,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
     if (leftWidth && rightWidth) {
-        float width = [leftWidth floatValue];
+        CGFloat width = [leftWidth floatValue];
         if (width >= 0.0) {
             frame = [leftSideContentView frame];
             frame.size.width = width;
@@ -489,7 +489,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[self window] makeFirstResponder:[pdfView documentView]];
     
     // Go to page?
-    unsigned int pageIndex = NSNotFound;
+    NSUInteger pageIndex = NSNotFound;
     if (hasWindowSetup)
         pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
@@ -610,7 +610,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSString *message;
     if (NSEqualRects(selRect, NSZeroRect)) {
-        float magnification = [pdfView currentMagnification];
+        CGFloat magnification = [pdfView currentMagnification];
         if (magnification > 0.0001)
             message = [NSString stringWithFormat:@"%.2f %C", magnification, MULTIPLICATION_SIGN_CHARACTER];
         else
@@ -619,10 +619,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
-            float factor = useMetric ? 0.035277778 : 0.013888889;
+            CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
             message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (int)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (int)NSHeight(selRect), (int)NSMinX(selRect), (int)NSMinY(selRect)];
+            message = [NSString stringWithFormat:@"%i %C %i @ (%i, %i) pt", (NSInteger)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (NSInteger)NSHeight(selRect), (NSInteger)NSMinX(selRect), (NSInteger)NSMinY(selRect)];
         }
     }
     [statusBar setRightStringValue:message];
@@ -631,13 +631,13 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
     NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
     id cell = [tableColumn dataCell];
-    float labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
+    CGFloat labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
     NSEnumerator *labelEnum = [pageLabels objectEnumerator];
     NSString *label;
     
     while (label = [labelEnum nextObject]) {
         [cell setStringValue:label];
-        labelWidth = fmaxf(labelWidth, [cell cellSize].width);
+        labelWidth = SKMax(labelWidth, [cell cellSize].width);
     }
     
     [tableColumn setMinWidth:labelWidth];
@@ -648,7 +648,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)updatePageLabelsAndOutline {
     PDFDocument *pdfDoc = [pdfView document];
-    unsigned int i, count = [pdfDoc pageCount];
+    NSUInteger i, count = [pdfDoc pageCount];
     
     // update page labels, also update the size of the table columns displaying the labels
     [self willChangeValueForKey:PAGELABELS_KEY];
@@ -681,7 +681,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     updatingOutlineSelection = YES;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [outlineView reloadData];
-	for (i = 0; i < (unsigned int)[outlineView numberOfRows]; i++) {
+	for (i = 0; i < (NSUInteger)[outlineView numberOfRows]; i++) {
 		SKPDFOutline *item = [outlineView itemAtRow:i];
 		if ([item isOpen])
 			[outlineView expandItem:item];
@@ -714,7 +714,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
     if ([pdfView document] != document) {
         
-        unsigned pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
+        NSUInteger pageIndex = NSNotFound, secondaryPageIndex = NSNotFound;
         NSRect visibleRect = NSZeroRect, secondaryVisibleRect = NSZeroRect;
         NSArray *snapshotDicts = nil;
         
@@ -810,7 +810,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        unsigned pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
@@ -862,7 +862,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)updatePageNumber {
-    unsigned int number = [[pdfView currentPage] pageIndex] + 1;
+    NSUInteger number = [[pdfView currentPage] pageIndex] + 1;
     if (pageNumber != number) {
         [self willChangeValueForKey:PAGENUMBER_KEY];
         pageNumber = number;
@@ -870,13 +870,13 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
 }
 
-- (unsigned int)pageNumber {
+- (NSUInteger)pageNumber {
     return pageNumber;
 }
 
-- (void)setPageNumber:(unsigned int)number {
+- (void)setPageNumber:(NSUInteger)number {
     // Check that the page number exists
-    unsigned int pageCount = [[pdfView document] pageCount];
+    NSUInteger pageCount = [[pdfView document] pageCount];
     if (number > pageCount)
         number = pageCount;
     if (number > 0 && [[pdfView currentPage] pageIndex] != number - 1)
@@ -898,7 +898,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)setPageLabel:(NSString *)label {
-    unsigned int idx = [pageLabels indexOfObject:label];
+    NSUInteger idx = [pageLabels indexOfObject:label];
     if (idx != NSNotFound && [[[pdfView currentPage] displayLabel] isEqual:label] == NO)
         [self goToPage:[[pdfView document] pageAtIndex:idx]];
 }
@@ -976,7 +976,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (BOOL)leftSidePaneIsOpen {
-    int state;
+    NSInteger state;
     if ([self isFullScreen])
         state = [leftSideWindow state];
     else if (usesDrawers)
@@ -987,7 +987,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (BOOL)rightSidePaneIsOpen {
-    int state;
+    NSInteger state;
     if ([self isFullScreen])
         state = [rightSideWindow state];
     else if (usesDrawers)
@@ -1011,22 +1011,22 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     return [[notes copy] autorelease];
 }
 	 
-- (unsigned int)countOfNotes {
+- (NSUInteger)countOfNotes {
     return [notes count];
 }
 
-- (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex {
+- (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex {
     return [notes objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(NSUInteger)theIndex {
     [notes insertObject:note atIndex:theIndex];
 
     // Start observing the just-inserted notes so that, when they're changed, we can record undo operations.
     [self startObservingNotes:[NSArray arrayWithObject:note]];
 }
 
-- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
     PDFAnnotation *note = [notes objectAtIndex:theIndex];
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
@@ -1075,19 +1075,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     return [[thumbnails copy] autorelease];
 }
 
-- (unsigned int)countOfThumbnails {
+- (NSUInteger)countOfThumbnails {
     return [thumbnails count];
 }
 
-- (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex {
+- (SKThumbnail *)objectInThumbnailsAtIndex:(NSUInteger)theIndex {
     return [thumbnails objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(NSUInteger)theIndex {
     [thumbnails insertObject:thumbnail atIndex:theIndex];
 }
 
-- (void)removeObjectFromThumbnailsAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromThumbnailsAtIndex:(NSUInteger)theIndex {
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
@@ -1104,19 +1104,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     return [[snapshots copy] autorelease];
 }
 
-- (unsigned int)countOfSnapshots {
+- (NSUInteger)countOfSnapshots {
     return [snapshots count];
 }
 
-- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(unsigned int)theIndex {
+- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(NSUInteger)theIndex {
     return [snapshots objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(NSUInteger)theIndex {
     [snapshots insertObject:snapshot atIndex:theIndex];
 }
 
-- (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromSnapshotsAtIndex:(NSUInteger)theIndex {
     [dirtySnapshots removeObject:[snapshots objectAtIndex:theIndex]];
     [snapshots removeObjectAtIndex:theIndex];
 }
@@ -1137,7 +1137,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (NSArray *)selectedNotes {
     NSMutableArray *selectedNotes = [NSMutableArray array];
     NSIndexSet *rowIndexes = [noteOutlineView selectedRowIndexes];
-    unsigned int row = [rowIndexes firstIndex];
+    NSUInteger row = [rowIndexes firstIndex];
     id item = nil;
     while (row != NSNotFound) {
         item = [noteOutlineView itemAtRow:row];
@@ -1158,19 +1158,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [searchResults setArray:newSearchResults];
 }
 
-- (unsigned int)countOfSearchResults {
+- (NSUInteger)countOfSearchResults {
     return [searchResults count];
 }
 
-- (PDFSelection *)objectInSearchResultsAtIndex:(unsigned int)theIndex {
+- (PDFSelection *)objectInSearchResultsAtIndex:(NSUInteger)theIndex {
     return [searchResults objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(NSUInteger)theIndex {
     [searchResults insertObject:searchResult atIndex:theIndex];
 }
 
-- (void)removeObjectFromSearchResultsAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromSearchResultsAtIndex:(NSUInteger)theIndex {
     [searchResults removeObjectAtIndex:theIndex];
 }
 
@@ -1182,19 +1182,19 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [groupedSearchResults setArray:newGroupedSearchResults];
 }
 
-- (unsigned int)countOfGroupedSearchResults {
+- (NSUInteger)countOfGroupedSearchResults {
     return [groupedSearchResults count];
 }
 
-- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(unsigned int)theIndex {
+- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(NSUInteger)theIndex {
     return [groupedSearchResults objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(NSUInteger)theIndex {
     [groupedSearchResults insertObject:groupedSearchResult atIndex:theIndex];
 }
 
-- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(NSUInteger)theIndex {
     [groupedSearchResults removeObjectAtIndex:theIndex];
 }
 
@@ -1680,7 +1680,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     NSArray *pages = [sel pages];
-    int i, iMax = [pages count];
+    NSInteger i, iMax = [pages count];
     NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey] ?: [NSColor redColor];
     
     for (i = 0; i < iMax; i++) {
@@ -1764,7 +1764,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else 
             [self fadeInOutlineView];
     } else {
-        int options = caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
+        NSInteger options = caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
         if (wholeWordSearch && [[pdfView document] respondsToSelector:@selector(beginFindStrings:withOptions:)]) {
             NSMutableArray *words = [NSMutableArray array];
             NSEnumerator *wordEnum = [[[sender stringValue] componentsSeparatedByString:@" "] objectEnumerator];
@@ -1788,16 +1788,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(int)options {
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options {
 	findPanelFind = YES;
     selection = [[pdfView document] findString:string fromSelection:selection withOptions:options];
 	findPanelFind = NO;
     return selection;
 }
 
-- (void)findString:(NSString *)string options:(int)options{
+- (void)findString:(NSString *)string options:(NSInteger)options{
     PDFSelection *sel = [pdfView currentSelection];
-    unsigned pageIndex = [[pdfView currentPage] pageIndex];
+    NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     while ([sel string] == nil && pageIndex-- > 0) {
         PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
         sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
@@ -1903,7 +1903,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (wholeWordSearch) {
             PDFSelection *copy = [[instance copy] autorelease];
             NSString *string = [instance string];
-            unsigned int l = [string length];
+            NSUInteger l = [string length];
             [copy extendSelectionAtEnd:1];
             string = [copy string];
             if ([string length] > l && [[NSCharacterSet letterCharacterSet] characterIsMember:[string characterAtIndex:l]])
@@ -1918,7 +1918,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         PDFPage *page = [[instance pages] objectAtIndex:0];
         SKGroupedSearchResult *result = [groupedSearchResults lastObject];
-        unsigned int maxCount = [result maxCount];
+        NSUInteger maxCount = [result maxCount];
         if ([[result page] isEqual:page] == NO) {
             result = [SKGroupedSearchResult groupedSearchResultWithPage:page maxCount:maxCount];
             [groupedSearchResults addObject:result];
@@ -1991,7 +1991,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (displayChanged)
         [pdfView layoutDocumentView];
     if (page) {
-        unsigned int idx = [page pageIndex];
+        NSUInteger idx = [page pageIndex];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -2056,8 +2056,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
         @try {
             NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
-            int historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
-            if (historyIndex < (int)[destinationHistory count])
+            NSInteger historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
+            if (historyIndex < (NSInteger)[destinationHistory count])
                 [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
             [destinationHistory addObject:destination];
             [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
@@ -2081,7 +2081,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Subwindows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits {
+- (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits {
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
@@ -2162,7 +2162,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
-    int row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSInteger row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
     
     [snapshotTableView scrollRowToVisible:row];
     
@@ -2177,7 +2177,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
     [[self document] addWindowController:controller];
     
-    int row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSInteger row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
     NSRect rect = [snapshotTableView frameOfCellAtColumn:0 row:row];
         
     rect = [snapshotTableView convertRect:rect toView:nil];
@@ -2436,11 +2436,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Outline
 
-- (int)outlineRowForPageIndex:(unsigned int)pageIndex {
+- (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex {
     if (pdfOutline == nil)
         return -1;
     
-	int i, numRows = [outlineView numberOfRows];
+	NSInteger i, numRows = [outlineView numberOfRows];
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
 		SKPDFOutline *outlineItem = [outlineView itemAtRow:i];
@@ -2467,10 +2467,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		return;
 	
 	// Get index of current page.
-	unsigned int pageIndex = [[pdfView currentPage] pageIndex];
+	NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     
 	// Test that the current selection is still valid.
-	int row = [outlineView selectedRow];
+	NSInteger row = [outlineView selectedRow];
     if (row == -1 || [[[[outlineView itemAtRow:row] destination] page] pageIndex] != pageIndex) {
         row = [self outlineRowForPageIndex:pageIndex];
         if (row != -1) {
@@ -2485,7 +2485,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)updateThumbnailSelection {
 	// Get index of current page.
-	unsigned pageIndex = [[pdfView currentPage] pageIndex];
+	NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     updatingThumbnailSelection = YES;
     [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
     [thumbnailTableView scrollRowToVisible:pageIndex];
@@ -2493,7 +2493,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnails {
-    unsigned i, count = [pageLabels count];
+    NSUInteger i, count = [pageLabels count];
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if (count) {
@@ -2504,7 +2504,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
-        float width = 0.8 * fminf(NSWidth(imgRect), NSHeight(imgRect));
+        CGFloat width = 0.8 * SKMin(NSWidth(imgRect), NSHeight(imgRect));
         imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
         [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
@@ -2522,12 +2522,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnailSizeIfNeeded {
-    roundedThumbnailSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
+    roundedThumbnailSize = SKRound([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
 
-    float defaultSize = roundedThumbnailSize;
-    float thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    CGFloat defaultSize = roundedThumbnailSize;
+    CGFloat thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (fabsf(thumbnailSize - thumbnailCacheSize) > 0.1) {
+    if (SKAbs(thumbnailSize - thumbnailCacheSize) > 0.1) {
         thumbnailCacheSize = thumbnailSize;
         
         if ([self countOfThumbnails])
@@ -2535,7 +2535,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)updateThumbnailAtPageIndex:(unsigned)anIndex {
+- (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
     [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
     [thumbnailTableView reloadData];
 }
@@ -2560,7 +2560,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
         
         newSize = [image size];
-        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
+        if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0) {
             [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]] afterDelay:0.0];
         }
     }
@@ -2573,8 +2573,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
     NSArray *orderedNotes = [noteArrayController arrangedObjects];
     PDFAnnotation *annotation, *selAnnotation = nil;
-    unsigned int pageIndex = [[pdfView currentPage] pageIndex];
-	int i, count = [orderedNotes count];
+    NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
+	NSInteger i, count = [orderedNotes count];
     NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
     NSEnumerator *selEnum = [[self selectedNotes] objectEnumerator];
     
@@ -2615,11 +2615,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark Snapshots
 
 - (void)resetSnapshotSizeIfNeeded {
-    roundedSnapshotThumbnailSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
-    float defaultSize = roundedSnapshotThumbnailSize;
-    float snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    roundedSnapshotThumbnailSize = SKRound([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
+    CGFloat defaultSize = roundedSnapshotThumbnailSize;
+    CGFloat snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (fabsf(snapshotSize - snapshotCacheSize) > 0.1) {
+    if (SKAbs(snapshotSize - snapshotCacheSize) > 0.1) {
         snapshotCacheSize = snapshotSize;
         
         if (snapshotTimer) {
@@ -2660,8 +2660,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [dirtySnapshots removeObject:controller];
         
         newSize = [image size];
-        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
-            unsigned idx = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+        if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0) {
+            NSUInteger idx = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
         }
     }

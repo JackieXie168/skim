@@ -45,13 +45,13 @@
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
-    float pinchZoomFactor;
+    CGFloat pinchZoomFactor;
 }
 
 - (BOOL)autoFits;
 - (void)setAutoFits:(BOOL)newAuto;
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
-- (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
+- (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;
 - (NSScrollView *)scrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;

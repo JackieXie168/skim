@@ -69,7 +69,7 @@
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)rowIndex;
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

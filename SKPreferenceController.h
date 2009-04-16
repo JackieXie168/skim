@@ -57,21 +57,21 @@
     IBOutlet SKFontWell *anchoredNoteFontWell;
     NSDictionary *resettableKeys;
     BOOL isCustomTeXEditor;
-    int updateInterval;
+    NSInteger updateInterval;
     NSUserDefaults *sud;
     NSUserDefaultsController *sudc;
 }
 
 + (id)sharedPrefenceController;
 
-- (unsigned int)countOfSizes;
-- (NSNumber *)objectInSizesAtIndex:(unsigned int)anIndex;
+- (NSUInteger)countOfSizes;
+- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
 
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
 
-- (int)updateInterval;
-- (void)setUpdateInterval:(int)interval;
+- (NSInteger)updateInterval;
+- (void)setUpdateInterval:(NSInteger)interval;
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 - (IBAction)changeTeXEditorPreset:(id)sender;

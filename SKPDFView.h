@@ -120,21 +120,21 @@ typedef NSInteger SKInteractionMode;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
     NSRect selectionRect;
-    unsigned int selectionPageIndex;
-    float magnification;
+    NSUInteger selectionPageIndex;
+    CGFloat magnification;
     BOOL didSelect;
     BOOL mouseDownInAnnotation;
-    int dragMask;
+    NSInteger dragMask;
     NSBezierPath *bezierPath;
-    unsigned int pathPageIndex;
-    float gestureRotation;
-    unsigned int gesturePageIndex;
+    NSUInteger pathPageIndex;
+    CGFloat gestureRotation;
+    NSUInteger gesturePageIndex;
     
-    int trackingRect;
+    NSInteger trackingRect;
     CFMutableArrayRef PDFToolTipRects;
-    int PDFToolTipRect;
+    NSInteger PDFToolTipRect;
     
-    int spellingTag;
+    NSInteger spellingTag;
 }
 
 - (SKToolMode)toolMode;
@@ -157,7 +157,7 @@ typedef NSInteger SKInteractionMode;
 - (PDFPage *)currentSelectionPage;
 - (void)setCurrentSelectionPage:(PDFPage *)page;
 
-- (float)currentMagnification;
+- (CGFloat)currentMagnification;
 
 - (BOOL)hideNotes;
 - (void)setHideNotes:(BOOL)flag;
@@ -201,7 +201,7 @@ typedef NSInteger SKInteractionMode;
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
 - (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page;
-- (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(unsigned int)pageIndex;
+- (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex;
 
 - (void)takeSnapshot:(id)sender;
 

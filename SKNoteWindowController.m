@@ -79,7 +79,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [page addAnnotation:annotation];
     [annotation release];
     
-    unsigned int i;
+    NSUInteger i;
     for (i = 0; i < 7; i++) {
         noteIcons[i] = [[NSImage alloc] initWithSize:SKNPDFAnnotationNoteSize];
         [noteIcons[i] lockFocus];
@@ -129,7 +129,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)updateStatusMessage {
     NSRect bounds = [note bounds];
-    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] displayLabel], (int)NSMidX(bounds), (int)NSMidY(bounds)]];
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] displayLabel], (NSInteger)NSMidX(bounds), (NSInteger)NSMidY(bounds)]];
 }
 
 - (void)windowDidLoad {
@@ -140,13 +140,13 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     if ([self isNoteType]) {
         if ([[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-            float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
             NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
             if (font)
                 [textView setFont:font];
         }
         
-        unsigned i, count = [iconTypePopUpButton numberOfItems];
+        NSUInteger i, count = [iconTypePopUpButton numberOfItems];
         for (i = 0; i < count; i++) {
             NSMenuItem *item = [iconTypePopUpButton itemAtIndex:i];
             [item setImage:noteIcons[[item tag]]];
@@ -302,7 +302,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             name = @"NoteImage";
         NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[note string]];
         NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
-        int i = 0;
+        NSInteger i = 0;
         NSFileManager *fm = [NSFileManager defaultManager];
         while ([fm fileExistsAtPath:path])
             path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
@@ -317,7 +317,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         NSString *key = [keyPath substringFromIndex:7];
         if (([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey]) && [self isNoteType] && [[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
-            float fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
+            CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
             NSFont *font = fontName ? [NSFont fontWithName:fontName size:fontSize] : nil;
             if (font)
                 [textView setFont:font];

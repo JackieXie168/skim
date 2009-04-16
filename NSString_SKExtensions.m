@@ -78,7 +78,7 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     NSCAssert1(buffer != NULL, @"failed to allocate memory for string of length %d", length);
     
     BOOL isFirst = NO, wasHyphen = NO;
-    int bufCnt = 0;
+    CFIndex bufCnt = 0;
     for(cnt = 0; cnt < length; cnt++){
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, cnt);
         if(NO == CFCharacterSetIsCharacterMember(CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline), ch)){
@@ -112,7 +112,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 @implementation NSString (SKExtensions)
 
 - (NSNumber *)noteTypeOrder {
-    int order = 9;
+    NSInteger order = 9;
     if ([self isEqualToString:SKNFreeTextString])
         order = 0;
     else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
@@ -141,16 +141,16 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 - (NSComparisonResult)boundsCompare:(NSString *)aString {
     NSRect rect1 = NSRectFromString(self);
     NSRect rect2 = NSRectFromString(aString);
-    float top1 = NSMaxY(rect1);
-    float top2 = NSMaxY(rect2);
+    CGFloat top1 = NSMaxY(rect1);
+    CGFloat top2 = NSMaxY(rect2);
     
     if (top1 > top2)
         return NSOrderedAscending;
     else if (top1 < top2)
         return NSOrderedDescending;
     
-    float left1 = NSMinX(rect1);
-    float left2 = NSMinX(rect2);
+    CGFloat left1 = NSMinX(rect1);
+    CGFloat left2 = NSMinX(rect2);
     
     if (left1 < left2)
         return NSOrderedAscending;
@@ -264,7 +264,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
         shellSpecialChars = [[NSCharacterSet characterSetWithCharactersInString:@"$\"`\\"] retain];
 
     NSMutableString *result = [self mutableCopy];
-    unsigned int i = 0;
+    NSUInteger i = 0;
     while (i < [result length]) {
         i = [result rangeOfCharacterFromSet:shellSpecialChars options:0 range:NSMakeRange(i, [result length] - i)].location;
         if (i != NSNotFound) {
@@ -353,7 +353,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     if (parenAndBackslashCharSet == nil)
         parenAndBackslashCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"()\\"] retain];
     
-    unsigned location = [self rangeOfCharacterFromSet:parenAndBackslashCharSet].location;
+    NSUInteger location = [self rangeOfCharacterFromSet:parenAndBackslashCharSet].location;
     if (location == NSNotFound)
         return self;
     
@@ -414,27 +414,27 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
 }
 
-- (float)rectX {
+- (CGFloat)rectX {
     return NSRectFromString(self).origin.x;
 }
 
-- (float)rectY {
+- (CGFloat)rectY {
     return NSRectFromString(self).origin.y;
 }
 
-- (float)rectWidth {
+- (CGFloat)rectWidth {
     return NSRectFromString(self).size.width;
 }
 
-- (float)rectHeight {
+- (CGFloat)rectHeight {
     return NSRectFromString(self).size.height;
 }
 
-- (float)pointX {
+- (CGFloat)pointX {
     return NSPointFromString(self).x;
 }
 
-- (float)pointY {
+- (CGFloat)pointY {
     return NSPointFromString(self).y;
 }
 
@@ -542,7 +542,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 - (NSString *)xmlString {
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
     NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-    int loc = NSMaxRange([string rangeOfString:@"<string>"]);
+    NSInteger loc = NSMaxRange([string rangeOfString:@"<string>"]);
     if (loc == NSNotFound)
         return self;
     [string deleteCharactersInRange:NSMakeRange(0, loc)];

@@ -55,12 +55,12 @@
 }
 
 - (void)setEnabledForAllSegments:(BOOL)enabled  {
-    unsigned i, count = [self segmentCount];
+    NSUInteger i, count = [self segmentCount];
     for (i = 0; i < count; i++)
         [self setEnabled:enabled forSegment:i];
 }
 
-- (void)setToolTip:(NSString *)toolTip forSegment:(int)segment {
+- (void)setToolTip:(NSString *)toolTip forSegment:(NSInteger)segment {
     [[self cell] setToolTip:toolTip forSegment:segment];
     NSArray *accessibilitySegments = [NSAccessibilityUnignoredDescendant(self) accessibilityAttributeValue:NSAccessibilityChildrenAttribute];
     [[accessibilitySegments objectAtIndex:segment] accessibilitySetOverrideValue:toolTip forAttribute:NSAccessibilityDescriptionAttribute];

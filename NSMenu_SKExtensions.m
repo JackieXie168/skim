@@ -102,7 +102,7 @@
 }
 
 - (void)removeDoubleSeparators {
-    int anIndex = [self numberOfItems];
+    NSInteger anIndex = [self numberOfItems];
     BOOL wasSeparator = YES;
     
     while (anIndex--) {

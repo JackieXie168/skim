@@ -131,15 +131,15 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSRect)foregroundBox {
     NSRect *rectPtr = NULL;
     if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectPtr)) {
-        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
-        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
+        CGFloat marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
+        CGFloat marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
         NSBitmapImageRep *imageRep = [self newBitmapImageRepForBox:kPDFDisplayBoxMediaBox];
         NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
         NSRect rect = [imageRep foregroundRect];
         if (imageRep == nil) {
             rect = bounds;
         } else if (NSEqualRects(NSZeroRect, rect)) {
-            rect.origin.x = floorf(NSMidX(bounds));
+            rect.origin.x = SKFloor(NSMidX(bounds));
             rect.origin.x = ceilf(NSMidY(bounds));
         } else {
             rect.origin.x += NSMinX(bounds);
@@ -158,21 +158,21 @@ static BOOL usesSequentialPageNumbering = NO;
     return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box {
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box {
     return  [self thumbnailWithSize:size forBox:box readingBarRect:NSZeroRect];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
-    float shadowBlurRadius = roundf(size / 32.0);
-    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
+    CGFloat shadowBlurRadius = SKRound(size / 32.0);
+    CGFloat shadowOffset = - ceilf(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
+- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
     NSRect bounds = [self boundsForBox:box];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
-    float scale = 1.0;
+    CGFloat scale = 1.0;
     NSSize thumbnailSize;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
@@ -182,10 +182,10 @@ static BOOL usesSequentialPageNumbering = NO;
     
     if (isScaled) {
         if (NSHeight(bounds) > NSWidth(bounds))
-            thumbnailSize = NSMakeSize(roundf((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
+            thumbnailSize = NSMakeSize(SKRound((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
-            thumbnailSize = NSMakeSize(size, roundf((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
-        scale = fminf((thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds), (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds));
+            thumbnailSize = NSMakeSize(size, SKRound((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
+        scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds), (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds));
     } else {
         thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
     }
@@ -242,7 +242,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return [image autorelease];
 }
 
-- (NSAttributedString *)thumbnailAttachmentWithSize:(float)size {
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size {
     NSImage *image = [self thumbnailWithSize:size forBox:kPDFDisplayBoxCropBox];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
@@ -345,14 +345,14 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    unsigned i, iMax = [sel safeNumberOfRangesOnPage:self];
+    NSUInteger i, iMax = [sel safeNumberOfRangesOnPage:self];
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     NSString *string = [self string];
     NSRange stringRange = NSMakeRange(0, [string length]);
     
     for (i = 0; i < iMax; i++) {
         NSRange range = [sel safeRangeAtIndex:i onPage:self];
-        unsigned j, jMax = NSMaxRange(range);
+        NSUInteger j, jMax = NSMaxRange(range);
         
         for (j = range.location; j < jMax; j++) {
             if ([indexes containsIndex:j])
@@ -360,7 +360,7 @@ static BOOL usesSequentialPageNumbering = NO;
             
             NSRect r = [self characterBoundsAtIndex:j];
             PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
-            unsigned k, kMax = [s safeNumberOfRangesOnPage:self];
+            NSUInteger k, kMax = [s safeNumberOfRangesOnPage:self];
             BOOL notEmpty = NO;
             
             for (k = 0; k < kMax; k++) {
@@ -400,7 +400,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return fullLines;
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     return [[self document] indexForPage:self];
 }
 
@@ -419,7 +419,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     SKPDFDocument *document = [self containingDocument];
-	unsigned idx = [self pageIndex];
+	NSUInteger idx = [self pageIndex];
     
     if (document && idx != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
@@ -441,15 +441,15 @@ static BOOL usesSequentialPageNumbering = NO;
     return document;
 }
 
-- (unsigned int)index {
+- (NSUInteger)index {
     return [self pageIndex] + 1;
 }
 
-- (int)rotationAngle {
+- (NSInteger)rotationAngle {
     return [self rotation];
 }
 
-- (void)setRotationAngle:(int)angle {
+- (void)setRotationAngle:(NSInteger)angle {
     if (angle != [self rotation]) {
         NSUndoManager *undoManager = [[self containingDocument] undoManager];
         [[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
@@ -540,11 +540,11 @@ static BOOL usesSequentialPageNumbering = NO;
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 }
 
-- (void)insertInNotes:(id)newNote atIndex:(unsigned int)anIndex {
+- (void)insertInNotes:(id)newNote atIndex:(NSUInteger)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeFromNotesAtIndex:(unsigned int)anIndex {
+- (void)removeFromNotesAtIndex:(NSUInteger)anIndex {
     PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
     SKPDFView *pdfView = [[self containingDocument] pdfView];
     

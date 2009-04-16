@@ -48,7 +48,7 @@
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
-static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
+static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs", @"LyX", @"TeXMaker", @"AlphaX"};
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor", @"texmaker", @"alphac"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line", @"\"%file\" -line %line", @"+%line \"%file\""};
@@ -105,7 +105,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 #define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 
@@ -113,8 +113,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
     NSString *editorPreset = [sud stringForKey:SKTeXEditorPresetKey];
-    int i = sizeof(SKTeXEditors) / sizeof(NSString *);
-    int idx = -1;
+    NSInteger i = sizeof(SKTeXEditors) / sizeof(NSString *);
+    NSInteger idx = -1;
     
     while (i--) {
         [texEditorPopUpButton insertItemWithTitle:SKTeXEditors[i] atIndex:0];
@@ -184,11 +184,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 #pragma mark Accessors
 
-- (unsigned int)countOfSizes {
-    return sizeof(SKDefaultFontSizes) / sizeof(float);
+- (NSUInteger)countOfSizes {
+    return sizeof(SKDefaultFontSizes) / sizeof(CGFloat);
 }
 
-- (NSNumber *)objectInSizesAtIndex:(unsigned int)anIndex {
+- (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex {
     return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
 }
 
@@ -200,11 +200,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
     isCustomTeXEditor = flag;
 }
 
-- (int)updateInterval {
+- (NSInteger)updateInterval {
     return updateInterval;
 }
 
-- (void)setUpdateInterval:(int)interval {
+- (void)setUpdateInterval:(NSInteger)interval {
     if (interval > 0)
         [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:interval > 0];
@@ -231,7 +231,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
-    int idx = [sender indexOfSelectedItem];
+    NSInteger idx = [sender indexOfSelectedItem];
     if (idx < [sender numberOfItems] - 1) {
         [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
         [[sudc values] setValue:SKTeXEditorCommands[idx] forKey:SKTeXEditorCommandKey];
@@ -251,7 +251,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [sudc revertToInitialValueForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
 }
 
-- (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSString *tabID = (NSString *)contextInfo;
         NSArray *keys = tabID ? [resettableKeys objectForKey:tabID] : nil;

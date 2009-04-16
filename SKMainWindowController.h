@@ -63,9 +63,9 @@ enum {
 };
 
 typedef struct _SKPDFViewState {
-	int displayMode;
+	NSInteger displayMode;
 	BOOL autoScales;
-	float scaleFactor;
+	CGFloat scaleFactor;
 	BOOL hasHorizontalScroller;
 	BOOL hasVerticalScroller;
 	BOOL autoHidesScrollers;
@@ -122,7 +122,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView             *thumbnailView;
     NSMutableArray              *thumbnails;
     BOOL                        updatingThumbnailSelection;
-    float                       roundedThumbnailSize;
+    CGFloat                       roundedThumbnailSize;
     BOOL                        isAnimating;
     
     IBOutlet NSArrayController  *findArrayController;
@@ -157,7 +157,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSMutableArray              *snapshots;
     NSMutableArray              *dirtySnapshots;
     NSTimer                     *snapshotTimer;
-    float                       roundedSnapshotThumbnailSize;
+    CGFloat                       roundedSnapshotThumbnailSize;
     
     NSMutableArray              *tags;
     double                      rating;
@@ -220,10 +220,10 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSMutableArray              *pageLabels;
     
     NSString                    *pageLabel;
-    unsigned int                pageNumber;
+    NSUInteger                pageNumber;
     
-    unsigned int                markedPageIndex;
-    unsigned int                beforeMarkedPageIndex;
+    NSUInteger                markedPageIndex;
+    NSUInteger                beforeMarkedPageIndex;
     
     NSMutableArray              *lastViewedPages;
     
@@ -232,12 +232,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     BOOL                        isPresentation;
     NSMutableDictionary         *savedNormalSetup;
     
-    float                       lastLeftSidePaneWidth;
-    float                       lastRightSidePaneWidth;
-    float                       lastSecondaryPdfViewPaneHeight;
+    CGFloat                       lastLeftSidePaneWidth;
+    CGFloat                       lastRightSidePaneWidth;
+    CGFloat                       lastSecondaryPdfViewPaneHeight;
     
-    float                       thumbnailCacheSize;
-    float                       snapshotCacheSize;
+    CGFloat                       thumbnailCacheSize;
+    CGFloat                       snapshotCacheSize;
     
     NSDrawer                    *leftSideDrawer;
     NSDrawer                    *rightSideDrawer;
@@ -254,7 +254,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)search:(id)sender;
 - (IBAction)searchNotes:(id)sender;
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect scaleFactor:(float)scaleFactor autoFits:(BOOL)autoFits;
+- (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
 
@@ -266,47 +266,47 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (SKProgressController *)progressController;
 
 - (NSArray *)notes;
-- (unsigned int)countOfNotes;
-- (PDFAnnotation *)objectInNotesAtIndex:(unsigned int)theIndex;
-- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(unsigned int)theIndex;
-- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex;
+- (NSUInteger)countOfNotes;
+- (PDFAnnotation *)objectInNotesAtIndex:(NSUInteger)theIndex;
+- (void)insertObject:(PDFAnnotation *)note inNotesAtIndex:(NSUInteger)theIndex;
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex;
 - (void)removeAllObjectsFromNotes;
 
 - (NSArray *)thumbnails;
-- (unsigned int)countOfThumbnails;
-- (SKThumbnail *)objectInThumbnailsAtIndex:(unsigned int)theIndex;
-- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(unsigned int)theIndex;
-- (void)removeObjectFromThumbnailsAtIndex:(unsigned int)theIndex;
+- (NSUInteger)countOfThumbnails;
+- (SKThumbnail *)objectInThumbnailsAtIndex:(NSUInteger)theIndex;
+- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(NSUInteger)theIndex;
+- (void)removeObjectFromThumbnailsAtIndex:(NSUInteger)theIndex;
 - (void)removeAllObjectsFromThumbnails;
 
 - (NSArray *)snapshots;
-- (unsigned int)countOfSnapshots;
-- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(unsigned int)theIndex;
-- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(unsigned int)theIndex;
-- (void)removeObjectFromSnapshotsAtIndex:(unsigned int)theIndex;
+- (NSUInteger)countOfSnapshots;
+- (SKSnapshotWindowController *)objectInSnapshotsAtIndex:(NSUInteger)theIndex;
+- (void)insertObject:(SKSnapshotWindowController *)snapshot inSnapshotsAtIndex:(NSUInteger)theIndex;
+- (void)removeObjectFromSnapshotsAtIndex:(NSUInteger)theIndex;
 - (void)removeAllObjectsFromSnapshots;
 
 - (NSArray *)searchResults;
 - (void)setSearchResults:(NSArray *)newSearchResults;
-- (unsigned int)countOfSearchResults;
-- (PDFSelection *)objectInSearchResultsAtIndex:(unsigned int)theIndex;
-- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(unsigned int)theIndex;
-- (void)removeObjectFromSearchResultsAtIndex:(unsigned int)theIndex;
+- (NSUInteger)countOfSearchResults;
+- (PDFSelection *)objectInSearchResultsAtIndex:(NSUInteger)theIndex;
+- (void)insertObject:(PDFSelection *)searchResult inSearchResultsAtIndex:(NSUInteger)theIndex;
+- (void)removeObjectFromSearchResultsAtIndex:(NSUInteger)theIndex;
 
 - (NSArray *)groupedSearchResults;
 - (void)setGroupedSearchResults:(NSArray *)newGroupedSearchResults;
-- (unsigned int)countOfGroupedSearchResults;
-- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(unsigned int)theIndex;
-- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(unsigned int)theIndex;
-- (void)removeObjectFromGroupedSearchResultsAtIndex:(unsigned int)theIndex;
+- (NSUInteger)countOfGroupedSearchResults;
+- (SKGroupedSearchResult *)objectInGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
+- (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
+- (void)removeObjectFromGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
 
 - (NSArray *)tags;
 - (double)rating;
 
 - (NSArray *)selectedNotes;
 
-- (unsigned int)pageNumber;
-- (void)setPageNumber:(unsigned int)pageNumber;
+- (NSUInteger)pageNumber;
+- (void)setPageNumber:(NSUInteger)pageNumber;
 - (NSString *)pageLabel;
 - (void)setPageLabel:(NSString *)label;
 
@@ -346,9 +346,9 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)removeTemporaryAnnotations;
 - (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page;
 
-- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(int)options;
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(NSInteger)options;
 
-- (int)outlineRowForPageIndex:(unsigned int)pageIndex;
+- (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex;
 - (void)updateOutlineSelection;
 
 - (void)updateNoteSelection;
@@ -356,7 +356,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
-- (void)updateThumbnailAtPageIndex:(unsigned)index;
+- (void)updateThumbnailAtPageIndex:(NSUInteger)index;
 - (void)allThumbnailsNeedUpdate;
 
 - (void)resetSnapshotSizeIfNeeded;

@@ -64,7 +64,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
     }
 }
 
-- (unsigned int)hash {
+- (NSUInteger)hash {
     return [parent hash];
 }
 
@@ -76,7 +76,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
     return nil;
 }
 
-- (int)index {
+- (NSInteger)index {
     return -1;
 }
 
@@ -181,7 +181,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
     }
 }
 
-- (unsigned int)hash {
+- (NSUInteger)hash {
     return [super hash] + [object hash];
 }
 
@@ -195,11 +195,11 @@ static SEL SKAttributeGetter(NSString *attribute) {
 
 @implementation SKAccessibilityIndexedFauxUIElement
 
-+ (id)elementWithIndex:(int)anIndex parent:(id)aParent {
++ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent {
     return [[[self alloc] initWithIndex:anIndex parent:aParent] autorelease];
 }
 
-- (id)initWithIndex:(int)anIndex parent:(id)aParent {
+- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent {
     if (self = [super initWithParent:aParent]) {
         index = anIndex;
     }
@@ -219,11 +219,11 @@ static SEL SKAttributeGetter(NSString *attribute) {
     }
 }
 
-- (unsigned int)hash {
+- (NSUInteger)hash {
     return [super hash] + index;
 }
 
-- (int)index {
+- (NSInteger)index {
     return index;
 }
 

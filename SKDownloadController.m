@@ -97,7 +97,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
@@ -110,7 +110,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)addDownloadForURL:(NSURL *)aURL {
     if (aURL) {
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
-        int row = [self countOfDownloads];
+        NSInteger row = [self countOfDownloads];
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
         [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -124,22 +124,22 @@ static SKDownloadController *sharedDownloadController = nil;
     return [[downloads copy] autorelease];
 }
 
-- (unsigned int)countOfDownloads {
+- (NSUInteger)countOfDownloads {
     return [downloads count];
 }
 
-- (SKDownload *)objectInDownloadsAtIndex:(unsigned int)anIndex {
+- (SKDownload *)objectInDownloadsAtIndex:(NSUInteger)anIndex {
     return [downloads objectAtIndex:anIndex];
 }
 
-- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(unsigned int)anIndex {
+- (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
     [downloads insertObject:download atIndex:anIndex];
     [self startObservingDownloads:[NSArray arrayWithObject:download]];
     [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView setNeedsDisplayInRect:[tableView rectOfRow:PROGRESS_COLUMN]];
 }
 
-- (void)removeObjectFromDownloadsAtIndex:(unsigned int)anIndex {
+- (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex {
     SKDownload *download = [downloads objectAtIndex:anIndex];
     [self endObservingDownloads:[NSArray arrayWithObject:download]];
     [download setDelegate:nil];
@@ -152,7 +152,7 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark Actions
 
 - (IBAction)clearDownloads:(id)sender {
-    int i = [self countOfDownloads];
+    NSInteger i = [self countOfDownloads];
     
     while (i-- > 0) {
         SKDownload *download = [self objectInDownloadsAtIndex:i];
@@ -165,7 +165,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
-        int row = [tableView clickedRow];
+        NSInteger row = [tableView clickedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
     }
@@ -177,7 +177,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
-        int row = [tableView clickedRow];
+        NSInteger row = [tableView clickedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
     }
@@ -189,7 +189,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDownload *download = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     
     if (download == nil) {
-        int row = [tableView clickedRow];
+        NSInteger row = [tableView clickedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
     }
@@ -249,7 +249,7 @@ static SKDownloadController *sharedDownloadController = nil;
         NSString *filePath = [download filePath];
         NSString *folderPath = [filePath stringByDeletingLastPathComponent];
         NSString *fileName = [filePath lastPathComponent];
-        int tag = 0;
+        NSInteger tag = 0;
         
         [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:folderPath destination:nil files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
     }
@@ -278,11 +278,11 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark NSTableViewDataSource
 
-- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
 
-- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
-- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op {
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
     
@@ -293,7 +293,7 @@ static SKDownloadController *sharedDownloadController = nil;
     return NSDragOperationNone;
 }
        
-- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op {
+- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
     NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
     
@@ -309,7 +309,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark NSTableViewDelegate
 
-- (void)tableView:(NSTableView *)tv willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row {
+- (void)tableView:(NSTableView *)tv willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSString *identifier = [tableColumn identifier];
     SKDownload *download = [self objectInDownloadsAtIndex:row];
     
@@ -340,7 +340,7 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation {
+- (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
     NSString *toolTip = nil;
     if ([[tableColumn identifier] isEqualToString:CANCEL_COLUMNID]) {
         if ([[self objectInDownloadsAtIndex:row] canCancel])
@@ -355,7 +355,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    unsigned int row = [rowIndexes firstIndex];
+    NSUInteger row = [rowIndexes firstIndex];
     SKDownload *download = [self objectInDownloadsAtIndex:row];
     
     if ([download canCancel])
@@ -368,7 +368,7 @@ static SKDownloadController *sharedDownloadController = nil;
     return YES;
 }
 
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)row {
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
     NSMenuItem *menuItem;
     SKDownload *download = [self objectInDownloadsAtIndex:row];
@@ -423,7 +423,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if ([keyPath isEqualToString:SKDownloadFileNameKey]) {
             [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
         } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
-            unsigned int row = [downloads indexOfObject:object];
+            NSUInteger row = [downloads indexOfObject:object];
             if (row != NSNotFound)
                 [tableView setNeedsDisplayInRect:NSUnionRect([tableView frameOfCellAtColumn:RESUME_COLUMN row:row], [tableView frameOfCellAtColumn:CANCEL_COLUMN row:row])];
         }

@@ -101,7 +101,7 @@ static char SKTableViewDefaultsObservationContext;
 
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
-	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
 	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
@@ -179,8 +179,8 @@ static char SKTableViewDefaultsObservationContext;
     
     if ([[self delegate] respondsToSelector:@selector(tableView:menuForTableColumn:row:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        int row = [self rowAtPoint:mouseLoc];
-        int column = [self columnAtPoint:mouseLoc];
+        NSInteger row = [self rowAtPoint:mouseLoc];
+        NSInteger column = [self columnAtPoint:mouseLoc];
         if (row != -1 && column != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             menu = [[self delegate] tableView:self menuForTableColumn:tableColumn row:row];
@@ -224,11 +224,11 @@ static char SKTableViewDefaultsObservationContext;
     return nil;
 }
 
-- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)aTypeSelectHelper {
+- (NSUInteger)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)aTypeSelectHelper {
     return [[self selectedRowIndexes] lastIndex];
 }
 
-- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+- (void)typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper selectItemAtIndex:(NSUInteger)itemIndex {
     [self selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
     [self scrollRowToVisible:itemIndex];
 }

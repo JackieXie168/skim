@@ -217,7 +217,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 - (void)saveRecentDocumentInfo {
     NSString *path = [[self fileURL] path];
-    unsigned int pageIndex = [[[self pdfView] currentPage] pageIndex];
+    NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
     if (path && pageIndex != NSNotFound && [self mainWindowController])
         [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
 }
@@ -271,12 +271,12 @@ static char SKPDFDocumentDefaultsObservationContext;
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             if ([[self pdfDocument] allowsPrinting] == NO) {
-                int idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
                 if (idx != -1)
                     [formatPopup removeItemAtIndex:idx];
             }
             if (lastExportedType) {
-                int idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
                 if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
                     [formatPopup selectItemAtIndex:idx];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
@@ -686,7 +686,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 if (pdfDoc) {
                     NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                        int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
+                        NSInteger readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                         if (readOption == NSAlertOtherReturn) {
                             NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
                                                              defaultButton:NSLocalizedString(@"Yes", @"Button title")
@@ -804,7 +804,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (NSString *)notesFDFStringForFile:(NSString *)filename {
     NSArray *fileIDStrings = [self fileIDStrings];
-    int i, count = [[self notes] count];
+    NSInteger i, count = [[self notes] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%%FDF-1.2\n%%%C%C%C%C\n", 0xe2, 0xe3, 0xcf, 0xd3];
     NSMutableString *annots = [NSMutableString string];
     for (i = 0; i < count; i++) {
@@ -842,7 +842,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate];
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo{
     if (returnCode == NSOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
         NSString *extension = [[notesURL path] pathExtension];
@@ -892,7 +892,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                        contextInfo:NULL];		
 }
 
-- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)convertNotesPasswordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     PDFDocument *pdfDocWithoutNotes = (PDFDocument *)contextInfo;
     
     if (returnCode == NSCancelButton) {
@@ -920,7 +920,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self progressController] beginSheetModalForWindow:[self windowForSheet]];
     
     PDFDocument *pdfDoc = [self pdfDocument];
-    int i, count = [pdfDoc pageCount];
+    NSInteger i, count = [pdfDoc pageCount];
     BOOL didConvert = NO;
     
     for (i = 0; i < count; i++) {
@@ -971,7 +971,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [[self progressController] endSheet];
 }
 
-- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertAlternateReturn)
         return;
     
@@ -1013,7 +1013,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
 }
 
-- (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+- (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
     if (NSOKButton == returnCode && [self fileURL])
         [self saveArchiveToFile:[sheet filename]];
 }
@@ -1143,7 +1143,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
 }
 
-- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode  contextInfo:(void  *)contextInfo {
     if (NSOKButton == returnCode && [self fileURL])
         [self saveDiskImageToFile:[sheet filename] email:NO];
 }
@@ -1178,7 +1178,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
 }
 
-- (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
@@ -1310,7 +1310,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     
     if (returnCode == NSAlertOtherReturn) {
         autoUpdate = NO;
@@ -1505,7 +1505,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return synchronizer;
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file {
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
@@ -1594,7 +1594,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex isFlipped:(BOOL)isFlipped {
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped {
     PDFPage *page = [[self pdfDocument] pageAtIndex:pageIndex];
     if (isFlipped)
         point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
@@ -1634,7 +1634,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self mainWindowController] setInitialSetup:setup];
 }
 
-- (void)findString:(NSString *)string options:(int)options{
+- (void)findString:(NSString *)string options:(NSInteger)options{
     [[self mainWindowController] findString:string options:options];
 }
 
@@ -1663,12 +1663,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     const char *endArrayPattern = "]";
     const char *startStringPattern = "<";
     const char *endStringPattern = ">";
-    unsigned patternLength = strlen(EOFPattern);
+    NSUInteger patternLength = strlen(EOFPattern);
     NSRange range = NSMakeRange([pdfData length] - 1024, 1024);
     if (range.location < 0)
         range = NSMakeRange(0, [pdfData length]);
-    unsigned EOFIndex = [pdfData indexOfBytes:EOFPattern length:patternLength options:NSBackwardsSearch range:range];
-    unsigned trailerIndex, IDIndex, startArrayIndex, endArrayIndex, startStringIndex, endStringIndex;
+    NSUInteger EOFIndex = [pdfData indexOfBytes:EOFPattern length:patternLength options:NSBackwardsSearch range:range];
+    NSUInteger trailerIndex, IDIndex, startArrayIndex, endArrayIndex, startStringIndex, endStringIndex;
     NSData *firstIDData = nil;
     NSData *secondIDData = nil;
     
@@ -1781,7 +1781,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([[self pdfDocument] isLocked])
         return;
     
-    int saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
+    NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption != NSAlertAlternateReturn) {
         const char *serviceName = [self keychainServiceName];
         if (serviceName != NULL) {
@@ -1861,17 +1861,17 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSArray *)pages {
     NSMutableArray *pages = [NSMutableArray array];
     PDFDocument *pdfDoc = [self pdfDocument];
-    int i, count = [pdfDoc pageCount];
+    NSInteger i, count = [pdfDoc pageCount];
     for (i = 0; i < count; i++)
         [pages addObject:[pdfDoc pageAtIndex:i]];
     return pages;
 }
 
-- (unsigned int)countOfPages {
+- (NSUInteger)countOfPages {
     return [[self pdfDocument] pageCount];
 }
 
-- (PDFPage *)objectInPagesAtIndex:(unsigned int)anIndex {
+- (PDFPage *)objectInPagesAtIndex:(NSUInteger)anIndex {
     return [[self pdfDocument] pageAtIndex:anIndex];
 }
 
@@ -1891,11 +1891,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(unsigned int)anIndex {
+- (void)insertObject:(PDFAnnotation *)newNote inNotesAtIndex:(NSUInteger)anIndex {
     [self insertInNotes:newNote];
 }
 
-- (void)removeObjectFromNotesAtIndex:(unsigned int)anIndex {
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex {
     PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
     
     [[self pdfView] removeAnnotation:note];
@@ -1922,7 +1922,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (NSTextStorage *)richText {
     PDFDocument *doc = [self pdfDocument];
-    unsigned int i, count = [doc pageCount];
+    NSUInteger i, count = [doc pageCount];
     NSTextStorage *textStorage = [[[NSTextStorage alloc] init] autorelease];
     NSAttributedString *attrString;
     [textStorage beginEditing];
@@ -2112,7 +2112,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         id backward = [args objectForKey:@"Backward"];
         id caseSensitive = [args objectForKey:@"CaseSensitive"];
         PDFSelection *selection = nil;
-        int options = 0;
+        NSInteger options = 0;
         
         if (from)
             selection = [PDFSelection selectionWithSpecifier:from];
@@ -2145,7 +2145,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         point = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
     }
     if (page) {
-        unsigned int pageIndex = [page pageIndex];
+        NSUInteger pageIndex = [page pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         
@@ -2212,7 +2212,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     NSNumber *number;
     
     if (number = [setup objectForKey:@"displayMode"]) {
-        int displayMode = 0;
+        NSInteger displayMode = 0;
         switch ([number unsignedLongValue]) {
             case SKScriptingDisplaySinglePage: displayMode = kPDFDisplaySinglePage; break;
             case SKScriptingDisplaySinglePageContinuous: displayMode = kPDFDisplaySinglePageContinuous; break;
@@ -2223,7 +2223,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     }
     
     if (number = [setup objectForKey:@"displayBox"]) {
-        int displayBox = 0;
+        NSInteger displayBox = 0;
         switch ([number unsignedLongValue]) {
             case SKScriptingMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
             case SKScriptingCropBox: displayBox = kPDFDisplayBoxCropBox; break;

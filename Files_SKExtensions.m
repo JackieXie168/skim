@@ -166,7 +166,7 @@ NSString *SKChewableItemsDirectory() {
             assert(NULL != newURL);
             
             if (CFURLGetFSRef(newURL, &newRef) == false) {
-                int nameLength = CFStringGetLength(baseName);
+                CFIndex nameLength = CFStringGetLength(baseName);
                 UniChar *nameBuf = CFAllocatorAllocate(alloc, nameLength * sizeof(UniChar), 0);
                 CFStringGetCharacters(baseName, CFRangeMake(0, nameLength), nameBuf);
                 err = FSCreateDirectoryUnicode(&chewableRef, nameLength, nameBuf, kFSCatInfoNone, NULL, NULL, NULL, NULL);

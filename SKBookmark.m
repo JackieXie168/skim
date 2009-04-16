@@ -60,10 +60,10 @@
     BDAlias *alias;
     NSData *aliasData;
     NSString *label;
-    unsigned int pageIndex;
+    NSUInteger pageIndex;
     NSDictionary *setup;
 }
-- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 - (BDAlias *)alias;
 - (NSData *)aliasData;
 @end
@@ -97,7 +97,7 @@ static Class SKBookmarkClass = Nil;
     return SKBookmarkClass == self ? defaultPlaceholderBookmark : [super allocWithZone:aZone];
 }
 
-+ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
++ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     return [[[self alloc] initWithPath:aPath pageIndex:aPageIndex label:aLabel] autorelease];
 }
 
@@ -125,7 +125,7 @@ static Class SKBookmarkClass = Nil;
     return [[[self alloc] initWithProperties:dictionary] autorelease];
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
@@ -167,7 +167,7 @@ static Class SKBookmarkClass = Nil;
 
 - (NSDictionary *)properties { return nil; }
 
-- (int)bookmarkType { return SKBookmarkTypeSeparator; }
+- (NSInteger)bookmarkType { return SKBookmarkTypeSeparator; }
 
 - (NSImage *)icon { return nil; }
 
@@ -175,16 +175,16 @@ static Class SKBookmarkClass = Nil;
 - (void)setLabel:(NSString *)newLabel {}
 
 - (NSString *)path { return nil; }
-- (unsigned int)pageIndex { return NSNotFound; }
+- (NSUInteger)pageIndex { return NSNotFound; }
 - (NSNumber *)pageNumber { return nil; }
 
 - (NSArray *)session { return nil; }
 
 - (NSArray *)children { return nil; }
-- (unsigned int)countOfChildren { return 0; }
-- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex { return nil; }
-- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex {}
-- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex {}
+- (NSUInteger)countOfChildren { return 0; }
+- (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
 
 - (SKBookmark *)parent {
     return parent;
@@ -225,11 +225,11 @@ static Class SKBookmarkClass = Nil;
     return nil;
 }
 
-- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     return [[SKFileBookmark alloc] initWithAlias:anAlias pageIndex:aPageIndex label:aLabel];
 }
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithPath:aPath] pageIndex:aPageIndex label:aLabel];
 }
 
@@ -276,7 +276,7 @@ static Class SKBookmarkClass = Nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 @end
 
@@ -284,7 +284,7 @@ static Class SKBookmarkClass = Nil;
 
 @implementation SKFileBookmark
 
-- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+- (id)initWithAlias:(BDAlias *)anAlias pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     if (self = [super init]) {
         if (anAlias) {
             alias = [anAlias retain];
@@ -329,7 +329,7 @@ static Class SKBookmarkClass = Nil;
     return properties;
 }
 
-- (int)bookmarkType {
+- (NSInteger)bookmarkType {
     return SKBookmarkTypeBookmark;
 }
 
@@ -375,7 +375,7 @@ static Class SKBookmarkClass = Nil;
     return icon;
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     return pageIndex;
 }
 
@@ -427,7 +427,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:FOLDER_STRING, TYPE_KEY, [children valueForKey:PROPERTIES_KEY], CHILDREN_KEY, label, LABEL_KEY, nil];
 }
 
-- (int)bookmarkType {
+- (NSInteger)bookmarkType {
     return SKBookmarkTypeFolder;
 }
 
@@ -450,20 +450,20 @@ static Class SKBookmarkClass = Nil;
     return [[children copy] autorelease];
 }
 
-- (unsigned int)countOfChildren {
+- (NSUInteger)countOfChildren {
     return [children count];
 }
 
-- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex {
+- (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex {
     return [children objectAtIndex:anIndex];
 }
 
-- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex {
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {
     [children insertObject:child atIndex:anIndex];
     [child setParent:self];
 }
 
-- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex {
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {
     [[children objectAtIndex:anIndex] setParent:nil];
     [children removeObjectAtIndex:anIndex];
 }
@@ -478,7 +478,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:SESSION_STRING, TYPE_KEY, [children valueForKey:PROPERTIES_KEY], CHILDREN_KEY, label, LABEL_KEY, nil];
 }
 
-- (int)bookmarkType {
+- (NSInteger)bookmarkType {
     return SKBookmarkTypeSession;
 }
 
@@ -504,7 +504,7 @@ static Class SKBookmarkClass = Nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:SEPARATOR_STRING, TYPE_KEY, nil];
 }
 
-- (int)bookmarkType {
+- (NSInteger)bookmarkType {
     return SKBookmarkTypeSeparator;
 }
 

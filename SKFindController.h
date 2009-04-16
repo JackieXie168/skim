@@ -45,7 +45,7 @@
     IBOutlet NSButton *ignoreCaseCheckbox;
     IBOutlet NSObjectController *ownerController;
     NSString *findString;
-    int lastChangeCount;
+    NSInteger lastChangeCount;
     BOOL ignoreCase;
     BDSKFindFieldEditor *fieldEditor;
 }
@@ -64,7 +64,7 @@
 - (BOOL)ignoreCase;
 - (void)setIgnoreCase:(BOOL)newIgnoreCase;
 
-- (int)findOptions;
+- (NSInteger)findOptions;
 
 - (id)target;
 - (id)selectionSource;
@@ -73,7 +73,7 @@
 
 
 @interface NSObject (SKFindPanelTarget)
-- (void)findString:(NSString *)string options:(int)options;
+- (void)findString:(NSString *)string options:(NSInteger)options;
 @end
 
 @interface NSObject (SKFindPanelSelectionSource)

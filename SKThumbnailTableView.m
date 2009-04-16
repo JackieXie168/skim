@@ -95,7 +95,7 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     NSColor *color;
-    int row;
+    NSInteger row;
     NSRect rect;
     BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
     
@@ -119,7 +119,7 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
         
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-        int i, count = MIN((int)[rows count], 5);
+        NSInteger i, count = MIN((NSInteger)[rows count], 5);
         
         for (i = 0; i < count; i++) {
             row = [[rows objectAtIndex:i] intValue];
@@ -152,7 +152,7 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
     [self setNeedsDisplay:YES];
 }
 
-- (void)deselectRow:(int)row {
+- (void)deselectRow:(NSInteger)row {
     [super deselectRow:row];
     [self setNeedsDisplay:YES];
 }
@@ -188,7 +188,7 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if (([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
-        int row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+        NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
         if (row != -1 && [[self delegate] tableView:self commandSelectRow:row])
             return;
     }

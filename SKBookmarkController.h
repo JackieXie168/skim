@@ -54,7 +54,7 @@
 
 - (SKBookmark *)bookmarkRoot;
 
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
+- (void)addBookmarkForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForPaths:(NSArray *)paths pageIndexes:(NSArray *)pageIndexes label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder;
@@ -68,8 +68,8 @@
 - (IBAction)toggleStatusBar:(id)sender;
 
 - (NSArray *)recentDocuments;
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
-- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
+- (NSUInteger)pageIndexForRecentDocumentAtPath:(NSString *)path;
 - (NSArray *)snapshotsAtPath:(NSString *)path;
 
 - (NSUndoManager *)undoManager;

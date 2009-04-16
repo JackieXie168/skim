@@ -66,7 +66,7 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [[self window] setTitle:NSLocalizedString(@"Release Notes", @"window title")];

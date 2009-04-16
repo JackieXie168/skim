@@ -243,7 +243,7 @@ static char SKFontWellFontSizeObservationContext;
 - (void)fontChanged {
     if ([self isActive])
         [[NSFontManager sharedFontManager] setSelectedFont:[self font] isMultiple:NO];
-    [self setTitle:[NSString stringWithFormat:@"%@ %i", [[self font] displayName], (int)[self fontSize]]];
+    [self setTitle:[NSString stringWithFormat:@"%@ %i", [[self font] displayName], (NSInteger)[self fontSize]]];
     [self setNeedsDisplay:YES];
 }
 
@@ -290,11 +290,11 @@ static char SKFontWellFontSizeObservationContext;
         [self setFont:newFont];
 }
 
-- (float)fontSize {
+- (CGFloat)fontSize {
     return [[self font] pointSize];
 }
 
-- (void)setFontSize:(float)pointSize {
+- (void)setFontSize:(CGFloat)pointSize {
     NSFont *newFont = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (newFont)
         [self setFont:newFont];
@@ -418,7 +418,7 @@ static char SKFontWellFontSizeObservationContext;
                 NSFontDescriptor *fontDescriptor = ([fontDescriptors isKindOfClass:[NSArray class]] && [fontDescriptors count]) ? [fontDescriptors objectAtIndex:0] : nil;
                 if ([fontDescriptor isKindOfClass:[NSFontDescriptor class]]) {
                     NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute] ?: [dict objectForKey:NSFontSizeAttribute];
-                    float fontSize = [size respondsToSelector:@selector(floatValue)] ? [size floatValue] : [self fontSize];
+                    CGFloat fontSize = [size respondsToSelector:@selector(floatValue)] ? [size floatValue] : [self fontSize];
                     droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
                 }
             }

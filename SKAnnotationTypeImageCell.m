@@ -104,9 +104,9 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
         else
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
         NSRect rect = cellFrame;
-        float width = NSWidth(cellFrame);
-        float height = fminf(width, NSHeight(cellFrame) - 1.0);
-        rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height));
+        CGFloat width = NSWidth(cellFrame);
+        CGFloat height = SKMin(width, NSHeight(cellFrame) - 1.0);
+        rect.origin.y = SKFloor(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height));
         rect.size.height = height;
         [NSBezierPath setDefaultLineWidth:1.0];
         [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];

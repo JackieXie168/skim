@@ -68,7 +68,7 @@
             if ([[self cell] isKindOfClass:[[[self class] cellClass] class]] == NO) {
                 NSSegmentedCell *cell = [[[[[self class] cellClass] alloc] init] autorelease];
                 id oldCell = [self cell];
-                unsigned int i, count = [self segmentCount];
+                NSUInteger i, count = [self segmentCount];
                 
                 [cell setSegmentCount:count];
                 [cell setTrackingMode:[oldCell trackingMode]];
@@ -103,8 +103,8 @@
 
 
 @interface NSSegmentedCell (SKApplePrivateDeclarations)
-- (int)_trackingSegment;
-- (int)_keySegment;
+- (NSInteger)_trackingSegment;
+- (NSInteger)_keySegment;
 @end
 
 
@@ -116,13 +116,13 @@
 
 @implementation SKSegmentedCell
 
-- (BOOL)isPressedSegment:(int)segment {
+- (BOOL)isPressedSegment:(NSInteger)segment {
     return [self isSelectedForSegment:segment] || ([self respondsToSelector:@selector(_trackingSegment)] && segment == [self _trackingSegment]);
 }
 
 - (void)drawWithFrame:(NSRect)frame inView:(NSView *)controlView {
-    int i, count = [self segmentCount];
-    int keySegment = [self respondsToSelector:@selector(_keySegment)] && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView ? [self _keySegment] : -1;
+    NSInteger i, count = [self segmentCount];
+    NSInteger keySegment = [self respondsToSelector:@selector(_keySegment)] && [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView ? [self _keySegment] : -1;
     NSRect rect = SKCenterRectVertically(frame, SEGMENT_HEIGHT, [controlView isFlipped]), keyRect = NSZeroRect;
     
     for (i = 0; i < count; i++) {

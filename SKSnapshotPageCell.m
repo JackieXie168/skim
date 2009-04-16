@@ -65,7 +65,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
 - (NSSize)cellSize {
     NSSize size = [super cellSize];
-    size.width = fmaxf(size.width, 12.0);
+    size.width = SKMax(size.width, 12.0);
     return size;
 }
 
@@ -74,7 +74,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
     [super drawInteriorWithFrame:textRect inView:controlView];
     if (hasWindow) {
-        float radius = 2.0;
+        CGFloat radius = 2.0;
         NSBezierPath *path = [NSBezierPath bezierPath];
         NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
         NSColor *fillColor;

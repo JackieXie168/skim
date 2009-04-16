@@ -54,8 +54,8 @@ enum {
     SKAddOnly
 };
 
-extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options);
-extern IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options);
+extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options);
+extern IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, NSInteger options);
 
 extern IMP SKReplaceInstanceMethodImplementation(Class aClass, SEL aSelector, IMP anImp);
 extern IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp);

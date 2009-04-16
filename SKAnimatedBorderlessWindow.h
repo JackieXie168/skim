@@ -48,7 +48,7 @@
 
 - (void)willClose;
 
-- (float)defaultAlphaValue;
+- (CGFloat)defaultAlphaValue;
 
 - (NSTimeInterval)fadeInDuration;
 - (NSTimeInterval)fadeOutDuration;

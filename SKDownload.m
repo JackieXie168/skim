@@ -46,7 +46,7 @@ NSString *SKDownloadStatusKey = @"status";
 NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @interface SKDownload (Private)
-- (void)setStatus:(int)newStatus;
+- (void)setStatus:(NSInteger)newStatus;
 - (void)setFilePath:(NSString *)newFilePath;
 - (void)setExpectedContentLength:(long long)newExpectedContentLength;
 - (void)setReceivedContentLength:(long long)newReceivedContentLength;
@@ -129,11 +129,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     delegate = newDelegate;
 }
 
-- (int)status {
+- (NSInteger)status {
     return status;
 }
 
-- (void)setStatus:(int)newStatus {
+- (void)setStatus:(NSInteger)newStatus {
     if (status != newStatus) {
         if (newStatus == SKDownloadStatusDownloading) {
             [progressIndicator startAnimation:self];
@@ -344,7 +344,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
         [delegate downloadDidUpdate:self];
 }
 
-- (void)download:(NSURLDownload *)download didReceiveDataOfLength:(unsigned)length {
+- (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
     if (expectedContentLength > 0) {
         receivedContentLength += length;
 		[progressIndicator setDoubleValue:(double)receivedContentLength];

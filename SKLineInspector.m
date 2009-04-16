@@ -96,7 +96,7 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)release {}
 
-- (unsigned)retainCount { return UINT_MAX; }
+- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
@@ -429,12 +429,12 @@ static SKLineInspector *sharedLineInspector = nil;
 
 #pragma mark Accessors
 
-- (float)lineWidth {
+- (CGFloat)lineWidth {
     return  lineWidth;
 }
 
-- (void)setLineWidth:(float)width {
-    if (fabsf(lineWidth - width) > 0.00001) {
+- (void)setLineWidth:(CGFloat)width {
+    if (SKAbs(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self sendActionToTarget:@selector(changeLineWidth:)];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];

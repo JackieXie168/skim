@@ -45,7 +45,7 @@
 
 - (NSString *)fileName;
 
-- (int)status;
+- (NSInteger)status;
 
 - (NSString *)statusDescription;
 

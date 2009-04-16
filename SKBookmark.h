@@ -49,7 +49,7 @@ enum {
     SKBookmark *parent;
 }
 
-+ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
++ (id)bookmarkWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 + (id)bookmarkWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 + (id)bookmarkFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 + (id)bookmarkFolderWithLabel:(NSString *)aLabel;
@@ -57,7 +57,7 @@ enum {
 + (id)bookmarkSeparator;
 + (id)bookmarkWithProperties:(NSDictionary *)dictionary;
 
-- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithPath:(NSString *)aPath pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel;
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel;
 - (id)initFolderWithLabel:(NSString *)aLabel;
@@ -67,7 +67,7 @@ enum {
 
 - (NSDictionary *)properties;
 
-- (int)bookmarkType;
+- (NSInteger)bookmarkType;
 
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
@@ -75,14 +75,14 @@ enum {
 - (NSImage *)icon;
 
 - (NSString *)path;
-- (unsigned int)pageIndex;
+- (NSUInteger)pageIndex;
 - (NSNumber *)pageNumber;
 
 - (NSArray *)children;
-- (unsigned int)countOfChildren;
-- (SKBookmark *)objectInChildrenAtIndex:(unsigned int)anIndex;
-- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(unsigned int)anIndex;
-- (void)removeObjectFromChildrenAtIndex:(unsigned int)anIndex;
+- (NSUInteger)countOfChildren;
+- (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex;
+- (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex;
+- (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex;
 
 - (SKBookmark *)parent;
 - (void)setParent:(SKBookmark *)newParent;

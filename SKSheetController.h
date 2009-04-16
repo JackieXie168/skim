@@ -49,8 +49,8 @@
 
 - (void)prepare;
 - (IBAction)dismiss:(id)sender;
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-- (void)endSheetWithReturnCode:(int)returnCode;
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+- (void)endSheetWithReturnCode:(NSInteger)returnCode;
 
 @end
 

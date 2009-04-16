@@ -83,21 +83,21 @@ CFHashCode SKCaseInsensitiveStringHash(const void *value)
 }
     
 const void *SKFloatRetain(CFAllocatorRef allocator, const void *value) {
-    float *floatPtr = (float *)CFAllocatorAllocate(allocator, sizeof(float), 0);
-    *floatPtr = *(float *)value;
+    CGFloat *floatPtr = (CGFloat *)CFAllocatorAllocate(allocator, sizeof(CGFloat), 0);
+    *floatPtr = *(CGFloat *)value;
     return floatPtr;
 }
 
 void SKFloatRelease(CFAllocatorRef allocator, const void *value) {
-    CFAllocatorDeallocate(allocator, (float *)value);
+    CFAllocatorDeallocate(allocator, (CGFloat *)value);
 }
 
 CFStringRef SKFloatCopyDescription(const void *value) {
-    return CFStringCreateWithFormat(NULL, NULL, CFSTR("%f"), *(float *)value);
+    return CFStringCreateWithFormat(NULL, NULL, CFSTR("%f"), *(CGFloat *)value);
 }
 
 Boolean	SKFloatEqual(const void *value1, const void *value2) {
-    return fabsf(*(float *)value1 - *(float *)value2) < 0.00000001;
+    return SKAbs(*(CGFloat *)value1 - *(CGFloat *)value2) < 0.00000001;
 }
 
 const void *SKNSRectRetain(CFAllocatorRef allocator, const void *value) {

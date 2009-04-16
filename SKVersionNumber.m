@@ -48,7 +48,7 @@
             [scanner scanString:@"-" intoString:NULL];
         
         while ([scanner isAtEnd] == NO && sep != nil) {
-            int component;
+            NSInteger component;
             
             if ([scanner scanInt:&component] && component >= 0) {
             
@@ -136,12 +136,12 @@
     return cleanVersionString;
 }
 
-- (unsigned int)componentCount;
+- (NSUInteger)componentCount;
 {
     return componentCount;
 }
 
-- (int)componentAtIndex:(unsigned int)componentIndex;
+- (NSInteger)componentAtIndex:(NSUInteger)componentIndex;
 {
     // This treats the version as a infinite sequence ending in "...0.0.0.0", making comparison easier
     if (componentIndex < componentCount)
@@ -149,7 +149,7 @@
     return 0;
 }
 
-- (int)releaseType;
+- (NSInteger)releaseType;
 {
     return releaseType;
 }
@@ -188,7 +188,7 @@
 
 #pragma mark Comparison
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
     return [cleanVersionString hash];
 }
@@ -205,10 +205,10 @@
     if (otherVersion == nil)
         return NSOrderedAscending;
 
-    unsigned int idx, count = MAX(componentCount, [otherVersion componentCount]);
+    NSUInteger idx, count = MAX(componentCount, [otherVersion componentCount]);
     for (idx = 0; idx < count; idx++) {
-        int component = [self componentAtIndex:idx];
-        int otherComponent = [otherVersion componentAtIndex:idx];
+        NSInteger component = [self componentAtIndex:idx];
+        NSInteger otherComponent = [otherVersion componentAtIndex:idx];
 
         if (component < otherComponent)
             return NSOrderedAscending;

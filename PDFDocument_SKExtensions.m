@@ -82,12 +82,12 @@ static id (*original_getPrintOperationForPrintInfo_autoRotate)(id, SEL, id, BOOL
     if ([pages count]) {
         PDFPage *firstPage = [pages objectAtIndex:0];
         PDFPage *lastPage = [pages lastObject];
-        unsigned int pageIndex = [self indexForPage:page];
-        unsigned int firstPageIndex = [self indexForPage:firstPage];
-        unsigned int lastPageIndex = [self indexForPage:lastPage];
-        unsigned int n = [selection safeNumberOfRangesOnPage:lastPage];
-        unsigned int firstChar = n ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
-        unsigned int lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) : NSNotFound;
+        NSUInteger pageIndex = [self indexForPage:page];
+        NSUInteger firstPageIndex = [self indexForPage:firstPage];
+        NSUInteger lastPageIndex = [self indexForPage:lastPage];
+        NSUInteger n = [selection safeNumberOfRangesOnPage:lastPage];
+        NSUInteger firstChar = n ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
+        NSUInteger lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) : NSNotFound;
         NSRect firstRect, lastRect;
         
         if (firstChar != NSNotFound) {

@@ -67,7 +67,7 @@ static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp,
     void *iterator = NULL;
     struct objc_method_list *mlist;
     Method m, method = NULL;
-    int i;
+    NSInteger i;
     while (method == NULL && (mlist = class_nextMethodList(aClass, &iterator))) {
         for (i = 0; i < mlist->method_count; i++) {
             m = &mlist->method_list[i];
@@ -129,7 +129,7 @@ static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodI
 #pragma mark API
 
 // this is essentially class_replaceMethod, but handles instance/class methods, returns any inherited implementation, and can get the types from an inherited implementation
-IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, int options) {
+IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options) {
     IMP imp = NULL;
     if (anImp) {
         Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
@@ -144,7 +144,7 @@ IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char
     return imp;
 }
 
-IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, int options) {
+IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, NSInteger options) {
     Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
     return method ? SKSetMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance, options) : NULL;
 }

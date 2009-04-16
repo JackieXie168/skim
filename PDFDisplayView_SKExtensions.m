@@ -142,7 +142,7 @@ static id replacement_accessibilityRangeForPositionAttributeForParameter(id self
         NSPoint point = [pdfView convertPoint:[[pdfView window] convertScreenToBase:[parameter pointValue]] fromView:nil];
         PDFPage *page = [pdfView pageForPoint:point nearest:NO];
         if (page) {
-            int i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
+            NSInteger i = [page characterIndexAtPoint:[pdfView convertPoint:point toPage:page]];
             if (i != -1) {
                 // make sure the accessibility table is generated
                 [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
@@ -175,9 +175,9 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
     if (pdfView) {
         // make sure the accessibility table is generated
         [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
-        int i = [parameter unsignedIntValue];
-        int n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
-        int start = MAX(0, i - 25), end = MIN(n, i + 25);
+        NSInteger i = [parameter unsignedIntValue];
+        NSInteger n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
+        NSInteger start = MAX(0, i - 25), end = MIN(n, i + 25);
         NSRange range = NSMakeRange(i, 1);
         NSRange r = NSMakeRange(start, end - start);
         BOOL foundRange = NO;
@@ -185,11 +185,11 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
             [attributedStringForAccessibilityRange(self, r) attributesAtIndex:i - r.location longestEffectiveRange:&range inRange:NSMakeRange(0, r.length)];
             foundRange = YES;
             if (range.location == r.location && r.location > 0) {
-                start = MAX(0, (int)r.location - 25);
+                start = MAX(0, (NSInteger)r.location - 25);
                 foundRange = NO;
             }
-            if (NSMaxRange(range) == NSMaxRange(r) && (int)NSMaxRange(range) < n) {
-                end = MIN(n, (int)NSMaxRange(r) + 25);
+            if (NSMaxRange(range) == NSMaxRange(r) && (NSInteger)NSMaxRange(range) < n) {
+                end = MIN(n, (NSInteger)NSMaxRange(r) + 25);
                 foundRange = NO;
             }
             r = NSMakeRange(start, end - start);

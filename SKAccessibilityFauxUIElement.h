@@ -45,7 +45,7 @@
 - (id)initWithParent:(id)aParent;
 - (id)parent;
 - (id)representedObject;
-- (int)index;
+- (NSInteger)index;
 @end
 
 #pragma mark -
@@ -60,10 +60,10 @@
 #pragma mark -
 
 @interface SKAccessibilityIndexedFauxUIElement : SKAccessibilityFauxUIElement {
-    int index;
+    NSInteger index;
 }
-+ (id)elementWithIndex:(int)anIndex parent:(id)aParent;
-- (id)initWithIndex:(int)anIndex parent:(id)aParent;
++ (id)elementWithIndex:(NSInteger)anIndex parent:(id)aParent;
+- (id)initWithIndex:(NSInteger)anIndex parent:(id)aParent;
 @end
 
 #pragma mark -

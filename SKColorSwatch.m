@@ -140,26 +140,26 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)sizeToFit {
     NSRect frame = [self frame];
-    int count = [colors count];
+    NSInteger count = [colors count];
     frame.size.width = count * (NSHeight(frame) - 3.0) + 3.0;
     [self setFrame:frame];
 }
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    int count = [colors count];
+    NSInteger count = [colors count];
     
-    bounds.size.width = fminf(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
+    bounds.size.width = SKMin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-    float grays[4] = {0.5, 0.75, 0.75, 0.75};
+    CGFloat grays[4] = {0.5, 0.75, 0.75, 0.75};
     
     rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
     
     [[NSBezierPath bezierPathWithRect:rect] addClip];
     
     NSRect r = NSMakeRect(1.0, 1.0, NSHeight(rect), NSHeight(rect));
-    int i;
+    NSInteger i;
     for (i = 0; i < count; i++) {
         NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.66667 alpha:1.0];
         [borderColor set];
@@ -193,7 +193,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)mouseDown:(NSEvent *)theEvent {
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    int i = [self colorIndexAtPoint:mouseLoc];
+    NSInteger i = [self colorIndexAtPoint:mouseLoc];
     
     if ([self isEnabled]) {
         highlightedIndex = i;
@@ -276,7 +276,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)moveRight:(NSEvent *)theEvent {
-    if (++focusedIndex >= (int)[colors count])
+    if (++focusedIndex >= (NSInteger)[colors count])
         focusedIndex = [colors count] - 1;
     [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
@@ -289,11 +289,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
-- (int)colorIndexAtPoint:(NSPoint)point {
+- (NSInteger)colorIndexAtPoint:(NSPoint)point {
     NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
     
     if (NSPointInRect(point, rect)) {
-        int i, count = [colors count];
+        NSInteger i, count = [colors count];
         
         rect.size.width = NSHeight(rect);
         for (i = 0; i < count; i++) {
@@ -305,11 +305,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     return -1;
 }
 
-- (int)insertionIndexAtPoint:(NSPoint)point {
+- (NSInteger)insertionIndexAtPoint:(NSPoint)point {
     NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
-    float w = NSHeight(rect) + 1.0;
-    float x = NSMinX(rect) + w / 2.0;
-    int i, count = [colors count];
+    CGFloat w = NSHeight(rect) + 1.0;
+    CGFloat x = NSMinX(rect) + w / 2.0;
+    NSInteger i, count = [colors count];
     
     for (i = 0; i < count; i++) {
         if (point.x < x)
@@ -356,12 +356,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     autoResizes = flag;
 }
 
-- (int)clickedColorIndex {
+- (NSInteger)clickedColorIndex {
     return clickedIndex;
 }
 
 - (NSColor *)color {
-    int i = clickedIndex;
+    NSInteger i = clickedIndex;
     return i == -1 ? nil : [colors objectAtIndex:i];
 }
 
@@ -414,7 +414,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
     BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
-    int i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
+    NSInteger i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
     
     if ([sender draggingSource] == self && draggedIndex == i && isCopy == NO)
@@ -446,7 +446,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
     BOOL isCopy = insertionIndex != -1;
-    int i = isCopy ? insertionIndex : highlightedIndex;
+    NSInteger i = isCopy ? insertionIndex : highlightedIndex;
     
     if (i != -1 && color) {
         [self willChangeValueForKey:COLORS_KEY];
@@ -495,7 +495,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         return NSAccessibilityRoleDescriptionForUIElement(self);
     } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute] || [attribute isEqualToString:NSAccessibilityContentsAttribute]) {
         NSMutableArray *children = [NSMutableArray array];
-        int i, count = [colors count];
+        NSInteger i, count = [colors count];
         for (i = 0; i < count; i++)
             [children addObject:[[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i parent:self] autorelease]];
         return NSAccessibilityUnignoredChildren(children);
@@ -517,7 +517,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
-    int i = [self colorIndexAtPoint:localPoint];
+    NSInteger i = [self colorIndexAtPoint:localPoint];
     if (i != -1) {
         SKAccessibilityColorSwatchElement *color = [[[SKAccessibilityColorSwatchElement alloc] initWithIndex:i parent:self] autorelease];
         return [color accessibilityHitTest:point];
@@ -527,7 +527,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (id)accessibilityFocusedUIElement {
-    if (focusedIndex != -1 && focusedIndex < (int)[colors count])
+    if (focusedIndex != -1 && focusedIndex < (NSInteger)[colors count])
         return NSAccessibilityUnignoredAncestor([[[SKAccessibilityColorSwatchElement alloc] initWithIndex:focusedIndex parent:self] autorelease]);
     else
         return NSAccessibilityUnignoredAncestor(self);
@@ -559,7 +559,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)pressFauxUIElement:(SKAccessibilityFauxUIElement *)element {
-    int i = [element index];
+    NSInteger i = [element index];
     if ([self isEnabled] && i != -1) {
         clickedIndex = i;
         [self sendAction:[self action] to:[self target]];

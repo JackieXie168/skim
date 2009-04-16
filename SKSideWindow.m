@@ -95,7 +95,7 @@
     [[self contentView] setAcceptsMouseOver:YES];
 }
 
-- (void)animateToWidth:(float)width {
+- (void)animateToWidth:(CGFloat)width {
     NSRect screenFrame = [[[controller window] screen] frame];
     NSRect endFrame, startFrame = [self frame];
     endFrame = startFrame;
@@ -152,7 +152,7 @@
     return edge;
 }
 
-- (int)state {
+- (NSInteger)state {
     return state;
 }
 
@@ -176,7 +176,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     unichar ch = [theEvent firstCharacter];
-	unsigned modifierFlags = [theEvent deviceIndependentModifierFlags];
+	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
     if (ch == SKEscapeCharacter && modifierFlags == 0) {
         if (state == NSDrawerOpenState || state == NSDrawerOpeningState)

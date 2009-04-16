@@ -41,7 +41,7 @@
 
 @implementation SKThumbnail
 
-- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(unsigned int)anIndex {
+- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex {
     if (self = [super init]) {
         image = [anImage retain];
         label = [aLabel retain];
@@ -87,7 +87,7 @@
     return label;
 }
 
-- (unsigned int)pageIndex {
+- (NSUInteger)pageIndex {
     return pageIndex;
 }
 

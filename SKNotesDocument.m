@@ -168,7 +168,7 @@
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedNotesTypeKey];
             if (lastExportedType) {
-                int idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
                 if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
                     [formatPopup selectItemAtIndex:idx];
                     [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
@@ -342,11 +342,11 @@
 }
 
 - (void)autoSizeNoteRows:(id)sender {
-    float rowHeight = [outlineView rowHeight];
+    CGFloat rowHeight = [outlineView rowHeight];
     NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:NOTE_COLUMNID];
     id cell = [tableColumn dataCell];
-    float indentation = [outlineView indentationPerLevel];
-    float width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
+    CGFloat indentation = [outlineView indentationPerLevel];
+    CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
     NSSize size = NSMakeSize(width, FLT_MAX);
     NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
     
@@ -359,14 +359,14 @@
         [(NSMutableArray *)items removeObject:[NSNull null]];
     }
     
-    int i, count = [items count];
+    NSInteger i, count = [items count];
     
     for (i = 0; i < count; i++) {
         id item = [items objectAtIndex:i];
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        float height = fmaxf(NSHeight(rect) + 3.0, rowHeight + 2.0);
+        CGFloat height = SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0);
         CFDictionarySetValue(rowHeights, (const void *)item, &height);
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
@@ -400,25 +400,25 @@
     return [[notes copy] autorelease];
 }
 
-- (unsigned int)countOfNotes {
+- (NSUInteger)countOfNotes {
     return [notes count];
 }
 
-- (NSDictionary *)objectInNotesAtIndex:(unsigned int)theIndex {
+- (NSDictionary *)objectInNotesAtIndex:(NSUInteger)theIndex {
     return [notes objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(unsigned int)theIndex {
+- (void)insertObject:(NSDictionary *)note inNotesAtIndex:(NSUInteger)theIndex {
     [notes insertObject:note atIndex:theIndex];
 }
 
-- (void)removeObjectFromNotesAtIndex:(unsigned int)theIndex {
+- (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
     [notes removeObjectAtIndex:theIndex];
 }
 
 #pragma mark NSOutlineView datasource and delegate methods
 
-- (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
+- (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil)
         return [[arrayController arrangedObjects] count];
     else
@@ -429,7 +429,7 @@
     return [[item texts] count] > 0;
 }
 
-- (id)outlineView:(NSOutlineView *)ov child:(int)anIndex ofItem:(id)item {
+- (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item {
     if (item == nil) {
         return [[arrayController arrangedObjects] objectAtIndex:anIndex];
     } else {
@@ -532,10 +532,10 @@
     return [items count] > 0;
 }
 
-- (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
-    float rowHeight = 0.0;
+- (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+    CGFloat rowHeight = 0.0;
     if (CFDictionaryContainsKey(rowHeights, (const void *)item))
-        rowHeight = *(float *)CFDictionaryGetValue(rowHeights, (const void *)item);
+        rowHeight = *(CGFloat *)CFDictionaryGetValue(rowHeights, (const void *)item);
     else if ([item type] == nil)
         rowHeight = 85.0;
     return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
@@ -545,7 +545,7 @@
     return YES;
 }
 
-- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(float)newHeight byItem:(id)item {
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
     CFDictionarySetValue(rowHeights, (const void *)item, &newHeight);
 }
 
@@ -561,7 +561,7 @@
     NSMenuItem *menuItem;
     NSMutableArray *items = [NSMutableArray array];
     NSIndexSet *rowIndexes = [outlineView selectedRowIndexes];
-    unsigned int row = [rowIndexes firstIndex];
+    NSUInteger row = [rowIndexes firstIndex];
     while (row != NSNotFound) {
         [items addObject:[outlineView itemAtRow:row]];
         row = [rowIndexes indexGreaterThanIndex:row];
@@ -583,7 +583,7 @@
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    int i, count = [outlineView numberOfRows];
+    NSInteger i, count = [outlineView numberOfRows];
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
     for (i = 0; i < count; i++) {
         id item = [outlineView itemAtRow:i];

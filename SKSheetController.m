@@ -65,7 +65,7 @@
     [self release];
 }
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
 	if(theModalDelegate != nil && theDidEndSelector != NULL){
 		NSInvocation *invocation = [NSInvocation invocationWithTarget:theModalDelegate selector:theDidEndSelector argument:&self];
 		[invocation setArgument:&returnCode atIndex:3];
@@ -74,7 +74,7 @@
 	}
 }
 
-- (void)endSheetWithReturnCode:(int)returnCode {
+- (void)endSheetWithReturnCode:(NSInteger)returnCode {
     [NSApp endSheet:[self window] returnCode:returnCode];
     [[self window] orderOut:self];
     
