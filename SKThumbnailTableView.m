@@ -100,12 +100,21 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
     BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
     
     if (supportsSourceList) {
-        if ([[self window] isMainWindow] == NO)
-            color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
-        else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            color = [NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0];
-        else
-            color = [NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0];
+        if ([NSColor currentControlTint] == NSGraphiteControlTint) {
+            if ([[self window] isMainWindow] == NO)
+                color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
+            else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                color = [NSColor colorWithDeviceRed:24672.0/65535.0 green:29812.0/65535.0 blue:35466.0/65535.0 alpha:1.0];
+            else
+                color = [NSColor colorWithDeviceRed:37779.0/65535.0 green:41634.0/65535.0 blue:45489.0/65535.0 alpha:1.0];
+        } else {
+            if ([[self window] isMainWindow] == NO)
+                color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
+            else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                color = [NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0];
+            else
+                color = [NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0];
+        }
     } else {
         if ([[self window] isMainWindow] && [[self window] firstResponder] == self)
             color = [NSColor alternateSelectedControlColor];
