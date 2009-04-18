@@ -73,6 +73,13 @@
     [super dealloc];
 }
 
+static CGFloat keyColorBlue[3]          = {14135.0/65535.0, 29298.0/65535.0, 48830.0/65535.0};
+static CGFloat mainColorBlue[3]         = {37779.0/65535.0, 41634.0/65535.0, 45489.0/65535.0};
+static CGFloat disabledColorBlue[3]     = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
+static CGFloat keyColorGraphite[3]      = {24672.0/65535.0, 29812.0/65535.0, 35466.0/65535.0};
+static CGFloat mainColorGraphite[3]     = {37779.0/65535.0, 41634.0/65535.0, 45489.0/65535.0};
+static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
+
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     NSColor *color;
     NSInteger row;
@@ -80,21 +87,15 @@
     BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
     
     if (supportsSourceList) {
-        if ([NSColor currentControlTint] == NSGraphiteControlTint) {
-            if ([[self window] isMainWindow] == NO)
-                color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
-            else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                color = [NSColor colorWithDeviceRed:24672.0/65535.0 green:29812.0/65535.0 blue:35466.0/65535.0 alpha:1.0];
-            else
-                color = [NSColor colorWithDeviceRed:37779.0/65535.0 green:41634.0/65535.0 blue:45489.0/65535.0 alpha:1.0];
-        } else {
-            if ([[self window] isMainWindow] == NO)
-                color = [NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0];
-            else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                color = [NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0];
-            else
-                color = [NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0];
-        }
+        CGFloat *rgb;
+        BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
+        if ([[self window] isMainWindow] == NO)
+            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
+        else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+        else
+            rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+        color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
     } else {
         if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
             color = [NSColor alternateSelectedControlColor];
