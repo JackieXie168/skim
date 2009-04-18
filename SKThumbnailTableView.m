@@ -109,12 +109,12 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
     if (supportsSourceList) {
         CGFloat *rgb;
         BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
-        if ([[self window] isMainWindow] == NO)
-            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-        else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
             rgb = isGraphite ? keyColorGraphite : keyColorBlue;
-        else
+        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
             rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+        else
+            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
         color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
     } else {
         if ([[self window] isMainWindow] && [[self window] firstResponder] == self)
