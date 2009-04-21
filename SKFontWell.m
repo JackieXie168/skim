@@ -121,13 +121,8 @@ static char SKFontWellFontSizeObservationContext;
 			[self setCell:newCell];
 			[newCell release];
 		}
-        if ([decoder allowsKeyedCoding]) {
-            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
-            target = [decoder decodeObjectForKey:TARGET_KEY];
-        } else {
-            action = NSSelectorFromString([decoder decodeObject]);
-            target = [decoder decodeObject];
-        }
+        action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+        target = [decoder decodeObjectForKey:TARGET_KEY];
         [self commonInit];
     }
     return self;
@@ -135,13 +130,8 @@ static char SKFontWellFontSizeObservationContext;
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
-        [coder encodeConditionalObject:target forKey:TARGET_KEY];
-    } else {
-        [coder encodeObject:NSStringFromSelector(action)];
-        [coder encodeConditionalObject:target];
-    }
+    [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+    [coder encodeConditionalObject:target forKey:TARGET_KEY];
 }
 
 - (void)dealloc {
@@ -468,13 +458,8 @@ static char SKFontWellFontSizeObservationContext;
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-        if ([decoder allowsKeyedCoding]) {
-            [self setTextColor:[decoder decodeObjectForKey:TEXTCOLOR_KEY]];
-            [self setHasTextColor:[decoder decodeBoolForKey:HASTEXTCOLOR_KEY]];
-        } else {
-            [self setTextColor:[decoder decodeObject]];
-            [decoder decodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];
-		}
+        [self setTextColor:[decoder decodeObjectForKey:TEXTCOLOR_KEY]];
+        [self setHasTextColor:[decoder decodeBoolForKey:HASTEXTCOLOR_KEY]];
         [self commonInit];
 	}
 	return self;
@@ -482,13 +467,8 @@ static char SKFontWellFontSizeObservationContext;
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    if ([coder allowsKeyedCoding]) {
-        [coder encodeConditionalObject:textColor forKey:TEXTCOLOR_KEY];
-        [coder encodeObject:textColor forKey:HASTEXTCOLOR_KEY];
-    } else {
-        [coder encodeObject:textColor];
-        [coder encodeValueOfObjCType:@encode(BOOL) at:&hasTextColor];
-    }
+    [coder encodeConditionalObject:textColor forKey:TEXTCOLOR_KEY];
+    [coder encodeObject:textColor forKey:HASTEXTCOLOR_KEY];
 }
 
 - (void)dealloc {

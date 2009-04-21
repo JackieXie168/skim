@@ -102,27 +102,15 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        if ([decoder allowsKeyedCoding]) {
-            lineWidth = [decoder decodeFloatForKey:SKLineWellLineWidthKey];
-            style = [decoder decodeIntForKey:SKLineWellStyleKey];
-            dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
-            startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
-            endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
-            displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
-            active = [decoder decodeBoolForKey:ACTIVE_KEY];
-            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
-            target = [decoder decodeObjectForKey:TARGET_KEY];
-        } else {
-            [decoder decodeValueOfObjCType:@encode(CGFloat) at:&lineWidth];
-            [decoder decodeValueOfObjCType:@encode(NSInteger) at:&style];
-            dashPattern = [[decoder decodeObject] retain];
-            [decoder decodeValueOfObjCType:@encode(NSInteger) at:&startLineStyle];
-            [decoder decodeValueOfObjCType:@encode(NSInteger) at:&endLineStyle];
-            [decoder decodeValueOfObjCType:@encode(NSInteger) at:&displayStyle];
-            [decoder decodeValueOfObjCType:@encode(BOOL) at:&active];
-            action = NSSelectorFromString([decoder decodeObject]);
-            target = [decoder decodeObject];
-        }
+        lineWidth = [decoder decodeFloatForKey:SKLineWellLineWidthKey];
+        style = [decoder decodeIntForKey:SKLineWellStyleKey];
+        dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
+        startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
+        endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
+        displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
+        active = [decoder decodeBoolForKey:ACTIVE_KEY];
+        action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+        target = [decoder decodeObjectForKey:TARGET_KEY];
         [self commonInit];
     }
     return self;
@@ -130,27 +118,15 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    if ([coder allowsKeyedCoding]) {
-        [coder encodeFloat:lineWidth forKey:SKLineWellLineWidthKey];
-        [coder encodeInt:style forKey:SKLineWellStyleKey];
-        [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
-        [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
-        [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
-        [coder encodeInt:displayStyle forKey:DISPLAYSTYLE_KEY];
-        [coder encodeBool:active forKey:ACTIVE_KEY];
-        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
-        [coder encodeConditionalObject:target forKey:TARGET_KEY];
-    } else {
-        [coder encodeValueOfObjCType:@encode(CGFloat) at:&lineWidth];
-        [coder encodeValueOfObjCType:@encode(NSInteger) at:&style];
-        [coder encodeObject:dashPattern];
-        [coder encodeValueOfObjCType:@encode(NSInteger) at:&startLineStyle];
-        [coder encodeValueOfObjCType:@encode(NSInteger) at:&endLineStyle];
-        [coder encodeValueOfObjCType:@encode(NSInteger) at:&displayStyle];
-        [coder encodeValueOfObjCType:@encode(BOOL) at:&active];
-        [coder encodeObject:NSStringFromSelector(action)];
-        [coder encodeConditionalObject:target];
-    }
+    [coder encodeFloat:lineWidth forKey:SKLineWellLineWidthKey];
+    [coder encodeInt:style forKey:SKLineWellStyleKey];
+    [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
+    [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
+    [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
+    [coder encodeInt:displayStyle forKey:DISPLAYSTYLE_KEY];
+    [coder encodeBool:active forKey:ACTIVE_KEY];
+    [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+    [coder encodeConditionalObject:target forKey:TARGET_KEY];
 }
 
 - (void)dealloc {
