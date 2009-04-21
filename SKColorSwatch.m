@@ -94,17 +94,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        if ([decoder allowsKeyedCoding]) {
-            colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:COLORS_KEY]];
-            action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
-            target = [decoder decodeObjectForKey:TARGET_KEY];
-            autoResizes = [decoder decodeBoolForKey:AUTORESIZES_KEY];
-        } else {
-            colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObject]];
-            action = NSSelectorFromString([decoder decodeObject]);
-            target = [decoder decodeObject];
-            [decoder decodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
-        }
+        colors = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:COLORS_KEY]];
+        action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
+        target = [decoder decodeObjectForKey:TARGET_KEY];
+        autoResizes = [decoder decodeBoolForKey:AUTORESIZES_KEY];
         [self commonInit];
     }
     return self;
@@ -112,17 +105,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    if ([coder allowsKeyedCoding]) {
-        [coder encodeObject:colors forKey:COLORS_KEY];
-        [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
-        [coder encodeConditionalObject:target forKey:TARGET_KEY];
-        [coder encodeBool:autoResizes forKey:AUTORESIZES_KEY];
-    } else {
-        [coder encodeObject:colors];
-        [coder encodeObject:NSStringFromSelector(action)];
-        [coder encodeConditionalObject:target];
-        [coder encodeValueOfObjCType:@encode(BOOL) at:&autoResizes];
-    }
+    [coder encodeObject:colors forKey:COLORS_KEY];
+    [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
+    [coder encodeConditionalObject:target forKey:TARGET_KEY];
+    [coder encodeBool:autoResizes forKey:AUTORESIZES_KEY];
 }
 
 - (void)dealloc {
