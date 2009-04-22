@@ -43,7 +43,7 @@
 #pragma mark SKTransitionController
 
 // this corresponds to the CGSTransitionType enum
-typedef enum _SKAnimationTransitionStyle {
+enum {
 	SKNoTransition,
     // Core Graphics transitions
 	SKFadeTransition,
@@ -57,7 +57,8 @@ typedef enum _SKAnimationTransitionStyle {
 	SKWarpFlipTransition,
     // Core Image transitions
     SKCoreImageTransition
-} SKAnimationTransitionStyle;
+};
+typedef NSUInteger SKAnimationTransitionStyle;
 
 @class CIImage, SKTransitionWindow, SKTransitionView;
 
