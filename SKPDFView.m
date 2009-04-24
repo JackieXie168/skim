@@ -852,7 +852,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
         NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-        page = NSPointInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self]) ? [self pageForPoint:center nearest:NO] : nil;
+        page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
         
         if (page == nil) {
             // Get center of the PDFView.
@@ -1854,7 +1854,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
         NSPoint center = [self convertPoint:point fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-        page = NSPointInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self]) ? [self pageForPoint:center nearest:NO] : nil;
+        page = NSMouseInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
         
         if (page == nil) {
             // Get center of the PDFView.
@@ -2284,7 +2284,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
 - (id)accessibilityChildAtPoint:(NSPoint)point {
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
     id child = nil;
-    if ([self isEditing] && NSPointInRect([self convertPoint:localPoint toView:[self documentView]], [editField frame])) {
+    if ([self isEditing] && NSMouseInRect([self convertPoint:localPoint toView:[self documentView]], [editField frame], [[self documentView] isFlipped])) {
         child = NSAccessibilityUnignoredDescendant(editField);
     } else {
         PDFPage *page = [self pageForPoint:localPoint nearest:NO];
@@ -3993,7 +3993,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
             cursor = [NSCursor pointingHandCursor];
         else
             cursor = [NSCursor arrowCursor];
-    } else if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
+    } else if (NSMouseInRect(p, [self visibleContentRect], [self isFlipped]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
         if ([theEvent modifierFlags] & NSShiftKeyMask)

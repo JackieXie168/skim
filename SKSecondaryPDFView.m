@@ -567,8 +567,9 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-	NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
-    if (NSPointInRect(mouseLoc, [[self documentView] visibleRect]))
+	NSView *view = [self documentView];
+    NSPoint mouseLoc = [view convertPoint:[theEvent locationInWindow] fromView:nil];
+    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]))
         [[NSCursor openHandCursor] set];
     else
         [[NSCursor arrowCursor] set];
