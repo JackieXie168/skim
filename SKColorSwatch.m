@@ -278,12 +278,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (NSInteger)colorIndexAtPoint:(NSPoint)point {
     NSRect rect = NSInsetRect([self bounds], 2.0, 2.0);
     
-    if (NSPointInRect(point, rect)) {
+    if (NSMouseInRect(point, rect, [self isFlipped])) {
         NSInteger i, count = [colors count];
         
         rect.size.width = NSHeight(rect);
         for (i = 0; i < count; i++) {
-            if (NSPointInRect(point, rect))
+            if (NSMouseInRect(point, rect, [self isFlipped]))
                 return i;
             rect.origin.x += NSWidth(rect) + 1.0;
         }

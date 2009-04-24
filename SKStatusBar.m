@@ -238,15 +238,15 @@
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
-    if (NSPointInRect(mouseLoc, rightRect)) {
+    if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped])) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        if (NSPointInRect(mouseLoc, rightRect))
+        if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped]))
             [rightCell performClick:self];
-    } else if (NSPointInRect(mouseLoc, leftRect)) {
+    } else if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped])) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        if (NSPointInRect(mouseLoc, leftRect))
+        if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped]))
             [leftCell performClick:self];
     }
 }
@@ -497,7 +497,7 @@
     NSPoint localPoint = [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
-    if (NSPointInRect(localPoint, rightRect))
+    if (NSMouseInRect(localPoint, rightRect, [self isFlipped]))
         return NSAccessibilityUnignoredAncestor(rightCell);
     else
         return NSAccessibilityUnignoredAncestor(leftCell);

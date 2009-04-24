@@ -384,7 +384,7 @@
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect resizeHandleRect = [self resizeHandleRect];
-    if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
+    if (NSMouseInRect(mouseLoc, resizeHandleRect, [self isFlipped]) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
         if (enabled && [theEvent clickCount] == 2)
             [(SKSideWindow *)[self window] collapse];
         else

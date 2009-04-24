@@ -415,8 +415,9 @@ static CGFloat BDSKScaleMenuFontSize = 11.0;
 
 - (void)mouseUp:(NSEvent *)theEvent{
     [NSCursor pop];
-	NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
-    if (NSPointInRect(mouseLoc, [[self documentView] visibleRect]))
+    NSView *view = [self documentView];
+	NSPoint mouseLoc = [view convertPoint:[theEvent locationInWindow] fromView:nil];
+    if (NSMouseInRect(mouseLoc, [view visibleRect], [view isFlipped]))
         [[NSCursor openHandCursor] set];
     else
         [[NSCursor arrowCursor] set];
