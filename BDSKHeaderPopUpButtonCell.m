@@ -66,20 +66,18 @@
 		
 		// we keep the headercell for drawing
 		headerCell = [aHeaderCell retain];
-		
-		indicatorImage = nil;
 	}
 	return self;
 }
 
-// a copy is used to fill in empty space if the column do not fill the table. That better be an empty headerCell
 - (id)copyWithZone:(NSZone *)aZone {
-	return [headerCell copyWithZone:aZone];
+	BDSKHeaderPopUpButtonCell *copy = [super copyWithZone:aZone];
+    copy->headerCell = [headerCell copyWithZone:aZone];
+    return copy;
 }
 
 - (void)dealloc {
 	[headerCell release];
-	[indicatorImage release];
 	[super dealloc];
 }
 
@@ -93,24 +91,6 @@
 	NSSize size = [super cellSize];
 	size.width -= 22.0 + 2 * [self controlSize];
 	return size;
-}
-
-- (NSRect)sortIndicatorRectForBounds:(NSRect)aRect {
-	NSRect indicatorRect = NSZeroRect;
-	if (indicatorImage != nil) {
-		NSSize indicatorSize = [indicatorImage size];
-		NSDivideRect(aRect, &indicatorRect, &aRect, indicatorSize.width + 8.0, NSMaxXEdge);
-	}
-	return indicatorRect;
-}
-
-- (NSRect)popUpRectForBounds:(NSRect)aRect {
-	NSRect popupRect = aRect;
-	if (indicatorImage != nil) {
-		NSSize indicatorSize = [indicatorImage size];
-		NSDivideRect(aRect, &aRect, &popupRect, indicatorSize.width + 8.0, NSMaxXEdge);
-	}
-	return popupRect;
 }
 
 - (NSString *)title {
@@ -133,19 +113,6 @@
 	[headerCell setState:[self isHighlighted]];
 	[headerCell setHighlighted:[self isHighlighted]];
 	[headerCell drawWithFrame:cellFrame inView:controlView];
-	
-	if (indicatorImage != nil) {
-		NSSize indicatorSize = [indicatorImage size];
-		NSRect indicatorRect, ignored;
-		
-		NSDivideRect(cellFrame, &ignored, &cellFrame, 4.0, NSMaxXEdge);
-		NSDivideRect(cellFrame, &indicatorRect, &cellFrame, indicatorSize.width, NSMaxXEdge);
-		NSDivideRect(cellFrame, &ignored, &cellFrame, 4.0, NSMaxXEdge);
-		
-        indicatorRect = SKCenterRect(indicatorRect, indicatorSize, [controlView isFlipped]);
-		
-        [indicatorImage drawFlipped:[controlView isFlipped] inRect:indicatorRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-	}
 	
 	// Two little arrows. We could also use some image here
 	NSInteger controlSize = [self controlSize];
@@ -175,20 +142,8 @@
     }
 }    
 
-- (void)setIndicatorImage:(NSImage *)image {
-	if (image != indicatorImage) {
-		[indicatorImage release];
-		indicatorImage = [image retain];
-	}
-}
-
-- (NSImage *)indicatorImage {
-	return indicatorImage;
-}
-
 - (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp {
 	// fool super to get the right menu position
-	cellFrame = [self popUpRectForBounds:cellFrame];
 	cellFrame.origin.x -= 7.0;
 	cellFrame.origin.y += 2.0;
 	cellFrame.size.width += 7.0;

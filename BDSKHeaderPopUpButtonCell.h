@@ -41,11 +41,6 @@
 
 @interface BDSKHeaderPopUpButtonCell : NSPopUpButtonCell {
 	NSTableHeaderCell *headerCell;
-	NSImage *indicatorImage;
 }
 - (id)initWithHeaderCell:(NSTableHeaderCell *)aHeaderCell;
-- (NSRect)sortIndicatorRectForBounds:(NSRect)aRect;
-- (NSRect)popUpRectForBounds:(NSRect)aRect;
-- (void)setIndicatorImage:(NSImage *)image;
-- (NSImage *)indicatorImage;
 @end
