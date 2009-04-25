@@ -88,8 +88,8 @@ static inline NSRect SKIntegralRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
     rect.origin.x = SKFloor(SKMin(aPoint.x, bPoint.x));
     rect.origin.y = SKFloor(SKMin(aPoint.y, bPoint.y));
-    rect.size.width = ceilf(SKMax(aPoint.x, bPoint.x) - NSMinX(rect));
-    rect.size.height = ceilf(SKMax(aPoint.y, bPoint.y) - NSMinY(rect));
+    rect.size.width = SKCeil(SKMax(aPoint.x, bPoint.x) - NSMinX(rect));
+    rect.size.height = SKCeil(SKMax(aPoint.y, bPoint.y) - NSMinY(rect));
     return rect;
 }
 

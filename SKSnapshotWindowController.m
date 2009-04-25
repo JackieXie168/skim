@@ -112,8 +112,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [pdfView convertRect:rect fromPage:page];
     CGFloat scale = [pdfView scaleFactor];
-	CGFloat maxX = ceilf(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceilf(NSMaxY(aRect) + scale);
+	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
+	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
 	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
 	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
 	
@@ -403,7 +403,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size {
     CGFloat shadowBlurRadius = SKRound(size / 32.0);
-    CGFloat shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
 }
 

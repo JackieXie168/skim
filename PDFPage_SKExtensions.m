@@ -140,7 +140,7 @@ static BOOL usesSequentialPageNumbering = NO;
             rect = bounds;
         } else if (NSEqualRects(NSZeroRect, rect)) {
             rect.origin.x = SKFloor(NSMidX(bounds));
-            rect.origin.x = ceilf(NSMidY(bounds));
+            rect.origin.x = SKCeil(NSMidY(bounds));
         } else {
             rect.origin.x += NSMinX(bounds);
             rect.origin.y += NSMinY(bounds);
@@ -164,7 +164,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
     CGFloat shadowBlurRadius = SKRound(size / 32.0);
-    CGFloat shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
 }
 

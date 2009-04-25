@@ -866,8 +866,8 @@
         size.height /= scaleFactor;
     
     // Calculate the new size for the window
-    size.width = ceilf(NSWidth(frame) + size.width - oldSize.width);
-    size.height = ceilf(NSHeight(frame) + size.height - oldSize.height);
+    size.width = SKCeil(NSWidth(frame) + size.width - oldSize.width);
+    size.height = SKCeil(NSHeight(frame) + size.height - oldSize.height);
     // Align the window frame from the old topleft point and constrain to the screen
     frame.origin.y = NSMaxY(frame) - size.height;
     frame.size = size;

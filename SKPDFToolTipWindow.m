@@ -233,7 +233,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             
             if ([selection string]) {
                 NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
-                CGFloat top = ceilf(SKMax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
+                CGFloat top = SKCeil(SKMax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
                 CGFloat left = SKFloor(SKMin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
                 if (top < NSMaxY(sourceRect))
                     sourceRect.origin.y = top - NSHeight(sourceRect);

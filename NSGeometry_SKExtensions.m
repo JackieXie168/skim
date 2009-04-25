@@ -82,14 +82,14 @@ NSRect SKIntersectionRect(NSRect rect, NSRect boundary) {
 NSRect SKCenterRect(NSRect rect, NSSize size, BOOL flipped) {
     rect.origin.x += 0.5 * (NSWidth(rect) - size.width);
     rect.origin.y += 0.5 * (NSHeight(rect) - size.height);
-    rect.origin.y = flipped ? ceilf(rect.origin.y)  : SKFloor(rect.origin.y);
+    rect.origin.y = flipped ? SKCeil(rect.origin.y)  : SKFloor(rect.origin.y);
     rect.size = size;
     return rect;
 }
 
 NSRect SKCenterRectVertically(NSRect rect, CGFloat height, BOOL flipped) {
     rect.origin.y += 0.5 * (NSHeight(rect) - height);
-    rect.origin.y = flipped ? ceilf(rect.origin.y)  : SKFloor(rect.origin.y);
+    rect.origin.y = flipped ? SKCeil(rect.origin.y)  : SKFloor(rect.origin.y);
     rect.size.height = height;
     return rect;
 }
