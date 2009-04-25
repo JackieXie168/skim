@@ -1485,7 +1485,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
-        SetSystemUIMode(kUIModeAllHidden, 0);
+        SetSystemUIMode(kUIModeAllHidden, kUIOptionDisableProcessSwitch);
     
     if (wasFullScreen)
         [self hideSideWindows];
