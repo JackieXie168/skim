@@ -42,5 +42,4 @@
 @interface BDSKHeaderPopUpButtonCell : NSPopUpButtonCell {
 	NSTableHeaderCell *headerCell;
 }
-- (id)initWithHeaderCell:(NSTableHeaderCell *)aHeaderCell;
 @end
