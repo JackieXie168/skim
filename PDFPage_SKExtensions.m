@@ -158,19 +158,19 @@ static BOOL usesSequentialPageNumbering = NO;
     return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box {
-    return  [self thumbnailWithSize:size forBox:box readingBarRect:NSZeroRect];
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
+    return  [self thumbnailWithSize:aSize forBox:box readingBarRect:NSZeroRect];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
-    CGFloat shadowBlurRadius = SKRound(size / 32.0);
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
+    CGFloat shadowBlurRadius = SKRound(aSize / 32.0);
     CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)size forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
     NSRect bounds = [self boundsForBox:box];
-    BOOL isScaled = size > 0.0;
+    BOOL isScaled = aSize > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
     CGFloat scale = 1.0;
     NSSize thumbnailSize;
@@ -182,9 +182,9 @@ static BOOL usesSequentialPageNumbering = NO;
     
     if (isScaled) {
         if (NSHeight(bounds) > NSWidth(bounds))
-            thumbnailSize = NSMakeSize(SKRound((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
+            thumbnailSize = NSMakeSize(SKRound((aSize - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), aSize);
         else
-            thumbnailSize = NSMakeSize(size, SKRound((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
+            thumbnailSize = NSMakeSize(aSize, SKRound((aSize - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
         scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds), (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds));
     } else {
         thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
@@ -242,8 +242,8 @@ static BOOL usesSequentialPageNumbering = NO;
     return [image autorelease];
 }
 
-- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size {
-    NSImage *image = [self thumbnailWithSize:size forBox:kPDFDisplayBoxCropBox];
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)aSize {
+    NSImage *image = [self thumbnailWithSize:aSize forBox:kPDFDisplayBoxCropBox];
     
     NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
     NSString *filename = [NSString stringWithFormat:@"page_%lu.tiff", (unsigned long)([self pageIndex] + 1)];
