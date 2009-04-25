@@ -42,17 +42,7 @@
 
 @implementation BDSKHeaderPopUpButtonCell
 
-- (id)initTextCell:(NSString *)aString {
-	NSTableHeaderCell *aHeaderCell = [[NSTableHeaderCell allocWithZone:[self zone]] initTextCell:@""];
-	if (self = [self initWithHeaderCell:aHeaderCell]) {
-		[self setStringValue:aString];
-        [headerCell setStringValue:aString];
-	}
-	[aHeaderCell release];
-	return self;
-}
-
-- (id)initWithHeaderCell:(NSTableHeaderCell *)aHeaderCell {
+- (id)initTextCell:(NSString *)stringValue pullsDown:(BOOL)pullDown {
 	if ([super initTextCell:@"" pullsDown:NO]) {
 		
 		[self setArrowPosition:NSPopUpNoArrow];
@@ -61,11 +51,11 @@
 		[self setUsesItemFromMenu:YES];
 		[self setRefusesFirstResponder:YES];
 		
-		// we could pass more properties
-		[self setFont:[aHeaderCell font]];
-		
 		// we keep the headercell for drawing
-		headerCell = [aHeaderCell retain];
+		headerCell = [[NSTableHeaderCell allocWithZone:[self zone]] initTextCell:@""];
+		
+        // we could pass more properties
+		[headerCell setFont:[self font]];
 	}
 	return self;
 }
@@ -74,6 +64,18 @@
 	BDSKHeaderPopUpButtonCell *copy = [super copyWithZone:aZone];
     copy->headerCell = [headerCell copyWithZone:aZone];
     return copy;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        headerCell = [[decoder decodeObjectForKey:@"headerCell"] retain];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:headerCell forKey:@"headerCell"];
 }
 
 - (void)dealloc {
