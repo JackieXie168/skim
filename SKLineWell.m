@@ -158,8 +158,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
         CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
-        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
-        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
+        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
+        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
         
         switch (startLineStyle) {
             case kPDFLineStyleNone:
@@ -223,8 +223,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         }
     } else if ([self displayStyle] == SKLineWellDisplayStyleSimpleLine) {
         CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
-        [path moveToPoint:NSMakePoint(NSMinX(bounds) + ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
-        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - ceilf(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
+        [path moveToPoint:NSMakePoint(NSMinX(bounds) + SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
+        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
     } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
         CGFloat inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];

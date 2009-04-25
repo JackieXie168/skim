@@ -147,8 +147,8 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
     CGFloat scale = [self scaleFactor];
-	CGFloat maxX = ceilf(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceilf(NSMaxY(aRect) + scale);
+	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
+	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
 	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
 	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
 	

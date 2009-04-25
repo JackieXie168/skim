@@ -456,8 +456,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
     CGFloat scale = [self scaleFactor];
-	CGFloat maxX = ceilf(NSMaxX(aRect) + scale);
-	CGFloat maxY = ceilf(NSMaxY(aRect) + scale);
+	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
+	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
 	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
 	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
 	

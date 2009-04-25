@@ -221,7 +221,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     NSRect newFrame = [self frameRectForContentRect:[toolTipView frame]];
     NSRect viewRect = [view convertRect:[view bounds] toView:nil];
     viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
-    newFrame.origin = NSMakePoint(ceilf(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
+    newFrame.origin = NSMakePoint(SKCeil(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
     [self setFrame:newFrame display:YES];
     [self setLevel:[[view window] level]];
     if ([self parentWindow] != [view window])
@@ -293,7 +293,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)sizeToFit {
     NSSize size = [[self attributedStringValue] size];
-    size.width = ceilf(size.width + 2 * LABEL_TEXT_MARGIN);
+    size.width = SKCeil(size.width + 2 * LABEL_TEXT_MARGIN);
     size.height += 2 * LABEL_TEXT_MARGIN;
     [self setFrameSize:size];
 }

@@ -150,7 +150,7 @@
             BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
             NSColor *color = [NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7];
             NSRect rect = [self rectOfRow:row];
-            CGFloat x = ceilf(NSMidX(rect));
+            CGFloat x = SKCeil(NSMidX(rect));
             CGFloat y = NSMaxY(rect) - 1.5;
             
             [color set];
