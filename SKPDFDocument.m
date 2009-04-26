@@ -1638,6 +1638,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self mainWindowController] findString:string options:options];
 }
 
+- (NSString *)findString {
+    return [[[self pdfView] currentSelection] string];
+}
+
 - (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
 }

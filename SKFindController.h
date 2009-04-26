@@ -77,6 +77,6 @@
 @end
 
 @interface NSObject (SKFindPanelSelectionSource)
-- (PDFView *)pdfView;
+- (NSString *)findString;
 @end
 

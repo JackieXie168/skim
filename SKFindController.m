@@ -38,8 +38,6 @@
 
 #import "SKFindController.h"
 #import "BDSKFindFieldEditor.h"
-#import "SKPDFDocument.h"
-#import <Quartz/Quartz.h>
 
 #define SKFindPanelFrameAutosaveName @"SKFindPanel"
 
@@ -147,13 +145,10 @@ static SKFindController *sharedFindController = nil;
 }
 
 - (IBAction)pickFindString:(id)sender {
-    id source = [self selectionSource];
-    if (source) {
-        PDFSelection *selection = [[source pdfView] currentSelection];
-        if (selection) {
-            [self setFindString:[selection string]];
-            [self updateFindPboard];
-        }
+    NSString *string = [[self selectionSource] findString];
+    if (string) {
+        [self setFindString:string];
+        [self updateFindPboard];
     }
 }
 
@@ -187,7 +182,7 @@ static SKFindController *sharedFindController = nil;
 	return options;
 }
 
-- (id)responderForSelector:(SEL)selector {
+static id responderForSelector(SEL selector) {
     id responder = [[NSApp mainWindow] windowController];
     if (responder == nil)
         return nil;
@@ -200,11 +195,11 @@ static SKFindController *sharedFindController = nil;
 }
 
 - (id)target {
-    return [self responderForSelector:@selector(findString:options:)];
+    return responderForSelector(@selector(findString:options:));
 }
 
 - (id)selectionSource {
-    return [self responderForSelector:@selector(pdfView)];
+    return responderForSelector(@selector(findString));
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
