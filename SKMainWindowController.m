@@ -1822,6 +1822,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
+- (NSString *)findString {
+    return [[[self pdfView] currentSelection] string];
+}
+
 - (void)removeHighlightedSelections:(NSTimer *)timer {
     [highlightTimer invalidate];
     [highlightTimer release];
