@@ -51,6 +51,7 @@ enum {
     SKDownloadStatusFailed,
     SKDownloadStatusCanceled
 };
+typedef NSInteger SKDownloadStatus;
 
 @interface SKDownload : NSObject {
     NSURL *URL;
@@ -69,7 +70,7 @@ enum {
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (NSInteger)status;
+- (SKDownloadStatus)status;
 
 - (NSURL *)URL;
 
