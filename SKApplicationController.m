@@ -272,20 +272,20 @@ static id sharedApplicationController = nil;
 
 #pragma mark Services Support
 
-- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
-    NSError *outError;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard error:&outError];
+- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    NSError *error;
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithURLFromPasteboard:pboard error:&error];
     
-    if (document == nil && outError && error)
-        *error = [outError localizedDescription];
+    if (document == nil && errorString)
+        *errorString = [error localizedDescription];
 }
 
-- (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
-    NSError *outError;
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard error:&outError];
+- (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    NSError *error;
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithImageFromPasteboard:pboard error:&error];
     
-    if (document == nil && outError && error)
-        *error = [outError localizedDescription];
+    if (document == nil && errorString)
+        *errorString = [error localizedDescription];
 }
 
 #pragma mark Actions

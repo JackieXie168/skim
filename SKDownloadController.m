@@ -107,15 +107,17 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }
 
-- (void)addDownloadForURL:(NSURL *)aURL {
+- (SKDownload *)addDownloadForURL:(NSURL *)aURL {
+    SKDownload *download = nil;
     if (aURL) {
-        SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
+        download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
         NSInteger row = [self countOfDownloads];
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] addObject:download];
         [download start];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [tableView scrollRowToVisible:row];
     }
+    return download;
 }
 
 #pragma mark Accessors
