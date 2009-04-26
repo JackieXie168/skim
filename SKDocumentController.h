@@ -78,8 +78,10 @@ extern NSString *SKDocumentDidShowNotification;
 }
 
 - (void)newDocumentFromClipboard:(id)sender;
+// this method may return an SKDownload instance
 - (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithImageFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
+// this method may return an SKDownload instance
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
 

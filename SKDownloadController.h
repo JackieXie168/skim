@@ -50,7 +50,7 @@
 
 + (id)sharedDownloadController;
 
-- (void)addDownloadForURL:(NSURL *)aURL;
+- (SKDownload *)addDownloadForURL:(NSURL *)aURL;
 
 - (IBAction)clearDownloads:(id)sender;
 - (IBAction)removeDownload:(id)sender;
