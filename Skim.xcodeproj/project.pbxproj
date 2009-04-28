@@ -132,7 +132,6 @@
 		CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */; };
 		CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
-		CE5F71560C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F71540C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
 		CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */ = {isa = PBXBuildFile; fileRef = CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */; };
 		CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */; };
@@ -691,8 +690,6 @@
 		CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		CE5F71530C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTextFieldCell_SKExtensions.h; sourceTree = "<group>"; };
-		CE5F71540C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTextFieldCell_SKExtensions.m; sourceTree = "<group>"; };
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
 		CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFCallBacks.h; sourceTree = "<group>"; };
@@ -1649,8 +1646,6 @@
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CEE54F6E0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.h */,
 				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
-				CE5F71530C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.h */,
-				CE5F71540C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m */,
 				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
@@ -2145,7 +2140,6 @@
 				CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */,
 				CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */,
 				CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */,
-				CE5F71560C8CDF9A008BE480 /* NSTextFieldCell_SKExtensions.m in Sources */,
 				CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */,
 				CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */,
 				CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */,
