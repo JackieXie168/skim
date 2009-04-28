@@ -68,7 +68,6 @@ enum {
 @end
 
 @interface SKPSProgressController (Private)
-- (void)processingPostScriptPage:(NSNumber *)page;
 - (void)showPostScriptConversionMessage:(NSString *)message;
 @end
 
@@ -80,14 +79,14 @@ static void PSConverterBeginDocumentCallback(void *info)
     if (delegate && [delegate respondsToSelector:@selector(conversionStarted)])
         [delegate performSelectorOnMainThread:@selector(conversionStarted) withObject:nil waitUntilDone:NO];
 }
-
+/*
 static void PSConverterBeginPageCallback(void *info, size_t pageNumber, CFDictionaryRef pageInfo)
 {
     id delegate = (id)info;
     if (delegate && [delegate respondsToSelector:@selector(processingPostScriptPage:)])
         [delegate performSelectorOnMainThread:@selector(processingPostScriptPage:) withObject:[NSNumber numberWithInt:pageNumber] waitUntilDone:NO];
 }
-
+*/
 static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
@@ -109,7 +108,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     0, 
     PSConverterBeginDocumentCallback, 
     PSConverterEndDocumentCallback, 
-    PSConverterBeginPageCallback,   /* haven't seen this called in my testing */
+    NULL,     /* could use PSConverterBeginPageCallback, but haven't seen this called in my testing */
     NULL, 
     NULL, 
     NULL,     /* could use PSConverterMessageCallback, but messages are usually not useful */
@@ -273,11 +272,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (NSString *)fileType {
     return @"PostScript";
-}
-
-- (void)processingPostScriptPage:(NSNumber *)page;
-{
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %ld", @"PS conversion progress message"), (long)[page intValue]] stringByAppendingEllipsis]];
 }
 
 - (void)showPostScriptConversionMessage:(NSString *)message;
