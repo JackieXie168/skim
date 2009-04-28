@@ -67,51 +67,33 @@ enum {
 - (void)setButtonTitle:(NSString *)title action:(SEL)action;
 @end
 
-@interface SKPSProgressController (Private)
-- (void)showPostScriptConversionMessage:(NSString *)message;
-@end
-
 #pragma mark Callbacks
 
 static void PSConverterBeginDocumentCallback(void *info)
 {
     id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(conversionStarted)])
+    if ([delegate respondsToSelector:@selector(conversionStarted)])
         [delegate performSelectorOnMainThread:@selector(conversionStarted) withObject:nil waitUntilDone:NO];
 }
-/*
-static void PSConverterBeginPageCallback(void *info, size_t pageNumber, CFDictionaryRef pageInfo)
-{
-    id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(processingPostScriptPage:)])
-        [delegate performSelectorOnMainThread:@selector(processingPostScriptPage:) withObject:[NSNumber numberWithInt:pageNumber] waitUntilDone:NO];
-}
-*/
+
 static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(conversionCompleted:)]) {
+    if ([delegate respondsToSelector:@selector(conversionCompleted:)]) {
         BOOL val = (success == true);
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:@selector(conversionCompleted:) argument:&val];
         [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
     }
 }
-/*
-static void PSConverterMessageCallback(void *info, CFStringRef message)
-{
-    id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(showPostScriptConversionMessage:)])
-        [delegate performSelectorOnMainThread:@selector(showPostScriptConversionMessage:) withObject:(id)message waitUntilDone:NO];
-}
-*/
+
 CGPSConverterCallbacks SKPSConverterCallbacks = { 
     0, 
     PSConverterBeginDocumentCallback, 
     PSConverterEndDocumentCallback, 
-    NULL,     /* could use PSConverterBeginPageCallback, but haven't seen this called in my testing */
+    NULL, // haven't seen this called in my testing
     NULL, 
     NULL, 
-    NULL,     /* could use PSConverterMessageCallback, but messages are usually not useful */
+    NULL, // messages are usually not useful
     NULL 
 };
 
@@ -150,7 +132,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     BOOL didDetach = NO;
     NSInteger rv = 0;
     
-    while (1) {
+    while (YES) {
         
         // we run this inside the modal session since the thread could end before runModalForWindow starts
         if (NO == didDetach) {
@@ -272,11 +254,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (NSString *)fileType {
     return @"PostScript";
-}
-
-- (void)showPostScriptConversionMessage:(NSString *)message;
-{
-    [textField setStringValue:message];
 }
 
 @end
