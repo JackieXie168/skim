@@ -41,6 +41,10 @@
 #import "NSColor_SKExtensions.h"
 
 
+@interface NSOutlineView (SKApplePrivate)
+- (id)_highlightColorForCell:(NSCell *)cell;
+@end
+
 @implementation SKTocOutlineView
 
 + (BOOL)usesDefaultFontSize { return YES; }
@@ -71,6 +75,16 @@
     if (trackingRects != NULL)
         CFRelease(trackingRects);
     [super dealloc];
+}
+
+// Tiger draws the highlight color in the cell, which I think is wrong, but it also uses the highlight color to decide about the text color, which is even more wrong
+- (id)_highlightColorForCell:(NSCell *)cell {
+    if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
+        return [super _highlightColorForCell:cell];
+    else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self) 
+        return [super _highlightColorForCell:cell];
+    else
+        return nil;
 }
 
 static CGFloat keyColorBlue[3]          = {14135.0/65535.0, 29298.0/65535.0, 48830.0/65535.0};
