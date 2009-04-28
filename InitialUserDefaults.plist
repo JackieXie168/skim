@@ -35,7 +35,7 @@
             <key>displaysPageBreaks</key>
             <true/>
             <key>displaysAsBook</key>
-            <false/>
+            <true/>
             <key>displayMode</key>
             <integer>1</integer>
             <key>displayBox</key>
