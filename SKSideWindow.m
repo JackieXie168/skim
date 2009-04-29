@@ -253,6 +253,7 @@
 - (void)drawRect:(NSRect)aRect {
     NSRect ignored, topRect, bottomRect, rect = [self bounds];
     NSPoint startPoint, endPoint;
+    NSShadow *shade = [[[NSShadow alloc] init] autorelease];
     
     NSDivideRect(rect, &topRect, &ignored, 2.0 * CORNER_RADIUS, NSMaxYEdge);
     NSDivideRect(rect, &bottomRect, &ignored, 2.0 * CORNER_RADIUS, NSMinYEdge);
@@ -275,18 +276,15 @@
         [NSBezierPath fillLeftRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
     }
     
+    [shade setShadowBlurRadius:0.0];
+    [shade setShadowOffset:NSMakeSize(1.0, 0.0)];
+    [shade setShadowColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
     endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
     [NSBezierPath setDefaultLineWidth:1.0];
     [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
-    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-    startPoint.x += 2.0;
-    endPoint.x += 2.0;
-    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-    [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-    startPoint.x -= 1.0;
-    endPoint.x -= 1.0;
+    [shade set];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;
