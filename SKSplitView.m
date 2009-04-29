@@ -156,22 +156,18 @@
     // Draw the handle
     NSPoint startPoint, endPoint;
     CGFloat handleSize = 20.0;
-    NSColor *darkColor = [NSColor colorWithCalibratedWhite:0.6 alpha:1.0];
-    NSColor *lightColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
+    NSShadow *shade = [[[NSShadow alloc] init] autorelease];
     
+    [shade setShadowBlurRadius:0.0];
+    [shade setShadowColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
     [NSBezierPath setDefaultLineWidth:1.0];
     if ([self isVertical]) {
         handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSHeight(aRect)));
         startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
         endPoint = NSMakePoint(startPoint.x, startPoint.y + handleSize);
-        [darkColor set];
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        startPoint.x += 2.0;
-        endPoint.x += 2.0;
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        [lightColor set];
-        startPoint.x -= 1.0;
-        endPoint.x -= 1.0;
+        [shade setShadowOffset:NSMakeSize(1.0, 0.0)];
+        [shade set];
+        [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
         [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
         startPoint.x += 2.0;
         endPoint.x += 2.0;
@@ -180,14 +176,9 @@
         handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSWidth(aRect)));
         startPoint = NSMakePoint(NSMidX(aRect) - 0.5 * handleSize, NSMinY(aRect) + 1.5);
         endPoint = NSMakePoint(startPoint.x + handleSize, startPoint.y);
-        [darkColor set];
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        startPoint.y += 2.0;
-        endPoint.y += 2.0;
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        [lightColor set];
-        startPoint.y -= 1.0;
-        endPoint.y -= 1.0;
+        [shade setShadowOffset:NSMakeSize(0.0, -1.0)];
+        [shade set];
+        [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
         [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
         startPoint.y += 2.0;
         endPoint.y += 2.0;
