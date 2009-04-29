@@ -62,15 +62,6 @@ enum {
     SKFitWindowOption
 };
 
-typedef struct _SKPDFViewState {
-	NSInteger displayMode;
-	BOOL autoScales;
-	CGFloat scaleFactor;
-	BOOL hasHorizontalScroller;
-	BOOL hasVerticalScroller;
-	BOOL autoHidesScrollers;
-} SKPDFViewState;
-
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
@@ -78,172 +69,172 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
 
 @interface SKMainWindowController : NSWindowController {
-    IBOutlet SKSplitView        *splitView;
+    IBOutlet SKSplitView            *splitView;
     
-    IBOutlet SKSplitView        *pdfSplitView;
-    IBOutlet BDSKEdgeView       *pdfEdgeView;
-    IBOutlet SKPDFView          *pdfView;
+    IBOutlet SKSplitView            *pdfSplitView;
+    IBOutlet BDSKEdgeView           *pdfEdgeView;
+    IBOutlet SKPDFView              *pdfView;
     
-    BDSKEdgeView                *secondaryPdfEdgeView;
-    SKSecondaryPDFView          *secondaryPdfView;
+    BDSKEdgeView                    *secondaryPdfEdgeView;
+    SKSecondaryPDFView              *secondaryPdfView;
     
-    IBOutlet NSView             *leftSideContentView;
-    IBOutlet NSView             *leftSideView;
-    IBOutlet BDSKEdgeView       *leftSideEdgeView;
-    IBOutlet BDSKCollapsibleView *leftSideCollapsibleView;
-    IBOutlet BDSKGradientView   *leftSideGradientView;
-    IBOutlet NSSegmentedControl *leftSideButton;
-    IBOutlet NSSearchField      *searchField;
+    IBOutlet NSView                 *leftSideContentView;
+    IBOutlet NSView                 *leftSideView;
+    IBOutlet BDSKEdgeView           *leftSideEdgeView;
+    IBOutlet BDSKCollapsibleView    *leftSideCollapsibleView;
+    IBOutlet BDSKGradientView       *leftSideGradientView;
+    IBOutlet NSSegmentedControl     *leftSideButton;
+    IBOutlet NSSearchField          *searchField;
     
-    IBOutlet NSView             *rightSideContentView;
-    IBOutlet NSView             *rightSideView;
-    IBOutlet BDSKEdgeView       *rightSideEdgeView;
-    IBOutlet BDSKCollapsibleView *rightSideCollapsibleView;
-    IBOutlet BDSKGradientView   *rightSideGradientView;
-    IBOutlet NSSegmentedControl *rightSideButton;
-    IBOutlet NSSearchField      *noteSearchField;
+    IBOutlet NSView                 *rightSideContentView;
+    IBOutlet NSView                 *rightSideView;
+    IBOutlet BDSKEdgeView           *rightSideEdgeView;
+    IBOutlet BDSKCollapsibleView    *rightSideCollapsibleView;
+    IBOutlet BDSKGradientView       *rightSideGradientView;
+    IBOutlet NSSegmentedControl     *rightSideButton;
+    IBOutlet NSSearchField          *noteSearchField;
     
-    IBOutlet NSView             *currentLeftSideView;
-    IBOutlet NSView             *currentRightSideView;
-    SKLeftSidePaneState         leftSidePaneState;
-    SKRightSidePaneState        rightSidePaneState;
-    SKLeftSidePaneState         savedLeftSidePaneState;
+    IBOutlet NSView                 *currentLeftSideView;
+    IBOutlet NSView                 *currentRightSideView;
+    SKLeftSidePaneState             leftSidePaneState;
+    SKRightSidePaneState            rightSidePaneState;
+    SKLeftSidePaneState             savedLeftSidePaneState;
     
-    SKStatusBar                 *statusBar;
+    SKStatusBar                     *statusBar;
     
-    IBOutlet SKTocOutlineView   *outlineView;
-    IBOutlet NSView             *tocView;
-    SKPDFOutline                *pdfOutline;
-    BOOL                        updatingOutlineSelection;
+    IBOutlet SKTocOutlineView       *outlineView;
+    IBOutlet NSView                 *tocView;
+    SKPDFOutline                    *pdfOutline;
+    BOOL                            updatingOutlineSelection;
     
-    IBOutlet NSObjectController *ownerController;
-    IBOutlet NSArrayController  *thumbnailArrayController;
-    IBOutlet SKThumbnailTableView *thumbnailTableView;
-    IBOutlet NSView             *thumbnailView;
-    NSMutableArray              *thumbnails;
-    BOOL                        updatingThumbnailSelection;
-    CGFloat                       roundedThumbnailSize;
-    BOOL                        isAnimating;
+    IBOutlet NSObjectController     *ownerController;
+    IBOutlet NSArrayController      *thumbnailArrayController;
+    IBOutlet SKThumbnailTableView   *thumbnailTableView;
+    IBOutlet NSView                 *thumbnailView;
+    NSMutableArray                  *thumbnails;
+    BOOL                            updatingThumbnailSelection;
+    CGFloat                         roundedThumbnailSize;
+    BOOL                            isAnimating;
     
-    IBOutlet NSArrayController  *findArrayController;
-    IBOutlet NSTableView        *findTableView;
-    IBOutlet NSView             *findView;
-    NSMutableArray              *searchResults;
-    BOOL                        findPanelFind;
-    BOOL                        caseInsensitiveSearch;
-    BOOL                        wholeWordSearch;
-    CFMutableSetRef             temporaryAnnotations;
-    NSTimer                     *temporaryAnnotationTimer;
-    NSTimer                     *highlightTimer;
+    IBOutlet NSArrayController      *findArrayController;
+    IBOutlet NSTableView            *findTableView;
+    IBOutlet NSView                 *findView;
+    NSMutableArray                  *searchResults;
+    BOOL                            findPanelFind;
+    BOOL                            caseInsensitiveSearch;
+    BOOL                            wholeWordSearch;
+    CFMutableSetRef                 temporaryAnnotations;
+    NSTimer                         *temporaryAnnotationTimer;
+    NSTimer                         *highlightTimer;
     
-    IBOutlet NSArrayController  *groupedFindArrayController;
-    IBOutlet NSTableView        *groupedFindTableView;
-    IBOutlet NSView             *groupedFindView;
-    NSMutableArray              *groupedSearchResults;
-    IBOutlet NSSegmentedControl *findButton;
-    SKFindPaneState             findPaneState;
+    IBOutlet NSArrayController      *groupedFindArrayController;
+    IBOutlet NSTableView            *groupedFindTableView;
+    IBOutlet NSView                 *groupedFindView;
+    NSMutableArray                  *groupedSearchResults;
+    IBOutlet NSSegmentedControl     *findButton;
+    SKFindPaneState                 findPaneState;
     
-    IBOutlet NSArrayController  *noteArrayController;
-    IBOutlet SKNoteOutlineView  *noteOutlineView;
-    IBOutlet NSView             *noteView;
-    NSMutableArray              *notes;
-    CFMutableDictionaryRef      rowHeights;
-    BOOL                        updatingNoteSelection;
-    BOOL                        caseInsensitiveNoteSearch;
+    IBOutlet NSArrayController      *noteArrayController;
+    IBOutlet SKNoteOutlineView      *noteOutlineView;
+    IBOutlet NSView                 *noteView;
+    NSMutableArray                  *notes;
+    CFMutableDictionaryRef          rowHeights;
+    BOOL                            updatingNoteSelection;
+    BOOL                            caseInsensitiveNoteSearch;
     
-    IBOutlet NSArrayController  *snapshotArrayController;
-    IBOutlet SKThumbnailTableView *snapshotTableView;
-    IBOutlet NSView             *snapshotView;
-    NSMutableArray              *snapshots;
-    NSMutableArray              *dirtySnapshots;
-    NSTimer                     *snapshotTimer;
-    CGFloat                       roundedSnapshotThumbnailSize;
+    IBOutlet NSArrayController      *snapshotArrayController;
+    IBOutlet SKThumbnailTableView   *snapshotTableView;
+    IBOutlet NSView                 *snapshotView;
+    NSMutableArray                  *snapshots;
+    NSMutableArray                  *dirtySnapshots;
+    NSTimer                         *snapshotTimer;
+    CGFloat                         roundedSnapshotThumbnailSize;
     
-    NSMutableArray              *tags;
-    double                      rating;
+    NSMutableArray                  *tags;
+    double                          rating;
     
-    NSWindow                    *mainWindow;
-    SKFullScreenWindow          *fullScreenWindow;
-    SKSideWindow                *leftSideWindow;
-    SKSideWindow                *rightSideWindow;
-    NSMutableArray              *blankingWindows;
+    NSWindow                        *mainWindow;
+    SKFullScreenWindow              *fullScreenWindow;
+    SKSideWindow                    *leftSideWindow;
+    SKSideWindow                    *rightSideWindow;
+    NSMutableArray                  *blankingWindows;
     
-    IBOutlet NSSegmentedControl *backForwardButton;
-    IBOutlet NSTextField        *pageNumberField;
-    IBOutlet NSSegmentedControl *previousNextPageButton;
-    IBOutlet NSSegmentedControl *previousPageButton;
-    IBOutlet NSSegmentedControl *nextPageButton;
-    IBOutlet NSSegmentedControl *previousNextFirstLastPageButton;
-    IBOutlet NSSegmentedControl *zoomInOutButton;
-    IBOutlet NSSegmentedControl *zoomInActualOutButton;
-    IBOutlet NSSegmentedControl *zoomActualButton;
-    IBOutlet NSSegmentedControl *zoomFitButton;
-    IBOutlet NSSegmentedControl *zoomSelectionButton;
-    IBOutlet NSSegmentedControl *rotateLeftButton;
-    IBOutlet NSSegmentedControl *rotateRightButton;
-    IBOutlet NSSegmentedControl *rotateLeftRightButton;
-    IBOutlet NSSegmentedControl *cropButton;
-    IBOutlet NSSegmentedControl *fullScreenButton;
-    IBOutlet NSSegmentedControl *presentationButton;
-    IBOutlet NSSegmentedControl *leftPaneButton;
-    IBOutlet NSSegmentedControl *rightPaneButton;
-    IBOutlet NSSegmentedControl *toolModeButton;
-    IBOutlet NSSegmentedControl *textNoteButton;
-    IBOutlet NSSegmentedControl *circleNoteButton;
-    IBOutlet NSSegmentedControl *markupNoteButton;
-    IBOutlet NSSegmentedControl *lineNoteButton;
-    IBOutlet NSSegmentedControl *singleTwoUpButton;
-    IBOutlet NSSegmentedControl *continuousButton;
-    IBOutlet NSSegmentedControl *displayModeButton;
-    IBOutlet NSSegmentedControl *displayBoxButton;
-    IBOutlet NSSegmentedControl *infoButton;
-    IBOutlet NSSegmentedControl *colorsButton;
-    IBOutlet NSSegmentedControl *fontsButton;
-    IBOutlet NSSegmentedControl *linesButton;
-    IBOutlet NSSegmentedControl *printButton;
-    IBOutlet NSSegmentedControl *customizeButton;
-    IBOutlet NSTextField        *scaleField;
-    IBOutlet NSSegmentedControl *noteButton;
-    IBOutlet SKColorSwatch      *colorSwatch;
-    NSMutableDictionary         *toolbarItems;
+    IBOutlet NSSegmentedControl     *backForwardButton;
+    IBOutlet NSTextField            *pageNumberField;
+    IBOutlet NSSegmentedControl     *previousNextPageButton;
+    IBOutlet NSSegmentedControl     *previousPageButton;
+    IBOutlet NSSegmentedControl     *nextPageButton;
+    IBOutlet NSSegmentedControl     *previousNextFirstLastPageButton;
+    IBOutlet NSSegmentedControl     *zoomInOutButton;
+    IBOutlet NSSegmentedControl     *zoomInActualOutButton;
+    IBOutlet NSSegmentedControl     *zoomActualButton;
+    IBOutlet NSSegmentedControl     *zoomFitButton;
+    IBOutlet NSSegmentedControl     *zoomSelectionButton;
+    IBOutlet NSSegmentedControl     *rotateLeftButton;
+    IBOutlet NSSegmentedControl     *rotateRightButton;
+    IBOutlet NSSegmentedControl     *rotateLeftRightButton;
+    IBOutlet NSSegmentedControl     *cropButton;
+    IBOutlet NSSegmentedControl     *fullScreenButton;
+    IBOutlet NSSegmentedControl     *presentationButton;
+    IBOutlet NSSegmentedControl     *leftPaneButton;
+    IBOutlet NSSegmentedControl     *rightPaneButton;
+    IBOutlet NSSegmentedControl     *toolModeButton;
+    IBOutlet NSSegmentedControl     *textNoteButton;
+    IBOutlet NSSegmentedControl     *circleNoteButton;
+    IBOutlet NSSegmentedControl     *markupNoteButton;
+    IBOutlet NSSegmentedControl     *lineNoteButton;
+    IBOutlet NSSegmentedControl     *singleTwoUpButton;
+    IBOutlet NSSegmentedControl     *continuousButton;
+    IBOutlet NSSegmentedControl     *displayModeButton;
+    IBOutlet NSSegmentedControl     *displayBoxButton;
+    IBOutlet NSSegmentedControl     *infoButton;
+    IBOutlet NSSegmentedControl     *colorsButton;
+    IBOutlet NSSegmentedControl     *fontsButton;
+    IBOutlet NSSegmentedControl     *linesButton;
+    IBOutlet NSSegmentedControl     *printButton;
+    IBOutlet NSSegmentedControl     *customizeButton;
+    IBOutlet NSTextField            *scaleField;
+    IBOutlet NSSegmentedControl     *noteButton;
+    IBOutlet SKColorSwatch          *colorSwatch;
+    NSMutableDictionary             *toolbarItems;
     
-    SKProgressController        *progressController;
+    SKProgressController            *progressController;
     
-    NSButton                    *colorAccessoryView;
-    BOOL                        updatingColor;
-    BOOL                        updatingFont;
-    BOOL                        updatingFontAttributes;
-    BOOL                        updatingLine;
+    NSButton                        *colorAccessoryView;
+    BOOL                            updatingColor;
+    BOOL                            updatingFont;
+    BOOL                            updatingFontAttributes;
+    BOOL                            updatingLine;
     
-    BOOL                        settingUpWindow;
+    BOOL                            settingUpWindow;
     
-    NSMutableArray              *pageLabels;
+    NSMutableArray                  *pageLabels;
     
-    NSString                    *pageLabel;
-    NSUInteger                pageNumber;
+    NSString                        *pageLabel;
+    NSUInteger                      pageNumber;
     
-    NSUInteger                markedPageIndex;
-    NSUInteger                beforeMarkedPageIndex;
+    NSUInteger                      markedPageIndex;
+    NSUInteger                      beforeMarkedPageIndex;
     
-    NSMutableArray              *lastViewedPages;
+    NSMutableArray                  *lastViewedPages;
     
-    NSTimer                     *activityTimer;
+    NSTimer                         *activityTimer;
     
-    BOOL                        isPresentation;
-    NSMutableDictionary         *savedNormalSetup;
+    BOOL                            isPresentation;
+    NSMutableDictionary             *savedNormalSetup;
     
-    CGFloat                       lastLeftSidePaneWidth;
-    CGFloat                       lastRightSidePaneWidth;
-    CGFloat                       lastSecondaryPdfViewPaneHeight;
+    CGFloat                         lastLeftSidePaneWidth;
+    CGFloat                         lastRightSidePaneWidth;
+    CGFloat                         lastSecondaryPdfViewPaneHeight;
     
-    CGFloat                       thumbnailCacheSize;
-    CGFloat                       snapshotCacheSize;
+    CGFloat                         thumbnailCacheSize;
+    CGFloat                         snapshotCacheSize;
     
-    NSDrawer                    *leftSideDrawer;
-    NSDrawer                    *rightSideDrawer;
-    BOOL                        usesDrawers;
+    NSDrawer                        *leftSideDrawer;
+    NSDrawer                        *rightSideDrawer;
+    BOOL                            usesDrawers;
     
-    NSMutableDictionary         *undoGroupOldPropertiesPerNote;
+    NSMutableDictionary             *undoGroupOldPropertiesPerNote;
 }
 
 - (IBAction)enterFullScreen:(id)sender;
