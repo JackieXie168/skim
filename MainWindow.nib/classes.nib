@@ -56,6 +56,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSApplication</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKThumbnailTableView</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -507,14 +515,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKSegmentedControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSSegmentedControl</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKColorSwatch</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -528,19 +528,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSSegmentedControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSImageCell</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSCell</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>SKAnnotationTypeImageCell</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSImageCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -580,6 +580,14 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKAnnotationTypeImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSImageCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

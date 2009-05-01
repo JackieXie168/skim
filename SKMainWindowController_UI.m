@@ -296,6 +296,78 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
+#pragma mark NSTableView datasource protocol
+
+// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
+    if ([tv isEqual:thumbnailTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            PDFPage *page = [[pdfView document] pageAtIndex:idx];
+            NSData *pdfData = [page dataRepresentation];
+            NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@.pdf", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
+            [pboard setData:pdfData forType:NSPDFPboardType];
+            [pboard setData:tiffData forType:NSTIFFPboardType];
+            [pboard setPropertyList:[NSArray arrayWithObject:fileName] forType:NSFilesPromisePboardType];
+            return YES;
+        }
+    } else if ([tv isEqual:snapshotTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
+            PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
+            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@.tiff", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
+            [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSTIFFPboardType];
+            [pboard setPropertyList:[NSArray arrayWithObject:fileName] forType:NSFilesPromisePboardType];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:thumbnailTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            PDFPage *page = [[pdfView document] pageAtIndex:idx];
+            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
+            NSString *path = [basePath stringByAppendingPathExtension:@"pdf"];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSInteger i = 0;
+            
+            while ([fm fileExistsAtPath:path])
+                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:@"pdf"];
+            if ([[page dataRepresentation] writeToFile:path atomically:YES])
+                return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+        }
+    } else if ([tv isEqual:snapshotTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
+            PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
+            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
+            NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSInteger i = 0;
+            
+            while ([fm fileExistsAtPath:path])
+                path = [[basePath stringByAppendingFormat:@" - %ld", (long)++i] stringByAppendingPathExtension:@"tiff"];
+            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToFile:path atomically:YES])
+                return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+        }
+    }
+    return nil;
+}
+
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
@@ -322,11 +394,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
     }
 }
-
-// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
-
-- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
 - (BOOL)tableView:(NSTableView *)tv commandSelectRow:(NSInteger)row {
     if ([tv isEqual:thumbnailTableView]) {
