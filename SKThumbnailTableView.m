@@ -219,4 +219,8 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
     [super mouseDown:theEvent];
 }
 
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
+    return NSDragOperationEvery;
+}
+
 @end
