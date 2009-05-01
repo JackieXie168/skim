@@ -310,7 +310,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
             NSData *pdfData = [page dataRepresentation];
             NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@.pdf", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
             [pboard setData:pdfData forType:NSPDFPboardType];
             [pboard setData:tiffData forType:NSTIFFPboardType];
@@ -322,7 +322,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@.tiff", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilesPromisePboardType, nil] owner:self];
             [pboard setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSTIFFPboardType];
             [pboard setPropertyList:[NSArray arrayWithObject:fileName] forType:NSFilesPromisePboardType];
@@ -337,7 +337,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSUInteger idx = [rowIndexes firstIndex];
         if (idx != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
             NSString *path = [basePath stringByAppendingPathExtension:@"pdf"];
             NSFileManager *fm = [NSFileManager defaultManager];
@@ -353,7 +353,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
             PDFPage *page = [[pdfView document] pageAtIndex:[snapshot pageIndex]];
-            NSString *fileName = [NSString stringWithFormat:@"%@ - Page %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), [page displayLabel]];
+            NSString *fileName = [NSString stringWithFormat:NSLocalizedString(@"%@ %C Page %@", @""), ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [page displayLabel]];
             NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:fileName];
             NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
             NSFileManager *fm = [NSFileManager defaultManager];
