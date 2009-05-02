@@ -1148,7 +1148,6 @@
         if (secondaryPdfView == nil) {
             secondaryPdfEdgeView = [[BDSKEdgeView alloc] initWithFrame:frame2];
             [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
-            [secondaryPdfEdgeView setColor:[NSColor lightGrayColor] forEdge:NSMaxYEdge];
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[[secondaryPdfEdgeView contentView] bounds]];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [secondaryPdfEdgeView addSubview:secondaryPdfView];
