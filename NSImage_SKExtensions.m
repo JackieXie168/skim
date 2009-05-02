@@ -1995,14 +1995,6 @@ static NSSize tinyImageSize = {16.0, 16.0};
     [self drawMirrored:NO andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
 
-- (void)drawMirroredInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    [self drawMirrored:YES andFlipped:NO inRect:dstRect fromRect:srcRect operation:op fraction:delta];
-}
-
-- (void)drawMirroredAndFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    [self drawMirrored:YES andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
-}
-
 - (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
     [self drawMirrored:YES andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
 }
