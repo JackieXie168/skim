@@ -48,7 +48,7 @@ NSString *SKLineWellDashPatternKey = @"dashPattern";
 NSString *SKLineWellStartLineStyleKey = @"startLineStyle";
 NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
-#define DISPLAYSTYLE_KEY @"displayStyle"
+#define DISPLAYSTYLE_KEY @"lwFlags.displayStyle"
 #define ACTIVE_KEY @"active"
 #define ACTION_KEY @"action"
 #define TARGET_KEY @"target"
@@ -76,7 +76,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)commonInit {
-    existsActiveLineWell = NO;
+    lwFlags.canActivate = 1;
+    lwFlags.highlighted = 0;
+    lwFlags.existsActiveLineWell = 0;
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
 }
@@ -88,9 +90,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         dashPattern = nil;
         startLineStyle = kPDFLineStyleNone;
         endLineStyle = kPDFLineStyleNone;
-        displayStyle = SKLineWellDisplayStyleLine;
-        active = NO;
-        canActivate = YES;
+        lwFlags.displayStyle = SKLineWellDisplayStyleLine;
+        lwFlags.active = 0;
         
         target = nil;
         action = NULL;
@@ -107,8 +108,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
         startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
         endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
-        displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
-        active = [decoder decodeBoolForKey:ACTIVE_KEY];
+        lwFlags.displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
+        lwFlags.active = [decoder decodeBoolForKey:ACTIVE_KEY];
         action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
         target = [decoder decodeObjectForKey:TARGET_KEY];
         [self commonInit];
@@ -123,8 +124,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
     [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
     [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
-    [coder encodeInt:displayStyle forKey:DISPLAYSTYLE_KEY];
-    [coder encodeBool:active forKey:ACTIVE_KEY];
+    [coder encodeInt:(NSInteger)(lwFlags.displayStyle) forKey:DISPLAYSTYLE_KEY];
+    [coder encodeBool:(BOOL)(lwFlags.active) forKey:ACTIVE_KEY];
     [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
     [coder encodeConditionalObject:target forKey:TARGET_KEY];
 }
@@ -135,7 +136,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self unbind:SKLineWellDashPatternKey];
     [self unbind:SKLineWellStartLineStyleKey];
     [self unbind:SKLineWellEndLineStyleKey];
-    if (active)
+    if (lwFlags.active)
         [self deactivate];
     [dashPattern release];
     [super dealloc];
@@ -386,7 +387,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)existsActiveLineWell {
-    existsActiveLineWell = YES;
+    lwFlags.existsActiveLineWell = 1;
 }
 
 - (void)lineWellWillBecomeActive:(NSNotification *)notification {
@@ -408,12 +409,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         SKLineInspector *inspector = [SKLineInspector sharedLineInspector];
         
-        existsActiveLineWell = NO;
+        lwFlags.existsActiveLineWell = 1;
         
         [nc postNotificationName:SKLineWellWillBecomeActiveNotification object:self
                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], EXCLUSIVE_KEY, nil]];
         
-        if (existsActiveLineWell) {
+        if (lwFlags.existsActiveLineWell) {
             [self takeValueForKey:SKLineWellLineWidthKey from:inspector];
             [self takeValueForKey:SKLineWellDashPatternKey from:inspector];
             [self takeValueForKey:SKLineWellStyleKey from:inspector];
@@ -449,7 +450,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                        name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
         } 
         
-        active = YES;
+        lwFlags.active = 1;
         
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
@@ -459,7 +460,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)deactivate {
     if ([self isActive]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        active = NO;
+        lwFlags.active = 0;
         [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
     }
@@ -488,38 +489,38 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (BOOL)isActive {
-    return active;
+    return lwFlags.active;
 }
 
 - (BOOL)canActivate {
-    return canActivate;
+    return lwFlags.canActivate;
 }
 
 - (void)setCanActivate:(BOOL)flag {
-    if (canActivate != flag) {
-        canActivate = flag;
-        if ([self isActive] && canActivate == NO)
+    if (lwFlags.canActivate != flag) {
+        lwFlags.canActivate = flag;
+        if ([self isActive] && lwFlags.canActivate == 0)
             [self deactivate];
     }
 }
 
 - (BOOL)isHighlighted {
-    return isHighlighted;
+    return lwFlags.highlighted;
 }
 
 - (void)setHighlighted:(BOOL)flag {
-    if (isHighlighted != flag) {
-        isHighlighted = flag;
+    if (lwFlags.highlighted != flag) {
+        lwFlags.highlighted = flag;
     }
 }
 
 - (SKLineWellDisplayStyle)displayStyle {
-    return displayStyle;
+    return lwFlags.displayStyle;
 }
 
 - (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle {
-    if (displayStyle != newStyle) {
-        displayStyle = newStyle;
+    if (lwFlags.displayStyle != newStyle) {
+        lwFlags.displayStyle = newStyle;
         if ([self isActive]) {
             NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
             SKLineInspector *inspector = [SKLineInspector sharedLineInspector];

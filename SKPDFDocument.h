@@ -84,13 +84,16 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     
     SKPDFSynchronizer *synchronizer;
     NSString *watchedFile;
-    BOOL autoUpdate;
-    BOOL disableAutoReload;
-    BOOL isSaving;
-    BOOL isUpdatingFile;
-    BOOL receivedFileUpdateNotification;
-    BOOL fileChangedOnDisk;
-    BOOL exportUsingPanel;
+    
+    struct _docFlags {
+        unsigned int autoUpdate : 1;
+        unsigned int disableAutoReload : 1;
+        unsigned int isSaving : 1;
+        unsigned int isUpdatingFile : 1;
+        unsigned int receivedFileUpdateNotification : 1;
+        unsigned int fileChangedOnDisk : 1;
+        unsigned int exportUsingPanel : 1;
+    } docFlags;
     
     // only used for network filesystems; fileUpdateTimer is not retained by the doc
     NSDate *lastModifiedDate;

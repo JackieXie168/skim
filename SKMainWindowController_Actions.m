@@ -67,16 +67,16 @@
 
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingColor == NO && [annotation isSkimNote]) {
+    if (mwcFlags.updatingColor == 0 && [annotation isSkimNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
         NSColor *color = (isFill ? [(id)annotation interiorColor] : [annotation color]) ?: [NSColor clearColor];
         if ([color isEqual:[sender color]] == NO) {
-            updatingColor = YES;
+            mwcFlags.updatingColor = 1;
             if (isFill)
                 [(id)annotation setInteriorColor:[[sender color] alphaComponent] > 0.0 ? [sender color] : nil];
             else
                 [annotation setColor:[sender color]];
-            updatingColor = NO;
+            mwcFlags.updatingColor = 0;
         }
     }
 }
@@ -98,23 +98,23 @@
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingFont == NO && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+    if (mwcFlags.updatingFont == 0 && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
-        updatingFont = YES;
+        mwcFlags.updatingFont = 1;
         [(PDFAnnotationFreeText *)annotation setFont:font];
-        updatingFont = NO;
+        mwcFlags.updatingFont = 0;
     }
 }
 
 - (IBAction)changeAttributes:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (updatingFontAttributes == NO && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
+    if (mwcFlags.updatingFontAttributes == 0 && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
         NSColor *color = [(PDFAnnotationFreeText *)annotation fontColor];
         NSColor *newColor = [[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName];
         if ([newColor isEqual:color] == NO) {
-            updatingFontAttributes = YES;
+            mwcFlags.updatingFontAttributes = 1;
             [(PDFAnnotationFreeText *)annotation setFontColor:newColor];
-            updatingFontAttributes = NO;
+            mwcFlags.updatingFontAttributes = 0;
         }
     }
 }
@@ -122,7 +122,7 @@
 - (void)changeLineWidth:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setLineWidth:[sender lineWidth]];
     }
 }
@@ -130,7 +130,7 @@
 - (void)changeLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setBorderStyle:[sender style]];
     }
 }
@@ -138,7 +138,7 @@
 - (void)changeDashPattern:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
         [annotation setDashPattern:[sender dashPattern]];
     }
 }
@@ -146,20 +146,20 @@
 - (void)changeStartLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
-        updatingLine = YES;
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
+        mwcFlags.updatingLine = 1;
         [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
-        updatingLine = NO;
+        mwcFlags.updatingLine = 0;
     }
 }
 
 - (void)changeEndLineStyle:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
-    if (updatingLine == NO && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
-        updatingLine = YES;
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
+        mwcFlags.updatingLine = 1;
         [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
-        updatingLine = NO;
+        mwcFlags.updatingLine = 0;
     }
 }
 
@@ -991,19 +991,19 @@
 }
 
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
-    caseInsensitiveSearch = NO == caseInsensitiveSearch;
+    mwcFlags.caseInsensitiveSearch = (0 == mwcFlags.caseInsensitiveSearch);
     if ([[searchField stringValue] length])
         [self search:searchField];
 }
 
 - (IBAction)toggleWholeWordSearch:(id)sender {
-    wholeWordSearch = NO == wholeWordSearch;
+    mwcFlags.wholeWordSearch = (0 == mwcFlags.wholeWordSearch);
     if ([[searchField stringValue] length])
         [self search:searchField];
 }
 
 - (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender {
-    caseInsensitiveNoteSearch = NO == caseInsensitiveNoteSearch;
+    mwcFlags.caseInsensitiveNoteSearch = (0 == mwcFlags.caseInsensitiveNoteSearch);
     if ([[noteSearchField stringValue] length])
         [self searchNotes:noteSearchField];
 }
@@ -1020,9 +1020,9 @@
             [self hideLeftSideWindow];
         else
             [self showLeftSideWindowOnScreen:[[self window] screen]];
-    } else if (usesDrawers) {
+    } else if (mwcFlags.usesDrawers) {
         if ([self leftSidePaneIsOpen]) {
-            if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
+            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
                 [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
             [leftSideDrawer close];
         } else {
@@ -1033,7 +1033,7 @@
         NSRect pdfFrame = [pdfSplitView frame];
         
         if ([self leftSidePaneIsOpen]) {
-            if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
+            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
                 [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
             lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastLeftSidePaneWidth;
@@ -1075,7 +1075,7 @@
             [self hideRightSideWindow];
         else
             [self showRightSideWindowOnScreen:[[self window] screen]];
-    } else if (usesDrawers) {
+    } else if (mwcFlags.usesDrawers) {
         if ([self rightSidePaneIsOpen])
             [rightSideDrawer close];
         else
