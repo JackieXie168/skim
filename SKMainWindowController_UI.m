@@ -143,14 +143,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([[self window] isMainWindow]) {
         if ([annotation isSkimNote]) {
             if ([annotation respondsToSelector:@selector(font)]) {
-                updatingFont = YES;
+                mwcFlags.updatingFont = 1;
                 [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-                updatingFont = NO;
+                mwcFlags.updatingFont = 0;
             }
             if ([annotation respondsToSelector:@selector(fontColor)]) {
-                updatingFontAttributes = YES;
+                mwcFlags.updatingFontAttributes = 1;
                 [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
-                updatingFontAttributes = NO;
+                mwcFlags.updatingFontAttributes = 0;
             }
         }
     }
@@ -186,9 +186,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
     
     if (color) {
-        updatingColor = YES;
+        mwcFlags.updatingColor = 1;
         [[NSColorPanel sharedColorPanel] setColor:color];
-        updatingColor = NO;
+        mwcFlags.updatingColor = 0;
     }
 }
 
@@ -202,9 +202,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     
     if ([[self window] isMainWindow]) {
         if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-            updatingLine = YES;
+            mwcFlags.updatingLine = 1;
             [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
-            updatingLine = NO;
+            mwcFlags.updatingLine = 0;
         }
     }
 }
@@ -377,7 +377,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
     } else if ([[aNotification object] isEqual:thumbnailTableView]) {
-        if (updatingThumbnailSelection == NO) {
+        if (mwcFlags.updatingThumbnailSelection == 0) {
             NSInteger row = [thumbnailTableView selectedRow];
             if (row != -1)
                 [self goToPage:[[pdfView document] pageAtIndex:row]];
@@ -722,10 +722,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
-	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
-        updatingOutlineSelection = YES;
+	if ([[notification object] isEqual:outlineView] && (mwcFlags.updatingOutlineSelection == 0)){
+        mwcFlags.updatingOutlineSelection = 1;
         [self goToSelectedOutlineItem:nil];
-        updatingOutlineSelection = NO;
+        mwcFlags.updatingOutlineSelection = 0;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
     }
@@ -1120,7 +1120,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
     if ([sender isEqual:splitView]) {
         
-        if (usesDrawers == NO) {
+        if (mwcFlags.usesDrawers == 0) {
             NSView *leftView = [[sender subviews] objectAtIndex:0];
             NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
             NSView *rightView = [[sender subviews] objectAtIndex:2];
@@ -1179,7 +1179,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
     id sender = [notification object];
-    if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && settingUpWindow == NO && usesDrawers == NO) {
+    if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0 && mwcFlags.usesDrawers == 0) {
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentView frame]) forKey:SKLeftSidePaneWidthKey];
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentView frame]) forKey:SKRightSidePaneWidthKey];
     }
@@ -1188,7 +1188,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSDrawer delegate protocol
 
 - (NSSize)drawerWillResizeContents:(NSDrawer *)sender toSize:(NSSize)contentSize {
-    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
         if ([sender isEqual:leftSideDrawer])
             [[NSUserDefaults standardUserDefaults] setFloat:contentSize.width forKey:SKLeftSidePaneWidthKey];
         else if ([sender isEqual:rightSideDrawer])
@@ -1199,7 +1199,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)drawerDidOpen:(NSNotification *)notification {
     id sender = [notification object];
-    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
         if ([sender isEqual:leftSideDrawer])
             [[NSUserDefaults standardUserDefaults] setFloat:[sender contentSize].width forKey:SKLeftSidePaneWidthKey];
         else if ([sender isEqual:rightSideDrawer])
@@ -1209,7 +1209,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)drawerDidClose:(NSNotification *)notification {
     id sender = [notification object];
-    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
+    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
         if ([sender isEqual:leftSideDrawer])
             [[NSUserDefaults standardUserDefaults] setFloat:0.0 forKey:SKLeftSidePaneWidthKey];
         else if ([sender isEqual:rightSideDrawer])
@@ -1355,10 +1355,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
-        [menuItem setState:leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
+        [menuItem setState:mwcFlags.leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
         return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
-        [menuItem setState:rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:mwcFlags.rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
     } else if (action == @selector(toggleSplitPDF:)) {
         if ([secondaryPdfView window])
@@ -1405,13 +1405,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
         return [self isPresentation] == NO;
     } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
-        [menuItem setState:caseInsensitiveSearch ? NSOnState : NSOffState];
+        [menuItem setState:mwcFlags.caseInsensitiveSearch ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(toggleWholeWordSearch:)) {
-        [menuItem setState:wholeWordSearch ? NSOnState : NSOffState];
+        [menuItem setState:mwcFlags.wholeWordSearch ? NSOnState : NSOffState];
         return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4;
     } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
-        [menuItem setState:caseInsensitiveNoteSearch ? NSOnState : NSOffState];
+        [menuItem setState:mwcFlags.caseInsensitiveNoteSearch ? NSOnState : NSOffState];
         return YES;
     }
     return YES;
@@ -1551,10 +1551,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     PDFPage *page = [[notification userInfo] objectForKey:SKPDFViewPageKey];
     
     if ([annotation isSkimNote]) {
-        updatingNoteSelection = YES;
+        mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] addObject:annotation];
         [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
-        updatingNoteSelection = NO;
+        mwcFlags.updatingNoteSelection = 0;
         [noteOutlineView reloadData];
     }
     if (page) {
@@ -1587,10 +1587,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             }
         }
         
-        updatingNoteSelection = YES;
+        mwcFlags.updatingNoteSelection = 1;
         [[self mutableArrayValueForKey:NOTES_KEY] removeObject:annotation];
         [noteArrayController rearrangeObjects]; // doesn't seem to be done automatically
-        updatingNoteSelection = NO;
+        mwcFlags.updatingNoteSelection = 0;
         [noteOutlineView reloadData];
     }
     if (page) {

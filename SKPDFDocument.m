@@ -266,7 +266,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
-    if (success && exportUsingPanel) {
+    if (success && docFlags.exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
@@ -289,20 +289,20 @@ static char SKPDFDocumentDefaultsObservationContext;
 }
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo { 
-    exportUsingPanel = NO;
+    docFlags.exportUsingPanel = NO;
 }
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
-    exportUsingPanel = (saveOperation == NSSaveToOperation);
+    docFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:NULL];
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [self stopCheckingFileUpdates];
-        isSaving = YES;
-    } else if (exportUsingPanel) {
+        docFlags.isSaving = YES;
+    } else if (docFlags.exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
@@ -411,12 +411,12 @@ static char SKPDFDocumentDefaultsObservationContext;
         if (success) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
-            fileChangedOnDisk = NO;
+            docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate] retain];
         }
         [self checkFileUpdatesIfNeeded];
-        isSaving = NO;
+        docFlags.isSaving = NO;
     }
     
     if (success == NO && outError != NULL)
@@ -749,7 +749,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [self setPDFData:data];
             [self setPDFDoc:pdfDoc];
             [pdfDoc release];
-            fileChangedOnDisk = NO;
+            docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
             
@@ -1192,7 +1192,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
      if ([self fileName]) { 	 
          if ([self isDocumentEdited]) { 	 
              [super revertDocumentToSaved:sender]; 	 
-         } else if (fileChangedOnDisk) { 	 
+         } else if (docFlags.fileChangedOnDisk) { 	 
              NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileName] lastPathComponent]] 	 
                                               defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
                                             alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
@@ -1217,7 +1217,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSString *fileName = [self fileName];
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
-        return [self isDocumentEdited] || fileChangedOnDisk;
+        return [self isDocumentEdited] || docFlags.fileChangedOnDisk;
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
@@ -1313,25 +1313,25 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     
     if (returnCode == NSAlertOtherReturn) {
-        autoUpdate = NO;
-        disableAutoReload = YES;
+        docFlags.autoUpdate = NO;
+        docFlags.disableAutoReload = YES;
     } else {
         NSError *error = nil;
         
         [[alert window] orderOut:nil];
         
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error])
-            receivedFileUpdateNotification = NO;
+            docFlags.receivedFileUpdateNotification = NO;
         else if (error)
             [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         if (returnCode == NSAlertAlternateReturn)
-            autoUpdate = YES;
-        disableAutoReload = NO;
-        if (receivedFileUpdateNotification)
+            docFlags.autoUpdate = YES;
+        docFlags.disableAutoReload = NO;
+        if (docFlags.receivedFileUpdateNotification)
             [self performSelector:@selector(fileUpdated) withObject:nil afterDelay:0.0];
     }
-    isUpdatingFile = NO;
-    receivedFileUpdateNotification = NO;
+    docFlags.isUpdatingFile = NO;
+    docFlags.receivedFileUpdateNotification = NO;
 }
 
 - (BOOL)canUpdateFromFile:(NSString *)fileName {
@@ -1369,24 +1369,24 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSString *fileName = [self fileName];
     
     // should never happen
-    if (isUpdatingFile)
+    if (docFlags.isUpdatingFile)
         NSLog(@"*** already busy updating file %@", fileName);
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         
-        fileChangedOnDisk = YES;
+        docFlags.fileChangedOnDisk = YES;
         
-        isUpdatingFile = YES;
-        receivedFileUpdateNotification = NO;
+        docFlags.isUpdatingFile = YES;
+        docFlags.receivedFileUpdateNotification = NO;
         
         // check for attached sheet, since reloading the document while an alert is up looks a bit strange
         if ([[self windowForSheet] attachedSheet]) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
                                                          name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
         } else if ([self canUpdateFromFile:fileName]) {
-            BOOL shouldAutoUpdate = autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
-            if (disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
+            BOOL shouldAutoUpdate = docFlags.autoUpdate || [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoReloadFileUpdateKey];
+            if (docFlags.disableAutoReload == NO && shouldAutoUpdate && [self isDocumentEdited] == NO && [[self notes] count] == 0) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
             } else {
@@ -1407,12 +1407,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                                     contextInfo:NULL];
             }
         } else {
-            isUpdatingFile = NO;
-            receivedFileUpdateNotification = NO;
+            docFlags.isUpdatingFile = NO;
+            docFlags.receivedFileUpdateNotification = NO;
         }
     } else {
-        isUpdatingFile = NO;
-        receivedFileUpdateNotification = NO;
+        docFlags.isUpdatingFile = NO;
+        docFlags.receivedFileUpdateNotification = NO;
     }
 }
 
@@ -1424,8 +1424,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if (notification && [path isEqualToString:[self fileName]] == NO)
             NSLog(@"*** received change notice for %@", path);
         
-        if (isUpdatingFile)
-            receivedFileUpdateNotification = YES;
+        if (docFlags.isUpdatingFile)
+            docFlags.receivedFileUpdateNotification = YES;
         else
             [self fileUpdated];
     }
@@ -1440,7 +1440,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)handleFileDeleteNotification:(NSNotification *)notification {
     if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
         [self stopCheckingFileUpdates];
-    fileChangedOnDisk = YES;
+    docFlags.fileChangedOnDisk = YES;
 }
 
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
@@ -1492,7 +1492,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     else
         [synchronizer setFileName:nil];
     // if we're saving this will be called when saving has finished
-    if (isSaving == NO)
+    if (docFlags.isSaving == NO)
         [self checkFileUpdatesIfNeeded];
 }
 

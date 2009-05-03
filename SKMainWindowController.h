@@ -96,33 +96,24 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     IBOutlet NSView                 *currentLeftSideView;
     IBOutlet NSView                 *currentRightSideView;
-    SKLeftSidePaneState             leftSidePaneState;
-    SKRightSidePaneState            rightSidePaneState;
-    SKLeftSidePaneState             savedLeftSidePaneState;
     
     SKStatusBar                     *statusBar;
     
     IBOutlet SKTocOutlineView       *outlineView;
     IBOutlet NSView                 *tocView;
     SKPDFOutline                    *pdfOutline;
-    BOOL                            updatingOutlineSelection;
     
     IBOutlet NSObjectController     *ownerController;
     IBOutlet NSArrayController      *thumbnailArrayController;
     IBOutlet SKThumbnailTableView   *thumbnailTableView;
     IBOutlet NSView                 *thumbnailView;
     NSMutableArray                  *thumbnails;
-    BOOL                            updatingThumbnailSelection;
     CGFloat                         roundedThumbnailSize;
-    BOOL                            isAnimating;
     
     IBOutlet NSArrayController      *findArrayController;
     IBOutlet NSTableView            *findTableView;
     IBOutlet NSView                 *findView;
     NSMutableArray                  *searchResults;
-    BOOL                            findPanelFind;
-    BOOL                            caseInsensitiveSearch;
-    BOOL                            wholeWordSearch;
     CFMutableSetRef                 temporaryAnnotations;
     NSTimer                         *temporaryAnnotationTimer;
     NSTimer                         *highlightTimer;
@@ -132,15 +123,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView                 *groupedFindView;
     NSMutableArray                  *groupedSearchResults;
     IBOutlet NSSegmentedControl     *findButton;
-    SKFindPaneState                 findPaneState;
     
     IBOutlet NSArrayController      *noteArrayController;
     IBOutlet SKNoteOutlineView      *noteOutlineView;
     IBOutlet NSView                 *noteView;
     NSMutableArray                  *notes;
     CFMutableDictionaryRef          rowHeights;
-    BOOL                            updatingNoteSelection;
-    BOOL                            caseInsensitiveNoteSearch;
     
     IBOutlet NSArrayController      *snapshotArrayController;
     IBOutlet SKThumbnailTableView   *snapshotTableView;
@@ -201,12 +189,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     SKProgressController            *progressController;
     
     NSButton                        *colorAccessoryView;
-    BOOL                            updatingColor;
-    BOOL                            updatingFont;
-    BOOL                            updatingFontAttributes;
-    BOOL                            updatingLine;
-    
-    BOOL                            settingUpWindow;
     
     NSMutableArray                  *pageLabels;
     
@@ -220,7 +202,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     NSTimer                         *activityTimer;
     
-    BOOL                            isPresentation;
     NSMutableDictionary             *savedNormalSetup;
     
     CGFloat                         lastLeftSidePaneWidth;
@@ -232,9 +213,30 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     NSDrawer                        *leftSideDrawer;
     NSDrawer                        *rightSideDrawer;
-    BOOL                            usesDrawers;
     
     NSMutableDictionary             *undoGroupOldPropertiesPerNote;
+    
+    struct _mwcFlags {
+        unsigned int leftSidePaneState : 1;
+        unsigned int rightSidePaneState : 1;
+        unsigned int savedLeftSidePaneState : 1;
+        unsigned int findPaneState : 1;
+        unsigned int updatingOutlineSelection : 1;
+        unsigned int updatingThumbnailSelection : 1;
+        unsigned int isAnimating : 1;
+        unsigned int findPanelFind : 1;
+        unsigned int caseInsensitiveSearch : 1;
+        unsigned int wholeWordSearch : 1;
+        unsigned int updatingNoteSelection : 1;
+        unsigned int caseInsensitiveNoteSearch : 1;
+        unsigned int updatingColor : 1;
+        unsigned int updatingFont : 1;
+        unsigned int updatingFontAttributes : 1;
+        unsigned int updatingLine : 1;
+        unsigned int settingUpWindow : 1;
+        unsigned int isPresentation : 1;
+        unsigned int usesDrawers : 1;
+    } mwcFlags;
 }
 
 - (IBAction)enterFullScreen:(id)sender;

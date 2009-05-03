@@ -61,11 +61,14 @@ typedef NSInteger SKLineWellDisplayStyle;
     NSArray *dashPattern;
     PDFLineStyle startLineStyle;
     PDFLineStyle endLineStyle;
-    SKLineWellDisplayStyle displayStyle;
-    BOOL active;
-    BOOL canActivate;
-    BOOL isHighlighted;
-    BOOL existsActiveLineWell;
+    
+    struct _lwFlags {
+        unsigned int displayStyle : 2;
+        unsigned int active : 1;
+        unsigned int canActivate : 1;
+        unsigned int highlighted : 1;
+        unsigned int existsActiveLineWell : 1;
+    } lwFlags;
     
     id target;
     SEL action;
