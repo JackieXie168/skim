@@ -161,7 +161,9 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     DEFINE_DOCUMENT_TYPE(NotesRTFD);
     DEFINE_DOCUMENT_TYPE(NotesFDF);
     DEFINE_DOCUMENT_TYPE(PostScript);
+    DEFINE_DOCUMENT_TYPE(BarePostScript);
     DEFINE_DOCUMENT_TYPE(DVI);
+    DEFINE_DOCUMENT_TYPE(BareDVI);
 }
 
 - (id)init {
