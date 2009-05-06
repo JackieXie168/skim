@@ -71,6 +71,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     
     // variables to be saved:
     NSData *pdfData;
+    NSData *psOrDviData;
     
     // temporary variables:
     PDFDocument *pdfDocument;

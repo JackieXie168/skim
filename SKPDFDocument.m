@@ -94,6 +94,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 @interface SKPDFDocument (SKPrivate)
 
 - (void)setPDFData:(NSData *)data;
+- (void)setPSOrDVIData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
 - (void)setOpenMetaTags:(NSArray *)array;
@@ -127,6 +128,7 @@ static char SKPDFDocumentDefaultsObservationContext;
     [presentationNotesDocument release];
     [watchedFile release];
     [pdfData release];
+    [psOrDviData release];
     [pdfDocument release];
     [noteDicts release];
     [openMetaTags release];
@@ -243,6 +245,14 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
+    if (SKIsPostScriptDocumentType([self fileType]) == NO) {
+        [writableTypes removeObject:SKPostScriptDocumentType];
+        [writableTypes removeObject:SKBarePostScriptDocumentType];
+    }
+    if (SKIsDVIDocumentType([self fileType]) == NO) {
+        [writableTypes removeObject:SKDVIDocumentType];
+        [writableTypes removeObject:SKBareDVIDocumentType];
+    }
     if (saveOperation == NSSaveToOperation) {
         [[NSDocumentController sharedDocumentController] resetCustomExportTemplateFiles];
         [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFiles]];
@@ -310,7 +320,7 @@ static char SKPDFDocumentDefaultsObservationContext;
     NSError *error = nil;
     
     // we check for notes and may save a .skim as well:
-    if (SKIsPDFDocumentType(typeName)) {
+    if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         
@@ -433,11 +443,10 @@ static char SKPDFDocumentDefaultsObservationContext;
         // this must be checked before PDF, as we check for comformance to the UTI
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
-    } else if (SKIsBarePDFDocumentType(typeName)) {
-        // this must be checked before PDF, as we check for comformance to the UTI
+    } else if (SKIsPDFDocumentType(typeName) || SKIsBarePDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if (SKIsPDFDocumentType(typeName)) {
-        didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
+    } else if (SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsBarePostScriptDocumentType(typeName) || SKIsBareDVIDocumentType(typeName)) {
+        didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
@@ -555,7 +564,7 @@ static char SKPDFDocumentDefaultsObservationContext;
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
@@ -584,6 +593,13 @@ static char SKPDFDocumentDefaultsObservationContext;
     if (pdfData != data) {
         [pdfData release];
         pdfData = [data retain];
+    }
+}
+
+- (void)setPSOrDVIData:(NSData *)data {
+    if (psOrDviData != data) {
+        [psOrDviData release];
+        psOrDviData = [data retain];
     }
 }
 
@@ -652,19 +668,32 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
+    NSData *fileData = nil;
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
     [self setPDFData:nil];
+    [self setPSOrDVIData:nil];
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
     [self setOpenMetaTags:nil];
     [self setOpenMetaRating:0.0];
     
-    if (SKIsPDFDocumentType(docType)) {
-        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
-            (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
+    if (SKIsPDFDocumentType(docType) || SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType)) {
+        if (fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
+            if (SKIsPDFDocumentType(docType)) {
+                if (data = [fileData retain])
+                    pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
+            } else if (SKIsPostScriptDocumentType(docType)) {
+                if (data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData] retain])
+                    pdfDoc = [[PDFDocument alloc] initWithData:data];
+            } else if (SKIsDVIDocumentType(docType)) {
+                if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
+                    pdfDoc = [[PDFDocument alloc] initWithData:data];
+            }
+        }
+        if (pdfDoc) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
             if ([array count]) {
                 [self setNoteDicts:array];
@@ -677,6 +706,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                                                        otherButton:nil
                                          informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
                     if ([alert runModal] == NSAlertDefaultReturn) {
+                        [fileData release];
+                        fileData = nil;
                         [data release];
                         data = nil;
                         [pdfDoc release];
@@ -731,16 +762,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             }
         }
-    } else if (SKIsPostScriptDocumentType(docType)) {
-        if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            if (data = [[SKConversionProgressController PDFDataWithPostScriptData:data] retain])
-                pdfDoc = [[PDFDocument alloc] initWithData:data];
-        }
-    } else if (SKIsDVIDocumentType(docType)) {
-        if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
-            if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
-                pdfDoc = [[PDFDocument alloc] initWithData:data];
-        }
     }
     
     if (data) {
@@ -748,6 +769,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             didRead = YES;
             [self setPDFData:data];
             [self setPDFDoc:pdfDoc];
+            if (SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType))
+                [self setPSOrDVIData:fileData];
             [pdfDoc release];
             docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
@@ -779,6 +802,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [self setPDFData:nil];
         }
         [data release];
+        [fileData release];
     }
     
     if (didRead == NO && outError != NULL)
@@ -996,6 +1020,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)convertNotes:(id)sender {
+    if (SKIsPDFDocumentType([self fileType]) == NO || SKIsPDFBundleDocumentType([self fileType]) == NO) {
+        NSBeep();
+        return;
+    }
     NSString *message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog");
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
         message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. This will loose the Table of Contents. Do you want to proceed?", @"Informative text in alert dialog");
@@ -1221,7 +1249,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else if ([anItem action] == @selector(printDocument:)) {
         return [[self pdfDocument] allowsPrinting];
     } else if ([anItem action] == @selector(convertNotes:)) {
-        return [[self pdfDocument] isLocked] == NO;
+        return SKIsPDFDocumentType([self fileType]) && [[self pdfDocument] isLocked] == NO;
     } else if ([anItem action] == @selector(saveArchive:) || [anItem action] == @selector(saveDiskImage:) || [anItem action] == @selector(emailArchive:) || [anItem action] == @selector(emailDiskImage:)) {
         NSString *path = [[self fileURL] path];
         return path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO;
@@ -2158,7 +2186,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)handleConvertNotesScriptCommand:(NSScriptCommand *)command {
-    [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+    if (SKIsPDFDocumentType([self fileType]) || SKIsPDFBundleDocumentType([self fileType]))
+        [self convertNotesSheetDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
 }
 
 @end

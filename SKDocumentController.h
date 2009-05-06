@@ -50,7 +50,9 @@ extern BOOL SKIsNotesRTFDocumentType(NSString *docType);
 extern BOOL SKIsNotesRTFDDocumentType(NSString *docType);
 extern BOOL SKIsNotesFDFDocumentType(NSString *docType);
 extern BOOL SKIsPostScriptDocumentType(NSString *docType);
+extern BOOL SKIsBarePostScriptDocumentType(NSString *docType);
 extern BOOL SKIsDVIDocumentType(NSString *docType);
+extern BOOL SKIsBareDVIDocumentType(NSString *docType);
 
 extern NSString *SKNormalizedDocumentType(NSString *docType);
 
@@ -64,7 +66,9 @@ extern NSString *SKNotesRTFDocumentType;
 extern NSString *SKNotesRTFDDocumentType;
 extern NSString *SKNotesFDFDocumentType;
 extern NSString *SKPostScriptDocumentType;
+extern NSString *SKBarePostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
+extern NSString *SKBareDVIDocumentType;
 
 extern NSString *SKDocumentSetupAliasKey;
 extern NSString *SKDocumentSetupFileNameKey;
