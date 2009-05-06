@@ -63,7 +63,9 @@
 #define SKNotesRTFDDocumentTypeName @"Notes as RTFD"
 #define SKNotesFDFDocumentTypeName @"Notes as FDF"
 #define SKPostScriptDocumentTypeName @"PostScript document"
+#define SKBarePostScriptDocumentTypeName @"PostScript Without Notes"
 #define SKDVIDocumentTypeName @"DVI document"
+#define SKBareDVIDocumentTypeName @"DVI Without Notes"
 
 #define SKPDFDocumentTypeUTI @"com.adobe.pdf"
 #define SKPDFBundleDocumentTypeUTI @"net.sourceforge.skim-app.pdfd"
@@ -76,8 +78,10 @@
 // I don't know the UTI for fdf, is there one?
 #define SKNotesFDFDocumentTypeUTI @"com.adobe.fdf"
 #define SKPostScriptDocumentTypeUTI @"com.adobe.postscript"
+#define SKBarePostScriptDocumentTypeUTI @"net.sourceforge.skim-app.bare.postscript"
 // I don't know the UTI for dvi, is there one?
 #define SKDVIDocumentTypeUTI @"net.sourceforge.skim-app.dvi"
+#define SKBareDVIDocumentTypeUTI @"net.sourceforge.skim-app.bare.dvi"
 
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = nil;
@@ -89,7 +93,9 @@ NSString *SKNotesRTFDocumentType = nil;
 NSString *SKNotesRTFDDocumentType = nil;
 NSString *SKNotesFDFDocumentType = nil;
 NSString *SKPostScriptDocumentType = nil;
+NSString *SKBarePostScriptDocumentType = nil;
 NSString *SKDVIDocumentType = nil;
+NSString *SKBareDVIDocumentType = nil;
 
 static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NSString *docUTI) {
     return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:docUTI]) || [docType isEqualToString:docTypeName];
@@ -107,7 +113,9 @@ DEFINE_IS_DOCUMENT_TYPE(NotesRTF)
 DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
 DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
 DEFINE_IS_DOCUMENT_TYPE(PostScript)
+DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
 DEFINE_IS_DOCUMENT_TYPE(DVI)
+DEFINE_IS_DOCUMENT_TYPE(BareDVI)
 
 #define RETURN_IF_IS_DOCUMENT_TYPE(name) if (SKIs##name##DocumentType(docType)) return SK##name##DocumentType
 
@@ -122,7 +130,9 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
     RETURN_IF_IS_DOCUMENT_TYPE(NotesRTFD);
     RETURN_IF_IS_DOCUMENT_TYPE(NotesFDF);
     RETURN_IF_IS_DOCUMENT_TYPE(PostScript);
+    RETURN_IF_IS_DOCUMENT_TYPE(BarePostScript);
     RETURN_IF_IS_DOCUMENT_TYPE(DVI);
+    RETURN_IF_IS_DOCUMENT_TYPE(BareDVI);
     return docType;
 }
 
@@ -172,6 +182,16 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
         // fix of bug when reading a PDF file on 10.4
         // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
         type = SKPDFDocumentType;
+    }
+    else if (SKIsBarePostScriptDocumentType(type)) {
+        // fix of bug when reading a PostScript file on 10.4
+        // this is interpreted as SKBarePostScriptDocumentType, even though we don't declare that as a readable type
+        type = SKPostScriptDocumentType;
+    }
+    else if (SKIsBareDVIDocumentType(type)) {
+        // fix of bug when reading a DVI file on 10.4
+        // this is interpreted as SKBareDVIDocumentType, even though we don't declare that as a readable type
+        type = SKDVIDocumentType;
     }
 	return type;
 }

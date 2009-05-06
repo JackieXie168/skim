@@ -167,7 +167,7 @@
 			<key>CFBundleTypeName</key>
 			<string>PostScript document</string>
 			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.adobe.postscript</string>
@@ -178,6 +178,8 @@
 			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
+				<string>PostScript document</string>
+				<string>PostScript Without Notes</string>
 				<string>NSPDFPboardType</string>
 				<string>PDF Bundle</string>
 				<string>PDF With Embedded Notes</string>
@@ -190,6 +192,8 @@
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
+				<string>com.adobe.postscript</string>
+				<string>net.sourceforge.skim-app.bare.postscript</string>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
 				<string>net.sourceforge.skim-app.embedded.pdf</string>
@@ -219,7 +223,7 @@
 				<string>*DVI</string>
 			</array>
 			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>net.sourceforge.skim-app.dvi</string>
@@ -230,6 +234,8 @@
 			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
+				<string>DVI document</string>
+				<string>DVI Without Notes</string>
 				<string>NSPDFPboardType</string>
 				<string>PDF Bundle</string>
 				<string>PDF With Embedded Notes</string>
@@ -242,6 +248,8 @@
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
+				<string>net.sourceforge.skim-app.dvi</string>
+				<string>net.sourceforge.skim-app.bare.dvi</string>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
 				<string>net.sourceforge.skim-app.embedded.pdf</string>
@@ -567,7 +575,7 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>DVI</string>
+			<string>DVI document</string>
 			<key>UTTypeIdentifier</key>
 			<string>net.sourceforge.skim-app.dvi</string>
 			<key>UTTypeTagSpecification</key>
@@ -587,7 +595,7 @@
 			<key>UTTypeDescription</key>
 			<string>PDF With Embedded Notes</string>
 			<key>UTTypeIconFile</key>
-			<string>PDFDDocument</string>
+			<string>PDFDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>net.sourceforge.skim-app.embedded.pdf</string>
 			<key>UTTypeTagSpecification</key>
@@ -607,7 +615,7 @@
 			<key>UTTypeDescription</key>
 			<string>PDF Without Notes</string>
 			<key>UTTypeIconFile</key>
-			<string>PDFDDocument</string>
+			<string>PDFDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>net.sourceforge.skim-app.bare.pdf</string>
 			<key>UTTypeTagSpecification</key>
@@ -615,6 +623,46 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>pdf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PostScript Without Notes</string>
+			<key>UTTypeIconFile</key>
+			<string>PSDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.bare.postscript</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ps</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DVI Without Notes</string>
+			<key>UTTypeIconFile</key>
+			<string>DVIDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.bare.dvi</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>dvi</string>
 				</array>
 			</dict>
 		</dict>
