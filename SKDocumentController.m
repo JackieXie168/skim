@@ -79,8 +79,8 @@
 #define SKNotesFDFDocumentTypeUTI @"com.adobe.fdf"
 #define SKPostScriptDocumentTypeUTI @"com.adobe.postscript"
 #define SKBarePostScriptDocumentTypeUTI @"net.sourceforge.skim-app.bare.postscript"
-// I don't know the UTI for dvi, is there one?
-#define SKDVIDocumentTypeUTI @"net.sourceforge.skim-app.dvi"
+// TUG now declares the following UTI, e.g. in TeX Live Utility
+#define SKDVIDocumentTypeUTI @"org.tug.tex.dvi"
 #define SKBareDVIDocumentTypeUTI @"net.sourceforge.skim-app.bare.dvi"
 
 NSString *SKPDFDocumentType = nil;
