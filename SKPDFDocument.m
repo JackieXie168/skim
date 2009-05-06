@@ -445,8 +445,12 @@ static char SKPDFDocumentDefaultsObservationContext;
         didWrite = [[self pdfDocument] writeToURL:absoluteURL];
     } else if (SKIsPDFDocumentType(typeName) || SKIsBarePDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
-    } else if (SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsBarePostScriptDocumentType(typeName) || SKIsBareDVIDocumentType(typeName)) {
-        didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+    } else if (SKIsPostScriptDocumentType(typeName) || SKIsBarePostScriptDocumentType(typeName)) {
+        if (SKIsPostScriptDocumentType([self fileType]))
+            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
+    } else if (SKIsDVIDocumentType(typeName) || SKIsBareDVIDocumentType(typeName)) {
+        if (SKIsDVIDocumentType([self fileType]))
+            didWrite = [psOrDviData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
         if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
