@@ -1,0 +1,162 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;\red255\green0\blue0;}
+\margl1440\margr1440\vieww9000\viewh9000\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 										
+\f1\b\fs28 \cf2 b\cf0 Distributed.com, Inc.
+\f0\b0\fs24 \
+
+\fs20 										2549 W. Golf Rd. #348\
+										Hoffman Estates, IL 60194\
+										Phone: (847) 372-3955\
+										Fax: (847) 589-3738\
+										Web: bdistributed.com\
+										Email: info@bdistributed.com\
+
+\fs24 \
+Below is a quick reference for the BDAlias class.\
+\
+
+\f1\b Instance Methods
+\f0\b0 \
+initWithAliasHandle:\
+initWithData:\
+initWithPath:\
+initWithPath:relativeToPath:\
+initWithFSRef:\
+initWithFSRef:relativeToFSRef:\
+dealloc\
+alias\
+setAlias:\
+aliasData\
+setAliasData:\
+fullPath\
+fullPathRelativeToPath:\
+\
+
+\f1\b Class Methods
+\f0\b0 \
+aliasWithAliasHandle:\
+aliasWithData:\
+aliasWithPath:\
+aliasWithPath:relativeToPath:\
+aliasWithFSRef:\
+aliasWithFSRef:relativeToFSRef:\
+\
+
+\f1\b - (id)initWithAliasHandle:(AliasHandle)alias
+\f0\b0 \
+Initializes an alias object with the contents of a Carbon alias handle.  This is the designated initializer.\
+\
+
+\f1\b - (id)initWithData:(NSData *)data
+\f0\b0 \
+Initializes an alias object with the contents of a data object.\
+\
+
+\f1\b - (id)initWithPath:(NSString *)fullPath
+\f0\b0 \
+Initializes an alias object to point to the object at the given path in the filesystem.\
+\
+
+\f1\b - (id)initWithPath:(NSString *)path relativeToPath:(NSString *)relPath
+\f0\b0 \
+Initializes an alias object to point to the object at the given path in the filesystem, relative to the given relative path.\
+\
+
+\f1\b - (id)initWithFSRef:(FSRef *)ref
+\f0\b0 \
+Initializes an alias object to point to the object represented by the given Carbon FSRef.\
+\
+
+\f1\b - (id)initWithFSRef:(FSRef *)ref relativeToFSRef:(FSRef *)relRef
+\f0\b0 \
+Initializes an alias object to point to the object represented by the given Carbon FSRef, relative to the given relative Carbon FSRef.\
+\
+
+\f1\b - (void)dealloc
+\f0\b0 \
+Releases resources held by an instance.\
+\
+
+\f1\b - (AliasHandle)alias
+\f0\b0 \
+Returns the internal Carbon alias handle used by an instance.\
+\
+
+\f1\b - (void)setAlias:(AliasHandle)newAlias
+\f0\b0 \
+Sets the internal Carbon alias handle used by an instance, releasing the previous alias handle (if any).\
+\
+
+\f1\b - (NSData *)aliasData
+\f0\b0 \
+Returns an autoreleased data object containing a copy of the alias data in this object.\
+\
+
+\f1\b - (void)setAliasData:(NSData *)newAliasData
+\f0\b0 \
+Sets the alias to use the alias record stored in the given data object.  Discards any previous data.\
+\
+
+\f1\b - (NSString *)fullPath
+\f0\b0 \
+Returns an autoreleased string containing the full path of the object pointed to by an alias.\
+\
+
+\f1\b - (NSString *)fullPathRelativeToPath:(NSString *)relPath
+\f0\b0 \
+Returns an autoreleased string containing the full path of the object pointed to by an alias, resolved relative to the other given full path.\
+\
+
+\f1\b + (BDAlias *)aliasWithAliasHandle:(AliasHandle)alias\
+
+\f0\b0 Creates an autoreleased alias object with the contents of the given Carbon alias handle.\
+\
+
+\f1\b + (BDAlias *)aliasWithData:(NSData *)data\
+
+\f0\b0 Creates an autoreleased alias object with the contents of the given NSData object.\
+\
+
+\f1\b + (BDAlias *)aliasWithPath:(NSString *)fullPath\
+
+\f0\b0 Creates an autoreleased alias object pointing to the object at the given full path.\
+\
+
+\f1\b + (BDAlias *)aliasWithPath:(NSString *)path relativeToPath:(NSString *)relPath\
+
+\f0\b0 Creates an autoreleased alias object pointing to the object at the given path, relative to the given relative path.\
+\
+
+\f1\b + (BDAlias *)aliasWithFSRef:(FSRef *)ref\
+
+\f0\b0 Creates an autoreleased alias object pointing to the object at the given Carbon FSRef.\
+\
+
+\f1\b + (BDAlias *)aliasWithFSRef:(FSREf *)ref relativeToFSRef:(FSRef *)relRef\
+
+\f0\b0 Creates an autoreleased alias object pointing to the object at the given Carbon FSRef, relative to the given relative Carbon FSRef.\
+\
+
+\f1\b License Agreement\
+
+\f0\b0 By using or downloading this software, you agree to be bound by the following license.  If you do not agree to be bound by the license, please destroy all copies of this software.\
+\
+Copyright \'a9 2001-2002, bDistributed.com, Inc.\
+All rights reserved.\
+\
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li580\fi-580\ql\qnatural
+\cf0 *	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\
+\
+*	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\
+\
+*	Neither the name of bDistributed.com, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. \
+}
