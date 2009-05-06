@@ -226,7 +226,7 @@
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>net.sourceforge.skim-app.dvi</string>
+				<string>org.tug.tex.dvi</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
@@ -248,7 +248,7 @@
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>net.sourceforge.skim-app.dvi</string>
+				<string>org.tug.tex.dvi</string>
 				<string>net.sourceforge.skim-app.bare.dvi</string>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
@@ -577,7 +577,7 @@
 			<key>UTTypeDescription</key>
 			<string>DVI document</string>
 			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.dvi</string>
+			<string>org.tug.tex.dvi</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
