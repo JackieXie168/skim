@@ -680,7 +680,32 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [self setOpenMetaTags:nil];
     [self setOpenMetaRating:0.0];
     
-    if (SKIsPDFDocumentType(docType) || SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType)) {
+    if (SKIsPDFBundleDocumentType(docType)) {
+        NSString *path = [absoluteURL path];
+        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
+        if (pdfFile) {
+            NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
+            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
+                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
+                NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
+                if (array == nil) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                    if ([alert runModal] == NSAlertDefaultReturn) {
+                        [data release];
+                        data = nil;
+                        [pdfDoc release];
+                        pdfDoc = nil;
+                    }
+                } else if ([array count]) {
+                    [self setNoteDicts:array];
+                }
+            }
+        }
+    } else  {
         if (fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             if (SKIsPDFDocumentType(docType)) {
                 if (data = [fileData retain])
@@ -737,31 +762,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 }
             }
         }
-    } else if (SKIsPDFBundleDocumentType(docType)) {
-        NSString *path = [absoluteURL path];
-        NSString *pdfFile = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:path error:&error];
-        if (pdfFile) {
-            NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
-            if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
-                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
-                NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
-                if (array == nil) {
-                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
-                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
-                                                       otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [path stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
-                    if ([alert runModal] == NSAlertDefaultReturn) {
-                        [data release];
-                        data = nil;
-                        [pdfDoc release];
-                        pdfDoc = nil;
-                    }
-                } else if ([array count]) {
-                    [self setNoteDicts:array];
-                }
-            }
-        }
     }
     
     if (data) {
@@ -802,8 +802,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [self setPDFData:nil];
         }
         [data release];
-        [fileData release];
     }
+    [fileData release];
     
     if (didRead == NO && outError != NULL)
         *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
