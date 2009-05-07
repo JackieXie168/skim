@@ -210,6 +210,22 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
 }
 
+- (NSString *)readableTypeFromFileExtension:(NSString *)extension {
+    NSEnumerator *classEnum = [[self documentClassNames] objectEnumerator];
+    NSString *className;
+    while (className = [classEnum nextObject]) {
+        NSEnumerator *typeEnum = [[NSClassFromString(className) readableTypes] objectEnumerator];
+        NSString *type;
+        while (type = [typeEnum nextObject]) {
+            if ([[NSWorkspace sharedWorkspace] filenameExtension:extension isValidForType:type]) {
+                return type;
+                break;
+            }
+        }
+    }
+    return nil;
+}
+
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
     NSUInteger headerLength = 5;
     
@@ -240,14 +256,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
                 type = SKPostScriptDocumentType;
             } else if ([extension length]) {
                 // On 10.5 when another app declares a different UTI for one of our types, we may get their UTI, rdar://problem/6864895
-                if ([extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)
-                    type = SKPDFDocumentType;
-                else if ([extension caseInsensitiveCompare:@"ps"] == NSOrderedSame)
-                    type = SKPostScriptDocumentType;
-                else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame)
-                    type = SKDVIDocumentType;
-                else if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame)
-                    type = SKNotesDocumentType;
+                type = [self readableTypeFromFileExtension:extension] ?: type;
             }
         }
         if (type == nil && outError)
