@@ -549,7 +549,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
 	if (activeAnnotation != nil) {
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
         if (changed && [self isEditing])
-            [self endAnnotationEdit:nil];
+            [self commitEditing];
 	}
     
 	// Assign.
@@ -2000,7 +2000,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     if (undoable)
         [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
-        [self endAnnotationEdit:self];
+        [self commitEditing];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
@@ -2038,7 +2038,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
         return;
     
     if ([self isEditing])
-        [self endAnnotationEdit:self];
+        [self commitEditing];
     if (activeAnnotation != annotation)
         [self setActiveAnnotation:annotation];
     [self editActiveAnnotation:sender];
@@ -2048,7 +2048,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     if (nil == activeAnnotation || hideNotes)
         return;
     
-    [self endAnnotationEdit:self];
+    [self commitEditing];
     
     NSString *type = [activeAnnotation type];
     
@@ -2082,6 +2082,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
+        [[[[self window] windowController] document] objectDidBeginEditing:self];
+        
     } else if ([activeAnnotation isEditable]) {
         
         [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2093,10 +2095,25 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     
 }
 
-- (void)endAnnotationEdit:(id)sender {
+- (void)discardEditing {
     if (editField) {
         if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
             [[self window] endEditingFor:nil];
+        [editField removeFromSuperview];
+        [editField release];
+        editField = nil;
+        
+        if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
+            [self setNeedsDisplayForAnnotation:activeAnnotation];
+        
+        [[[[self window] windowController] document] objectDidEndEditing:self];
+    }
+}
+
+- (BOOL)commitEditing {
+    if (editField) {
+        if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
+            return NO;
         if ([[editField stringValue] isEqualToString:[activeAnnotation string]] == NO)
             [activeAnnotation setString:[editField stringValue]];
         [editField removeFromSuperview];
@@ -2105,6 +2122,23 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
         
         if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
             [self setNeedsDisplayForAnnotation:activeAnnotation];
+        
+        [[[[self window] windowController] document] objectDidEndEditing:self];
+    }
+    return YES;
+}
+
+- (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
+    BOOL didCommit = [self commitEditing];
+    if (delegate && didCommitSelector) {
+        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
+        [invocation setTarget:delegate];
+        [invocation setSelector:didCommitSelector];
+        [invocation setArgument:&self atIndex:2];
+        [invocation setArgument:&didCommit atIndex:3];
+        [invocation setArgument:&contextInfo atIndex:4];
+        [invocation invoke];
     }
 }
 
@@ -2112,7 +2146,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     BOOL rv = NO;
     if ([control isEqual:editField]) {
         if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
-            [self endAnnotationEdit:self];
+            [self commitEditing];
             [[self window] makeFirstResponder:self];
             rv = YES;
         }
@@ -2131,7 +2165,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     
     if (activeAnnotation) {
         if ([self isEditing])
-            [self endAnnotationEdit:self];
+            [self commitEditing];
         pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
     } else {
@@ -2177,7 +2211,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     
     if (activeAnnotation) {
         if ([self isEditing])
-            [self endAnnotationEdit:self];
+            [self commitEditing];
         pageIndex = [[activeAnnotation page] pageIndex];
         annotations = [[activeAnnotation page] annotations];
         i = [annotations indexOfObject:activeAnnotation];
