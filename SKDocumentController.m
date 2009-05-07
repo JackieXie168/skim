@@ -231,12 +231,23 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
+            NSString *extension = [fileName pathExtension];
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             NSData *leadingData = [fh readDataOfLength:headerLength];
             if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
                 type = SKPDFDocumentType;
             } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
                 type = SKPostScriptDocumentType;
+            } else if ([extension length]) {
+                // On 10.5 when another app declares a different UTI for one of our types, we may get their UTI, rdar://problem/6864895
+                if ([extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)
+                    type = SKPDFDocumentType;
+                else if ([extension caseInsensitiveCompare:@"ps"] == NSOrderedSame)
+                    type = SKPostScriptDocumentType;
+                else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame)
+                    type = SKDVIDocumentType;
+                else if ([extension caseInsensitiveCompare:@"skim"] == NSOrderedSame)
+                    type = SKNotesDocumentType;
             }
         }
         if (type == nil && outError)
