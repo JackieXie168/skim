@@ -165,7 +165,7 @@
 				<string>application/postscript</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>PostScript document</string>
+			<string>NSPostScriptPboardType</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
@@ -178,7 +178,7 @@
 			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
 			<array>
-				<string>PostScript document</string>
+				<string>NSPostScriptPboardType</string>
 				<string>PostScript Without Notes</string>
 				<string>NSPDFPboardType</string>
 				<string>PDF Bundle</string>
