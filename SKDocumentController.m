@@ -53,35 +53,24 @@
 
 
 // See CFBundleTypeName in Info.plist
-#define SKPDFDocumentTypeName NSPDFPboardType
-#define SKPDFBundleDocumentTypeName @"PDF Bundle"
-#define SKEmbeddedPDFDocumentTypeName @"PDF With Embedded Notes"
-#define SKBarePDFDocumentTypeName @"PDF Without Notes"
-#define SKNotesDocumentTypeName @"Skim Notes"
-#define SKNotesTextDocumentTypeName @"Notes as Text"
-#define SKNotesRTFDocumentTypeName @"Notes as RTF"
-#define SKNotesRTFDDocumentTypeName @"Notes as RTFD"
-#define SKNotesFDFDocumentTypeName @"Notes as FDF"
-#define SKPostScriptDocumentTypeName NSPostScriptPboardType
+#define SKPDFDocumentTypeName            NSPDFPboardType
+#define SKPDFBundleDocumentTypeName      @"PDF Bundle"
+#define SKEmbeddedPDFDocumentTypeName    @"PDF With Embedded Notes"
+#define SKBarePDFDocumentTypeName        @"PDF Without Notes"
+#define SKNotesDocumentTypeName          @"Skim Notes"
+#define SKNotesTextDocumentTypeName      @"Notes as Text"
+#define SKNotesRTFDocumentTypeName       @"Notes as RTF"
+#define SKNotesRTFDDocumentTypeName      @"Notes as RTFD"
+#define SKNotesFDFDocumentTypeName       @"Notes as FDF"
+#define SKPostScriptDocumentTypeName     NSPostScriptPboardType
 #define SKBarePostScriptDocumentTypeName @"PostScript Without Notes"
-#define SKDVIDocumentTypeName @"DVI document"
-#define SKBareDVIDocumentTypeName @"DVI Without Notes"
+#define SKDVIDocumentTypeName            @"DVI document"
+#define SKBareDVIDocumentTypeName        @"DVI Without Notes"
 
-#define SKPDFDocumentTypeUTI @"com.adobe.pdf"
-#define SKPDFBundleDocumentTypeUTI @"net.sourceforge.skim-app.pdfd"
-#define SKEmbeddedPDFDocumentTypeUTI @"net.sourceforge.skim-app.embedded.pdf"
-#define SKBarePDFDocumentTypeUTI @"net.sourceforge.skim-app.bare.pdf"
-#define SKNotesDocumentTypeUTI @"net.sourceforge.skim-app.skimnotes"
-#define SKNotesTextDocumentTypeUTI @"public.plain-text"
-#define SKNotesRTFDocumentTypeUTI @"public.rtf"
-#define SKNotesRTFDDocumentTypeUTI @"com.apple.rtfd"
-// I don't know the UTI for fdf, is there one?
-#define SKNotesFDFDocumentTypeUTI @"com.adobe.fdf"
-#define SKPostScriptDocumentTypeUTI @"com.adobe.postscript"
-#define SKBarePostScriptDocumentTypeUTI @"net.sourceforge.skim-app.bare.postscript"
-// I don't know the UTI for dvi, is there one?
-#define SKDVIDocumentTypeUTI @"net.sourceforge.skim-app.dvi"
-#define SKBareDVIDocumentTypeUTI @"net.sourceforge.skim-app.bare.dvi"
+#define SKPDFDocumentTypeUTI             @"com.adobe.pdf"
+#define SKPDFBundleDocumentTypeUTI       @"net.sourceforge.skim-app.pdfd"
+#define SKNotesDocumentTypeUTI           @"net.sourceforge.skim-app.skimnotes"
+#define SKPostScriptDocumentTypeUTI      @"com.adobe.postscript"
 
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = nil;
@@ -97,24 +86,21 @@ NSString *SKBarePostScriptDocumentType = nil;
 NSString *SKDVIDocumentType = nil;
 NSString *SKBareDVIDocumentType = nil;
 
-static BOOL SKIsEqualToDocumentType(NSString *docType, NSString *docTypeName, NSString *docUTI) {
-    return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:docUTI]) || [docType isEqualToString:docTypeName];
-}
+#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentTypeName]; }
+#define DEFINE_IS_DOCUMENT_TYPE_UTI(name) BOOL SKIs##name##DocumentType(NSString *docType) { return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:SK##name##DocumentTypeUTI]) || [docType isEqualToString:SK##name##DocumentTypeName]; }
 
-#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return SKIsEqualToDocumentType(docType, SK##name##DocumentTypeName, SK##name##DocumentTypeUTI); }
-
-DEFINE_IS_DOCUMENT_TYPE(PDF)
-DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
+DEFINE_IS_DOCUMENT_TYPE_UTI(PDF)
+DEFINE_IS_DOCUMENT_TYPE_UTI(PDFBundle)
+DEFINE_IS_DOCUMENT_TYPE_UTI(Notes)
+DEFINE_IS_DOCUMENT_TYPE_UTI(PostScript)
+DEFINE_IS_DOCUMENT_TYPE(DVI)
 DEFINE_IS_DOCUMENT_TYPE(EmbeddedPDF)
 DEFINE_IS_DOCUMENT_TYPE(BarePDF)
-DEFINE_IS_DOCUMENT_TYPE(Notes)
 DEFINE_IS_DOCUMENT_TYPE(NotesText)
 DEFINE_IS_DOCUMENT_TYPE(NotesRTF)
 DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
 DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
-DEFINE_IS_DOCUMENT_TYPE(PostScript)
 DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
-DEFINE_IS_DOCUMENT_TYPE(DVI)
 DEFINE_IS_DOCUMENT_TYPE(BareDVI)
 
 #define RETURN_IF_IS_DOCUMENT_TYPE(name) if (SKIs##name##DocumentType(docType)) return SK##name##DocumentType
@@ -149,23 +135,31 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 @implementation SKDocumentController
 
-#define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 ? SK##name##DocumentTypeName : SK##name##DocumentTypeUTI
+#define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = SK##name##DocumentTypeName
+#define DEFINE_DOCUMENT_TYPE_UTI(name) SK##name##DocumentType = SK##name##DocumentTypeUTI
 
 + (void)initialize {
     SKINITIALIZE;
     
-    DEFINE_DOCUMENT_TYPE(PDF);
-    DEFINE_DOCUMENT_TYPE(PDFBundle);
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
+        DEFINE_DOCUMENT_TYPE(PDF);
+        DEFINE_DOCUMENT_TYPE(PDFBundle);
+        DEFINE_DOCUMENT_TYPE(Notes);
+        DEFINE_DOCUMENT_TYPE(PostScript);
+    } else {
+        DEFINE_DOCUMENT_TYPE_UTI(PDF);
+        DEFINE_DOCUMENT_TYPE_UTI(PDFBundle);
+        DEFINE_DOCUMENT_TYPE_UTI(Notes);
+        DEFINE_DOCUMENT_TYPE_UTI(PostScript);
+    }
+    DEFINE_DOCUMENT_TYPE(DVI);
     DEFINE_DOCUMENT_TYPE(EmbeddedPDF);
     DEFINE_DOCUMENT_TYPE(BarePDF);
-    DEFINE_DOCUMENT_TYPE(Notes);
     DEFINE_DOCUMENT_TYPE(NotesText);
     DEFINE_DOCUMENT_TYPE(NotesRTF);
     DEFINE_DOCUMENT_TYPE(NotesRTFD);
     DEFINE_DOCUMENT_TYPE(NotesFDF);
-    DEFINE_DOCUMENT_TYPE(PostScript);
     DEFINE_DOCUMENT_TYPE(BarePostScript);
-    DEFINE_DOCUMENT_TYPE(DVI);
     DEFINE_DOCUMENT_TYPE(BareDVI);
 }
 
