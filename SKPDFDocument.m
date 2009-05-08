@@ -2023,36 +2023,33 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 	NSDictionary *args = [command evaluatedArguments];
     id fileURL = [args objectForKey:@"File"];
     id fileType = [args objectForKey:@"FileType"];
-    // we don't want to expose the values of SKPDFDocumentType and SKPostScriptDocumentType to the user, we advertise these type as "PDF" and "PostScript".
-    if ([fileType isEqualToString:@"PDF"]) {
-        fileType = SKPDFDocumentType;
-        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-        [arguments setObject:fileType forKey:@"FileType"];
-        [command setArguments:arguments];
-        [arguments release];
-    } else if ([fileType isEqualToString:@"PostScript"]) {
-        fileType = SKPostScriptDocumentType;
-        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-        [arguments setObject:fileType forKey:@"FileType"];
-        [command setArguments:arguments];
-        [arguments release];
-    } else if ([fileType isEqualToString:@"DVI"]) {
-        fileType = SKDVIDocumentType;
-        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
-        [arguments setObject:fileType forKey:@"FileType"];
-        [command setArguments:arguments];
-        [arguments release];
+    // we don't want to expose the pboard types or UTIs to the user
+    if (fileType) {
+        NSString *normalizedType = SKNormalizedDocumentType(fileType);
+        if ([fileType isEqualToString:normalizedType] == NO) {
+            fileType = SKPDFDocumentType;
+            NSMutableDictionary *arguments = [[command arguments] mutableCopy];
+            [arguments setObject:fileType forKey:@"FileType"];
+            [command setArguments:arguments];
+            [arguments release];
+        }
     }
     if (fileURL) {
         if ([fileURL isKindOfClass:[NSURL class]] == NO) {
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
             [command setScriptErrorString:@"The file is not a file or alias."];
         } else {
-            NSSaveOperationType saveOperation = fileType ? NSSaveToOperation : NSSaveAsOperation;
-            fileType = fileType ? SKNormalizedDocumentType(fileType) : SKPDFDocumentType;
+            NSSaveOperationType saveOperation = NSSaveToOperation;
+            NSString *extension = [[fileURL path] pathExtension];
+            
+            if (fileType == nil) {
+                fileType = [[NSDocumentController sharedDocumentController] typeFromFileExtension:extension];
+                if (fileType == nil || [[self class] isNativeType:fileType] == NO || [[self writableTypesForSaveOperation:NSSaveAsOperation] containsObject:fileType] == NO)
+                    fileType = [self fileType];
+                saveOperation = NSSaveAsOperation;
+            }
             
             NSString *requiredExtension = [self fileNameExtensionForType:fileType saveOperation:saveOperation];
-            NSString *extension = [[fileURL path] pathExtension];
             
             if (extension == nil && requiredExtension) {
                 extension = requiredExtension;

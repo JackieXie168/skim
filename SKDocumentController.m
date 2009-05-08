@@ -133,6 +133,9 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
     RETURN_IF_IS_DOCUMENT_TYPE(BarePostScript);
     RETURN_IF_IS_DOCUMENT_TYPE(DVI);
     RETURN_IF_IS_DOCUMENT_TYPE(BareDVI);
+    if ([docType isEqualToString:@"PDF"]) return SKPDFDocumentType;
+    if ([docType isEqualToString:@"PostScript"]) return SKPostScriptDocumentType;
+    if ([docType isEqualToString:@"DVI"]) return SKDVIDocumentType;
     return docType;
 }
 
