@@ -62,7 +62,7 @@
 #define SKNotesRTFDocumentTypeName @"Notes as RTF"
 #define SKNotesRTFDDocumentTypeName @"Notes as RTFD"
 #define SKNotesFDFDocumentTypeName @"Notes as FDF"
-#define SKPostScriptDocumentTypeName @"PostScript document"
+#define SKPostScriptDocumentTypeName NSPostScriptPboardType
 #define SKBarePostScriptDocumentTypeName @"PostScript Without Notes"
 #define SKDVIDocumentTypeName @"DVI document"
 #define SKBareDVIDocumentTypeName @"DVI Without Notes"
