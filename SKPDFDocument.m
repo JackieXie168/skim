@@ -2023,9 +2023,21 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 	NSDictionary *args = [command evaluatedArguments];
     id fileURL = [args objectForKey:@"File"];
     id fileType = [args objectForKey:@"FileType"];
-    // we don't want to expose the value of SKPDFDocumentType to the user, we advertise this type as "PDF".
+    // we don't want to expose the values of SKPDFDocumentType and SKPostScriptDocumentType to the user, we advertise these type as "PDF" and "PostScript".
     if ([fileType isEqualToString:@"PDF"]) {
         fileType = SKPDFDocumentType;
+        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
+        [arguments setObject:fileType forKey:@"FileType"];
+        [command setArguments:arguments];
+        [arguments release];
+    } else if ([fileType isEqualToString:@"PostScript"]) {
+        fileType = SKPostScriptDocumentType;
+        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
+        [arguments setObject:fileType forKey:@"FileType"];
+        [command setArguments:arguments];
+        [arguments release];
+    } else if ([fileType isEqualToString:@"DVI"]) {
+        fileType = SKDVIDocumentType;
         NSMutableDictionary *arguments = [[command arguments] mutableCopy];
         [arguments setObject:fileType forKey:@"FileType"];
         [command setArguments:arguments];
