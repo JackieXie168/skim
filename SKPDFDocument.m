@@ -2043,8 +2043,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             NSString *extension = [[fileURL path] pathExtension];
             
             if (fileType == nil) {
-                fileType = [[NSDocumentController sharedDocumentController] typeFromFileExtension:extension];
-                if (fileType == nil || [[self class] isNativeType:fileType] == NO || [[self writableTypesForSaveOperation:NSSaveAsOperation] containsObject:fileType] == NO)
+                if ([extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)
+                    fileType = SKPDFDocumentType;
+                else if ([extension caseInsensitiveCompare:@"ps"] == NSOrderedSame && SKIsPostScriptDocumentType([self fileType]))
+                    fileType = SKPostScriptDocumentType;
+                else if ([extension caseInsensitiveCompare:@"dvi"] == NSOrderedSame && SKIsDVIDocumentType([self fileType]))
+                    fileType = SKDVIDocumentType;
+                else
                     fileType = [self fileType];
                 saveOperation = NSSaveAsOperation;
             }
