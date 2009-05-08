@@ -50,13 +50,13 @@
 			<array>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>net.sourceforge.skim-app.embedded.pdf</string>
-				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
 				<string>net.sourceforge.skim-app.skimnotes</string>
-				<string>public.plain-text</string>
-				<string>public.rtf</string>
-				<string>com.apple.rtfd</string>
-				<string>com.adobe.fdf</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
 			</array>
 		</dict>
 		<dict>
@@ -100,13 +100,13 @@
 			<array>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>net.sourceforge.skim-app.embedded.pdf</string>
-				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
 				<string>net.sourceforge.skim-app.skimnotes</string>
-				<string>public.plain-text</string>
-				<string>public.rtf</string>
-				<string>com.apple.rtfd</string>
-				<string>com.adobe.fdf</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
@@ -143,8 +143,8 @@
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>public.plain-text</string>
-				<string>public.rtf</string>
+				<string>Notes as RTF</string>
+				<string>Notes as Text</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
@@ -193,16 +193,16 @@
 			<key>NSExportableTypes</key>
 			<array>
 				<string>com.adobe.postscript</string>
-				<string>net.sourceforge.skim-app.bare.postscript</string>
+				<string>PostScript Without Notes</string>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>net.sourceforge.skim-app.embedded.pdf</string>
-				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
 				<string>net.sourceforge.skim-app.skimnotes</string>
-				<string>public.plain-text</string>
-				<string>public.rtf</string>
-				<string>com.apple.rtfd</string>
-				<string>com.adobe.fdf</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
 			</array>
 		</dict>
 		<dict>
@@ -224,10 +224,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.dvi</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -249,16 +245,16 @@
 			<key>NSExportableTypes</key>
 			<array>
 				<string>net.sourceforge.skim-app.dvi</string>
-				<string>net.sourceforge.skim-app.bare.dvi</string>
+				<string>DVI Without Notes</string>
 				<string>com.adobe.pdf</string>
 				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>net.sourceforge.skim-app.embedded.pdf</string>
-				<string>net.sourceforge.skim-app.bare.pdf</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
 				<string>net.sourceforge.skim-app.skimnotes</string>
-				<string>public.plain-text</string>
-				<string>public.rtf</string>
-				<string>com.apple.rtfd</string>
-				<string>com.adobe.fdf</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
@@ -282,10 +278,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.embedded.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -312,10 +304,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.bare.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -338,10 +326,6 @@
 			<string>PostScript Without Notes</string>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.bare.postscript</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -368,10 +352,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.bare.dvi</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -392,10 +372,6 @@
 			<string>Notes as Text</string>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.plain-text</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
@@ -418,10 +394,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.rtf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
@@ -444,10 +416,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.apple.rtfd</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>
 			<key>NSPersistentStoreTypeKey</key>
@@ -470,10 +438,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.fdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -599,126 +563,6 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>skim</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
-	<key>UTImportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>FDF</string>
-			<key>UTTypeIdentifier</key>
-			<string>com.adobe.fdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>com.apple.ostype</key>
-				<string>FDF </string>
-				<key>public.filename-extension</key>
-				<array>
-					<string>fdf</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>DVI document</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.dvi</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>dvi</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>PDF With Embedded Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>PDFDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.embedded.pdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>pdf</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>PDF Without Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>PDFDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.bare.pdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>pdf</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>PostScript Without Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>PSDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.bare.postscript</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>ps</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.composite-content</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>DVI Without Notes</string>
-			<key>UTTypeIconFile</key>
-			<string>DVIDocument</string>
-			<key>UTTypeIdentifier</key>
-			<string>net.sourceforge.skim-app.bare.dvi</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>dvi</string>
 				</array>
 			</dict>
 		</dict>
