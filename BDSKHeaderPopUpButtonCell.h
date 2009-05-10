@@ -39,7 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface BDSKHeaderPopUpButtonCell : NSPopUpButtonCell {
-	NSTableHeaderCell *headerCell;
-}
+@interface BDSKHeaderPopUpButtonCell : NSPopUpButtonCell
 @end

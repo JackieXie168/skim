@@ -38,48 +38,17 @@
 
 #import "BDSKHeaderPopUpButtonCell.h"
 #import "NSImage_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
 
 @implementation BDSKHeaderPopUpButtonCell
 
 - (id)initTextCell:(NSString *)stringValue pullsDown:(BOOL)pullDown {
 	if ([super initTextCell:@"" pullsDown:NO]) {
-		
 		[self setBordered:NO];
 		[self setEnabled:YES];
 		[self setUsesItemFromMenu:YES];
 		[self setRefusesFirstResponder:YES];
-		
-		// we keep the headercell for drawing
-		headerCell = [[NSTableHeaderCell allocWithZone:[self zone]] initTextCell:@""];
-		
-        // we could pass more properties
-		[headerCell setFont:[self font]];
 	}
 	return self;
-}
-
-- (id)copyWithZone:(NSZone *)aZone {
-	BDSKHeaderPopUpButtonCell *copy = [super copyWithZone:aZone];
-    copy->headerCell = [headerCell copyWithZone:aZone];
-    return copy;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-    if (self = [super initWithCoder:decoder]) {
-        headerCell = [[decoder decodeObjectForKey:@"headerCell"] retain];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeObject:headerCell forKey:@"headerCell"];
-}
-
-- (void)dealloc {
-	[headerCell release];
-	[super dealloc];
 }
 
 - (NSSize)cellSize {
@@ -89,10 +58,10 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-	// let the headercell draw the gradient background
-	[headerCell setState:[self isHighlighted]];
-	[headerCell setHighlighted:[self isHighlighted]];
-	[headerCell drawWithFrame:cellFrame inView:controlView];
+    NSRect bgRect, divRect, srcRect = NSMakeRect(0.0, 0.0, 1.0, 15.0);
+    NSDivideRect(cellFrame, &divRect, &bgRect, 1.0, NSMaxXEdge);
+    [[NSImage imageNamed:@"Scroller_Background"] drawFlipped:[controlView isFlipped] inRect:bgRect fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+    [[NSImage imageNamed:@"Scroller_Divider"] drawFlipped:[controlView isFlipped] inRect:divRect fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
     [super drawWithFrame:cellFrame inView:controlView];
 }    
 

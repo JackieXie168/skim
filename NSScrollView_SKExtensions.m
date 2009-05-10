@@ -78,13 +78,13 @@ static CFMutableDictionaryRef scrollViewPlacards = NULL;
         NSView *view;
         NSScroller *horizScroller = [self horizontalScroller];
         NSRect viewFrame, horizScrollerFrame = [horizScroller frame];
-        CGFloat height = NSHeight(horizScrollerFrame) - 1.0, totalWidth = 0.0;
+        CGFloat height = NSHeight(horizScrollerFrame), totalWidth = 0.0;
         BDSKEdgeView *edgeView = (BDSKEdgeView *)[[[placards lastObject] superview] superview];
         
         if ([edgeView isDescendantOf:self] == NO) {
             edgeView = [[[BDSKEdgeView alloc] init] autorelease];
             [edgeView setEdgeColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0]];
-            [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxYEdgeMask];
+            [edgeView setEdges:BDSKMinXEdgeMask];
             [self addSubview:edgeView];
         }
         
