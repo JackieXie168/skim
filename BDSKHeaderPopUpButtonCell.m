@@ -45,7 +45,6 @@
 - (id)initTextCell:(NSString *)stringValue pullsDown:(BOOL)pullDown {
 	if ([super initTextCell:@"" pullsDown:NO]) {
 		
-		[self setArrowPosition:NSPopUpNoArrow];
 		[self setBordered:NO];
 		[self setEnabled:YES];
 		[self setUsesItemFromMenu:YES];
@@ -83,73 +82,18 @@
 	[super dealloc];
 }
 
-// we might pass more properties to the headercell
-- (void)setFont:(NSFont *)font {
-	[super setFont:font];
-	[headerCell setFont:font];
-}
-
 - (NSSize)cellSize {
 	NSSize size = [super cellSize];
 	size.width -= 22.0 + 2 * [self controlSize];
 	return size;
 }
 
-- (NSString *)title {
-    if ([self usesItemFromMenu])
-        return [super title];
-    else
-        return [headerCell title];
-}
-
-- (void)setTitle:(NSString *)title {
-    if ([self usesItemFromMenu])
-        [super setTitle:title];
-    [headerCell setTitle:title];
-}
-
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-	// let the header cell do most of the drawing for usNSLog(@"%@ %@");
-    if ([self usesItemFromMenu])
-        [headerCell setStringValue:[self title]];
+	// let the headercell draw the gradient background
 	[headerCell setState:[self isHighlighted]];
 	[headerCell setHighlighted:[self isHighlighted]];
 	[headerCell drawWithFrame:cellFrame inView:controlView];
-	
-	// Two little arrows. We could also use some image here
-	NSInteger controlSize = [self controlSize];
-	CGFloat width = 5.0 - controlSize;
-	CGFloat height = 4.0 - controlSize;
-	CGFloat totalHeight = 3.0 + 2 * height;
-	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path moveToPoint:NSMakePoint(NSMaxX(cellFrame) - 7.5 + controlSize, SKFloor(NSMidY(cellFrame) - 0.5f * totalHeight))];
-	[path relativeLineToPoint:NSMakePoint(-0.5f * width, height)];
-	[path relativeLineToPoint:NSMakePoint(width, 0.0)];
-	[path closePath];
-	[path relativeMoveToPoint:NSMakePoint(0.0, totalHeight)];
-	[path relativeLineToPoint:NSMakePoint(-0.5f * width, -height)];
-	[path relativeLineToPoint:NSMakePoint(width, 0.0)];
-	[path closePath];
-    
-    [NSGraphicsContext saveGraphicsState];
-	[[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] set];
-	[path fill];
-    [NSGraphicsContext restoreGraphicsState];
-
-    if ([[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView) {
-		[NSGraphicsContext saveGraphicsState];
-		NSSetFocusRingStyle(NSFocusRingOnly);
-        [NSBezierPath fillRect:cellFrame];
-		[NSGraphicsContext restoreGraphicsState];
-    }
+    [super drawWithFrame:cellFrame inView:controlView];
 }    
-
-- (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp {
-	// fool super to get the right menu position
-	cellFrame.origin.x -= 7.0;
-	cellFrame.origin.y += 2.0;
-	cellFrame.size.width += 7.0;
-	return [super trackMouse:theEvent inRect:cellFrame ofView:controlView untilMouseUp:untilMouseUp];
-}
 
 @end
