@@ -136,20 +136,34 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
 @implementation BDSKPlacardView
 
 - (void)drawRect:(NSRect)aRect {
-    [self subviews];
     NSImage *bgImage = [NSImage imageNamed:@"Scroller_Background"];
     NSImage *divImage = [NSImage imageNamed:@"Scroller_Divider"];
-    NSRect srcRect = {NSZeroPoint, [bgImage size]};
-    NSRect bounds = [self bounds];
-    NSRect divRect = bounds;
+    NSRect bgSrcRect = {NSZeroPoint, [bgImage size]};
+    NSRect divSrcRect = {NSZeroPoint, [divImage size]};
+    NSRect leftRect, rightRect, leftSrcRect, rightSrcRect, midSrcRect = bgSrcRect;
+    NSRect midRect = [self bounds];
+    NSRect divRect = midRect;
+    CGFloat width = NSHeight(bgSrcRect);
+    
     divRect.size.width = 1.0;
-    [bgImage drawInRect:bounds fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
-    [divImage drawInRect:divRect fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+    midSrcRect.origin.x = SKFloor(NSWidth(midSrcRect) / 2.0);
+    midSrcRect.size.width = 1.0;
+    NSDivideRect(bgSrcRect, &rightSrcRect, &bgSrcRect, width, NSMaxXEdge);
+    NSDivideRect(bgSrcRect, &leftSrcRect, &bgSrcRect, width, NSMinXEdge);
+    NSDivideRect(midRect, &rightRect, &midRect, width, NSMaxXEdge);
+    NSDivideRect(midRect, &leftRect, &midRect, width, NSMinXEdge);
+    
+    [bgImage drawInRect:leftRect fromRect:leftSrcRect operation:NSCompositeSourceOver fraction:1.0];
+    [bgImage drawInRect:rightRect fromRect:rightSrcRect operation:NSCompositeSourceOver fraction:1.0];
+    if (NSWidth(midRect) > 0)
+        [bgImage drawInRect:midRect fromRect:midSrcRect operation:NSCompositeSourceOver fraction:1.0];
+    
     NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-    NSView *view;
+    NSView *view = [viewEnum nextObject];
+    CGFloat f = [[self window] isMainWindow] || [[self window] isKeyWindow] ? 1.0 : 0.33333;
     while (view = [viewEnum nextObject]) {
-        divRect.origin.x = NSMaxX([view frame]);
-        [divImage drawInRect:divRect fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+        divRect.origin.x = NSMinX([view frame]) - 1;
+        [divImage drawInRect:divRect fromRect:divSrcRect operation:NSCompositeSourceOver fraction:f];
     }
 }
 
