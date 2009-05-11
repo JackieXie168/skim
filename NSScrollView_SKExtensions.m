@@ -38,7 +38,6 @@
 
 #import "NSScrollView_SKExtensions.h"
 #import "SKRuntime.h"
-#import "BDSKEdgeView.h"
 
 
 @interface BDSKPlacardView : NSView
