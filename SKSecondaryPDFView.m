@@ -37,7 +37,6 @@
  */
 
 #import "SKSecondaryPDFView.h"
-#import "BDSKHeaderPopUpButton.h"
 #import "NSScrollView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
@@ -163,6 +162,16 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
 
 #pragma mark Popup buttons
 
+static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anIndex) {
+    NSUInteger i = [popUpButton indexOfSelectedItem];
+    [popUpButton selectItemAtIndex:anIndex];
+    [popUpButton sizeToFit];
+    NSSize frameSize = [popUpButton frame].size;
+    frameSize.width -= 22.0 + 2 * [[popUpButton cell] controlSize];
+    [popUpButton setFrameSize:frameSize];
+    [popUpButton selectItemAtIndex:i];
+}
+
 - (void)reloadPagePopUpButton {
     PDFDocument *pdfDoc = [self document];
     NSUInteger i, count = [pagePopUpButton numberOfItems];
@@ -186,10 +195,7 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
             [pagePopUpButton addItemWithTitle:label];
         }
         
-        i = [pagePopUpButton indexOfSelectedItem];
-        [pagePopUpButton selectItemAtIndex:maxIndex];
-        [pagePopUpButton sizeToFit];
-        [pagePopUpButton selectItemAtIndex:i];
+        sizePopUpToItemAtIndex(pagePopUpButton, maxIndex);
         
         [pagePopUpButton selectItemAtIndex:[pdfDoc indexForPage:[self currentPage]]];
     }
@@ -207,9 +213,13 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
     if (scalePopUpButton == nil) {
 
         // create it        
-        scalePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        scalePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         [[scalePopUpButton cell] setControlSize:controlSize];
+		[scalePopUpButton setBordered:NO];
+		[scalePopUpButton setEnabled:YES];
+		[scalePopUpButton setRefusesFirstResponder:YES];
+		[[scalePopUpButton cell] setUsesItemFromMenu:YES];
 
         // set a suitable font, the control size is 0, 1 or 2
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKPopUpMenuFontSize - controlSize]];
@@ -241,10 +251,7 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
             [self setScaleFactor:[self scaleFactor] adjustPopup:YES];
 
         // Make sure the popup is big enough to fit the largest cell
-        cnt = [scalePopUpButton indexOfSelectedItem];
-        [scalePopUpButton selectItemAtIndex:maxIndex];
-        [scalePopUpButton sizeToFit];
-        [scalePopUpButton selectItemAtIndex:cnt];
+        sizePopUpToItemAtIndex(scalePopUpButton, maxIndex);
 
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
@@ -258,9 +265,13 @@ static CGFloat SKPopUpMenuFontSize = 11.0;
     if (pagePopUpButton == nil) {
         
         // create it        
-        pagePopUpButton = [[BDSKHeaderPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        pagePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         [[pagePopUpButton cell] setControlSize:controlSize];
+		[pagePopUpButton setBordered:NO];
+		[pagePopUpButton setEnabled:YES];
+		[pagePopUpButton setRefusesFirstResponder:YES];
+		[[pagePopUpButton cell] setUsesItemFromMenu:YES];
 
         // set a suitable font, the control size is 0, 1 or 2
         [pagePopUpButton setFont:[NSFont toolTipsFontOfSize: SKPopUpMenuFontSize - controlSize]];
