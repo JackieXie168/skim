@@ -62,13 +62,13 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
 
 - (void)replacement_setHasHorizontalScroller:(BOOL)flag;
 {
-    CFDictionaryRemoveValue(scrollViewPlacardViews, self);
+    if (CFDictionaryContainsKey(scrollViewPlacardViews, self) == FALSE)
         original_setHasHorizontalScroller(self, _cmd, flag);
 }
 
 - (void)replacement_setAutohidesScrollers:(BOOL)flag;
 {
-    CFDictionaryRemoveValue(scrollViewPlacardViews, self);
+    if (CFDictionaryContainsKey(scrollViewPlacardViews, self) == FALSE)
         original_setAutohidesScrollers(self, _cmd, flag);
 }
 
