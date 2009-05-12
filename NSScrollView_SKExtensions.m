@@ -62,13 +62,13 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
 
 - (void)replacement_setHasHorizontalScroller:(BOOL)flag;
 {
-    if ([[self placards] count] == 0)
+    CFDictionaryRemoveValue(scrollViewPlacardViews, self);
         original_setHasHorizontalScroller(self, _cmd, flag);
 }
 
 - (void)replacement_setAutohidesScrollers:(BOOL)flag;
 {
-    if ([[self placards] count] == 0)
+    CFDictionaryRemoveValue(scrollViewPlacardViews, self);
         original_setAutohidesScrollers(self, _cmd, flag);
 }
 
@@ -109,15 +109,12 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
         CFDictionarySetValue(scrollViewPlacardViews, self, placardView);
     }
     
-    [placardView removeFromSuperview];
-    
-    NSArray *subviews = [[placardView subviews] retain];
     NSEnumerator *viewEnum = [newPlacards objectEnumerator];
     NSView *view;
-    [subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [placardView removeFromSuperview];
+    [[[[placardView subviews] copy] autorelease] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     while (view = [viewEnum nextObject])
         [placardView addSubview:view];
-    [subviews release];
     
     if ([newPlacards count] != 0) {
         original_setHasHorizontalScroller(self, @selector(setHasHorizontalScroller:), YES);
