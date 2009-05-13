@@ -224,10 +224,10 @@
         <real>128.0</real>
         <key>SKDefaultNoteHeight</key>
         <real>64.0</real>
-        <key>SKActivateFullScreenNavigationAtBottom</key>
-        <true/>
-        <key>SKActivatePresentationNavigationAtBottom</key>
-        <true/>
+        <key>SKHasFullScreenNavigation</key>
+        <integer>1</integer>
+        <key>SKHasPresentationNavigation</key>
+        <integer>1</integer>
         <key>SKAutoHidePresentationContents</key>
         <true/>
         <key>SKEnableAppleRemote</key>
