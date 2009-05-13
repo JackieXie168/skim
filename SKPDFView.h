@@ -99,7 +99,7 @@ typedef NSInteger SKInteractionMode;
     
     BOOL hideNotes;
     
-    BOOL activateNavigationAtBottom;
+    NSInteger navigationMode;
     NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
     

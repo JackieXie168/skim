@@ -118,6 +118,12 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, CGFloat r
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, CGFloat radius, bool active);
 static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloat radius, NSInteger mask);
 
+enum {
+    SKNavigationNone,
+    SKNavigationBottom,
+    SKNavigationEverywhere,
+};
+
 #pragma mark -
 
 @interface PDFView (SKLeopardPrivate)
@@ -1214,8 +1220,8 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
     }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = (interactionMode != SKNormalMode) && (activateNavigationAtBottom == NO || [theEvent locationInWindow].y < 5.0);
-    if (activateNavigationAtBottom || shouldShowNavWindow) {
+    BOOL shouldShowNavWindow = (navigationMode == SKNavigationEverywhere) || (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 5.0);
+    if (navigationMode || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
             [navWindow orderFront:self];
         }
@@ -2521,7 +2527,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
 }
 
 - (void)enableNavigationForScreen:(NSScreen *)screen {
-    activateNavigationAtBottom = [[NSUserDefaults standardUserDefaults] boolForKey:interactionMode == SKPresentationMode ? SKActivatePresentationNavigationAtBottomKey : SKActivateFullScreenNavigationAtBottomKey];
+    navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKHasPresentationNavigationKey : SKHasFullScreenNavigationKey];
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
     if (navWindow != nil)
@@ -2537,7 +2543,7 @@ static void SKCGContextDrawGrabHandles(CGContextRef context, CGRect rect, CGFloa
 }
 
 - (void)disableNavigation {
-    activateNavigationAtBottom = NO;
+    navigationMode = SKNavigationNone;
     
     [navWindow orderOut:self];
 }
