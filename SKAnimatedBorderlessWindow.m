@@ -90,6 +90,7 @@
 
 - (void)cancelDelayedAnimations {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(orderOut:) object:nil];
 }
 
 - (void)fadeOutAfterTimeout {
@@ -125,32 +126,48 @@
     [self setAlphaValue:[self defaultAlphaValue]];
     [self willClose];
     
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:[self fadeOutDuration]];
-    [animation setDelegate:self];
-    [animation startAnimation];
+    if ([self respondsToSelector:@selector(animator)]) {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
+        [[self animator] setAlphaValue:0.0];
+        [NSAnimationContext endGrouping];
+        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
+    } else {
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+        [fadeOutDict release];
+        
+        [animation setAnimationBlockingMode:NSAnimationNonblocking];
+        [animation setDuration:[self fadeOutDuration]];
+        [animation setDelegate:self];
+        [animation startAnimation];
+    }
 }
 
 - (void)fadeIn {
     [self stopAnimation];
     
-    NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-    [fadeInDict release];
-    
-    [self setAlphaValue:0.0];
+    if ([self isVisible] == NO)
+        [self setAlphaValue:0.0];
     [super orderFront:self];
     
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:[self fadeInDuration]];
-    [animation setDelegate:self];
-    [animation startAnimation];
+    if ([self respondsToSelector:@selector(animator)]) {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:[self fadeInDuration]];
+        [[self animator] setAlphaValue:[self defaultAlphaValue]];
+        [NSAnimationContext endGrouping];
+    }else {
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+        [fadeInDict release];
+        
+        [animation setAnimationBlockingMode:NSAnimationNonblocking];
+        [animation setDuration:[self fadeInDuration]];
+        [animation setDelegate:self];
+        [animation startAnimation];
+    }
     [self fadeOutAfterTimeout];
 }
 
