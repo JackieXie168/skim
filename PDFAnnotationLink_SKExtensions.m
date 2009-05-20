@@ -53,11 +53,11 @@ static id (*original_toolTip)(id, SEL) = NULL;
 static id (*original_toolTipNoLabel)(id, SEL) = NULL;
 
 - (NSString *)replacement_toolTip {
-    return ([self URL] || [self destination] || original_toolTip == NULL) ? nil : original_toolTip(self, _cmd);
+    return ([self URL] || [self destination] || original_toolTip == NULL) ? @"" : original_toolTip(self, _cmd);
 }
 
 - (NSString *)replacement_toolTipNoLabel {
-    return ([self URL] || [self destination] || original_toolTipNoLabel == NULL) ? nil : original_toolTipNoLabel(self, _cmd);
+    return ([self URL] || [self destination] || original_toolTipNoLabel == NULL) ? @"" : original_toolTipNoLabel(self, _cmd);
 }
 
 + (void)load {
