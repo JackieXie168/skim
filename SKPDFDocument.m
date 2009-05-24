@@ -122,7 +122,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [mainWindowController release];
-    [synchronizer stopDOServer];
+    [synchronizer terminate];
     [synchronizer release];
     [presentationNotesDocument release];
     [watchedFile release];

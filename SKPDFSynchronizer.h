@@ -39,14 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@protocol SKPDFSynchronizerClient
-- (void)setServerProxy:(byref id)anObject;
-- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
-@end
-
-
-@interface SKPDFSynchronizer : NSObject <SKPDFSynchronizerClient> {
+@interface SKPDFSynchronizer : NSObject {
     id delegate;
     
     id server;
@@ -63,7 +56,8 @@
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
 - (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file;
 
-- (void)stopDOServer;
+// this must be called to stop the DO server from running in the server thread
+- (void)terminate;
 
 @end
 
