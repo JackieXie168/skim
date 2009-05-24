@@ -70,7 +70,7 @@
 
 #pragma mark | API
 
-- (void)stopDOServer {
+- (void)terminate {
     // tell the server thread to stop running, this is also necessary to tickle the server thread so the runloop can finish
     [serverProxy stopRunning];
     // set the stop flag immediately, so any running task may stop in its tracks

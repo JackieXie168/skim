@@ -39,15 +39,22 @@
 #import <Cocoa/Cocoa.h>
 #import "synctex_parser.h"
 
-
+// these methods can be sent to the proxy for the server and are implemented by the server
 @protocol SKPDFSynchronizerServer
 - (oneway void)stopRunning; 
 - (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
 - (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file;
 @end
 
+// these methods can be sent to the proxy for the client and must be implemented by the client
+@protocol SKPDFSynchronizerClient
+- (void)setServerProxy:(byref id)anObject;
+- (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
+@end
 
-@interface SKPDFSynchronizerServer : NSObject <SKPDFSynchronizerServer> {
+
+@interface SKPDFSynchronizerServer : NSObject {
     NSString *fileName;
     NSString *syncFileName;
     NSDate *lastModDate;
