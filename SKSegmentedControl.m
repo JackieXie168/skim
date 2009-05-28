@@ -117,7 +117,8 @@
 @implementation SKSegmentedCell
 
 - (BOOL)isPressedSegment:(NSInteger)segment {
-    return [self isSelectedForSegment:segment] || ([self respondsToSelector:@selector(_trackingSegment)] && segment == [self _trackingSegment]);
+    return ([self trackingMode] != NSSegmentSwitchTrackingMomentary && [self isSelectedForSegment:segment] && [self isEnabledForSegment:segment]) || 
+		   ([self respondsToSelector:@selector(_trackingSegment)] && segment == [self _trackingSegment]);
 }
 
 - (void)drawWithFrame:(NSRect)frame inView:(NSView *)controlView {
