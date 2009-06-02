@@ -409,7 +409,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         SKLineInspector *inspector = [SKLineInspector sharedLineInspector];
         
-        lwFlags.existsActiveLineWell = 1;
+        lwFlags.existsActiveLineWell = 0;
         
         [nc postNotificationName:SKLineWellWillBecomeActiveNotification object:self
                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:exclusive], EXCLUSIVE_KEY, nil]];
