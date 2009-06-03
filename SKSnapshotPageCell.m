@@ -65,7 +65,7 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
 - (NSSize)cellSize {
     NSSize size = [super cellSize];
-    size.width = SKMax(size.width, 12.0);
+    size.width = SKMax(size.width, 16.0);
     return size;
 }
 
