@@ -784,7 +784,7 @@ Some PDF files require you to enter a password before you can select or copy tex
 @end itemize
 @endbox
 
-If the Password command is disabled, this document does not require you to enter one. Make sure you've selected the Text tool by choosing Tools > Text. 
+If the Password command is disabled, this document does not require you to enter one. Make sure you've selected the Text tool by choosing Tools > Text. If you still cannot select text, the PDF is probably a scanned PDF, which does not contain any text but rather an image that may look like text.
 
 @c ======================================================================================
 

@@ -787,7 +787,7 @@ In sommige PDF-bestanden moet u eerst een wachtwoord invoeren voordat u tekst ku
 @end itemize
 @endbox
 
-Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op te geven om dit document te kunnen openen. Zorg ervoor dat u de tekstfunctie hebt ingeschakeld, door Extra's > Tekstfunctie te kiezen.
+Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op te geven om dit document te kunnen openen. Zorg ervoor dat u de tekstfunctie hebt ingeschakeld, door Extra's > Tekstfunctie te kiezen. Als u nog steeds geen tekst kan selecteren dan heeft u waarschijnlijk een gescande PDF, welke geen tekst bevat maar een plaatje dat er uit kan zien als tekst.
 
 @c ======================================================================================
 
