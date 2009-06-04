@@ -28,10 +28,6 @@
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -43,18 +39,6 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>PDF With Embedded Notes</string>
-				<string>PDF Without Notes</string>
-				<string>net.sourceforge.skim-app.skimnotes</string>
 				<string>Notes as Text</string>
 				<string>Notes as RTF</string>
 				<string>Notes as RTFD</string>
@@ -78,10 +62,6 @@
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.pdfd</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>
 			<key>NSDocumentClass</key>
@@ -93,18 +73,6 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>PDF With Embedded Notes</string>
-				<string>PDF Without Notes</string>
-				<string>net.sourceforge.skim-app.skimnotes</string>
 				<string>Notes as Text</string>
 				<string>Notes as RTF</string>
 				<string>Notes as RTFD</string>
@@ -130,20 +98,11 @@
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.skimnotes</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
 			<string>SKNotesDocument</string>
 			<key>NSExportableAs</key>
-			<array>
-				<string>Notes as RTF</string>
-				<string>Notes as Text</string>
-			</array>
-			<key>NSExportableTypes</key>
 			<array>
 				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
@@ -172,10 +131,6 @@
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.postscript</string>
-			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -189,20 +144,6 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>com.adobe.postscript</string>
-				<string>PostScript Without Notes</string>
-				<string>com.adobe.pdf</string>
-				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>PDF With Embedded Notes</string>
-				<string>PDF Without Notes</string>
-				<string>net.sourceforge.skim-app.skimnotes</string>
 				<string>Notes as Text</string>
 				<string>Notes as RTF</string>
 				<string>Notes as RTFD</string>
@@ -243,20 +184,6 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
-				<string>Notes as Text</string>
-				<string>Notes as RTF</string>
-				<string>Notes as RTFD</string>
-				<string>Notes as FDF</string>
-			</array>
-			<key>NSExportableTypes</key>
-			<array>
-				<string>net.sourceforge.skim-app.dvi</string>
-				<string>DVI Without Notes</string>
-				<string>com.adobe.pdf</string>
-				<string>net.sourceforge.skim-app.pdfd</string>
-				<string>PDF With Embedded Notes</string>
-				<string>PDF Without Notes</string>
-				<string>net.sourceforge.skim-app.skimnotes</string>
 				<string>Notes as Text</string>
 				<string>Notes as RTF</string>
 				<string>Notes as RTFD</string>

@@ -67,11 +67,6 @@
 #define SKDVIDocumentTypeName            @"DVI document"
 #define SKBareDVIDocumentTypeName        @"DVI Without Notes"
 
-#define SKPDFDocumentTypeUTI             @"com.adobe.pdf"
-#define SKPDFBundleDocumentTypeUTI       @"net.sourceforge.skim-app.pdfd"
-#define SKNotesDocumentTypeUTI           @"net.sourceforge.skim-app.skimnotes"
-#define SKPostScriptDocumentTypeUTI      @"com.adobe.postscript"
-
 NSString *SKPDFDocumentType = nil;
 NSString *SKPDFBundleDocumentType = nil;
 NSString *SKEmbeddedPDFDocumentType = nil;
@@ -87,12 +82,11 @@ NSString *SKDVIDocumentType = nil;
 NSString *SKBareDVIDocumentType = nil;
 
 #define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentTypeName]; }
-#define DEFINE_IS_DOCUMENT_TYPE_UTI(name) BOOL SKIs##name##DocumentType(NSString *docType) { return ([[NSWorkspace sharedWorkspace] respondsToSelector:@selector(type:conformsToType:)] && [[NSWorkspace sharedWorkspace] type:docType conformsToType:SK##name##DocumentTypeUTI]) || [docType isEqualToString:SK##name##DocumentTypeName]; }
 
-DEFINE_IS_DOCUMENT_TYPE_UTI(PDF)
-DEFINE_IS_DOCUMENT_TYPE_UTI(PDFBundle)
-DEFINE_IS_DOCUMENT_TYPE_UTI(Notes)
-DEFINE_IS_DOCUMENT_TYPE_UTI(PostScript)
+DEFINE_IS_DOCUMENT_TYPE(PDF)
+DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
+DEFINE_IS_DOCUMENT_TYPE(Notes)
+DEFINE_IS_DOCUMENT_TYPE(PostScript)
 DEFINE_IS_DOCUMENT_TYPE(DVI)
 DEFINE_IS_DOCUMENT_TYPE(EmbeddedPDF)
 DEFINE_IS_DOCUMENT_TYPE(BarePDF)
@@ -136,22 +130,14 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 @implementation SKDocumentController
 
 #define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = SK##name##DocumentTypeName
-#define DEFINE_DOCUMENT_TYPE_UTI(name) SK##name##DocumentType = SK##name##DocumentTypeUTI
 
 + (void)initialize {
     SKINITIALIZE;
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        DEFINE_DOCUMENT_TYPE(PDF);
-        DEFINE_DOCUMENT_TYPE(PDFBundle);
-        DEFINE_DOCUMENT_TYPE(Notes);
-        DEFINE_DOCUMENT_TYPE(PostScript);
-    } else {
-        DEFINE_DOCUMENT_TYPE_UTI(PDF);
-        DEFINE_DOCUMENT_TYPE_UTI(PDFBundle);
-        DEFINE_DOCUMENT_TYPE_UTI(Notes);
-        DEFINE_DOCUMENT_TYPE_UTI(PostScript);
-    }
+    DEFINE_DOCUMENT_TYPE(PDF);
+    DEFINE_DOCUMENT_TYPE(PDFBundle);
+    DEFINE_DOCUMENT_TYPE(Notes);
+    DEFINE_DOCUMENT_TYPE(PostScript);
     DEFINE_DOCUMENT_TYPE(DVI);
     DEFINE_DOCUMENT_TYPE(EmbeddedPDF);
     DEFINE_DOCUMENT_TYPE(BarePDF);
