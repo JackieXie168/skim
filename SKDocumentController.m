@@ -53,35 +53,21 @@
 
 
 // See CFBundleTypeName in Info.plist
-#define SKPDFDocumentTypeName            NSPDFPboardType
-#define SKPDFBundleDocumentTypeName      @"PDF Bundle"
-#define SKEmbeddedPDFDocumentTypeName    @"PDF With Embedded Notes"
-#define SKBarePDFDocumentTypeName        @"PDF Without Notes"
-#define SKNotesDocumentTypeName          @"Skim Notes"
-#define SKNotesTextDocumentTypeName      @"Notes as Text"
-#define SKNotesRTFDocumentTypeName       @"Notes as RTF"
-#define SKNotesRTFDDocumentTypeName      @"Notes as RTFD"
-#define SKNotesFDFDocumentTypeName       @"Notes as FDF"
-#define SKPostScriptDocumentTypeName     NSPostScriptPboardType
-#define SKBarePostScriptDocumentTypeName @"PostScript Without Notes"
-#define SKDVIDocumentTypeName            @"DVI document"
-#define SKBareDVIDocumentTypeName        @"DVI Without Notes"
-
 NSString *SKPDFDocumentType = nil;
-NSString *SKPDFBundleDocumentType = nil;
-NSString *SKEmbeddedPDFDocumentType = nil;
-NSString *SKBarePDFDocumentType = nil;
-NSString *SKNotesDocumentType = nil;
-NSString *SKNotesTextDocumentType = nil;
-NSString *SKNotesRTFDocumentType = nil;
-NSString *SKNotesRTFDDocumentType = nil;
-NSString *SKNotesFDFDocumentType = nil;
+NSString *SKPDFBundleDocumentType = @"PDF Bundle";
+NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
+NSString *SKBarePDFDocumentType = @"PDF Without Notes";
+NSString *SKNotesDocumentType = @"Skim Notes";
+NSString *SKNotesTextDocumentType = @"Notes as Text";
+NSString *SKNotesRTFDocumentType = @"Notes as RTF";
+NSString *SKNotesRTFDDocumentType = @"Notes as RTFD";
+NSString *SKNotesFDFDocumentType = @"Notes as FDF";
 NSString *SKPostScriptDocumentType = nil;
-NSString *SKBarePostScriptDocumentType = nil;
-NSString *SKDVIDocumentType = nil;
-NSString *SKBareDVIDocumentType = nil;
+NSString *SKBarePostScriptDocumentType = @"PostScript Without Notes";
+NSString *SKDVIDocumentType = @"DVI document";
+NSString *SKBareDVIDocumentType = @"DVI Without Notes";
 
-#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentTypeName]; }
+#define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentType]; }
 
 DEFINE_IS_DOCUMENT_TYPE(PDF)
 DEFINE_IS_DOCUMENT_TYPE(PDFBundle)
@@ -129,24 +115,11 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 @implementation SKDocumentController
 
-#define DEFINE_DOCUMENT_TYPE(name) SK##name##DocumentType = SK##name##DocumentTypeName
-
 + (void)initialize {
     SKINITIALIZE;
     
-    DEFINE_DOCUMENT_TYPE(PDF);
-    DEFINE_DOCUMENT_TYPE(PDFBundle);
-    DEFINE_DOCUMENT_TYPE(Notes);
-    DEFINE_DOCUMENT_TYPE(PostScript);
-    DEFINE_DOCUMENT_TYPE(DVI);
-    DEFINE_DOCUMENT_TYPE(EmbeddedPDF);
-    DEFINE_DOCUMENT_TYPE(BarePDF);
-    DEFINE_DOCUMENT_TYPE(NotesText);
-    DEFINE_DOCUMENT_TYPE(NotesRTF);
-    DEFINE_DOCUMENT_TYPE(NotesRTFD);
-    DEFINE_DOCUMENT_TYPE(NotesFDF);
-    DEFINE_DOCUMENT_TYPE(BarePostScript);
-    DEFINE_DOCUMENT_TYPE(BareDVI);
+    SKPDFDocumentType = NSPDFPboardType;
+    SKPostScriptDocumentType = NSPostScriptPboardType;
 }
 
 - (id)init {
