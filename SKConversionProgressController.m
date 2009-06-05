@@ -49,7 +49,7 @@
 #define PDFPATH_KEY     @"pdfData"
 #define DVITOOLPATH_KEY @"dviToolPath"
 
-#define DVICONVERSIONCOMMAND_KEY @"SKDviConversionCommand"
+#define SKDviConversionCommandKey @"SKDviConversionCommand"
 
 enum {
     SKConversionSucceeded = 0,
@@ -266,7 +266,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     static NSString *dviToolPath = nil;
     
     if (dviToolPath == nil) {
-        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:DVICONVERSIONCOMMAND_KEY];
+        NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:SKDviConversionCommandKey];
         NSString *commandName = [commandPath lastPathComponent];
         NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
         NSInteger i = 0, iMax = [paths count];
