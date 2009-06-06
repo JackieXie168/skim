@@ -2527,7 +2527,7 @@ enum {
 }
 
 - (void)enableNavigationForScreen:(NSScreen *)screen {
-    navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKHasPresentationNavigationKey : SKHasFullScreenNavigationKey];
+    navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKPresentationNavigationOptionKey : SKFullScreenNavigationOptionKey];
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
     if (navWindow != nil)
