@@ -40,6 +40,7 @@
 #import "NSScrollView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKHighlightingPopUpButton.h"
 
 
 @implementation SKSnapshotPDFView
@@ -121,7 +122,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [scrollView setHasHorizontalScroller:YES];
         
         // create it        
-        scalePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        scalePopUpButton = [[SKHighlightingPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
         [[scalePopUpButton cell] setControlSize:controlSize];

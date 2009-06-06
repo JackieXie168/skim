@@ -43,6 +43,7 @@
 #import "SKStringConstants.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKHighlightingPopUpButton.h"
 
 
 @interface NSResponder (BDSKGesturesPrivate)
@@ -213,7 +214,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (scalePopUpButton == nil) {
 
         // create it        
-        scalePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        scalePopUpButton = [[SKHighlightingPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         [[scalePopUpButton cell] setControlSize:controlSize];
 		[scalePopUpButton setBordered:NO];
@@ -265,7 +266,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (pagePopUpButton == nil) {
         
         // create it        
-        pagePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
+        pagePopUpButton = [[SKHighlightingPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         [[pagePopUpButton cell] setControlSize:controlSize];
 		[pagePopUpButton setBordered:NO];
