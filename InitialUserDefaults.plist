@@ -224,9 +224,9 @@
         <real>128.0</real>
         <key>SKDefaultNoteHeight</key>
         <real>64.0</real>
-        <key>SKHasFullScreenNavigation</key>
+        <key>SKFullScreenNavigationOption</key>
         <integer>1</integer>
-        <key>SKHasPresentationNavigation</key>
+        <key>SKPresentationNavigationOption</key>
         <integer>1</integer>
         <key>SKAutoHidePresentationContents</key>
         <true/>
