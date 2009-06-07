@@ -88,6 +88,15 @@
 #define SKDocumentToolbarCustomizeItemIdentifier @"SKDocumentToolbarCustomizeItemIdentifier"
 
 
+@interface SKToolbar : NSToolbar
+@end
+
+@implementation SKToolbar
+- (BOOL)_allowsSizeMode:(NSToolbarSizeMode)sizeMode { return NO; }
+@end
+
+#pargma mark -
+
 @interface SKMainWindowController (TSKoolbarPrivate)
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
 @end
@@ -97,7 +106,7 @@
 
 - (void)setupToolbar {
     // Create a new toolbar instance, and attach it to our document window
-    NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKDocumentToolbarIdentifier] autorelease];
+    NSToolbar *toolbar = [[[SKToolbar alloc] initWithIdentifier:SKDocumentToolbarIdentifier] autorelease];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
     [toolbar setAllowsUserCustomization:YES];
