@@ -95,7 +95,7 @@
 - (BOOL)_allowsSizeMode:(NSToolbarSizeMode)sizeMode { return NO; }
 @end
 
-#pargma mark -
+#pragma mark -
 
 @interface SKMainWindowController (TSKoolbarPrivate)
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
