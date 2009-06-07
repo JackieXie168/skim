@@ -65,9 +65,13 @@
     NSLocalizedStringFromTable(@"600%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"800%", @"ZoomValues", @"Zoom popup entry")
 */   
-static NSString *BDSKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
-static CGFloat BDSKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
-static CGFloat BDSKScaleMenuFontSize = 11.0;
+static NSString *SKDefaultScaleMenuLabels[] = {@"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
+static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
+
+#define SKMinDefaultScaleMenuFactor (SKDefaultScaleMenuFactors[1])
+#define SKDefaultScaleMenuFactorsCount (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat))
+
+#define SKScaleMenuFontSize ((CGFloat)11.0)
 
 #pragma mark Popup button
 
@@ -132,9 +136,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 		[[scalePopUpButton cell] setUsesItemFromMenu:YES];
         
         // set a suitable font, the control size is 0, 1 or 2
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
+        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKScaleMenuFontSize - controlSize]];
 		
-        NSUInteger cnt, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuLabels) / sizeof(NSString *));
+        NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;
         NSString *label;
         CGFloat width, maxWidth = 0.0;
@@ -144,7 +148,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
-            label = [[NSBundle mainBundle] localizedStringForKey:BDSKDefaultScaleMenuLabels[cnt] value:@"" table:@"ZoomValues"];
+            label = [[NSBundle mainBundle] localizedStringForKey:SKDefaultScaleMenuLabels[cnt] value:@"" table:@"ZoomValues"];
             width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
             if (width > maxWidth) {
                 maxWidth = width;
@@ -152,7 +156,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             }
             [scalePopUpButton addItemWithTitle:label];
             curItem = [scalePopUpButton itemAtIndex:cnt];
-            [curItem setRepresentedObject:(BDSKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:BDSKDefaultScaleMenuFactors[cnt]] : nil)];
+            [curItem setRepresentedObject:(SKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:SKDefaultScaleMenuFactors[cnt]] : nil)];
         }
         // select the appropriate item, adjusting the scaleFactor if necessary
         if([self autoFits])
@@ -235,18 +239,18 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (NSUInteger)lowerIndexForScaleFactor:(CGFloat)scaleFactor {
-    NSUInteger i, count = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i, count = SKDefaultScaleMenuFactorsCount;
     for (i = count - 1; i > 0; i--) {
-        if (scaleFactor * 1.01 > BDSKDefaultScaleMenuFactors[i])
+        if (scaleFactor * 1.01 > SKDefaultScaleMenuFactors[i])
             return i;
     }
     return 1;
 }
 
 - (NSUInteger)upperIndexForScaleFactor:(CGFloat)scaleFactor {
-    NSUInteger i, count = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i, count = SKDefaultScaleMenuFactorsCount;
     for (i = 1; i < count; i++) {
-        if (scaleFactor * 0.99 < BDSKDefaultScaleMenuFactors[i])
+        if (scaleFactor * 0.99 < SKDefaultScaleMenuFactors[i])
             return i;
     }
     return count - 1;
@@ -254,7 +258,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (NSUInteger)indexForScaleFactor:(CGFloat)scaleFactor {
     NSUInteger lower = [self lowerIndexForScaleFactor:scaleFactor], upper = [self upperIndexForScaleFactor:scaleFactor];
-    if (upper > lower && scaleFactor < 0.5 * (BDSKDefaultScaleMenuFactors[lower] + BDSKDefaultScaleMenuFactors[upper]))
+    if (upper > lower && scaleFactor < 0.5 * (SKDefaultScaleMenuFactors[lower] + SKDefaultScaleMenuFactors[upper]))
         return lower;
     return upper;
 }
@@ -267,7 +271,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 	if (flag) {
 		NSUInteger i = [self indexForScaleFactor:newScaleFactor];
         [scalePopUpButton selectItemAtIndex:i];
-        newScaleFactor = BDSKDefaultScaleMenuFactors[i];
+        newScaleFactor = SKDefaultScaleMenuFactors[i];
     }
     if ([self autoFits])
         [self setAutoFits:NO adjustPopup:NO];
@@ -281,10 +285,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [super zoomIn:sender];
         [self setAutoFits:NO adjustPopup:YES];
     }else{
-        NSUInteger numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(CGFloat));
+        NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
         if (i < numberOfDefaultItems - 1) i++;
-        [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
+        [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
     }
 }
 
@@ -295,14 +299,14 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }else{
         NSUInteger i = [self upperIndexForScaleFactor:[self scaleFactor]];
         if (i > 1) i--;
-        [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
+        [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
     }
 }
 
 - (BOOL)canZoomIn{
     if ([super canZoomIn] == NO)
         return NO;
-    NSUInteger numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
     NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
     return i < numberOfDefaultItems - 1;
 }
@@ -386,7 +390,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     [[scrollView verticalScroller] setControlSize:controlSize];
 	if(scalePopUpButton){
 		[[scalePopUpButton cell] setControlSize:controlSize];
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
+        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKScaleMenuFontSize - controlSize]];
 	}
 }
 
@@ -400,7 +404,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
     if (SKAbs(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], BDSKDefaultScaleMenuFactors[1])];
+        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
     pinchZoomFactor = 1.0;
     if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
@@ -410,9 +414,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if ([theEvent respondsToSelector:@selector(magnification)]) {
         pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
         CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
-        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, BDSKDefaultScaleMenuFactors[1])];
+        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKMinDefaultScaleMenuFactor)];
         if (i != [self indexForScaleFactor:[self scaleFactor]]) {
-            [self setScaleFactor:BDSKDefaultScaleMenuFactors[i]];
+            [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
             pinchZoomFactor = scaleFactor / [self scaleFactor];
         }
     }

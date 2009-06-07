@@ -99,7 +99,11 @@
 */   
 static NSString *SKDefaultScaleMenuLabels[] = {@"=", @"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%"};
 static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0};
-static CGFloat SKPopUpMenuFontSize = 11.0;
+
+#define SKMinDefaultScaleMenuFactor (SKDefaultScaleMenuFactors[2])
+#define SKDefaultScaleMenuFactorsCount (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat))
+
+#define SKPopUpMenuFontSize ((CGFloat)11.0)
 
 - (void)commonInitialization {
     scalePopUpButton = nil;
@@ -225,7 +229,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         // set a suitable font, the control size is 0, 1 or 2
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: SKPopUpMenuFontSize - controlSize]];
 
-        NSUInteger cnt, numberOfDefaultItems = (sizeof(SKDefaultScaleMenuLabels) / sizeof(NSString *));
+        NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;
         NSString *label;
         CGFloat width, maxWidth = 0.0;
@@ -372,7 +376,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (NSUInteger)lowerIndexForScaleFactor:(CGFloat)scaleFactor {
-    NSUInteger i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i, count = SKDefaultScaleMenuFactorsCount;
     for (i = count - 1; i > 1; i--) {
         if (scaleFactor * 1.01 > SKDefaultScaleMenuFactors[i])
             return i;
@@ -381,7 +385,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (NSUInteger)upperIndexForScaleFactor:(CGFloat)scaleFactor {
-    NSUInteger i, count = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger i, count = SKDefaultScaleMenuFactorsCount;
     for (i = 2; i < count; i++) {
         if (scaleFactor * 0.99 < SKDefaultScaleMenuFactors[i])
             return i;
@@ -423,7 +427,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (IBAction)zoomIn:(id)sender{
-    NSUInteger numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
     NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
     if (i < numberOfDefaultItems - 1) i++;
     [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
@@ -438,7 +442,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (BOOL)canZoomIn{
     if ([super canZoomIn] == NO)
         return NO;
-    NSUInteger numberOfDefaultItems = (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat));
+    NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
     NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
     return i < numberOfDefaultItems - 1;
 }
@@ -549,7 +553,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
     if (SKAbs(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKDefaultScaleMenuFactors[2])];
+        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
     pinchZoomFactor = 1.0;
     if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
@@ -559,7 +563,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if ([theEvent respondsToSelector:@selector(magnification)]) {
         pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
         CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
-        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKDefaultScaleMenuFactors[2])];
+        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKMinDefaultScaleMenuFactor)];
         if (i != [self indexForScaleFactor:[self scaleFactor]]) {
             [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
             pinchZoomFactor = scaleFactor / [self scaleFactor];
