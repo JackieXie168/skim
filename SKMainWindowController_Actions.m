@@ -543,6 +543,10 @@
         [self doAutoScale:sender];
 }
 
+- (IBAction)zoomLog:(id)sender {
+    [pdfView setScaleFactor:exp([sender doubleValue])];
+}
+
 - (void)rotatePageAtIndex:(NSUInteger)idx by:(NSInteger)rotation {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:idx by:-rotation];

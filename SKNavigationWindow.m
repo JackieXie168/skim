@@ -44,6 +44,7 @@
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
+#define SLIDER_WIDTH 100.0
 #define SEP_WIDTH 21.0
 #define MARGIN 7.0
 #define OFFSET 20.0
@@ -60,11 +61,13 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationWindow
 
-- (id)initWithPDFView:(PDFView *)pdfView {
+- (id)initWithPDFView:(PDFView *)pdfView hasSlider:(BOOL)hasSlider {
     NSScreen *screen = [[pdfView window] screen];
     if (screen == nil)
         screen = [NSScreen mainScreen];
     CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
+    if (hasSlider)
+        width += SLIDER_WIDTH;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + OFFSET, width, BUTTON_HEIGHT + 2 * MARGIN);
     if (self = [super initWithContentRect:contentRect screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
@@ -97,6 +100,19 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
         [[self contentView] addSubview:[[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease]];
+        
+        if (hasSlider) {
+            rect.origin.x = NSMaxX(rect);
+            rect.size.width = SLIDER_WIDTH;
+            zoomSlider = [[SKNavigationSlider alloc] initWithFrame:rect];
+            [zoomSlider setTarget:controller];
+            [zoomSlider setAction:@selector(zoomLog:)];
+            [zoomSlider setMinValue:log(0.1)];
+            [zoomSlider setMaxValue:log(20.0)];
+            [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
+            [zoomSlider setEnabled:NO == [pdfView autoScales]];
+            [[self contentView] addSubview:zoomSlider];
+        }
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
@@ -133,6 +149,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [zoomButton release];
+    [zoomSlider release];
     [super dealloc];
 }
 
@@ -150,6 +167,16 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [zoomButton setState:[[notification object] autoScales] ? NSOnState : NSOffState];
+    [zoomSlider setEnabled:NO == [[notification object] autoScales]];
+    [zoomSlider setDoubleValue:log([[notification object] scaleFactor])];
+}
+
+- (void)showSlider {
+    
+}
+
+- (void)hideSlider {
+    
 }
 
 @end
@@ -161,10 +188,10 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)drawRect:(NSRect)rect {
     [[NSGraphicsContext currentContext] saveGraphicsState];
     rect = NSInsetRect([self bounds], 1.0, 1.0);
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
+    [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] set];
     [NSBezierPath setDefaultLineWidth:1.0];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
@@ -426,7 +453,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] setFill];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] setFill];
     [([self state] == NSOnState && [self alternatePath] ? [self alternatePath] : [self path]) fill];
 }
 
@@ -460,11 +487,65 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 #pragma mark -
 
+@implementation SKNavigationSlider
+
++ (Class)cellClass { return [SKNavigationSliderCell class]; }
+
+@end
+
+#pragma mark -
+
+@implementation SKNavigationSliderCell
+
+- (void)drawBarInside:(NSRect)frame flipped:(BOOL)flipped {
+    frame.origin.x += 2.5;
+    frame.origin.y += 0.5 * NSHeight(frame) - 2.0;
+    frame.size.width -= 5.0;
+    frame.size.height = 5.0;
+	
+    if ([self isEnabled]) {
+        [[NSColor colorWithDeviceWhite:0.3 alpha:0.6] setFill];
+        [[NSColor colorWithDeviceWhite:1.0 alpha:0.6] setStroke];
+    } else {
+        [[NSColor colorWithDeviceWhite:0.3 alpha:0.3] setFill];
+        [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setStroke];
+    }
+    
+	NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:frame radius:2.0];
+    [path fill];
+    [path stroke];
+}
+
+- (void)drawKnob:(NSRect)frame {
+    frame.origin.x += 3.0;
+    frame.origin.y += 3.0;
+    frame.size.height = 15.0;
+    frame.size.width = 15.0;
+    
+	if ([self isEnabled]) {
+        [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.7] setFill];
+        NSShadow *shade = [[[NSShadow alloc] init] autorelease];
+        [shade setShadowColor:[NSColor blackColor]];
+        [shade setShadowBlurRadius:2.0];
+        [shade set];
+    } else {
+        [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setFill];
+    }
+    
+    [[NSBezierPath bezierPathWithOvalInRect:frame] fill];
+}
+
+- (BOOL)_usesCustomTrackImage { return YES; }
+
+@end
+
+#pragma mark -
+
 @implementation SKNavigationSeparator
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.6] setFill];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:0.6] setFill];
     [NSBezierPath fillRect:NSMakeRect(NSMidX(bounds) - 0.5, NSMinY(bounds), 1.0, NSHeight(bounds))];
 }
 

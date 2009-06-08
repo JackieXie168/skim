@@ -43,8 +43,9 @@
 
 @interface SKNavigationWindow : SKAnimatedBorderlessWindow {
     SKNavigationButton *zoomButton;
+    NSSlider *zoomSlider;
 }
-- (id)initWithPDFView:(PDFView *)pdfView;
+- (id)initWithPDFView:(PDFView *)pdfView hasSlider:(BOOL)hasSlider;
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 @end
@@ -106,6 +107,16 @@
 - (NSBezierPath *)alternatePath;
 - (void)setAlternatePath:(NSBezierPath *)newAlternatePath;
 
+@end
+
+
+@interface SKNavigationSlider : NSSlider {
+}
+@end
+
+
+@interface SKNavigationSliderCell : NSSliderCell {
+}
 @end
 
 
