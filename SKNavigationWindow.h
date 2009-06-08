@@ -111,12 +111,17 @@
 
 
 @interface SKNavigationSlider : NSSlider {
+    NSTrackingRectTag trackingRectTag;
+    NSString *toolTip;
 }
+
+- (NSString *)toolTip;
+- (void)setToolTip:(NSString *)string;
+
 @end
 
 
-@interface SKNavigationSliderCell : NSSliderCell {
-}
+@interface SKNavigationSliderCell : NSSliderCell
 @end
 
 

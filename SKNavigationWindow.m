@@ -107,6 +107,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             zoomSlider = [[SKNavigationSlider alloc] initWithFrame:rect];
             [zoomSlider setTarget:controller];
             [zoomSlider setAction:@selector(zoomLog:)];
+            [zoomSlider setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
             [zoomSlider setMinValue:log(0.1)];
             [zoomSlider setMaxValue:log(20.0)];
             [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
@@ -490,6 +491,59 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 @implementation SKNavigationSlider
 
 + (Class)cellClass { return [SKNavigationSliderCell class]; }
+
+- (id)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
+        trackingRectTag = 0;
+        toolTip = nil;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [toolTip release];
+    [super dealloc];
+}
+
+- (void)viewWillMoveToWindow {
+    if (trackingRectTag != 0) {
+        [self removeTrackingRect:trackingRectTag];
+        trackingRectTag = 0;
+    }
+    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+        [super viewWillMoveToWindow];
+}
+
+- (void)viewDidMoveToWindow {
+    if ([self window])
+        trackingRectTag = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+        [super viewDidMoveToWindow];
+}
+
+- (NSString *)toolTip {
+    return toolTip;
+}
+
+- (void)setToolTip:(NSString *)string {
+    if (toolTip != string) {
+        [toolTip release];
+        toolTip = [string retain];
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:self];
+    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+        [super mouseEntered:theEvent];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:self])
+        [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
+    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
+        [super mouseExited:theEvent];
+}
 
 @end
 
