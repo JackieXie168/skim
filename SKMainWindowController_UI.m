@@ -1715,6 +1715,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:SKPDFViewDidMoveAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleReadingBarDidChangeNotification:) 
                              name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
+    //  UndoManager
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
                              name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];
 }
