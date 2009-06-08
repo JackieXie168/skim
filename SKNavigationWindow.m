@@ -505,20 +505,26 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     [super dealloc];
 }
 
-- (void)viewWillMoveToWindow {
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if (trackingRectTag != 0) {
         [self removeTrackingRect:trackingRectTag];
         trackingRectTag = 0;
     }
-    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
-        [super viewWillMoveToWindow];
+    [super viewWillMoveToWindow:newWindow];
 }
 
 - (void)viewDidMoveToWindow {
     if ([self window])
         trackingRectTag = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-    if ([[SKNavigationSlider superclass] instancesRespondToSelector:_cmd])
-        [super viewDidMoveToWindow];
+    [super viewDidMoveToWindow];
+}
+
+- (void)resetCursorRects {
+    [super resetCursorRects];
+    if (trackingRectTag)
+        [self removeTrackingRect:trackingRectTag];
+    if ([self window])
+        trackingRectTag = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
 - (NSString *)toolTip {
