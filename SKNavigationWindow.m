@@ -499,7 +499,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)drawBarInside:(NSRect)frame flipped:(BOOL)flipped {
     frame.origin.x += 2.5;
-    frame.origin.y += 0.5 * NSHeight(frame) - 2.0;
+    frame.origin.y = NSMidY(frame) - 2.0;
     frame.size.width -= 5.0;
     frame.size.height = 5.0;
 	
@@ -517,8 +517,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)drawKnob:(NSRect)frame {
-    frame.origin.x += 3.0;
-    frame.origin.y += 3.0;
+    frame.origin.x = NSMidX(frame) - 7.5;
+    frame.origin.y = NSMidY(frame) - 7.5;
     frame.size.height = 15.0;
     frame.size.width = 15.0;
     
