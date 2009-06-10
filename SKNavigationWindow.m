@@ -111,7 +111,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             [zoomSlider setMinValue:log(0.1)];
             [zoomSlider setMaxValue:log(20.0)];
             [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
-            [zoomSlider setEnabled:NO == [pdfView autoScales]];
             [[self contentView] addSubview:zoomSlider];
         }
         
@@ -168,7 +167,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [zoomButton setState:[[notification object] autoScales] ? NSOnState : NSOffState];
-    [zoomSlider setEnabled:NO == [[notification object] autoScales]];
     [zoomSlider setDoubleValue:log([[notification object] scaleFactor])];
 }
 
