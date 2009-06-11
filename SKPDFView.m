@@ -3147,13 +3147,19 @@ enum {
             if ([activeAnnotation isMovable]) {
                 // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
                 BOOL draggedAnnotation = NO;
+                NSEvent *lastMouseEvent = theEvent;
+                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
                 while (YES) {
-                    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+                    NSEvent *theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
                     if ([theEvent type] == NSLeftMouseUp)
                         break;
-                    [self doDragAnnotationWithEvent:theEvent];
-                    draggedAnnotation = YES;
+                    if ([theEvent type] == NSLeftMouseDragged) {
+                        lastMouseEvent = theEvent;
+                        draggedAnnotation = YES;
+                    }
+                    [self doDragAnnotationWithEvent:lastMouseEvent];
                 }
+                [NSEvent stopPeriodicEvents];
                 if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
                     [self editActiveAnnotation:self]; 	 
                 if (draggedAnnotation && 
@@ -3642,6 +3648,7 @@ enum {
     NSArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     
+    NSEvent *lastMouseEvent = theEvent;
     NSPoint lastMouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSPoint point = [self convertPoint:lastMouseLoc toPage:page];
     NSInteger lineOffset = SKIndexOfRectAtYInOrderedRects(point.y, lineRects, YES) - [readingBar currentLine];
@@ -3651,16 +3658,21 @@ enum {
     
     [[NSCursor closedHandCursor] push];
     
+    [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+    
 	while (YES) {
 		
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		if ([theEvent type] == NSLeftMouseUp)
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
+		
+        if ([theEvent type] == NSLeftMouseUp)
             break;
+		if ([theEvent type] == NSLeftMouseDragged)
+            lastMouseEvent = theEvent;
         
         // dragging
-        NSPoint mouseLocInWindow = [theEvent locationInWindow];
+        NSPoint mouseLocInWindow = [lastMouseEvent locationInWindow];
         NSPoint mouseLoc = [self convertPoint:mouseLocInWindow fromView:nil];
-        if ([[self documentView] autoscroll:theEvent] == NO &&
+        if ([[self documentView] autoscroll:lastMouseEvent] == NO &&
             ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) &&
             [[NSDate date] timeIntervalSinceDate:lastPageChangeDate] > 0.7) {
             if (mouseLoc.y < NSMinY([self bounds])) {
@@ -3709,9 +3721,11 @@ enum {
         }
     }
     
+    [NSEvent stopPeriodicEvents];
+    
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [[self getCursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+    [[self getCursorForEvent:lastMouseEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent {
