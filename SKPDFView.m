@@ -3872,6 +3872,7 @@ enum {
 
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
+	NSEvent *lastMouseEvent = theEvent;
     NSScrollView *scrollView = [[self documentView] enclosingScrollView];
     NSView *documentView = [scrollView documentView];
     NSView *clipView = [scrollView contentView];
@@ -3897,8 +3898,10 @@ enum {
     [documentView setPostsBoundsChangedNotifications: NO];
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
-        
-	while ([theEvent type] != NSLeftMouseUp) {
+    
+    [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+    
+    while ([theEvent type] != NSLeftMouseUp) {
         
         if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
             // set up the currentLevel and magnification
@@ -3917,6 +3920,7 @@ enum {
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
+            lastMouseEvent = theEvent;
         }
         
         if ([self mouse:mouseLoc inRect:visibleRect]) {
@@ -3978,15 +3982,17 @@ enum {
                 [[self window] enableFlushWindow];
                 [[self window] flushWindowIfNeeded];
             }
-            if ([theEvent type] == NSLeftMouseDragged)
-                [documentView autoscroll:theEvent];
+            if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
+                [documentView autoscroll:lastMouseEvent];
             if (currentLevel > 2)
                 [[self window] cacheImageInRect:visibleRect];
             else
                 [[self window] discardCachedImage];
         }
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask];
 	}
+    
+    [NSEvent stopPeriodicEvents];
     
     magnification = 0.0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
