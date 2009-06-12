@@ -539,10 +539,23 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)setInitialSetup:(NSDictionary *)setup{
-    if ([self isWindowLoaded] == NO)
+    if ([self isWindowLoaded] == NO) {
         [savedNormalSetup setDictionary:setup];
-    else
-        NSLog(@"-[NSMainWindowController setupWindow:] called after window was loaded");
+    } else if ([self isFullScreen] || [self isPresentation]) {
+        NSString *rectString = [setup objectForKey:SKMainWindowFrameKey];
+        if (rectString)
+            [mainWindow setFrame:NSRectFromString([setup objectForKey:SKMainWindowFrameKey]) display:YES];
+        NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
+        if (pageIndex != NSNotFound)
+            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
+        if ([snapshotSetups count])
+            [self showSnapshotsWithSetups:snapshotSetups];
+        if ([self isFullScreen] || [self isPresentation])
+            [savedNormalSetup addEntriesFromDictionary:setup];
+        else
+            [self applyPDFSettings:setup];
+    }
 }
 
 - (NSDictionary *)currentSetup {
