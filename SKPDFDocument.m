@@ -1660,8 +1660,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return setup;
 }
 
-- (void)setInitialSetup:(NSDictionary *)setup {
-    [[self mainWindowController] setInitialSetup:setup];
+- (void)applySetup:(NSDictionary *)setup {
+    [[self mainWindowController] applySetup:setup];
 }
 
 - (void)findString:(NSString *)string options:(NSInteger)options{

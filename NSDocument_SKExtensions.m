@@ -114,6 +114,6 @@ static NSSet *supportedRichTextTypes = nil;
 
 - (void)saveRecentDocumentInfo {}
 
-- (void)setInitialSetup:(NSDictionary *)setup {}
+- (void)applySetup:(NSDictionary *)setup {}
 
 @end
