@@ -345,7 +345,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if(fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if(fileURL && NO == SKFileIsInTrash(fileURL)) {
-        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
+        if (document = [self documentForURL:fileURL]) {
+            // the document was already open, don't call makeWindowControllers because that adds new empty windows
+            // perhaps we should somehow apply the settings anyway?
+        } else if (document = [self openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
             [document makeWindowControllers];
             [document setInitialSetup:setup];
             [document showWindows];
