@@ -127,7 +127,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 
 - (NSDictionary *)currentDocumentSetup;
 
-- (void)setInitialSetup:(NSDictionary *)setup;
+- (void)applySetup:(NSDictionary *)setup;
 
 - (SKPDFSynchronizer *)synchronizer;
 

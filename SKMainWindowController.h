@@ -364,7 +364,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)setOpenMetaTags:(NSArray *)tags;
 - (void)setOpenMetaRating:(double)rating;
 
-- (void)setInitialSetup:(NSDictionary *)setup;
+- (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;
 - (void)applyPDFSettings:(NSDictionary *)setup;
 - (NSDictionary *)currentPDFSettings;

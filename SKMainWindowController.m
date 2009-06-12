@@ -538,7 +538,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     mwcFlags.settingUpWindow = 0;
 }
 
-- (void)setInitialSetup:(NSDictionary *)setup{
+- (void)applySetup:(NSDictionary *)setup{
     if ([self isWindowLoaded] == NO) {
         [savedNormalSetup setDictionary:setup];
     } else if ([self isFullScreen] || [self isPresentation]) {
