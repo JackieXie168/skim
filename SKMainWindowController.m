@@ -541,16 +541,59 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)applySetup:(NSDictionary *)setup{
     if ([self isWindowLoaded] == NO) {
         [savedNormalSetup setDictionary:setup];
-    } else if ([self isFullScreen] || [self isPresentation]) {
+    } else {
+        
         NSString *rectString = [setup objectForKey:SKMainWindowFrameKey];
         if (rectString)
             [mainWindow setFrame:NSRectFromString([setup objectForKey:SKMainWindowFrameKey]) display:YES];
+        
+        NSNumber *leftWidth = [setup objectForKey:LEFTSIDEPANEWIDTH_KEY];
+        NSNumber *rightWidth = [setup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
+        if (leftWidth && rightWidth) {
+            CGFloat width = [leftWidth floatValue];
+            NSRect frame;
+            if (width >= 0.0) {
+                frame = [leftSideContentView frame];
+                frame.size.width = width;
+                if (mwcFlags.usesDrawers == 0) {
+                    [leftSideContentView setFrame:frame];
+                } else if (width > 0.0) {
+                    [leftSideDrawer setContentSize:frame.size];
+                    [leftSideDrawer openOnEdge:NSMinXEdge];
+                } else {
+                    [leftSideDrawer close];
+                }
+            }
+            width = [rightWidth floatValue];
+            if (width >= 0.0) {
+                frame = [rightSideContentView frame];
+                frame.size.width = width;
+                if (mwcFlags.usesDrawers == 0) {
+                    frame.origin.x = NSMaxX([splitView bounds]) - width;
+                    [rightSideContentView setFrame:frame];
+                } else if (width > 0.0) {
+                    [rightSideDrawer setContentSize:frame.size];
+                    [rightSideDrawer openOnEdge:NSMaxXEdge];
+                } else {
+                    [rightSideDrawer close];
+                }
+            }
+            if (mwcFlags.usesDrawers == 0) {
+                frame = [pdfSplitView frame];
+                frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
+                frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
+                [pdfSplitView setFrame:frame];
+            }
+        }
+        
         NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
         if (pageIndex != NSNotFound)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        
         NSArray *snapshotSetups = [setup objectForKey:SNAPSHOTS_KEY];
         if ([snapshotSetups count])
             [self showSnapshotsWithSetups:snapshotSetups];
+        
         if ([self isFullScreen] || [self isPresentation])
             [savedNormalSetup addEntriesFromDictionary:setup];
         else
