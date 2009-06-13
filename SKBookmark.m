@@ -265,6 +265,8 @@ static Class SKBookmarkClass = Nil;
         while (dict = [dictEnum nextObject])
             [newChildren addObject:[SKBookmark bookmarkWithProperties:dict]];
         return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
+    } else if ([dictionary objectForKey:@"windowFrame"]) {
+        return [[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     } else {
         return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:ALIASDATA_KEY]] pageIndex:[[dictionary objectForKey:PAGEINDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
     }
