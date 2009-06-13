@@ -3988,7 +3988,7 @@ enum {
             
         } else { // mouse is not in the rect
             // show cursor 
-            if (mouseInside == YES) {
+            if (mouseInside) {
                 mouseInside = NO;
                 [NSCursor unhide];
                 // restore the cached image in order to clear the rect
