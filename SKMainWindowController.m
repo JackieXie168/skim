@@ -1391,17 +1391,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)saveNormalSetup {
-    if ([self isPresentation] == NO && [self isFullScreen] == NO) {
-        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-        [savedNormalSetup setDictionary:[self currentPDFSettings]];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
-        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
-    }
-    
-    NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
-    if ([fullScreenSetup count])
-        [self applyPDFSettings:fullScreenSetup];
+    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    [savedNormalSetup setDictionary:[self currentPDFSettings]];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
 }
 
 - (void)activityTimerFired:(NSTimer *)timer {
@@ -1410,7 +1404,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-    [self saveNormalSetup];
+    if ([self isFullScreen] == NO)
+        [self saveNormalSetup];
     // Set up presentation mode
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
@@ -1463,12 +1458,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
-    [self saveNormalSetup];
-    
-    if ([self isPresentation])
+    if ([self isPresentation]) {
         [self exitPresentationMode];
-    else
+    } else {
+        [self saveNormalSetup];
         [self goFullScreen];
+    }
     
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     [pdfView setBackgroundColor:backgroundColor];
@@ -1494,6 +1489,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionDisableProcessSwitch);
+    else
+        SetSystemUIMode(kUIModeNormal, kUIOptionDisableProcessSwitch);
     
     if (wasFullScreen)
         [self hideSideWindows];
