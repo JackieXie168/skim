@@ -158,23 +158,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)setupToolbar;
 
 - (void)updatePageLabel;
-- (void)updatePageLabelsAndOutline;
 
 - (SKProgressController *)progressController;
 
-- (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
-- (void)showRightSideWindowOnScreen:(NSScreen *)screen;
-- (void)hideLeftSideWindow;
-- (void)hideRightSideWindow;
-- (void)showSideWindowsOnScreen:(NSScreen *)screen;
-- (void)hideSideWindows;
-- (void)goFullScreen;
-- (void)saveNormalSetup;
-- (void)enterPresentationMode;
-- (void)exitPresentationMode;
-- (void)activityTimerFired:(NSTimer *)timer;
-
-- (void)goToFindResults:(NSArray *)findResults scrollToVisible:(BOOL)scroll;
 - (void)goToSelectedFindResults:(id)sender;
 - (void)updateFindResultHighlights:(BOOL)scroll;
 
@@ -184,9 +170,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)updateNoteFilterPredicate;
 
-- (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
-
-- (void)goToDestination:(PDFDestination *)destination;
 - (void)goToPage:(PDFPage *)page;
 
 - (void)registerForDocumentNotifications;
