@@ -153,6 +153,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 @interface SKMainWindowController (SKPrivate)
 
+- (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
+
 - (void)setupToolbar;
 
 - (void)updatePageLabel;
@@ -294,7 +296,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)windowDidLoad{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     BOOL hasWindowSetup = [savedNormalSetup count] > 0;
-    NSRect frame;
     
     mwcFlags.settingUpWindow = 1;
     
@@ -419,41 +420,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKLeftSidePaneWidthKey];
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
-    if (leftWidth && rightWidth) {
-        CGFloat width = [leftWidth floatValue];
-        if (width >= 0.0) {
-            frame = [leftSideContentView frame];
-            frame.size.width = width;
-            if (mwcFlags.usesDrawers == 0) {
-                [leftSideContentView setFrame:frame];
-            } else if (width > 0.0) {
-                [leftSideDrawer setContentSize:frame.size];
-                [leftSideDrawer openOnEdge:NSMinXEdge];
-            } else {
-                [leftSideDrawer close];
-            }
-        }
-        width = [rightWidth floatValue];
-        if (width >= 0.0) {
-            frame = [rightSideContentView frame];
-            frame.size.width = width;
-            if (mwcFlags.usesDrawers == 0) {
-                frame.origin.x = NSMaxX([splitView bounds]) - width;
-                [rightSideContentView setFrame:frame];
-            } else if (width > 0.0) {
-                [rightSideDrawer setContentSize:frame.size];
-                [rightSideDrawer openOnEdge:NSMaxXEdge];
-            } else {
-                [rightSideDrawer close];
-            }
-        }
-        if (mwcFlags.usesDrawers == 0) {
-            frame = [pdfSplitView frame];
-            frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
-            frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
-            [pdfSplitView setFrame:frame];
-        }
-    }
+    if (leftWidth && rightWidth)
+        [self applyLeftSideWidth:[leftWidth floatValue] rightSideWidth:[rightWidth floatValue]];
     
     // this needs to be done before loading the PDFDocument
     [self resetThumbnailSizeIfNeeded];
@@ -538,6 +506,41 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     mwcFlags.settingUpWindow = 0;
 }
 
+- (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
+    NSRect frame;
+    if (leftSideWidth >= 0.0) {
+        frame = [leftSideContentView frame];
+        frame.size.width = leftSideWidth;
+        if (mwcFlags.usesDrawers == 0) {
+            [leftSideContentView setFrame:frame];
+        } else if (leftSideWidth > 0.0) {
+            [leftSideDrawer setContentSize:frame.size];
+            [leftSideDrawer openOnEdge:NSMinXEdge];
+        } else {
+            [leftSideDrawer close];
+        }
+    }
+    if (rightSideWidth >= 0.0) {
+        frame = [rightSideContentView frame];
+        frame.size.width = rightSideWidth;
+        if (mwcFlags.usesDrawers == 0) {
+            frame.origin.x = NSMaxX([splitView bounds]) - rightSideWidth;
+            [rightSideContentView setFrame:frame];
+        } else if (rightSideWidth > 0.0) {
+            [rightSideDrawer setContentSize:frame.size];
+            [rightSideDrawer openOnEdge:NSMaxXEdge];
+        } else {
+            [rightSideDrawer close];
+        }
+    }
+    if (mwcFlags.usesDrawers == 0) {
+        frame = [pdfSplitView frame];
+        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
+        frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
+        [pdfSplitView setFrame:frame];
+    }
+}
+
 - (void)applySetup:(NSDictionary *)setup{
     if ([self isWindowLoaded] == NO) {
         [savedNormalSetup setDictionary:setup];
@@ -549,42 +552,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         NSNumber *leftWidth = [setup objectForKey:LEFTSIDEPANEWIDTH_KEY];
         NSNumber *rightWidth = [setup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
-        if (leftWidth && rightWidth) {
-            CGFloat width = [leftWidth floatValue];
-            NSRect frame;
-            if (width >= 0.0) {
-                frame = [leftSideContentView frame];
-                frame.size.width = width;
-                if (mwcFlags.usesDrawers == 0) {
-                    [leftSideContentView setFrame:frame];
-                } else if (width > 0.0) {
-                    [leftSideDrawer setContentSize:frame.size];
-                    [leftSideDrawer openOnEdge:NSMinXEdge];
-                } else {
-                    [leftSideDrawer close];
-                }
-            }
-            width = [rightWidth floatValue];
-            if (width >= 0.0) {
-                frame = [rightSideContentView frame];
-                frame.size.width = width;
-                if (mwcFlags.usesDrawers == 0) {
-                    frame.origin.x = NSMaxX([splitView bounds]) - width;
-                    [rightSideContentView setFrame:frame];
-                } else if (width > 0.0) {
-                    [rightSideDrawer setContentSize:frame.size];
-                    [rightSideDrawer openOnEdge:NSMaxXEdge];
-                } else {
-                    [rightSideDrawer close];
-                }
-            }
-            if (mwcFlags.usesDrawers == 0) {
-                frame = [pdfSplitView frame];
-                frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
-                frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
-                [pdfSplitView setFrame:frame];
-            }
-        }
+        if (leftWidth && rightWidth)
+            [self applyLeftSideWidth:[leftWidth floatValue] rightSideWidth:[rightWidth floatValue]];
         
         NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
         if (pageIndex != NSNotFound)
