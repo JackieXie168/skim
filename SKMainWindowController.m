@@ -1579,15 +1579,15 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 #pragma mark Swapping tables
 
-- (void)replaceSideView:(NSView *)newView atLeft:(BOOL)left animate:(BOOL)animate {
+- (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
     if ([newView window] == nil) {
         NSView *oldView = nil;
-        if (left) {
-            oldView = currentLeftSideView;
-            currentLeftSideView = newView;
-        } else {
+        if (newView == noteView || newView == snapshotView) {
             oldView = currentRightSideView;
             currentRightSideView = newView;
+        } else {
+            oldView = currentLeftSideView;
+            currentLeftSideView = newView;
         }
         
         NSResponder *oldFirstResponder = [[oldView window] firstResponder];
@@ -1653,47 +1653,47 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)displayOutlineView {
-    [self replaceSideView:tocView atLeft:YES animate:NO];
+    [self replaceSideView:tocView animate:NO];
     [self updateOutlineSelection];
 }
 
 - (void)fadeInOutlineView {
-    [self replaceSideView:tocView atLeft:YES animate:YES];
+    [self replaceSideView:tocView animate:YES];
     [self updateOutlineSelection];
 }
 
 - (void)displayThumbnailView {
-    [self replaceSideView:thumbnailView atLeft:YES animate:NO];
+    [self replaceSideView:thumbnailView animate:NO];
     [self updateThumbnailSelection];
 }
 
 - (void)fadeInThumbnailView {
-    [self replaceSideView:thumbnailView atLeft:YES animate:YES];
+    [self replaceSideView:thumbnailView animate:YES];
     [self updateThumbnailSelection];
 }
 
 - (void)displaySearchView {
-    [self replaceSideView:findView atLeft:YES animate:NO];
+    [self replaceSideView:findView animate:NO];
 }
 
 - (void)fadeInSearchView {
-    [self replaceSideView:findView atLeft:YES animate:YES];
+    [self replaceSideView:findView animate:YES];
 }
 
 - (void)displayGroupedSearchView {
-    [self replaceSideView:groupedFindView atLeft:YES animate:NO];
+    [self replaceSideView:groupedFindView animate:NO];
 }
 
 - (void)fadeInGroupedSearchView {
-    [self replaceSideView:groupedFindView atLeft:YES animate:YES];
+    [self replaceSideView:groupedFindView animate:YES];
 }
 
 - (void)displayNoteView {
-    [self replaceSideView:noteView atLeft:NO animate:NO];
+    [self replaceSideView:noteView animate:NO];
 }
 
 - (void)displaySnapshotView {
-    [self replaceSideView:snapshotView atLeft:NO animate:NO];
+    [self replaceSideView:snapshotView animate:NO];
     [self updateSnapshotsIfNeeded];
 }
 
