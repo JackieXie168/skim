@@ -1409,7 +1409,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [menuItem setTitle:NSLocalizedString(@"Hide Split PDF", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Split PDF", @"Menu item title")];
-        return [self isPresentation] == NO && [self isFullScreen] == NO;
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleStatusBar:)) {
         if ([statusBar isVisible])
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];

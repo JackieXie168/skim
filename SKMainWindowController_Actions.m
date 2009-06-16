@@ -1034,7 +1034,7 @@
         }
     } else {
         NSRect sideFrame = [leftSideContentView frame];
-        NSRect pdfFrame = [pdfSplitView frame];
+        NSRect pdfFrame = [pdfContentView frame];
         
         if ([self leftSidePaneIsOpen]) {
             if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
@@ -1052,7 +1052,7 @@
         }
         pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
         [leftSideContentView setFrame:sideFrame];
-        [pdfSplitView setFrame:pdfFrame];
+        [pdfContentView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         [[self window] invalidateCursorRectsForView:splitView];
         
@@ -1086,7 +1086,7 @@
             [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
         NSRect sideFrame = [rightSideContentView frame];
-        NSRect pdfFrame = [pdfSplitView frame];
+        NSRect pdfFrame = [pdfContentView frame];
         
         if ([self rightSidePaneIsOpen]) {
             lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
@@ -1102,7 +1102,7 @@
         }
         sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
         [rightSideContentView setFrame:sideFrame];
-        [pdfSplitView setFrame:pdfFrame];
+        [pdfContentView setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         [[self window] invalidateCursorRectsForView:splitView];
         
@@ -1139,6 +1139,8 @@
     if ([secondaryPdfView window]) {
         
         [secondaryPdfEdgeView removeFromSuperview];
+        if ([self isFullScreen])
+            [pdfEdgeView setEdges:BDSKNoEdgeMask];
         
     } else {
         
@@ -1151,7 +1153,6 @@
         
         if (secondaryPdfView == nil) {
             secondaryPdfEdgeView = [[BDSKEdgeView alloc] initWithFrame:frame2];
-            [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[[secondaryPdfEdgeView contentView] bounds]];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [secondaryPdfEdgeView addSubview:secondaryPdfView];
@@ -1167,12 +1168,21 @@
             [secondaryPdfEdgeView setFrame:frame2];
             [pdfSplitView addSubview:secondaryPdfEdgeView];
         }
+        if ([self isFullScreen]) {
+            [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
+            [pdfEdgeView setEdges:BDSKMinYEdgeMask];
+        } else {
+            [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+            [pdfEdgeView setEdges:BDSKEveryEdgeMask];
+        }
         
         [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];
     }
     
     [pdfSplitView adjustSubviews];
     [[self window] recalculateKeyViewLoop];
+    if ([self isFullScreen])
+        [[self window] makeFirstResponder:pdfView];
 }
 
 - (IBAction)toggleFullScreen:(id)sender {

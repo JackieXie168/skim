@@ -1499,7 +1499,7 @@ enum {
     NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
     [super mouseExited:theEvent];
     if (trackingNumber == trackingRect) {
-        [[self window] setAcceptsMouseMovedEvents:NO];
+        [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKFullScreenMode)];
     } else if (PDFToolTipRect == trackingNumber) {
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
         PDFToolTipRect = 0;
