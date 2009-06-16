@@ -1220,7 +1220,7 @@ enum {
     }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = (navigationMode == SKNavigationEverywhere) || (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 5.0);
+    BOOL shouldShowNavWindow = (navigationMode == SKNavigationEverywhere) || (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0);
     if (navigationMode || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
             [navWindow orderFront:self];
