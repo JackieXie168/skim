@@ -294,6 +294,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
+    [pdfSplitView setFrame:[pdfContentView bounds]];
+    [pdfContentView addSubview:pdfSplitView];
+    
     if (mwcFlags.usesDrawers == 0 || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
         [leftSideButton makeTexturedRounded];
         [rightSideButton makeTexturedRounded];
@@ -310,6 +313,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
     [leftSideContentView setAutoresizesSubviews:YES];
     [rightSideContentView setAutoresizesSubviews:YES];
+    [pdfContentView setAutoresizesSubviews:YES];
+    [pdfEdgeView setAutoresizesSubviews:YES];
     
     [leftSideView setFrame:[leftSideContentView bounds]];
     [leftSideContentView addSubview:leftSideView];
@@ -358,7 +363,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [rightSideDrawer setDelegate:self];
-        [pdfSplitView setFrame:[splitView bounds]];
+        [pdfContentView setFrame:[splitView bounds]];
     } else {
         [pdfSplitView setBlendEnds:YES];
     }
@@ -517,10 +522,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         }
     }
     if (mwcFlags.usesDrawers == 0) {
-        frame = [pdfSplitView frame];
+        frame = [pdfContentView frame];
         frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
         frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
-        [pdfSplitView setFrame:frame];
+        [pdfContentView setFrame:frame];
     }
 }
 
@@ -1317,8 +1322,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self showLeftSideWindowOnScreen:screen];
     [self showRightSideWindowOnScreen:screen];
     
-    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
-    [[pdfView superview] setNeedsDisplay:YES];
+    [pdfSplitView setFrame:NSInsetRect([[pdfSplitView superview] bounds], 9.0, 0.0)];
+    [[pdfSplitView superview] setNeedsDisplay:YES];
 }
 
 - (void)hideSideWindows {
@@ -1343,10 +1348,17 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
-    [fullScreenWindow setMainView:pdfView];
+    if ([self isPresentation]) {
+        [fullScreenWindow setMainView:pdfView];
+    } else {
+        [fullScreenWindow setMainView:pdfSplitView];
+        [pdfEdgeView setEdges:[secondaryPdfView window] ? BDSKMinYEdgeMask : BDSKNoEdgeMask];
+        [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
+    }
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:[self isPresentation] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
     [pdfView setBackgroundColor:backgroundColor];
+    [secondaryPdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
@@ -1421,6 +1433,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSColor *backgroundColor = [NSColor blackColor];
     [pdfView setBackgroundColor:backgroundColor];
+    [secondaryPdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
@@ -1460,6 +1473,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     if ([self isPresentation]) {
         [self exitPresentationMode];
+        [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+        [pdfEdgeView addSubview:pdfView];
+        [fullScreenWindow setMainView:pdfSplitView];
+        [pdfEdgeView setEdges:[secondaryPdfView window] ? BDSKMinYEdgeMask : BDSKNoEdgeMask];
+        [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
     } else {
         [self saveNormalSetup];
         [self goFullScreen];
@@ -1467,6 +1485,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     [pdfView setBackgroundColor:backgroundColor];
+    [secondaryPdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSNormalWindowLevel];
     
@@ -1492,10 +1511,16 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else
         SetSystemUIMode(kUIModeNormal, kUIOptionDisableProcessSwitch);
     
-    if (wasFullScreen)
+    if (wasFullScreen) {
+        [pdfSplitView setFrame:[pdfContentView bounds]];
+        [pdfContentView addSubview:pdfSplitView];
+        [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+        [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+        [fullScreenWindow setMainView:pdfView];
         [self hideSideWindows];
-    else
+    } else {
         [self goFullScreen];
+    }
     
     [pdfView setInteractionMode:SKPresentationMode screen:screen];
 }
@@ -1518,9 +1543,18 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [fullScreenWindow fadeOutBlocking:YES];
     
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
-    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-    [pdfEdgeView addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
+    // this should be done before exitPresentationMode to get a smooth transition
+    if ([self isFullScreen]) {
+        [pdfSplitView setFrame:[pdfContentView bounds]];
+        [pdfContentView addSubview:pdfSplitView];
+        [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+        [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+    } else {
+        [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+        [pdfEdgeView addSubview:pdfView]; 
+    }
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+    [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView layoutDocumentView];
     
     if ([self isPresentation])
@@ -2290,14 +2324,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey]) {
-            if ([self isFullScreen] == NO && [self isPresentation] == NO)
+            if ([self isFullScreen] == NO && [self isPresentation] == NO) {
                 [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
-            [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+                [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
+            }
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
             if ([self isFullScreen]) {
                 NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
                 if (color) {
                     [pdfView setBackgroundColor:color];
+                    [secondaryPdfView setBackgroundColor:color];
                     [fullScreenWindow setBackgroundColor:color];
                     [[fullScreenWindow contentView] setNeedsDisplay:YES];
                     

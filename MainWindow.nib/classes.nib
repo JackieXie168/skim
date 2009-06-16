@@ -72,6 +72,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKTocOutlineView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKOutlineView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKMainWindow</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -80,11 +88,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>SKTocOutlineView</string>
+			<string>NSWindowController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
-			<string>SKOutlineView</string>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -265,6 +281,8 @@
 				<string>id</string>
 				<key>zoomInActualOut</key>
 				<string>id</string>
+				<key>zoomLog</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>SKMainWindowController</string>
@@ -352,6 +370,8 @@
 				<string>NSObjectController</string>
 				<key>pageNumberField</key>
 				<string>NSTextField</string>
+				<key>pdfContentView</key>
+				<string>NSView</string>
 				<key>pdfEdgeView</key>
 				<string>BDSKEdgeView</string>
 				<key>pdfSplitView</key>
@@ -429,22 +449,6 @@
 			<string>NSWindowController</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -507,19 +511,19 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSScrollView</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSView</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>SKSegmentedControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSSegmentedControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>

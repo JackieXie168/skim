@@ -71,6 +71,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView            *splitView;
     
+    IBOutlet NSView                 *pdfContentView;
     IBOutlet SKSplitView            *pdfSplitView;
     IBOutlet BDSKEdgeView           *pdfEdgeView;
     IBOutlet SKPDFView              *pdfView;
