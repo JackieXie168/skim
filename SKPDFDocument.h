@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKPDFDocumentWillSaveNotification;
 extern NSString *SKSkimFileDidSaveNotification;
 
 enum {

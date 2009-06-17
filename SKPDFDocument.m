@@ -81,6 +81,7 @@
 #define OPEN_META_TAGS_KEY @"com.apple.metadata:kOMUserTags"
 #define OPEN_META_RATING_KEY @"com.apple.metadata:kOMStarRating"
 
+NSString *SKPDFDocumentWillSaveNotification = @"SKPDFDocumentWillSaveNotification";
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
@@ -435,6 +436,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     NSError *error = nil;
     if (SKIsEmbeddedPDFDocumentType(typeName)) {

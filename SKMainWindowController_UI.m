@@ -1077,50 +1077,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
-#pragma mark NSControl delegate protocol
-
-- (void)controlTextDidBeginEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView])
-        [[self document] objectDidBeginEditing:self];
-}
-
-- (void)controlTextDidEndEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView])
-        [[self document] objectDidEndEditing:self];
-}
-
-#pragma mark NSEditor protocol
-
-- (void)discardEditing {
-    int row = [noteOutlineView editedRow];
-    if (row != -1) {
-        id item = [noteOutlineView itemAtRow:row];
-        [[noteOutlineView currentEditor] setString:[item string]];
-        [[noteOutlineView window] makeFirstResponder:noteOutlineView];
-    }
-}
-
-- (BOOL)commitEditing {
-    if ([noteOutlineView editedRow] != -1)
-        return [[noteOutlineView window] makeFirstResponder:noteOutlineView];
-    else
-        return YES;
-}
-
-- (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
-    BOOL didCommit = [self commitEditing];
-    if (delegate && didCommitSelector) {
-        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
-        [invocation setArgument:&didCommit atIndex:3];
-        [invocation setArgument:&contextInfo atIndex:4];
-        [invocation invoke];
-    }
-}
-
 #pragma mark SKPDFView delegate protocol
 
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
@@ -1566,6 +1522,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
 }
 
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
+    [pdfView endAnnotationEdit:self];
+    if ([noteOutlineView editedRow] != -1)
+        [[noteOutlineView window] makeFirstResponder:noteOutlineView];
+}
+
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
@@ -1686,6 +1648,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                              name:NSApplicationDidResignActiveNotification object:NSApp];
     [nc addObserver:self selector:@selector(handleApplicationWillBecomeActiveNotification:) 
                              name:NSApplicationWillBecomeActiveNotification object:NSApp];
+    // Document
+    [nc addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
+                             name:SKPDFDocumentWillSaveNotification object:[self document]];
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
