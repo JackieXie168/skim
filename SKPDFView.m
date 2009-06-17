@@ -554,7 +554,7 @@ enum {
 	if (activeAnnotation != nil) {
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
         if (changed && [self isEditing])
-            [self commitEditing];
+            [self endAnnotationEdit:nil];
 	}
     
 	// Assign.
@@ -2001,7 +2001,7 @@ enum {
     if (undoable)
         [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
-        [self commitEditing];
+        [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
@@ -2039,7 +2039,7 @@ enum {
         return;
     
     if ([self isEditing])
-        [self commitEditing];
+        [self endAnnotationEdit:self];
     if (activeAnnotation != annotation)
         [self setActiveAnnotation:annotation];
     [self editActiveAnnotation:sender];
@@ -2049,7 +2049,7 @@ enum {
     if (nil == activeAnnotation || hideNotes)
         return;
     
-    [self commitEditing];
+    [self endAnnotationEdit:self];
     
     NSString *type = [activeAnnotation type];
     
@@ -2083,8 +2083,6 @@ enum {
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
-        [[[[self window] windowController] document] objectDidBeginEditing:self];
-        
     } else if ([activeAnnotation isEditable]) {
         
         [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2096,25 +2094,10 @@ enum {
     
 }
 
-- (void)discardEditing {
+- (void)endAnnotationEdit:(id)sender {
     if (editField) {
         if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
             [[self window] endEditingFor:nil];
-        [editField removeFromSuperview];
-        [editField release];
-        editField = nil;
-        
-        if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
-            [self setNeedsDisplayForAnnotation:activeAnnotation];
-        
-        [[[[self window] windowController] document] objectDidEndEditing:self];
-    }
-}
-
-- (BOOL)commitEditing {
-    if (editField) {
-        if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
-            return NO;
         if ([[editField stringValue] isEqualToString:[activeAnnotation string]] == NO)
             [activeAnnotation setString:[editField stringValue]];
         [editField removeFromSuperview];
@@ -2123,23 +2106,6 @@ enum {
         
         if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-        
-        [[[[self window] windowController] document] objectDidEndEditing:self];
-    }
-    return YES;
-}
-
-- (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
-    BOOL didCommit = [self commitEditing];
-    if (delegate && didCommitSelector) {
-        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
-        [invocation setArgument:&didCommit atIndex:3];
-        [invocation setArgument:&contextInfo atIndex:4];
-        [invocation invoke];
     }
 }
 
@@ -2147,7 +2113,7 @@ enum {
     BOOL rv = NO;
     if ([control isEqual:editField]) {
         if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
-            [self commitEditing];
+            [self endAnnotationEdit:self];
             [[self window] makeFirstResponder:self];
             rv = YES;
         }
@@ -2166,7 +2132,7 @@ enum {
     
     if (activeAnnotation) {
         if ([self isEditing])
-            [self commitEditing];
+            [self endAnnotationEdit:self];
         pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
     } else {
@@ -2212,7 +2178,7 @@ enum {
     
     if (activeAnnotation) {
         if ([self isEditing])
-            [self commitEditing];
+            [self endAnnotationEdit:self];
         pageIndex = [[activeAnnotation page] pageIndex];
         annotations = [[activeAnnotation page] annotations];
         i = [annotations indexOfObject:activeAnnotation];

@@ -195,6 +195,9 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [self updateStatusMessage];
     
     [self setWindowFrameAutosaveNameOrCascade:[self isNoteType] ? SKNoteWindowFrameAutosaveName : SKGenericNoteWindowFrameAutosaveName];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
+                                                 name:SKPDFDocumentWillSaveNotification object:[self document]];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
@@ -266,20 +269,14 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [pdfView setActiveAnnotation:note];
 }
 
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
+    [noteController commitEditing];
+}
+
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {
     if (textViewUndoManager == nil)
         textViewUndoManager = [[NSUndoManager alloc] init];
     return textViewUndoManager;
-}
-
-#pragma mark NSEditorRegistration protocol
-
-- (void)objectDidBeginEditing:(id)editor {
-    [[self document] objectDidBeginEditing:editor];
-}
-
-- (void)objectDidEndEditing:(id)editor {
-    [[self document] objectDidEndEditing:editor];
 }
 
 #pragma mark BDSKDragImageView delegate protocol
