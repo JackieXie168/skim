@@ -145,7 +145,6 @@ enum {
 - (void)enableNavigationForScreen:(NSScreen *)screen;
 - (void)disableNavigation;
 
-- (void)autohideTimerFired:(NSTimer *)aTimer;
 - (void)doAutohide:(BOOL)flag;
 
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
