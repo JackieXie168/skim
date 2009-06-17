@@ -2544,6 +2544,7 @@ enum {
 - (void)disableNavigation {
     navigationMode = SKNavigationNone;
     
+    [self doAutohide:NO];
     [navWindow orderOut:self];
 }
 
