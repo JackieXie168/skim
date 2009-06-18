@@ -46,10 +46,10 @@ NSString *SUInstallerVersionComparatorKey = @"SUInstallerVersionComparator";
 + (void)performInstallationWithPath:(NSString *)path host:(SUHost *)host delegate:delegate synchronously:(BOOL)synchronously versionComparator:(id <SUVersionComparison>)comparator
 {
 	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:path, SUInstallerPathKey, host, SUInstallerHostKey, delegate, SUInstallerDelegateKey, comparator, SUInstallerVersionComparatorKey, nil];
-	if (synchronously)
+	//if (synchronously)
 		[self _performInstallationWithInfo:info];
-	else
-		[NSThread detachNewThreadSelector:@selector(_performInstallationWithInfo:) toTarget:self withObject:info];
+	//else
+	//	[NSThread detachNewThreadSelector:@selector(_performInstallationWithInfo:) toTarget:self withObject:info];
 }
 
 @end
