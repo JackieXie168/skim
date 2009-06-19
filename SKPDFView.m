@@ -146,6 +146,7 @@ enum {
 - (void)disableNavigation;
 
 - (void)doAutohide:(BOOL)flag;
+- (void)showNavWindow:(BOOL)flag;
 
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
@@ -292,7 +293,8 @@ enum {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self doAutohide:NO]; // invalidates and releases the timer
+    [self showNavWindow:NO];
+    [self doAutohide:NO];
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
     CFRelease(PDFToolTipRects);
@@ -1218,8 +1220,12 @@ enum {
         [self setActiveAnnotation:nil];
     }
     
-    if ([navWindow isVisible] == NO && ((navigationMode == SKNavigationEverywhere) || (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0)))
-        [navWindow orderFront:self];
+    if ([navWindow isVisible] == NO) {
+        if (navigationMode == SKNavigationEverywhere)
+            [navWindow orderFront:nil];
+        else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0)
+            [self showNavWindow:YES];
+    }
     if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
         [self doAutohide:YES];
 }
@@ -2506,11 +2512,12 @@ enum {
 - (void)disableNavigation {
     navigationMode = SKNavigationNone;
     
+    [self showNavWindow:NO];
     [self doAutohide:NO];
     [navWindow orderOut:self];
 }
 
-- (void)autohideTimerFired:(NSTimer *)aTimer {
+- (void)doAutohideDelayed {
     if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (interactionMode == SKPresentationMode)
@@ -2520,13 +2527,20 @@ enum {
 }
 
 - (void)doAutohide:(BOOL)flag {
-    if (autohideTimer) {
-        [autohideTimer invalidate];
-        [autohideTimer release];
-        autohideTimer = nil;
-    }
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutohideDelayed) object:nil];
     if (flag)
-        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
+        [self performSelector:@selector(doAutohideDelayed) withObject:nil afterDelay:3.0];
+}
+
+- (void)showNavWindowDelayed {
+    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0)
+        [navWindow orderFront:nil];
+}
+
+- (void)showNavWindow:(BOOL)flag {
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindowDelayed) object:nil];
+    if (flag)
+        [self performSelector:@selector(showNavWindowDelayed) withObject:nil afterDelay:0.3];
 }
 
 #pragma mark Event handling
