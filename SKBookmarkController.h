@@ -58,7 +58,8 @@
 - (void)addBookmarkForSetup:(NSDictionary *)setupDict label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForPaths:(NSArray *)paths pageIndexes:(NSArray *)pageIndexes label:(NSString *)label toFolder:(SKBookmark *)folder;
 - (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder;
-- (void)openBookmarks:(NSArray *)items;
+
+- (void)openBookmark:(SKBookmark *)bookmark;
 
 - (IBAction)doubleClickBookmark:(id)sender;
 - (IBAction)insertBookmarkFolder:(id)sender;

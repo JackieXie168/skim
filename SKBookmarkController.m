@@ -376,7 +376,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return bookmarksPath;
 }
 
-- (void)openBookmark:(SKBookmark *)bookmark {
+- (void)openFileBookmark:(SKBookmark *)bookmark {
     id document = nil;
     NSError *error = nil;
     NSDictionary *dict = [bookmark properties];
@@ -393,18 +393,13 @@ static SKBookmarkController *sharedBookmarkController = nil;
         [NSApp presentError:error];
 }
 
-- (void)openBookmarks:(NSArray *)items {
-    NSEnumerator *bmEnum = [items objectEnumerator];
-    SKBookmark *bm;
-    
-    while (bm = [bmEnum nextObject]) {
-        if ([bm bookmarkType] == SKBookmarkTypeSession) {
-            NSInteger i = [bm countOfChildren];
-            while (i--)
-                [self openBookmark:[bm objectInChildrenAtIndex:i]];
-        } else if ([bm bookmarkType] == SKBookmarkTypeBookmark) {
-            [self openBookmark:bm];
-        }
+- (void)openBookmark:(SKBookmark *)bookmark {
+    if ([bookmark bookmarkType] == SKBookmarkTypeSession) {
+        NSInteger i = [bookmark countOfChildren];
+        while (i--)
+            [self openFileBookmark:[bookmark objectInChildrenAtIndex:i]];
+    } else if ([bookmark bookmarkType] == SKBookmarkTypeBookmark) {
+        [self openFileBookmark:bookmark];
     }
 }
 
@@ -412,7 +407,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     NSInteger row = [outlineView clickedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
     if (bm && [bm bookmarkType] == SKBookmarkTypeBookmark)
-        [self openBookmarks:[NSArray arrayWithObject:bm]];
+        [self openBookmark:bm];
 }
 
 - (IBAction)insertBookmarkFolder:(id)sender {

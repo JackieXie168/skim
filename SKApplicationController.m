@@ -331,8 +331,7 @@ static id sharedApplicationController = nil;
 }
 
 - (IBAction)openBookmark:(id)sender {
-    SKBookmark *bookmark = [sender representedObject];
-    [[SKBookmarkController sharedBookmarkController] openBookmarks:[NSArray arrayWithObjects:bookmark, nil]];
+    [[SKBookmarkController sharedBookmarkController] openBookmark:[sender representedObject]];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
