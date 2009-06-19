@@ -240,7 +240,6 @@ enum {
     
     hideNotes = NO;
     
-    autohideTimer = nil;
     navWindow = nil;
     
     readingBar = nil;
@@ -721,7 +720,7 @@ enum {
     if (shouldAnimate) {
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
         [[self transitionController] animateForRect:rect forward:next];
-        if (interactionMode == SKPresentationMode && autohideTimer == nil)
+        if (interactionMode == SKPresentationMode)
             [self doAutohide:YES];
     }
 }

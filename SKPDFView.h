@@ -100,7 +100,6 @@ typedef NSInteger SKInteractionMode;
     BOOL hideNotes;
     
     NSInteger navigationMode;
-    NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
     
     SKReadingBar *readingBar;
