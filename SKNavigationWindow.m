@@ -170,14 +170,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [zoomSlider setDoubleValue:log([[notification object] scaleFactor])];
 }
 
-- (void)showSlider {
-    
-}
-
-- (void)hideSlider {
-    
-}
-
 @end
 
 #pragma mark -
