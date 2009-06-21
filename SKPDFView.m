@@ -1221,7 +1221,7 @@ enum {
     
     if ([navWindow isVisible] == NO) {
         if (navigationMode == SKNavigationEverywhere)
-            [navWindow orderFront:nil];
+            [navWindow fadeIn];
         else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < 3.0)
             [self showNavWindow:YES];
     }
@@ -2533,7 +2533,7 @@ enum {
 
 - (void)showNavWindowDelayed {
     if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < 3.0)
-        [navWindow orderFront:nil];
+        [navWindow fadeIn];
 }
 
 - (void)showNavWindow:(BOOL)flag {
