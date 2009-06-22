@@ -51,6 +51,7 @@
 @interface NSResponder (SKLeopardGestures)
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)rotateWithEvent:(NSEvent *)theEvent;
+- (void)swipeWithEvent:(NSEvent *)theEvent;
 - (void)beginGestureWithEvent:(NSEvent *)theEvent;
 - (void)endGestureWithEvent:(NSEvent *)theEvent;
 @end

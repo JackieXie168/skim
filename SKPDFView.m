@@ -1549,6 +1549,20 @@ enum {
         [super magnifyWithEvent:theEvent];
 }
 
+- (void)swipeWithEvent:(NSEvent *)theEvent {
+    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition) {
+        if ([theEvent deltaX] < 0.0 || [theEvent deltaY] < 0.0) {
+            if ([self canGoToNextPage])
+                [self goToNextPage:nil];
+        } else if ([theEvent deltaX] > 0.0 || [theEvent deltaY] > 0.0) {
+            if ([self canGoToPreviousPage])
+                [self goToPreviousPage:nil];
+        }
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+        [super swipeWithEvent:theEvent];
+    }
+}
+
 - (void)checkSpellingStartingAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
     NSUInteger i, first = [page pageIndex];
     NSUInteger count = [[self document] pageCount];
