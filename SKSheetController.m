@@ -40,24 +40,16 @@
 #import "NSInvocation_SKExtensions.h"
 
 
-typedef struct _SKCallbackInfo {
-    id delegate;
-	SEL selector;
-    void *contextInfo;
-} SKCallbackInfo;
-
-
 @implementation SKSheetController
 
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
 	[self prepare];
 	
-    SKCallbackInfo *info = NULL;
+    NSInvocation *invocation = nil;
     if (delegate != nil && didEndSelector != NULL) {
-        info = (SKCallbackInfo *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(SKCallbackInfo));
-        info->delegate = delegate;
-        info->selector = didEndSelector;
-        info->contextInfo = contextInfo;
+        invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector argument:&self];
+		[invocation setArgument:&returnCode atIndex:3];
+		[invocation setArgument:&contextInfo atIndex:4];
 	}
     
 	[self retain]; // make sure we stay around long enough
@@ -66,7 +58,7 @@ typedef struct _SKCallbackInfo {
 	   modalForWindow:window
 		modalDelegate:self
 	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
-		  contextInfo:info];
+		  contextInfo:[invocation retain]];
 }
 
 - (void)prepare {}
@@ -77,14 +69,9 @@ typedef struct _SKCallbackInfo {
 }
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-	SKCallbackInfo *info = (SKCallbackInfo *)contextInfo;
-    if(info != NULL){
-		NSInvocation *invocation = [NSInvocation invocationWithTarget:info->delegate selector:info->selector argument:&self];
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation setArgument:&(info->contextInfo) atIndex:4];
+	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
+    if (invocation)
 		[invocation invoke];
-        NSZoneFree(NSDefaultMallocZone(), info);
-	}
 }
 
 - (void)endSheetWithReturnCode:(NSInteger)returnCode {
