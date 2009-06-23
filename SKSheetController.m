@@ -52,11 +52,14 @@ typedef struct _SKCallbackInfo {
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
 	[self prepare];
 	
-    SKCallbackInfo *info = (SKCallbackInfo *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(SKCallbackInfo));
-    info->delegate = delegate;
-	info->selector = didEndSelector;
-    info->contextInfo = contextInfo;
-	
+    SKCallbackInfo *info = NULL;
+    if (delegate != nil && didEndSelector != NULL) {
+        info = (SKCallbackInfo *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(SKCallbackInfo));
+        info->delegate = delegate;
+        info->selector = didEndSelector;
+        info->contextInfo = contextInfo;
+	}
+    
 	[self retain]; // make sure we stay around long enough
 	
 	[NSApp beginSheet:[self window]
@@ -75,13 +78,13 @@ typedef struct _SKCallbackInfo {
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
 	SKCallbackInfo *info = (SKCallbackInfo *)contextInfo;
-    if(info->delegate != nil && info->selector != NULL){
+    if(info != NULL){
 		NSInvocation *invocation = [NSInvocation invocationWithTarget:info->delegate selector:info->selector argument:&self];
 		[invocation setArgument:&returnCode atIndex:3];
 		[invocation setArgument:&(info->contextInfo) atIndex:4];
 		[invocation invoke];
+        NSZoneFree(NSDefaultMallocZone(), info);
 	}
-    NSZoneFree(NSDefaultMallocZone(), info);
 }
 
 - (void)endSheetWithReturnCode:(NSInteger)returnCode {
