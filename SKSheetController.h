@@ -39,11 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKSheetController : NSWindowController {
-    id theModalDelegate;
-    SEL theDidEndSelector;
-    void *theContextInfo;
-}
+@interface SKSheetController : NSWindowController
 
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo;
 
