@@ -48,7 +48,6 @@
     NSInvocation *invocation = nil;
     if (delegate != nil && didEndSelector != NULL) {
         invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector argument:&self];
-		[invocation setArgument:&returnCode atIndex:3];
 		[invocation setArgument:&contextInfo atIndex:4];
 	}
     
@@ -70,8 +69,10 @@
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
 	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
-    if (invocation)
+    if (invocation) {
+		[invocation setArgument:&returnCode atIndex:3];
 		[invocation invoke];
+    }
 }
 
 - (void)endSheetWithReturnCode:(NSInteger)returnCode {
