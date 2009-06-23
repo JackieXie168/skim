@@ -42,9 +42,15 @@
 
 @implementation SKSheetController
 
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
+    if (invocation) {
+		[invocation setArgument:&returnCode atIndex:3];
+		[invocation invoke];
+    }
+}
+
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
-	[self prepare];
-	
     NSInvocation *invocation = nil;
     if (delegate != nil && didEndSelector != NULL) {
         invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector argument:&self];
@@ -60,24 +66,10 @@
 		  contextInfo:[invocation retain]];
 }
 
-- (void)prepare {}
-
 - (IBAction)dismiss:(id)sender {
-	[self endSheetWithReturnCode:[sender tag]];
-    [self release];
-}
-
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
-    if (invocation) {
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation invoke];
-    }
-}
-
-- (void)endSheetWithReturnCode:(NSInteger)returnCode {
-    [NSApp endSheet:[self window] returnCode:returnCode];
+    [NSApp endSheet:[self window] returnCode:[sender tag]];
     [[self window] orderOut:self];
+    [self release];
 }
 
 @end
