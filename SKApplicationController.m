@@ -233,7 +233,7 @@ static id sharedApplicationController = nil;
 
 // we don't want to reopen last open files when re-activating the app
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
-    return NO;
+    return flag;
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
