@@ -71,6 +71,4 @@
 
 - (void)statusBarClicked:(id)sender;
 
-- (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
-
 @end
