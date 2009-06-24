@@ -2587,7 +2587,7 @@ enum {
 - (void)showNavWindow:(BOOL)flag {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindowDelayed) object:nil];
     if (flag)
-        [self performSelector:@selector(showNavWindowDelayed) withObject:nil afterDelay:0.3];
+        [self performSelector:@selector(showNavWindowDelayed) withObject:nil afterDelay:0.25];
 }
 
 #pragma mark Event handling
