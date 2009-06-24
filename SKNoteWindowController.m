@@ -195,19 +195,28 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [self updateStatusMessage];
     
     [self setWindowFrameAutosaveNameOrCascade:[self isNoteType] ? SKNoteWindowFrameAutosaveName : SKGenericNoteWindowFrameAutosaveName];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
-                                                 name:SKPDFDocumentWillSaveNotification object:[self document]];
+}
+
+- (BOOL)windowShouldClose:(id)window {
+    return [noteController commitEditing];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
-    [noteController commitEditing];
+    if ([noteController commitEditing] == NO)
+        [noteController discardEditing];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
     if ([[self window] isKeyWindow])
         [[[[self document] mainWindowController] window] makeKeyWindow];
     else if ([[self window] isMainWindow])
         [[[[self document] mainWindowController] window] makeMainWindow];
+}
+
+- (void)setDocument:(NSDocument *)document {
+    // in case the document is reset before windowWillClose: is called, I think this can happen on Tiger
+    if ([self document] && document == nil && [noteController commitEditing] == NO)
+        [noteController discardEditing];
+    [super setDocument:document];
 }
 
 - (IBAction)showWindow:(id)sender {
@@ -269,14 +278,20 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [pdfView setActiveAnnotation:note];
 }
 
-- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
-    [noteController commitEditing];
-}
-
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView {
     if (textViewUndoManager == nil)
         textViewUndoManager = [[NSUndoManager alloc] init];
     return textViewUndoManager;
+}
+
+#pragma mark NSEditorRegistration protocol
+
+- (void)objectDidBeginEditing:(id)editor {
+    [[self document] objectDidBeginEditing:editor];
+}
+
+- (void)objectDidEndEditing:(id)editor {
+    [[self document] objectDidEndEditing:editor];
 }
 
 #pragma mark BDSKDragImageView delegate protocol
