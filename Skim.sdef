@@ -727,7 +727,7 @@
             </property>
             <property name="page" code="Page" type="page" access="r"
                 description="The page for the note.">
-                <cocoa key="page"/>
+                <cocoa key="scriptingPage"/>
             </property>
             <property name="bounds" code="pbnd" type="rectangle"
                 description="The bounding rectangle of the note (left, top, right, bottom).">

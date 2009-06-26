@@ -105,6 +105,7 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 + (NSSet *)customScriptingKeys;
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (FourCharCode)scriptingNoteType;
+- (PDFPage *)scriptingPage;
 - (FourCharCode)scriptingIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;

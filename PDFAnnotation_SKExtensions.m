@@ -382,6 +382,10 @@ enum {
         [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
 }
 
+- (PDFPage *)scriptingPage {
+    return [self page];
+}
+
 - (FourCharCode)scriptingIconType {
     return SKScriptingTextAnnotationIconNote;
 }
