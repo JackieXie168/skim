@@ -235,13 +235,13 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 
 	NSString *tmpPath = [self _temporaryCopyNameForPath:dst];
 
-	if (![[NSFileManager defaultManager] movePath:dst toPath:tmpPath handler:self])
+	if (![[NSFileManager defaultManager] movePath:dst toPath:tmpPath handler:nil])
 	{
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't move %@ to %@.", dst, tmpPath] forKey:NSLocalizedDescriptionKey]];
 		return NO;			
 	}
-	if (![[NSFileManager defaultManager] copyPath:src toPath:dst handler:self])
+	if (![[NSFileManager defaultManager] copyPath:src toPath:dst handler:nil])
 	{
 		if (error != NULL)
 			*error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUFileCopyFailure userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Couldn't copy %@ to %@.", src, dst] forKey:NSLocalizedDescriptionKey]];
