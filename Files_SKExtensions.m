@@ -97,7 +97,7 @@ BOOL SKFileIsInTrash(NSURL *fileURL) {
 BOOL SKFileExistsAtPath(NSString *path) {
     FSRef fileRef;
     
-    if (path && noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &fileRef, NULL))
+    if (path && noErr == FSPathMakeRefWithOptions((UInt8 *)[path fileSystemRepresentation], kFSPathMakeRefDoNotFollowLeafSymlink, &fileRef, NULL))
         return YES;
     else
         return NO;
