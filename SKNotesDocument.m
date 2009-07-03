@@ -136,8 +136,7 @@
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
     if (saveOperation == NSSaveToOperation) {
-        [[NSDocumentController sharedDocumentController] resetCustomExportTemplateFiles];
-        NSEnumerator *fileEnum = [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] objectEnumerator];
+        NSEnumerator *fileEnum = [[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting] objectEnumerator];
         NSString *file;
         while (file = [fileEnum nextObject]) {
             if ([[file pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame)

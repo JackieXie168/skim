@@ -89,7 +89,7 @@ extern NSString *SKDocumentDidShowNotification;
 - (id)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 - (id)openDocumentWithSetup:(NSDictionary *)setup error:(NSError **)outError;
 
-- (void)resetCustomExportTemplateFiles;
 - (NSArray *)customExportTemplateFiles;
+- (NSArray *)customExportTemplateFilesResetting;
 
 @end
