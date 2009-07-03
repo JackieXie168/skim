@@ -253,8 +253,7 @@ static char SKPDFDocumentDefaultsObservationContext;
         [writableTypes removeObject:SKBareDVIDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        [[NSDocumentController sharedDocumentController] resetCustomExportTemplateFiles];
-        [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFiles]];
+        [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
     }
     return writableTypes;
 }

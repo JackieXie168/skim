@@ -408,9 +408,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return customExportTemplateFiles;
 }
 
-- (void)resetCustomExportTemplateFiles {
+- (NSArray *)customExportTemplateFilesResetting {
     [customExportTemplateFiles release];
     customExportTemplateFiles = nil;
+    return [self customExportTemplateFiles];
 }
 
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName {
