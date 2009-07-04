@@ -1106,6 +1106,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)removeAllObjectsFromThumbnails {
     if ([thumbnails count]) {
+        NSEnumerator *thumbnailEnum = [thumbnails objectEnumerator];
+        SKThumbnail *thumbnail;
+        while (thumbnail = [thumbnailEnum nextObject])
+            [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:thumbnail];
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
         [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
         [thumbnails removeAllObjects];
@@ -2562,6 +2566,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)resetThumbnails {
     NSUInteger i, count = [pageLabels count];
     [self willChangeValueForKey:THUMBNAILS_KEY];
+    NSEnumerator *thumbnailEnum = [thumbnails objectEnumerator];
+    SKThumbnail *thumbnail;
+    while (thumbnail = [thumbnailEnum nextObject])
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:thumbnail];
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
@@ -2579,7 +2587,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
-            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
+            thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
