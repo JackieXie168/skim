@@ -73,13 +73,8 @@
 }
 
 - (NSImage *)image {
-    if (dirty) {
-        NSImage *anImage = [delegate imageForThumbnail:self];
-        if (anImage) {
-            [self setDirty:NO];
-            [self setImage:anImage];
-        }
-    }
+    if (dirty && [delegate generateImageForThumbnail:self])
+        [self setDirty:NO];
     return image;
 }
 
