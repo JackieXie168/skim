@@ -2528,6 +2528,28 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Thumbnails
 
+- (void)makeImageForThumbnail:(SKThumbnail *)thumbnail {
+    NSSize newSize, oldSize = [thumbnail size];
+    PDFDocument *pdfDoc = [pdfView document];
+    PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
+    NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
+    NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
+    
+    [thumbnail setImage:image];
+    
+    newSize = [image size];
+    if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0)
+        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
+    //[thumbnailTableView setNeedsDisplayInRect:[thumbnailTableView frameOfCellAtColumn:0 row:[thumbnail pageIndex]]];
+}
+
+- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
+    if (mwcFlags.isAnimating || [thumbnailTableView isScrolling] || [[pdfView document] isLocked])
+        return NO;
+    [self performSelector:@selector(makeImageForThumbnail:) withObject:thumbnail afterDelay:0.0];
+    return YES;
+}
+
 - (void)updateThumbnailSelection {
 	// Get index of current page.
 	NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
@@ -2583,35 +2605,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
-    [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
+    SKThumbnail *tn = [self objectInThumbnailsAtIndex:anIndex];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
+    [tn setDirty:YES];
     [thumbnailTableView reloadData];
 }
 
 - (void)allThumbnailsNeedUpdate {
     NSEnumerator *te = [thumbnails objectEnumerator];
     SKThumbnail *tn;
-    while (tn = [te nextObject])
+    while (tn = [te nextObject]) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
         [tn setDirty:YES];
-    [thumbnailTableView reloadData];
-}
-
-
-- (NSImage *)imageForThumbnail:(SKThumbnail *)thumbnail {
-    NSImage *image = nil;
-    if (0 == mwcFlags.isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
-        
-        NSSize newSize, oldSize = [thumbnail size];
-        PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
-        NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
-        image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
-        
-        newSize = [image size];
-        if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0) {
-            [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]] afterDelay:0.0];
-        }
     }
-    return image;
+    [thumbnailTableView reloadData];
 }
 
 #pragma mark Notes

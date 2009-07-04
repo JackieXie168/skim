@@ -56,6 +56,7 @@
 - (void)setDirty:(BOOL)flag;
 
 - (NSImage *)image;
+- (void)setImage:(NSImage *)newImage;
 
 - (NSString *)label;
 
@@ -66,5 +67,5 @@
 @end
 
 @interface NSObject (SKThumbnailDelegate)
-- (NSImage *)imageForThumbnail:(SKThumbnail *)thumbnail;
+- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
 @end
