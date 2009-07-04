@@ -2542,9 +2542,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self willChangeValueForKey:THUMBNAILS_KEY];
     [thumbnails removeAllObjects];
     if (count) {
+        PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
-        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
-        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
+        [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
+        [emptyPage setBounds:[firstPage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
+        [emptyPage setRotation:[firstPage rotation]];
         NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
