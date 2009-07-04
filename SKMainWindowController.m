@@ -1106,10 +1106,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)removeAllObjectsFromThumbnails {
     if ([thumbnails count]) {
-        NSEnumerator *thumbnailEnum = [thumbnails objectEnumerator];
-        SKThumbnail *thumbnail;
-        while (thumbnail = [thumbnailEnum nextObject])
-            [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:thumbnail];
+        // cancel all delayed perform requests for makeImageForThumbnail:
+        [[self class] cancelPreviousPerformRequestsWithTarget:self];
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
         [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
         [thumbnails removeAllObjects];
@@ -2544,7 +2542,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     newSize = [image size];
     if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0)
         [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
-    //[thumbnailTableView setNeedsDisplayInRect:[thumbnailTableView frameOfCellAtColumn:0 row:[thumbnail pageIndex]]];
 }
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
@@ -2565,11 +2562,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)resetThumbnails {
     NSUInteger i, count = [pageLabels count];
+    // cancel all delayed perform requests for makeImageForThumbnail:
+    [[self class] cancelPreviousPerformRequestsWithTarget:self];
     [self willChangeValueForKey:THUMBNAILS_KEY];
-    NSEnumerator *thumbnailEnum = [thumbnails objectEnumerator];
-    SKThumbnail *thumbnail;
-    while (thumbnail = [thumbnailEnum nextObject])
-        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:thumbnail];
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *firstPage = [[pdfView document] pageAtIndex:0];
@@ -2587,7 +2582,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
-            thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i] pageIndex:i];
             [thumbnail setDelegate:self];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
