@@ -473,13 +473,14 @@ struct SKServerFlags {
 
 - (BOOL)pdfsyncFindPage:(NSUInteger *)pageIndexPtr location:(NSPoint *)pointPtr forLine:(NSInteger)line inFile:(NSString *)file {
     BOOL rv = NO;
-    if ([lines objectForKey:file]) {
+    NSArray *theLines = [lines objectForKey:file];
+    if (theLines) {
         
         SKPDFSyncRecord *record = nil;
         SKPDFSyncRecord *beforeRecord = nil;
         SKPDFSyncRecord *afterRecord = nil;
         SKPDFSyncRecord *atRecord = nil;
-        NSEnumerator *recordEnum = [[lines objectForKey:file] objectEnumerator];
+        NSEnumerator *recordEnum = [theLines objectEnumerator];
         
         while (record = [recordEnum nextObject]) {
             if ([record pageIndex] == NSNotFound)
@@ -522,7 +523,7 @@ struct SKServerFlags {
 
 #pragma mark | SyncTeX
 
-- (BOOL)loadSynctexFile:(NSString *)theFileName {
+- (BOOL)loadSynctexFileForFile:(NSString *)theFileName {
     BOOL rv = NO;
     if (scanner)
         synctex_scanner_free(scanner);
@@ -591,9 +592,9 @@ struct SKServerFlags {
             else if (isPdfsync)
                 rv = [self loadPdfsyncFile:theSyncFileName];
             else
-                rv = [self loadSynctexFile:theFileName];
+                rv = [self loadSynctexFileForFile:theFileName];
         } else {
-            rv = [self loadSynctexFile:theFileName];
+            rv = [self loadSynctexFileForFile:theFileName];
             if (rv == NO) {
                 theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
                 if (SKFileExistsAtPath(theSyncFileName))
