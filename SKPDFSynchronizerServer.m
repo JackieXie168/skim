@@ -211,9 +211,9 @@ struct SKServerFlags {
 }
 
 - (void)setFileName:(NSString *)newFileName {
+    // we compare filenames in canonical form throughout, so we need to make sure fileName also is in canonical form
+    newFileName = [[newFileName stringByResolvingSymlinksInPath] stringByStandardizingPath];
     @synchronized(self) {
-        // we compare filenames in canonical form throughout, so we need to make sure fileName also is in canonical form
-        newFileName = [[newFileName stringByResolvingSymlinksInPath] stringByStandardizingPath];
         if (fileName != newFileName) {
             if ([fileName isEqualToString:newFileName] == NO) {
                 [syncFileName release];
