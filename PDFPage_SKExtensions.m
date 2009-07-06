@@ -170,31 +170,32 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
     NSRect bounds = [self boundsForBox:box];
+    NSSize pageSize = bounds.size;
     BOOL isScaled = aSize > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
     CGFloat scale = 1.0;
     NSSize thumbnailSize;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
+    NSImage *pageImage;
     
     if ([self rotation] % 180 == 90)
-        bounds = NSMakeRect(NSMinX(bounds), NSMinY(bounds), NSHeight(bounds), NSWidth(bounds));
+        pageSize = NSMakeSize(pageSize.height, pageSize.width);
     
     if (isScaled) {
-        if (NSHeight(bounds) > NSWidth(bounds))
-            thumbnailSize = NSMakeSize(SKRound((aSize - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), aSize);
+        if (pageSize.height > pageSize.width)
+            thumbnailSize = NSMakeSize(SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
         else
-            thumbnailSize = NSMakeSize(aSize, SKRound((aSize - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
-        scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds), (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds));
+            thumbnailSize = NSMakeSize(aSize, SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.height / pageSize.width + 2.0 * shadowBlurRadius));
+        scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
     } else {
-        thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
+        thumbnailSize = NSMakeSize(pageSize.width + 2.0 * shadowBlurRadius, pageSize.height + 2.0 * shadowBlurRadius);
     }
     
-    readingBarRect.origin = SKSubstractPoints(readingBarRect.origin, bounds.origin);
-
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
     if (hasShadow) {
@@ -211,23 +212,53 @@ static BOOL usesSequentialPageNumbering = NO;
     pageRect.origin.y -= shadowOffset.height;
     NSRectFill(pageRect);
     [NSGraphicsContext restoreGraphicsState];
+    
     if (isScaled || hasShadow) {
         NSAffineTransform *transform = [NSAffineTransform transform];
         if (isScaled)
             [transform scaleBy:scale];
-        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
+        if (hasShadow)
+            [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
         [transform concat];
     }
     
+    if (isScaled) {
+        // drawing the page with an active transform can sometimes lead to a deadlock in CG, rdar://problem/5447966
+        pageImage = [[NSImage alloc] initWithSize:pageSize];
+        [pageImage lockFocus];
+    }
     [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
     [self drawWithBox:box]; 
     [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
+    if (isScaled) {
+        [pageImage unlockFocus];
+        [pageImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [pageImage release];
+    }
     
     if (NSIsEmptyRect(readingBarRect) == NO) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        switch ([self rotation]) {
+            case 0:
+                [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
+                break;
+            case 90:
+                [transform rotateByDegrees:-90.0];
+                [transform translateXBy:-NSMaxX(bounds) yBy:-NSMinY(bounds)];
+                break;
+            case 180:
+                [transform rotateByDegrees:180.0];
+                [transform translateXBy:-NSMaxX(bounds) yBy:-NSMaxY(bounds)];
+                break;
+            case 270:
+                [transform rotateByDegrees:90.0];
+                [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)];
+                break;
+        }
+        [transform concat];
         [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
             NSRect outRect, ignored;
-            bounds.origin = NSZeroPoint;
             NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge);
             [NSBezierPath fillRect:outRect];
             NSDivideRect(bounds, &outRect, &ignored, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge);
@@ -237,6 +268,7 @@ static BOOL usesSequentialPageNumbering = NO;
             [NSBezierPath fillRect:readingBarRect];
         }
     }
+    
     [image unlockFocus];
     
     return [image autorelease];
