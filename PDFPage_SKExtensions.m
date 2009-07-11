@@ -177,7 +177,7 @@ static BOOL usesSequentialPageNumbering = NO;
     NSSize thumbnailSize;
     NSRect pageRect = NSZeroRect;
     NSImage *image;
-    NSImage *pageImage;
+    NSImage *pageImage = nil;
     
     if ([self rotation] % 180 == 90)
         pageSize = NSMakeSize(pageSize.height, pageSize.width);
