@@ -3173,7 +3173,7 @@ enum {
                 NSEvent *lastMouseEvent = theEvent;
                 [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
                 while (YES) {
-                    NSEvent *theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
+                    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
                     if ([theEvent type] == NSLeftMouseUp)
                         break;
                     if ([theEvent type] == NSLeftMouseDragged) {
