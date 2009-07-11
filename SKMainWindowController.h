@@ -426,6 +426,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)alternateZoomToFit:(id)sender;
 - (IBAction)doZoomToSelection:(id)sender;
 - (IBAction)zoomInActualOut:(id)sender;
+- (IBAction)zoomLog:(id)sender;
 - (IBAction)doAutoScale:(id)sender;
 - (IBAction)toggleAutoScale:(id)sender;
 - (IBAction)toggleAutoActualSize:(id)sender;
