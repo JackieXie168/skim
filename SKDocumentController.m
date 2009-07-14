@@ -392,7 +392,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         }
         
         if (doc == nil && outError)
-            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to open folder", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
         
         return doc;
     }
