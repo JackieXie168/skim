@@ -40,6 +40,12 @@
 
 extern NSString *SKDocumentErrorDomain;
 
+enum {
+    SKWriteFileError = 1,
+    SKReadFileError = 2,
+    SKReadPasteboardError = 3
+};
+
 @interface NSDocument (SKExtensions)
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile;
