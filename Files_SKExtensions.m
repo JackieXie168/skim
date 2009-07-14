@@ -143,6 +143,7 @@ NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
         [tmpDirName getCharacters:tmpName];
         success = noErr == FSPathMakeRef((UInt8 *)[basePath fileSystemRepresentation], &tmpRef, NULL) &&
                   noErr == FSCreateDirectoryUnicode(&tmpRef, length, tmpName, kFSCatInfoNone, NULL, NULL, NULL, NULL);
+        NSZoneFree(NULL, tmpName);
     }
     
     return success ? [basePath stringByAppendingPathComponent:tmpDirName] : nil;
