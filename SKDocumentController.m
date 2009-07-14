@@ -66,6 +66,7 @@ NSString *SKPostScriptDocumentType = nil;
 NSString *SKBarePostScriptDocumentType = @"PostScript Without Notes";
 NSString *SKDVIDocumentType = @"DVI document";
 NSString *SKBareDVIDocumentType = @"DVI Without Notes";
+NSString *SKFolderDocumentType = @"Folder";
 
 #define DEFINE_IS_DOCUMENT_TYPE(name) BOOL SKIs##name##DocumentType(NSString *docType) { return [docType isEqualToString:SK##name##DocumentType]; }
 
@@ -82,6 +83,7 @@ DEFINE_IS_DOCUMENT_TYPE(NotesRTFD)
 DEFINE_IS_DOCUMENT_TYPE(NotesFDF)
 DEFINE_IS_DOCUMENT_TYPE(BarePostScript)
 DEFINE_IS_DOCUMENT_TYPE(BareDVI)
+DEFINE_IS_DOCUMENT_TYPE(Folder)
 
 #define RETURN_IF_IS_DOCUMENT_TYPE(name) if (SKIs##name##DocumentType(docType)) return SK##name##DocumentType
 
@@ -99,6 +101,7 @@ NSString *SKNormalizedDocumentType(NSString *docType) {
     RETURN_IF_IS_DOCUMENT_TYPE(BarePostScript);
     RETURN_IF_IS_DOCUMENT_TYPE(DVI);
     RETURN_IF_IS_DOCUMENT_TYPE(BareDVI);
+    RETURN_IF_IS_DOCUMENT_TYPE(Folder);
     if ([docType isEqualToString:@"PDF"]) return SKPDFDocumentType;
     if ([docType isEqualToString:@"PostScript"]) return SKPostScriptDocumentType;
     if ([docType isEqualToString:@"DVI"]) return SKDVIDocumentType;
@@ -200,8 +203,13 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
+    BOOL isDir;
     
-    if ([self documentClassForType:type] == NULL) {
+    // folders are not recognized, so we have to check for those ourselves, rdar://problem/7056540
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[inAbsoluteURL path] isDirectory:&isDir] && isDir &&
+        [[NSWorkspace sharedWorkspace] isFilePackageAtPath:[inAbsoluteURL path]] == NO) {
+        type = SKFolderDocumentType;
+    } else if ([self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
             NSString *fileName = [inAbsoluteURL path];
@@ -369,6 +377,24 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
                 absoluteURL = [NSURL fileURLWithPath:pdfFile];
         }
+    } else if (SKIsFolderDocumentType(type)) {
+        NSDocument *doc = nil;
+        NSError *error = nil;
+        NSString *basePath = [absoluteURL path];
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:basePath];
+        NSString *path;
+        
+        while (path = [dirEnum nextObject]) {
+            NSURL *url = [NSURL fileURLWithPath:[basePath stringByAppendingPathComponent:path]];
+            NSString *aType = [self typeForContentsOfURL:url error:NULL];
+            if ([self documentClassForType:aType])
+                doc = [self openDocumentWithContentsOfURL:url display:displayDocument error:&error] ?: doc;
+        }
+        
+        if (doc == nil && outError)
+            *outError = error ?: [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to open folder", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        
+        return doc;
     }
     return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
 }
