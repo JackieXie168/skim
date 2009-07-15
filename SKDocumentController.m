@@ -169,6 +169,12 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:document, @"document", nil]];
 }
 
+
+- (NSInteger)runModalOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)extensions {    
+    [openPanel setCanChooseDirectories:YES];
+    return [super runModalOpenPanel:openPanel forTypes:extensions];
+}
+
 - (NSString *)readableTypeFromFileExtension:(NSString *)extension {
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
         return nil;
