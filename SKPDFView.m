@@ -1072,11 +1072,11 @@ enum {
         [super mouseDown:theEvent];
         return;
     } else if (interactionMode == SKPresentationMode) {
-        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
-            [super mouseDown:theEvent];
-        } else if ([theEvent subtype] == NSTabletProximity || [theEvent subtype] == NSTabletPoint) {
+        if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype)) {
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
+        } else if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
+            [super mouseDown:theEvent];
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
