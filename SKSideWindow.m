@@ -40,6 +40,7 @@
 #import "SKMainWindowController.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKRuntime.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
@@ -50,8 +51,17 @@
 #define RESIZE_HANDLE_WIDTH     8.0
 #define RESIZE_HANDLE_HEIGHT    20.0
 
+#define SKHideClosedFullScreenSidePanelsKey @"SKHideClosedFullScreenSidePanels"
 
 @implementation SKSideWindow
+
+static BOOL hideWhenClosed = NO;
+
++ (void)initialize {
+    SKINITIALIZE;
+    
+    hideWhenClosed = [[NSUserDefaults standardUserDefaults] boolForKey:SKHideClosedFullScreenSidePanelsKey];
+}
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen] ?: [NSScreen mainScreen];
@@ -92,6 +102,8 @@
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
     state = NSDrawerClosedState;
+    if (hideWhenClosed)
+        [self setAlphaValue:0.0];
     [[self contentView] setAcceptsMouseOver:YES];
 }
 
@@ -113,6 +125,10 @@
     }
 }
 
+- (void)makeTransparent {
+    [self setAlphaValue:0.0];
+}
+
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
@@ -120,11 +136,19 @@
         if ([self isKeyWindow])
             [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
+        if (hideWhenClosed) {
+            if ([self respondsToSelector:@selector(animator)])
+                [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+            else
+                [self setAlphaValue:0.0];
+        }
     }
 }
 
 - (void)slideIn {
     if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
+        if ([self alphaValue] < 0.1)
+            [self setAlphaValue:1.0];
         state = NSDrawerOpeningState;
         [self animateToWidth:NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET];
         if ([[controller window] isKeyWindow])
