@@ -160,6 +160,7 @@ enum {
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
+- (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent;
 - (void)doSelectWithEvent:(NSEvent *)theEvent;
 - (void)doSelectTextWithEvent:(NSEvent *)theEvent;
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent;
@@ -1073,6 +1074,8 @@ enum {
     } else if (interactionMode == SKPresentationMode) {
         if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
             [super mouseDown:theEvent];
+        } else if ([theEvent subtype] == NSTabletProximity || [theEvent subtype] == NSTabletPoint) {
+            [self doDrawFreehandNoteWithEvent:theEvent];
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
@@ -2992,6 +2995,31 @@ enum {
     }
 }
 
+- (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
+    NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+    BOOL didDraw = NO;
+    bezierPath = [[NSBezierPath alloc] init];
+    [bezierPath setLineCapStyle:NSRoundLineCapStyle];
+    [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
+    [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+    [bezierPath moveToPoint:pagePoint];
+    pathPageIndex = [page pageIndex];
+    while (YES) {
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        didDraw = YES;
+    }
+    if (didDraw)
+        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
+    [bezierPath release];
+    bezierPath = nil;
+}
+
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = nil;
     NSArray *annotations;
@@ -3202,25 +3230,7 @@ enum {
         
     } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
         
-        BOOL didDraw = NO;
-        bezierPath = [[NSBezierPath alloc] init];
-        [bezierPath setLineCapStyle:NSRoundLineCapStyle];
-        [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
-        [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-        [bezierPath moveToPoint:pagePoint];
-        pathPageIndex = [page pageIndex];
-        while (YES) {
-            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-            [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
-            [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
-            if ([theEvent type] == NSLeftMouseUp)
-                break;
-            didDraw = YES;
-        }
-        if (didDraw)
-            [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
-        [bezierPath release];
-        bezierPath = nil;
+        [self doDrawFreehandNoteWithEvent:theEvent];
         
         return YES;
         
