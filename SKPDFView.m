@@ -1076,6 +1076,7 @@ enum {
             [super mouseDown:theEvent];
         } else if ([theEvent subtype] == NSTabletProximity || [theEvent subtype] == NSTabletPoint) {
             [self doDrawFreehandNoteWithEvent:theEvent];
+            [self setActiveAnnotation:nil];
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
