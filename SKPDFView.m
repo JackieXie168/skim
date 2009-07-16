@@ -3035,6 +3035,8 @@ enum {
     }
     pathPageIndex = [page pageIndex];
     
+    [self setActiveAnnotation:nil];
+    
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
