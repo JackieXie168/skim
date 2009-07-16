@@ -360,10 +360,10 @@ enum {
     [self transformCGContext:context forPage:pdfPage];
     SKCGContextSetDefaultRGBColorSpace(context);
     
-    if (bezierPath && pathPageIndex == [pdfPage pageIndex]) {
+    if (bezierPaths && pathPageIndex == [pdfPage pageIndex]) {
         [NSGraphicsContext saveGraphicsState];
-        [[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey] setStroke];
-        [bezierPath stroke];
+        [(pathColor ?: [[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]) setStroke];
+        [bezierPaths makeObjectsPerformSelector:@selector(stroke)];
         [NSGraphicsContext restoreGraphicsState];
     }
     
@@ -1957,8 +1957,8 @@ enum {
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
             break;
         case SKInkNote:
-            if (bezierPath)
-                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:[NSArray arrayWithObject:[[bezierPath copy] autorelease]]];
+            if (bezierPaths)
+                newAnnotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:[[[NSArray alloc] initWithArray:bezierPaths copyItems:YES] autorelease]];
             break;
 	}
     if (newAnnotation) {
@@ -3000,25 +3000,63 @@ enum {
     NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
     NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+    NSString *text = nil;
+    PDFBorder *border = nil;
+    NSBezierPath *path;
     BOOL didDraw = NO;
-    bezierPath = [[NSBezierPath alloc] init];
-    [bezierPath setLineCapStyle:NSRoundLineCapStyle];
-    [bezierPath setLineJoinStyle:NSRoundLineJoinStyle];
-    [bezierPath setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-    [bezierPath moveToPoint:pagePoint];
+    
+    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
+        bezierPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        NSRect bounds = [activeAnnotation bounds];
+        [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+        [bezierPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+        text = [[[activeAnnotation string] retain] autorelease];
+        border = [[[activeAnnotation border] retain] autorelease];
+        pathColor = [[activeAnnotation color] retain];
+        NSEnumerator *pathEnum = [bezierPaths objectEnumerator];
+        while (path = [pathEnum nextObject]) {
+            [path setLineCapStyle:NSRoundLineCapStyle];
+            [path setLineJoinStyle:NSRoundLineJoinStyle];
+            [path setLineWidth:[border lineWidth]];
+        }
+        [self removeActiveAnnotation:nil];
+        path = [[bezierPaths lastObject] retain];
+        [path lineToPoint:pagePoint];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
+        didDraw = YES;
+    } else {
+        path = [NSBezierPath bezierPath];
+        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path setLineJoinStyle:NSRoundLineJoinStyle];
+        [path setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        [path moveToPoint:pagePoint];
+        bezierPaths = [[NSArray alloc] initWithObjects:path, nil];
+    }
     pathPageIndex = [page pageIndex];
+    
     while (YES) {
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-        [bezierPath lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
-        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([bezierPath nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         if ([theEvent type] == NSLeftMouseUp)
             break;
+        [path lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         didDraw = YES;
     }
-    if (didDraw)
-        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
-    [bezierPath release];
-    bezierPath = nil;
+    
+    if (didDraw) {
+        [self addAnnotationWithType:SKInkNote contents:text page:page bounds:NSZeroRect];
+        if (pathColor)
+            [activeAnnotation setColor:pathColor];
+        if (border)
+            [activeAnnotation setBorder:border];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    }
+    
+    [bezierPaths release];
+    bezierPaths = nil;
+    [pathColor release];
+    pathColor = nil;
 }
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
@@ -3136,16 +3174,18 @@ enum {
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 
                 [paths release];
-                [accessibilityChildren release];
-                accessibilityChildren = nil;
+                
+                bounds = [newActiveAnnotation bounds];
+                clickDelta.x = pagePoint.x - NSMinX(bounds);
+                clickDelta.y = pagePoint.y - NSMinY(bounds);
             }
         }
     }
     
-    if (activeAnnotation != newActiveAnnotation)
-        [self setActiveAnnotation:newActiveAnnotation];
-    
     if (newActiveAnnotation) {
+        
+        if (activeAnnotation != newActiveAnnotation)
+            [self setActiveAnnotation:newActiveAnnotation];
         
         if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
             [self editActiveAnnotation:self];
@@ -3237,6 +3277,7 @@ enum {
         
     } else {
         // no new active annotation
+        [self setActiveAnnotation:nil];
         return NO;
     }
 }

@@ -124,8 +124,9 @@ typedef NSInteger SKInteractionMode;
     BOOL didSelect;
     BOOL mouseDownInAnnotation;
     NSInteger dragMask;
-    NSBezierPath *bezierPath;
+    NSArray *bezierPaths;
     NSUInteger pathPageIndex;
+    NSColor *pathColor;
     CGFloat gestureRotation;
     NSUInteger gesturePageIndex;
     
