@@ -132,11 +132,6 @@
 					if (date)
 						[dict setObject:date forKey:name];
 				}
-                else if ([name isEqualToString:@"description"])
-                {
-					// may need XML representation for display in release notes
-					[dict setObject:[node XMLString] forKey:name];
-				}
                 else if (name != nil)
                 {
 					// add all other values as strings
