@@ -127,7 +127,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
             for (i = 0; i < iMax; i++) {
                 prevPoint = nextPoint;
                 nextPoint = [path associatedPointForElementAtIndex:i];
-                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, 4.0, delta))
+                if (i > 0 && SKPointNearLineFromPointToPoint(relPoint, prevPoint, nextPoint, delta, delta))
                     return YES;
             }
         }
