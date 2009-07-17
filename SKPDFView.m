@@ -385,9 +385,9 @@ enum {
             CGPathRelease(path);
         } else if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
             NSPoint point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]);
-            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMaxXEdgeMask);
-            point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
             SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMinXEdgeMask);
+            point = SKAddPoints(bounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]);
+            SKCGContextDrawGrabHandle(context, NSPointToCGPoint(point), 4.0, dragMask == BDSKMaxXEdgeMask);
         } else if (editField == nil) {
             CGFloat color[4] = { 0.278477, 0.467857, 0.810941, 1.0 };
             CGContextSetStrokeColor(context, color);
