@@ -156,7 +156,6 @@ enum {
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
 - (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)doSelectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)doMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)doDragWithEvent:(NSEvent *)theEvent;
@@ -246,11 +245,7 @@ enum {
     readingBar = nil;
     
     activeAnnotation = nil;
-    wasBounds = NSZeroRect;
-    wasStartPoint = NSZeroPoint;
-    wasEndPoint = NSZeroPoint;
     mouseDownLoc = NSZeroPoint;
-    clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
     selectionPageIndex = NSNotFound;
     magnification = 0.0;
@@ -2996,297 +2991,7 @@ enum {
     }
 }
 
-- (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
-    NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
-    NSString *text = nil;
-    PDFBorder *border = nil;
-    NSBezierPath *path;
-    BOOL didDraw = NO;
-    
-    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
-        bezierPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        NSRect bounds = [activeAnnotation bounds];
-        [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-        [bezierPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-        text = [[[activeAnnotation string] retain] autorelease];
-        border = [[[activeAnnotation border] retain] autorelease];
-        pathColor = [[activeAnnotation color] retain];
-        NSEnumerator *pathEnum = [bezierPaths objectEnumerator];
-        while (path = [pathEnum nextObject]) {
-            [path setLineCapStyle:NSRoundLineCapStyle];
-            [path setLineJoinStyle:NSRoundLineJoinStyle];
-            [path setLineWidth:[border lineWidth]];
-        }
-        [self removeActiveAnnotation:nil];
-        path = [[bezierPaths lastObject] retain];
-        [path lineToPoint:pagePoint];
-        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
-        didDraw = YES;
-    } else {
-        path = [NSBezierPath bezierPath];
-        [path setLineCapStyle:NSRoundLineCapStyle];
-        [path setLineJoinStyle:NSRoundLineJoinStyle];
-        [path setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
-        [path moveToPoint:pagePoint];
-        bezierPaths = [[NSArray alloc] initWithObjects:path, nil];
-    }
-    pathPageIndex = [page pageIndex];
-    
-    [self setActiveAnnotation:nil];
-    
-    while (YES) {
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-        if ([theEvent type] == NSLeftMouseUp)
-            break;
-        [path lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
-        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
-        didDraw = YES;
-    }
-    
-    if (didDraw) {
-        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
-        if (pathColor)
-            [activeAnnotation setColor:pathColor];
-        if (border)
-            [activeAnnotation setBorder:border];
-        if (text)
-            [activeAnnotation setString:text];
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-    }
-    
-    [bezierPaths release];
-    bezierPaths = nil;
-    [pathColor release];
-    pathColor = nil;
-}
-
-- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
-    PDFAnnotation *newActiveAnnotation = nil;
-    NSArray *annotations;
-    NSInteger i;
-    NSPoint pagePoint;
-    PDFPage *page;
-    
-    // Mouse in display view coordinates.
-    mouseDownLoc = [theEvent locationInWindow];
-    
-    NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
-    
-    // Page we're on.
-    page = [self pageForPoint:mouseDownOnPage nearest:YES];
-    
-    // Get mouse in "page space".
-    pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
-    
-    // Hit test for annotation.
-    annotations = [page annotations];
-    i = [annotations count];
-    
-    while (i-- > 0) {
-        PDFAnnotation *annotation = [annotations objectAtIndex:i];
-        NSRect bounds = [annotation bounds];
-        
-        // Hit test annotation.
-        if ([annotation isSkimNote]) {
-            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
-                mouseDownInAnnotation = YES;
-                newActiveAnnotation = annotation;
-                // Remember click point relative to annotation origin.
-                clickDelta.x = pagePoint.x - NSMinX(bounds);
-                clickDelta.y = pagePoint.y - NSMinY(bounds);
-                break;
-            } else if (NSPointInRect(pagePoint, bounds)) {
-                // register this, so we can do our own selection later
-                mouseDownInAnnotation = YES;
-            }
-        } else if (NSPointInRect(pagePoint, bounds)) {
-            if ([annotation isTemporaryAnnotation]) {
-                // register this, so we can do our own selection later
-                mouseDownInAnnotation = YES;
-            } else if ([annotation isLink]) {
-                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote))
-                    newActiveAnnotation = annotation;
-                break;
-            }
-        }
-    }
-    
-    if (hideNotes == NO && page != nil) {
-        if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
-            // select a new copy of the annotation
-            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
-            [self addAnnotation:newAnnotation toPage:page];
-            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-            newActiveAnnotation = newAnnotation;
-            [newAnnotation release];
-        } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote && annotationMode != SKInkNote &&
-                   NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
-            // add a new annotation immediately, unless this is just a click
-            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
-                NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
-                NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
-                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
-                newActiveAnnotation = activeAnnotation;
-                mouseDownInAnnotation = YES;
-                clickDelta.x = pagePoint.x - NSMinX(bounds);
-                clickDelta.y = pagePoint.y - NSMinY(bounds);
-            }
-        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
-            newActiveAnnotation = nil;
-            mouseDownInAnnotation = YES;
-        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
-            if ([activeAnnotation isMarkup]) {
-                NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
-                PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
-                [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
-                
-                [self removeActiveAnnotation:nil];
-                [self removeAnnotation:newActiveAnnotation];
-                [accessibilityChildren release];
-                accessibilityChildren = nil;
-                
-                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
-                [newActiveAnnotation setString:[sel cleanedString]];
-                [self addAnnotation:newActiveAnnotation toPage:page];
-                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
-            } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
-                NSMutableArray *paths = [[NSMutableArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
-                NSArray *newPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)newActiveAnnotation paths] copyItems:YES];
-                
-                NSAffineTransform *transform = [NSAffineTransform transform];
-                NSRect bounds = [activeAnnotation bounds];
-                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-                [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                transform = [NSAffineTransform transform];
-                bounds = [newActiveAnnotation bounds];
-                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
-                [newPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
-                [paths addObjectsFromArray:newPaths];
-                [newPaths release];
-                
-                [self removeAnnotation:newActiveAnnotation];
-                newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
-                [(PDFAnnotationInk *)newActiveAnnotation setString:[activeAnnotation string]];
-                [(PDFAnnotationInk *)newActiveAnnotation setColor:[activeAnnotation color]];
-                [(PDFAnnotationInk *)newActiveAnnotation setBorder:[activeAnnotation border]];
-                [self removeActiveAnnotation:nil];
-                [self addAnnotation:newActiveAnnotation toPage:page];
-                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
-                
-                [paths release];
-                
-                bounds = [newActiveAnnotation bounds];
-                clickDelta.x = pagePoint.x - NSMinX(bounds);
-                clickDelta.y = pagePoint.y - NSMinY(bounds);
-            }
-        }
-    }
-    
-    if (newActiveAnnotation) {
-        
-        if (activeAnnotation != newActiveAnnotation)
-            [self setActiveAnnotation:newActiveAnnotation];
-        
-        if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
-            [self editActiveAnnotation:self];
-        } else { 
-            // Old (current) annotation location.
-            wasBounds = [activeAnnotation bounds];
-            
-            if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
-                wasStartPoint = [(PDFAnnotationLine *)activeAnnotation startPoint];
-                wasEndPoint = [(PDFAnnotationLine *)activeAnnotation endPoint];
-            }
-            
-            // Hit-test for resize box.
-            dragMask = 0;
-            if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
-                if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
-                    dragMask = BDSKMaxXEdgeMask;
-                else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(wasBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
-                    dragMask = BDSKMinXEdgeMask;
-            }  else if ([activeAnnotation isResizable]) {
-                if (NSWidth(wasBounds) < 2.0) {
-                    dragMask |= BDSKMinXEdgeMask | BDSKMaxXEdgeMask;
-                } else if ([page rotation] < 180) {
-                    if (pagePoint.x >= NSMaxX(wasBounds) - 4.0)
-                        dragMask |= BDSKMaxXEdgeMask;
-                    else if (pagePoint.x <= NSMinX(wasBounds) + 4.0)
-                        dragMask |= BDSKMinXEdgeMask;
-                } else {
-                    if (pagePoint.x <= NSMinX(wasBounds) + 4.0)
-                        dragMask |= BDSKMinXEdgeMask;
-                    else if (pagePoint.x >= NSMaxX(wasBounds) - 4.0)
-                        dragMask |= BDSKMaxXEdgeMask;
-                }
-                if (NSHeight(wasBounds) < 2.0) {
-                    dragMask |= BDSKMinYEdgeMask | BDSKMaxYEdgeMask;
-                } else if ([page rotation] % 270 != 0) {
-                    if (pagePoint.y >= NSMaxY(wasBounds) - 4.0)
-                        dragMask |= BDSKMaxYEdgeMask;
-                    else if (pagePoint.y <= NSMinY(wasBounds) + 4.0)
-                        dragMask |= BDSKMinYEdgeMask;
-                } else {
-                    if (pagePoint.y <= NSMinY(wasBounds) + 4.0)
-                        dragMask |= BDSKMinYEdgeMask;
-                    else if (pagePoint.y >= NSMaxY(wasBounds) - 4.0)
-                        dragMask |= BDSKMaxYEdgeMask;
-                }
-            }
-            if (dragMask)
-                [self setNeedsDisplayForAnnotation:activeAnnotation];
-            
-            if ([activeAnnotation isMovable]) {
-                // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
-                BOOL draggedAnnotation = NO;
-                NSEvent *lastMouseEvent = theEvent;
-                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
-                while (YES) {
-                    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-                    if ([theEvent type] == NSLeftMouseUp)
-                        break;
-                    if ([theEvent type] == NSLeftMouseDragged) {
-                        lastMouseEvent = theEvent;
-                        draggedAnnotation = YES;
-                    }
-                    [self doDragAnnotationWithEvent:lastMouseEvent];
-                }
-                [NSEvent stopPeriodicEvents];
-                if (toolMode == SKNoteToolMode && NSEqualSizes(wasBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
-                    [self editActiveAnnotation:self]; 	 
-                if (draggedAnnotation && 
-                    [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
-                    ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
-                    NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] cleanedString];
-                    if ([selString length])
-                        [activeAnnotation setString:selString];
-                }
-                [self setNeedsDisplayForAnnotation:activeAnnotation];
-                mouseDownInAnnotation = NO;
-                dragMask = 0;
-            }
-        }
-        
-        return YES;
-        
-    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
-        
-        [self doDrawFreehandNoteWithEvent:theEvent];
-        
-        return YES;
-        
-    } else {
-        // no new active annotation
-        [self setActiveAnnotation:nil];
-        return NO;
-    }
-}
-
-- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent {
+- (void)doDragAnnotationWithEvent:(NSEvent *)theEvent originalBounds:(NSRect)originalBounds originalStartPoint:(NSPoint)originalStartPoint originalEndPoint:(NSPoint)originalEndPoint offset:(NSPoint)offset {
     PDFPage *page = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
@@ -3297,13 +3002,13 @@ enum {
         NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:page];
         NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
         NSPoint relPoint = SKSubstractPoints(endPt, startPoint);
-        newBounds = wasBounds;
+        newBounds = originalBounds;
         
         if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
             
             PDFAnnotationLine *annotation = (PDFAnnotationLine *)activeAnnotation;
-            NSPoint endPoint = SKIntegralPoint(SKAddPoints(wasEndPoint, wasBounds.origin));
-            startPoint = SKIntegralPoint(SKAddPoints(wasStartPoint, wasBounds.origin));
+            NSPoint endPoint = originalEndPoint;
+            startPoint = originalStartPoint;
             NSPoint *draggedPoint = (dragMask & BDSKMinXEdgeMask) ? &startPoint : &endPoint;
             
             *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
@@ -3451,7 +3156,7 @@ enum {
         
         if (newActivePage == nil) {
             // this should never happen, but just to be sure
-            newBounds = wasBounds;
+            newBounds = originalBounds;
         } else {
             if (newActivePage != page) {
                 // move the annotation to the new page
@@ -3460,7 +3165,7 @@ enum {
             }
             
             newBounds = currentBounds;
-            newBounds.origin = SKIntegralPoint(SKSubstractPoints([self convertPoint:mouseLoc toPage:page], clickDelta));
+            newBounds.origin = SKIntegralPoint(SKSubstractPoints([self convertPoint:mouseLoc toPage:page], offset));
             // constrain bounds inside page bounds
             newBounds = SKConstrainRect(newBounds, pageBounds);
         }
@@ -3468,6 +3173,292 @@ enum {
     
     // Change annotation's location.
     [activeAnnotation setBounds:newBounds];
+}
+
+- (BOOL)doSelectAnnotationWithEvent:(NSEvent *)theEvent {
+    PDFAnnotation *newActiveAnnotation = nil;
+    NSArray *annotations;
+    NSInteger i;
+    NSPoint pagePoint;
+    PDFPage *page;
+    
+    // Mouse in display view coordinates.
+    mouseDownLoc = [theEvent locationInWindow];
+    
+    NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
+    
+    // Page we're on.
+    page = [self pageForPoint:mouseDownOnPage nearest:YES];
+    
+    // Get mouse in "page space".
+    pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+    
+    // Hit test for annotation.
+    annotations = [page annotations];
+    i = [annotations count];
+    
+    while (i-- > 0) {
+        PDFAnnotation *annotation = [annotations objectAtIndex:i];
+        NSRect bounds = [annotation bounds];
+        
+        // Hit test annotation.
+        if ([annotation isSkimNote]) {
+            if ([annotation hitTest:pagePoint] && (editField == nil || annotation != activeAnnotation)) {
+                mouseDownInAnnotation = YES;
+                newActiveAnnotation = annotation;
+                break;
+            } else if (NSPointInRect(pagePoint, bounds)) {
+                // register this, so we can do our own selection later
+                mouseDownInAnnotation = YES;
+            }
+        } else if (NSPointInRect(pagePoint, bounds)) {
+            if ([annotation isTemporaryAnnotation]) {
+                // register this, so we can do our own selection later
+                mouseDownInAnnotation = YES;
+            } else if ([annotation isLink]) {
+                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote))
+                    newActiveAnnotation = annotation;
+                break;
+            }
+        }
+    }
+    
+    if (hideNotes == NO && page != nil) {
+        if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
+            // select a new copy of the annotation
+            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
+            [self addAnnotation:newAnnotation toPage:page];
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            newActiveAnnotation = newAnnotation;
+            [newAnnotation release];
+        } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote && annotationMode != SKInkNote &&
+                   NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
+            // add a new annotation immediately, unless this is just a click
+            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+                NSSize size = annotationMode == SKAnchoredNote ? SKNPDFAnnotationNoteSize : NSZeroSize;
+                NSRect bounds = SKRectFromCenterAndSize(pagePoint, size);
+                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
+                newActiveAnnotation = activeAnnotation;
+                mouseDownInAnnotation = YES;
+            }
+        } else if ([newActiveAnnotation isMarkup] && NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:NO] type]) {
+            newActiveAnnotation = nil;
+            mouseDownInAnnotation = YES;
+        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]]) {
+            if ([activeAnnotation isMarkup]) {
+                NSInteger markupType = [(PDFAnnotationMarkup *)activeAnnotation markupType];
+                PDFSelection *sel = [(PDFAnnotationMarkup *)activeAnnotation selection];
+                [sel addSelection:[(PDFAnnotationMarkup *)newActiveAnnotation selection]];
+                
+                [self removeActiveAnnotation:nil];
+                [self removeAnnotation:newActiveAnnotation];
+                [accessibilityChildren release];
+                accessibilityChildren = nil;
+                
+                newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
+                [newActiveAnnotation setString:[sel cleanedString]];
+                [self addAnnotation:newActiveAnnotation toPage:page];
+                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+            } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
+                NSMutableArray *paths = [[NSMutableArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
+                NSArray *newPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)newActiveAnnotation paths] copyItems:YES];
+                
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                NSRect bounds = [activeAnnotation bounds];
+                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+                [paths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                transform = [NSAffineTransform transform];
+                bounds = [newActiveAnnotation bounds];
+                [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+                [newPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+                [paths addObjectsFromArray:newPaths];
+                [newPaths release];
+                
+                [self removeAnnotation:newActiveAnnotation];
+                newActiveAnnotation = [[[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths] autorelease];
+                [(PDFAnnotationInk *)newActiveAnnotation setString:[activeAnnotation string]];
+                [(PDFAnnotationInk *)newActiveAnnotation setColor:[activeAnnotation color]];
+                [(PDFAnnotationInk *)newActiveAnnotation setBorder:[activeAnnotation border]];
+                [self removeActiveAnnotation:nil];
+                [self addAnnotation:newActiveAnnotation toPage:page];
+                [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+                
+                [paths release];
+            }
+        }
+    }
+    
+    if (newActiveAnnotation) {
+        
+        if (activeAnnotation != newActiveAnnotation)
+            [self setActiveAnnotation:newActiveAnnotation];
+        
+        if ([theEvent clickCount] == 2 && [activeAnnotation isSkimNote]) {
+            [self editActiveAnnotation:self];
+        } else { 
+            // Old (current) annotation location and click point relative to it
+            NSRect originalBounds = [activeAnnotation bounds];
+            
+            // Hit-test for resize box.
+            dragMask = 0;
+            if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
+                if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation endPoint]), SKMakeSquareSize(8.0))))
+                    dragMask = BDSKMaxXEdgeMask;
+                else if (NSPointInRect(pagePoint, SKRectFromCenterAndSize(SKAddPoints(originalBounds.origin, [(PDFAnnotationLine *)activeAnnotation startPoint]), SKMakeSquareSize(8.0))))
+                    dragMask = BDSKMinXEdgeMask;
+            }  else if ([activeAnnotation isResizable]) {
+                if (NSWidth(originalBounds) < 2.0) {
+                    dragMask |= BDSKMinXEdgeMask | BDSKMaxXEdgeMask;
+                } else if ([page rotation] < 180) {
+                    if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
+                        dragMask |= BDSKMaxXEdgeMask;
+                    else if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
+                        dragMask |= BDSKMinXEdgeMask;
+                } else {
+                    if (pagePoint.x <= NSMinX(originalBounds) + 4.0)
+                        dragMask |= BDSKMinXEdgeMask;
+                    else if (pagePoint.x >= NSMaxX(originalBounds) - 4.0)
+                        dragMask |= BDSKMaxXEdgeMask;
+                }
+                if (NSHeight(originalBounds) < 2.0) {
+                    dragMask |= BDSKMinYEdgeMask | BDSKMaxYEdgeMask;
+                } else if ([page rotation] % 270 != 0) {
+                    if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
+                        dragMask |= BDSKMaxYEdgeMask;
+                    else if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
+                        dragMask |= BDSKMinYEdgeMask;
+                } else {
+                    if (pagePoint.y <= NSMinY(originalBounds) + 4.0)
+                        dragMask |= BDSKMinYEdgeMask;
+                    else if (pagePoint.y >= NSMaxY(originalBounds) - 4.0)
+                        dragMask |= BDSKMaxYEdgeMask;
+                }
+            }
+            if (dragMask)
+                [self setNeedsDisplayForAnnotation:activeAnnotation];
+            
+            if ([activeAnnotation isMovable]) {
+                // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
+                BOOL draggedAnnotation = NO;
+                NSEvent *lastMouseEvent = theEvent;
+                NSRect originalBounds = [activeAnnotation bounds];
+                NSPoint offset = SKSubstractPoints(pagePoint, originalBounds.origin);
+                NSPoint originalStartPoint = NSZeroPoint;
+                NSPoint originalEndPoint = NSZeroPoint;
+                
+                if ([[activeAnnotation type] isEqualToString:SKNLineString]) {
+                    originalStartPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation startPoint], originalBounds.origin));
+                    originalEndPoint = SKIntegralPoint(SKAddPoints([(PDFAnnotationLine *)activeAnnotation endPoint], originalBounds.origin));
+                }
+                
+                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
+                while (YES) {
+                    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
+                    if ([theEvent type] == NSLeftMouseUp)
+                        break;
+                    if ([theEvent type] == NSLeftMouseDragged) {
+                        lastMouseEvent = theEvent;
+                        draggedAnnotation = YES;
+                    }
+                    [self doDragAnnotationWithEvent:lastMouseEvent originalBounds:originalBounds originalStartPoint:originalStartPoint originalEndPoint:originalEndPoint offset:offset];
+                }
+                [NSEvent stopPeriodicEvents];
+                if (toolMode == SKNoteToolMode && NSEqualSizes(originalBounds.size, NSZeroSize) && [[activeAnnotation type] isEqualToString:SKNFreeTextString])
+                    [self editActiveAnnotation:self]; 	 
+                if (draggedAnnotation && 
+                    [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey] == NO &&
+                    ([[activeAnnotation type] isEqualToString:SKNCircleString] || [[activeAnnotation type] isEqualToString:SKNSquareString])) {
+                    NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] cleanedString];
+                    if ([selString length])
+                        [activeAnnotation setString:selString];
+                }
+                [self setNeedsDisplayForAnnotation:activeAnnotation];
+                mouseDownInAnnotation = NO;
+                dragMask = 0;
+            }
+        }
+        
+        return YES;
+        
+    } else if (toolMode == SKNoteToolMode && annotationMode == SKInkNote && hideNotes == NO && page != nil) {
+        
+        [self doDrawFreehandNoteWithEvent:theEvent];
+        
+        return YES;
+        
+    } else {
+        // no new active annotation
+        [self setActiveAnnotation:nil];
+        return NO;
+    }
+}
+
+- (void)doDrawFreehandNoteWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseDownOnPage = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:mouseDownOnPage nearest:YES];
+    NSPoint pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
+    NSString *text = nil;
+    PDFBorder *border = nil;
+    NSBezierPath *path;
+    BOOL didDraw = NO;
+    
+    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
+        bezierPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        NSRect bounds = [activeAnnotation bounds];
+        [transform translateXBy:NSMinX(bounds) yBy:NSMinY(bounds)];
+        [bezierPaths makeObjectsPerformSelector:@selector(transformUsingAffineTransform:) withObject:transform];
+        text = [[[activeAnnotation string] retain] autorelease];
+        border = [[[activeAnnotation border] retain] autorelease];
+        pathColor = [[activeAnnotation color] retain];
+        NSEnumerator *pathEnum = [bezierPaths objectEnumerator];
+        while (path = [pathEnum nextObject]) {
+            [path setLineCapStyle:NSRoundLineCapStyle];
+            [path setLineJoinStyle:NSRoundLineJoinStyle];
+            [path setLineWidth:[border lineWidth]];
+        }
+        [self removeActiveAnnotation:nil];
+        path = [[bezierPaths lastObject] retain];
+        [path lineToPoint:pagePoint];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
+        didDraw = YES;
+    } else {
+        path = [NSBezierPath bezierPath];
+        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path setLineJoinStyle:NSRoundLineJoinStyle];
+        [path setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];
+        [path moveToPoint:pagePoint];
+        bezierPaths = [[NSArray alloc] initWithObjects:path, nil];
+    }
+    pathPageIndex = [page pageIndex];
+    
+    [self setActiveAnnotation:nil];
+    
+    while (YES) {
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        [path lineToPoint:[self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page]];
+        [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
+        didDraw = YES;
+    }
+    
+    if (didDraw) {
+        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
+        if (pathColor)
+            [activeAnnotation setColor:pathColor];
+        if (border)
+            [activeAnnotation setBorder:border];
+        if (text)
+            [activeAnnotation setString:text];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    }
+    
+    [bezierPaths release];
+    bezierPaths = nil;
+    [pathColor release];
+    pathColor = nil;
 }
 
 - (void)doDragWithEvent:(NSEvent *)theEvent {
