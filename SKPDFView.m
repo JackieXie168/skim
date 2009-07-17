@@ -3047,11 +3047,13 @@ enum {
     }
     
     if (didDraw) {
-        [self addAnnotationWithType:SKInkNote contents:text page:page bounds:NSZeroRect];
+        [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
         if (pathColor)
             [activeAnnotation setColor:pathColor];
         if (border)
             [activeAnnotation setBorder:border];
+        if (text)
+            [activeAnnotation setString:text];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
     }
     
