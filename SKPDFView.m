@@ -3419,7 +3419,7 @@ enum {
             [path setLineWidth:[border lineWidth]];
         }
         [self removeActiveAnnotation:nil];
-        path = [[bezierPaths lastObject] retain];
+        path = [bezierPaths lastObject];
         [path lineToPoint:pagePoint];
         [self setNeedsDisplayInRect:[self convertRect:NSInsetRect([path nonEmptyBounds], -8.0, -8.0) fromPage:page]];
         didDraw = YES;
