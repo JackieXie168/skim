@@ -3342,7 +3342,6 @@ enum {
                 // we move or resize the annotation in an event loop, which ensures it's enclosed in a single undo group
                 BOOL draggedAnnotation = NO;
                 NSEvent *lastMouseEvent = theEvent;
-                NSRect originalBounds = [activeAnnotation bounds];
                 NSPoint offset = SKSubstractPoints(pagePoint, originalBounds.origin);
                 NSPoint originalStartPoint = NSZeroPoint;
                 NSPoint originalEndPoint = NSZeroPoint;
