@@ -3402,8 +3402,9 @@ enum {
     PDFBorder *border = nil;
     NSBezierPath *path;
     BOOL didDraw = NO;
+    BOOL isExtension = ([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page];
     
-    if (([theEvent modifierFlags] & NSShiftKeyMask) && [[activeAnnotation type] isEqualToString:SKNInkString] && [[activeAnnotation page] isEqual:page]) {
+    if (isExtension) {
         bezierPaths = [[NSArray alloc] initWithArray:[(PDFAnnotationInk *)activeAnnotation paths] copyItems:YES];
         NSAffineTransform *transform = [NSAffineTransform transform];
         NSRect bounds = [activeAnnotation bounds];
@@ -3446,13 +3447,14 @@ enum {
     
     if (didDraw) {
         [self addAnnotationWithType:SKInkNote contents:nil page:page bounds:NSZeroRect];
-        if (pathColor)
-            [activeAnnotation setColor:pathColor];
-        if (border)
-            [activeAnnotation setBorder:border];
-        if (text)
-            [activeAnnotation setString:text];
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        if (activeAnnotation) {
+            if (isExtension) {
+                [activeAnnotation setColor:pathColor];
+                [activeAnnotation setBorder:border];
+                [activeAnnotation setString:text];
+            }
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+        }
     }
     
     [bezierPaths release];
