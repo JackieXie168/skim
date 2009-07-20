@@ -1,0 +1,6 @@
+// Base framework only
+
+#include "SkimNotes-Framework.xcconfig"
+
+PRODUCT_NAME = SkimNotesBase
+GCC_PREFIX_HEADER = SkimNotesBase_Prefix.pch

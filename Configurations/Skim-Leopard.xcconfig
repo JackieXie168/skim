@@ -1,0 +1,11 @@
+MACOSX_DEPLOYMENT_TARGET = 10.5
+INSTALL_PATH = $(HOME)/Library/Bundles
+
+OTHER_LDFLAGS = -framework Foundation -framework AppKit
+
+INFOPLIST_FILE = Leopard-Info.plist
+PRODUCT_NAME = Skim-Leopard
+WRAPPER_EXTENSION = bundle
+
+GCC_PRECOMPILE_PREFIX_HEADER = YES
+GCC_PREFIX_HEADER = $(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h
