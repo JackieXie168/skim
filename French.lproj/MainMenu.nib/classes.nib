@@ -151,6 +151,22 @@
 			<string>SKOutlineView</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>addBookmark</key>
@@ -329,6 +345,8 @@
 				<string>id</string>
 				<key>zoomInActualOut</key>
 				<string>id</string>
+				<key>zoomLog</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>SKMainWindowController</string>
@@ -416,6 +434,8 @@
 				<string>NSObjectController</string>
 				<key>pageNumberField</key>
 				<string>NSTextField</string>
+				<key>pdfContentView</key>
+				<string>NSView</string>
 				<key>pdfEdgeView</key>
 				<string>BDSKEdgeView</string>
 				<key>pdfSplitView</key>
@@ -491,22 +511,6 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>

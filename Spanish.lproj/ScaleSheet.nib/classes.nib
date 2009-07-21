@@ -19,7 +19,7 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>NSView</string>
+			<string>NSApplication</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
@@ -60,14 +60,6 @@
 			<string>NSResponder</string>
 		</dict>
 		<dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -88,6 +80,30 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKScaleSheetController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -101,14 +117,6 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindow</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
