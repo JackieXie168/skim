@@ -72,6 +72,8 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
             if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
                 string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
             theURL = [NSURL URLWithString:string];
+            if (theURL == nil)
+                theURL = [NSURL URLWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         }
         if (theURL == nil) {
             if ([string hasPrefix:@"~"])
