@@ -449,7 +449,7 @@ enum {
             CGContextSetFillColor(context, color);
             CGContextFillRect(context, NSRectToCGRect(selectionRect));
         }
-        SKCGContextDrawGrabHandles(context, NSRectToCGRect(selectionRect), radius, [pdfPage isEqual:[self currentPage]] ? dragMask : 0);
+        SKCGContextDrawGrabHandles(context, NSRectToCGRect(selectionRect), radius, 0);
     }
     
     CGContextRestoreGState(context);
