@@ -2288,10 +2288,14 @@ enum {
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], SKPDFViewOldPageKey, nil];
                 if ([self hasReadingBar] == NO)
                     [self toggleReadingBar];
                 [readingBar setPage:page];
                 [readingBar goToPageForPoint:point];
+                [self setNeedsDisplay:YES];
+                [userInfo setObject:page forKey:SKPDFViewNewPageKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
             } else if (sel && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode)) {
                 [self setCurrentSelection:sel];
             }
