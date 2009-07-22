@@ -3561,6 +3561,61 @@ enum {
         
         if (dragMask == 0) {
             newRect.origin = SKAddPoints(newRect.origin, delta);
+        } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
+            CGFloat width = NSWidth(newRect);
+            CGFloat height = NSHeight(newRect);
+            CGFloat square;
+            
+            if (dragMask & BDSKMaxXEdgeMask)
+                width += delta.x;
+            else if (dragMask & BDSKMinXEdgeMask)
+                width -= delta.x;
+            if (dragMask & BDSKMaxYEdgeMask)
+                height += delta.y;
+            else if (dragMask & BDSKMinYEdgeMask)
+                height -= delta.y;
+            
+            if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
+                if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
+                    square = SKMax(SKAbs(width), SKAbs(height));
+                else
+                    square = SKAbs(width);
+            } else {
+                square = SKAbs(height);
+            }
+            
+            if (dragMask & BDSKMinXEdgeMask) {
+                if (width >= 0.0 && NSMaxX(newRect) - square < NSMinX(pageBounds))
+                    square = NSMaxX(newRect) - NSMinX(pageBounds);
+                else if (width < 0.0 && NSMaxX(newRect) + square > NSMaxX(pageBounds))
+                    square =  NSMaxX(pageBounds) - NSMaxX(newRect);
+            } else {
+                if (width >= 0.0 && NSMinX(newRect) + square > NSMaxX(pageBounds))
+                    square = NSMaxX(pageBounds) - NSMinX(newRect);
+                else if (width < 0.0 && NSMinX(newRect) - square < NSMinX(pageBounds))
+                    square = NSMinX(newRect) - NSMinX(pageBounds);
+            }
+            if (dragMask & BDSKMinYEdgeMask) {
+                if (height >= 0.0 && NSMaxY(newRect) - square < NSMinY(pageBounds))
+                    square = NSMaxY(newRect) - NSMinY(pageBounds);
+                else if (height < 0.0 && NSMaxY(newRect) + square > NSMaxY(pageBounds))
+                    square = NSMaxY(pageBounds) - NSMaxY(newRect);
+            } else {
+                if (height >= 0.0 && NSMinY(newRect) + square > NSMaxY(pageBounds))
+                    square = NSMaxY(pageBounds) - NSMinY(newRect);
+                if (height < 0.0 && NSMinY(newRect) - square < NSMinY(pageBounds))
+                    square = NSMinY(newRect) - NSMinY(pageBounds);
+            }
+            
+            if (dragMask & BDSKMinXEdgeMask)
+                newRect.origin.x = width < 0.0 ? NSMaxX(newRect) : NSMaxX(newRect) - square;
+            else if (width < 0.0 && (dragMask & BDSKMaxXEdgeMask))
+                newRect.origin.x = NSMinX(newRect) - square;
+            if (dragMask & BDSKMinYEdgeMask)
+                newRect.origin.y = height < 0.0 ? NSMaxY(newRect) : NSMaxY(newRect) - square;
+            else if (height < 0.0 && (dragMask & BDSKMaxYEdgeMask))
+                newRect.origin.y = NSMinY(newRect) - square;
+            newRect.size.width = newRect.size.height = square;
         } else {
             if (dragMask & BDSKMaxXEdgeMask) {
                 newRect.size.width += delta.x;
