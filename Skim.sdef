@@ -1237,6 +1237,10 @@
 				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
 				<cocoa key="Source"/> 
 			</parameter>
+			<parameter name="showing reading bar" code="RBar" type="boolean" optional="yes" 
+				description="Whether to move the reading bar instead of selecting. Only applies for a TeX line."> 
+				<cocoa key="ShowReadingBar"/> 
+			</parameter>
         </command>
 
         <command name="convert notes" code="SKIMConv"

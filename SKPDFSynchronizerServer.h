@@ -43,14 +43,14 @@
 @protocol SKPDFSynchronizerServer
 - (oneway void)stopRunning; 
 - (oneway void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
-- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file;
+- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file options:(NSInteger)options;
 @end
 
 // these methods can be sent to the proxy for the client and must be implemented by the client
 @protocol SKPDFSynchronizerClient
 - (void)setServerProxy:(byref id)anObject;
 - (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file;
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
 @end
 
 

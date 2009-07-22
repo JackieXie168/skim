@@ -119,8 +119,8 @@
     [serverProxy findFileAndLineForLocation:point inRect:rect pageBounds:bounds atPageIndex:pageIndex];
 }
 
-- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file {
-    [serverProxy findPageAndLocationForLine:line inFile:file];
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options {
+    [serverProxy findPageAndLocationForLine:line inFile:file options:options];
 }
 
 #pragma mark | Client protocol
@@ -130,9 +130,9 @@
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
-- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped {
-    if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:isFlipped:)])
-        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex isFlipped:isFlipped];
+- (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
+    if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:options:)])
+        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex options:options];
 }
 
 @end

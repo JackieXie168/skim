@@ -1623,13 +1623,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped {
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
     PDFPage *page = [[self pdfDocument] pageAtIndex:pageIndex];
-    if (isFlipped)
+    if (options & SKPDFSynchronizerFlippedMask)
         point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
         [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
-    [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+    [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex showReadingBar:(options & SKPDFSynchronizerShowReadingBarMask) != 0];
 }
 
 
@@ -2130,11 +2130,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
     } else if ([location isKindOfClass:[SKLine class]]) {
         id source = [args objectForKey:@"Source"];
+        BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
+        NSInteger options = showBar ? SKPDFSynchronizerShowReadingBarMask : 0;
         if ([source isKindOfClass:[NSString class]])
             source = [NSURL fileURLWithPath:source];
         if ([source isKindOfClass:[NSURL class]] == NO)
             source = [self fileURL];
-        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
+        [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([[selection pages] count]) {
