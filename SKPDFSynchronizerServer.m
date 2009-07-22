@@ -637,7 +637,9 @@ struct SKServerFlags {
             success = [self synctexFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         
         if (success && [self shouldKeepRunning]) {
-            if (isPdfsync == NO)
+            if (isPdfsync)
+                options &= ~SKPDFSynchronizerFlippedMask;
+            else
                 options |= SKPDFSynchronizerFlippedMask;
             [clientProxy foundLocation:foundPoint atPageIndex:foundPageIndex options:options];
         }
