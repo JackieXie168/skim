@@ -623,7 +623,7 @@ struct SKServerFlags {
     }
 }
 
-- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file {
+- (oneway void)findPageAndLocationForLine:(NSInteger)line inFile:(bycopy NSString *)file options:(NSInteger)options {
     if (file && [self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
         NSUInteger foundPageIndex = NSNotFound;
         NSPoint foundPoint = NSZeroPoint;
@@ -636,8 +636,11 @@ struct SKServerFlags {
         else
             success = [self synctexFindPage:&foundPageIndex location:&foundPoint forLine:line inFile:file];
         
-        if (success && [self shouldKeepRunning])
-            [clientProxy foundLocation:foundPoint atPageIndex:foundPageIndex isFlipped:isPdfsync == NO];
+        if (success && [self shouldKeepRunning]) {
+            if (isPdfsync == NO)
+                options |= SKPDFSynchronizerFlippedMask;
+            [clientProxy foundLocation:foundPoint atPageIndex:foundPageIndex options:options];
+        }
     }
 }
 

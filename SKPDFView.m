@@ -2280,14 +2280,22 @@ enum {
     [self scrollRect:[annotation bounds] inPageToVisible:[annotation page]];
 }
 
-- (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex {
+- (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : SKRectFromCenterAndSize(point, SKMakeSquareSize(10.0));
         
-        if (sel && interactionMode != SKPresentationMode && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode))
-            [self setCurrentSelection:sel];
+        if (interactionMode != SKPresentationMode) {
+            if (showBar) {
+                if ([self hasReadingBar] == NO)
+                    [self toggleReadingBar];
+                [readingBar setPage:page];
+                [readingBar goToPageForPoint:point];
+            } else if (sel && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode)) {
+                [self setCurrentSelection:sel];
+            }
+        }
         [self scrollRect:rect inPageToVisible:page];
     }
 }

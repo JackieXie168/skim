@@ -183,4 +183,14 @@
     return didMove;
 }
 
+- (BOOL)goToPageForPoint:(NSPoint)point {
+    if ([lineRects count] == 0)
+        return NO;
+    NSInteger i = [lineRects count] - numberOfLines;
+    while (--i >= 0)
+        if (NSMaxY([[lineRects objectAtIndex:i] rectValue]) >= point.y) break;
+    currentLine = MAX(0, i);
+    return YES;
+}
+
 @end

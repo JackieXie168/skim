@@ -38,6 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum {
+    SKPDFSynchronizerDefaultOptions = 0,
+    SKPDFSynchronizerShowReadingBarMask = 1 << 0,
+    SKPDFSynchronizerFlippedMask = 1 << 1,
+};
 
 @interface SKPDFSynchronizer : NSObject {
     id delegate;
@@ -54,7 +59,7 @@
 - (void)setFileName:(NSString *)newFileName;
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
-- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file;
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options;
 
 // this must be called to stop the DO server from running in the server thread
 - (void)terminate;
@@ -64,5 +69,5 @@
 
 @interface NSObject (SKPDFSynchronizerDelegate)
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex isFlipped:(BOOL)isFlipped;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
 @end

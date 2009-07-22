@@ -66,5 +66,6 @@
 - (BOOL)goToPreviousLine;
 - (BOOL)goToNextPage;
 - (BOOL)goToPreviousPage;
+- (BOOL)goToPageForPoint:(NSPoint)point;
 
 @end
