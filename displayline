@@ -4,6 +4,11 @@
 #
 # Usage: displayline [-r] [-b] LINE PDFFILE [TEXSOURCEFILE]
 
+if [ $# == 0 -o "$1" == "-h" -o "$1" == "-help" ]; then
+  echo "Usage: displayline [-r] [-b] LINE PDFFILE [TEXSOURCEFILE]"
+  exit 0
+fi
+
 # get arguments
 revert=0
 bar=0
