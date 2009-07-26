@@ -190,6 +190,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     SKProgressController            *progressController;
     
     NSButton                        *colorAccessoryView;
+    NSButton                        *textColorAccessoryView;
     
     NSMutableArray                  *pageLabels;
     
