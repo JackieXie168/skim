@@ -270,6 +270,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [savedNormalSetup release];
     [progressController release];
     [colorAccessoryView release];
+    [textColorAccessoryView release];
     [leftSideDrawer release];
     [rightSideDrawer release];
     [secondaryPdfEdgeView release];

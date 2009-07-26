@@ -100,6 +100,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 @interface SKMainWindowController (UIPrivate)
 - (void)changeColorFill:(id)sender;
+- (void)changeColorText:(id)sender;
 @end
 
 #pragma mark -
@@ -174,15 +175,30 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                     [colorAccessoryView sizeToFit];
                 }
                 accessoryView = colorAccessoryView;
+            } else if ([annotation respondsToSelector:@selector(setFontColor:)]) {
+                if (textColorAccessoryView == nil) {
+                    textColorAccessoryView = [[NSButton alloc] init];
+                    [textColorAccessoryView setButtonType:NSSwitchButton];
+                    [textColorAccessoryView setTitle:NSLocalizedString(@"Text color", @"Button title")];
+                    [[textColorAccessoryView cell] setControlSize:NSSmallControlSize];
+                    [textColorAccessoryView setTarget:self];
+                    [textColorAccessoryView setAction:@selector(changeColorText:)];
+                    [textColorAccessoryView sizeToFit];
+                }
+                accessoryView = textColorAccessoryView;
             }
             if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
                 color = [(id)annotation interiorColor] ?: [NSColor clearColor];
+            } else if ([annotation respondsToSelector:@selector(setFontColor:)] && [textColorAccessoryView state] == NSOnState) {
+                color = [(id)annotation fontColor] ?: [NSColor blackColor];
             } else {
                 color = [annotation color];
             }
         }
-        if ([[NSColorPanel sharedColorPanel] accessoryView] != accessoryView)
+        if ([[NSColorPanel sharedColorPanel] accessoryView] != accessoryView) {
+            [[NSColorPanel sharedColorPanel] setAccessoryView:nil];
             [[NSColorPanel sharedColorPanel] setAccessoryView:accessoryView];
+        }
     }
     
     if (color) {
@@ -193,6 +209,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)changeColorFill:(id)sender{
+   [self updateColorPanel];
+}
+
+- (void)changeColorText:(id)sender{
    [self updateColorPanel];
 }
 

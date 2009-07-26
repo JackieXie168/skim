@@ -1765,6 +1765,8 @@ enum {
             if ([pboardType isEqualToString:NSColorPboardType]) {
                 if ((GetCurrentKeyModifiers() & optionKey) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
                     [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
+                else if ((GetCurrentKeyModifiers() & optionKey) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
+                    [(id)highlightAnnotation setFontColor:[NSColor colorFromPasteboard:pboard]];
                 else
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
