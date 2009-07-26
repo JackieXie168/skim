@@ -128,6 +128,10 @@ enum {
 
 @interface PDFView (SKLeopardPrivate)
 - (void)addTooltipsForVisiblePages;
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleViewChangedNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 @end
 
 #pragma mark -
@@ -264,6 +268,12 @@ enum {
                                                  name:PDFViewPageChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                  name:PDFViewScaleChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
+                                                 name:SKPDFViewDisplayModeChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
+                                                 name:SKPDFViewDisplayBoxChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
+                                                 name:SKPDFViewDisplayAsBookChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]
         context:&SKPDFViewDefaultsObservationContext];
@@ -2430,6 +2440,7 @@ enum {
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
+    [self resetPDFToolTipRects];
     if ([self isEditing]) {
         NSRect editBounds = [self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]];
         [editField setFrame:editBounds];
@@ -2438,6 +2449,10 @@ enum {
             [editField setFont:[[NSFontManager sharedFontManager] convertFont:font toSize:[font pointSize] * [self scaleFactor]]];
         }
     }
+}
+
+- (void)handleViewChangedNotification:(NSNotification *)notification {
+    [self resetPDFToolTipRects];
 }
 
 #pragma mark Menu validation
