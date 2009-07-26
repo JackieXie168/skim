@@ -2423,6 +2423,7 @@ enum {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
         if ([self isEditing])
             [self relayoutEditField];
+        [self resetPDFToolTipRects];
         [accessibilityChildren release];
         accessibilityChildren = nil;
     }
