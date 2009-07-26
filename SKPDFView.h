@@ -203,10 +203,6 @@ typedef NSInteger SKInteractionMode;
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 
-- (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
-
 - (void)resetPDFToolTipRects;
 - (void)removePDFToolTipRects;
 
