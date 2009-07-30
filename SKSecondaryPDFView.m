@@ -577,6 +577,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)mouseDown:(NSEvent *)theEvent{
 	if ((NSCommandKeyMask | NSShiftKeyMask) == ([theEvent modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask))) {
+        // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+        while (YES) {
+            if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+                break;
+        }
+        
         SKPDFDocument *document = (SKPDFDocument *)[[[self window] windowController] document];
         
         if ([document respondsToSelector:@selector(synchronizer)]) {
@@ -589,11 +595,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
             
             [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
-        }
-        // eat up mouseDragged/mouseUp events, so we won't get their event handlers
-        while (YES) {
-            if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-                break;
         }
     } else {
         [[NSCursor closedHandCursor] push];

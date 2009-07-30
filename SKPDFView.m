@@ -4179,6 +4179,12 @@ enum {
 }
 
 - (void)doPdfsyncWithEvent:(NSEvent *)theEvent {
+    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+    while (YES) {
+        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+            break;
+    }
+    
     SKPDFDocument *document = (SKPDFDocument *)[[[self window] windowController] document];
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
@@ -4191,11 +4197,6 @@ enum {
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         
         [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
-    }
-    // eat up mouseDragged/mouseUp events, so we won't get their event handlers
-    while (YES) {
-        if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
-            break;
     }
 }
 
