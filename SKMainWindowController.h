@@ -295,6 +295,9 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)insertObject:(SKGroupedSearchResult *)groupedSearchResult inGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
 - (void)removeObjectFromGroupedSearchResultsAtIndex:(NSUInteger)theIndex;
 
+- (NSDictionary *)presentationOptions;
+- (void)setPresentationOptions:(NSDictionary *)dictionary;
+
 - (NSArray *)tags;
 - (double)rating;
 

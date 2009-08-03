@@ -114,15 +114,47 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @implementation SKTransitionController
 
 + (NSArray *)transitionFilterNames {
-    static NSMutableArray *transitionFilterNames = nil;
+    static NSArray *transitionFilterNames = nil;
     
-    if(transitionFilterNames == nil) {
+    if (transitionFilterNames == nil) {
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
         transitionFilterNames = [[CIFilter filterNamesInCategories:[NSArray arrayWithObject:kCICategoryTransition]] copy];
     }
     
     return transitionFilterNames;
+}
+
++ (NSArray *)transitionNames {
+    static NSArray *transitionNames = nil;
+    
+    if (transitionNames == nil) {
+        transitionNames = [NSArray arrayWithObjects:
+            @"CoreGraphics SKFadeTransition", 
+            @"CoreGraphics SKZoomTransition", 
+            @"CoreGraphics SKRevealTransition", 
+            @"CoreGraphics SKSlideTransition", 
+            @"CoreGraphics SKWarpFadeTransition", 
+            @"CoreGraphics SKSwapTransition", 
+            @"CoreGraphics SKCubeTransition", 
+            @"CoreGraphics SKWarpSwitchTransition", 
+            @"CoreGraphics SKWarpFlipTransition", nil];
+        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[self transitionFilterNames]] copy];
+    }
+    
+    return transitionNames;
+}
+
++ (NSString *)nameForStyle:(SKAnimationTransitionStyle)style {
+    if (style > SKNoTransition && style <= [[self transitionNames] count])
+        return [[self transitionNames] objectAtIndex:style - 1];
+    else
+        return nil;
+}
+
++ (SKAnimationTransitionStyle)styleForName:(NSString *)name {
+    NSUInteger idx = [[self transitionNames] indexOfObject:name];
+    return idx == NSNotFound ? SKNoTransition : idx + 1;
 }
 
 - (id)initWithView:(NSView *)aView {

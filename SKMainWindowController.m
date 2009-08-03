@@ -1214,6 +1214,35 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [groupedSearchResults removeObjectAtIndex:theIndex];
 }
 
+
+- (NSDictionary *)presentationOptions {
+    SKTransitionController *transitions = [pdfView transitionController];
+    SKAnimationTransitionStyle style = [transitions transitionStyle];
+    NSString *styleName = [SKTransitionController nameForStyle:style];
+    if (styleName == nil) {
+        return nil;
+    } else {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        [options setObject:styleName forKey:@"styleName"];
+        [options setObject:[NSNumber numberWithFloat:[transitions duration]] forKey:@"duration"];
+        [options setObject:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:@"shouldRestrict"];
+        return options;
+    }
+}
+
+- (void)setPresentationOptions:(NSDictionary *)dictionary {
+    SKTransitionController *transitions = [pdfView transitionController];
+    NSString *styleName = [dictionary objectForKey:@"styleName"];
+    NSNumber *duration = [dictionary objectForKey:@"duration"];
+    NSNumber *shouldRestrict = [dictionary objectForKey:@"shouldRestrict"];
+    if (styleName)
+        [transitions setTransitionStyle:[SKTransitionController styleForName:styleName]];
+    if (duration)
+        [transitions setDuration:[duration floatValue]];
+    if (shouldRestrict)
+        [transitions setShouldRestrict:[shouldRestrict boolValue]];
+}
+
 - (NSArray *)tags {
     return tags;
 }
