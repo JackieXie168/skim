@@ -77,6 +77,10 @@ typedef NSUInteger SKAnimationTransitionStyle;
 }
 
 + (NSArray *)transitionFilterNames;
++ (NSArray *)transitionNames;
+
++ (NSString *)nameForStyle:(SKAnimationTransitionStyle)style;
++ (SKAnimationTransitionStyle)styleForName:(NSString *)name;
 
 - (id)initWithView:(NSView *)aView;
 

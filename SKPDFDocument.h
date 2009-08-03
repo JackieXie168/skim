@@ -75,6 +75,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     // temporary variables:
     PDFDocument *pdfDocument;
     NSArray *noteDicts;
+    NSDictionary *presentationOptions;
     NSArray *openMetaTags;
     double openMetaRating;
     

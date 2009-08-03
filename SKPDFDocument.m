@@ -78,6 +78,7 @@
 #import "SKTextFieldSheetController.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
+#define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
 #define OPEN_META_TAGS_KEY @"com.apple.metadata:kOMUserTags"
 #define OPEN_META_RATING_KEY @"com.apple.metadata:kOMStarRating"
 
@@ -96,6 +97,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 - (void)setPSOrDVIData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
+- (void)setPresentationOptions:(NSDictionary *)array;
 - (void)setOpenMetaTags:(NSArray *)array;
 - (void)setOpenMetaRating:(double)rating;
 
@@ -130,6 +132,7 @@ static char SKPDFDocumentDefaultsObservationContext;
     [psOrDviData release];
     [pdfDocument release];
     [noteDicts release];
+    [presentationOptions release];
     [openMetaTags release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
@@ -170,6 +173,10 @@ static char SKPDFDocumentDefaultsObservationContext;
     
     [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
     [self setNoteDicts:nil];
+    
+    if (presentationOptions)
+        [[self mainWindowController] setPresentationOptions:presentationOptions];
+    [self setPresentationOptions:nil];
     
     [mainController setOpenMetaTags:openMetaTags];
     [self setOpenMetaTags:nil];
@@ -385,6 +392,11 @@ static char SKPDFDocumentDefaultsObservationContext;
                 [alert runModal];
             }
             
+            NSDictionary *options = [[self mainWindowController] presentationOptions];
+            [[SKNExtendedAttributeManager sharedManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+            if (options)
+                [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
+            
             if (success)
                 [[NSDistributedNotificationCenter defaultCenter]
                     postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
@@ -470,10 +482,16 @@ static char SKPDFDocumentDefaultsObservationContext;
             name = [name stringByAppendingString:@"1"];
         NSData *data;
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
+        NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
+        NSDictionary *options = [[self mainWindowController] presentationOptions];
+        if (options) {
+            info = [[info mutableCopy] autorelease];
+            [(NSMutableDictionary *)info setObject:options forKey:@"PresentationOptions"];
+        }
         [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
         if (data = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding])
             [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
-        if (data = [NSPropertyListSerialization dataFromPropertyList:[[SKInfoWindowController sharedInstance] infoForDocument:self] format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL])
+        if (data = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL])
             [fileWrapper addRegularFileWithContents:data preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
         if ([[self notes] count] > 0) {
             if (data = [self notesData])
@@ -559,6 +577,10 @@ static char SKPDFDocumentDefaultsObservationContext;
         [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
         [self setNoteDicts:nil];
         
+        if (presentationOptions)
+            [[self mainWindowController] setPresentationOptions:presentationOptions];
+        [self setPresentationOptions:nil];
+        
         [[self mainWindowController] setOpenMetaTags:openMetaTags];
         [self setOpenMetaTags:nil];
         
@@ -634,6 +656,13 @@ static char SKPDFDocumentDefaultsObservationContext;
     }
 }
 
+- (void)setPresentationOptions:(NSDictionary *)dictionary {
+    if (presentationOptions != dictionary) {
+        [presentationOptions autorelease];
+        presentationOptions = [dictionary retain];
+    }
+}
+
 - (void)setOpenMetaTags:(NSArray *)array {
     if (openMetaTags != array) {
         [openMetaTags autorelease];
@@ -694,6 +723,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [self setPSOrDVIData:nil];
     [self setPDFDoc:nil];
     [self setNoteDicts:nil];
+    [self setPresentationOptions:nil];
     [self setOpenMetaTags:nil];
     [self setOpenMetaRating:0.0];
     
@@ -793,6 +823,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
             
+            NSDictionary *dictionary = nil;
             NSArray *array = nil;
             NSNumber *number = nil;
             if (SKIsPDFBundleDocumentType(docType)) {
@@ -803,14 +834,18 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                     if (info == nil) {
                         [errorString release];
                     } else if ([info isKindOfClass:[NSDictionary class]]) {
-                        array =[info objectForKey:@"Tags"];
+                        dictionary = [info objectForKey:@"PresentationOptions"];
+                        array = [info objectForKey:@"Tags"];
                         number = [info objectForKey:@"Rating"];
                     }
                 }
             } else {
+                dictionary = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
                 array = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
                 number = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             }
+            if ([dictionary isKindOfClass:[NSDictionary class]] && [dictionary count])
+                [self setPresentationOptions:dictionary];
             if ([array isKindOfClass:[NSArray class]] && [array count])
                 [self setOpenMetaTags:array];
             if ([number respondsToSelector:@selector(doubleValue)] && [number doubleValue] > 0.0)
