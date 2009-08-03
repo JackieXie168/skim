@@ -111,6 +111,35 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
+@interface SKTransitionAnimation : NSAnimation {
+    CIFilter *filter;
+}
+- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
+- (CIImage *)currentImage;
+@end
+
+#pragma mark -
+
+@interface SKTransitionView : NSOpenGLView {
+    SKTransitionAnimation *animation;
+    CIImage *image;
+    CIContext *context;
+    BOOL needsReshape;
+}
+- (SKTransitionAnimation *)animation;
+- (void)setAnimation:(SKTransitionAnimation *)newAnimation;
+- (CIImage *)image;
+- (void)setImage:(CIImage *)newImage;
+- (CIImage *)currentImage;
+@end
+
+#pragma mark -
+
+@interface SKTransitionWindow : NSWindow
+@end
+
+#pragma mark -
+
 @implementation SKTransitionController
 
 + (NSArray *)transitionFilterNames {
