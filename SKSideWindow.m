@@ -44,23 +44,31 @@
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
-#define WINDOW_OFFSET           8.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
 #define WINDOW_MIN_WIDTH        14.0
 #define RESIZE_HANDLE_WIDTH     8.0
 #define RESIZE_HANDLE_HEIGHT    20.0
 
+static CGFloat WINDOW_OFFSET = 8.0;
+
 #define SKHideClosedFullScreenSidePanelsKey @"SKHideClosedFullScreenSidePanels"
 
 @implementation SKSideWindow
 
-static BOOL hideWhenClosed = NO;
+static NSUInteger hideWhenClosed = NO;
 
 + (void)initialize {
     SKINITIALIZE;
     
-    hideWhenClosed = [[NSUserDefaults standardUserDefaults] boolForKey:SKHideClosedFullScreenSidePanelsKey];
+    hideWhenClosed = [[NSUserDefaults standardUserDefaults] integerForKey:SKHideClosedFullScreenSidePanelsKey];
+    
+    if (hideWhenClosed == 2)
+        WINDOW_OFFSET = 0.0;
+}
+
++ (BOOL)isAutoHideEnabled {
+    return hideWhenClosed != 2;
 }
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
@@ -258,7 +266,7 @@ static BOOL hideWhenClosed = NO;
 }
 
 - (BOOL)acceptsMouseOver {
-    return acceptsMouseOver;
+    return acceptsMouseOver && hideWhenClosed != 2;
 }
 
 - (void)setAcceptsMouseOver:(BOOL)flag {
@@ -427,7 +435,7 @@ static BOOL hideWhenClosed = NO;
 }
 
 - (void)trackMouseOvers {
-    if ([self window] && resizing == NO) {
+    if ([self window] && resizing == NO && hideWhenClosed != 2) {
         if (trackingRect)
             [self removeTrackingRect:trackingRect];
         trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NSMouseInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds], [self isFlipped])];
