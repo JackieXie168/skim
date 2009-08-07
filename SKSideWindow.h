@@ -48,6 +48,8 @@
     NSRectEdge edge;
 }
 
++ (BOOL)isAutoHideEnabled;
+
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)slideIn;

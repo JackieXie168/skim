@@ -1354,7 +1354,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self showLeftSideWindowOnScreen:screen];
     [self showRightSideWindowOnScreen:screen];
     
-    [pdfSplitView setFrame:NSInsetRect([[pdfSplitView superview] bounds], 9.0, 0.0)];
+    if ([SKSideWindow isAutoHideEnabled])
+        [pdfSplitView setFrame:NSInsetRect([[pdfSplitView superview] bounds], 9.0, 0.0)];
     [[pdfSplitView superview] setNeedsDisplay:YES];
 }
 
