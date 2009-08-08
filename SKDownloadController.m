@@ -200,16 +200,6 @@ static SKDownloadController *sharedDownloadController = nil;
         [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObject:download];
 }
 
-- (IBAction)paste:(id)sender {
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
-    
-    if ([theURL isFileURL])
-        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL];
-    else if (theURL)
-        [self addDownloadForURL:theURL];
-}
-
 - (IBAction)showDownloadPreferences:(id)sender {
     [NSApp beginSheet:preferencesSheet modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
 }
@@ -368,6 +358,20 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     return YES;
+}
+
+- (void)tableViewPaste:(NSTableView *)tv {
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
+    
+    if ([theURL isFileURL])
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL];
+    else if (theURL)
+        [self addDownloadForURL:theURL];
+}
+
+- (BOOL)tableViewCanPaste:(NSTableView *)tv {
+    return (nil != [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]);
 }
 
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {

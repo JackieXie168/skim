@@ -160,11 +160,30 @@ static char SKTableViewDefaultsObservationContext;
         NSBeep();
 }
 
+- (BOOL)canPaste {
+    if ([[self delegate] respondsToSelector:@selector(tableViewPaste:)]) {
+        if ([[self delegate] respondsToSelector:@selector(tableViewCanPaste:)])
+            return [[self delegate] tableViewCanPaste:self];
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)paste:(id)sender {
+    if ([self canPaste])
+        [[self delegate] tableViewPaste:self];
+    else
+        NSBeep();
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(delete:))
         return [self canDelete];
     else if ([menuItem action] == @selector(copy:))
         return [self canCopy];
+    else if ([menuItem action] == @selector(paste:))
+        return [self canPaste];
     else if ([menuItem action] == @selector(selectAll:))
         return [self allowsMultipleSelection];
     else if ([menuItem action] == @selector(deselectAll:))

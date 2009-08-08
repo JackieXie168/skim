@@ -55,6 +55,9 @@
 - (BOOL)canCopy;
 - (void)copy:(id)sender;
 
+- (BOOL)canPaste;
+- (void)paste:(id)sender;
+
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
@@ -68,6 +71,9 @@
 
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
+- (void)tableViewPaste:(NSTableView *)aTableView;
+- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
 
 - (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
