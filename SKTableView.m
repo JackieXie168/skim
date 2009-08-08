@@ -130,7 +130,7 @@ static char SKTableViewDefaultsObservationContext;
         if ([[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)])
             return [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
         else
-            return [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)];
+            return YES;
     }
     return NO;
 }
@@ -148,7 +148,7 @@ static char SKTableViewDefaultsObservationContext;
         if ([[self delegate] respondsToSelector:@selector(tableView:canCopyRowsWithIndexes:)])
             return [[self delegate] tableView:self canCopyRowsWithIndexes:indexes];
         else
-            return [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)];
+            return YES;
     }
     return NO;
 }

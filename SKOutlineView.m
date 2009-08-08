@@ -152,7 +152,7 @@ static char SKOutlineViewDefaultsObservationContext;
         if ([[self delegate] respondsToSelector:@selector(outlineView:canDeleteItems:)])
             return [[self delegate] outlineView:self canDeleteItems:items];
         else
-            return [[self delegate] respondsToSelector:@selector(outlineView:deleteItems:)];
+            return YES;
     }
     return NO;
 }
@@ -170,7 +170,7 @@ static char SKOutlineViewDefaultsObservationContext;
         if ([[self delegate] respondsToSelector:@selector(outlineView:canCopyItems:)])
             return [[self delegate] outlineView:self canCopyItems:items];
         else
-            return [[self delegate] respondsToSelector:@selector(outlineView:copyItems:)];
+            return YES;
     }
     return NO;
 }
