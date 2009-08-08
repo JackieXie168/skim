@@ -1468,6 +1468,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         else
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
         return [self isPresentation] == NO;
+    } else if (action == @selector(chooseTransition:)) {
+        return [[self pdfDocument] pageCount] > 1;
     } else if (action == @selector(toggleCaseInsensitiveSearch:)) {
         [menuItem setState:mwcFlags.caseInsensitiveSearch ? NSOnState : NSOffState];
         return YES;
