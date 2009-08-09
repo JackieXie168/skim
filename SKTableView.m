@@ -46,6 +46,11 @@
 static char SKTableViewDefaultsObservationContext;
 
 
+@interface SKTableView (SKPrivate)
+- (void)rebuildTrackingRects;
+@end
+
+
 @implementation SKTableView
 
 + (BOOL)usesDefaultFontSize { return NO; }
@@ -55,6 +60,8 @@ static char SKTableViewDefaultsObservationContext;
         @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
         @catch (id e) {}
     }
+    if (trackingRects != NULL)
+        CFRelease(trackingRects);
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [super dealloc];
@@ -96,6 +103,7 @@ static char SKTableViewDefaultsObservationContext;
 
 - (void)reloadData {
     [super reloadData];
+	[self rebuildTrackingRects];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
@@ -233,6 +241,94 @@ static char SKTableViewDefaultsObservationContext;
     
     [self setRowHeight:[NSLayoutManager defaultViewLineHeightForFont:font]];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+#pragma mark Tracking
+
+- (void)removeTrackingRects {
+    if (trackingRects) {
+        CFIndex idx = CFArrayGetCount(trackingRects);
+        while(idx--)
+            [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
+        CFArrayRemoveAllValues(trackingRects);
+    }
+}
+
+- (void)rebuildTrackingRects {
+    if ([[self delegate] respondsToSelector:@selector(tableView:shouldTrackTableColumn:row:)] == NO)
+        return;
+    
+    if (trackingRects == nil)
+        trackingRects = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+    else
+        [self removeTrackingRects];
+    
+    if ([self window]) {
+        NSRange rowRange = [self rowsInRect:[self visibleRect]];
+        NSRange columnRange = [self columnsInRect:[self visibleRect]];
+        NSUInteger row, column;
+        NSTableColumn *tableColumn;
+        NSInteger userData;
+        NSTrackingRectTag tag;
+        
+        for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
+            tableColumn = [[self tableColumns] objectAtIndex:column];
+            for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
+                if ([[self delegate] tableView:self shouldTrackTableColumn:tableColumn row:row]) {
+                    userData = row * [self numberOfColumns] + column;
+                    tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
+                    CFArrayAppendValue(trackingRects, (const void *)tag);
+                }
+            }
+        }
+    }
+}
+
+- (void)resetCursorRects {
+	[super resetCursorRects];
+    [self rebuildTrackingRects];
+}
+
+- (void)setDataSource:(id)anObject {
+	[super setDataSource:anObject];
+	[self rebuildTrackingRects];
+}
+
+- (void)noteNumberOfRowsChanged {
+	[super noteNumberOfRowsChanged];
+	[self rebuildTrackingRects];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if ([self window])
+        [self removeTrackingRects];
+}
+
+- (void)viewDidMoveToWindow {
+	if ([self window])
+        [self rebuildTrackingRects];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
+	}
+}
+
+- (void)mouseExited:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
+        NSInteger userData = (NSInteger)[theEvent userData];
+        NSInteger numCols = [self numberOfColumns];
+		NSInteger column = userData % numCols;
+		NSInteger row = userData / numCols;
+        NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+        [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
+	}
 }
 
 #pragma mark SKTypeSelectHelper datasource protocol
