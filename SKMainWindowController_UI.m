@@ -107,33 +107,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 @implementation SKMainWindowController (UI)
 
-#pragma mark Support
-
-- (void)showToolTipForDestination:(PDFDestination *)dest {
-    if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        NSPoint point = [dest point];
-        switch ([[dest page] rotation]) {
-            case 0:
-                point.x -= 50.0;
-                point.y += 20.0;
-                break;
-            case 90:
-                point.x -= 20.0;
-                point.y -= 50.0;
-                break;
-            case 180:
-                point.x += 50.0;
-                point.y -= 20.0;
-                break;
-            case 270:
-                point.x += 20.0;
-                point.y += 50.0;
-                break;
-        }
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease] atPoint:NSZeroPoint];
-    }
-}
-
 #pragma mark UI updating
 
 - (void)updateFontPanel {
@@ -533,20 +506,24 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([tv isEqual:findTableView]) {
-        PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
-        [self showToolTipForDestination:dest];
-    } else if ([tv isEqual:groupedFindTableView]) {
-        PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
-        [self showToolTipForDestination:dest];
+    if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
+        if ([tv isEqual:findTableView]) {
+            PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:dest atPoint:NSZeroPoint];
+        } else if ([tv isEqual:groupedFindTableView]) {
+            PDFDestination *dest = [[[[[groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:dest atPoint:NSZeroPoint];
+        }
     }
 }
 
 - (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)row {
-    if ([tv isEqual:findTableView]) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-    } else if ([tv isEqual:groupedFindTableView]) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+    if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
+        if ([tv isEqual:findTableView]) {
+            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        } else if ([tv isEqual:groupedFindTableView]) {
+            [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
+        }
     }
 }
 
@@ -912,13 +889,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)outlineView:(NSOutlineView *)ov mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView]) {
-        [self showToolTipForDestination:[item destination]];
+    if ([ov isEqual:outlineView] && [NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:[item destination] atPoint:NSZeroPoint];
     }
 }
 
 - (void)outlineView:(NSOutlineView *)ov mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    if ([ov isEqual:outlineView]) {
+    if ([ov isEqual:outlineView] && [NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
     }
 }

@@ -204,11 +204,14 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         PDFDestination *dest = nil;
         PDFPage *page;
+        NSPoint offset = NSZeroPoint;
         
-        if ([context isKindOfClass:[PDFDestination class]])
+        if ([context isKindOfClass:[PDFDestination class]]) {
             dest = context;
-        else if ([context isKindOfClass:[PDFAnnotationLink class]])
+            offset = NSMakePoint(-50.0, 20.0);
+        } else if ([context isKindOfClass:[PDFAnnotationLink class]]) {
             dest = [context destination];
+        }
         
         if (page = [dest page]) {
             
@@ -237,8 +240,9 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             
             bounds = [transform transformRect:bounds];
             
-            sourceRect.origin = [transform transformPoint:[dest point]];
+            sourceRect.origin = SKAddPoints([transform transformPoint:[dest point]], offset);
             sourceRect.origin.y -= NSHeight(sourceRect);
+            
             
             if ([selection string]) {
                 NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
