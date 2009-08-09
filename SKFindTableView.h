@@ -37,18 +37,8 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
 #import "SKTableView.h"
 
 
-@interface SKFindTableView : SKTableView {
-    CFMutableArrayRef trackingRects;
-}
-@end
-
-
-@interface NSObject (SKFindTableViewDelegate)
-- (BOOL)tableView:(NSTableView *)aTableView shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex;
+@interface SKFindTableView : SKTableView
 @end
