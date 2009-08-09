@@ -51,7 +51,8 @@
 
 + (id)sharedToolTipWindow;
 
-- (void)showForPDFContext:(id)annotationOrPage atPoint:(NSPoint)aPoint;
+// aContext can be a PDFAnnotation, PDFDestination, or PDFPage
+- (void)showForPDFContext:(id)aContext atPoint:(NSPoint)aPoint;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 
