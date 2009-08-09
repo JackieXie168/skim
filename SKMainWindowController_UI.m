@@ -132,7 +132,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 break;
         }
         [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:NSZeroPoint];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
     }
 }
 
