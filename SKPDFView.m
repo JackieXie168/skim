@@ -713,11 +713,13 @@ enum {
 
 - (void)animateTransitionForNextPage:(BOOL)next {
     NSUInteger idx = [[self currentPage] pageIndex];
-    BOOL shouldAnimate = [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++idx : --idx] label]] == NO;
+    BOOL shouldAnimate = [transitionController pageTransitions] || [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++idx : --idx] label]] == NO;
     NSRect rect;
     if (shouldAnimate) {
+        if (next == NO) idx--;
+        NSDictionary *info = idx < [[transitionController pageTransitions] count] ? [[transitionController pageTransitions] objectAtIndex:idx] : nil;
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-        [[self transitionController] prepareAnimationForRect:rect];
+        [[self transitionController] prepareAnimation:info forRect:rect];
     }
     if (next)
         [super goToNextPage:self];
@@ -732,14 +734,16 @@ enum {
 }
 
 - (IBAction)goToNextPage:(id)sender {
-    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToNextPage])
+    if (interactionMode == SKPresentationMode && [self canGoToNextPage] && transitionController &&
+        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions]))
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
-    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+    if (interactionMode == SKPresentationMode && [self canGoToPreviousPage] && transitionController &&
+        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions]))
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
@@ -1499,7 +1503,7 @@ enum {
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
     } else if ([NSApp isActive] && -1 != CFArrayGetFirstIndexOfValue(PDFToolTipRects, CFRangeMake(0, CFArrayGetCount(PDFToolTipRects)), (void *)trackingNumber)) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[theEvent userData] atPoint:NSZeroPoint];
         PDFToolTipRect = trackingNumber;
     }
 }
@@ -1559,7 +1563,8 @@ enum {
 }
 
 - (void)swipeWithEvent:(NSEvent *)theEvent {
-    if (interactionMode == SKPresentationMode && transitionController && [transitionController transitionStyle] != SKNoTransition) {
+    if (interactionMode == SKPresentationMode && transitionController &&
+        ([transitionController transitionStyle] != SKNoTransition || [transitionController pageTransitions])) {
         if ([theEvent deltaX] < 0.0 || [theEvent deltaY] < 0.0) {
             if ([self canGoToNextPage])
                 [self goToNextPage:nil];
@@ -2225,7 +2230,7 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(SKRound(point.x), SKRound(point.y))];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:point];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
             [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         }
@@ -2274,7 +2279,7 @@ enum {
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
             point = [[self window] convertBaseToScreen:NSMakePoint(SKRound(point.x), SKRound(point.y))];
-            [[SKPDFToolTipWindow sharedToolTipWindow] showForAnnotation:annotation atPoint:point];
+            [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
             [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
         }

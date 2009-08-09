@@ -39,20 +39,19 @@
 #import <Cocoa/Cocoa.h>
 #import "SKAnimatedBorderlessWindow.h"
 
-@class PDFAnnotation;
 
 @interface SKPDFToolTipWindow : SKAnimatedBorderlessWindow {
     NSFont *font;
     NSColor *backgroundColor;
     NSFont *labelFont;
     NSColor *labelColor;
-    PDFAnnotation *annotation;
+    id context;
     NSPoint point;
 }
 
 + (id)sharedToolTipWindow;
 
-- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)aPoint;
+- (void)showForPDFContext:(id)annotationOrPage atPoint:(NSPoint)aPoint;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 

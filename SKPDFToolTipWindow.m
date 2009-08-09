@@ -97,7 +97,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
         labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
         
-        annotation = nil;
+        context = nil;
         point = NSZeroPoint;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
@@ -176,8 +176,8 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
 - (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)willClose {
-    [annotation release];
-    annotation = nil;
+    [context release];
+    context = nil;
     point = NSZeroPoint;
 }
 
@@ -196,9 +196,13 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     
     [self cancelDelayedAnimations];
     
-    if ([annotation isLink]) {
+    if ([context isKindOfClass:[PDFPage class]]) {
         
-        PDFDestination *dest = [annotation destination];
+        image = [[context thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect] retain];
+        
+    } else if ([context isLink]) {
+        
+        PDFDestination *dest = [context destination];
         PDFPage *page = [dest page];
         
         if (page) {
@@ -272,13 +276,13 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             
         } else {
             
-            string = [[(PDFAnnotationLink *)annotation URL] absoluteString];
+            string = [[(PDFAnnotationLink *)context URL] absoluteString];
             
         }
         
     } else {
         
-        text = [annotation text];
+        text = [context text];
         string = [text string];
         NSUInteger i = 0, l = [string length];
         NSRange r = NSMakeRange(0, l);
@@ -299,8 +303,8 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         if ([text length] == 0) {
             text = nil;
-            if ([[annotation string] length])
-                string = [annotation string];
+            if ([[context string] length])
+                string = [context string];
         }
         // we release text later
         [text retain];
@@ -363,14 +367,14 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
-- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)aPoint {
+- (void)showForPDFContext:(id)annotationOrPage atPoint:(NSPoint)aPoint {
     point = aPoint;
     
-    if ([note isEqual:annotation] == NO) {
+    if ([annotationOrPage isEqual:context] == NO) {
         [self stopAnimation];
         
-        [annotation release];
-        annotation = [note retain];
+        [context release];
+        context = [annotationOrPage retain];
         
         [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? ALT_SHOW_DELAY : DEFAULT_SHOW_DELAY];
     }
