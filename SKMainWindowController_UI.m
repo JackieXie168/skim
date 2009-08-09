@@ -111,7 +111,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)showToolTipForDestination:(PDFDestination *)dest {
     if ([NSApp isActive] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey] == NO) { 
-        PDFAnnotationLink *annotation = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
         NSPoint point = [dest point];
         switch ([[dest page] rotation]) {
             case 0:
@@ -131,8 +130,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 point.y += 50.0;
                 break;
         }
-        [annotation setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:NSZeroPoint];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease] atPoint:NSZeroPoint];
     }
 }
 

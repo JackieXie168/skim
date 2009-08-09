@@ -200,12 +200,17 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         image = [[context thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect] retain];
         
-    } else if ([context isLink]) {
+    } else {
         
-        PDFDestination *dest = [context destination];
-        PDFPage *page = [dest page];
+        PDFDestination *dest = nil;
+        PDFPage *page;
         
-        if (page) {
+        if ([context isKindOfClass:[PDFDestination class]])
+            dest = context;
+        else if ([context isKindOfClass:[PDFAnnotationLink class]])
+            dest = [context destination];
+        
+        if (page = [dest page]) {
             
             NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
             NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
@@ -274,40 +279,40 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             [attrs release];
             [labelString release];
             
-        } else {
+        } else if ([context isKindOfClass:[PDFAnnotationLink class]]) {
             
             string = [[(PDFAnnotationLink *)context URL] absoluteString];
             
+        } else if ([context isKindOfClass:[PDFAnnotation class]]) {
+            
+            text = [context text];
+            string = [text string];
+            NSUInteger i = 0, l = [string length];
+            NSRange r = NSMakeRange(0, l);
+            
+            while (i != NSNotFound) {
+                r = NSMakeRange(i, l - i);
+                i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location;
+            }
+            i = l;
+            while (i != NSNotFound) {
+                r.length = i - r.location;
+                i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location;
+            }
+            if (r.length < l)
+                text = [text attributedSubstringFromRange:r];
+            
+            string = nil;
+            
+            if ([text length] == 0) {
+                text = nil;
+                if ([[context string] length])
+                    string = [context string];
+            }
+            // we release text later
+            [text retain];
+            
         }
-        
-    } else {
-        
-        text = [context text];
-        string = [text string];
-        NSUInteger i = 0, l = [string length];
-        NSRange r = NSMakeRange(0, l);
-        
-        while (i != NSNotFound) {
-            r = NSMakeRange(i, l - i);
-            i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location;
-        }
-        i = l;
-        while (i != NSNotFound) {
-            r.length = i - r.location;
-            i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location;
-        }
-        if (r.length < l)
-            text = [text attributedSubstringFromRange:r];
-        
-        string = nil;
-        
-        if ([text length] == 0) {
-            text = nil;
-            if ([[context string] length])
-                string = [context string];
-        }
-        // we release text later
-        [text retain];
     }
     
     if (string) {
@@ -367,14 +372,14 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showDelayed) object:nil];
 }
 
-- (void)showForPDFContext:(id)annotationOrPage atPoint:(NSPoint)aPoint {
+- (void)showForPDFContext:(id)aContext atPoint:(NSPoint)aPoint {
     point = aPoint;
     
-    if ([annotationOrPage isEqual:context] == NO) {
+    if ([aContext isEqual:context] == NO) {
         [self stopAnimation];
         
         [context release];
-        context = [annotationOrPage retain];
+        context = [aContext retain];
         
         [self performSelector:@selector(showDelayed) withObject:nil afterDelay:[self isVisible] ? ALT_SHOW_DELAY : DEFAULT_SHOW_DELAY];
     }
