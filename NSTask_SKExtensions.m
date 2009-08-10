@@ -42,7 +42,7 @@
 @implementation NSTask (SKExtensions) 
 
 + (NSTask *)launchedTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
-    NSTask *task = [[[NSTask alloc] init] autorelease];
+    NSTask *task = [[[self alloc] init] autorelease];
     
     [task setLaunchPath:launchPath];
     if (directoryPath)
@@ -63,7 +63,7 @@
 }
 
 + (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
-    NSTask *task = [[self class] launchedTaskWithLaunchPath:launchPath arguments:arguments currentDirectoryPath:directoryPath];
+    NSTask *task = [self launchedTaskWithLaunchPath:launchPath arguments:arguments currentDirectoryPath:directoryPath];
     BOOL success = task != nil;
     
     if (success) {
