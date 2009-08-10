@@ -74,6 +74,12 @@ typedef NSUInteger SKAnimationTransitionStyle;
     SKAnimationTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;
+    
+    SKAnimationTransitionStyle currentTransitionStyle;
+    CGFloat currentDuration;
+    BOOL currentShouldRestrict;
+    
+    NSArray *pageTransitions;
 }
 
 + (NSArray *)transitionFilterNames;
@@ -96,7 +102,13 @@ typedef NSUInteger SKAnimationTransitionStyle;
 - (BOOL)shouldRestrict;
 - (void)setShouldRestrict:(BOOL)flag;
 
+- (NSArray *)pageTransitions;
+- (void)setPageTransitions:(NSArray *)newPageTransitions;
+
+- (NSUndoManager *)undoManager;
+
 - (void)prepareAnimationForRect:(NSRect)rect;
+- (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
 - (void)animateForRect:(NSRect)rect forward:(BOOL)forward;
 
 @end

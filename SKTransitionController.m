@@ -193,6 +193,9 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         transitionStyle = SKNoTransition;
         duration = 1.0;
         shouldRestrict = YES;
+        currentTransitionStyle = SKNoTransition;
+        currentDuration = 1.0;
+        currentShouldRestrict = YES;
     }
     return self;
 }
@@ -219,7 +222,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
-    transitionStyle = style;
+    if (transitionStyle != style) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setTransitionStyle:transitionStyle];
+        transitionStyle = style;
+    }
 }
 
 - (CGFloat)duration {
@@ -227,6 +233,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setDuration:(CGFloat)newDuration {
+    [(SKTransitionController *)[[self undoManager] prepareWithInvocationTarget:self] setDuration:duration];
     duration = newDuration;
 }
 
@@ -235,7 +242,26 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setShouldRestrict:(BOOL)flag {
-    shouldRestrict = flag;
+    if (shouldRestrict != flag) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setShouldRestrict:shouldRestrict];
+        shouldRestrict = flag;
+    }
+}
+
+- (NSArray *)pageTransitions {
+    return pageTransitions;
+}
+
+- (void)setPageTransitions:(NSArray *)newPageTransitions {
+    if (pageTransitions != newPageTransitions) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setPageTransitions:pageTransitions];
+        [pageTransitions release];
+        pageTransitions = [newPageTransitions copy];
+    }
+}
+
+- (NSUndoManager *)undoManager {
+    return [view respondsToSelector:@selector(undoManager)] ? [view undoManager] : nil;
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {
@@ -296,7 +322,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
-    NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
+    NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:currentTransitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
     
     NSRect bounds = [view bounds];
@@ -307,7 +333,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     while (key = [keyEnum nextObject]) {
         id value = nil;
         if ([key isEqualToString:@"inputExtent"]) {
-            NSRect extent = shouldRestrict ? rect : bounds;
+            NSRect extent = currentShouldRestrict ? rect : bounds;
             value = [CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)];
         } else if ([key isEqualToString:@"inputAngle"]) {
             CGFloat angle = forward ? 0.0 : M_PI;
@@ -361,11 +387,31 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)prepareAnimationForRect:(NSRect)rect {
-	if (transitionStyle == SKNoTransition) {
+    [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
+}
+
+- (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
+    currentTransitionStyle = transitionStyle;
+    currentDuration = duration;
+    currentShouldRestrict = shouldRestrict;
+    
+    NSUInteger idx = MIN(fromIndex, toIndex);
+    if (fromIndex != NSNotFound && toIndex != NSNotFound && idx < [pageTransitions count]) {
+        NSDictionary *info = [pageTransitions objectAtIndex:idx];
+        id value;
+        if (value = [info objectForKey:@"styleName"])
+            currentTransitionStyle = [[self class] styleForName:value];
+        if ((value = [info objectForKey:@"duration"]) && [value respondsToSelector:@selector(floatValue)])
+            currentDuration = [value floatValue];
+        if ((value = [info objectForKey:@"shouldRestrict"]) && [value respondsToSelector:@selector(boolValue)])
+            currentShouldRestrict = [value boolValue];
+    }
+    
+	if (currentTransitionStyle == SKNoTransition) {
         // Do nothing
-	} else if (transitionStyle < SKCoreImageTransition) {
+	} else if (currentTransitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
-            if (shouldRestrict) {
+            if (currentShouldRestrict) {
                 [initialImage release];
                 initialImage = [self newCurrentImage];
             }
@@ -383,14 +429,14 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
-	if (transitionStyle == SKNoTransition) {
+	if (currentTransitionStyle == SKNoTransition) {
         // Do nothing
-	} else if (transitionStyle < SKCoreImageTransition) {
+	} else if (currentTransitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
             
             CIImage *finalImage = nil;
             
-            if (shouldRestrict) {
+            if (currentShouldRestrict) {
                 if (initialImage == nil)
                     [self prepareAnimationForRect:rect];
                 
@@ -420,10 +466,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             CGSTransitionSpec spec;
             // specify our specifications
             spec.unknown1 = 0;
-            spec.type =  transitionStyle;
+            spec.type =  currentTransitionStyle;
             spec.option = forward ? CGSLeft : CGSRight;
             spec.backColour = NULL;
-            spec.wid = [(shouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
+            spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
             
             // Let's get a connection
             CGSConnection cgs = _CGSDefaultConnection();
@@ -431,7 +477,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             // Create a transition
             CGSNewTransition(cgs, &spec, &handle);
             
-            if (shouldRestrict) {
+            if (currentShouldRestrict) {
                 [[self transitionView] setImage:finalImage];
                 [[self transitionView] display];
             }
@@ -442,14 +488,14 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             [[view window] enableFlushWindow];
             [[view window] flushWindow];
             
-            CGSInvokeTransition(cgs, handle, duration);
+            CGSInvokeTransition(cgs, handle, currentDuration);
             // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-            usleep((useconds_t)(duration * 1000000));
+            usleep((useconds_t)(currentDuration * 1000000));
             
             CGSReleaseTransition(cgs, handle);
             handle = 0;
             
-            if (shouldRestrict) {
+            if (currentShouldRestrict) {
                 [[view window] removeChildWindow:[self transitionWindow]];
                 [[self transitionWindow] orderOut:nil];
                 [[self transitionView] setImage:nil];
@@ -474,7 +520,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         NSRect frame = [view convertRect:[view frame] toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
-        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:duration];
+        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
         [[self transitionView] setAnimation:animation];
         [animation release];
         
@@ -495,6 +541,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         [[self transitionView] setAnimation:nil];
         
     }
+    
+    currentTransitionStyle = transitionStyle;
+    currentDuration = duration;
+    currentShouldRestrict = shouldRestrict;
 }
 
 @end
