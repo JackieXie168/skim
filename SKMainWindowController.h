@@ -66,7 +66,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView            *splitView;
@@ -188,6 +188,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSMutableDictionary             *toolbarItems;
     
     SKProgressController            *progressController;
+    
+    SKPresentationOptionsSheetController *presentationSheetController;
     
     NSButton                        *colorAccessoryView;
     NSButton                        *textColorAccessoryView;

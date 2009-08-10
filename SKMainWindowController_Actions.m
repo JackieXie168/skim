@@ -973,23 +973,12 @@
 }
 
 - (void)presentationSheetDidEnd:(SKPresentationOptionsSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        SKTransitionController *transitions = [pdfView transitionController];
-        [transitions setTransitionStyle:[controller transitionStyle]];
-        [transitions setDuration:[controller duration]];
-        [transitions setShouldRestrict:[controller shouldRestrict]];
-        [(SKPDFDocument *)[self document] setPresentationNotesDocument:[controller notesDocument]];
-    }
+    [presentationSheetController release];
+    presentationSheetController = nil;
 }
 
 - (IBAction)chooseTransition:(id)sender {
-    SKPresentationOptionsSheetController *presentationSheetController = [[[SKPresentationOptionsSheetController alloc] initForDocument:(SKPDFDocument *)[self document]] autorelease];
-    
-    SKTransitionController *transitions = [pdfView transitionController];
-    [presentationSheetController setTransitionStyle:[transitions transitionStyle]];
-    [presentationSheetController setDuration:[transitions duration]];
-    [presentationSheetController setShouldRestrict:[transitions shouldRestrict]];
-    [presentationSheetController setNotesDocument:[(SKPDFDocument *)[self document] presentationNotesDocument]];
+    presentationSheetController = [[SKPresentationOptionsSheetController alloc] initForDocument:(SKPDFDocument *)[self document]];
     
     [presentationSheetController beginSheetModalForWindow: [self window]
         modalDelegate: self

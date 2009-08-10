@@ -165,6 +165,7 @@
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
+		CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B80491030642400EA8774 /* SKTransitionInfo.m */; };
 		CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
@@ -767,6 +768,8 @@
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
 		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
 		CE8B46F30C29CA4A005CE7F1 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/LineInspector.nib; sourceTree = "<group>"; };
+		CE9B80481030642400EA8774 /* SKTransitionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionInfo.h; sourceTree = "<group>"; };
+		CE9B80491030642400EA8774 /* SKTransitionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTransitionInfo.m; sourceTree = "<group>"; };
 		CE9B951B0D04657A00EB1A6C /* SKRemoteStateWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRemoteStateWindow.h; sourceTree = "<group>"; };
 		CE9B951C0D04657A00EB1A6C /* SKRemoteStateWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRemoteStateWindow.m; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
@@ -1418,6 +1421,8 @@
 				CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */,
 				CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */,
 				CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */,
+				CE9B80481030642400EA8774 /* SKTransitionInfo.h */,
+				CE9B80491030642400EA8774 /* SKTransitionInfo.m */,
 				CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */,
 				CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */,
 			);
@@ -2216,6 +2221,7 @@
 				CEC3154F0F24AC02008D2C75 /* SKRichTextFormat.m in Sources */,
 				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
 				CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */,
+				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

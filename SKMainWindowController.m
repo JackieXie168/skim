@@ -1214,7 +1214,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [groupedSearchResults removeObjectAtIndex:theIndex];
 }
 
-
 - (NSDictionary *)presentationOptions {
     SKTransitionController *transitions = [pdfView transitionController];
     SKAnimationTransitionStyle style = [transitions transitionStyle];
@@ -1235,12 +1234,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSString *styleName = [dictionary objectForKey:@"styleName"];
     NSNumber *duration = [dictionary objectForKey:@"duration"];
     NSNumber *shouldRestrict = [dictionary objectForKey:@"shouldRestrict"];
+    NSArray *pageTransitions = [dictionary objectForKey:@"pageTransitions"];
     if (styleName)
         [transitions setTransitionStyle:[SKTransitionController styleForName:styleName]];
     if (duration)
         [transitions setDuration:[duration floatValue]];
     if (shouldRestrict)
         [transitions setShouldRestrict:[shouldRestrict boolValue]];
+    [transitions setPageTransitions:pageTransitions];
 }
 
 - (NSArray *)tags {
@@ -2576,7 +2577,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
-    if (mwcFlags.isAnimating || [thumbnailTableView isScrolling] || [[pdfView document] isLocked])
+    if (mwcFlags.isAnimating || [thumbnailTableView isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
         return NO;
     [self performSelector:@selector(makeImageForThumbnail:) withObject:thumbnail afterDelay:0.0];
     return YES;

@@ -1,10 +1,10 @@
 //
-//  SKPresentationOptionsSheetController.h
+//  SKTransitionInfo.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/28/08.
+//  Created by Christiaan on 8/10/09.
 /*
- This software is Copyright (c) 2008-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,49 +37,34 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKSheetController.h"
 #import "SKTransitionController.h"
 
-@class SKPDFDocument, SKThumbnail, SKTransitionInfo, SKThumbnailTableView;
+@class SKThumbnail;
 
-@interface SKPresentationOptionsSheetController : SKSheetController {
-    IBOutlet NSPopUpButton *transitionStylePopUpButton;
-    IBOutlet NSTextField *transitionDurationField;
-    IBOutlet NSSlider *transitionDurationSlider;
-    IBOutlet NSMatrix *transitionExtentMatrix;
-    IBOutlet NSPopUpButton *notesDocumentPopUpButton;
-    IBOutlet SKThumbnailTableView *tableView;
-    IBOutlet NSButton *separateCheckButton;
-    IBOutlet NSObjectController *objectController;
-    IBOutlet NSArrayController *arrayController;
-    BOOL separate;
-    SKTransitionInfo *transition;
-    NSArray *transitions;
-    SKPDFDocument *document;
-    NSUndoManager *undoManager;
+@interface SKTransitionInfo : NSObject {
+    SKAnimationTransitionStyle transitionStyle;
+    CGFloat duration;
+    BOOL shouldRestrict;
+    SKThumbnail *thumbnail;
+    NSString *label;
 }
 
-- (id)initForDocument:(SKPDFDocument *)aDocument;
+- (NSDictionary *)properties;
+- (void)setProperties:(NSDictionary *)dictionary;
 
-- (SKPDFDocument *)document;
+- (SKAnimationTransitionStyle)transitionStyle;
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
 
-- (BOOL)separate;
-- (void)setSeparate:(BOOL)newSeparate;
+- (CGFloat)duration;
+- (void)setDuration:(CGFloat)newDuration;
 
-- (SKTransitionInfo *)transition;
+- (BOOL)shouldRestrict;
+- (void)setShouldRestrict:(BOOL)newShouldRestrict;
 
-- (NSArray *)transitions;
-- (void)setTransitions:(NSArray *)newTransitions;
+- (SKThumbnail *)thumbnail;
+- (void)setThumbnail:(SKThumbnail *)newThumbnail;
 
-- (NSArray *)pageTransitions;
-
-- (SKPDFDocument *)notesDocument;
-
-- (BOOL)isScrolling;
-
-- (NSUndoManager *)undoManager;
-
-- (void)startObservingTransitions:(NSArray *)infos;
-- (void)stopObservingTransitions:(NSArray *)infos;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
 
 @end

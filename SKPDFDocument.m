@@ -168,6 +168,8 @@ static char SKPDFDocumentDefaultsObservationContext;
         [printInfo release];
     }
     
+    [[self undoManager] disableUndoRegistration];
+    
     [mainController setPdfDocument:pdfDocument];
     [self setPDFDoc:nil];
     
@@ -183,6 +185,8 @@ static char SKPDFDocumentDefaultsObservationContext;
     
     [mainController setOpenMetaRating:openMetaRating];
     [self setOpenMetaRating:0.0];
+    
+    [[self undoManager] enableUndoRegistration];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 

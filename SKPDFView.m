@@ -713,13 +713,12 @@ enum {
 
 - (void)animateTransitionForNextPage:(BOOL)next {
     NSUInteger idx = [[self currentPage] pageIndex];
-    BOOL shouldAnimate = [transitionController pageTransitions] || [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:next ? ++idx : --idx] label]] == NO;
+    NSUInteger toIdx = (next ? idx + 1 : idx - 1);
+    BOOL shouldAnimate = [transitionController pageTransitions] || [[[self currentPage] label] isEqualToString:[[[self document] pageAtIndex:toIdx] label]] == NO;
     NSRect rect;
     if (shouldAnimate) {
-        if (next == NO) idx--;
-        NSDictionary *info = idx < [[transitionController pageTransitions] count] ? [[transitionController pageTransitions] objectAtIndex:idx] : nil;
         rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-        [[self transitionController] prepareAnimation:info forRect:rect];
+        [[self transitionController] prepareAnimationForRect:rect from:idx to:toIdx];
     }
     if (next)
         [super goToNextPage:self];
