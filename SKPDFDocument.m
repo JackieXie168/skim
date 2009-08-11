@@ -560,7 +560,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey];
+    BOOL disableAlert = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableReloadAlertKey] || [[self windowForSheet] attachedSheet];
     
     if (disableAlert == NO) {
         [[[self windowForSheet] attachedSheet] orderOut:self];
