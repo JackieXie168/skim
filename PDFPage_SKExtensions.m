@@ -382,31 +382,41 @@ static BOOL usesSequentialPageNumbering = NO;
     NSString *string = [self string];
     NSRange stringRange = NSMakeRange(0, [string length]);
     
-    for (i = 0; i < iMax; i++) {
-        NSRange range = [sel safeRangeAtIndex:i onPage:self];
-        NSUInteger j, jMax = NSMaxRange(range);
-        
-        for (j = range.location; j < jMax; j++) {
-            if ([indexes containsIndex:j])
-                continue;
+    if (iMax > 0) {
+        for (i = 0; i < iMax; i++) {
+            NSRange range = [sel safeRangeAtIndex:i onPage:self];
+            NSUInteger j, jMax = NSMaxRange(range);
             
-            NSRect r = [self characterBoundsAtIndex:j];
-            PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
-            NSUInteger k, kMax = [s safeNumberOfRangesOnPage:self];
-            BOOL notEmpty = NO;
-            
-            for (k = 0; k < kMax; k++) {
-                NSRange selRange = [s safeRangeAtIndex:k onPage:self];
-                if (selRange.location != NSNotFound) {
-                    [indexes addIndexesInRange:selRange];
-                    // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
-                    if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
-                        notEmpty = YES;
+            for (j = range.location; j < jMax; j++) {
+                if ([indexes containsIndex:j])
+                    continue;
+                
+                NSRect r = [self characterBoundsAtIndex:j];
+                PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
+                NSUInteger k, kMax = [s safeNumberOfRangesOnPage:self];
+                BOOL notEmpty = NO;
+                
+                for (k = 0; k < kMax; k++) {
+                    NSRange selRange = [s safeRangeAtIndex:k onPage:self];
+                    if (selRange.location != NSNotFound) {
+                        [indexes addIndexesInRange:selRange];
+                        // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
+                        if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
+                            notEmpty = YES;
+                    }
                 }
+                if (notEmpty)
+                    [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];
             }
-            if (notEmpty)
-                [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];
         }
+    } else if ([sel respondsToSelector:@selector(selectionsByLine)]) {
+        NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
+        PDFSelection *s;
+        while (s = [selEnum nextObject]) {
+            NSRect r = [s boundsForPage:self];
+            if (NSIsEmptyRect(r) == NO)
+                [lines addObject:[NSValue valueWithRect:r]];
+        } 
     }
     
     [lines sortUsingSelector:@selector(boundsCompare:)];

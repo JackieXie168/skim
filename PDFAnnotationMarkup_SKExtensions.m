@@ -210,35 +210,45 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
             NSRect lineRect = NSZeroRect;
             NSRect charRect = NSZeroRect;
             NSRect lastCharRect = NSZeroRect;
-            for (i = 0; i < iMax; i++) {
-                NSRange range = [selection safeRangeAtIndex:i onPage:page];
-                NSUInteger j, jMax = NSMaxRange(range);
-                for (j = range.location; j < jMax; j++) {
-                    lastCharRect = charRect;
-                    charRect = [page characterBoundsAtIndex:j];
-                    BOOL nonWS = NO == [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
-                    if (NSIsEmptyRect(lineRect)) {
-                        // beginning of a line, just ignore whitespace
-                        if (nonWS)
-                            lineRect = charRect;
-                    } else if (adjacentCharacterBounds(lastCharRect, charRect)) {
-                        // continuation of a line
-                        if (nonWS)
-                            lineRect = NSUnionRect(lineRect, charRect);
-                    } else {
-                        // start of a new line
-                        if (NSIsEmptyRect(lineRect) == NO) {
-                            CFArrayAppendValue([self lineRects], &lineRect);
-                            newBounds = NSUnionRect(lineRect, newBounds);
-                        }
-                        // ignore whitespace at the beginning of the new line
-                        lineRect = nonWS ? charRect : NSZeroRect;
-                   }
+            if (iMax > 0) {
+                for (i = 0; i < iMax; i++) {
+                    NSRange range = [selection safeRangeAtIndex:i onPage:page];
+                    NSUInteger j, jMax = NSMaxRange(range);
+                    for (j = range.location; j < jMax; j++) {
+                        lastCharRect = charRect;
+                        charRect = [page characterBoundsAtIndex:j];
+                        BOOL nonWS = NO == [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
+                        if (NSIsEmptyRect(lineRect)) {
+                            // beginning of a line, just ignore whitespace
+                            if (nonWS)
+                                lineRect = charRect;
+                        } else if (adjacentCharacterBounds(lastCharRect, charRect)) {
+                            // continuation of a line
+                            if (nonWS)
+                                lineRect = NSUnionRect(lineRect, charRect);
+                        } else {
+                            // start of a new line
+                            if (NSIsEmptyRect(lineRect) == NO) {
+                                CFArrayAppendValue([self lineRects], &lineRect);
+                                newBounds = NSUnionRect(lineRect, newBounds);
+                            }
+                            // ignore whitespace at the beginning of the new line
+                            lineRect = nonWS ? charRect : NSZeroRect;
+                       }
+                    }
                 }
-            }
-            if (NSIsEmptyRect(lineRect) == NO) {
-                CFArrayAppendValue([self lineRects], &lineRect);
-                newBounds = NSUnionRect(lineRect, newBounds);
+                if (NSIsEmptyRect(lineRect) == NO) {
+                    CFArrayAppendValue([self lineRects], &lineRect);
+                    newBounds = NSUnionRect(lineRect, newBounds);
+                }
+            } else if ([selection respondsToSelector:@selector(selectionsByLine)]) {
+                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
+                PDFSelection *sel;
+                while (sel = [selEnum nextObject]) {
+                    lineRect = [sel boundsForPage:page];
+                    if (NSIsEmptyRect(lineRect) == NO)
+                         CFArrayAppendValue([self lineRects], &lineRect);
+                } 
             }
             if (NSIsEmptyRect(newBounds)) {
                 [self release];
