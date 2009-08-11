@@ -247,8 +247,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                 PDFSelection *sel;
                 while (sel = [selEnum nextObject]) {
                     lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
+                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
                          CFArrayAppendValue([self lineRects], &lineRect);
+                         newBounds = NSUnionRect(lineRect, newBounds);
+                    }
                 } 
             }
             if (NSIsEmptyRect(newBounds)) {
