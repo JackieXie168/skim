@@ -414,7 +414,7 @@ static BOOL usesSequentialPageNumbering = NO;
         PDFSelection *s;
         while (s = [selEnum nextObject]) {
             NSRect r = [s boundsForPage:self];
-            if (NSIsEmptyRect(r) == NO)
+            if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
                 [lines addObject:[NSValue valueWithRect:r]];
         } 
     }
