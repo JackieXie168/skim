@@ -65,7 +65,7 @@
 }
 
 - (NSAttributedString *)contextString {
-    PDFSelection *extendedSelection = [self copy]; // see remark in -tableViewSelectionDidChange:
+    PDFSelection *extendedSelection = [self copy];
 	NSMutableAttributedString *attributedSample;
 	NSString *searchString = [self cleanedString];
 	NSString *sample;
