@@ -43,16 +43,31 @@
 #import "SKStringConstants.h"
 #import "SKPDFDocument.h"
 #import "SKCFCallbacks.h"
+#import "SKRuntime.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
+- (NSArray *)pageRanges;
 - (NSInteger)numberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
 @end
 
+@interface NSObject (PDFPageRangePrivateDeclarations)
+- (PDFPage *)page;
+- (NSRange)range;
+@end
+
 
 @implementation PDFSelection (SKExtensions)
+
+static usePageRanges = NO;
+
++ (void)initialize {
+    SKINITIALIZE;
+    // NSAppKitVersionNumber10_5 = 949, apparently PDFSelection on 10.6 defines but doesn't implement -numberOfPagesOnRange: and -rangeAtIndex:onPage:
+    usePageRanges = floor(NSAppKitVersionNumber) > 949 && [self instancesRespondToSelector:@selector(pageRages)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(page)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(range)];
+}
 
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
@@ -120,17 +135,27 @@
 }
 
 - (NSInteger)safeNumberOfRangesOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
+    if (usePageRanges) {
+        NSEnumerator *prEnum = [[self pageRanges] objectEnumerator];
+        id pr;
+        NSInteger count = 0;
+        while (pr = [prEnum nextObject])
+            if ([[pr page] isEqual:page]) count++;
+        return count;
+    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
         return [self numberOfRangesOnPage:page];
-    else
-        return 0;
+    return 0;
 }
 
 - (NSRange)safeRangeAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
+    if (usePageRanges) {
+        NSEnumerator *prEnum = [[self pageRanges] objectEnumerator];
+        id pr;
+        while (pr = [prEnum nextObject])
+            if ([[pr page] isEqual:page] && (0 == anIndex--)) return [pr range];
+    } else if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
         return [self rangeAtIndex:anIndex onPage:page];
-    else
-        return NSMakeRange(NSNotFound, 0);
+    return NSMakeRange(NSNotFound, 0);
 }
 
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
