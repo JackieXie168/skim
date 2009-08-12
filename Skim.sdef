@@ -1218,7 +1218,7 @@
         </enumeration>
 
         <command name="revert" code="SKIMRvrt"
-            description="Revert a document.">
+            description="Revert a document. Don't use this when you have turned on the auto-relead functionality.">
             <direct-parameter type="specifier"
                 description="The document(s) or window(s) to revert."/>
         </command>
