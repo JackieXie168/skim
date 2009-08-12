@@ -377,12 +377,21 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    NSUInteger i, iMax = [sel safeNumberOfRangesOnPage:self];
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-    NSString *string = [self string];
-    NSRange stringRange = NSMakeRange(0, [string length]);
+    NSUInteger i, iMax;
     
-    if (iMax > 0) {
+    if ([sel respondsToSelector:@selector(selectionsByLine)]) {
+        NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
+        PDFSelection *s;
+        while (s = [selEnum nextObject]) {
+            NSRect r = [s boundsForPage:self];
+            if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
+                [lines addObject:[NSValue valueWithRect:r]];
+        } 
+    } else if (sel) {
+        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+        NSString *string = [self string];
+        NSRange stringRange = NSMakeRange(0, [string length]);
+        iMax = [sel safeNumberOfRangesOnPage:self];
         for (i = 0; i < iMax; i++) {
             NSRange range = [sel safeRangeAtIndex:i onPage:self];
             NSUInteger j, jMax = NSMaxRange(range);
@@ -409,14 +418,6 @@ static BOOL usesSequentialPageNumbering = NO;
                     [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];
             }
         }
-    } else if ([sel respondsToSelector:@selector(selectionsByLine)]) {
-        NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
-        PDFSelection *s;
-        while (s = [selEnum nextObject]) {
-            NSRect r = [s boundsForPage:self];
-            if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
-                [lines addObject:[NSValue valueWithRect:r]];
-        } 
     }
     
     [lines sortUsingSelector:@selector(boundsCompare:)];

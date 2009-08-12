@@ -203,15 +203,26 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         self = nil;
     } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         PDFPage *page = [[selection pages] objectAtIndex:0];
-        NSString *string = [page string];
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;
         if (selection) {
-            NSUInteger i, iMax = [selection safeNumberOfRangesOnPage:page];
+            NSUInteger i, iMax;
             NSRect lineRect = NSZeroRect;
-            NSRect charRect = NSZeroRect;
-            NSRect lastCharRect = NSZeroRect;
-            if (iMax > 0) {
+            if ([selection respondsToSelector:@selector(selectionsByLine)]) {
+                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
+                PDFSelection *sel;
+                while (sel = [selEnum nextObject]) {
+                    lineRect = [sel boundsForPage:page];
+                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                         CFArrayAppendValue([self lineRects], &lineRect);
+                         newBounds = NSUnionRect(lineRect, newBounds);
+                    }
+                } 
+            } else if (iMax > 0) {
+                NSString *string = [page string];
+                NSRect charRect = NSZeroRect;
+                NSRect lastCharRect = NSZeroRect;
+                iMax = [selection safeNumberOfRangesOnPage:page];
                 for (i = 0; i < iMax; i++) {
                     NSRange range = [selection safeRangeAtIndex:i onPage:page];
                     NSUInteger j, jMax = NSMaxRange(range);
@@ -242,16 +253,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     CFArrayAppendValue([self lineRects], &lineRect);
                     newBounds = NSUnionRect(lineRect, newBounds);
                 }
-            } else if ([selection respondsToSelector:@selector(selectionsByLine)]) {
-                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
-                PDFSelection *sel;
-                while (sel = [selEnum nextObject]) {
-                    lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                         CFArrayAppendValue([self lineRects], &lineRect);
-                         newBounds = NSUnionRect(lineRect, newBounds);
-                    }
-                } 
             }
             if (NSIsEmptyRect(newBounds)) {
                 [self release];
