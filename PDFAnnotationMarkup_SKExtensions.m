@@ -206,19 +206,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;
         if (selection) {
-            NSUInteger i, iMax;
+            NSUInteger i, iMax = [selection safeNumberOfRangesOnPage:page];
             NSRect lineRect = NSZeroRect;
-            if ([selection respondsToSelector:@selector(selectionsByLine)]) {
-                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
-                PDFSelection *sel;
-                while (sel = [selEnum nextObject]) {
-                    lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                         CFArrayAppendValue([self lineRects], &lineRect);
-                         newBounds = NSUnionRect(lineRect, newBounds);
-                    }
-                } 
-            } else if (iMax > 0) {
+            if (iMax > 0) {
                 NSString *string = [page string];
                 NSRect charRect = NSZeroRect;
                 NSRect lastCharRect = NSZeroRect;
@@ -253,6 +243,16 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     CFArrayAppendValue([self lineRects], &lineRect);
                     newBounds = NSUnionRect(lineRect, newBounds);
                 }
+            } else if ([selection respondsToSelector:@selector(selectionsByLine)]) {
+                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
+                PDFSelection *sel;
+                while (sel = [selEnum nextObject]) {
+                    lineRect = [sel boundsForPage:page];
+                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                         CFArrayAppendValue([self lineRects], &lineRect);
+                         newBounds = NSUnionRect(lineRect, newBounds);
+                    }
+                } 
             }
             if (NSIsEmptyRect(newBounds)) {
                 [self release];
