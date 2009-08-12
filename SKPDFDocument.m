@@ -2280,7 +2280,10 @@ static id (*original_document)(id, SEL) = NULL;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];
-    if (document == nil) {
+    if (docFlags.isUpdatingFile) {
+        [command setScriptErrorNumber:NSInternalScriptError];
+        [command setScriptErrorString:@"Cannot revert."];
+    } else if (document == nil) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"Window does not have a document."];
     } else
