@@ -2165,7 +2165,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
-        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
+        if (docFlags.isUpdatingFile) {
+            [command setScriptErrorNumber:NSInternalScriptError];
+            [command setScriptErrorString:@"Cannot revert."];
+        } else if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];
         }
@@ -2280,10 +2283,7 @@ static id (*original_document)(id, SEL) = NULL;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];
-    if (docFlags.isUpdatingFile) {
-        [command setScriptErrorNumber:NSInternalScriptError];
-        [command setScriptErrorString:@"Cannot revert."];
-    } else if (document == nil) {
+    if (document == nil) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"Window does not have a document."];
     } else
