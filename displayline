@@ -40,11 +40,14 @@ echo -ne "${line}\x00${file}\x00${source}\x00${revert}\x00${bar}\x00" | \
   -e "set theSource to POSIX file theSource" \
   -e "set shouldRevert to (shouldRevert as integer) as boolean" \
   -e "set shouldShowBar to (shouldShowBar as integer) as boolean" \
+  -e "set thePath to POSIX path of (theFile as alias)" \
   -e "tell application \"Skim\"" \
   -e "  activate" \
   -e "  if shouldRevert then" \
-  -e "    set theDocs to get documents whose path is (get POSIX path of (theFile as alias))" \
-  -e "    if (count of theDocs) > 0 then revert theDocs" \
+  -e "    try" \
+  -e "      set theDocs to get documents whose path is thePath" \
+  -e "      if (count of theDocs) > 0 then revert theDocs" \
+  -e "    end try" \
   -e "  end if" \
   -e "  open theFile" \
   -e "  tell front document to go to TeX line theLine from theSource showing reading bar shouldShowBar" \
