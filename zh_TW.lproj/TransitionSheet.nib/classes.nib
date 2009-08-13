@@ -13,6 +13,14 @@
 			<string>NSResponder</string>
 		</dict>
 		<dict>
+			<key>CLASS</key>
+			<string>SKThumbnailTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>SKTableView</string>
+		</dict>
+		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>dismiss</key>
@@ -75,6 +83,14 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>SKCenteredTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTextFieldCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>NSWindow</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -83,13 +99,29 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
 			<string>SKPresentationOptionsSheetController</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
+				<key>arrayController</key>
+				<string>NSArrayController</string>
 				<key>notesDocumentPopUpButton</key>
 				<string>NSPopUpButton</string>
+				<key>objectController</key>
+				<string>NSObjectController</string>
+				<key>separateCheckButton</key>
+				<string>NSButton</string>
+				<key>tableView</key>
+				<string>SKThumbnailTableView</string>
 				<key>transitionDurationField</key>
 				<string>NSTextField</string>
 				<key>transitionDurationSlider</key>
@@ -101,6 +133,14 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>SKSheetController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSImageCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSCell</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -133,6 +173,27 @@
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>copy</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>paste</key>
+				<string>id</string>
+				<key>scrollToBeginningOfDocument</key>
+				<string>id</string>
+				<key>scrollToEndOfDocument</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>SKTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTableView</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
