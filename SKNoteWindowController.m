@@ -315,17 +315,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
-    BOOL didCommit = [self commitEditing];
-    if (delegate && didCommitSelector) {
-        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
-        [invocation setArgument:&didCommit atIndex:3];
-        [invocation setArgument:&contextInfo atIndex:4];
-        [invocation invoke];
-    }
+    return [noteController commitEditingWithDelegate:delegate didCommitSelector:didCommitSelector contextInfo:contextInfo];
 }
 
 #pragma mark BDSKDragImageView delegate protocol
