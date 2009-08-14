@@ -52,6 +52,7 @@
     
     BOOL keepOnTop;
     BOOL forceOnTop;
+    BOOL isEditing;
     
     NSUndoManager *textViewUndoManager;
 }

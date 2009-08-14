@@ -2119,7 +2119,8 @@ enum {
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
-        [[[[self window] windowController] document] objectDidBeginEditing:self];
+        if ([[self delegate] respondsToSelector:@selector(PDFViewDidBeginEditing:)])
+            [[self delegate] PDFViewDidBeginEditing:self];
         
     } else if ([activeAnnotation isEditable]) {
         
@@ -2142,7 +2143,8 @@ enum {
         if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
             [self setNeedsDisplayForAnnotation:activeAnnotation];
         
-        [[[[self window] windowController] document] objectDidEndEditing:self];
+        if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
+            [[self delegate] PDFViewDidEndEditing:self];
     }
 }
 
@@ -2159,23 +2161,10 @@ enum {
         if ([[activeAnnotation type] isEqualToString:SKNFreeTextString])
             [self setNeedsDisplayForAnnotation:activeAnnotation];
         
-        [[[[self window] windowController] document] objectDidEndEditing:self];
+        if ([[self delegate] respondsToSelector:@selector(PDFViewDidEndEditing:)])
+            [[self delegate] PDFViewDidEndEditing:self];
     }
     return YES;
-}
-
-- (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
-    BOOL didCommit = [self commitEditing];
-    if (delegate && didCommitSelector) {
-        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didCommitSelector];
-        [invocation setArgument:&self atIndex:2];
-        [invocation setArgument:&didCommit atIndex:3];
-        [invocation setArgument:&contextInfo atIndex:4];
-        [invocation invoke];
-    }
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {

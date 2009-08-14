@@ -198,12 +198,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (BOOL)windowShouldClose:(id)window {
-    return [noteController commitEditing];
+    return [self commitEditing];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
-    if ([noteController commitEditing] == NO)
-        [noteController discardEditing];
+    if ([self commitEditing] == NO)
+        [self discardEditing];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
     if ([[self window] isKeyWindow])
@@ -214,8 +214,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)setDocument:(NSDocument *)document {
     // in case the document is reset before windowWillClose: is called, I think this can happen on Tiger
-    if ([self document] && document == nil && [noteController commitEditing] == NO)
-        [noteController discardEditing];
+    if ([self document] && document == nil && [self commitEditing] == NO)
+        [self discardEditing];
+    if (isEditing) {
+        [[self document] objectDidEndEditing:self];
+        isEditing = NO;
+    }
     [super setDocument:document];
 }
 
@@ -284,14 +288,42 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return textViewUndoManager;
 }
 
-#pragma mark NSEditorRegistration protocol
+#pragma mark NSEditorRegistration and NSEditor protocol
 
 - (void)objectDidBeginEditing:(id)editor {
-    [[self document] objectDidBeginEditing:editor];
+    if (isEditing == NO) {
+        [[self document] objectDidBeginEditing:self];
+        isEditing = YES;
+    }
 }
 
 - (void)objectDidEndEditing:(id)editor {
-    [[self document] objectDidEndEditing:editor];
+    if (isEditing) {
+        [[self document] objectDidEndEditing:self];
+        isEditing = NO;
+    }
+}
+
+- (void)discardEditing {
+    [noteController discardEditing];
+}
+
+- (BOOL)commitEditing {
+    return [noteController commitEditing];
+}
+
+- (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
+    BOOL didCommit = [self commitEditing];
+    if (delegate && didCommitSelector) {
+        // - (void)editor:(id)editor didCommit:(BOOL)didCommit contextInfo:(void *)contextInfo
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[delegate methodSignatureForSelector:didCommitSelector]];
+        [invocation setTarget:delegate];
+        [invocation setSelector:didCommitSelector];
+        [invocation setArgument:&self atIndex:2];
+        [invocation setArgument:&didCommit atIndex:3];
+        [invocation setArgument:&contextInfo atIndex:4];
+        [invocation invoke];
+    }
 }
 
 #pragma mark BDSKDragImageView delegate protocol

@@ -218,4 +218,6 @@ typedef NSInteger SKInteractionMode;
 
 @interface NSObject (SKPDFViewDelegate)
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;
+- (void)PDFViewDidBeginEditing:(PDFView *)sender;
+- (void)PDFViewDidEndEditing:(PDFView *)sender;
 @end
