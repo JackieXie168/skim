@@ -237,6 +237,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
         if ([[pdfView document] isFinding])
             [[pdfView document] cancelFindString];
+        if (mwcFlags.isEditing && [self commitEditing] == NO)
+            [self discardEditing];
         
         [ownerController setContent:nil];
     }
@@ -1075,21 +1077,27 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSControl delegate protocol
 
 - (void)controlTextDidBeginEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView])
+    if ([[note object] isEqual:noteOutlineView] && mwcFlags.isEditing == NO) {
         [[self document] objectDidBeginEditing:self];
+        mwcFlags.isEditing = YES;
+    }
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView])
+    if ([[note object] isEqual:noteOutlineView] && mwcFlags.isEditing) {
         [[self document] objectDidEndEditing:self];
+        mwcFlags.isEditing = NO;
+    }
 }
 
 - (void)setDocument:(NSDocument *)document {
-    if ([self document] && document == nil) {
+    if ([self document] && document == nil && mwcFlags.isEditing) {
         if ([self commitEditing] == NO)
             [self discardEditing];
-        if ([pdfView isEditing] && [pdfView commitEditing] == NO)
-            [pdfView discardEditing];
+        if (mwcFlags.isEditing) {
+            [[self document] objectDidEndEditing:self];
+            mwcFlags.isEditing = NO;
+        }
     }
     [super setDocument:document];
 }
@@ -1097,19 +1105,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSEditor protocol
 
 - (void)discardEditing {
-    int row = [noteOutlineView editedRow];
-    if (row != -1) {
-        id item = [noteOutlineView itemAtRow:row];
-        [[noteOutlineView currentEditor] setString:[item string]];
-        [[noteOutlineView window] makeFirstResponder:noteOutlineView];
-    }
+    [noteOutlineView abortEditing];
+    [pdfView discardEditing];
 }
 
 - (BOOL)commitEditing {
+    if ([pdfView isEditing])
+        return [pdfView commitEditing];
     if ([noteOutlineView editedRow] != -1)
         return [[noteOutlineView window] makeFirstResponder:noteOutlineView];
-    else
-        return YES;
+    return YES;
 }
 
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {
@@ -1130,6 +1135,20 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
     [self showNote:annotation];
+}
+
+- (void)PDFViewDidBeginEditing:(PDFView *)sender {
+    if (mwcFlags.isEditing == NO) {
+        [[self document] objectDidBeginEditing:self];
+        mwcFlags.isEditing = YES;
+    }
+}
+
+- (void)PDFViewDidEndEditing:(PDFView *)sender {
+    if (mwcFlags.isEditing) {
+        [[self document] objectDidEndEditing:self];
+        mwcFlags.isEditing = NO;
+    }
 }
 
 #pragma mark SKSplitView delegate protocol
