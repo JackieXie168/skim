@@ -214,11 +214,13 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)setDocument:(NSDocument *)document {
     // in case the document is reset before windowWillClose: is called, I think this can happen on Tiger
-    if ([self document] && document == nil && [self commitEditing] == NO)
-        [self discardEditing];
-    if (isEditing) {
-        [[self document] objectDidEndEditing:self];
-        isEditing = NO;
+    if ([self document] && document == nil) {
+        if ([self commitEditing] == NO)
+            [self discardEditing];
+        if (isEditing) {
+            [[self document] objectDidEndEditing:self];
+            isEditing = NO;
+        }
     }
     [super setDocument:document];
 }
