@@ -1698,6 +1698,8 @@ enum {
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if ([self window] && trackingRect)
         [self removeTrackingRect:trackingRect];
+    if ([self isEditing] && [self commitEditing] == NO)
+        [self discardEditing];
 }
 
 - (void)viewDidMoveToWindow {
@@ -2132,8 +2134,7 @@ enum {
 
 - (void)discardEditing {
     if (editField) {
-        if ([[self window] firstResponder] == [editField currentEditor] && [[self window] makeFirstResponder:self] == NO)
-            [[self window] endEditingFor:nil];
+        [editField abortEditing];
         [editField removeFromSuperview];
         [editField release];
         editField = nil;
@@ -2570,6 +2571,8 @@ enum {
 #pragma mark FullScreen navigation and autohide
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    if ([self isEditing] && [self commitEditing] == NO)
+        [self discardEditing];
     [navWindow orderOut:self];
 }
 
