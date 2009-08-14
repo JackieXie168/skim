@@ -1084,6 +1084,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [[self document] objectDidEndEditing:self];
 }
 
+- (void)setDocument:(NSDocument *)document {
+    if ([self document] && document == nil) {
+        if ([self commitEditing] == NO)
+            [self discardEditing];
+        if ([pdfView isEditing] && [pdfView commitEditing] == NO)
+            [pdfView discardEditing];
+    }
+    [super setDocument:document];
+}
+
 #pragma mark NSEditor protocol
 
 - (void)discardEditing {
