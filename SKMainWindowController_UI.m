@@ -65,6 +65,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "SKLineInspector.h"
 #import "SKPDFOutline.h"
+#import "SKDocumentController.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1528,7 +1529,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [self updateLeftStatus];
     
     if ([self isPresentation]) {
-        SKPDFView *notesPdfView = [[(SKPDFDocument *)[self document] presentationNotesDocument] pdfView];
+        SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
         if (notesPdfView)
             [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[page pageIndex]]];
     }
@@ -1701,6 +1702,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [self updateThumbnailAtPageIndex:[newPage pageIndex]];
 }
 
+- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification {
+    if ([[notification userInfo] objectForKey:@"document"] == presentationNotesDocument)
+        [self setPresentationNotesDocument:nil];
+}
+
 #pragma mark Observer registration
 
 - (void)registerForNotifications {
@@ -1744,6 +1750,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     //  UndoManager
     [nc addObserver:self selector:@selector(observeUndoManagerCheckpoint:) 
                              name:NSUndoManagerCheckpointNotification object:[[self document] undoManager]];
+    //  SKDocumentController
+    [nc addObserver:self selector:@selector(handleDidRemoveDocumentNotification:) 
+                             name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
 }
 
 @end

@@ -81,8 +81,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     
     SKProgressController *progressController;
     
-    SKPDFDocument *presentationNotesDocument;
-    
     SKPDFSynchronizer *synchronizer;
     NSString *watchedFile;
     
@@ -114,9 +112,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 - (PDFDocument *)pdfDocument;
 
 - (SKPDFView *)pdfView;
-
-- (SKPDFDocument *)presentationNotesDocument;
-- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument;
 
 - (NSData *)notesData;
 - (NSString *)notesFDFString;

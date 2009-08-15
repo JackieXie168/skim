@@ -66,7 +66,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, SKPDFOutline, PDFSelection, SKThumbnail, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
-@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
+@class SKPDFDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView            *splitView;
@@ -191,6 +191,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     SKPresentationOptionsSheetController *presentationSheetController;
     
+    SKPDFDocument                   *presentationNotesDocument;
+    
     NSButton                        *colorAccessoryView;
     NSButton                        *textColorAccessoryView;
     
@@ -300,6 +302,9 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 - (NSDictionary *)presentationOptions;
 - (void)setPresentationOptions:(NSDictionary *)dictionary;
+
+- (SKPDFDocument *)presentationNotesDocument;
+- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument;
 
 - (NSArray *)tags;
 - (double)rating;

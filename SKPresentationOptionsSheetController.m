@@ -38,6 +38,7 @@
 
 #import "SKPresentationOptionsSheetController.h"
 #import <Quartz/Quartz.h>
+#import "SKMainWindowController.h"
 #import "SKPDFDocument.h"
 #import "SKDocumentController.h"
 #import "SKTransitionInfo.h"
@@ -62,14 +63,14 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-- (id)initForDocument:(SKPDFDocument *)aDocument {
+- (id)initForController:(SKMainWindowController *)aController {
     if (self = [super init]) {
-        document = aDocument;
+        controller = aController;
         separate = NO;
         transition = [[SKTransitionInfo alloc] init];
         transitions = nil;
         
-        SKTransitionController *transitionController = [[document pdfView] transitionController];
+        SKTransitionController *transitionController = [[controller pdfView] transitionController];
         [transition setTransitionStyle:[transitionController transitionStyle]];
         [transition setDuration:[transitionController duration]];
         [transition setShouldRestrict:[transitionController shouldRestrict]];
@@ -97,9 +98,9 @@ static char *SKTransitionPropertiesObservationContext;
     NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
     id doc;
     NSMutableArray *documents = [NSMutableArray array];
-    NSUInteger pageCount = [[document pdfDocument] pageCount];
+    NSUInteger pageCount = [[controller pdfDocument] pageCount];
     while (doc = [docEnum nextObject]) {
-        if ([doc respondsToSelector:@selector(pdfDocument)] && doc != document && [[doc pdfDocument] pageCount] == pageCount)
+        if ([doc respondsToSelector:@selector(pdfDocument)] && doc != [controller document] && [[doc pdfDocument] pageCount] == pageCount)
             [documents addObject:doc];
     }
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];
@@ -138,7 +139,7 @@ static char *SKTransitionPropertiesObservationContext;
     [typeSelectHelper setCyclesSimilarResults:NO];
     [tableView setTypeSelectHelper:typeSelectHelper];
     
-    if ([[[document pdfView] transitionController] pageTransitions]) {
+    if ([[[controller pdfView] transitionController] pageTransitions]) {
         [[self undoManager] disableUndoRegistration];
         [self setSeparate:YES];
         [[self undoManager] enableUndoRegistration];
@@ -146,7 +147,7 @@ static char *SKTransitionPropertiesObservationContext;
     
     // set the current notes document and observe changes for the popup
     [self handleDocumentsDidChangeNotification:nil];
-    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:[document presentationNotesDocument]];
+    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:[controller presentationNotesDocument]];
     [notesDocumentPopUpButton selectItemAtIndex:docIndex > 0 ? docIndex : 0];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentsDidChangeNotification:) 
                                                  name:SKDocumentDidShowNotification object:nil];
@@ -164,8 +165,8 @@ static char *SKTransitionPropertiesObservationContext;
     
     NSMutableArray *array = [NSMutableArray array];
     NSDictionary *dictionary = [transition properties];
-    NSEnumerator *ptEnum = [[[[document pdfView] transitionController] pageTransitions] objectEnumerator];
-    NSEnumerator *tnEnum = [[[document mainWindowController] thumbnails] objectEnumerator];
+    NSEnumerator *ptEnum = [[[[controller pdfView] transitionController] pageTransitions] objectEnumerator];
+    NSEnumerator *tnEnum = [[controller thumbnails] objectEnumerator];
     SKThumbnail *tn = [tnEnum nextObject];
     SKThumbnail *next;
     
@@ -203,14 +204,14 @@ static char *SKTransitionPropertiesObservationContext;
     } else if ([objectController commitEditing]) {
         // don't make changes when nothing was changed
         if ([undoManager canUndo]) {
-            SKTransitionController *transitionController = [[document pdfView] transitionController];
+            SKTransitionController *transitionController = [[controller pdfView] transitionController];
             [transitionController setTransitionStyle:[transition transitionStyle]];
             [transitionController setDuration:[transition duration]];
             [transitionController setShouldRestrict:[transition shouldRestrict]];
             [transitionController setPageTransitions:[self pageTransitions]];
             [[transitionController undoManager] setActionName:NSLocalizedString(@"Change Transitions", @"Undo action name")];
         }
-        [document setPresentationNotesDocument:[self notesDocument]];
+        [controller setPresentationNotesDocument:[self notesDocument]];
         [super dismiss:sender];
     }
 }
@@ -400,7 +401,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[[document pdfDocument] pageAtIndex:row] atPoint:NSZeroPoint];
+        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[[controller pdfDocument] pageAtIndex:row] atPoint:NSZeroPoint];
 }
 
 - (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
