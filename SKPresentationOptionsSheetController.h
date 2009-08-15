@@ -61,8 +61,6 @@
 
 - (id)initForDocument:(SKPDFDocument *)aDocument;
 
-- (SKPDFDocument *)document;
-
 - (BOOL)separate;
 - (void)setSeparate:(BOOL)newSeparate;
 
