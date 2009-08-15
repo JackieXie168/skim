@@ -978,7 +978,7 @@
 }
 
 - (IBAction)chooseTransition:(id)sender {
-    presentationSheetController = [[SKPresentationOptionsSheetController alloc] initForDocument:(SKPDFDocument *)[self document]];
+    presentationSheetController = [[SKPresentationOptionsSheetController alloc] initForController:self];
     
     [presentationSheetController beginSheetModalForWindow: [self window]
         modalDelegate: self

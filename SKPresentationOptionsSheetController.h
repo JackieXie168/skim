@@ -40,7 +40,7 @@
 #import "SKSheetController.h"
 #import "SKTransitionController.h"
 
-@class SKPDFDocument, SKThumbnail, SKTransitionInfo, SKThumbnailTableView;
+@class SKMainWindowController, SKPDFDocument, SKThumbnail, SKTransitionInfo, SKThumbnailTableView;
 
 @interface SKPresentationOptionsSheetController : SKSheetController {
     IBOutlet NSPopUpButton *transitionStylePopUpButton;
@@ -55,11 +55,11 @@
     BOOL separate;
     SKTransitionInfo *transition;
     NSArray *transitions;
-    SKPDFDocument *document;
+    SKMainWindowController *controller;
     NSUndoManager *undoManager;
 }
 
-- (id)initForDocument:(SKPDFDocument *)aDocument;
+- (id)initForController:(SKMainWindowController *)aController;
 
 - (BOOL)separate;
 - (void)setSeparate:(BOOL)newSeparate;

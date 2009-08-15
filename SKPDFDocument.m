@@ -126,7 +126,6 @@ static char SKPDFDocumentDefaultsObservationContext;
     [mainWindowController release];
     [synchronizer terminate];
     [synchronizer release];
-    [presentationNotesDocument release];
     [watchedFile release];
     [pdfData release];
     [psOrDviData release];
@@ -1546,11 +1545,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
 }
 
-- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification {
-    if ([[notification userInfo] objectForKey:@"document"] == presentationNotesDocument)
-        [self setPresentationNotesDocument:nil];
-}
-
 #pragma mark Notification observation
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -1728,17 +1722,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
-}
-
-- (SKPDFDocument *)presentationNotesDocument {
-    return presentationNotesDocument;
-}
-
-- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument {
-    if (presentationNotesDocument != aDocument) {
-        [presentationNotesDocument release];
-        presentationNotesDocument = [aDocument retain];
-    }
 }
 
 - (NSArray *)fileIDStrings {

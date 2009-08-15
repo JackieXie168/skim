@@ -274,6 +274,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [leftSideDrawer release];
     [rightSideDrawer release];
     [secondaryPdfEdgeView release];
+    [presentationNotesDocument release];
     [super dealloc];
 }
 
@@ -1244,6 +1245,17 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [transitions setPageTransitions:pageTransitions];
 }
 
+- (SKPDFDocument *)presentationNotesDocument {
+    return presentationNotesDocument;
+}
+
+- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument {
+    if (presentationNotesDocument != aDocument) {
+        [presentationNotesDocument release];
+        presentationNotesDocument = [aDocument retain];
+    }
+}
+
 - (NSArray *)tags {
     return tags;
 }
@@ -1471,7 +1483,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
-    SKPDFView *notesPdfView = [[(SKPDFDocument *)[self document] presentationNotesDocument] pdfView];
+    SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
     if (notesPdfView)
         [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
