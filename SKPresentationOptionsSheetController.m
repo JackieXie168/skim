@@ -215,10 +215,6 @@ static char *SKTransitionPropertiesObservationContext;
     }
 }
 
-- (SKPDFDocument *)document {
-    return document;
-}
-
 - (BOOL)separate {
     return separate;
 }
