@@ -111,7 +111,6 @@ static char SKPDFDocumentDefaultsObservationContext;
 - (void)handleFileDeleteNotification:(NSNotification *)notification;
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
-- (void)handleDidRemoveDocumentNotification:(NSNotification *)notification;
 
 - (SKProgressController *)progressController;
 
@@ -190,8 +189,6 @@ static char SKPDFDocumentDefaultsObservationContext;
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveDocumentNotification:) 
-                                                 name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
 }
 
 - (void)showWindows{
