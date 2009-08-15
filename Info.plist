@@ -44,6 +44,18 @@
 				<string>Notes as RTFD</string>
 				<string>Notes as FDF</string>
 			</array>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -67,6 +79,18 @@
 			<key>NSDocumentClass</key>
 			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
+			<key>NSExportableTypes</key>
 			<array>
 				<string>NSPDFPboardType</string>
 				<string>PDF Bundle</string>
@@ -103,6 +127,11 @@
 			<key>NSDocumentClass</key>
 			<string>SKNotesDocument</string>
 			<key>NSExportableAs</key>
+			<array>
+				<string>Notes as RTF</string>
+				<string>Notes as Text</string>
+			</array>
+			<key>NSExportableTypes</key>
 			<array>
 				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
@@ -149,6 +178,20 @@
 				<string>Notes as RTFD</string>
 				<string>Notes as FDF</string>
 			</array>
+			<key>NSExportableTypes</key>
+			<array>
+				<string>NSPostScriptPboardType</string>
+				<string>PostScript Without Notes</string>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -176,6 +219,20 @@
 			<key>NSDocumentClass</key>
 			<string>SKPDFDocument</string>
 			<key>NSExportableAs</key>
+			<array>
+				<string>DVI document</string>
+				<string>DVI Without Notes</string>
+				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as Text</string>
+				<string>Notes as RTF</string>
+				<string>Notes as RTFD</string>
+				<string>Notes as FDF</string>
+			</array>
+			<key>NSExportableTypes</key>
 			<array>
 				<string>DVI document</string>
 				<string>DVI Without Notes</string>
