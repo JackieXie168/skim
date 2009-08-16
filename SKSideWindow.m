@@ -54,11 +54,11 @@ static CGFloat WINDOW_OFFSET = 8.0;
 
 #define SKHideClosedFullScreenSidePanelsKey @"SKHideClosedFullScreenSidePanels"
 
-enum { SKClosedSidePanelDefault, SKClosedSidePanelAutoHide, SKClosedSidePanelHide };
+enum { SKClosedSidePanelCollapse, SKClosedSidePanelAutoHide, SKClosedSidePanelHide };
 
 @implementation SKSideWindow
 
-static NSUInteger hideWhenClosed = SKClosedSidePanelDefault;
+static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -112,7 +112,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelDefault;
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
     state = NSDrawerClosedState;
-    if (hideWhenClosed != SKClosedSidePanelDefault)
+    if (hideWhenClosed != SKClosedSidePanelCollapse)
         [self setAlphaValue:0.0];
     [[self contentView] setAcceptsMouseOver:YES];
 }
@@ -146,7 +146,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelDefault;
         if ([self isKeyWindow])
             [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
-        if (hideWhenClosed != SKClosedSidePanelDefault) {
+        if (hideWhenClosed != SKClosedSidePanelCollapse) {
             if ([self respondsToSelector:@selector(animator)])
                 [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
             else
