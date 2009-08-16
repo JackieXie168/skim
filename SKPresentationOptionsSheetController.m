@@ -362,7 +362,8 @@ static char *SKTransitionPropertiesObservationContext;
         if ([newValue isEqual:[NSNull null]]) newValue = nil;
         if ([oldValue isEqual:[NSNull null]]) oldValue = nil;
         
-        [[[self undoManager] prepareWithInvocationTarget:self] setValue:oldValue forKey:keyPath ofTransition:info];
+        if ((newValue || oldValue) && [newValue isEqual:oldValue] == NO)
+            [[[self undoManager] prepareWithInvocationTarget:self] setValue:oldValue forKey:keyPath ofTransition:info];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
