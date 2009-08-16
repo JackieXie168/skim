@@ -49,6 +49,8 @@
 #import "SKPDFView.h"
 #import "SKPDFToolTipWindow.h"
 
+#define RIGHTARROW_CHARACTER 0x2192
+
 #define PAGE_COLUMNID @"page"
 #define IMAGE_COLUMNID @"image"
 
@@ -173,7 +175,7 @@ static char *SKTransitionPropertiesObservationContext;
     while (next = [tnEnum nextObject]) {
         SKTransitionInfo *info = [[SKTransitionInfo alloc] init];
         [info setThumbnail:tn];
-        [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], 0x2192, [next label]]];
+        [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], RIGHTARROW_CHARACTER, [next label]]];
         [info setProperties:([ptEnum nextObject] ?: dictionary)];
         [array addObject:info];
         [cell setStringValue:[info label]];
