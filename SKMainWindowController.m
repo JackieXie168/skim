@@ -1219,15 +1219,16 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     SKTransitionController *transitions = [pdfView transitionController];
     SKAnimationTransitionStyle style = [transitions transitionStyle];
     NSString *styleName = [SKTransitionController nameForStyle:style];
-    if (styleName == nil) {
-        return nil;
-    } else {
-        NSMutableDictionary *options = [NSMutableDictionary dictionary];
-        [options setObject:styleName forKey:@"styleName"];
-        [options setObject:[NSNumber numberWithFloat:[transitions duration]] forKey:@"duration"];
-        [options setObject:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:@"shouldRestrict"];
-        return options;
+    NSArray *pageTransitions = [transitions pageTransitions];
+    NSMutableDictionary *options = nil;
+    if ([styleName length] || [pageTransitions count]) {
+        options = [NSMutableDictionary dictionary];
+        [options setValue:(styleName ?: @"") forKey:@"styleName"];
+        [options setValue:[NSNumber numberWithFloat:[transitions duration]] forKey:@"duration"];
+        [options setValue:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:@"shouldRestrict"];
+        [options setValue:pageTransitions forKey:@"pageTransitions"];
     }
+    return options;
 }
 
 - (void)setPresentationOptions:(NSDictionary *)dictionary {
