@@ -61,12 +61,12 @@
 
 @implementation PDFSelection (SKExtensions)
 
-static usePageRanges = NO;
+static BOOL usePageRanges = NO;
 
 + (void)initialize {
     SKINITIALIZE;
     // NSAppKitVersionNumber10_5 = 949, apparently PDFSelection on 10.6 defines but doesn't implement -numberOfPagesOnRange: and -rangeAtIndex:onPage:
-    usePageRanges = floor(NSAppKitVersionNumber) > 949 && [self instancesRespondToSelector:@selector(pageRages)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(page)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(range)];
+    usePageRanges = floor(NSAppKitVersionNumber) > 949 && [self instancesRespondToSelector:@selector(pageRanges)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(page)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(range)];
 }
 
 // returns the label of the first page (if the selection spans multiple pages)
