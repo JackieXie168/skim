@@ -54,21 +54,23 @@ static CGFloat WINDOW_OFFSET = 8.0;
 
 #define SKHideClosedFullScreenSidePanelsKey @"SKHideClosedFullScreenSidePanels"
 
+enum { SKClosedSidePanelDefault, SKClosedSidePanelAutoHide, SKClosedSidePanelHide };
+
 @implementation SKSideWindow
 
-static NSUInteger hideWhenClosed = NO;
+static NSUInteger hideWhenClosed = SKClosedSidePanelDefault;
 
 + (void)initialize {
     SKINITIALIZE;
     
     hideWhenClosed = [[NSUserDefaults standardUserDefaults] integerForKey:SKHideClosedFullScreenSidePanelsKey];
     
-    if (hideWhenClosed == 2)
+    if (hideWhenClosed == SKClosedSidePanelHide)
         WINDOW_OFFSET = 0.0;
 }
 
 + (BOOL)isAutoHideEnabled {
-    return hideWhenClosed != 2;
+    return hideWhenClosed != SKClosedSidePanelHide;
 }
 
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
@@ -110,7 +112,7 @@ static NSUInteger hideWhenClosed = NO;
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
     state = NSDrawerClosedState;
-    if (hideWhenClosed)
+    if (hideWhenClosed != SKClosedSidePanelDefault)
         [self setAlphaValue:0.0];
     [[self contentView] setAcceptsMouseOver:YES];
 }
@@ -144,7 +146,7 @@ static NSUInteger hideWhenClosed = NO;
         if ([self isKeyWindow])
             [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
-        if (hideWhenClosed) {
+        if (hideWhenClosed != SKClosedSidePanelDefault) {
             if ([self respondsToSelector:@selector(animator)])
                 [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
             else
@@ -266,7 +268,7 @@ static NSUInteger hideWhenClosed = NO;
 }
 
 - (BOOL)acceptsMouseOver {
-    return acceptsMouseOver && hideWhenClosed != 2;
+    return acceptsMouseOver && hideWhenClosed != SKClosedSidePanelHide;
 }
 
 - (void)setAcceptsMouseOver:(BOOL)flag {
@@ -435,7 +437,7 @@ static NSUInteger hideWhenClosed = NO;
 }
 
 - (void)trackMouseOvers {
-    if ([self window] && resizing == NO && hideWhenClosed != 2) {
+    if ([self window] && resizing == NO && hideWhenClosed != SKClosedSidePanelHide) {
         if (trackingRect)
             [self removeTrackingRect:trackingRect];
         trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NSMouseInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds], [self isFlipped])];
