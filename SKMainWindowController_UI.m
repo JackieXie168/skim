@@ -1548,7 +1548,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
     [toolModeButton selectSegmentWithTag:[pdfView toolMode]];
-    [statusBar setRightAction:[pdfView toolMode] == SKSelectToolMode ? @selector(statusBarClicked:) : NULL];
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
@@ -1609,6 +1608,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [noteOutlineView deselectAll:self];
     }
     [noteOutlineView reloadData];
+    [self updateRightStatus];
 }
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
