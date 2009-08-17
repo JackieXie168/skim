@@ -239,12 +239,14 @@
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
     if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped])) {
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
+        while ([theEvent type] != NSLeftMouseUp)
+            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped]))
             [rightCell performClick:self];
     } else if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped])) {
-        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
+        while ([theEvent type] != NSLeftMouseUp)
+            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped]))
             [leftCell performClick:self];
