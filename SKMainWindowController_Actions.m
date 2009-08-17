@@ -818,7 +818,7 @@
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
-        [statusBar setRightAction:[pdfView toolMode] == SKSelectToolMode ? @selector(statusBarClicked:) : NULL];
+        [statusBar setRightAction:@selector(statusBarClicked:)];
         [statusBar setRightTarget:self];
     }
     [statusBar toggleBelowView:splitView offset:1.0];

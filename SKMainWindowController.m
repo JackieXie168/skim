@@ -148,6 +148,8 @@ static char SKMainWindowDefaultsObservationContext;
 #define SKUsesDrawersKey @"SKUsesDrawers"
 #define SKDisableAnimatedSearchHighlightKey @"SKDisableAnimatedSearchHighlight"
 
+#define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
+
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
 
@@ -621,24 +623,26 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)updateRightStatus {
-    NSRect selRect = [pdfView currentSelectionRect];
-    
+    NSRect rect = [pdfView currentSelectionRect];
+    CGFloat magnification = [pdfView currentMagnification];
     NSString *message;
-    if (NSEqualRects(selRect, NSZeroRect)) {
-        CGFloat magnification = [pdfView currentMagnification];
-        if (magnification > 0.0001)
-            message = [NSString stringWithFormat:@"%.2f %C", magnification, MULTIPLICATION_SIGN_CHARACTER];
-        else
-           message = @"";
-    } else {
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey] && NSEqualRects(rect, NSZeroRect) && [pdfView activeAnnotation])
+        rect = [[pdfView activeAnnotation] bounds];
+    
+    if (NSEqualRects(rect, NSZeroRect) == NO) {
         if ([statusBar rightState] == NSOnState) {
             BOOL useMetric = [[[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
             NSString *units = useMetric ? @"cm" : @"in";
             CGFloat factor = useMetric ? 0.035277778 : 0.013888889;
-            message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(selRect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(selRect) * factor, NSMinX(selRect) * factor, NSMinY(selRect) * factor, units];
+            message = [NSString stringWithFormat:@"%.2f %C %.2f @ (%.2f, %.2f) %@", NSWidth(rect) * factor, MULTIPLICATION_SIGN_CHARACTER, NSHeight(rect) * factor, NSMinX(rect) * factor, NSMinY(rect) * factor, units];
         } else {
-            message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) pt", (long)NSWidth(selRect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(selRect), (long)NSMinX(selRect), (long)NSMinY(selRect)];
+            message = [NSString stringWithFormat:@"%ld %C %ld @ (%ld, %ld) pt", (long)NSWidth(rect), MULTIPLICATION_SIGN_CHARACTER, (long)NSHeight(rect), (long)NSMinX(rect), (long)NSMinY(rect)];
         }
+    } else if (magnification > 0.0001) {
+        message = [NSString stringWithFormat:@"%.2f %C", magnification, MULTIPLICATION_SIGN_CHARACTER];
+    } else {
+        message = @"";
     }
     [statusBar setRightStringValue:message];
 }
@@ -2494,6 +2498,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
                 [noteArrayController rearrangeObjects];
                 [noteOutlineView reloadData];
+            }
+            
+            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey]) {
+                [self updateRightStatus];
             }
             
             // update the various panels if necessary
