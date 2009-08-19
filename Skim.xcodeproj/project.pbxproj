@@ -252,6 +252,7 @@
 		CEF82CE60EC4B2FE009652CF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
+		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* SKSnapshotPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* SKSnapshotPDFView.m */; };
@@ -972,6 +973,8 @@
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
 		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPreferences.tiff; sourceTree = "<group>"; };
+		CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFormatCommand.h; sourceTree = "<group>"; };
+		CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFormatCommand.m; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -1476,6 +1479,8 @@
 			children = (
 				CE4643DC0DF6B77800CFD8D2 /* SKBoundsCommand.h */,
 				CE4643DD0DF6B77800CFD8D2 /* SKBoundsCommand.m */,
+				CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */,
+				CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */,
 				CE4643D90DF6B66000CFD8D2 /* SKIndexCommand.h */,
 				CE4643DA0DF6B66000CFD8D2 /* SKIndexCommand.m */,
 				CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */,
@@ -2222,6 +2227,7 @@
 				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
 				CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */,
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
+				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

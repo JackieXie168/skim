@@ -189,6 +189,9 @@
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="format">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="window" code="cwin"
@@ -704,6 +707,9 @@
 			<responds-to name="grab">
 				<cocoa method="handleGrabScriptCommand:"/>
 			</responds-to>
+			<responds-to name="format">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="note" plural="notes" code="Note"
@@ -806,6 +812,9 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get pages for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="format">
 				<cocoa method=""/>
 			</responds-to>
         </class>
@@ -1414,6 +1423,33 @@
             </parameter>
             <result type="any"
                 description="The PDF or TIFF data of the picture."/>
+        </command>
+
+        <command name="format" code="SKIMFrmt"
+            description="Format an object using a template.">
+            <cocoa class="SKFormatCommand"/>
+            <direct-parameter
+                description="The object to format using a template.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+            </direct-parameter>
+            <parameter name="using template" code="Tmpl"
+                description="The template to use as a file, text, or rich text.">
+                <type type="file"/>
+                <type type="text"/>
+                <type type="rich text"/>
+                <cocoa key="template"/>
+            </parameter>
+            <parameter name="to" type="file" code="to  " optional="yes"
+                description="The file to write the resulting text to.">
+                <cocoa key="to"/>
+            </parameter>
+            <result
+                description="The text or rich text generated using the template.">
+                <type type="text"/>
+                <type type="specifier"/>
+            </result>
         </command>
 
     </suite>
