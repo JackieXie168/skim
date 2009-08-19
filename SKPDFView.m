@@ -101,7 +101,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 #define SKMoveReadingBarModifiersKey @"SKMoveReadingBarModifiers"
 #define SKResizeReadingBarModifiersKey @"SKResizeReadingBarModifiers"
 #define SKDisableUpdateContentsFromEnclosedTextKey @"SKDisableUpdateContentsFromEnclosedText"
-
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 
@@ -1557,7 +1556,7 @@ enum {
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
-    if (interactionMode != SKPresentationMode && [[SKPDFView superclass] instancesRespondToSelector:_cmd])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && interactionMode != SKPresentationMode && [[SKPDFView superclass] instancesRespondToSelector:_cmd])
         [super magnifyWithEvent:theEvent];
 }
 

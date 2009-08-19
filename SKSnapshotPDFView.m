@@ -44,6 +44,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKPDFDocument.h"
 #import "SKPDFSynchronizer.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKSnapshotPDFView
@@ -414,7 +415,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
-    if ([theEvent respondsToSelector:@selector(magnification)]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
         pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
         CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
         NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKMinDefaultScaleMenuFactor)];
