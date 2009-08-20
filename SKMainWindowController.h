@@ -242,7 +242,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
         unsigned int settingUpWindow : 1;
         unsigned int isPresentation : 1;
         unsigned int usesDrawers : 1;
-        unsigned int isEditing : 1;
+        unsigned int isEditingPDF : 1;
+        unsigned int isEditingTable : 1;
     } mwcFlags;
 }
 

@@ -238,7 +238,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         }
         if ([[pdfView document] isFinding])
             [[pdfView document] cancelFindString];
-        if (mwcFlags.isEditing && [self commitEditing] == NO)
+        if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         
         [ownerController setContent:nil];
@@ -1078,27 +1078,28 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 #pragma mark NSControl delegate protocol
 
 - (void)controlTextDidBeginEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView] && mwcFlags.isEditing == NO) {
-        [[self document] objectDidBeginEditing:self];
-        mwcFlags.isEditing = YES;
+    if ([[note object] isEqual:noteOutlineView]) {
+        if (mwcFlags.isEditingTable == NO && mwcFlags.isEditingPDF == NO)
+            [[self document] objectDidBeginEditing:self];
+        mwcFlags.isEditingTable = YES;
     }
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)note {
-    if ([[note object] isEqual:noteOutlineView] && mwcFlags.isEditing) {
-        [[self document] objectDidEndEditing:self];
-        mwcFlags.isEditing = NO;
+    if ([[note object] isEqual:noteOutlineView]) {
+        if (mwcFlags.isEditingTable && mwcFlags.isEditingPDF == NO)
+            [[self document] objectDidEndEditing:self];
+        mwcFlags.isEditingTable = NO;
     }
 }
 
 - (void)setDocument:(NSDocument *)document {
-    if ([self document] && document == nil && mwcFlags.isEditing) {
+    if ([self document] && document == nil && (mwcFlags.isEditingPDF || mwcFlags.isEditingTable)) {
         if ([self commitEditing] == NO)
             [self discardEditing];
-        if (mwcFlags.isEditing) {
+        if (mwcFlags.isEditingPDF || mwcFlags.isEditingTable)
             [[self document] objectDidEndEditing:self];
-            mwcFlags.isEditing = NO;
-        }
+        mwcFlags.isEditingPDF = mwcFlags.isEditingTable = NO;
     }
     [super setDocument:document];
 }
@@ -1139,17 +1140,15 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)PDFViewDidBeginEditing:(PDFView *)sender {
-    if (mwcFlags.isEditing == NO) {
+    if (mwcFlags.isEditingPDF == NO && mwcFlags.isEditingTable == NO)
         [[self document] objectDidBeginEditing:self];
-        mwcFlags.isEditing = YES;
-    }
+    mwcFlags.isEditingPDF = YES;
 }
 
 - (void)PDFViewDidEndEditing:(PDFView *)sender {
-    if (mwcFlags.isEditing) {
+    if (mwcFlags.isEditingPDF && mwcFlags.isEditingTable == NO)
         [[self document] objectDidEndEditing:self];
-        mwcFlags.isEditing = NO;
-    }
+    mwcFlags.isEditingPDF = NO;
 }
 
 #pragma mark SKSplitView delegate protocol
