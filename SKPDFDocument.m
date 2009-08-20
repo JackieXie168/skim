@@ -285,7 +285,7 @@ static char SKPDFDocumentDefaultsObservationContext;
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
-            if ([[self pdfDocument] allowsPrinting] == NO) {
+            if ([[self pdfDocument] isEncrypted]) {
                 NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
                 if (idx != -1)
                     [formatPopup removeItemAtIndex:idx];
