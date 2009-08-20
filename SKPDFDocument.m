@@ -1596,8 +1596,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             NSFileManager *fm = [NSFileManager defaultManager];
             
             if ([editorPreset isEqualToString:@""] == NO) {
-                if ((path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset]) &&
-                    (appBundle = [NSBundle bundleWithPath:path])) {
+                path = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
+                if (path == nil && [editorPreset isEqualToString:@"Aquamacs Emacs"])
+                    path = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Aquamacs"];
+                if (path && (appBundle = [NSBundle bundleWithPath:path])) {
                     [searchPaths addObject:[appBundle sharedSupportPath]];
                     [searchPaths addObject:[appBundle resourcePath]];
                     if ([editorPreset isEqualToString:@"BBEdit"] == NO)
