@@ -260,6 +260,8 @@ static char SKPDFDocumentDefaultsObservationContext;
         [writableTypes removeObject:SKBareDVIDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
+        if ([[self pdfDocument] isEncrypted])
+            [writableTypes removeObject:SKEmbeddedPDFDocumentType];
         [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
     }
     return writableTypes;
@@ -285,11 +287,6 @@ static char SKPDFDocumentDefaultsObservationContext;
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
-            if ([[self pdfDocument] isEncrypted]) {
-                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
-                if (idx != -1)
-                    [formatPopup removeItemAtIndex:idx];
-            }
             if (lastExportedType) {
                 NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
                 if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
