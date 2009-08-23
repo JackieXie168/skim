@@ -57,7 +57,7 @@ extern NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary 
 extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings);
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController, SKTemporaryData;
 
 @interface SKPDFDocument : NSDocument
 {
@@ -73,11 +73,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     NSData *psOrDviData;
     
     // temporary variables:
-    PDFDocument *pdfDocument;
-    NSArray *noteDicts;
-    NSDictionary *presentationOptions;
-    NSArray *openMetaTags;
-    double openMetaRating;
+    SKTemporaryData *tmpData;
     
     SKProgressController *progressController;
     
