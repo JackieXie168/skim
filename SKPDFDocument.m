@@ -91,15 +91,34 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 static char SKPDFDocumentDefaultsObservationContext;
 
-@interface SKPDFDocument (SKPrivate)
 
-- (void)setPDFData:(NSData *)data;
-- (void)setPSOrDVIData:(NSData *)data;
-- (void)setPDFDoc:(PDFDocument *)doc;
-- (void)setNoteDicts:(NSArray *)array;
-- (void)setPresentationOptions:(NSDictionary *)array;
-- (void)setOpenMetaTags:(NSArray *)array;
-- (void)setOpenMetaRating:(double)rating;
+@interface SKTemporaryData : NSObject {
+    PDFDocument *pdfDocument;
+    NSArray *noteDicts;
+    NSDictionary *presentationOptions;
+    NSArray *openMetaTags;
+    double openMetaRating;
+}
+
+- (PDFDocument *)pdfDocument;
+- (void)setPdfDocument:(PDFDocument *)newPdfDocument;
+
+- (NSArray *)noteDicts;
+- (void)setNoteDicts:(NSArray *)newNoteDicts;
+
+- (NSDictionary *)presentationOptions;
+- (void)setPresentationOptions:(NSDictionary *)newPresentationOptions;
+
+- (NSArray *)openMetaTags;
+- (void)setOpenMetaTags:(NSArray *)newOpenMetaTags;
+
+- (double)openMetaRating;
+- (void)setOpenMetaRating:(double)newOpenMetaRating;
+
+@end
+
+
+@interface SKPDFDocument (SKPrivate)
 
 - (BOOL)tryToUnlockDocument:(PDFDocument *)document;
 
@@ -128,14 +147,11 @@ static char SKPDFDocumentDefaultsObservationContext;
     [watchedFile release];
     [pdfData release];
     [psOrDviData release];
-    [pdfDocument release];
-    [noteDicts release];
-    [presentationOptions release];
-    [openMetaTags release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
     [progressController release];
     [autoRotateButton release];
+    [tmpData release];
     [super dealloc];
 }
 
@@ -145,15 +161,33 @@ static char SKPDFDocumentDefaultsObservationContext;
     [self addWindowController:mainWindowController];
 }
 
+- (void)setDataFromTmpData {
+    [[self undoManager] disableUndoRegistration];
+    
+    if ([[tmpData pdfDocument] isLocked])
+        [self tryToUnlockDocument:[tmpData pdfDocument]];
+    [[self mainWindowController] setPdfDocument:[tmpData pdfDocument]];
+    
+    [[self mainWindowController] setAnnotationsFromDictionaries:[tmpData noteDicts] undoable:NO];
+    
+    if ([tmpData presentationOptions])
+        [[self mainWindowController] setPresentationOptions:[tmpData presentationOptions]];
+    
+    [[self mainWindowController] setOpenMetaTags:[tmpData openMetaTags]];
+    
+    [[self mainWindowController] setOpenMetaRating:[tmpData openMetaRating]];
+    
+    [[self undoManager] enableUndoRegistration];
+}
+
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
-    SKMainWindowController *mainController = (SKMainWindowController *)aController;
+    [self setDataFromTmpData];
+    [tmpData release];
+    tmpData = nil;
     
-    if ([pdfDocument isLocked])
-        [self tryToUnlockDocument:pdfDocument];
-    
-    if ([pdfDocument pageCount]) {
+    if ([[self pdfDocument] pageCount]) {
         BOOL autoRotate = (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) ? [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRotatePrintedPagesKey] : YES;
-        PDFPage *page = [pdfDocument pageAtIndex:0];
+        PDFPage *page = [[self pdfDocument] pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
         BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
@@ -166,29 +200,9 @@ static char SKPDFDocumentDefaultsObservationContext;
         [printInfo release];
     }
     
-    [[self undoManager] disableUndoRegistration];
-    
-    [mainController setPdfDocument:pdfDocument];
-    [self setPDFDoc:nil];
-    
-    [mainController setAnnotationsFromDictionaries:noteDicts undoable:NO];
-    [self setNoteDicts:nil];
-    
-    if (presentationOptions)
-        [[self mainWindowController] setPresentationOptions:presentationOptions];
-    [self setPresentationOptions:nil];
-    
-    [mainController setOpenMetaTags:openMetaTags];
-    [self setOpenMetaTags:nil];
-    
-    [mainController setOpenMetaRating:openMetaRating];
-    [self setOpenMetaRating:0.0];
-    
-    [[self undoManager] enableUndoRegistration];
-    
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKPDFDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
-                                                 name:NSWindowWillCloseNotification object:[mainController window]];
+                                                 name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
 }
 
 - (void)showWindows{
@@ -566,30 +580,16 @@ static char SKPDFDocumentDefaultsObservationContext;
     BOOL success = [super revertToContentsOfURL:absoluteURL ofType:typeName error:outError];
     
     if (success) {
-        if ([pdfDocument isLocked])
-            [self tryToUnlockDocument:pdfDocument];
-        [[self mainWindowController] setPdfDocument:pdfDocument];
-        [self setPDFDoc:nil];
-        
-        [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts undoable:NO];
-        [self setNoteDicts:nil];
-        
-        if (presentationOptions)
-            [[self mainWindowController] setPresentationOptions:presentationOptions];
-        [self setPresentationOptions:nil];
-        
-        [[self mainWindowController] setOpenMetaTags:openMetaTags];
-        [self setOpenMetaTags:nil];
-        
-        [[self mainWindowController] setOpenMetaRating:openMetaRating];
-        [self setOpenMetaRating:0.0];
-        
+        [self setDataFromTmpData];
         [[self undoManager] removeAllActions];
         // file watching could have been disabled if the file was deleted
         if (watchedFile == nil && fileUpdateTimer == nil)
             [self checkFileUpdatesIfNeeded];
     }
-
+    
+    [tmpData release];
+    tmpData = nil;
+    
     if (disableAlert == NO)
         [[self progressController] endSheet];
     
@@ -620,16 +620,16 @@ static char SKPDFDocumentDefaultsObservationContext;
     return dict;
 }
 
-- (void)setPDFDataUndoable:(NSData *)data {
-    [[[self undoManager] prepareWithInvocationTarget:self] setPDFDataUndoable:pdfData];
-    [self setPDFData:data];
-}
-
 - (void)setPDFData:(NSData *)data {
     if (pdfData != data) {
         [pdfData release];
         pdfData = [data retain];
     }
+}
+
+- (void)setPDFDataUndoable:(NSData *)data {
+    [[[self undoManager] prepareWithInvocationTarget:self] setPDFDataUndoable:pdfData];
+    [self setPDFData:data];
 }
 
 - (void)setPSOrDVIData:(NSData *)data {
@@ -639,47 +639,14 @@ static char SKPDFDocumentDefaultsObservationContext;
     }
 }
 
-- (void)setPDFDoc:(PDFDocument *)doc {
-    if (pdfDocument != doc) {
-        [pdfDocument release];
-        pdfDocument = [doc retain];
-    }
-}
-
-- (void)setNoteDicts:(NSArray *)array {
-    if (noteDicts != array) {
-        [noteDicts autorelease];
-        noteDicts = [array retain];
-    }
-}
-
-- (void)setPresentationOptions:(NSDictionary *)dictionary {
-    if (presentationOptions != dictionary) {
-        [presentationOptions autorelease];
-        presentationOptions = [dictionary retain];
-    }
-}
-
-- (void)setOpenMetaTags:(NSArray *)array {
-    if (openMetaTags != array) {
-        [openMetaTags autorelease];
-        openMetaTags = [array retain];
-    }
-}
-
-- (void)setOpenMetaRating:(double)rating {
-    openMetaRating = rating;
-}
-
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
 {
     BOOL didRead = NO;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
-    [self setPDFData:nil];
-    [self setPDFDoc:nil];
-    [self setNoteDicts:nil];
+    [tmpData release];
+    tmpData = [[SKTemporaryData alloc] init];
     
     if (SKIsPostScriptDocumentType(docType))
         data = [SKConversionProgressController PDFDataWithPostScriptData:data];
@@ -687,10 +654,10 @@ static char SKPDFDocumentDefaultsObservationContext;
     if (data)
         pdfDoc = [[PDFDocument alloc] initWithData:data];
     
-    [self setPDFData:data];
-    [self setPDFDoc:pdfDoc];
+    [tmpData setPdfDocument:pdfDoc];
 
     if (pdfDoc) {
+        [self setPDFData:data];
         [pdfDoc release];
         didRead = YES;
         [self updateChangeCount:NSChangeDone];
@@ -716,13 +683,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
-    [self setPDFData:nil];
-    [self setPSOrDVIData:nil];
-    [self setPDFDoc:nil];
-    [self setNoteDicts:nil];
-    [self setPresentationOptions:nil];
-    [self setOpenMetaTags:nil];
-    [self setOpenMetaRating:0.0];
+    [tmpData release];
+    tmpData = [[SKTemporaryData alloc] init];
     
     if (SKIsPDFBundleDocumentType(docType)) {
         NSString *path = [absoluteURL path];
@@ -745,7 +707,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         pdfDoc = nil;
                     }
                 } else if ([array count]) {
-                    [self setNoteDicts:array];
+                    [tmpData setNoteDicts:array];
                 }
             }
         }
@@ -765,7 +727,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (pdfDoc) {
             NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromExtendedAttributesAtURL:absoluteURL error:&error];
             if ([array count]) {
-                [self setNoteDicts:array];
+                [tmpData setNoteDicts:array];
             } else {
                 // we found no notes, see if we had an error finding notes. if EAs were not supported we ignore the error, as we may assume there won't be any notes
                 if (array == nil && isIgnorablePOSIXError(error) == NO) {
@@ -798,7 +760,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                         if (readOption == NSAlertDefaultReturn) {
                             array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:[NSURL fileURLWithPath:path] error:NULL];
                             if ([array count]) {
-                                [self setNoteDicts:array];
+                                [tmpData setNoteDicts:array];
                                 [self updateChangeCount:NSChangeDone];
                             }
                         }
@@ -812,7 +774,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (pdfDoc) {
             didRead = YES;
             [self setPDFData:data];
-            [self setPDFDoc:pdfDoc];
+            [tmpData setPdfDocument:pdfDoc];
             if (SKIsPostScriptDocumentType(docType) || SKIsDVIDocumentType(docType))
                 [self setPSOrDVIData:fileData];
             [pdfDoc release];
@@ -842,13 +804,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 number = [[SKNExtendedAttributeManager sharedNoSplitManager] propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             }
             if ([dictionary isKindOfClass:[NSDictionary class]] && [dictionary count])
-                [self setPresentationOptions:dictionary];
+                [tmpData setPresentationOptions:dictionary];
             if ([array isKindOfClass:[NSArray class]] && [array count])
-                [self setOpenMetaTags:array];
+                [tmpData setOpenMetaTags:array];
             if ([number respondsToSelector:@selector(doubleValue)] && [number doubleValue] > 0.0)
-                [self setOpenMetaRating:[number doubleValue]];
-        } else {
-            [self setPDFData:nil];
+                [tmpData setOpenMetaRating:[number doubleValue]];
         }
         [data release];
     }
@@ -2318,3 +2278,61 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     
     return setup;
 }
+
+
+@implementation SKTemporaryData
+
+- (PDFDocument *)pdfDocument {
+    return pdfDocument;
+}
+
+- (void)setPdfDocument:(PDFDocument *)newPdfDocument {
+    if (pdfDocument != newPdfDocument) {
+        [pdfDocument release];
+        pdfDocument = [newPdfDocument retain];
+    }
+}
+
+- (NSArray *)noteDicts {
+    return [[noteDicts retain] autorelease];
+}
+
+- (void)setNoteDicts:(NSArray *)newNoteDicts {
+    if (noteDicts != newNoteDicts) {
+        [noteDicts release];
+        noteDicts = [newNoteDicts copy];
+    }
+}
+
+- (NSDictionary *)presentationOptions {
+    return presentationOptions;
+}
+
+- (void)setPresentationOptions:(NSDictionary *)newPresentationOptions {
+    if (presentationOptions != newPresentationOptions) {
+        [presentationOptions release];
+        presentationOptions = [newPresentationOptions copy];
+    }
+}
+
+- (NSArray *)openMetaTags {
+    return openMetaTags;
+}
+
+- (void)setOpenMetaTags:(NSArray *)newOpenMetaTags {
+    if (openMetaTags != newOpenMetaTags) {
+        [openMetaTags release];
+        openMetaTags = [newOpenMetaTags copy];
+    }
+}
+
+- (double)openMetaRating {
+    return openMetaRating;
+}
+
+- (void)setOpenMetaRating:(double)newOpenMetaRating {
+    openMetaRating = newOpenMetaRating;
+}
+
+@end
+
