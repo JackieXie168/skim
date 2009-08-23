@@ -2282,6 +2282,25 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
 
 @implementation SKTemporaryData
 
+- (id)init {
+    if (self = [super init]) {
+        pdfDocument = nil;
+        noteDicts = nil;
+        presentationOptions = nil;
+        openMetaTags = nil;
+        openMetaRating = 0.0;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [pdfDocument release];
+    [noteDicts release];
+    [presentationOptions release];
+    [openMetaTags release];
+    [super dealloc];
+}
+
 - (PDFDocument *)pdfDocument {
     return pdfDocument;
 }
@@ -2294,7 +2313,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
 }
 
 - (NSArray *)noteDicts {
-    return [[noteDicts retain] autorelease];
+    return noteDicts;
 }
 
 - (void)setNoteDicts:(NSArray *)newNoteDicts {
