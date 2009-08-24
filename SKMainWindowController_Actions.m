@@ -61,6 +61,7 @@
 #import "BDSKEdgeView.h"
 #import "SKSplitView.h"
 #import "SKPDFOutline.h"
+#import "SKLineInspector.h"
 
 
 @implementation SKMainWindowController (Actions)
@@ -122,46 +123,30 @@
     }
 }
 
-- (void)changeLineWidth:(id)sender {
+- (void)changeLineAttribute:(id)sender {
+    SKLineChangeAction action = [sender currentLineChangeAction];
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-        [annotation setLineWidth:[sender lineWidth]];
-    }
-}
-
-- (void)changeLineStyle:(id)sender {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-        [annotation setBorderStyle:[sender style]];
-    }
-}
-
-- (void)changeDashPattern:(id)sender {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-        [annotation setDashPattern:[sender dashPattern]];
-    }
-}
-
-- (void)changeStartLineStyle:(id)sender {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
+    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [[annotation keysForValuesToObserveForUndo] containsObject:SKNPDFAnnotationBorderKey]) {
         mwcFlags.updatingLine = 1;
-        [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
-        mwcFlags.updatingLine = 0;
-    }
-}
-
-- (void)changeEndLineStyle:(id)sender {
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [type isEqualToString:SKNLineString]) {
-        mwcFlags.updatingLine = 1;
-        [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
+        switch (action) {
+            case SKLineWidthLineChangeAction:
+                [annotation setLineWidth:[sender lineWidth]];
+                break;
+            case SKStyleLineChangeAction:
+                [annotation setBorderStyle:[sender style]];
+                break;
+            case SKDashPatternLineChangeAction:
+                [annotation setDashPattern:[sender dashPattern]];
+                break;
+            case SKStartLineStyleLineChangeAction:
+                if ([[annotation type] isEqualToString:SKNLineString])
+                    [(PDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
+                break;
+            case SKEndLineStyleLineChangeAction:
+                if ([[annotation type] isEqualToString:SKNLineString])
+                    [(PDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
+                break;
+        }
         mwcFlags.updatingLine = 0;
     }
 }

@@ -102,10 +102,6 @@ typedef NSInteger SKLineWellDisplayStyle;
 - (PDFLineStyle)endLineStyle;
 - (void)setEndLineStyle:(PDFLineStyle)newStyle;
 
-- (void)lineInspectorLineWidthChanged:(NSNotification *)notification;
-- (void)lineInspectorLineStyleChanged:(NSNotification *)notification;
-- (void)lineInspectorDashPatternChanged:(NSNotification *)notification;
-- (void)lineInspectorStartLineStyleChanged:(NSNotification *)notification;
-- (void)lineInspectorEndLineStyleChanged:(NSNotification *)notification;
+- (void)lineInspectorLineAttributeChanged:(NSNotification *)notification;
 
 @end

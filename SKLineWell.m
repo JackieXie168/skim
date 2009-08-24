@@ -437,18 +437,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                    name:SKLineWellWillBecomeActiveNotification object:nil];
         [nc addObserver:self selector:@selector(lineInspectorWindowWillClose:)
                    name:NSWindowWillCloseNotification object:[inspector window]];
-        [nc addObserver:self selector:@selector(lineInspectorLineWidthChanged:)
-                   name:SKLineInspectorLineWidthDidChangeNotification object:inspector];
-        [nc addObserver:self selector:@selector(lineInspectorLineStyleChanged:)
-                   name:SKLineInspectorLineStyleDidChangeNotification object:inspector];
-        [nc addObserver:self selector:@selector(lineInspectorDashPatternChanged:)
-                   name:SKLineInspectorDashPatternDidChangeNotification object:inspector];
-        if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-            [nc addObserver:self selector:@selector(lineInspectorStartLineStyleChanged:)
-                       name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
-            [nc addObserver:self selector:@selector(lineInspectorEndLineStyleChanged:)
-                       name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
-        } 
+        [nc addObserver:self selector:@selector(lineInspectorLineAttributeChanged:)
+                   name:SKLineInspectorLineAttributeDidChangeNotification object:inspector];
         
         lwFlags.active = 1;
         
@@ -521,19 +511,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)setDisplayStyle:(SKLineWellDisplayStyle)newStyle {
     if (lwFlags.displayStyle != newStyle) {
         lwFlags.displayStyle = newStyle;
-        if ([self isActive]) {
-            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            SKLineInspector *inspector = [SKLineInspector sharedLineInspector];
-            if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                [nc addObserver:self selector:@selector(lineInspectorStartLineStyleChanged:)
-                          name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
-                [nc addObserver:self selector:@selector(lineInspectorEndLineStyleChanged:)
-                          name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
-            } else {
-                [nc removeObserver:self name:SKLineInspectorStartLineStyleDidChangeNotification object:inspector];
-                [nc removeObserver:self name:SKLineInspectorEndLineStyleDidChangeNotification object:inspector];
-            }
-        }
         [self setNeedsDisplay:YES];
     }
 }
@@ -606,29 +583,32 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark Notification handlers
 
-- (void)lineInspectorChangedValueForKey:(NSString *)key {
-    [self takeValueForKey:key from:[SKLineInspector sharedLineInspector]];
-    [self sendAction:[self action] to:[self target]];
-}
-
-- (void)lineInspectorLineWidthChanged:(NSNotification *)notification {
-    [self lineInspectorChangedValueForKey:SKLineWellLineWidthKey];
-}
-
-- (void)lineInspectorLineStyleChanged:(NSNotification *)notification {
-    [self lineInspectorChangedValueForKey:SKLineWellStyleKey];
-}
-
-- (void)lineInspectorDashPatternChanged:(NSNotification *)notification {
-    [self lineInspectorChangedValueForKey:SKLineWellDashPatternKey];
-}
-
-- (void)lineInspectorStartLineStyleChanged:(NSNotification *)notification {
-    [self lineInspectorChangedValueForKey:SKLineWellStartLineStyleKey];
-}
-
-- (void)lineInspectorEndLineStyleChanged:(NSNotification *)notification {
-    [self lineInspectorChangedValueForKey:SKLineWellEndLineStyleKey];
+- (void)lineInspectorLineAttributeChanged:(NSNotification *)notification {
+    SKLineInspector *inspector = [notification object];
+    NSString *key = nil;
+    switch ([inspector currentLineChangeAction]) {
+        case SKLineWidthLineChangeAction:
+            key = SKLineWellLineWidthKey;
+            break;
+        case SKStyleLineChangeAction:
+            key = SKLineWellStyleKey;
+            break;
+        case SKDashPatternLineChangeAction:
+            key = SKLineWellDashPatternKey;
+            break;
+        case SKStartLineStyleLineChangeAction:
+            if ([self displayStyle] == SKLineWellDisplayStyleLine)
+                key = SKLineWellStartLineStyleKey;
+            break;
+        case SKEndLineStyleLineChangeAction:
+            if ([self displayStyle] == SKLineWellDisplayStyleLine)
+                key = SKLineWellEndLineStyleKey;
+            break;
+    }
+    if (key) {
+        [self takeValueForKey:key from:inspector];
+        [self sendAction:[self action] to:[self target]];
+    }
 }
 
 #pragma mark NSDraggingSource protocol 

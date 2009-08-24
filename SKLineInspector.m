@@ -42,17 +42,14 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKNumberArrayFormatter.h"
 
-NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";
-NSString *SKLineInspectorLineStyleDidChangeNotification = @"SKLineInspectorLineStyleDidChangeNotification";
-NSString *SKLineInspectorDashPatternDidChangeNotification = @"SKLineInspectorDashPatternDidChangeNotification";
-NSString *SKLineInspectorStartLineStyleDidChangeNotification = @"SKLineInspectorStartLineStyleDidChangeNotification";
-NSString *SKLineInspectorEndLineStyleDidChangeNotification = @"SKLineInspectorEndLineStyleDidChangeNotification";
+NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
 
 #define LINEWIDTH_KEY       @"lineWidth"
 #define STYLE_KEY           @"style"
 #define DASHPATTERN_KEY     @"dashPattern"
 #define STARTLINESTYLE_KEY  @"startLineStyle"
 #define ENDLINESTYLE_KEY    @"endLineStyle"
+#define ACTION_KEY          @"action"
 
 #define SKLineInspectorFrameAutosaveName @"SKLineInspector"
 
@@ -81,6 +78,7 @@ static SKLineInspector *sharedLineInspector = nil;
         dashPattern = nil;
         startLineStyle = kPDFLineStyleNone;
         endLineStyle = kPDFLineStyleNone;
+        currentLineChangeAction = SKNoLineChangeAction;
     }
     return sharedLineInspector;
 }
@@ -417,7 +415,10 @@ static SKLineInspector *sharedLineInspector = nil;
 	[image release];
 }
 
-- (void)sendActionToTarget:(SEL)selector {
+- (void)notifyChangeAction:(SKLineChangeAction)action {
+    currentLineChangeAction = action;
+    
+    SEL selector = @selector(changeLineAttribute:);
     NSWindow *mainWindow = [NSApp mainWindow];
     NSResponder *responder = [mainWindow firstResponder];
     
@@ -425,19 +426,23 @@ static SKLineInspector *sharedLineInspector = nil;
         responder = [responder nextResponder];
     
     [responder performSelector:selector withObject:self];
+    
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:action], ACTION_KEY, nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineAttributeDidChangeNotification object:self userInfo:userInfo];
+    
+    currentLineChangeAction = SKNoLineChangeAction;
 }
 
 #pragma mark Accessors
 
 - (CGFloat)lineWidth {
-    return  lineWidth;
+    return lineWidth;
 }
 
 - (void)setLineWidth:(CGFloat)width {
     if (SKAbs(lineWidth - width) > 0.00001) {
         lineWidth = width;
-        [self sendActionToTarget:@selector(changeLineWidth:)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];
+        [self notifyChangeAction:SKLineWidthLineChangeAction];
     }
 }
 
@@ -448,8 +453,7 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)setStyle:(PDFBorderStyle)newStyle {
     if (newStyle != style) {
         style = newStyle;
-        [self sendActionToTarget:@selector(changeLineStyle:)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineStyleDidChangeNotification object:self];
+        [self notifyChangeAction:SKStyleLineChangeAction];
     }
 }
 
@@ -461,8 +465,7 @@ static SKLineInspector *sharedLineInspector = nil;
     if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
-        [self sendActionToTarget:@selector(changeDashPattern:)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorDashPatternDidChangeNotification object:self];
+        [self notifyChangeAction:SKDashPatternLineChangeAction];
     }
 }
 
@@ -473,8 +476,7 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)setStartLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != startLineStyle) {
         startLineStyle = newStyle;
-        [self sendActionToTarget:@selector(changeStartLineStyle:)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorStartLineStyleDidChangeNotification object:self];
+        [self notifyChangeAction:SKStartLineStyleLineChangeAction];
     }
 }
 
@@ -485,8 +487,7 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)setEndLineStyle:(PDFLineStyle)newStyle {
     if (newStyle != endLineStyle) {
         endLineStyle = newStyle;
-        [self sendActionToTarget:@selector(changeEndLineStyle:)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorEndLineStyleDidChangeNotification object:self];
+        [self notifyChangeAction:SKEndLineStyleLineChangeAction];
     }
 }
 
@@ -501,6 +502,10 @@ static SKLineInspector *sharedLineInspector = nil;
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
         [self setEndLineStyle:[(PDFAnnotationLine *)annotation endLineStyle]];
     }
+}
+
+- (SKLineChangeAction)currentLineChangeAction {
+    return currentLineChangeAction;
 }
 
 - (void)setNilValueForKey:(NSString *)key {
