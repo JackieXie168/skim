@@ -40,11 +40,17 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern NSString *SKLineInspectorLineWidthDidChangeNotification;
-extern NSString *SKLineInspectorLineStyleDidChangeNotification;
-extern NSString *SKLineInspectorDashPatternDidChangeNotification;
-extern NSString *SKLineInspectorStartLineStyleDidChangeNotification;
-extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
+extern NSString *SKLineInspectorLineAttributeDidChangeNotification;
+
+enum {
+    SKNoLineChangeAction,
+    SKLineWidthLineChangeAction,
+    SKStyleLineChangeAction,
+    SKDashPatternLineChangeAction,
+    SKStartLineStyleLineChangeAction,
+    SKEndLineStyleLineChangeAction
+};
+typedef NSUInteger SKLineChangeAction;
 
 @class SKLineWell;
 
@@ -61,6 +67,7 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
     NSArray *dashPattern;
     PDFLineStyle startLineStyle;
     PDFLineStyle endLineStyle;
+    SKLineChangeAction currentLineChangeAction;
 }
 
 + (id)sharedLineInspector;
@@ -80,15 +87,11 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation;
 
+- (SKLineChangeAction)currentLineChangeAction;
+
 @end
 
 
 @interface NSObject (SKLineInspectorDelegate)
-
-- (void)changeLineWidth:(id)sender;
-- (void)changeLineStyle:(id)sender;
-- (void)changeDashPattern:(id)sender;
-- (void)changeStartLineStyle:(id)sender;
-- (void)changeEndLineStyle:(id)sender;
-
+- (void)changeLineAttribute:(id)sender;
 @end
