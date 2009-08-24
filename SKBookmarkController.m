@@ -219,7 +219,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
     return bookmarkRoot;
 }
 
-- (NSArray *)minimumCoverForBookmarks:(NSArray *)items {
+static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSEnumerator *bmEnum = [items objectEnumerator];
     SKBookmark *bm;
     SKBookmark *lastBm = nil;
@@ -636,7 +636,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
-    [self setDraggedBookmarks:[self minimumCoverForBookmarks:items]];
+    [self setDraggedBookmarks:minimumCoverForBookmarks(items)];
     [pboard declareTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil] owner:nil];
     [pboard setData:[NSData data] forType:SKBookmarkRowsPboardType];
     return YES;
@@ -726,7 +726,7 @@ static SKBookmarkController *sharedBookmarkController = nil;
 }
 
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
-    NSEnumerator *itemEnum = [[self minimumCoverForBookmarks:items] reverseObjectEnumerator];
+    NSEnumerator *itemEnum = [minimumCoverForBookmarks(items) reverseObjectEnumerator];
     SKBookmark *item;
     [self endEditing];
     while (item = [itemEnum  nextObject]) {
