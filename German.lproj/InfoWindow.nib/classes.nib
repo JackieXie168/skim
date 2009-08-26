@@ -5,38 +5,6 @@
 	<key>IBClasses</key>
 	<array>
 		<dict>
-			<key>CLASS</key>
-			<string>SKInfoWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSWindowController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSApplication</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSMenu</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSWindowController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSResponder</string>
-		</dict>
-		<dict>
 			<key>ACTIONS</key>
 			<dict>
 				<key>changeDashPattern</key>
@@ -54,6 +22,22 @@
 			<string>NSObject</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSTextFieldCell</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSActionCell</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SKInfoWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
 		</dict>
 		<dict>
 			<key>CLASS</key>
@@ -81,7 +65,15 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>FirstResponder</string>
+			<string>NSApplication</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSResponder</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>
@@ -89,7 +81,23 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
 			<string>NSResponder</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>SUPERCLASS</key>

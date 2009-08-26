@@ -99,9 +99,15 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>PDFViewDidBeginEditing</key>
+				<string>PDFView</string>
+				<key>PDFViewDidEndEditing</key>
+				<string>PDFView</string>
 				<key>changeDashPattern</key>
 				<string>id</string>
 				<key>changeEndLineStyle</key>
+				<string>id</string>
+				<key>changeLineAttribute</key>
 				<string>id</string>
 				<key>changeLineStyle</key>
 				<string>id</string>
