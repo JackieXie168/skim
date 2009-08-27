@@ -1,0 +1,67 @@
+//
+// Prefix header for all source files of the 'Skim' target in the 'Skim' project
+//
+
+#ifdef __OBJC__
+
+    #import <Cocoa/Cocoa.h>
+    #import <Quartz/Quartz.h>
+
+    #ifndef NSAppKitVersionNumber10_4
+    #define NSAppKitVersionNumber10_4 824
+    #endif
+
+    #define __SKFILENAMEASNSSTRING \
+      [[NSString stringWithCString:__FILE__] lastPathComponent]
+
+    #if defined (DEBUG)
+
+        #define log_method() \
+          NSLog(@"%@[%@ %@] (%@ line %d)", (id)[self class] == (id)self ? @"+" : @"-", \
+          [self class], NSStringFromSelector(_cmd), __SKFILENAMEASNSSTRING, __LINE__)
+
+        #define log_function() \
+          NSLog(@"%s (%@ line %d)", __PRETTY_FUNCTION__, __SKFILENAMEASNSSTRING, __LINE__)
+
+    #else
+
+       #define log_method();
+       #define log_function();
+
+    #endif
+
+#else
+
+/* this should work for C or C++ */
+
+    #if defined (DEBUG)
+
+       #define log_function() \
+         fprintf(stderr, "%s (%s line %d)", __PRETTY_FUNCTION__, __FILENAME__, __LINE__) \
+         fflush(stderr);
+    
+    #else
+    
+       #define log_function();
+
+    #endif
+
+#endif
+
+#if __LP64__
+#define SKRound(f)      round(f)
+#define SKFloor(f)      floor(f)
+#define SKCeil(f)       ceil(f)
+#define SKTrunc(f)      trunc(f)
+#define SKAbs(f)        fabs(f)
+#define SKMin(f1, f2)   fmin(f1, f2)
+#define SKMax(f1, f2)   fmax(f1, f2)
+#else
+#define SKRound(f)      roundf(f)
+#define SKFloor(f)      floorf(f)
+#define SKCeil(f)       ceilf(f)
+#define SKTrunc(f)      truncf(f)
+#define SKAbs(f)        fabsf(f)
+#define SKMin(f1, f2)   fminf(f1, f2)
+#define SKMax(f1, f2)   fmaxf(f1, f2)
+#endif
