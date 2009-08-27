@@ -338,7 +338,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path closePath];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
-    [toolbarPageUpImage unlockFocus];
+    [toolbarPageDownImage unlockFocus];
     [toolbarPageDownImage setName:SKImageNameToolbarPageDown];
     
     toolbarFirstPageImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
