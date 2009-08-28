@@ -90,7 +90,8 @@
                             sep = @"";
                             
                             // ignore a "." or "-"
-                            [scanner scanString:@"." intoString:NULL] || [scanner scanString:@"-" intoString:NULL];
+                            if ([scanner scanString:@"." intoString:NULL] == NO)
+                                [scanner scanString:@"-" intoString:NULL];
                         }
                     }
                 }
