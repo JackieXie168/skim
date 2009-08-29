@@ -206,13 +206,22 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;
         if (selection) {
-            NSUInteger i, iMax = [selection safeNumberOfRangesOnPage:page];
+            NSUInteger i, iMax;
             NSRect lineRect = NSZeroRect;
-            if (iMax > 0) {
+            if ([selection respondsToSelector:@selector(selectionsByLine)]) {
+                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
+                PDFSelection *sel;
+                while (sel = [selEnum nextObject]) {
+                    lineRect = [sel boundsForPage:page];
+                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                         CFArrayAppendValue([self lineRects], &lineRect);
+                         newBounds = NSUnionRect(lineRect, newBounds);
+                    }
+                } 
+            } else if (iMax = [selection safeNumberOfRangesOnPage:page]) {
                 NSString *string = [page string];
                 NSRect charRect = NSZeroRect;
                 NSRect lastCharRect = NSZeroRect;
-                iMax = [selection safeNumberOfRangesOnPage:page];
                 for (i = 0; i < iMax; i++) {
                     NSRange range = [selection safeRangeAtIndex:i onPage:page];
                     NSUInteger j, jMax = NSMaxRange(range);
@@ -243,16 +252,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                     CFArrayAppendValue([self lineRects], &lineRect);
                     newBounds = NSUnionRect(lineRect, newBounds);
                 }
-            } else if ([selection respondsToSelector:@selector(selectionsByLine)]) {
-                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
-                PDFSelection *sel;
-                while (sel = [selEnum nextObject]) {
-                    lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                         CFArrayAppendValue([self lineRects], &lineRect);
-                         newBounds = NSUnionRect(lineRect, newBounds);
-                    }
-                } 
             }
             if (NSIsEmptyRect(newBounds)) {
                 [self release];
