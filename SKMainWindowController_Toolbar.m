@@ -97,7 +97,7 @@
 
 #pragma mark -
 
-@interface SKMainWindowController (TSKoolbarPrivate)
+@interface SKMainWindowController (SKToolbarPrivate)
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
 @end
 
