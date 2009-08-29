@@ -43,31 +43,19 @@
 #import "SKStringConstants.h"
 #import "SKPDFDocument.h"
 #import "SKCFCallbacks.h"
-#import "SKRuntime.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
-- (NSArray *)pageRanges;
+// defined on 10.6
+- (NSIndexSet *)indexOfCharactersOnPage:(PDFPage *)page;
+// defined and used on 10.4 & 10.5
 - (NSInteger)numberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
 @end
 
-@interface NSObject (PDFPageRangePrivateDeclarations)
-- (PDFPage *)page;
-- (NSRange)range;
-@end
-
 
 @implementation PDFSelection (SKExtensions)
-
-static BOOL usePageRanges = NO;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    // NSAppKitVersionNumber10_5 = 949, apparently PDFSelection on 10.6 defines but doesn't implement -numberOfPagesOnRange: and -rangeAtIndex:onPage:
-    usePageRanges = floor(NSAppKitVersionNumber) > 949 && [self instancesRespondToSelector:@selector(pageRanges)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(page)] && [NSClassFromString(@"PDFPageRange") instancesRespondToSelector:@selector(range)];
-}
 
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
@@ -135,12 +123,16 @@ static BOOL usePageRanges = NO;
 }
 
 - (NSInteger)safeNumberOfRangesOnPage:(PDFPage *)page {
-    if (usePageRanges) {
-        NSEnumerator *prEnum = [[self pageRanges] objectEnumerator];
-        id pr;
+    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+        NSIndexSet *chars = [self indexOfCharactersOnPage:page];
+        NSUInteger idx = [chars firstIndex];
+        NSUInteger prevIdx = NSNotFound;
         NSInteger count = 0;
-        while (pr = [prEnum nextObject])
-            if ([[pr page] isEqual:page]) count++;
+        while (idx != NSNotFound) {
+            if (prevIdx == NSNotFound || idx != prevIdx + 1) count++;
+            prevIdx = idx;
+            idx = [chars indexGreaterThanIndex:idx];
+        }
         return count;
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
         return [self numberOfRangesOnPage:page];
@@ -148,11 +140,26 @@ static BOOL usePageRanges = NO;
 }
 
 - (NSRange)safeRangeAtIndex:(NSInteger)anIndex onPage:(PDFPage *)page {
-    if (usePageRanges) {
-        NSEnumerator *prEnum = [[self pageRanges] objectEnumerator];
-        id pr;
-        while (pr = [prEnum nextObject])
-            if ([[pr page] isEqual:page] && (0 == anIndex--)) return [pr range];
+    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+        NSIndexSet *chars = [self indexOfCharactersOnPage:page];
+        NSUInteger idx = [chars firstIndex];
+        NSUInteger prevIdx = NSNotFound;
+        NSRange range = NSMakeRange(NSNotFound, 0);
+        NSInteger count = 0;
+        while (idx != NSNotFound) {
+            if (prevIdx == NSNotFound || idx != prevIdx + 1) {
+                if (count > anIndex)
+                    return range;
+                count++;
+                range = NSMakeRange(idx, 1);
+            } else {
+                range.length++;
+            }
+            prevIdx = idx;
+            idx = [chars indexGreaterThanIndex:idx];
+        }
+        if (count > anIndex)
+            return range;
     } else if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
         return [self rangeAtIndex:anIndex onPage:page];
     return NSMakeRange(NSNotFound, 0);
