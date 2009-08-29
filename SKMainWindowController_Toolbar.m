@@ -702,9 +702,9 @@
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
         return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && [[[pdfView currentSelection] string] length];
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier]) {
-        BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
+        BOOL enabled = ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO && [[[pdfView currentSelection] string] length];
         [noteButton setEnabled:enabled forSegment:SKHighlightNote];
         [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
         [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];

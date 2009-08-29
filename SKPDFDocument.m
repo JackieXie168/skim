@@ -1963,7 +1963,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (id)selectionSpecifier {
     PDFSelection *sel = [[self pdfView] currentSelection];
-    return sel ? [sel objectSpecifier] : [NSArray array];
+    return [[sel string] length] ? [sel objectSpecifier] : [NSArray array];
 }
 
 - (void)setSelectionSpecifier:(id)specifier {
