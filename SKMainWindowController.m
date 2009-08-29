@@ -2575,7 +2575,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         row = [self outlineRowForPageIndex:pageIndex];
         if (row != -1) {
             mwcFlags.updatingOutlineSelection = 1;
-            [outlineView selectRow:row byExtendingSelection: NO];
+            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
             mwcFlags.updatingOutlineSelection = 0;
         }
     }
