@@ -1888,7 +1888,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)findString:(NSString *)string options:(NSInteger)options{
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
-    while ([sel string] == nil && pageIndex-- > 0) {
+    while ([[sel string] length] == 0 && pageIndex-- > 0) {
         PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
         sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
     }
