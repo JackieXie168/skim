@@ -60,10 +60,8 @@
         NSArray *pages = [selection pages];
         PDFPage *firstPage = [pages objectAtIndex:0];
         PDFPage *lastPage = [pages lastObject];
-        
-        NSUInteger numRanges = [selection safeNumberOfRangesOnPage:lastPage];
-        NSUInteger firstIndex = numRanges ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
-        NSUInteger lastIndex = numRanges ? NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:lastPage]) : NSNotFound;
+        NSUInteger firstIndex = [selection safeIndexOfFirstCharacterOnPage:firstPage];
+        NSUInteger lastIndex = [selection safeIndexOfLastCharacterOnPage:lastPage];
         if (firstIndex != NSNotFound && lastIndex != NSNotFound)
             selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex - 1];
     }

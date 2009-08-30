@@ -48,8 +48,9 @@
 
 - (PDFDestination *)destination;
 
-- (NSInteger)safeNumberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)safeRangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
+- (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page;
+- (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page;
+- (NSArray *)safeRangesOnPage:(PDFPage *)page;
 
 + (id)selectionWithSpecifier:(id)specifier;
 + (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;

@@ -391,9 +391,10 @@ static BOOL usesSequentialPageNumbering = NO;
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         NSString *string = [self string];
         NSRange stringRange = NSMakeRange(0, [string length]);
-        iMax = [sel safeNumberOfRangesOnPage:self];
-        for (i = 0; i < iMax; i++) {
-            NSRange range = [sel safeRangeAtIndex:i onPage:self];
+        NSEnumerator *rangeEnum = [[sel safeRangesOnPage:self] objectEnumerator];
+        NSValue *value;
+        while (value = [rangeEnum nextObject]) {
+            NSRange range = [value rangeValue];
             NSUInteger j, jMax = NSMaxRange(range);
             
             for (j = range.location; j < jMax; j++) {
@@ -402,11 +403,11 @@ static BOOL usesSequentialPageNumbering = NO;
                 
                 NSRect r = [self characterBoundsAtIndex:j];
                 PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
-                NSUInteger k, kMax = [s safeNumberOfRangesOnPage:self];
                 BOOL notEmpty = NO;
-                
-                for (k = 0; k < kMax; k++) {
-                    NSRange selRange = [s safeRangeAtIndex:k onPage:self];
+                NSEnumerator *rEnum = [[s safeRangesOnPage:self] objectEnumerator];
+                NSValue *val;
+                while (val = [rEnum nextObject]) {
+                    NSRange selRange = [val rangeValue];
                     if (selRange.location != NSNotFound) {
                         [indexes addIndexesInRange:selRange];
                         // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string

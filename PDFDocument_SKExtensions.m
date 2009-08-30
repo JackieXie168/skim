@@ -85,9 +85,8 @@ static id (*original_getPrintOperationForPrintInfo_autoRotate)(id, SEL, id, BOOL
         NSUInteger pageIndex = [self indexForPage:page];
         NSUInteger firstPageIndex = [self indexForPage:firstPage];
         NSUInteger lastPageIndex = [self indexForPage:lastPage];
-        NSUInteger n = [selection safeNumberOfRangesOnPage:lastPage];
-        NSUInteger firstChar = n ? [selection safeRangeAtIndex:0 onPage:firstPage].location : NSNotFound;
-        NSUInteger lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) : NSNotFound;
+        NSUInteger firstChar = [selection safeIndexOfFirstCharacterOnPage:firstPage];
+        NSUInteger lastChar = [selection safeIndexOfLastCharacterOnPage:lastPage];
         NSRect firstRect, lastRect;
         
         if (firstChar != NSNotFound) {

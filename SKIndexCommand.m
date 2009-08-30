@@ -65,15 +65,8 @@
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];
-        if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0])) {
-            NSUInteger count = [selection safeNumberOfRangesOnPage:page];
-            if (count > 0) {
-                NSRange range = [selection safeRangeAtIndex:last ? count - 1 : 0 onPage:page];
-                if (range.length) {
-                    idx = last ? NSMaxRange(range) - 1 : range.location;
-                }
-            }
-        }
+        if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0]))
+            idx = last ? [selection safeIndexOfLastCharacterOnPage:page] : [selection safeIndexOfFirstCharacterOnPage:page];
     }
     
     return [NSNumber numberWithInt:idx == NSNotFound ? 0 : (NSInteger)idx + 1];
