@@ -291,18 +291,13 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             
             text = [context text];
             string = [text string];
-            NSUInteger i = 0, l = [string length];
+            NSUInteger i, l = [string length];
             NSRange r = NSMakeRange(0, l);
             
-            while (i != NSNotFound) {
+            while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location))
                 r = NSMakeRange(i, l - i);
-                i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location;
-            }
-            i = l;
-            while (i != NSNotFound) {
+            while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
                 r.length = i - r.location;
-                i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location;
-            }
             if (r.length < l)
                 text = [text attributedSubstringFromRange:r];
             
