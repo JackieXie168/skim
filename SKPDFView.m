@@ -1607,15 +1607,12 @@ enum {
 - (void)checkSpelling:(id)sender {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
-    NSUInteger numRanges, idx = 0;
+    NSUInteger idx = 0;
     if ([[selection string] length]) {
         page = [[selection pages] lastObject];
-        numRanges = [selection safeNumberOfRangesOnPage:page];
-        if (numRanges > 0) {
-            idx = NSMaxRange([selection safeRangeAtIndex:numRanges - 1 onPage:page]);
-            if (idx == NSNotFound)
-                idx = 0;
-        }
+        idx = [selection safeIndexOfLastCharacterOnPage:page];
+        if (idx == NSNotFound)
+            idx = 0;
     }
     [self checkSpellingStartingAtIndex:idx onPage:page];
 }
@@ -1626,11 +1623,9 @@ enum {
     NSUInteger idx = 0;
     if ([[selection string] length]) {
         page = [[selection pages] objectAtIndex:0];
-        if ([selection safeNumberOfRangesOnPage:page] > 0) {
-            idx = [selection safeRangeAtIndex:0 onPage:page].location;
-            if (idx == NSNotFound)
-                idx = 0;
-        }
+        idx = [selection safeIndexOfFirstCharacterOnPage:page];
+        if (idx == NSNotFound)
+            idx = 0;
     }
     [self checkSpellingStartingAtIndex:idx onPage:page];
     [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];

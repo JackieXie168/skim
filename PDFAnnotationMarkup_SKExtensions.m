@@ -218,12 +218,14 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                          newBounds = NSUnionRect(lineRect, newBounds);
                     }
                 } 
-            } else if (iMax = [selection safeNumberOfRangesOnPage:page]) {
+            } else {
                 NSString *string = [page string];
                 NSRect charRect = NSZeroRect;
                 NSRect lastCharRect = NSZeroRect;
-                for (i = 0; i < iMax; i++) {
-                    NSRange range = [selection safeRangeAtIndex:i onPage:page];
+                NSEnumerator *rangeEnum = [[selection safeRangesOnPage:page] objectEnumerator];
+                NSValue *value;
+                while (value = [rangeEnum nextObject]) {
+                    NSRange range = [value rangeValue];
                     NSUInteger j, jMax = NSMaxRange(range);
                     for (j = range.location; j < jMax; j++) {
                         lastCharRect = charRect;
