@@ -294,7 +294,7 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
             NSUInteger i, l = [string length];
             NSRange r = NSMakeRange(0, l);
             
-            while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r].location))
+            while (NSNotFound != (i = NSMaxRange([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSAnchoredSearch range:r])))
                 r = NSMakeRange(i, l - i);
             while (NSNotFound != (i = [string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch | NSAnchoredSearch range:r].location))
                 r.length = i - r.location;
