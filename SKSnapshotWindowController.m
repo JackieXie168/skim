@@ -216,6 +216,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setAutoScales:NO];
     [pdfView setDisplaysPageBreaks:NO];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
+    [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] floatForKey:SKShouldAntiAliasKey]];
+    [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
     [pdfView setDocument:pdfDocument];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
@@ -570,6 +572,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
             BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
             [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
             [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+        } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
+            [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+        } else if ([key isEqualToString:SKGreekingThresholdKey]) {
+            [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
