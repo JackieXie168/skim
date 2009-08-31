@@ -68,6 +68,16 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder{
+    if (self = [super initWithCoder:coder]) {
+        blendEnds = NO;
+        dividerLayer = NULL;
+        minBlendLayer = NULL;
+        maxBlendLayer = NULL;
+    }
+    return self;
+}
+
 - (void)dealloc {
     CGLayerRelease(dividerLayer);
     CGLayerRelease(minBlendLayer);
