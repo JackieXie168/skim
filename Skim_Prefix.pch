@@ -12,7 +12,7 @@
     #endif
 
     #define __SKFILENAMEASNSSTRING \
-      [[NSString stringWithUTF8String:__FILE__] lastPathComponent]
+      [[NSString stringWithFileSystemRepresentation:__FILE__] lastPathComponent]
 
     #if defined (DEBUG)
 
