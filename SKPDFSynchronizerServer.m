@@ -344,7 +344,8 @@ struct SKServerFlags {
                             break;
                         case 'p':
                             // we ignore * and + modifiers
-                            [sc scanString:@"*" intoString:NULL] || [sc scanString:@"+" intoString:NULL];
+                            if ([sc scanString:@"*" intoString:NULL] == NO)
+                                [sc scanString:@"+" intoString:NULL];
                             if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
                                 record = [records recordForIndex:recordIndex];
                                 [record setPageIndex:[pages count] - 1];
