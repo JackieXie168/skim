@@ -98,7 +98,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey context:&SKSnaphotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
     [self setHasWindow:YES];
 }
@@ -170,7 +170,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
     if (miniaturizing == NO && [[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
         [[self delegate] snapshotControllerWindowWillClose:self];
     if ([[self window] isKeyWindow])
