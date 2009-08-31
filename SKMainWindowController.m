@@ -1521,6 +1521,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    else if ([self isPresentation])
+        SetSystemUIMode(kUIModeNormal, 0);
     
     if ([self isPresentation]) {
         [self exitPresentationMode];
