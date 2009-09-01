@@ -1,9 +1,0 @@
-OMNI_CONFIG_COPYRIGHT = Copyright 2005 Omni Development, Inc.  All rights reserved.
-OMNI_CONFIG_SOURCE_LICENSE = This software may only be used and reproduced according to the terms in the file OmniSourceLicense.html, which should be distributed with this project and can also be found at <http://www.omnigroup.com/developer/sourcecode/sourcelicense/>.
-OMNI_CONFIG_RCSID = $Header$
-
-OMNI_CONFIG_COMMENT = Common settings for Coverage configurations of Framework targets
-
-OMNI_CONFIG_COMMENT = Common settings for Application targets
-
-GCC_SYMBOLS_PRIVATE_EXTERN = NO
