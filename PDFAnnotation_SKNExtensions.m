@@ -191,7 +191,7 @@ static void replacementDealloc(id self, SEL _cmd) {
                 if ([lineWidth respondsToSelector:@selector(floatValue)])
                     [[self border] setLineWidth:[lineWidth floatValue]];
                 if ([borderStyle respondsToSelector:@selector(intValue)])
-                    [[self border] setStyle:[lineWidth intValue]];
+                    [[self border] setStyle:[borderStyle intValue]];
                 if ([dashPattern isKindOfClass:arrayClass])
                     [[self border] setDashPattern:dashPattern];
             }
