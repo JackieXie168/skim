@@ -179,6 +179,31 @@
     return nil;
 }
 
+- (BOOL)hasCharacters {
+    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+                return YES;
+        }
+        return NO;
+    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            NSInteger i, count = [self numberOfRangesOnPage:page];
+            for (i = 0; i < count; i++) {
+                if ([self rangeAtIndex:i onPage:page].length > 0)
+                    return YES;
+            }
+        }
+        return NO;
+    } else {
+        return [[self string] length] > 0;
+    }
+}
+
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
     NSUInteger length = [string length];
     NSRange range = NSMakeRange(0, 0);

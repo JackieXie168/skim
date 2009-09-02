@@ -52,6 +52,8 @@
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page;
 - (NSArray *)safeRangesOnPage:(PDFPage *)page;
 
+- (BOOL)hasCharacters;
+
 + (id)selectionWithSpecifier:(id)specifier;
 + (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;
 - (id)objectSpecifier;
