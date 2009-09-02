@@ -589,7 +589,10 @@ enum {
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
     if (mode != [self displayMode]) {
+        PDFPage *page = [self currentPage];
         [super setDisplayMode:mode];
+        if (page && NSLocationInRange([page pageIndex], [self visiblePageIndexRange]) == NO)
+            [self goToPage:page];
         [self relayoutEditField];
         [accessibilityChildren release];
         accessibilityChildren = nil;
