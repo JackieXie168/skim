@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -149,7 +149,6 @@
 		8DC2EF5B0486A6940098B216 /* SkimNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Debug.xcconfig"; sourceTree = "<group>"; };
 		CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Framework.xcconfig"; sourceTree = "<group>"; };
-		CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release-64Bit.xcconfig"; sourceTree = "<group>"; };
 		CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release-GCSupport.xcconfig"; sourceTree = "<group>"; };
 		CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Release.xcconfig"; sourceTree = "<group>"; };
 		CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Tool.xcconfig"; sourceTree = "<group>"; };
@@ -375,7 +374,6 @@
 				CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */,
 				CE17EF840E250E8A00DE06EA /* SkimNotes-Debug.xcconfig */,
 				CE17EF880E250E8A00DE06EA /* SkimNotes-Release.xcconfig */,
-				CE17EF860E250E8A00DE06EA /* SkimNotes-Release-64Bit.xcconfig */,
 				CE17EF870E250E8A00DE06EA /* SkimNotes-Release-GCSupport.xcconfig */,
 				CE17EF850E250E8A00DE06EA /* SkimNotes-Framework.xcconfig */,
 				CE17EF890E250E8A00DE06EA /* SkimNotes-Tool.xcconfig */,
@@ -517,7 +515,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "SkimNotes" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
