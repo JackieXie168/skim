@@ -355,12 +355,16 @@ enum {
 
 - (void)drawPage:(PDFPage *)pdfPage {
     
-	// Let PDFView do most of the hard work.
-	[super drawPage: pdfPage];
-	
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+	
     CGContextSaveGState(context);
     
+    // smooth graphics when anti-aliasing
+    [[NSGraphicsContext currentContext] setImageInterpolation:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey] ? NSImageInterpolationHigh : NSImageInterpolationDefault];
+    
+    // Let PDFView do most of the hard work.
+    [super drawPage: pdfPage];
+	
     [self transformCGContext:context forPage:pdfPage];
     SKCGContextSetDefaultRGBColorSpace(context);
     
