@@ -2537,8 +2537,15 @@ enum {
 }
 
 - (NSRange)visiblePageIndexRange {
-    NSRange range;
-    if ([[self document] pageCount]) {
+    NSRange range = NSMakeRange(NSNotFound, 0);
+    if ([self respondsToSelector:@selector(visiblePages)]) {
+        NSArray *pages = [self visiblePages];
+        if ([pages count]) {
+            NSUInteger first = [[pages objectAtIndex:0] pageIndex];
+            NSUInteger last = [[pages lastObject] pageIndex];
+            range = NSMakeRange(first, last - first + 1);
+        }
+    } else if ([[self document] pageCount]) {
         NSRect visibleRect = [self visibleContentRect];
         PDFPage *page;
         NSUInteger first, last;
@@ -2552,8 +2559,6 @@ enum {
         page = [self pageForPoint:SKBottomLeftPoint(visibleRect) nearest:YES];
         last = MAX(last, [page pageIndex]);
         range = NSMakeRange(first, last - first + 1);
-    } else {
-        range = NSMakeRange(NSNotFound, 0);
     }
     return range;
 }
