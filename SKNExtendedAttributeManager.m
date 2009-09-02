@@ -69,16 +69,24 @@ static id sharedNoSplitManager = nil;
 
 + (id)sharedManager;
 {
-    if (sharedManager == nil)
-        sharedManager = [[[self class] alloc] init];
-    return sharedManager;
+    id manager;
+    @synchronized(self) {
+        if (sharedManager == nil)
+            sharedManager = [[[self class] alloc] init];
+        manager = sharedManager;
+    }
+    return manager;
 }
 
 + (id)sharedNoSplitManager;
 {
-    if (sharedNoSplitManager == nil)
-        sharedNoSplitManager = [[[self class] alloc] initWithPrefix:nil];
-    return sharedNoSplitManager;
+    id manager;
+    @synchronized(self) {
+        if (sharedNoSplitManager == nil)
+            sharedNoSplitManager = [[[self class] alloc] initWithPrefix:nil];
+        manager = sharedNoSplitManager;
+    }
+    return manager;
 }
 
 - (id)init;
