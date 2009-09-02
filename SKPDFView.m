@@ -815,7 +815,7 @@ enum {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     
     if ([types count]) {
-        if ([[[self currentSelection] string] length])
+        if ([[self currentSelection] hasCharacters])
             [pboard addTypes:types owner:nil];
         else
             [pboard declareTypes:types owner:nil];
@@ -1134,7 +1134,7 @@ enum {
                             mouseDownInAnnotation = NO; 	 
                         } else {
                             [super mouseDown:theEvent];
-                            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[[self currentSelection] string] length]) {
+                            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
@@ -1184,7 +1184,7 @@ enum {
                  mouseDownInAnnotation = NO; 	 
                  dragMask = 0; 	 
             }
-            if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[[self currentSelection] string] length]) {
+            if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                 [self addAnnotationWithType:annotationMode];
                 [self setCurrentSelection:nil];
                 [super mouseUp:theEvent]; // this may be necssary to clean up a selection rect
@@ -1350,7 +1350,7 @@ enum {
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
     [item setTarget:self];
     
-    if ([self toolMode] == SKTextToolMode && [[[self currentSelection] string] length] && NSAppKitVersionNumber <= NSAppKitVersionNumber10_4) {
+    if ([self toolMode] == SKTextToolMode && [[self currentSelection] hasCharacters] && NSAppKitVersionNumber <= NSAppKitVersionNumber10_4) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
             
@@ -1379,7 +1379,7 @@ enum {
         [item setTag:SKSquareNote];
         [item setTarget:self];
         
-        if ([[[self currentSelection] string] length]) {
+        if ([[self currentSelection] hasCharacters]) {
             item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
             [item setTag:SKHighlightNote];
             [item setTarget:self];
@@ -1475,7 +1475,7 @@ enum {
             item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@"" atIndex:0];
         }
         
-        if (([activeAnnotation isSkimNote] && [activeAnnotation isMovable]) || [[[self currentSelection] string] length]) {
+        if (([activeAnnotation isSkimNote] && [activeAnnotation isMovable]) || [[self currentSelection] hasCharacters]) {
             if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
             item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
@@ -1484,7 +1484,7 @@ enum {
         if ([[menu itemAtIndex:0] isSeparatorItem])
             [menu removeItemAtIndex:0];
         
-    } else if ((toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) || ([self toolMode] == SKTextToolMode && [self hideNotes] && [[[self currentSelection] string] length])) {
+    } else if ((toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) || ([self toolMode] == SKTextToolMode && [self hideNotes] && [[self currentSelection] hasCharacters])) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1612,7 +1612,7 @@ enum {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
     NSUInteger idx = 0;
-    if ([[selection string] length]) {
+    if ([selection hasCharacters]) {
         page = [[selection pages] lastObject];
         idx = [selection safeIndexOfLastCharacterOnPage:page];
         if (idx == NSNotFound)
@@ -1625,7 +1625,7 @@ enum {
     PDFSelection *selection = [self currentSelection];
     PDFPage *page = [self currentPage];
     NSUInteger idx = 0;
-    if ([[selection string] length]) {
+    if ([selection hasCharacters]) {
         page = [[selection pages] objectAtIndex:0];
         idx = [selection safeIndexOfFirstCharacterOnPage:page];
         if (idx == NSNotFound)
@@ -1873,7 +1873,7 @@ enum {
     PDFSelection *selection = [self currentSelection];
     NSString *text = nil;
 	
-    if ([[selection string] length]) {
+    if ([selection hasCharacters]) {
         text = [selection cleanedString];
         
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
@@ -2461,7 +2461,7 @@ enum {
             [menuItem setState:[self annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(copy:)) {
-        if ([[[self currentSelection] string] length])
+        if ([[self currentSelection] hasCharacters])
             return YES;
         if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
             return YES;
@@ -2481,7 +2481,7 @@ enum {
     } else if (action == @selector(selectAll:)) {
         return toolMode == SKTextToolMode;
     } else if (action == @selector(deselectAll:)) {
-        return [[[self currentSelection] string] length] != 0;
+        return [[self currentSelection] hasCharacters] != 0;
     } else if (action == @selector(autoSelectContent:)) {
         return toolMode == SKSelectToolMode;
     } else {
@@ -3728,7 +3728,7 @@ enum {
         [self setCurrentSelection:wasSelection];
     } else if (modifiers & NSShiftKeyMask) {
         extendSelection = YES;
-        if ([[[self currentSelection] string] length])
+        if ([[self currentSelection] hasCharacters])
             wasSelection = [[self currentSelection] retain];
         NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:p nearest:YES];
@@ -3788,7 +3788,7 @@ enum {
         }
     }
     
-    if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[[self currentSelection] string] length]) {
+    if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
         [self addAnnotationWithType:annotationMode];
         [self setCurrentSelection:nil];
     }
