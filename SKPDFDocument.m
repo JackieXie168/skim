@@ -2102,10 +2102,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
-        if (docFlags.isUpdatingFile) {
-            [command setScriptErrorNumber:NSInternalScriptError];
-            [command setScriptErrorString:@"Cannot revert."];
-        } else if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
+        if (docFlags.isUpdatingFile == NO && [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];
         }
