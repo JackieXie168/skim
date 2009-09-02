@@ -1,5 +1,6 @@
-// Common to all targets for Release with GC and 64 Bits support
+// Common to all targets for Release with GC support
 
-#include "SkimNotes-Release-64Bit.xcconfig"
+#include "SkimNotes-Release.xcconfig"
 
+MACOSX_DEPLOYMENT_TARGET = 10.5
 GCC_ENABLE_OBJC_GC = supported
