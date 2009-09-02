@@ -265,6 +265,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (BOOL)isPageVisible:(PDFPage *)page {
     if ([[page document] isEqual:[pdfView document]] == NO)
         return NO;
+    if ([pdfView respondsToSelector:@selector(visiblePages)])
+        return [[pdfView visiblePages] containsObject:page];
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
