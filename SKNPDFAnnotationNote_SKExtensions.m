@@ -93,6 +93,8 @@ NSString *SKPDFAnnotationRichTextKey = @"richText";
 
 - (BOOL)isEditable { return [self isSkimNote]; }
 
+- (BOOL)hasBorder { return NO; }
+
 // override these Leopard methods to avoid showing the standard tool tips over our own
 - (NSString *)toolTip { return @""; }
 - (NSString *)toolTipNoLabel { return @""; }

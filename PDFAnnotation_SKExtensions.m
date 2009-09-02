@@ -211,6 +211,8 @@ enum {
 
 - (BOOL)isEditable { return [self isSkimNote]; }
 
+- (BOOL)hasBorder { return [self isSkimNote]; }
+
 - (BOOL)isConvertibleAnnotation { return NO; }
 
 - (BOOL)hitTest:(NSPoint)point {
