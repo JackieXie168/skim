@@ -89,11 +89,14 @@
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isSkimNote]) {
         BOOL isFill = (GetCurrentKeyModifiers() & optionKey) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        NSColor *color = (isFill ? [(id)annotation interiorColor] : [annotation color]) ?: [NSColor clearColor];
+        BOOL isText = (GetCurrentKeyModifiers() & optionKey) != 0 && [annotation respondsToSelector:@selector(setFontColor:)];
+        NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
         NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO) {
             if (isFill)
-                [(id)annotation setInteriorColor:newColor];
+                [(id)annotation setInteriorColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
+            else if (isText)
+                [(id)annotation setFontColor:[newColor alphaComponent] > 0.0 ? newColor : nil];
             else
                 [annotation setColor:newColor];
         }
@@ -126,7 +129,7 @@
 - (void)changeLineAttribute:(id)sender {
     SKLineChangeAction action = [sender currentLineChangeAction];
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingLine == 0 && [annotation isSkimNote] && [[annotation keysForValuesToObserveForUndo] containsObject:SKNPDFAnnotationBorderKey]) {
+    if (mwcFlags.updatingLine == 0 && [annotation hasBorder]) {
         mwcFlags.updatingLine = 1;
         switch (action) {
             case SKLineWidthLineChangeAction:

@@ -374,6 +374,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (BOOL)isMarkup { return YES; }
 
+- (BOOL)hasBorder { return NO; }
+
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 #pragma mark Scripting support
