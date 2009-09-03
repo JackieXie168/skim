@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     SInt32 version;
     OSStatus err = Gestalt(gestaltSystemVersion, &version);
     
-    if (noErr != err || version < 0x00001040) {
+    if (noErr != err || version < 0x00001050) {
         DialogRef alert;
         
         // pool required for localized strings
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
             0
         };
         
-        err = CreateStandardAlert(kAlertStopAlert, (CFStringRef)NSLocalizedString(@"Unsupported System Version", @""), (CFStringRef)NSLocalizedString(@"This version of Skim requires Mac OS X 10.4 or greater to run.", @""), &alertParamRec, &alert);
+        err = CreateStandardAlert(kAlertStopAlert, (CFStringRef)NSLocalizedString(@"Unsupported System Version", @""), (CFStringRef)NSLocalizedString(@"This version of Skim requires Mac OS X 10.5 or greater to run.", @""), &alertParamRec, &alert);
         DialogItemIndex idx;
         
         if (noErr == err) {
