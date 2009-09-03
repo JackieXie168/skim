@@ -58,7 +58,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLineWell.h"
-#import <Carbon/Carbon.h>
+#import <CoreServices/CoreServices.h>
 #import "NSGeometry_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKRuntime.h"
@@ -1726,9 +1726,9 @@ enum {
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
             if ([pboardType isEqualToString:NSColorPboardType]) {
-                if ((GetCurrentKeyModifiers() & optionKey) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
+                if (([NSEvent currentModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
                     [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
-                else if ((GetCurrentKeyModifiers() & optionKey) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
+                else if (([NSEvent currentModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
                     [(id)highlightAnnotation setFontColor:[NSColor colorFromPasteboard:pboard]];
                 else
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
@@ -4231,19 +4231,9 @@ enum {
 }
 
 - (void)doUpdateCursor {
-    NSUInteger flags = 0;
-    UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
-    if (currentKeyModifiers & cmdKey)
-        flags |= NSCommandKeyMask;
-    if (currentKeyModifiers & shiftKey)
-        flags |= NSShiftKeyMask;
-    if (currentKeyModifiers & optionKey)
-        flags |= NSAlternateKeyMask;
-    if (currentKeyModifiers & controlKey)
-        flags |= NSControlKeyMask;
     NSEvent *event = [NSEvent mouseEventWithType:NSMouseMoved
                                         location:[[self window] mouseLocationOutsideOfEventStream]
-                                   modifierFlags:flags
+                                   modifierFlags:[NSEvent currentModifierFlags]
                                        timestamp:0
                                     windowNumber:[[self window] windowNumber]
                                          context:nil

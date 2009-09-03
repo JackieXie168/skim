@@ -37,9 +37,25 @@
  */
 
 #import "NSEvent_SKExtensions.h"
+#import <Carbon/Carbon.h>
 
 
 @implementation NSEvent (SKExtensions)
+
++ (NSUInteger)currentModifierFlags {
+    NSUInteger flags = 0;
+    UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
+    if (currentKeyModifiers & cmdKey)
+        flags |= NSCommandKeyMask;
+    if (currentKeyModifiers & shiftKey)
+        flags |= NSShiftKeyMask;
+    if (currentKeyModifiers & optionKey)
+        flags |= NSAlternateKeyMask;
+    if (currentKeyModifiers & controlKey)
+        flags |= NSControlKeyMask;
+    
+    return flags;
+}
 
 - (NSUInteger)deviceIndependentModifierFlags {
     return [self modifierFlags] & NSDeviceIndependentModifierFlagsMask;

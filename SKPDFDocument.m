@@ -38,7 +38,7 @@
 
 #import "SKPDFDocument.h"
 #import <Quartz/Quartz.h>
-#import <Carbon/Carbon.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKMainWindowController.h"
 #import "PDFAnnotation_SKExtensions.h"

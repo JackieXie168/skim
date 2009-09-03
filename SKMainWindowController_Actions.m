@@ -62,6 +62,7 @@
 #import "SKSplitView.h"
 #import "SKPDFOutline.h"
 #import "SKLineInspector.h"
+#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKMainWindowController (Actions)
@@ -88,8 +89,8 @@
 - (IBAction)selectColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isSkimNote]) {
-        BOOL isFill = (GetCurrentKeyModifiers() & optionKey) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        BOOL isText = (GetCurrentKeyModifiers() & optionKey) != 0 && [annotation respondsToSelector:@selector(setFontColor:)];
+        BOOL isFill = ([NSEvent currentModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setInteriorColor:)];
+        BOOL isText = ([NSEvent currentModifierFlags] & NSAlternateKeyMask) != 0 && [annotation respondsToSelector:@selector(setFontColor:)];
         NSColor *color = (isFill ? [(id)annotation interiorColor] : (isText ? [(id)annotation fontColor] : [annotation color])) ?: [NSColor clearColor];
         NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO) {

@@ -43,6 +43,7 @@ enum {
 };
 
 @interface NSEvent (SKExtensions)
++ (NSUInteger)currentModifierFlags;
 - (NSUInteger)deviceIndependentModifierFlags;
 - (NSUInteger)standardModifierFlags;
 - (unichar)firstCharacter;

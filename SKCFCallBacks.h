@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Carbon/Carbon.h>
+#import <CoreFoundation/CoreFoundation.h>
 
 extern const void *SKNSObjectRetain(CFAllocatorRef allocator, const void *value);
 
