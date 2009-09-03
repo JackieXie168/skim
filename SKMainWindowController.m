@@ -236,6 +236,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
         mwcFlags.usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:SKUsesDrawersKey];
+        activityAssertionID = 0;
     }
     
     return self;
@@ -1453,10 +1454,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
 }
 
-- (void)activityTimerFired:(NSTimer *)timer {
-    UpdateSystemActivity(1); // UsrActivity = 1, but that's not defined for 64 bits
-}
-
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     if ([self isFullScreen] == NO)
@@ -1484,16 +1481,16 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (notesPdfView)
         [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
-    // periodically send a 'user activity' to prevent sleep mode and screensaver from being activated
-    activityTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(activityTimerFired:) userInfo:NULL repeats:YES] retain];
+    // prevent sleep
+    if (activityAssertionID == 0 && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim Presentation"), &activityAssertionID))
+        activityAssertionID = 0;
     
     mwcFlags.isPresentation = 1;
 }
 
 - (void)exitPresentationMode {
-    [activityTimer invalidate];
-    [activityTimer release];
-    activityTimer = nil;
+    if (activityAssertionID != 0)
+        IOPMAssertionRelease(activityAssertionID);
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
