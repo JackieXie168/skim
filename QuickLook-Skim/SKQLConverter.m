@@ -32,6 +32,7 @@
  */
 
 #import "SKQLConverter.h"
+#include <tgmath.h>
 
 static NSString *_noteFontName = @"LucidaHandwriting-Italic";
 static const CGFloat _noteIndent = 20.0;
@@ -49,7 +50,7 @@ NSString *SKQLPDFPathForPDFBundleURL(NSURL *url)
     if ([files containsObject:fileName]) {
         pdfFile = fileName;
     } else {
-        unsigned int idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+        NSUInteger idx = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
         if (idx != NSNotFound)
             pdfFile = [files objectAtIndex:idx];
     }
@@ -74,9 +75,9 @@ static NSString *hexStringWithColor(NSColor *color)
     static char hexChars[16] = "0123456789abcdef";
     if ([color alphaComponent] < 1.0)
         color = [[NSColor controlBackgroundColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
-    int red = (int)roundf(255 * [color redComponent]);
-    int green = (int)roundf(255 * [color greenComponent]);
-    int blue = (int)roundf(255 * [color blueComponent]);
+    NSInteger red = (NSInteger)round(255 * [color redComponent]);
+    NSInteger green = (NSInteger)round(255 * [color greenComponent]);
+    NSInteger blue = (NSInteger)round(255 * [color blueComponent]);
     return [NSString stringWithFormat:@"%C%C%C%C%C%C", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
 }
 
@@ -86,7 +87,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
     unichar *ptr, *begin, *end;
     NSMutableString *result;
     NSString *string;
-    int length;
+    NSInteger length;
     
 #define APPEND_PREVIOUS() \
     string = [[NSString alloc] initWithCharacters:begin length:(ptr - begin)]; \
@@ -110,7 +111,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
     while (ptr < end) {
         if (*ptr > 127) {
             APPEND_PREVIOUS();
-            [result appendFormat:@"&#%d;", (int)*ptr];
+            [result appendFormat:@"&#%ld;", (long)*ptr];
         } else if (*ptr == '&') {
             APPEND_PREVIOUS();
             [result appendString:@"&amp;"];
@@ -164,13 +165,13 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             NSString *contents = [note objectForKey:@"contents"];
             NSString *text = [[note objectForKey:@"text"] string];
             NSColor *color = [note objectForKey:@"color"];
-            unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
+            NSUInteger pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntegerValue];
             NSURL *imgURL = [(NSURL *)CFBundleCopyResourceURL(bundle, (CFStringRef)type, CFSTR("png"), NULL) autorelease];
-            int start;
+            NSInteger start;
             
             [attrString appendAttributedString:imageAttachmentForPath([imgURL path])];
             [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
-            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %i)\n", type, pageIndex+1] attributes:attrs] autorelease]];
+            [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (page %ld)\n", type, (long)(pageIndex+1)] attributes:attrs] autorelease]];
             start = [attrString length];
             [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:noteAttrs] autorelease]];
             if (text) {
@@ -204,8 +205,8 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             NSString *contents = [note objectForKey:@"contents"];
             NSString *text = [[note objectForKey:@"text"] string];
             NSColor *color = [note objectForKey:@"color"];
-            unsigned int pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntValue];
-            [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %i)</dt>", type, hexStringWithColor(color), type, pageIndex+1];
+            NSUInteger pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntegerValue];
+            [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %ld)</dt>", type, hexStringWithColor(color), type, (long)(pageIndex+1)];
             [htmlString appendFormat:@"<dd>%@", HTMLEscapeString(contents)];
             if (text)
                 [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", HTMLEscapeString(text)];

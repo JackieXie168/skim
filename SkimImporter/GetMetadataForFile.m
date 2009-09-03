@@ -49,14 +49,14 @@ static BOOL GetTextAndAttributesForPDFFile(NSURL *url, NSString **text, NSDictio
         if (text != NULL)
             *text = [pdfDoc string];
         if (info != NULL) {
-            unsigned int pageCount = [pdfDoc pageCount];
+            NSUInteger pageCount = [pdfDoc pageCount];
             NSSize size = pageCount ? [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size : NSZeroSize;
             NSMutableDictionary *mutableInfo = [[[pdfDoc documentAttributes] mutableCopy] autorelease];
             [mutableInfo setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
             [mutableInfo setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
-            [mutableInfo setValue:[NSNumber numberWithUnsignedInt:pageCount] forKey:@"PageCount"];
-            [mutableInfo setValue:[NSNumber numberWithFloat:size.width] forKey:@"PageWidth"];
-            [mutableInfo setValue:[NSNumber numberWithFloat:size.height] forKey:@"PageHeight"];
+            [mutableInfo setValue:[NSNumber numberWithUnsignedInteger:pageCount] forKey:@"PageCount"];
+            [mutableInfo setValue:[NSNumber numberWithDouble:size.width] forKey:@"PageWidth"];
+            [mutableInfo setValue:[NSNumber numberWithDouble:size.height] forKey:@"PageHeight"];
             *info = mutableInfo;
         }
         [pdfDoc release];
