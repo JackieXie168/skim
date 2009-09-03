@@ -1,3 +1,0 @@
-<$publications>
-<$pubAuthors.abbreviatedNormalizedName.stringByRemovingTeX.@componentsJoinedByCommaAndAnd/> (<$fields.Year/>).  <$fields.Title.stringByRemovingTeX/>, <$fields.Journal.stringByRemovingTeX/>, <$fields.Volume/>(<$fields.Number/>), <$fields.Pages/>
-</$publications>
