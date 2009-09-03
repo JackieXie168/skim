@@ -236,7 +236,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
         mwcFlags.usesDrawers = [[NSUserDefaults standardUserDefaults] boolForKey:SKUsesDrawersKey];
-        activityAssertionID = 0;
+        activityAssertionID = kIOPMNullAssertionID;
     }
     
     return self;
@@ -1482,15 +1482,15 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
     // prevent sleep
-    if (activityAssertionID == 0 && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim Presentation"), &activityAssertionID))
-        activityAssertionID = 0;
+    if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim Presentation"), &activityAssertionID))
+        activityAssertionID = kIOPMNullAssertionID;
     
     mwcFlags.isPresentation = 1;
 }
 
 - (void)exitPresentationMode {
-    if (activityAssertionID != 0)
-        IOPMAssertionRelease(activityAssertionID);
+    if (activityAssertionID != kIOPMNullAssertionID && kIOReturnSuccess == IOPMAssertionRelease(activityAssertionID))
+        activityAssertionID = kIOPMNullAssertionID;
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
