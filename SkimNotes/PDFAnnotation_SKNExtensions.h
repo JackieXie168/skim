@@ -307,7 +307,7 @@ extern NSString *SKNPDFAnnotationPointListsKey;
     @discussion This optional method can be implemented in another category to provide a default color for Skim notes that have no color set in the properties dictionary.  This method is not implemented by default.
     @result     The default color for an annotation with the passed in markup style.
 */
-+ (NSColor *)defaultSkimNoteColorForMarkupType:(int)markupType;
++ (NSColor *)defaultSkimNoteColorForMarkupType:(NSInteger)markupType;
 @end
 
 #pragma mark -
