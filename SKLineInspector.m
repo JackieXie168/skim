@@ -423,7 +423,7 @@ static SKLineInspector *sharedLineInspector = nil;
     
     [responder performSelector:selector withObject:self];
     
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:action], ACTION_KEY, nil];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:action], ACTION_KEY, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineAttributeDidChangeNotification object:self userInfo:userInfo];
     
     currentLineChangeAction = SKNoLineChangeAction;
@@ -506,9 +506,9 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:LINEWIDTH_KEY]) {
-        [self setValue:[NSNumber numberWithFloat:0.0] forKey:key];
+        [self setValue:[NSNumber numberWithDouble:0.0] forKey:key];
     } else if ([key isEqualToString:STYLE_KEY] || [key isEqualToString:STARTLINESTYLE_KEY] || [key isEqualToString:ENDLINESTYLE_KEY]) {
-        [self setValue:[NSNumber numberWithInt:0] forKey:key];
+        [self setValue:[NSNumber numberWithInteger:0] forKey:key];
     } else {
         [super setNilValueForKey:key];
     }

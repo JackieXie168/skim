@@ -188,9 +188,9 @@ enum {
     NSNumber *moveReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKMoveReadingBarModifiersKey];
     NSNumber *resizeReadingBarModifiersNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKResizeReadingBarModifiersKey];
     if (moveReadingBarModifiersNumber)
-        moveReadingBarModifiers = [moveReadingBarModifiersNumber intValue];
+        moveReadingBarModifiers = [moveReadingBarModifiersNumber integerValue];
     if (resizeReadingBarModifiersNumber)
-        resizeReadingBarModifiers = [resizeReadingBarModifiersNumber intValue];
+        resizeReadingBarModifiers = [resizeReadingBarModifiersNumber integerValue];
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Double-click to edit.", @"Default text for new text note"), SKDefaultFreeTextNoteContentsKey, NSLocalizedString(@"New note", @"Default text for new anchored note"), SKDefaultAnchoredNoteContentsKey, nil]];
     
@@ -1737,15 +1737,15 @@ enum {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
                 if (number = [dict objectForKey:SKLineWellLineWidthKey])
-                    [highlightAnnotation setLineWidth:[number floatValue]];
+                    [highlightAnnotation setLineWidth:[number doubleValue]];
                 [highlightAnnotation setDashPattern:[dict objectForKey:SKLineWellDashPatternKey]];
                 if (number = [dict objectForKey:SKLineWellStyleKey])
-                    [highlightAnnotation setBorderStyle:[number intValue]];
+                    [highlightAnnotation setBorderStyle:[number integerValue]];
                 if ([type isEqualToString:SKNLineString]) {
                     if (number = [dict objectForKey:SKLineWellStartLineStyleKey])
-                        [(PDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
+                        [(PDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number integerValue]];
                     if (number = [dict objectForKey:SKLineWellEndLineStyleKey])
-                        [(PDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number intValue]];
+                        [(PDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number integerValue]];
                 }
                 performedDrag = YES;
             }

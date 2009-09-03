@@ -160,7 +160,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             }
             [scalePopUpButton addItemWithTitle:label];
             curItem = [scalePopUpButton itemAtIndex:cnt];
-            [curItem setRepresentedObject:(SKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:SKDefaultScaleMenuFactors[cnt]] : nil)];
+            [curItem setRepresentedObject:(SKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithDouble:SKDefaultScaleMenuFactors[cnt]] : nil)];
         }
         // select the appropriate item, adjusting the scaleFactor if necessary
         if([self autoFits])
@@ -212,7 +212,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (void)scalePopUpAction:(id)sender {
     NSNumber *selectedFactorObject = [[sender selectedItem] representedObject];
     if(selectedFactorObject)
-        [self setScaleFactor:[selectedFactorObject floatValue] adjustPopup:NO];
+        [self setScaleFactor:[selectedFactorObject doubleValue] adjustPopup:NO];
     else
         [self setAutoFits:YES adjustPopup:NO];
 }

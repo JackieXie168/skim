@@ -70,7 +70,7 @@
 }
 
 - (PDFPrintScalingMode)printScalingMode {
-    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"] intValue];
+    return [[self valueForKeyPath:@"representedObject.dictionary.PDFPrintScalingMode"] integerValue];
 }
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {

@@ -337,8 +337,8 @@
     id cell = [tableColumn dataCell];
     CGFloat indentation = [outlineView indentationPerLevel];
     CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
-    NSSize size = NSMakeSize(width, FLT_MAX);
-    NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
+    NSSize size = NSMakeSize(width, CGFLOAT_MAX);
+    NSSize smallSize = NSMakeSize(width - indentation, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     

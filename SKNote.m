@@ -56,7 +56,7 @@
 }
 
 - (NSUInteger)pageIndex {
-    return [[properties valueForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+    return [[properties valueForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
 }
 
 - (NSString *)contents {
@@ -73,7 +73,7 @@
 
 - (id)page {
     NSUInteger pageIndex = [self pageIndex];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%lu", (unsigned long)(pageIndex + 1)], @"label", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%lu", (unsigned long)(pageIndex + 1)], @"label", nil];
 }
 
 - (NSArray *)texts {

@@ -92,7 +92,7 @@
     [gaussianFilter setValue:startColor forKey:@"inputColor0"];
     [gaussianFilter setValue:endColor forKey:@"inputColor1"];
     
-    [gaussianFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
+    [gaussianFilter setValue:[NSNumber numberWithDouble:radius] forKey:@"inputRadius"];
     [gaussianFilter setValue:[CIVector vectorWithX:center.x Y:center.y] forKey:@"inputCenter"];
     
     return [gaussianFilter valueForKey:@"outputImage"];
@@ -165,7 +165,7 @@
     if (gaussianBlurFilter == nil)
         gaussianBlurFilter = [[CIFilter filterWithName:@"CIGaussianBlur"] retain];    
     
-    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
+    [gaussianBlurFilter setValue:[NSNumber numberWithDouble:radius] forKey:@"inputRadius"];
     [gaussianBlurFilter setValue:self forKey:@"inputImage"];
     
     return [gaussianBlurFilter valueForKey:@"outputImage"];

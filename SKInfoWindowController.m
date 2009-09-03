@@ -215,13 +215,13 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKPDFDocument *)doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
         [dictionary setValue:[NSString stringWithFormat: @"%ld.%ld", (long)[pdfDoc majorVersion], (long)[pdfDoc minorVersion]] forKey:SKInfoVersionKey];
-        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];
+        [dictionary setValue:[NSNumber numberWithInteger:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];
         if ([pdfDoc pageCount]) {
             NSSize cropSize = [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size;
             NSSize mediaSize = [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size;
             [dictionary setValue:SKSizeString(cropSize, mediaSize) forKey:SKInfoPageSizeKey];
-            [dictionary setValue:[NSNumber numberWithFloat:cropSize.width] forKey:SKInfoPageWidthKey];
-            [dictionary setValue:[NSNumber numberWithFloat:cropSize.height] forKey:SKInfoPageHeightKey];
+            [dictionary setValue:[NSNumber numberWithDouble:cropSize.width] forKey:SKInfoPageWidthKey];
+            [dictionary setValue:[NSNumber numberWithDouble:cropSize.height] forKey:SKInfoPageHeightKey];
         }
         [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:SKInfoKeywordsStringKey];
         [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:SKInfoEncryptedKey];

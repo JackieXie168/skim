@@ -1,4 +1,3 @@
-
 //
 //  SKLineInspector.h
 //  Skim

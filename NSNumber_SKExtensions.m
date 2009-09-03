@@ -45,11 +45,11 @@
 #pragma mark Templating support
 
 - (NSNumber *)numberByAddingOne {
-    return [NSNumber numberWithInt:[self intValue] + 1];
+    return [NSNumber numberWithInteger:[self integerValue] + 1];
 }
 
 - (NSNumber *)numberBySubstractingOne {
-    return [NSNumber numberWithInt:[self intValue] - 1];
+    return [NSNumber numberWithInteger:[self integerValue] - 1];
 }
 
 inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSString *v, NSString *x) {
@@ -71,7 +71,7 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
     static NSString *symbols[9] = {@"i", @"v", @"x", @"l", @"c", @"d", @"m", @"mmm", @""};
     
     NSMutableString *string = [NSMutableString string];
-    NSUInteger digit, offset, number = [self unsignedIntValue];
+    NSUInteger digit, offset, number = [self unsignedIntegerValue];
     
     if (number >= 5000)
         [NSException raise:@"Roman Numeral Exception" format:@"The number %lu is too big to represent as a roman numeral.", (unsigned long)number];
@@ -86,7 +86,7 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
 
 - (NSString *)alphaCounterValue{
     NSMutableString *string = [NSMutableString string];
-    NSUInteger letter, number = [self unsignedIntValue];
+    NSUInteger letter, number = [self unsignedIntegerValue];
     
     while (number > 0) {
         letter = number % 26;
@@ -98,7 +98,7 @@ inline static NSString *romanNumeralForDigit(NSUInteger digit, NSString *i, NSSt
 
 - (NSString *)greekCounterValue{
     NSMutableString *string = [NSMutableString string];
-    NSUInteger letter, number = [self unsignedIntValue];
+    NSUInteger letter, number = [self unsignedIntegerValue];
     
     while (number > 0) {
         letter = number % 24;

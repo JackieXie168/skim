@@ -125,7 +125,7 @@
 }
 
 - (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex {
-    NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
+    NSNumber *recordNumber = [[NSNumber alloc] initWithInteger:recordIndex];
     SKPDFSyncRecord *record = [records objectForKey:recordNumber];
     if (record == nil) {
         record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];

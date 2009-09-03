@@ -163,7 +163,7 @@ static char SKFontWellFontSizeObservationContext;
     NSDictionary *info = [self infoForBinding:FONTNAME_KEY];
     [[info objectForKey:NSObservedObjectKey] setValue:[self fontName] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
     info = [self infoForBinding:FONTSIZE_KEY];
-    [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithFloat:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
+    [[info objectForKey:NSObservedObjectKey] setValue:[NSNumber numberWithDouble:[self fontSize]] forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
 }
 
 - (void)notifyTextColorBinding {
@@ -408,7 +408,7 @@ static char SKFontWellFontSizeObservationContext;
                 NSFontDescriptor *fontDescriptor = ([fontDescriptors isKindOfClass:[NSArray class]] && [fontDescriptors count]) ? [fontDescriptors objectAtIndex:0] : nil;
                 if ([fontDescriptor isKindOfClass:[NSFontDescriptor class]]) {
                     NSNumber *size = [[fontDescriptor fontAttributes] objectForKey:NSFontSizeAttribute] ?: [dict objectForKey:NSFontSizeAttribute];
-                    CGFloat fontSize = [size respondsToSelector:@selector(floatValue)] ? [size floatValue] : [self fontSize];
+                    CGFloat fontSize = [size respondsToSelector:@selector(doubleValue)] ? [size doubleValue] : [self fontSize];
                     droppedFont = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
                 }
             }

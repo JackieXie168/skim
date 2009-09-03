@@ -77,7 +77,7 @@
 	NSRange foundRange;
     NSDictionary *attributes;
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-	CGFloat fontSize = fontSizeNumber ? [fontSizeNumber floatValue] : 0.0;
+	CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] : 0.0;
     
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];

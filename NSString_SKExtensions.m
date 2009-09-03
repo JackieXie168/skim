@@ -131,7 +131,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         order = 7;
     else if ([self isEqualToString:SKNInkString])
         order = 8;
-    return [NSNumber numberWithInt:order];
+    return [NSNumber numberWithInteger:order];
 }
 
 - (NSComparisonResult)noteTypeCompare:(id)other {

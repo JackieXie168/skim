@@ -70,7 +70,7 @@
 - (NSDictionary *)properties {
     return [NSDictionary dictionaryWithObjectsAndKeys:
                 ([SKTransitionController nameForStyle:transitionStyle] ?: @""), STYLENAME_KEY,
-                [NSNumber numberWithFloat:duration], DURATION_KEY,
+                [NSNumber numberWithDouble:duration], DURATION_KEY,
                 [NSNumber numberWithBool:shouldRestrict], SHOULDRESTRICT_KEY, nil];
 }
 
@@ -79,9 +79,9 @@
     if (value = [dictionary objectForKey:STYLENAME_KEY])
         [self setTransitionStyle:[SKTransitionController styleForName:value]];
     if (value = [dictionary objectForKey:DURATION_KEY])
-        [self setDuration:[value floatValue]];
+        [self setDuration:[value doubleValue]];
     if (value = [dictionary objectForKey:SHOULDRESTRICT_KEY])
-        [self setShouldRestrict:[value floatValue]];
+        [self setShouldRestrict:[value doubleValue]];
 }
 
 - (SKAnimationTransitionStyle)transitionStyle {

@@ -534,7 +534,7 @@
     if ([self isUnderlined]) {
         NSAttributedString *attrString = [[self attributedStringValue] copy];
         NSMutableAttributedString *mutAttrString = [attrString mutableCopy];
-        [mutAttrString addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSUnderlineStyleSingle] range:NSMakeRange(0, [mutAttrString length])];
+        [mutAttrString addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:NSMakeRange(0, [mutAttrString length])];
         [self setAttributedStringValue:mutAttrString];
         [mutAttrString release];
         [super drawInteriorWithFrame:cellFrame inView:controlView];

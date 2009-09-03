@@ -134,7 +134,7 @@
 }
 
 - (id)accessibilityNumberOfCharactersAttribute {
-    return [NSNumber numberWithUnsignedInt:[[self accessibilityValueAttribute] length]];
+    return [NSNumber numberWithUnsignedInteger:[[self accessibilityValueAttribute] length]];
 }
 
 - (id)accessibilityVisibleCharacterRangeAttribute {

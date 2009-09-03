@@ -69,7 +69,7 @@
             idx = last ? [selection safeIndexOfLastCharacterOnPage:page] : [selection safeIndexOfFirstCharacterOnPage:page];
     }
     
-    return [NSNumber numberWithInt:idx == NSNotFound ? 0 : (NSInteger)idx + 1];
+    return [NSNumber numberWithInteger:idx == NSNotFound ? 0 : (NSInteger)idx + 1];
 }
 
 @end

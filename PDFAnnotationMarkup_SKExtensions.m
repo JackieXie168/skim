@@ -415,7 +415,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (id)accessibilityNumberOfCharactersAttribute {
-    return [NSNumber numberWithUnsignedInt:[[self accessibilityValueAttribute] length]];
+    return [NSNumber numberWithUnsignedInteger:[[self accessibilityValueAttribute] length]];
 }
 
 - (id)accessibilityVisibleCharacterRangeAttribute {
