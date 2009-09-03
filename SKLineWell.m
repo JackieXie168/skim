@@ -103,12 +103,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        lineWidth = [decoder decodeFloatForKey:SKLineWellLineWidthKey];
-        style = [decoder decodeIntForKey:SKLineWellStyleKey];
+        lineWidth = [decoder decodeDoubleForKey:SKLineWellLineWidthKey];
+        style = [decoder decodeIntegerForKey:SKLineWellStyleKey];
         dashPattern = [[decoder decodeObjectForKey:SKLineWellDashPatternKey] retain];
-        startLineStyle = [decoder decodeIntForKey:SKLineWellStartLineStyleKey];
-        endLineStyle = [decoder decodeIntForKey:SKLineWellEndLineStyleKey];
-        lwFlags.displayStyle = [decoder decodeIntForKey:DISPLAYSTYLE_KEY];
+        startLineStyle = [decoder decodeIntegerForKey:SKLineWellStartLineStyleKey];
+        endLineStyle = [decoder decodeIntegerForKey:SKLineWellEndLineStyleKey];
+        lwFlags.displayStyle = [decoder decodeIntegerForKey:DISPLAYSTYLE_KEY];
         lwFlags.active = [decoder decodeBoolForKey:ACTIVE_KEY];
         action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
         target = [decoder decodeObjectForKey:TARGET_KEY];
@@ -119,12 +119,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    [coder encodeFloat:lineWidth forKey:SKLineWellLineWidthKey];
-    [coder encodeInt:style forKey:SKLineWellStyleKey];
+    [coder encodeDouble:lineWidth forKey:SKLineWellLineWidthKey];
+    [coder encodeInteger:style forKey:SKLineWellStyleKey];
     [coder encodeObject:dashPattern forKey:SKLineWellDashPatternKey];
-    [coder encodeInt:startLineStyle forKey:SKLineWellStartLineStyleKey];
-    [coder encodeInt:endLineStyle forKey:SKLineWellEndLineStyleKey];
-    [coder encodeInt:(NSInteger)(lwFlags.displayStyle) forKey:DISPLAYSTYLE_KEY];
+    [coder encodeInteger:startLineStyle forKey:SKLineWellStartLineStyleKey];
+    [coder encodeInteger:endLineStyle forKey:SKLineWellEndLineStyleKey];
+    [coder encodeInteger:(NSInteger)(lwFlags.displayStyle) forKey:DISPLAYSTYLE_KEY];
     [coder encodeBool:(BOOL)(lwFlags.active) forKey:ACTIVE_KEY];
     [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
     [coder encodeConditionalObject:target forKey:TARGET_KEY];
@@ -241,7 +241,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         if (count) {
             CGFloat pattern[count];
             for (i = 0; i < count; i++)
-                pattern[i] = [[dashPattern objectAtIndex:i] floatValue];
+                pattern[i] = [[dashPattern objectAtIndex:i] doubleValue];
             [path setLineDash:pattern count:count phase:0.0];
         }
     }
@@ -347,10 +347,10 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
                     [pboard declareTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil] owner:nil];
                     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInt:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
+                        [NSNumber numberWithDouble:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInteger:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
                     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                        [dict setObject:[NSNumber numberWithInt:startLineStyle] forKey:SKLineWellStartLineStyleKey];
-                        [dict setObject:[NSNumber numberWithInt:endLineStyle] forKey:SKLineWellEndLineStyleKey];
+                        [dict setObject:[NSNumber numberWithInteger:startLineStyle] forKey:SKLineWellStartLineStyleKey];
+                        [dict setObject:[NSNumber numberWithInteger:endLineStyle] forKey:SKLineWellEndLineStyleKey];
                     }
                     [pboard setPropertyList:dict forType:SKLineStylePboardType];
                     
@@ -575,7 +575,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:SKLineWellLineWidthKey] || [key isEqualToString:SKLineWellStyleKey] || 
         [key isEqualToString:SKLineWellStartLineStyleKey] || [key isEqualToString:SKLineWellEndLineStyleKey]) {
-        [self setValue:[NSNumber numberWithInt:0] forKey:key];
+        [self setValue:[NSNumber numberWithInteger:0] forKey:key];
     } else {
         [super setNilValueForKey:key];
     }
@@ -694,7 +694,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescription(NSAccessibilityCheckBoxRole, nil);
     } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [NSNumber numberWithInt:[self isActive]];
+        return [NSNumber numberWithInteger:[self isActive]];
     } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
         return [NSString stringWithFormat:@"%@ %ld", NSLocalizedString(@"line width", @"Accessibility description"), (long)[self lineWidth]];
     } else if ([attribute isEqualToString:NSAccessibilityHelpAttribute]) {

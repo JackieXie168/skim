@@ -306,7 +306,7 @@ struct SKServerFlags {
         NSMutableArray *files = [[NSMutableArray alloc] init];
         NSString *file;
         NSInteger recordIndex, line, pageIndex;
-        CGFloat x, y;
+        double x, y;
         SKPDFSyncRecord *record;
         NSMutableArray *array;
         unichar ch;
@@ -325,7 +325,7 @@ struct SKServerFlags {
             [array release];
             
             // we ignore the version
-            if ([sc scanString:@"version" intoString:NULL] && [sc scanInt:NULL]) {
+            if ([sc scanString:@"version" intoString:NULL] && [sc scanInteger:NULL]) {
                 
                 [sc scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
                 
@@ -333,9 +333,9 @@ struct SKServerFlags {
                     
                     switch (ch) {
                         case 'l':
-                            if ([sc scanInt:&recordIndex] && [sc scanInt:&line]) {
+                            if ([sc scanInteger:&recordIndex] && [sc scanInteger:&line]) {
                                 // we ignore the column
-                                [sc scanInt:NULL];
+                                [sc scanInteger:NULL];
                                 record = [records recordForIndex:recordIndex];
                                 [record setFile:file];
                                 [record setLine:line];
@@ -346,7 +346,7 @@ struct SKServerFlags {
                             // we ignore * and + modifiers
                             if ([sc scanString:@"*" intoString:NULL] == NO)
                                 [sc scanString:@"+" intoString:NULL];
-                            if ([sc scanInt:&recordIndex] && [sc scanFloat:&x] && [sc scanFloat:&y]) {
+                            if ([sc scanInteger:&recordIndex] && [sc scanDouble:&x] && [sc scanDouble:&y]) {
                                 record = [records recordForIndex:recordIndex];
                                 [record setPageIndex:[pages count] - 1];
                                 [record setPoint:NSMakePoint(PDFSYNC_TO_PDF(x) + pdfOffset.x, PDFSYNC_TO_PDF(y) + pdfOffset.y)];
@@ -355,7 +355,7 @@ struct SKServerFlags {
                             break;
                         case 's':
                             // start of a new page, the scanned integer should always equal [pages count]+1
-                            if ([sc scanInt:&pageIndex] == NO) pageIndex = [pages count] + 1;
+                            if ([sc scanInteger:&pageIndex] == NO) pageIndex = [pages count] + 1;
                             while (pageIndex > (NSInteger)[pages count]) {
                                 array = [[NSMutableArray alloc] init];
                                 [pages addObject:array];
@@ -436,7 +436,7 @@ struct SKServerFlags {
                 afterRecord = record;
                 break;
             } else {
-                [atRecords setObject:record forKey:[NSNumber numberWithFloat:SKAbs(p.x - point.x)]];
+                [atRecords setObject:record forKey:[NSNumber numberWithDouble:SKAbs(p.x - point.x)]];
             }
         }
         

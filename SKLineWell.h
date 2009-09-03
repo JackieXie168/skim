@@ -63,11 +63,11 @@ typedef NSInteger SKLineWellDisplayStyle;
     PDFLineStyle endLineStyle;
     
     struct _lwFlags {
-        unsigned int displayStyle : 2;
-        unsigned int active : 1;
-        unsigned int canActivate : 1;
-        unsigned int highlighted : 1;
-        unsigned int existsActiveLineWell : 1;
+        unsigned int displayStyle:2;
+        unsigned int active:1;
+        unsigned int canActivate:1;
+        unsigned int highlighted:1;
+        unsigned int existsActiveLineWell:1;
     } lwFlags;
     
     id target;

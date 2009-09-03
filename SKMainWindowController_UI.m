@@ -877,9 +877,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSNumber *rowNumber;
         
         while (rowNumber = [rowEnum nextObject]) {
-            NSInteger row = [self outlineRowForPageIndex:[rowNumber intValue]];
+            NSInteger row = [self outlineRowForPageIndex:[rowNumber integerValue]];
             if (row != -1)
-                [array addObject:[NSNumber numberWithInt:row]];
+                [array addObject:[NSNumber numberWithInteger:row]];
         }
         
         return array;
@@ -939,8 +939,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     id cell = [tableColumn dataCell];
     CGFloat indentation = [noteOutlineView indentationPerLevel];
     CGFloat width = NSWidth([cell drawingRectForBounds:NSMakeRect(0.0, 0.0, [tableColumn width] - indentation, rowHeight)]);
-    NSSize size = NSMakeSize(width, FLT_MAX);
-    NSSize smallSize = NSMakeSize(width - indentation, FLT_MAX);
+    NSSize size = NSMakeSize(width, CGFLOAT_MAX);
+    NSSize smallSize = NSMakeSize(width - indentation, CGFLOAT_MAX);
     
     NSArray *items = [sender representedObject];
     
@@ -1497,7 +1497,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     PDFPage *page = [pdfView currentPage];
     
-    [lastViewedPages insertObject:[NSNumber numberWithUnsignedInt:[page pageIndex]] atIndex:0];
+    [lastViewedPages insertObject:[NSNumber numberWithUnsignedInteger:[page pageIndex]] atIndex:0];
     if ([lastViewedPages count] > 5)
         [lastViewedPages removeLastObject];
     [thumbnailTableView setNeedsDisplay:YES];
@@ -1535,7 +1535,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
+    [scaleField setDoubleValue:[pdfView scaleFactor] * 100.0];
     
     [zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];

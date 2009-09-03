@@ -315,8 +315,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     CGRect extent = [image extent];
     CGFloat xScale = size.width / CGRectGetWidth(extent);
     CGFloat yScale = size.height / CGRectGetHeight(extent);
-    [scalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
-    [scalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
+    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:@"inputScale"];
+    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:@"inputAspectRatio"];
     [scalingFilter setValue:image forKey:@"inputImage"];
     return [scalingFilter valueForKey:@"outputImage"];
 }
@@ -339,7 +339,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             CGFloat angle = forward ? 0.0 : M_PI;
             if ([filterName isEqualToString:@"CIPageCurlTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
-            value = [NSNumber numberWithFloat:angle];
+            value = [NSNumber numberWithDouble:angle];
         } else if ([key isEqualToString:@"inputCenter"]) {
             value = [CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)];
         } else if ([key isEqualToString:@"inputImage"]) {
@@ -401,8 +401,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
         id value;
         if (value = [info objectForKey:@"styleName"])
             currentTransitionStyle = [[self class] styleForName:value];
-        if ((value = [info objectForKey:@"duration"]) && [value respondsToSelector:@selector(floatValue)])
-            currentDuration = [value floatValue];
+        if ((value = [info objectForKey:@"duration"]) && [value respondsToSelector:@selector(doubleValue)])
+            currentDuration = [value doubleValue];
         if ((value = [info objectForKey:@"shouldRestrict"]) && [value respondsToSelector:@selector(boolValue)])
             currentShouldRestrict = [value boolValue];
     }
@@ -567,7 +567,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
-    [filter setValue:[NSNumber numberWithFloat:[self currentValue]] forKey:@"inputTime"];
+    [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
     [[self delegate] display];
 }
 

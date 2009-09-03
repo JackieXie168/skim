@@ -251,8 +251,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
     [self setPdfDocument:pdfDocument
-             scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] floatValue]
-          goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntValue]
+             scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
+          goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntegerValue]
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
                 autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]];
     
@@ -340,7 +340,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(SKSnapshotPDFView *)pdfView autoFits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithFloat:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
 }
 
 #pragma mark Actions

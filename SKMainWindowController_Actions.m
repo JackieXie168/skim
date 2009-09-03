@@ -762,7 +762,7 @@
 }
 
 - (IBAction)changeScaleFactor:(id)sender {
-    NSInteger scale = [sender intValue];
+    NSInteger scale = [sender integerValue];
 
 	if (scale >= 10.0 && scale <= 500.0 ) {
 		[pdfView setScaleFactor:scale / 100.0f];
@@ -772,13 +772,13 @@
 
 - (void)scaleSheetDidEnd:(SKScaleSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
-        [pdfView setScaleFactor:[[controller textField] intValue]];
+        [pdfView setScaleFactor:[[controller textField] integerValue]];
 }
 
 - (IBAction)chooseScale:(id)sender {
     SKScaleSheetController *scaleSheetController = [[[SKScaleSheetController alloc] init] autorelease];
     
-    [[scaleSheetController textField] setIntValue:[pdfView scaleFactor]];
+    [[scaleSheetController textField] setIntegerValue:[pdfView scaleFactor]];
     
     [scaleSheetController beginSheetModalForWindow: [self window]
         modalDelegate: self

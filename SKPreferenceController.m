@@ -187,7 +187,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 }
 
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex {
-    return [NSNumber numberWithFloat:SKDefaultFontSizes[anIndex]];
+    return [NSNumber numberWithDouble:SKDefaultFontSizes[anIndex]];
 }
 
 - (BOOL)isCustomTeXEditor {

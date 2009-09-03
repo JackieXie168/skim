@@ -246,7 +246,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 - (void)undoableActionDoesntDirtyDocumentDeferred:(NSNumber *)anUndoState {
 	[self updateChangeCount:[anUndoState boolValue] ? NSChangeDone : NSChangeUndone];
     // this should be automatic, but Leopard does not seem to do this
-    if ([[self valueForKey:@"changeCount"] intValue] == 0)
+    if ([[self valueForKey:@"changeCount"] integerValue] == 0)
         [self updateChangeCount:NSChangeCleared];
 }
 
@@ -2060,9 +2060,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
             [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
             if ([settings objectForKey:NSPrintFirstPage] == nil)
-                [settings setObject:[NSNumber numberWithInt:1] forKey:NSPrintLastPage];
+                [settings setObject:[NSNumber numberWithInteger:1] forKey:NSPrintLastPage];
             if ([settings objectForKey:NSPrintLastPage] == nil)
-                [settings setObject:[NSNumber numberWithInt:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
+                [settings setObject:[NSNumber numberWithInteger:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
         }
         [[printInfo dictionary] addEntriesFromDictionary:settings];
     }
@@ -2206,7 +2206,7 @@ NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settin
     NSMutableDictionary *setup = [[settings mutableCopy] autorelease];
     
     FourCharCode displayMode = 0;
-    switch ([[setup objectForKey:@"displayMode"] intValue]) {
+    switch ([[setup objectForKey:@"displayMode"] integerValue]) {
         case kPDFDisplaySinglePage: displayMode = SKScriptingDisplaySinglePage; break;
         case kPDFDisplaySinglePageContinuous: displayMode = SKScriptingDisplaySinglePageContinuous; break;
         case kPDFDisplayTwoUp: displayMode = SKScriptingDisplayTwoUp; break;
@@ -2215,7 +2215,7 @@ NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settin
     [setup setObject:[NSNumber numberWithUnsignedLong:displayMode] forKey:@"displayMode"];
     
     FourCharCode displayBox = 0;
-    switch ([[setup objectForKey:@"displayBox"] intValue]) {
+    switch ([[setup objectForKey:@"displayBox"] integerValue]) {
         case kPDFDisplayBoxMediaBox: displayBox = SKScriptingMediaBox; break;
         case kPDFDisplayBoxCropBox: displayBox = SKScriptingCropBox; break;
     }
@@ -2236,7 +2236,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
             case SKScriptingDisplayTwoUp: displayMode = kPDFDisplayTwoUp; break;
             case SKScriptingDisplayTwoUpContinuous: displayMode = kPDFDisplayTwoUpContinuous; break;
         }
-        [setup setObject:[NSNumber numberWithInt:displayMode] forKey:@"displayMode"];
+        [setup setObject:[NSNumber numberWithInteger:displayMode] forKey:@"displayMode"];
     }
     
     if (number = [setup objectForKey:@"displayBox"]) {
@@ -2245,7 +2245,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
             case SKScriptingMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
             case SKScriptingCropBox: displayBox = kPDFDisplayBoxCropBox; break;
         }
-        [setup setObject:[NSNumber numberWithInt:displayBox] forKey:@"displayBox"];
+        [setup setObject:[NSNumber numberWithInteger:displayBox] forKey:@"displayBox"];
     }
     
     return setup;

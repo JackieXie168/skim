@@ -189,7 +189,7 @@ static char *SKTransitionPropertiesObservationContext;
     [tableColumn setWidth:labelWidth];
     
     NSRect frame = [[tableView enclosingScrollView] frame];
-    frame.size.width = 19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] floatValue];
+    frame.size.width = 19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue];
     [[tableView enclosingScrollView] setFrame:frame];
     
     [self setTransitions:array];

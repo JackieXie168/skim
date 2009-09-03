@@ -71,7 +71,7 @@ static char SKTableViewDefaultsObservationContext;
     if ([[self class] usesDefaultFontSize]) {
         NSNumber *fontSize = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
         if (fontSize)
-            [self setFont:[NSFont systemFontOfSize:[fontSize floatValue]]];
+            [self setFont:[NSFont systemFontOfSize:[fontSize doubleValue]]];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKTableFontSizeKey context:&SKTableViewDefaultsObservationContext];
     }
     if ([[SKTableView superclass] instancesRespondToSelector:_cmd])

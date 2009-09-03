@@ -98,7 +98,7 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
         NSInteger i, count = MIN((NSInteger)[rows count], 5);
         
         for (i = 0; i < count; i++) {
-            row = [[rows objectAtIndex:i] intValue];
+            row = [[rows objectAtIndex:i] integerValue];
             rect = [self rectOfRow:row];
             if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
                 [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];

@@ -46,7 +46,7 @@
     [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     [numberFormatter setFormat:@"0;0;-0"];
-    [numberFormatter setMinimum:[NSNumber numberWithFloat:0.0]];
+    [numberFormatter setMinimum:[NSNumber numberWithDouble:0.0]];
 }
 
  - (id)init {

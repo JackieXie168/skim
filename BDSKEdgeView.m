@@ -55,7 +55,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		edgeColors = [[decoder decodeObjectForKey:@"edgeColors"] retain];
-		edges = [decoder decodeIntForKey:@"edges"];
+		edges = [decoder decodeIntegerForKey:@"edges"];
 	}
 	return self;
 }
@@ -63,7 +63,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
   [super encodeWithCoder:coder];
   [coder encodeObject:edgeColors forKey:@"edgeColors"];
-  [coder encodeInt:edges forKey:@"edges"];
+  [coder encodeInteger:edges forKey:@"edges"];
   // NSView should handle encoding of contentView as it is a subview
 }
 

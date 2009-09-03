@@ -414,7 +414,7 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
     NSScreen *aScreen;
     NSScreen *screen = nil;
-    CGFloat distanceSquared = FLT_MAX;
+    CGFloat distanceSquared = CGFLOAT_MAX;
     
     while (aScreen = [screenEnum nextObject]) {
         NSRect frame = [aScreen frame];

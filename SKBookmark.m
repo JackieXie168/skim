@@ -268,7 +268,7 @@ static Class SKBookmarkClass = Nil;
     } else if ([dictionary objectForKey:@"windowFrame"]) {
         return [[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     } else {
-        return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:ALIASDATA_KEY]] pageIndex:[[dictionary objectForKey:PAGEINDEX_KEY] unsignedIntValue] label:[dictionary objectForKey:LABEL_KEY]];
+        return [[SKFileBookmark alloc] initWithAlias:[BDAlias aliasWithData:[dictionary objectForKey:ALIASDATA_KEY]] pageIndex:[[dictionary objectForKey:PAGEINDEX_KEY] unsignedIntegerValue] label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
@@ -303,7 +303,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
-    if (self = [self initWithAlias:[BDAlias aliasWithData:[aSetupDict objectForKey:ALIASDATA_KEY]] pageIndex:[[aSetupDict objectForKey:PAGEINDEX_KEY] unsignedIntValue] label:aLabel]) {
+    if (self = [self initWithAlias:[BDAlias aliasWithData:[aSetupDict objectForKey:ALIASDATA_KEY]] pageIndex:[[aSetupDict objectForKey:PAGEINDEX_KEY] unsignedIntegerValue] label:aLabel]) {
         setup = [aSetupDict copy];
     }
     return self;
@@ -327,7 +327,7 @@ static Class SKBookmarkClass = Nil;
 
 - (NSDictionary *)properties {
     NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:setup];
-    [properties addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:BOOKMARK_STRING, TYPE_KEY, [self aliasData], ALIASDATA_KEY, [NSNumber numberWithUnsignedInt:pageIndex], PAGEINDEX_KEY, label, LABEL_KEY, nil]];
+    [properties addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:BOOKMARK_STRING, TYPE_KEY, [self aliasData], ALIASDATA_KEY, [NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, label, LABEL_KEY, nil]];
     return properties;
 }
 
@@ -382,7 +382,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSNumber *)pageNumber {
-    return pageIndex == NSNotFound ? nil : [NSNumber numberWithUnsignedInt:pageIndex + 1];
+    return pageIndex == NSNotFound ? nil : [NSNumber numberWithUnsignedInteger:pageIndex + 1];
 }
 
 - (NSString *)label {

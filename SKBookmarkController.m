@@ -256,7 +256,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSMutableArray *children = [NSMutableArray array];
     SKBookmark *bookmark;
     while ((path = [pathEnum nextObject]) && (page = [pageEnum nextObject])) {
-        if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:[page unsignedIntValue] label:[path lastPathComponent]])
+        if (bookmark = [SKBookmark bookmarkWithPath:path pageIndex:[page unsignedIntegerValue] label:[path lastPathComponent]])
             [children addObject:bookmark];
     }
     if (folder == nil) folder = bookmarkRoot;
@@ -322,7 +322,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     
     BDAlias *alias = [BDAlias aliasWithPath:path];
     if (alias) {
-        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:pageIndex], PAGEINDEX_KEY, [alias aliasData], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
+        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, [alias aliasData], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
         [recentDocuments insertObject:bm atIndex:0];
         if ([recentDocuments count] > maxRecentDocumentsCount)
             [recentDocuments removeLastObject];
@@ -333,7 +333,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     if (path == nil)
         return NSNotFound;
     NSUInteger idx = [self indexOfRecentDocumentAtPath:path];
-    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntValue];
+    return idx == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:idx] objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
 }
 
 - (NSArray *)snapshotsAtPath:(NSString *)path {
@@ -530,7 +530,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if ([newValue isEqual:[NSNull null]]) newValue = nil;
         if ([oldValue isEqual:[NSNull null]]) oldValue = nil;
         
-        switch ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntValue]) {
+        switch ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue]) {
             case NSKeyValueChangeSetting:
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     NSMutableArray *old = [NSMutableArray arrayWithArray:oldValue];

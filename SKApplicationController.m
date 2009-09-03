@@ -416,7 +416,7 @@ static id sharedApplicationController = nil;
         SKVersionNumber *importerVersionNumber = [SKVersionNumber versionNumberWithVersionString:importerVersion];
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
-        long sysVersion;
+        SInt32 sysVersion;
         OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
         
         BOOL runImporter = NO;
@@ -426,7 +426,7 @@ static id sharedApplicationController = nil;
             NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
             SKVersionNumber *lastImporterVersionNumber = [SKVersionNumber versionNumberWithVersionString:lastImporterVersion];
             
-            long lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] longValue];
+            SInt32 lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] intValue];
             
             runImporter = noErr == err ? ([lastImporterVersionNumber compareToVersionNumber:importerVersionNumber] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
@@ -584,11 +584,11 @@ static id sharedApplicationController = nil;
 - (NSDictionary *)defaultLineWidths {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithFloat:[sud floatForKey:SKFreeTextNoteLineWidthKey]], SKNFreeTextString, 
-        [NSNumber numberWithFloat:[sud floatForKey:SKCircleNoteLineWidthKey]], SKNCircleString, 
-        [NSNumber numberWithFloat:[sud floatForKey:SKSquareNoteLineWidthKey]], SKNSquareString, 
-        [NSNumber numberWithFloat:[sud floatForKey:SKLineNoteLineWidthKey]], SKNLineString, 
-        [NSNumber numberWithFloat:[sud floatForKey:SKInkNoteLineWidthKey]], SKNInkString, 
+        [NSNumber numberWithDouble:[sud doubleForKey:SKFreeTextNoteLineWidthKey]], SKNFreeTextString, 
+        [NSNumber numberWithDouble:[sud doubleForKey:SKCircleNoteLineWidthKey]], SKNCircleString, 
+        [NSNumber numberWithDouble:[sud doubleForKey:SKSquareNoteLineWidthKey]], SKNSquareString, 
+        [NSNumber numberWithDouble:[sud doubleForKey:SKLineNoteLineWidthKey]], SKNLineString, 
+        [NSNumber numberWithDouble:[sud doubleForKey:SKInkNoteLineWidthKey]], SKNInkString, 
         nil];
 }
 
@@ -596,15 +596,15 @@ static id sharedApplicationController = nil;
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
     if (number = [dict objectForKey:SKNFreeTextString])
-        [sud setFloat:[number floatValue] forKey:SKFreeTextNoteLineWidthKey];
+        [sud setDouble:[number doubleValue] forKey:SKFreeTextNoteLineWidthKey];
     if (number = [dict objectForKey:SKNCircleString])
-        [sud setFloat:[number floatValue] forKey:SKCircleNoteLineWidthKey];
+        [sud setDouble:[number doubleValue] forKey:SKCircleNoteLineWidthKey];
     if (number = [dict objectForKey:SKNSquareString])
-        [sud setFloat:[number floatValue] forKey:SKSquareNoteLineWidthKey];
+        [sud setDouble:[number doubleValue] forKey:SKSquareNoteLineWidthKey];
     if (number = [dict objectForKey:SKNLineString])
-        [sud setFloat:[number floatValue] forKey:SKLineNoteLineWidthKey];
+        [sud setDouble:[number doubleValue] forKey:SKLineNoteLineWidthKey];
     if (number = [dict objectForKey:SKNInkString])
-        [sud setFloat:[number floatValue] forKey:SKInkNoteLineWidthKey];
+        [sud setDouble:[number doubleValue] forKey:SKInkNoteLineWidthKey];
 }
 
 - (NSDictionary *)defaultLineStyles {

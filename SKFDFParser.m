@@ -237,7 +237,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
     
     if (success && CGPDFDictionaryGetInteger(annot, SKFDFAnnotationPageIndexKey, &integer)) {
-        [dictionary setObject:[NSNumber numberWithInt:integer] forKey:SKNPDFAnnotationPageIndexKey];
+        [dictionary setObject:[NSNumber numberWithInteger:integer] forKey:SKNPDFAnnotationPageIndexKey];
     } else {
         success = NO;
     }
@@ -246,16 +246,16 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
         if (CGPDFDictionaryGetDictionary(annot, SKFDFAnnotationBorderStylesKey, &dict)) {
             if (CGPDFDictionaryGetNumber(dict, SKFDFAnnotationLineWidthKey, &real)) {
                 if (real > 0.0) {
-                    [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKNPDFAnnotationLineWidthKey];
+                    [dictionary setObject:[NSNumber numberWithDouble:real] forKey:SKNPDFAnnotationLineWidthKey];
                     if (CGPDFDictionaryGetName(dict, SKFDFAnnotationBorderStyleKey, &name)) {
-                        [dictionary setObject:[NSNumber numberWithInt:SKPDFBorderStyleFromFDFBorderStyle(name)] forKey:SKNPDFAnnotationBorderStyleKey];
+                        [dictionary setObject:[NSNumber numberWithInteger:SKPDFBorderStyleFromFDFBorderStyle(name)] forKey:SKNPDFAnnotationBorderStyleKey];
                     }
                     if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationDashPatternKey, &array)) {
                         size_t i, count = CGPDFArrayGetCount(array);
                         NSMutableArray *dp = [NSMutableArray array];
                         for (i = 0; i < count; i++) {
                             if (CGPDFArrayGetNumber(array, i, &real))
-                                [dp addObject:[NSNumber numberWithFloat:real]];
+                                [dp addObject:[NSNumber numberWithDouble:real]];
                         }
                         [dictionary setObject:dp forKey:SKNPDFAnnotationDashPatternKey];
                     }
@@ -264,24 +264,24 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
         } else if (CGPDFDictionaryGetArray(annot, SKFDFAnnotationBorderKey, &array)) {
             size_t i, count = CGPDFArrayGetCount(array);
             if (count > 2 && CGPDFArrayGetNumber(array, 2, &real) && real > 0.0) {
-                [dictionary setObject:[NSNumber numberWithFloat:real] forKey:SKNPDFAnnotationLineWidthKey];
+                [dictionary setObject:[NSNumber numberWithDouble:real] forKey:SKNPDFAnnotationLineWidthKey];
                 CGPDFArrayRef dp;
                 if (count > 3 && CGPDFArrayGetArray(array, 3, &dp)) {
                     count = CGPDFArrayGetCount(dp);
                     NSMutableArray *dashPattern = [NSMutableArray arrayWithCapacity:count];
                     for (i = 0; i < count; i++) {
                         if (CGPDFArrayGetNumber(dp, i, &real))
-                            [dashPattern addObject:[NSNumber numberWithFloat:real]];
+                            [dashPattern addObject:[NSNumber numberWithDouble:real]];
                     }
                     [dictionary setObject:dashPattern forKey:SKNPDFAnnotationDashPatternKey];
-                    [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleDashed] forKey:SKNPDFAnnotationBorderStyleKey];
+                    [dictionary setObject:[NSNumber numberWithInteger:kPDFBorderStyleDashed] forKey:SKNPDFAnnotationBorderStyleKey];
                 } else {
-                     [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKNPDFAnnotationBorderStyleKey];
+                     [dictionary setObject:[NSNumber numberWithInteger:kPDFBorderStyleSolid] forKey:SKNPDFAnnotationBorderStyleKey];
                 }
             }
         } else {
-            [dictionary setObject:[NSNumber numberWithFloat:1.0] forKey:SKNPDFAnnotationLineWidthKey];
-            [dictionary setObject:[NSNumber numberWithInt:kPDFBorderStyleSolid] forKey:SKNPDFAnnotationBorderStyleKey];
+            [dictionary setObject:[NSNumber numberWithDouble:1.0] forKey:SKNPDFAnnotationLineWidthKey];
+            [dictionary setObject:[NSNumber numberWithInteger:kPDFBorderStyleSolid] forKey:SKNPDFAnnotationBorderStyleKey];
         }
     }
     
@@ -300,7 +300,7 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
     
     if (success && CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {
-        [dictionary setObject:[NSNumber numberWithInt:SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(name)] forKey:SKNPDFAnnotationIconTypeKey];
+        [dictionary setObject:[NSNumber numberWithInteger:SKPDFTextAnnotationIconTypeFromFDFTextAnnotationIconType(name)] forKey:SKNPDFAnnotationIconTypeKey];
     }
     
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationLineStylesKey, &array)) {
@@ -314,8 +314,8 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
                 endStyle = SKPDFLineStyleFromFDFLineStyle(name);
             }
         }
-        [dictionary setObject:[NSNumber numberWithInt:endStyle] forKey:SKNPDFAnnotationEndLineStyleKey];
-        [dictionary setObject:[NSNumber numberWithInt:startStyle] forKey:SKNPDFAnnotationStartLineStyleKey];
+        [dictionary setObject:[NSNumber numberWithInteger:endStyle] forKey:SKNPDFAnnotationEndLineStyleKey];
+        [dictionary setObject:[NSNumber numberWithInteger:startStyle] forKey:SKNPDFAnnotationStartLineStyleKey];
     }
     
     if (success && CGPDFDictionaryGetArray(annot, SKFDFAnnotationLinePointsKey, &array)) {
@@ -365,14 +365,14 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
         if (da) {
             NSScanner *scanner = [NSScanner scannerWithString:da];
             NSString *fontName;
-            CGFloat fontSize;
+            double fontSize;
             if ([scanner scanUpToString:@"Tf" intoString:NULL] && [scanner isAtEnd] == NO) {
                 NSUInteger location = [scanner scanLocation];
                 NSRange r = [da rangeOfString:@"/" options:NSBackwardsSearch range:NSMakeRange(0, location)];
                 if (r.location != NSNotFound) {
                     [scanner setScanLocation:NSMaxRange(r)];
                     if ([scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:&fontName] &&
-                        [scanner scanFloat:&fontSize] &&
+                        [scanner scanDouble:&fontSize] &&
                         [scanner scanString:@"Tf" intoString:NULL] &&
                         [scanner scanLocation] == location + 2) {
                         NSFont *font = [NSFont fontWithName:fontName size:fontSize];

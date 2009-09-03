@@ -405,7 +405,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSNumber *rightWidth = [savedNormalSetup objectForKey:RIGHTSIDEPANEWIDTH_KEY] ?: [sud objectForKey:SKRightSidePaneWidthKey];
     
     if (leftWidth && rightWidth)
-        [self applyLeftSideWidth:[leftWidth floatValue] rightSideWidth:[rightWidth floatValue]];
+        [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
     
     // this needs to be done before loading the PDFDocument
     [self resetThumbnailSizeIfNeeded];
@@ -443,7 +443,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Go to page?
     NSUInteger pageIndex = NSNotFound;
     if (hasWindowSetup)
-        pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
+        pageIndex = [[savedNormalSetup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
     else if ([sud boolForKey:SKRememberLastPageViewedKey])
         pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
     if (pageIndex != NSNotFound && [[pdfView document] pageCount] > pageIndex)
@@ -537,9 +537,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         NSNumber *leftWidth = [setup objectForKey:LEFTSIDEPANEWIDTH_KEY];
         NSNumber *rightWidth = [setup objectForKey:RIGHTSIDEPANEWIDTH_KEY];
         if (leftWidth && rightWidth)
-            [self applyLeftSideWidth:[leftWidth floatValue] rightSideWidth:[rightWidth floatValue]];
+            [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
         
-        NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntValue];
+        NSUInteger pageIndex = [[setup objectForKey:PAGEINDEX_KEY] unsignedIntegerValue];
         if (pageIndex != NSNotFound)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
         
@@ -558,9 +558,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:SKMainWindowFrameKey];
-    [setup setObject:[NSNumber numberWithFloat:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
-    [setup setObject:[NSNumber numberWithFloat:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:PAGEINDEX_KEY];
+    [setup setObject:[NSNumber numberWithDouble:[self leftSidePaneIsOpen] ? NSWidth([leftSideContentView frame]) : 0.0] forKey:LEFTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithDouble:[self rightSidePaneIsOpen] ? NSWidth([rightSideContentView frame]) : 0.0] forKey:RIGHTSIDEPANEWIDTH_KEY];
+    [setup setObject:[NSNumber numberWithUnsignedInteger:[[pdfView currentPage] pageIndex]] forKey:PAGEINDEX_KEY];
     if ([snapshots count])
         [setup setObject:[snapshots valueForKey:SKSnapshotCurrentSetupKey] forKey:SNAPSHOTS_KEY];
     if ([self isFullScreen] || [self isPresentation]) {
@@ -576,7 +576,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)applyPDFSettings:(NSDictionary *)setup {
     NSNumber *number;
     if (number = [setup objectForKey:SCALEFACTOR_KEY])
-        [pdfView setScaleFactor:[number floatValue]];
+        [pdfView setScaleFactor:[number doubleValue]];
     if (number = [setup objectForKey:AUTOSCALES_KEY])
         [pdfView setAutoScales:[number boolValue]];
     if (number = [setup objectForKey:DISPLAYPAGEBREAKS_KEY])
@@ -584,9 +584,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (number = [setup objectForKey:DISPLAYASBOOK_KEY])
         [pdfView setDisplaysAsBook:[number boolValue]];
     if (number = [setup objectForKey:DISPLAYMODE_KEY])
-        [pdfView setDisplayMode:[number intValue]];
+        [pdfView setDisplayMode:[number integerValue]];
     if (number = [setup objectForKey:DISPLAYBOX_KEY])
-        [pdfView setDisplayBox:[number intValue]];
+        [pdfView setDisplayBox:[number integerValue]];
 }
 
 - (NSDictionary *)currentPDFSettings {
@@ -598,10 +598,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     } else {
         [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:DISPLAYPAGEBREAKS_KEY];
         [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:DISPLAYASBOOK_KEY];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:DISPLAYBOX_KEY];
-        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
+        [setup setObject:[NSNumber numberWithInteger:[pdfView displayBox]] forKey:DISPLAYBOX_KEY];
+        [setup setObject:[NSNumber numberWithDouble:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
         [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTOSCALES_KEY];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:DISPLAYMODE_KEY];
+        [setup setObject:[NSNumber numberWithInteger:[pdfView displayMode]] forKey:DISPLAYMODE_KEY];
     }
     
     return setup;
@@ -821,7 +821,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     // create new annotations from the dictionary and add them to their page and to the document
     while (dict = [e nextObject]) {
-        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
@@ -1220,7 +1220,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([styleName length] || [pageTransitions count]) {
         options = [NSMutableDictionary dictionary];
         [options setValue:(styleName ?: @"") forKey:@"styleName"];
-        [options setValue:[NSNumber numberWithFloat:[transitions duration]] forKey:@"duration"];
+        [options setValue:[NSNumber numberWithDouble:[transitions duration]] forKey:@"duration"];
         [options setValue:[NSNumber numberWithBool:[transitions shouldRestrict]] forKey:@"shouldRestrict"];
         [options setValue:pageTransitions forKey:@"pageTransitions"];
     }
@@ -1236,7 +1236,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (styleName)
         [transitions setTransitionStyle:[SKTransitionController styleForName:styleName]];
     if (duration)
-        [transitions setDuration:[duration floatValue]];
+        [transitions setDuration:[duration doubleValue]];
     if (shouldRestrict)
         [transitions setShouldRestrict:[shouldRestrict boolValue]];
     [transitions setPageTransitions:pageTransitions];
@@ -2057,7 +2057,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)documentDidEndPageFind:(NSNotification *)note {
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
     [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue]];
-    if ([pageIndex unsignedIntValue] % 50 == 0) {
+    if ([pageIndex unsignedIntegerValue] % 50 == 0) {
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];
         [self willChangeValueForKey:SEARCHRESULTS_KEY];
@@ -2115,7 +2115,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
+	[[self progressController] setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
 }
 
 - (void)registerForDocumentNotifications {

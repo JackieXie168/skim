@@ -175,8 +175,8 @@ static id replacement_accessibilityStyleRangeForIndexAttributeForParameter(id se
     if (pdfView) {
         // make sure the accessibility table is generated
         [self accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
-        NSInteger i = [parameter unsignedIntValue];
-        NSInteger n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] intValue];
+        NSInteger i = [parameter unsignedIntegerValue];
+        NSInteger n = [[self accessibilityAttributeValue:NSAccessibilityNumberOfCharactersAttribute] integerValue];
         NSInteger start = MAX(0, i - 25), end = MIN(n, i + 25);
         NSRange range = NSMakeRange(i, 1);
         NSRange r = NSMakeRange(start, end - start);

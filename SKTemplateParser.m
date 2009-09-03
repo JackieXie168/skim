@@ -153,7 +153,7 @@ static inline NSRange altConditionTagRange(NSString *template, NSString *altTag,
 
 static id templateValueForKeyPath(id object, NSString *keyPath, NSInteger anIndex) {
     if ([keyPath hasPrefix:@"#"] && anIndex > 0) {
-        object = [NSNumber numberWithInt:anIndex];
+        object = [NSNumber numberWithInteger:anIndex];
         if ([keyPath length] == 1)
             return object;
         if ([keyPath hasPrefix:@"#."] == NO || [keyPath length] < 3)
@@ -802,7 +802,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 #pragma mark -
 
 @implementation NSNumber (SKTemplateParser)
-- (BOOL)isNotEmpty { return [self isEqualToNumber:[NSNumber numberWithBool:NO]] == NO && [self isEqualToNumber:[NSNumber numberWithInt:0]] == NO; }
+- (BOOL)isNotEmpty { return [self isEqualToNumber:[NSNumber numberWithBool:NO]] == NO && [self isEqualToNumber:[NSNumber numberWithInteger:0]] == NO; }
 @end
 
 #pragma mark -

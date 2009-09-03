@@ -62,7 +62,7 @@
 }
 
 - (NSInteger)status {
-    return [[self objectValueForKey:SKDownloadStatusKey] intValue];
+    return [[self objectValueForKey:SKDownloadStatusKey] integerValue];
 }
 
 - (NSString *)statusDescription {
