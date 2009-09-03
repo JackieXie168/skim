@@ -787,6 +787,34 @@
           contextInfo: nil];
 }
 
+- (IBAction)delete:(id)sender {
+    [pdfView delete:sender];
+}
+
+- (IBAction)paste:(id)sender {
+    [pdfView paste:sender];
+}
+
+- (IBAction)alternatePaste:(id)sender {
+    [pdfView alternatePaste:sender];
+}
+
+- (IBAction)pasteAsPlainText:(id)sender {
+    [pdfView pasteAsPlainText:sender];
+}
+
+- (IBAction)copy:(id)sender {
+    [pdfView copy:sender];
+}
+
+- (IBAction)cut:(id)sender {
+    [pdfView cut:sender];
+}
+
+- (IBAction)deselectAll:(id)sender {
+    [pdfView deselectAll:sender];
+}
+
 - (IBAction)changeToolMode:(id)sender {
     NSInteger newToolMode = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
     [pdfView setToolMode:newToolMode];
