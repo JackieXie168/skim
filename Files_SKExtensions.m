@@ -37,7 +37,7 @@
  */
 
 #import "Files_SKExtensions.h"
-#import <Carbon/Carbon.h>
+#import <CoreFoundation/CoreFoundation.h>
 
 NSString *SKDownloadDirectory() {
     

@@ -39,8 +39,8 @@
 #import "SKColorSwatch.h"
 #import "SKRuntime.h"
 #import "NSColor_SKExtensions.h"
-#import <Carbon/Carbon.h>
 #import "SKAccessibilityFauxUIElement.h"
+#import "NSEvent_SKExtensions.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -399,7 +399,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
-    BOOL isCopy = GetCurrentKeyModifiers() == optionKey;
+    BOOL isCopy = ([NSEvent currentModifierFlags] && NSDeviceIndependentModifierFlagsMask) == NSAlternateKeyMask;
     NSInteger i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
     

@@ -37,7 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import "SKOutlineView.h"
 
 

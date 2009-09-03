@@ -40,7 +40,7 @@
 #import "SKMainWindowController_Toolbar.h"
 #import "SKMainWindowController_UI.h"
 #import <Quartz/Quartz.h>
-#import <CoreServices/CoreServices.h>
+#import <Carbon/Carbon.h>
 #import "SKStringConstants.h"
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"

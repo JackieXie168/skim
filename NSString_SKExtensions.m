@@ -42,7 +42,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
-#import <Carbon/Carbon.h>
+#import <CoreFoundation/CoreFoundation.h>
 
 #define ELLIPSIS_CHARACTER 0x2026
 
