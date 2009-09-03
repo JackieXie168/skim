@@ -90,7 +90,7 @@
                         docType = NSDocFormatTextDocumentType;
                     else if ([ext isEqualToString:@"docx"])
                         docType = NSWordMLTextDocumentType;
-                    else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && [ext isEqualToString:@"odt"])
+                    else if ([ext isEqualToString:@"odt"])
                         docType = NSOfficeOpenXMLTextDocumentType;
                     if (docType && [docType isEqualToString:NSRTFTextDocumentType] == NO) {
                         [mutableDocAttrs setObject:docType forKey:NSDocumentTypeDocumentAttribute];

@@ -61,8 +61,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
         if (font)
             [self setFont:font];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]];
-        if ([self respondsToSelector:@selector(setFontColor:)])
-            [self setFontColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteFontColorKey]];
+        [self setFontColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteFontColorKey]];
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKFreeTextNoteDashPatternKey]];
@@ -77,7 +76,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
     [fdfString appendFDFName:SKFDFDefaultAppearanceKey];
     [fdfString appendFormat:@"(/%@ %f Tf", [[self font] fontName], [[self font] pointSize]];
-    if ([self respondsToSelector:@selector(fontColor)] && [[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO) {
+    if ([[self fontColor] isEqual:[NSColor colorWithCalibratedWhite:0.0 alpha:0.0]] == NO) {
         CGFloat r = 0.0, g = 0.0, b = 0.0, a;
         [[self fontColor] getRed:&r green:&g blue:&b alpha:&a];
         [fdfString appendFormat:@" %f %f %f rg", r, g, b];
@@ -131,7 +130,7 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
     NSTextStorage *textContents = [super textContents];
     if ([self font])
         [textContents addAttribute:NSFontAttributeName value:[self font] range:NSMakeRange(0, [textContents length])];
-    if ([self respondsToSelector:@selector(fontColor)] && [self fontColor])
+    if ([self fontColor])
         [textContents addAttribute:NSForegroundColorAttributeName value:[self fontColor] range:NSMakeRange(0, [textContents length])];
     return textContents;
 }
@@ -157,12 +156,11 @@ NSString *SKPDFAnnotationScriptingFontColorKey = @"scriptingFontColor";
 }
 
 - (NSColor *)scriptingFontColor {
-    return [self respondsToSelector:@selector(fontColor)] ? [self fontColor] : [NSColor blackColor];
+    return [self fontColor];
 }
 
 - (void)setScriptingFontColor:(NSColor *)newScriptingFontColor {
-    if ([self respondsToSelector:@selector(setFontColor:)])
-        [self setFontColor:newScriptingFontColor];
+    [self setFontColor:newScriptingFontColor];
 }
 
 #pragma mark Accessibility

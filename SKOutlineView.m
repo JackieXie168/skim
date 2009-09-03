@@ -242,7 +242,7 @@ static char SKOutlineViewDefaultsObservationContext;
     }
     
     CGFloat rowHeight = [NSLayoutManager defaultViewLineHeightForFont:font];
-    if ([self respondsToSelector:@selector(selectionHighlightStyle)] && [self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
+    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
         rowHeight += 2.0;
     [self setRowHeight:rowHeight];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];

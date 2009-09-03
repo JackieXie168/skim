@@ -263,19 +263,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (BOOL)isPageVisible:(PDFPage *)page {
-    if ([[page document] isEqual:[pdfView document]] == NO)
-        return NO;
-    if ([pdfView respondsToSelector:@selector(visiblePages)])
-        return [[pdfView visiblePages] containsObject:page];
-    
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-    NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
-    NSUInteger first, last, idx = [page pageIndex];
-    
-    first = [[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES] pageIndex];
-    last = [[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES] pageIndex];
-    
-    return idx >= first && idx <= last;
+    return [[page document] isEqual:[pdfView document]] && [[pdfView visiblePages] containsObject:page];
 }
 
 #pragma mark Acessors
@@ -345,8 +333,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
-    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
-        [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehaviorDefault];
+    [[self window] setCollectionBehavior:forceOnTop ? NSWindowCollectionBehaviorCanJoinAllSpaces : NSWindowCollectionBehaviorDefault];
 }
 
 - (NSDictionary *)currentSetup {

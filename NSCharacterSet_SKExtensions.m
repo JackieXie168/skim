@@ -42,27 +42,11 @@
 
 @implementation NSCharacterSet (SKExtensions)
 
-+ (id)replacement_newlineCharacterSet {
-    static NSCharacterSet *newlineCharacterSet = nil;
-    if (newlineCharacterSet == nil) {
-        NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
-        [tmpSet invert];
-        [tmpSet formIntersectionWithCharacterSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        newlineCharacterSet = [tmpSet copy];
-        [tmpSet release];
-    }
-    return newlineCharacterSet;
-}
-
 + (id)nonWhitespaceAndNewlineCharacterSet {
     static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
     if (nonWhitespaceAndNewlineCharacterSet == nil)
         nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
     return nonWhitespaceAndNewlineCharacterSet;
-}
-
-+ (void)load {
-    SKAddClassMethodImplementationFromSelector(self, @selector(newlineCharacterSet), @selector(replacement_newlineCharacterSet));
 }
 
 @end

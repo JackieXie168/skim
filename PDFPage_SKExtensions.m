@@ -325,13 +325,8 @@ static BOOL usesSequentialPageNumbering = NO;
     PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
     PDFPage *page = [pdfDoc pageAtIndex:0];
     
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
-        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
-    } else {
-        // setting the media box is buggy on Tiger, see bug # 1928384
-        [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
-    }
+    [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
     [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
@@ -377,53 +372,18 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    NSUInteger i, iMax;
+    NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
+    PDFSelection *s;
     
-    if ([sel respondsToSelector:@selector(selectionsByLine)]) {
-        NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
-        PDFSelection *s;
-        while (s = [selEnum nextObject]) {
-            NSRect r = [s boundsForPage:self];
-            if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
-                [lines addObject:[NSValue valueWithRect:r]];
-        } 
-    } else if (sel) {
-        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-        NSString *string = [self string];
-        NSRange stringRange = NSMakeRange(0, [string length]);
-        NSEnumerator *rangeEnum = [[sel safeRangesOnPage:self] objectEnumerator];
-        NSValue *value;
-        while (value = [rangeEnum nextObject]) {
-            NSRange range = [value rangeValue];
-            NSUInteger j, jMax = NSMaxRange(range);
-            
-            for (j = range.location; j < jMax; j++) {
-                if ([indexes containsIndex:j])
-                    continue;
-                
-                NSRect r = [self characterBoundsAtIndex:j];
-                PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
-                BOOL notEmpty = NO;
-                NSEnumerator *rEnum = [[s safeRangesOnPage:self] objectEnumerator];
-                NSValue *val;
-                while (val = [rEnum nextObject]) {
-                    NSRange selRange = [val rangeValue];
-                    if (selRange.location != NSNotFound) {
-                        [indexes addIndexesInRange:selRange];
-                        // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
-                        if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
-                            notEmpty = YES;
-                    }
-                }
-                if (notEmpty)
-                    [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];
-            }
-        }
-    }
+    while (s = [selEnum nextObject]) {
+        NSRect r = [s boundsForPage:self];
+        if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
+            [lines addObject:[NSValue valueWithRect:r]];
+    } 
     
     [lines sortUsingSelector:@selector(boundsCompare:)];
     
-    iMax = [lines count];
+    NSUInteger i, iMax = [lines count];
     NSMutableArray *fullLines = [NSMutableArray array];
     NSRect r1 = NSZeroRect;
     

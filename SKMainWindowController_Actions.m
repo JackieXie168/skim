@@ -220,7 +220,7 @@
 - (void)goToSelectedOutlineItem:(id)sender {
     SKPDFOutline *outlineItem = [outlineView itemAtRow:[outlineView selectedRow]];
     if ([outlineItem destination])
-        [self goToDestination:[outlineItem destination]];
+        [pdfView goToDestination:[outlineItem destination]];
     else if ([outlineItem action])
         [pdfView performAction:[outlineItem action]];
 }
@@ -417,10 +417,10 @@
     if (markedPageIndex == NSNotFound || [pdfDoc isLocked] || [pdfDoc pageCount] == 0) {
         NSBeep();
     } else if (beforeMarkedPageIndex != NSNotFound) {
-        [self goToPage:[pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)]];
+        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(beforeMarkedPageIndex, [pdfDoc pageCount] - 1)]];
     } else if (currentPageIndex != markedPageIndex) {
         beforeMarkedPageIndex = currentPageIndex;
-        [self goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
+        [pdfView goToPage:[pdfDoc pageAtIndex:MIN(markedPageIndex, [pdfDoc pageCount] - 1)]];
     }
 }
 

@@ -177,39 +177,6 @@ enum {
 
 #pragma mark -
 
-// Adobe Reader recognizes a path from the hyperref command \url{./test.pdf} as a file: URL, but PDFKit turns it into an http: URL (which of course doesn't work); I notice this because my collaborators use Adobe Reader 	 
-@interface PDFAnnotation (SKRelativePathFix) 	 
-- (void)fixRelativeURLIfNeeded; 	 
-@end 	 
-
-@implementation PDFAnnotation (SKRelativePathFix) 	 
-- (void)fixRelativeURLIfNeeded {}
-@end
-
-@implementation PDFAnnotationLink (SKRelativePathFix) 	 
-
-// class posing indicates that setURL: is never called, and neither is setContents: (-contents returns nil), so this is the only way I can find to fix the thing, since we don't have an equivalent to textView:clickedOnLink:atIndex: 	 
-- (void)fixRelativeURLIfNeeded { 	 
-    // Adam G. provided a console log with *** -[PDFAnnotationLink URL]: selector not recognized, which really seems weird
-    NSURL *theURL = [self respondsToSelector:@selector(URL)] ? [self URL] : nil; 	 
-    // http://./path/to/file will never make sense, right? 	 
-    if (theURL && [[theURL host] isEqualToString:@"."]) { 	 
-        NSString *basePath = [[[[[self page] document] documentURL] path] stringByDeletingLastPathComponent]; 	 
-        if (basePath) { 	 
-            NSString *realPath = [basePath stringByAppendingPathComponent:[theURL path]]; 	 
-            realPath = [realPath stringByStandardizingPath]; 	 
-            if (realPath) 	 
-                theURL = [NSURL fileURLWithPath:realPath]; 	 
-            if (theURL) 	 
-                [self setURL:theURL]; 	 
-        } 	 
-    } 	 
-} 	 
-
-@end 	 
-
-#pragma mark -
-
 @implementation SKPDFView
 
 + (void)initialize {
@@ -313,10 +280,6 @@ enum {
 
 #pragma mark Tool Tips
 
-// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
-// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
-- (void)scheduleAddingToolips {}
-
 - (void)removePDFToolTipRects {
     CFIndex idx = CFArrayGetCount(PDFToolTipRects);
     while (idx--)
@@ -374,9 +337,6 @@ enum {
         [bezierPaths makeObjectsPerformSelector:@selector(stroke)];
         [NSGraphicsContext restoreGraphicsState];
     }
-    
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        [[pdfPage annotations] makeObjectsPerformSelector:@selector(fixRelativeURLIfNeeded)];
     
     if ([[activeAnnotation page] isEqual:pdfPage]) {
         BOOL isLink = [activeAnnotation isLink];
@@ -1137,7 +1097,7 @@ enum {
                             mouseDownInAnnotation = NO; 	 
                         } else {
                             [super mouseDown:theEvent];
-                            if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4 && toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
+                            if (toolMode == SKNoteToolMode && hideNotes == NO && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote) && [[self currentSelection] hasCharacters]) {
                                 [self addAnnotationWithType:annotationMode];
                                 [self setCurrentSelection:nil];
                             }
@@ -1254,15 +1214,6 @@ enum {
     [self doUpdateCursor];
 }
 
-- (void)lookUpCurrentSelectionInDictionary:(id)sender;
-{
-    NSString *text = [[self currentSelection] string];
-    if ([text length])
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[@"dict:///" stringByAppendingString:text]]];
-    else
-        NSBeep();
-}
-
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
@@ -1352,13 +1303,6 @@ enum {
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
     [item setTarget:self];
-    
-    if ([self toolMode] == SKTextToolMode && [[self currentSelection] hasCharacters] && NSAppKitVersionNumber <= NSAppKitVersionNumber10_4) {
-        
-        [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
-            
-        item = [menu insertItemWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@"" atIndex:0];
-    }
     
     if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
         
@@ -1665,7 +1609,7 @@ enum {
             // fall back to just opening the file and ignore the destination
             [[NSWorkspace sharedWorkspace] openURL:fileURL];
         }
-    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+    } else {
         [super performAction:action];
     }
 }
@@ -2538,26 +2482,10 @@ enum {
 
 - (NSRange)visiblePageIndexRange {
     NSRange range = NSMakeRange(NSNotFound, 0);
-    if ([self respondsToSelector:@selector(visiblePages)]) {
-        NSArray *pages = [self visiblePages];
-        if ([pages count]) {
-            NSUInteger first = [[pages objectAtIndex:0] pageIndex];
-            NSUInteger last = [[pages lastObject] pageIndex];
-            range = NSMakeRange(first, last - first + 1);
-        }
-    } else if ([[self document] pageCount]) {
-        NSRect visibleRect = [self visibleContentRect];
-        PDFPage *page;
-        NSUInteger first, last;
-        
-        page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
-        first = [page pageIndex];
-        page = [self pageForPoint:SKTopRightPoint(visibleRect) nearest:YES];
-        first = MIN(first, [page pageIndex]);
-        page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
-        last = [page pageIndex];
-        page = [self pageForPoint:SKBottomLeftPoint(visibleRect) nearest:YES];
-        last = MAX(last, [page pageIndex]);
+    NSArray *pages = [self visiblePages];
+    if ([pages count]) {
+        NSUInteger first = [[pages objectAtIndex:0] pageIndex];
+        NSUInteger last = [[pages lastObject] pageIndex];
         range = NSMakeRange(first, last - first + 1);
     }
     return range;

@@ -110,25 +110,14 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 static CFMutableDictionaryRef lineRectsDict = NULL;
 
 static void (*original_dealloc)(id, SEL) = NULL;
-static void (*original_drawWithBox_inContext)(id, SEL, CGPDFBox, CGContextRef) = NULL;
 
 - (void)replacement_dealloc {
     CFDictionaryRemoveValue(lineRectsDict, self);
     original_dealloc(self, _cmd);
 }
 
-// fix a bug in PDFKit, the color space sometimes is not correct
-- (void)replacement_drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
-    CGContextSaveGState(context);
-    SKCGContextSetDefaultRGBColorSpace(context);
-    original_drawWithBox_inContext(self, _cmd, box, context);
-    CGContextRestoreGState(context);
-}
-
 + (void)load {
     original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        original_drawWithBox_inContext = (void (*)(id, SEL, CGPDFBox, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawWithBox:inContext:), @selector(replacement_drawWithBox:inContext:));
     lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
@@ -208,53 +197,15 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         if (selection) {
             NSUInteger i, iMax;
             NSRect lineRect = NSZeroRect;
-            if ([selection respondsToSelector:@selector(selectionsByLine)]) {
-                NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
-                PDFSelection *sel;
-                while (sel = [selEnum nextObject]) {
-                    lineRect = [sel boundsForPage:page];
-                    if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                         CFArrayAppendValue([self lineRects], &lineRect);
-                         newBounds = NSUnionRect(lineRect, newBounds);
-                    }
-                } 
-            } else {
-                NSString *string = [page string];
-                NSRect charRect = NSZeroRect;
-                NSRect lastCharRect = NSZeroRect;
-                NSEnumerator *rangeEnum = [[selection safeRangesOnPage:page] objectEnumerator];
-                NSValue *value;
-                while (value = [rangeEnum nextObject]) {
-                    NSRange range = [value rangeValue];
-                    NSUInteger j, jMax = NSMaxRange(range);
-                    for (j = range.location; j < jMax; j++) {
-                        lastCharRect = charRect;
-                        charRect = [page characterBoundsAtIndex:j];
-                        BOOL nonWS = NO == [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
-                        if (NSIsEmptyRect(lineRect)) {
-                            // beginning of a line, just ignore whitespace
-                            if (nonWS)
-                                lineRect = charRect;
-                        } else if (adjacentCharacterBounds(lastCharRect, charRect)) {
-                            // continuation of a line
-                            if (nonWS)
-                                lineRect = NSUnionRect(lineRect, charRect);
-                        } else {
-                            // start of a new line
-                            if (NSIsEmptyRect(lineRect) == NO) {
-                                CFArrayAppendValue([self lineRects], &lineRect);
-                                newBounds = NSUnionRect(lineRect, newBounds);
-                            }
-                            // ignore whitespace at the beginning of the new line
-                            lineRect = nonWS ? charRect : NSZeroRect;
-                       }
-                    }
+            NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
+            PDFSelection *sel;
+            while (sel = [selEnum nextObject]) {
+                lineRect = [sel boundsForPage:page];
+                if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
+                     CFArrayAppendValue([self lineRects], &lineRect);
+                     newBounds = NSUnionRect(lineRect, newBounds);
                 }
-                if (NSIsEmptyRect(lineRect) == NO) {
-                    CFArrayAppendValue([self lineRects], &lineRect);
-                    newBounds = NSUnionRect(lineRect, newBounds);
-                }
-            }
+            } 
             if (NSIsEmptyRect(newBounds)) {
                 [self release];
                 self = nil;

@@ -172,8 +172,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)updateNoteFilterPredicate;
 
-- (void)goToPage:(PDFPage *)page;
-
 - (void)registerForDocumentNotifications;
 - (void)unregisterForDocumentNotifications;
 
@@ -300,12 +298,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [pdfSplitView setFrame:[pdfContentView bounds]];
     [pdfContentView addSubview:pdfSplitView];
-    
-    if (mwcFlags.usesDrawers == 0 || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        [leftSideButton makeTexturedRounded];
-        [rightSideButton makeTexturedRounded];
-        [findButton makeTexturedRounded];
-    }
     
     [leftSideButton setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
     [leftSideButton setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
@@ -899,7 +891,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if (number > pageCount)
         number = pageCount;
     if (number > 0 && [[pdfView currentPage] pageIndex] != number - 1)
-        [self goToPage:[[pdfView document] pageAtIndex:number - 1]];
+        [pdfView goToPage:[[pdfView document] pageAtIndex:number - 1]];
 }
 
 - (void)updatePageLabel {
@@ -919,7 +911,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)setPageLabel:(NSString *)label {
     NSUInteger idx = [pageLabels indexOfObject:label];
     if (idx != NSNotFound && [[[pdfView currentPage] displayLabel] isEqual:label] == NO)
-        [self goToPage:[[pdfView document] pageAtIndex:idx]];
+        [pdfView goToPage:[[pdfView document] pageAtIndex:idx]];
 }
 
 - (BOOL)validatePageLabel:(id *)value error:(NSError **)error {
@@ -1857,7 +1849,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self fadeInOutlineView];
     } else {
         NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
-        if (mwcFlags.wholeWordSearch && [[pdfView document] respondsToSelector:@selector(beginFindStrings:withOptions:)]) {
+        if (mwcFlags.wholeWordSearch) {
             NSMutableArray *words = [NSMutableArray array];
             NSEnumerator *wordEnum = [[[sender stringValue] componentsSeparatedByString:@" "] objectEnumerator];
             NSString *word;
@@ -1907,7 +1899,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self addAnnotationsForSelection:selection];
             temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
         }
-        if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO)
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO)
             [pdfView setCurrentSelection:selection animate:YES];
 	} else {
 		NSBeep();
@@ -1953,14 +1945,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (highlightTimer)
         [self removeHighlightedSelections:highlightTimer];
-    if ([pdfView respondsToSelector:@selector(setHighlightedSelections:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [currentSel respondsToSelector:@selector(setColor:)] && [findResults count] > 1) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [findResults count] > 1) {
         PDFSelection *tmpSel = [[currentSel copy] autorelease];
         [tmpSel setColor:[NSColor yellowColor]];
         [pdfView setHighlightedSelections:[NSArray arrayWithObject:tmpSel]];
         highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
-    if ([pdfView respondsToSelector:@selector(setCurrentSelection:animate:)] && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && firstSel)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && firstSel)
         [pdfView setCurrentSelection:firstSel animate:YES];
     
     if (currentSel)
@@ -2144,35 +2136,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
     [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
     [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
-}
-
-#pragma mark Tiger history fixes
-
-- (void)registerDestinationHistory:(PDFDestination *)destination {
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        @try {
-            NSMutableArray *destinationHistory = [pdfView valueForKeyPath:@"pdfPriv.destinationHistory"];
-            NSInteger historyIndex = [[pdfView valueForKeyPath:@"pdfPriv.historyIndex"] intValue];
-            if (historyIndex < (NSInteger)[destinationHistory count])
-                [destinationHistory removeObjectsInRange:NSMakeRange(historyIndex, [destinationHistory count] - historyIndex)];
-            [destinationHistory addObject:destination];
-            [pdfView setValue:[NSNumber numberWithInt:++historyIndex] forKeyPath:@"pdfPriv.historyIndex"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:PDFViewChangedHistoryNotification object:pdfView];
-        }
-        @catch (id exception) {}
-    }
-}
-
-- (void)goToDestination:(PDFDestination *)destination {
-    PDFDestination *dest = [pdfView currentDestination];
-    [pdfView goToDestination:destination];
-    [self registerDestinationHistory:dest];
-}
-
-- (void)goToPage:(PDFPage *)page {
-    PDFDestination *dest = [pdfView currentDestination];
-    [pdfView goToPage:page];
-    [self registerDestinationHistory:dest];
 }
 
 #pragma mark Subwindows

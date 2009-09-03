@@ -77,8 +77,7 @@ static SKFindController *sharedFindController = nil;
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
-    if ([[self window] respondsToSelector:@selector(setCollectionBehavior:)])
-        [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
+    [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {

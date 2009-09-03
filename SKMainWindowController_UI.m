@@ -374,7 +374,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if (mwcFlags.updatingThumbnailSelection == 0) {
             NSInteger row = [thumbnailTableView selectedRow];
             if (row != -1)
-                [self goToPage:[[pdfView document] pageAtIndex:row]];
+                [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
             
             if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
                 [self hideLeftSideWindow];
@@ -1479,7 +1479,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return YES;
     } else if (action == @selector(toggleWholeWordSearch:)) {
         [menuItem setState:mwcFlags.wholeWordSearch ? NSOnState : NSOffState];
-        return floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4;
+        return YES;
     } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
         [menuItem setState:mwcFlags.caseInsensitiveNoteSearch ? NSOnState : NSOffState];
         return YES;

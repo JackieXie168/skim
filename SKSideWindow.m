@@ -93,8 +93,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:YES];
         [self setLevel:NSFloatingWindowLevel];
-        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
-            [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+        [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
     }
     return self;
 }
@@ -123,16 +122,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     endFrame = startFrame;
     endFrame.size.width = width;
     endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - width : NSMinX(screenFrame);
-    if ([self respondsToSelector:@selector(animator)]) {
-        [[self animator] setFrame:endFrame display:YES];
-    } else {
-        NSDictionary *slideDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
-        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideDict, nil]];
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:[self animationResizeTime:endFrame]];
-        [animation startAnimation];
-        [animation release];
-    }
+    [[self animator] setFrame:endFrame display:YES];
 }
 
 - (void)makeTransparent {
@@ -147,10 +137,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
         if (hideWhenClosed != SKClosedSidePanelCollapse) {
-            if ([self respondsToSelector:@selector(animator)])
-                [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
-            else
-                [self setAlphaValue:0.0];
+            [self performSelector:@selector(makeTransparent) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
         }
     }
 }

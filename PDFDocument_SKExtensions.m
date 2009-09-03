@@ -38,6 +38,7 @@
 
 #import "PDFDocument_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "SKPrintAccessoryController.h"
 #import "SKRuntime.h"
 
 
@@ -54,20 +55,13 @@ static id (*original_getPrintOperationForPrintInfo_autoRotate)(id, SEL, id, BOOL
     NSPrintOperation *printOperation = original_getPrintOperationForPrintInfo_autoRotate(self, _cmd, printInfo, autoRotate);
     BOOL suppressPrintPanel = [[[[printOperation printInfo] dictionary] objectForKey:@"SKSuppressPrintPanel"] boolValue];
     
-    if (suppressPrintPanel) {
+    if (suppressPrintPanel)
         [printOperation setShowsPrintPanel:NO];
-    }
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        NSPrintPanel *printPanel = [printOperation printPanel];
-        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
-        
-        Class printAccessoryControllerClass = NSClassFromString(@"SKPrintAccessoryController");
-        if (printAccessoryControllerClass == Nil)
-            printAccessoryControllerClass = [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Skim-Leopard" ofType:@"bundle"]] principalClass];
-        id printAccessoryViewController = [[[printAccessoryControllerClass alloc] init] autorelease];
-        if (printAccessoryViewController)
-            [printPanel addAccessoryController:printAccessoryViewController];
-    } 
+    
+    NSPrintPanel *printPanel = [printOperation printPanel];
+    [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+    [printPanel addAccessoryController:[[[SKPrintAccessoryController alloc] init] autorelease]];
+    
     return printOperation;
 }
 

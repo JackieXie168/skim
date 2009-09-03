@@ -80,7 +80,6 @@
 #define REGISTERED_DEFAULTS_KEY         @"RegisteredDefaults"
 #define RESETTABLE_KEYS_KEY             @"ResettableKeys"
 
-#define FILE_MENU_INDEX      1
 #define VIEW_MENU_INDEX      4
 #define BOOKMARKS_MENU_INDEX 8
 
@@ -150,13 +149,6 @@ static id sharedApplicationController = nil;
         NSMenuItem *menuItem = [viewMenu itemAtIndex:i];
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:)) 
             [menuItem setIndentationLevel:1];
-    }
-    
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
-        NSMenu *fileMenu = [[[NSApp mainMenu] itemAtIndex:FILE_MENU_INDEX] submenu];
-        NSUInteger idx = [fileMenu indexOfItemWithTarget:nil andAction:@selector(runPageLayout:)];
-        if (idx != NSNotFound)
-            [fileMenu removeItemAtIndex:idx];
     }
     
     [[[NSApp mainMenu] itemAtIndex:BOOKMARKS_MENU_INDEX] setRepresentedObject:[[SKBookmarkController sharedBookmarkController] bookmarkRoot]];
