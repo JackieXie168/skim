@@ -40,7 +40,7 @@
 #import "SKMainWindowController_Toolbar.h"
 #import "SKMainWindowController_UI.h"
 #import <Quartz/Quartz.h>
-#import <Carbon/Carbon.h>
+#import <CoreServices/CoreServices.h>
 #import "SKStringConstants.h"
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
@@ -1454,7 +1454,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)activityTimerFired:(NSTimer *)timer {
-    UpdateSystemActivity(UsrActivity);
+    UpdateSystemActivity(1); // UsrActivity = 1, but that's not defined for 64 bits
 }
 
 - (void)enterPresentationMode {
