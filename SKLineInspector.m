@@ -327,8 +327,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [path lineToPoint:NSMakePoint(8.0, 2.0)];
     [path closePath];
     [path setLineWidth:2.0];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.65] setStroke];
     [path stroke];
     [image unlockFocus];
     [startLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];
@@ -345,8 +343,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [path lineToPoint:NSMakePoint(16.0, 2.0)];
     [path closePath];
     [path setLineWidth:2.0];
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.65] setStroke];
     [path stroke];
     [image unlockFocus];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleDiamond];

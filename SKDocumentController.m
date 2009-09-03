@@ -176,8 +176,6 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 }
 
 - (NSString *)readableTypeFromFileExtension:(NSString *)extension {
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        return nil;
     NSEnumerator *classEnum = [[self documentClassNames] objectEnumerator];
     NSString *className;
     while (className = [classEnum nextObject]) {

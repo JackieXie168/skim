@@ -76,8 +76,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setHidesOnDeactivate:YES];
         [self setMovableByWindowBackground:YES];
-        if ([self respondsToSelector:@selector(setCollectionBehavior:)])
-            [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+        [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
@@ -365,15 +364,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)setAlternateToolTip:(NSString *)string {
     [(SKNavigationButtonCell *)[self cell] setAlternateToolTip:string];
-}
-
-- (void)viewDidMoveToWindow {
-    // fix for a Tiger bug when a button is added to a window, it does not reset the tracking rects
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4 && [self showsBorderOnlyWhileMouseInside]) {
-        [self setShowsBorderOnlyWhileMouseInside:NO];
-        [self setShowsBorderOnlyWhileMouseInside:YES];
-    }
-    [super viewDidMoveToWindow];
 }
 
 @end

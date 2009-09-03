@@ -98,36 +98,28 @@
 }
 
 - (PDFAction *)action {
-    if ([outline respondsToSelector:_cmd])
-        return [outline action];
-    else
-        return nil;
+    return [outline action];
 }
 
 - (PDFPage *)page {
-    if ([outline respondsToSelector:@selector(destination)])
-        return [[outline destination] page];
-    else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(destination)])
-        return [[(PDFActionGoTo *)[outline action] destination] page];
-    else
-        return nil;
+    PDFDestination *dest = [outline destination];
+    if (dest == nil && [[outline action] respondsToSelector:@selector(destination)])
+        dest = [(PDFActionGoTo *)[outline action] destination];
+    return [dest page];
 }
 
 - (NSString *)pageLabel {
     PDFPage *page = [self page];
     if (page)
         return [page displayLabel];
-    else if ([outline respondsToSelector:@selector(action)] && [[outline action] respondsToSelector:@selector(pageIndex)])
+    else if ([[outline action] respondsToSelector:@selector(pageIndex)])
         return [NSString stringWithFormat:@"%lu", (unsigned long)([(PDFActionRemoteGoTo *)[outline action] pageIndex] + 1)];
     else
         return nil;
 }
 
 - (BOOL)isOpen {
-    if ([outline respondsToSelector:_cmd])
-        return [outline isOpen];
-    else
-        return [parent parent] == nil && (parent == nil || [parent numberOfChildren] == 1) && [outline numberOfChildren] > 0;
+    return [outline isOpen];
 }
 
 @end

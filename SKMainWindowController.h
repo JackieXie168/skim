@@ -383,9 +383,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)applyPDFSettings:(NSDictionary *)setup;
 - (NSDictionary *)currentPDFSettings;
 
-- (void)goToDestination:(PDFDestination *)destination;
-- (void)goToPage:(PDFPage *)page;
-
 - (void)updateLeftStatus;
 - (void)updateRightStatus;
 

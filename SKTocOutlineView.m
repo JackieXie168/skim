@@ -49,24 +49,16 @@
 
 + (BOOL)usesDefaultFontSize { return YES; }
 
-#define TIGER_BACKGROUNDCOLOR [NSColor colorWithCalibratedRed:0.905882 green:0.929412 blue:0.964706 alpha:1.0]
-
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
-            [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-        else
-            [self setBackgroundColor:TIGER_BACKGROUNDCOLOR];
+        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
     if (self = [super initWithCoder:coder]) {
-        if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
-            [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-        else
-            [self setBackgroundColor:TIGER_BACKGROUNDCOLOR];
+        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
     }
     return self;
 }
@@ -75,16 +67,6 @@
     if (trackingRects != NULL)
         CFRelease(trackingRects);
     [super dealloc];
-}
-
-// Tiger draws the highlight color in the cell, which I think is wrong, but it also uses the highlight color to decide about the text color, which is even more wrong
-- (id)_highlightColorForCell:(NSCell *)cell {
-    if ([self respondsToSelector:@selector(setSelectionHighlightStyle:)])
-        return [super _highlightColorForCell:cell];
-    else if ([[self window] isKeyWindow] && [[self window] firstResponder] == self) 
-        return [super _highlightColorForCell:cell];
-    else
-        return nil;
 }
 
 static CGFloat keyColorBlue[3]          = {14135.0/65535.0, 29298.0/65535.0, 48830.0/65535.0};
@@ -98,24 +80,15 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
     NSColor *color;
     NSInteger row;
     NSRect rect;
-    BOOL supportsSourceList = [self respondsToSelector:@selector(setSelectionHighlightStyle:)];
-    
-    if (supportsSourceList) {
-        CGFloat *rgb;
-        BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            rgb = isGraphite ? keyColorGraphite : keyColorBlue;
-        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-            rgb = isGraphite ? mainColorGraphite : mainColorBlue;
-        else
-            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-        color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
-    } else {
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            color = [NSColor alternateSelectedControlColor];
-        else
-            color = [NSColor colorWithCalibratedRed:0.724706 green:0.743529 blue:0.771765 alpha:1.0];
-    }
+    CGFloat *rgb;
+    BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
+    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+        rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+        rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+    else
+        rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
+    color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
     
     [NSGraphicsContext saveGraphicsState];
     
@@ -135,19 +108,9 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
         }
     }
     
-    row = [self selectedRow];
-    if (row != -1 && supportsSourceList == NO) {
-        rect = [self rectOfRow:row];
-        if (NSIntersectsRect(rect, clipRect)) {
-            [color setFill];
-            NSRectFill([self rectOfRow:row]);
-        }
-    }
-
     [NSGraphicsContext restoreGraphicsState];
     
-    if (supportsSourceList)
-        [super highlightSelectionInClipRect:clipRect];
+    [super highlightSelectionInClipRect:clipRect];
 }
 
 - (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extendSelection {

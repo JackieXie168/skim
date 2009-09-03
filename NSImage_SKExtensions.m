@@ -410,14 +410,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarBackImage unlockFocus];
     [toolbarBackImage setName:SKImageNameToolbarBack];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        // the image drawn right after ToolbarBack on Tiger has drawing artifacts, a gray upward pointing arrow at the bottom, so we make it a dummy image
-        NSImage *dummy = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
-        [dummy lockFocus];
-        [dummy unlockFocus];
-        // a release here won't work to fix the bug
-    }
-    
     toolbarForwardImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 13.0)];
     [toolbarForwardImage lockFocus];
     [NSGraphicsContext saveGraphicsState];
@@ -1394,10 +1386,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     NSSize size = NSMakeSize(25.0, 14.0);
     NSRect rect = {NSZeroPoint, size};
     
-    // 14 looks nicer on Leopard, 13 looks better on Tiger
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        size.height = 13.0;
-    
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:0.85];
     
     NSBezierPath *path;
@@ -1421,8 +1409,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [outlineViewAdornImage unlockFocus];
-    if ([outlineViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [outlineViewAdornImage setTemplate:YES];
+    [outlineViewAdornImage setTemplate:YES];
     [outlineViewAdornImage setName:SKImageNameOutlineViewAdorn];
     
     thumbnailViewAdornImage = [[NSImage alloc] initWithSize:size];
@@ -1442,8 +1429,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [thumbnailViewAdornImage unlockFocus];
-    if ([thumbnailViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [thumbnailViewAdornImage setTemplate:YES];
+    [thumbnailViewAdornImage setTemplate:YES];
     [thumbnailViewAdornImage setName:SKImageNameThumbnailViewAdorn];
     
     noteViewAdornImage = [[NSImage alloc] initWithSize:size];
@@ -1479,8 +1465,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [noteViewAdornImage unlockFocus];
-    if ([noteViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [noteViewAdornImage setTemplate:YES];
+    [noteViewAdornImage setTemplate:YES];
     [noteViewAdornImage setName:SKImageNameNoteViewAdorn];
     
     snapshotViewAdornImage = [[NSImage alloc] initWithSize:size];
@@ -1496,8 +1481,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [snapshotViewAdornImage unlockFocus];
-    if ([snapshotViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [snapshotViewAdornImage setTemplate:YES];
+    [snapshotViewAdornImage setTemplate:YES];
     [snapshotViewAdornImage setName:SKImageNameSnapshotViewAdorn];
     
     findViewAdornImage = [[NSImage alloc] initWithSize:size];
@@ -1519,8 +1503,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [findViewAdornImage unlockFocus];
-    if ([findViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [findViewAdornImage setTemplate:YES];
+    [findViewAdornImage setTemplate:YES];
     [findViewAdornImage setName:SKImageNameFindViewAdorn];
     
     groupedFindViewAdornImage = [[NSImage alloc] initWithSize:size];
@@ -1541,8 +1524,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
     [groupedFindViewAdornImage unlockFocus];
-    if ([groupedFindViewAdornImage respondsToSelector:@selector(setTemplate:)])
-        [groupedFindViewAdornImage setTemplate:YES];
+    [groupedFindViewAdornImage setTemplate:YES];
     [groupedFindViewAdornImage setName:SKImageNameGroupedFindViewAdorn];
     
     [shadow1 release];

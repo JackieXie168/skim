@@ -65,12 +65,8 @@ static NSSet *supportedRichTextTypes = nil;
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
     if (richTextTypes == nil)
         richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
-    if (supportedRichTextTypes == nil) {
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-            supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
-        else
-            supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", nil];
-    }
+    if (supportedRichTextTypes == nil)
+        supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
     if ([supportedRichTextTypes containsObject:fileType]) {

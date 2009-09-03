@@ -126,23 +126,11 @@
     [self setAlphaValue:[self defaultAlphaValue]];
     [self willClose];
     
-    if ([self respondsToSelector:@selector(animator)]) {
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
-        [[self animator] setAlphaValue:0.0];
-        [NSAnimationContext endGrouping];
-        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
-    } else {
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-        [fadeOutDict release];
-        
-        [animation setAnimationBlockingMode:NSAnimationNonblocking];
-        [animation setDuration:[self fadeOutDuration]];
-        [animation setDelegate:self];
-        [animation startAnimation];
-    }
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:[self fadeOutDuration]];
+    [[self animator] setAlphaValue:0.0];
+    [NSAnimationContext endGrouping];
+    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:[self fadeOutDuration]];
 }
 
 - (void)fadeIn {
@@ -152,22 +140,10 @@
         [self setAlphaValue:0.0];
     [super orderFront:self];
     
-    if ([self respondsToSelector:@selector(animator)]) {
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:[self fadeInDuration]];
-        [[self animator] setAlphaValue:[self defaultAlphaValue]];
-        [NSAnimationContext endGrouping];
-    }else {
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-        
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-        [fadeInDict release];
-        
-        [animation setAnimationBlockingMode:NSAnimationNonblocking];
-        [animation setDuration:[self fadeInDuration]];
-        [animation setDelegate:self];
-        [animation startAnimation];
-    }
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:[self fadeInDuration]];
+    [[self animator] setAlphaValue:[self defaultAlphaValue]];
+    [NSAnimationContext endGrouping];
     [self fadeOutAfterTimeout];
 }
 

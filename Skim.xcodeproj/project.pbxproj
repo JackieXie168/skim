@@ -92,7 +92,6 @@
 		CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
-		CE416D4A0CE6354F00AAB04C /* archivedmg.sh in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE2A11660CE3B51600A0499B /* archivedmg.sh */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
@@ -120,7 +119,6 @@
 		CE4EC8830B7E6E920091F228 /* CIImage_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */; };
 		CE4EC88C0B7E6EDB0091F228 /* SKSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */; };
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
-		CE51630B0EAB5A1A009FA237 /* SKSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */; };
 		CE5163380EAB5EE2009FA237 /* Segment_Cap.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */; };
 		CE51633A0EAB5EE2009FA237 /* Segment_CapPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE51632E0EAB5EE2009FA237 /* Segment_CapPress.tiff */; };
 		CE51633C0EAB5EE2009FA237 /* Segment_DividerPress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5163300EAB5EE2009FA237 /* Segment_DividerPress.tiff */; };
@@ -156,10 +154,6 @@
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
 		CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; };
-		CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
-		CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
-		CE816B040D71963B008D807D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
-		CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */; };
 		CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
@@ -171,6 +165,7 @@
 		CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */; };
 		CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA1CCE60C9864470061A6D4 /* Security.framework */; };
 		CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA1D6E80C9984400061A6D4 /* SKTextWithIconCell.m */; };
+		CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CEA450F40E47A87500D161AD /* NSLayoutManager_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA450F30E47A87500D161AD /* NSLayoutManager_SKExtensions.m */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
@@ -328,13 +323,6 @@
 			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
 			remoteInfo = Skim;
 		};
-		CE816AB50D7195E8008D807D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CE816AAA0D71958F008D807D;
-			remoteInfo = Leopard;
-		};
 		CEA5F5430E2CED1100F65088 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
@@ -418,7 +406,6 @@
 			files = (
 				CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */,
 				CEE22EA30BFB8672002B746B /* displayline in Copy Files: Shared Support */,
-				CE416D4A0CE6354F00AAB04C /* archivedmg.sh in Copy Files: Shared Support */,
 				CE0ECCDA0DE7188C006EEDDB /* Templates in Copy Files: Shared Support */,
 			);
 			name = "Copy Files: Shared Support";
@@ -494,7 +481,6 @@
 		CE0ECD1A0DE73604006EEDDB /* NSDocument_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDocument_SKExtensions.h; sourceTree = "<group>"; };
 		CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDocument_SKExtensions.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
-		CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Leopard.xcconfig"; sourceTree = "<group>"; };
 		CE17F47C0F1A17E200E741DD /* SKPDFSynchronizerServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizerServer.h; sourceTree = "<group>"; };
 		CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizerServer.m; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
@@ -519,7 +505,6 @@
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE2896D80E78948200031EEA /* SKPDFOutline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFOutline.h; sourceTree = "<group>"; };
 		CE2896D90E78948200031EEA /* SKPDFOutline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFOutline.m; sourceTree = "<group>"; };
-		CE2A11660CE3B51600A0499B /* archivedmg.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = archivedmg.sh; sourceTree = "<group>"; };
 		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
 		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
@@ -653,8 +638,6 @@
 		CE4F96F70CFB4ACA00DBEA14 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE4F96FA0CFB4AD400DBEA14 /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE4F9DED0BC1BE3A005BE0A1 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CE5163080EAB5A1A009FA237 /* SKSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSegmentedControl.h; sourceTree = "<group>"; };
-		CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSegmentedControl.m; sourceTree = "<group>"; };
 		CE51632C0EAB5EE2009FA237 /* Segment_Cap.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_Cap.tiff; sourceTree = "<group>"; };
 		CE51632E0EAB5EE2009FA237 /* Segment_CapPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_CapPress.tiff; sourceTree = "<group>"; };
 		CE5163300EAB5EE2009FA237 /* Segment_DividerPress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Segment_DividerPress.tiff; sourceTree = "<group>"; };
@@ -757,8 +740,6 @@
 		CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKHighlightingPopUpButton.m; sourceTree = "<group>"; };
 		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
 		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
-		CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Skim-Leopard.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE816AAC0D71958F008D807D /* Leopard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Leopard-Info.plist"; sourceTree = "<group>"; };
 		CE820A1F0C8A0E310020E6B0 /* NSTask_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask_SKExtensions.h; sourceTree = "<group>"; };
 		CE820A200C8A0E310020E6B0 /* NSTask_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTask_SKExtensions.m; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
@@ -1010,15 +991,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CE816AA90D71958F008D807D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CE816B030D71963B008D807D /* Cocoa.framework in Frameworks */,
-				CE816B040D71963B008D807D /* Quartz.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1048,7 +1020,6 @@
 			isa = PBXGroup;
 			children = (
 				8D15AC370486D014006FF6A4 /* Skim.app */,
-				CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1064,7 +1035,6 @@
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				CEE22EA20BFB8631002B746B /* Shared Support */,
 				CE2BD8160BD4123D00A5F4DB /* Subprojects */,
-				CE816AA10D718C5B008D807D /* Leopard */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 				CED8D4050D744D520028E3E2 /* Configurations */,
@@ -1285,6 +1255,8 @@
 				CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */,
 				CE05A7350E9024ED0060BB07 /* SKPresentationOptionsSheetController.h */,
 				CE05A7360E9024ED0060BB07 /* SKPresentationOptionsSheetController.m */,
+				CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */,
+				CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */,
 				CE209FA70C9D38C6007C72F9 /* SKProgressController.h */,
 				CE209FA80C9D38C6007C72F9 /* SKProgressController.m */,
 				F97751610B37461000DF673B /* SKConversionProgressController.h */,
@@ -1359,8 +1331,6 @@
 				CEAA55B50C6DE452006BD633 /* SKProgressCell.m */,
 				CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */,
 				CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */,
-				CE5163080EAB5A1A009FA237 /* SKSegmentedControl.h */,
-				CE5163090EAB5A1A009FA237 /* SKSegmentedControl.m */,
 				CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */,
 				CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */,
 				F92DB5AA0B36FE1F002A26E9 /* SKSnapshotPDFView.h */,
@@ -1550,16 +1520,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CE816AA10D718C5B008D807D /* Leopard */ = {
-			isa = PBXGroup;
-			children = (
-				CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */,
-				CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */,
-				CE816AAC0D71958F008D807D /* Leopard-Info.plist */,
-			);
-			name = Leopard;
-			sourceTree = "<group>";
-		};
 		CE9BD6FA0D096EE300EB1A6C /* RemoteControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1619,7 +1579,6 @@
 				CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */,
 				CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */,
 				CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */,
-				CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */,
 			);
 			path = Configurations;
 			sourceTree = "<group>";
@@ -1709,7 +1668,6 @@
 			children = (
 				CE0ECCD40DE71868006EEDDB /* Templates */,
 				CE1E2F120BDB86A10011D9DD /* displayline */,
-				CE2A11660CE3B51600A0499B /* archivedmg.sh */,
 			);
 			name = "Shared Support";
 			sourceTree = "<group>";
@@ -1746,7 +1704,6 @@
 			dependencies = (
 				CE7DC75B0E0928D700D6D76D /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
-				CE816AB60D7195E8008D807D /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
 				CE816A030D70F8F7008D807D /* PBXTargetDependency */,
 				CE7DC7E20E093C1A00D6D76D /* PBXTargetDependency */,
@@ -1756,23 +1713,6 @@
 			productName = Skim;
 			productReference = 8D15AC370486D014006FF6A4 /* Skim.app */;
 			productType = "com.apple.product-type.application";
-		};
-		CE816AAA0D71958F008D807D /* Skim-Leopard */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Skim-Leopard" */;
-			buildPhases = (
-				CE816AA70D71958F008D807D /* Resources */,
-				CE816AA80D71958F008D807D /* Sources */,
-				CE816AA90D71958F008D807D /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Skim-Leopard";
-			productName = Leopard;
-			productReference = CE816AAB0D71958F008D807D /* Skim-Leopard.bundle */;
-			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -1817,7 +1757,6 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
-				CE816AAA0D71958F008D807D /* Skim-Leopard */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 			);
 		};
@@ -1947,7 +1886,6 @@
 				CE6DC7770D687252003A072F /* PrintAccessoryView.nib in Resources */,
 				CE6DC88A0D68C657003A072F /* ToolbarMoveTool.tiff in Resources */,
 				CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */,
-				CE816B0E0D719700008D807D /* Skim-Leopard.bundle in Resources */,
 				CEAF36B20E67246A00491E3B /* ReleaseNotes.nib in Resources */,
 				CEAF36B40E6724B900491E3B /* ProgressSheet.nib in Resources */,
 				CEAF36B60E6724F400491E3B /* SnapshotWindow.nib in Resources */,
@@ -1962,13 +1900,6 @@
 				CEB34A530F5C1B7E0037E086 /* dsa_pub.pem in Resources */,
 				CE0458310FB6FAB0003CAF5D /* Scroller_Divider.tiff in Resources */,
 				CE0458320FB6FAB0003CAF5D /* Scroller_Background.tiff in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CE816AA70D71958F008D807D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2218,7 +2149,6 @@
 				CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */,
 				CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */,
 				CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */,
-				CE51630B0EAB5A1A009FA237 /* SKSegmentedControl.m in Sources */,
 				CED6A3120EADF37800E8CD11 /* NSImageCell_SKExtensions.m in Sources */,
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
@@ -2228,14 +2158,7 @@
 				CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */,
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
 				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CE816AA80D71958F008D807D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CE816AB00D7195B7008D807D /* SKPrintAccessoryController.m in Sources */,
+				CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2266,11 +2189,6 @@
 			isa = PBXTargetDependency;
 			name = Skim;
 			targetProxy = CE816A020D70F8F7008D807D /* PBXContainerItemProxy */;
-		};
-		CE816AB60D7195E8008D807D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CE816AAA0D71958F008D807D /* Skim-Leopard */;
-			targetProxy = CE816AB50D7195E8008D807D /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2634,20 +2552,6 @@
 			};
 			name = Release;
 		};
-		CE816AAD0D719591008D807D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		CE816AAE0D719591008D807D /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CE17EE4A0E24EE7500DE06EA /* Skim-Leopard.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2674,15 +2578,6 @@
 			buildConfigurations = (
 				CE592C5F0B9239C600C113DF /* Debug */,
 				CE592C600B9239C600C113DF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CE816AAF0D719592008D807D /* Build configuration list for PBXNativeTarget "Skim-Leopard" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CE816AAD0D719591008D807D /* Debug */,
-				CE816AAE0D719591008D807D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

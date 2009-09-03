@@ -148,15 +148,9 @@
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
-    if ([[SKNotesDocument superclass] instancesRespondToSelector:_cmd]) {
-        fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-        if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
-            fileExtension = [typeName pathExtension];
-    } else {
-        NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:typeName];
-        if ([fileExtensions count])
-            fileExtension = [fileExtensions objectAtIndex:0];
-    }
+    fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
+    if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+        fileExtension = [typeName pathExtension];
     return fileExtension;
 }
 
@@ -299,10 +293,7 @@
     [attrString release];
     [printableView release];
     [printInfo release];
-    
-    NSPrintPanel *printPanel = [printOperation printPanel];
-    if ([printPanel respondsToSelector:@selector(setOptions:)])
-        [printPanel setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
+    [[printOperation printPanel] setOptions:NSPrintPanelShowsCopies | NSPrintPanelShowsPageRange | NSPrintPanelShowsPaperSize | NSPrintPanelShowsOrientation | NSPrintPanelShowsScaling | NSPrintPanelShowsPreview];
     
     return printOperation;
 }

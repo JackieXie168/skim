@@ -41,15 +41,6 @@
 
 @implementation NSSegmentedControl (SKExtensions)
 
-- (void)makeTexturedRounded {
-    NSRect frame = [self frame];
-    frame.size.height = 25.0;
-    [self setFrame:frame];
-    if ([self respondsToSelector:@selector(setSegmentStyle:)]) {
-        [self setSegmentStyle:NSSegmentStyleTexturedRounded];
-    }
-}
-
 - (NSInteger)selectedTag {
     return [[self cell] tagForSegment:[self selectedSegment]];
 }

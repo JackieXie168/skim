@@ -186,14 +186,13 @@ static char SKPDFDocumentDefaultsObservationContext;
     tmpData = nil;
     
     if ([[self pdfDocument] pageCount]) {
-        BOOL autoRotate = (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) ? [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRotatePrintedPagesKey] : YES;
         PDFPage *page = [[self pdfDocument] pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
         BOOL isLandscape = [page rotation] % 180 == 90 ? pageSize.height > pageSize.width : pageSize.width > pageSize.height;
         
         printInfo = [printInfo copy];
-        [[printInfo dictionary] setValue:[NSNumber numberWithBool:autoRotate] forKey:@"PDFPrintAutoRotate"];
+        [[printInfo dictionary] setValue:[NSNumber numberWithBool:YES] forKey:@"PDFPrintAutoRotate"];
         if (isLandscape)
             [printInfo setOrientation:NSLandscapeOrientation];
         [self setPrintInfo:printInfo];
@@ -253,12 +252,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 - (void)undoableActionDoesntDirtyDocument {
 	// This action, while undoable, shouldn't mark the document dirty
-	BOOL isUndoing = [[self undoManager] isUndoing];
-	if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-		[self updateChangeCount:isUndoing ? NSChangeDone : NSChangeUndone];
-	} else {
-		[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:isUndoing] afterDelay:0.0];
-	}
+	[self performSelector:@selector(undoableActionDoesntDirtyDocumentDeferred:) withObject:[NSNumber numberWithBool:[[self undoManager] isUndoing]] afterDelay:0.0];
 }
 
 #pragma mark Document read/write
@@ -283,15 +277,9 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 - (NSString *)fileNameExtensionForType:(NSString *)typeName saveOperation:(NSSaveOperationType)saveOperation {
     NSString *fileExtension = nil;
-    if ([[SKPDFDocument superclass] instancesRespondToSelector:_cmd]) {
-        fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
-        if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
-            fileExtension = [typeName pathExtension];
-    } else {
-        NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:typeName];
-        if ([fileExtensions count])
-            fileExtension = [fileExtensions objectAtIndex:0];
-    }
+    fileExtension = [super fileNameExtensionForType:typeName saveOperation:saveOperation];
+    if (fileExtension == nil && [[[NSDocumentController sharedDocumentController] customExportTemplateFiles] containsObject:typeName])
+        fileExtension = [typeName pathExtension];
     return fileExtension;
 }
 
@@ -1033,14 +1021,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSBeep();
         return;
     }
-    NSString *message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog");
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
-        message = NSLocalizedString(@"This will convert PDF annotations to Skim notes. This will loose the Table of Contents. Do you want to proceed?", @"Informative text in alert dialog");
     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Convert Notes", @"Alert text when trying to convert notes")
                                      defaultButton:NSLocalizedString(@"OK", @"Button title")
                                    alternateButton:NSLocalizedString(@"Cancel", @"Button title")
                                        otherButton:nil
-                         informativeTextWithFormat:message];
+                         informativeTextWithFormat:NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog")];
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
@@ -1148,19 +1133,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
     NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
-    NSString *scriptPath = nil;
-    NSArray *arguments = nil;
+    NSArray *arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
     
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4) {
-        // hdiutil on Tiger looses EAs, so we use a more complicated path
-        scriptPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"archivedmg.sh"];
-        arguments = [NSArray arrayWithObjects:sourcePath, targetPath, nil];
-    } else {
-        scriptPath = @"/usr/bin/hdiutil";
-        arguments = [NSArray arrayWithObjects:@"create", @"-srcfolder", sourcePath, @"-format", @"UDZO", @"-volname", [[targetPath lastPathComponent] stringByDeletingPathExtension], targetPath, nil];
-    }
-    
-    if ([NSTask runTaskWithLaunchPath:scriptPath arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]] == NO)
+    if ([NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:arguments currentDirectoryPath:[sourcePath stringByDeletingLastPathComponent]] == NO)
         NSBeep();
     
     [[self progressController] performSelectorOnMainThread:@selector(hide) withObject:nil waitUntilDone:NO];

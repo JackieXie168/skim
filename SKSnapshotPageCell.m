@@ -78,14 +78,8 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
         NSBezierPath *path = [NSBezierPath bezierPath];
         NSShadow *aShadow = [[[NSShadow alloc] init] autorelease];
         NSColor *fillColor;
-        NSBackgroundStyle backgroundStyle = NSBackgroundStyleLight;
         
-        if ([self respondsToSelector:@selector(interiorBackgroundStyle)])
-            backgroundStyle = [self interiorBackgroundStyle];
-        else if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
-            backgroundStyle = NSBackgroundStyleDark;
-        
-        switch (backgroundStyle) {
+        switch ([self interiorBackgroundStyle]) {
             case NSBackgroundStyleDark:
                 [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
                 fillColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
