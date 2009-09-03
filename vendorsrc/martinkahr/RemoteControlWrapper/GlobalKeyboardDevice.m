@@ -108,17 +108,17 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 			defaultsKey = @"playhold";
 			break;			
 		default: 
-			NSLog(@"Unknown global keyboard defaults key for remote button identifier %d", remoteButtonIdentifier);
+			NSLog(@"Unknown global keyboard defaults key for remote button identifier %lu", (unsigned long)remoteButtonIdentifier);
 	}
 	
 	NSNumber* modifiersCfg = [[NSUserDefaults standardUserDefaults] objectForKey: [NSString stringWithFormat: @"mac.remotecontrols.GlobalKeyboardDevice.%@_modifiers", defaultsKey]];
 	NSNumber* keycodeCfg   = [[NSUserDefaults standardUserDefaults] objectForKey: [NSString stringWithFormat: @"mac.remotecontrols.GlobalKeyboardDevice.%@_keycode", defaultsKey]];
 	
 	NSUInteger modifiers = defaultModifiers;
-	if (modifiersCfg) modifiers = [modifiersCfg unsignedIntValue];
+	if (modifiersCfg) modifiers = [modifiersCfg unsignedIntegerValue];
 	
 	NSUInteger keycode = defaultKeycode;
-	if (keycodeCfg) keycode = [keycodeCfg unsignedIntValue];
+	if (keycodeCfg) keycode = [keycodeCfg unsignedIntegerValue];
 				  
     [self registerHotKeyCode: keycode  modifiers: modifiers remoteEventIdentifier: remoteButtonIdentifier];
 }	
@@ -157,7 +157,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 	NSEnumerator* values = [hotKeyRemoteEventMapping objectEnumerator];
 	NSNumber* remoteIdentifier;
 	while( (remoteIdentifier = [values nextObject]) ) {
-		if ([remoteIdentifier unsignedIntValue] == identifier) return YES;
+		if ([remoteIdentifier unsignedIntegerValue] == identifier) return YES;
 	}
 	return NO;
 }
@@ -172,14 +172,14 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 	EventHotKeyRef carbonHotKey;
 
 	hotKeyID.signature = 'PTHk';
-	hotKeyID.id = (long)keycode;
+	hotKeyID.id = (UInt32)keycode;
 	
 	err = RegisterEventHotKey(keycode, modifiers, hotKeyID, GetEventDispatcherTarget(), 0, &carbonHotKey );
 	
 	if( err )
 		return NO;
 	
-	[hotKeyRemoteEventMapping setObject: [NSNumber numberWithInt:identifier] forKey: [NSNumber numberWithUnsignedInt: hotKeyID.id]];
+	[hotKeyRemoteEventMapping setObject: [NSNumber numberWithInteger:identifier] forKey: [NSNumber numberWithUnsignedInteger:hotKeyID.id]];
 	
 	return YES;
 }
@@ -209,8 +209,8 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 */
 
 - (RemoteControlEventIdentifier) remoteControlEventIdentifierForID: (NSUInteger) anId {
-	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInt: anId]];
-	return [remoteEventIdentifier unsignedIntValue];
+	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInteger:anId]];
+	return [remoteEventIdentifier unsignedIntegerValue];
 }
 
 - (void) sendRemoteButtonEvent: (RemoteControlEventIdentifier) event pressedDown: (BOOL) pressedDown {
