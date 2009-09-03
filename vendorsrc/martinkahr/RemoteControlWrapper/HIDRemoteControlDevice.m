@@ -85,7 +85,7 @@
 		NSNumber* identifier;
 		supportedButtonEvents = 0;
 		while(identifier = [enumerator nextObject]) {
-			supportedButtonEvents |= [identifier intValue];
+			supportedButtonEvents |= [identifier integerValue];
 		}
 		
 		fixSecureEventInputBug = [[NSUserDefaults standardUserDefaults] boolForKey: @"remoteControlWrapperFixSecureEventInputBug"];
@@ -285,7 +285,7 @@ cleanup:
 		
 	NSNumber* buttonId = [[self cookieToButtonMapping] objectForKey: cookieString];
 	if (buttonId != nil) {
-		[self sendRemoteButtonEvent: [buttonId intValue] pressedDown: (sumOfValues>0)];
+		[self sendRemoteButtonEvent: [buttonId integerValue] pressedDown: (sumOfValues>0)];
 	} else {
 		// let's see if a number of events are stored in the cookie string. this does
 		// happen when the main thread is too busy to handle all incoming events in time.
@@ -436,7 +436,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 			if (object == nil || ![object isKindOfClass:[NSNumber class]]) continue;			
 			usagePage = [object longValue];
 
-			[allCookies addObject: [NSNumber numberWithInt:(NSInteger)cookie]];
+			[allCookies addObject: [NSNumber numberWithInteger:(int)cookie]];
 		}
 	} else {
 		return NO;
@@ -460,7 +460,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 			IOHIDElementCookie cookie;
 			NSEnumerator *allCookiesEnumerator = [allCookies objectEnumerator];
 			
-			while (cookie = (IOHIDElementCookie)[[allCookiesEnumerator nextObject] intValue]) {
+			while (cookie = (IOHIDElementCookie)[[allCookiesEnumerator nextObject] integerValue]) {
 				(*queue)->addElement(queue, cookie, 0);
 			}
 									  

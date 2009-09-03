@@ -43,7 +43,7 @@ extern NSString* kTargetApplicationIdentifier;
 
 @class RemoteControl;
 
-typedef enum _RemoteControlEventIdentifier {
+enum _RemoteControlEventIdentifier {
 	// normal events
 	kRemoteButtonPlus				=1<<1,
 	kRemoteButtonMinus				=1<<2,
@@ -62,7 +62,8 @@ typedef enum _RemoteControlEventIdentifier {
 	
 	// special events (not supported by all devices)	
 	kRemoteControl_Switched			=1<<13,
-} RemoteControlEventIdentifier;
+};
+typedef NSUInteger RemoteControlEventIdentifier;
 
 @interface NSObject(RemoteControlDelegate)
 

@@ -106,7 +106,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 }
 
 - (void) executeClickCountEvent: (NSArray*) values {
-	RemoteControlEventIdentifier event = [[values objectAtIndex: 0] unsignedIntValue]; 
+	RemoteControlEventIdentifier event = [[values objectAtIndex: 0] unsignedIntegerValue]; 
 	NSTimeInterval eventTimePoint = [[values objectAtIndex: 1] doubleValue];
 	
 	BOOL finishedClicking = NO;
@@ -167,7 +167,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 					NSNumber* timeNumber;		
 					eventClickCount = 1;
 					timeNumber = [NSNumber numberWithDouble:lastClickCountEventTime];
-					eventNumber= [NSNumber numberWithUnsignedInt:previousEvent];
+					eventNumber= [NSNumber numberWithUnsignedInteger:previousEvent];
 					NSTimeInterval diffTime = maxClickTimeDifference-([NSDate timeIntervalSinceReferenceDate]-lastHoldEventTime);
 					[self performSelector: @selector(executeClickCountEvent:) 
 							   withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
@@ -196,7 +196,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 			}
 			lastClickCountEvent = event;
 			timeNumber = [NSNumber numberWithDouble:lastClickCountEventTime];
-			eventNumber= [NSNumber numberWithUnsignedInt:event];
+			eventNumber= [NSNumber numberWithUnsignedInteger:event];
 		}
 		[self performSelector: @selector(executeClickCountEvent:) 
 				   withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
