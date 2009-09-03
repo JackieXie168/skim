@@ -2,7 +2,7 @@
 
 #include "SkimNotes-Common.xcconfig"
 
-ARCHS = $(NATIVE_ARCH)
+ARCHS = $(NATIVE_ARCH_ACTUAL)
 
 COPY_PHASE_STRIP = YES
 STRIP_INSTALLED_PRODUCT = YES
