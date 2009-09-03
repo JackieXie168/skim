@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <IOKit/pwr_mgt/IOPMLib.h>
 
 enum {
     SKThumbnailSidePaneState,
@@ -206,7 +207,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     NSMutableArray                  *lastViewedPages;
     
-    NSTimer                         *activityTimer;
+    IOPMAssertionID                 activityAssertionID;
     
     NSMutableDictionary             *savedNormalSetup;
     
