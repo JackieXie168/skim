@@ -9,7 +9,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,32 +20,7 @@ int main(int argc, char *argv[])
     OSStatus err = Gestalt(gestaltSystemVersion, &version);
     
     if (noErr != err || version < 0x00001050) {
-        DialogRef alert;
-        
-        // pool required for localized strings
-        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-        
-        AlertStdCFStringAlertParamRec alertParamRec = {
-            kStdCFStringAlertVersionOne,
-            TRUE,
-            FALSE,
-            (CFStringRef)NSLocalizedString(@"Quit", @""),
-            NULL, // cancel button text
-            NULL, // other button text
-            kAlertStdAlertOKButton,
-            kAlertStdAlertCancelButton,
-            kWindowDefaultPosition,
-            0
-        };
-        
-        err = CreateStandardAlert(kAlertStopAlert, (CFStringRef)NSLocalizedString(@"Unsupported System Version", @""), (CFStringRef)NSLocalizedString(@"This version of Skim requires Mac OS X 10.5 or greater to run.", @""), &alertParamRec, &alert);
-        DialogItemIndex idx;
-        
-        if (noErr == err) {
-            // this will dispose of the alert (not that a leak is a big deal at this point)
-            err = RunStandardAlert(alert, NULL, &idx);
-        }
-        [pool release];
+        NSLog(@"Incompatible version. Skim requires Mac OSX 10.5 or later.");
         return err;
     }
     return NSApplicationMain(argc, (const char **) argv);
