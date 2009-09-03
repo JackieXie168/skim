@@ -1041,6 +1041,9 @@ enum {
     if ([activeAnnotation isLink])
         [self setActiveAnnotation:nil];
     
+    // 10.6 does not automatically make us firstResponder, that's annoying
+    [[self window] makeFirstResponder:self];
+    
     mouseDownLoc = [theEvent locationInWindow];
 	NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
@@ -2413,6 +2416,10 @@ enum {
         if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
             return YES;
         if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && selectionPageIndex != NSNotFound)
+            return YES;
+        return NO;
+    } else if (action == @selector(cut:)) {
+        if ([activeAnnotation isSkimNote] && [activeAnnotation isMovable])
             return YES;
         return NO;
     } else if (action == @selector(paste:)) {
