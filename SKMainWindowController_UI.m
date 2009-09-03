@@ -1344,15 +1344,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     } else if (action == @selector(changeDisplayBox:)) {
         [menuItem setState:[pdfView displayBox] == (PDFDisplayBox)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
-    } else if (action == @selector(changeToolMode:)) {
-        [menuItem setState:[pdfView toolMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(changeAnnotationMode:)) {
-        if ([[menuItem menu] numberOfItems] > 8)
-            [menuItem setState:[pdfView toolMode] == SKNoteToolMode && [pdfView annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
-        else
-            [menuItem setState:[pdfView annotationMode] == (SKToolMode)[menuItem tag] ? NSOnState : NSOffState];
-        return YES;
+    } else if (action == @selector(delete:) || action == @selector(copy:) || action == @selector(cut:) || action == @selector(paste:) || action == @selector(alternatePaste:) || action == @selector(pasteAsPlainText:) || action == @selector(deselectAll:) || action == @selector(changeAnnotationMode:) || action == @selector(changeToolMode:) || action == @selector(changeToolMode:)) {
+        return [pdfView validateMenuItem:menuItem];
     } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];
     } else if (action == @selector(doGoToPreviousPage:) ) {
