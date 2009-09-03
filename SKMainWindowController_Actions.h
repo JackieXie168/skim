@@ -102,6 +102,13 @@
 - (IBAction)getInfo:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)chooseScale:(id)sender;
+- (IBAction)delete:(id)sender;
+- (IBAction)paste:(id)sender;
+- (IBAction)alternatePaste:(id)sender;
+- (IBAction)pasteAsPlainText:(id)sender;
+- (IBAction)copy:(id)sender;
+- (IBAction)cut:(id)sender;
+- (IBAction)deselectAll:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
