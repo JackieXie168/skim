@@ -65,7 +65,6 @@
 		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
-		CE2896DA0E78948200031EEA /* SKPDFOutline.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2896D90E78948200031EEA /* SKPDFOutline.m */; };
 		CE2A1E630CE513E400A0499B /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2A1E610CE513E300A0499B /* RemoteControl.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
@@ -127,6 +126,7 @@
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
+		CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */; };
 		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
 		CE5BEA190C7C635400EBDCF7 /* NSGeometry_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */; };
 		CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */; };
@@ -503,8 +503,6 @@
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
-		CE2896D80E78948200031EEA /* SKPDFOutline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFOutline.h; sourceTree = "<group>"; };
-		CE2896D90E78948200031EEA /* SKPDFOutline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFOutline.m; sourceTree = "<group>"; };
 		CE2A1E600CE513E300A0499B /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
 		CE2A1E610CE513E300A0499B /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
@@ -669,6 +667,8 @@
 		CE5A822F0E6C42A7008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE5A82300E6C42B1008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5A82310E6C42BF008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CE5BAF4210511A0F00161B87 /* PDFOutline_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFOutline_SKExtensions.h; sourceTree = "<group>"; };
+		CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFOutline_SKExtensions.m; sourceTree = "<group>"; };
 		CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTypeSelectHelper.h; sourceTree = "<group>"; };
 		CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTypeSelectHelper.m; sourceTree = "<group>"; };
 		CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSGeometry_SKExtensions.h; sourceTree = "<group>"; };
@@ -1384,8 +1384,6 @@
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
 				CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */,
 				CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */,
-				CE2896D80E78948200031EEA /* SKPDFOutline.h */,
-				CE2896D90E78948200031EEA /* SKPDFOutline.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
 				CE4294A20BBD29120016FDC2 /* SKReadingBar.m */,
 				CEC3154D0F24AC02008D2C75 /* SKRichTextFormat.h */,
@@ -1633,18 +1631,20 @@
 				CEE54D870DA2E37B0037169F /* PDFAnnotation_SKExtensions.m */,
 				CEE54D910DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.h */,
 				CEE54D920DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m */,
-				CEE54D960DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.h */,
-				CEE54D970DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m */,
-				CEE54D9A0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.h */,
-				CEE54D9B0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m */,
 				CEE54DAC0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.h */,
 				CEE54DAD0DA2E8CD0037169F /* PDFAnnotationFreeText_SKExtensions.m */,
-				CEE54DB20DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.h */,
-				CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */,
-				CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */,
-				CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */,
+				CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */,
+				CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */,
+				CEE54D9A0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.h */,
+				CEE54D9B0DA2E7B30037169F /* PDFAnnotationLine_SKExtensions.m */,
 				CEC3AD220E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.h */,
 				CEC3AD230E23EC0300F40B0B /* PDFAnnotationLink_SKExtensions.m */,
+				CEE54DB20DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.h */,
+				CEE54DB30DA2E99D0037169F /* PDFAnnotationMarkup_SKExtensions.m */,
+				CEE54D960DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.h */,
+				CEE54D970DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m */,
+				CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */,
+				CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */,
 				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
 				CEE54DC60DA2EAE00037169F /* PDFBorder_SKExtensions.h */,
@@ -1653,12 +1653,12 @@
 				CEE176E30DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m */,
 				CE6DC7B90D689138003A072F /* PDFDocument_SKExtensions.h */,
 				CE6DC7BA0D689138003A072F /* PDFDocument_SKExtensions.m */,
+				CE5BAF4210511A0F00161B87 /* PDFOutline_SKExtensions.h */,
+				CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */,
 				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
 				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
 				CE49726A0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.h */,
 				CE49726B0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m */,
-				CEEE7C500E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.h */,
-				CEEE7C510E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m */,
 			);
 			name = "PDFKit Categories";
 			sourceTree = "<group>";
@@ -2142,7 +2142,6 @@
 				CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */,
 				CE09FC3C0E3886C100BDF413 /* SKRuntime.m in Sources */,
 				CEA450F40E47A87500D161AD /* NSLayoutManager_SKExtensions.m in Sources */,
-				CE2896DA0E78948200031EEA /* SKPDFOutline.m in Sources */,
 				CEEE7C520E7D3F2000B7B208 /* PDFAnnotationInk_SKExtensions.m in Sources */,
 				CE05A7380E9024ED0060BB07 /* SKPresentationOptionsSheetController.m in Sources */,
 				CE05A86F0E90ED950060BB07 /* SKTextFieldSheetController.m in Sources */,
@@ -2159,6 +2158,7 @@
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
 				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
 				CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */,
+				CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
