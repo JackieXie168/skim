@@ -1079,7 +1079,7 @@ enum {
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         
-        if (readingBar && (area == kPDFNoArea || area == kPDFPageArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
+        if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
             if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
                 [self doResizeReadingBarWithEvent:theEvent];
             else
@@ -1093,7 +1093,7 @@ enum {
                 case SKNoteToolMode:
                     if ([self doSelectAnnotationWithEvent:theEvent] == NO &&
                         (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
-                        if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] string] == nil) {
+                        if (area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO) {
                             [self doDragWithEvent:theEvent];
                         } else if (nil == activeAnnotation && mouseDownInAnnotation) {
                             [self doSelectTextWithEvent:theEvent];
@@ -4165,10 +4165,11 @@ enum {
                 p = [self convertPoint:p toPage:page];
                 if ([activeAnnotation isResizable] && [[activeAnnotation page] isEqual:page] && [activeAnnotation hitTest:p])
                     area = kPDFAnnotationArea;
-                BOOL canSelectOrDrag = area == kPDFNoArea || area == kPDFPageArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]]))
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
-                else if (area == kPDFNoArea || area == kPDFPageArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] string] == nil))
+                else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
                     cursor = [NSCursor openHandCursor];
                 else if (toolMode == SKNoteToolMode && annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote)
                     cursor = [NSCursor arrowCursor];
@@ -4181,7 +4182,7 @@ enum {
                     cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
-                if (area == kPDFNoArea || area == kPDFPageArea) {
+                if (area == kPDFNoArea) {
                     cursor = [NSCursor openHandCursor];
                 } else {
                     CGFloat margin = 4.0 / [self scaleFactor];
@@ -4227,7 +4228,7 @@ enum {
                 break;
             }
             case SKMagnifyToolMode:
-                if (area == kPDFNoArea || area == kPDFPageArea)
+                if (area == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
                 else
                     cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
