@@ -41,7 +41,7 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKCFCallbacks.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
@@ -452,7 +452,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             CFArrayRef ranges = (CFArrayRef)[dict objectForKey:@"ranges"];
             NSUInteger i, numRanges = CFArrayGetCount(ranges);
             
-            if ([container isKindOfClass:[SKPDFDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
+            if ([container isKindOfClass:[SKMainDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
                 
                 PDFDocument *document = [container pdfDocument];
                 NSUInteger aPageIndex = (aPage ? [aPage pageIndex] : NSNotFound), page, numPages = [document pageCount];
@@ -478,7 +478,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                 endIndex = MIN(NSMaxRange(range) - pageStart, pageLengths[page]) - 1;
                             }
                         }
-                        pageStart += pageLengths[page] + 1; // text of pages is separated by newlines, see -[SKPDFDocument richText]
+                        pageStart += pageLengths[page] + 1; // text of pages is separated by newlines, see -[SKMainDocument richText]
                     }
                     
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {

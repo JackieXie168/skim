@@ -43,7 +43,7 @@
 #import "SKPreferenceController.h"
 #import "SKReleaseNotesController.h"
 #import "SKStringConstants.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKMainWindowController.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"

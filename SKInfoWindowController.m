@@ -37,7 +37,7 @@
  */
 
 #import "SKInfoWindowController.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import <Quartz/Quartz.h>
 #import "SKRuntime.h"
 
@@ -205,7 +205,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     PDFDocument *pdfDoc;
     unsigned long long logicalSize = 0, physicalSize = 0;
     
-    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKPDFDocument *)doc pdfDocument])) {
+    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKMainDocument *)doc pdfDocument])) {
         [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
         [dictionary setValue:[NSString stringWithFormat: @"%ld.%ld", (long)[pdfDoc majorVersion], (long)[pdfDoc minorVersion]] forKey:SKInfoVersionKey];
         [dictionary setValue:[NSNumber numberWithInteger:[pdfDoc pageCount]] forKey:SKInfoPageCountKey];
@@ -226,9 +226,9 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:SKInfoPhysicalSizeKey];
     [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:SKInfoLogicalSizeKey];
     if ([doc respondsToSelector:@selector(tags)])
-        [dictionary setValue:[(SKPDFDocument *)doc tags] ?: [NSArray array] forKey:SKInfoTagsKey];
+        [dictionary setValue:[(SKMainDocument *)doc tags] ?: [NSArray array] forKey:SKInfoTagsKey];
     if ([doc respondsToSelector:@selector(rating)])
-        [dictionary setValue:[NSNumber numberWithDouble:[(SKPDFDocument *)doc rating]] forKey:SKInfoRatingKey];
+        [dictionary setValue:[NSNumber numberWithDouble:[(SKMainDocument *)doc rating]] forKey:SKInfoRatingKey];
     
     return dictionary;
 }

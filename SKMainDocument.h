@@ -1,5 +1,5 @@
 //
-//  SKPDFDocument.h
+//  SKMainDocument.h
 //  Skim
 //
 //  Created by Michael McCracken on 12/5/06.
@@ -59,7 +59,7 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 
 @class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController, SKTemporaryData;
 
-@interface SKPDFDocument : NSDocument
+@interface SKMainDocument : NSDocument
 {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;

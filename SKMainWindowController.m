@@ -50,7 +50,7 @@
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
 #import "PDFPage_SKExtensions.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKThumbnail.h"
 #import "SKPDFView.h"
 #import "BDSKCollapsibleView.h"
@@ -1238,11 +1238,11 @@ IOReturn IOPMAssertionCreateWithName(CFStringRef AssertionType, IOPMAssertionLev
     [transitions setPageTransitions:pageTransitions];
 }
 
-- (SKPDFDocument *)presentationNotesDocument {
+- (SKMainDocument *)presentationNotesDocument {
     return presentationNotesDocument;
 }
 
-- (void)setPresentationNotesDocument:(SKPDFDocument *)aDocument {
+- (void)setPresentationNotesDocument:(SKMainDocument *)aDocument {
     if (presentationNotesDocument != aDocument) {
         [presentationNotesDocument release];
         presentationNotesDocument = [aDocument retain];

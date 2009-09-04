@@ -37,7 +37,7 @@
  */
 
 #import "SKApplication.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKPDFView.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
@@ -239,7 +239,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     NSInteger i = [orderedDocuments count];
     
     while (i--)
-        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKPDFDocument class]] == NO)
+        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKMainDocument class]] == NO)
             [orderedDocuments removeObjectAtIndex:i];
     
     return orderedDocuments;

@@ -1,5 +1,5 @@
 //
-//  SKPDFDocument.m
+//  SKMainDocument.m
 //  Skim
 //
 //  Created by Michael McCracken on 12/5/06.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import <Quartz/Quartz.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <SkimNotes/SkimNotes.h>
@@ -89,7 +89,7 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKAutoRotatePrintedPagesKey @"SKAutoRotatePrintedPages"
 #define SKDisableReloadAlertKey @"SKDisableReloadAlert"
 
-static char SKPDFDocumentDefaultsObservationContext;
+static char SKMainDocumentDefaultsObservationContext;
 
 
 @interface SKTemporaryData : NSObject {
@@ -118,7 +118,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 @end
 
 
-@interface SKPDFDocument (SKPrivate)
+@interface SKMainDocument (SKPrivate)
 
 - (BOOL)tryToUnlockDocument:(PDFDocument *)document;
 
@@ -137,7 +137,7 @@ static char SKPDFDocumentDefaultsObservationContext;
 
 #pragma mark -
 
-@implementation SKPDFDocument
+@implementation SKMainDocument
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -199,7 +199,7 @@ static char SKPDFDocumentDefaultsObservationContext;
         [printInfo release];
     }
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKPDFDocumentDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey context:&SKMainDocumentDefaultsObservationContext];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[[self mainWindowController] window]];
 }
@@ -1477,7 +1477,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 #pragma mark Notification observation
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKPDFDocumentDefaultsObservationContext) {
+    if (context == &SKMainDocumentDefaultsObservationContext) {
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
             [self checkFileUpdatesIfNeeded];

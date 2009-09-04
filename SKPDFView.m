@@ -53,7 +53,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKReadingBar.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
@@ -1597,7 +1597,7 @@ enum {
         NSError *error = nil;
         NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
         id document = nil;
-        if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKPDFDocument class]) {
+        if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKMainDocument class]) {
             if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
                 NSUInteger pageIndex = [action pageIndex];
                 if (pageIndex < [[document pdfDocument] pageCount]) {
@@ -4123,7 +4123,7 @@ enum {
             break;
     }
     
-    SKPDFDocument *document = (SKPDFDocument *)[[[self window] windowController] document];
+    SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
         

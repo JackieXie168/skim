@@ -56,7 +56,7 @@
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKNoteText.h"
 #import "SKPDFToolTipWindow.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKGroupedSearchResult.h"
 #import "PDFSelection_SKExtensions.h"

@@ -39,7 +39,7 @@
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "SKPDFAnnotationTemporary.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKRuntime.h"
@@ -422,7 +422,7 @@ static BOOL usesSequentialPageNumbering = NO;
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    SKPDFDocument *document = [self containingDocument];
+    SKMainDocument *document = [self containingDocument];
 	NSUInteger idx = [self pageIndex];
     
     if (document && idx != NSNotFound) {
@@ -433,9 +433,9 @@ static BOOL usesSequentialPageNumbering = NO;
     }
 }
 
-- (SKPDFDocument *)containingDocument {
+- (SKMainDocument *)containingDocument {
     NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
-    SKPDFDocument *document;
+    SKMainDocument *document;
     
     while (document = [docEnum nextObject]) {
         if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])

@@ -42,7 +42,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStatusBar.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKPDFView.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -278,7 +278,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)statusBarClicked:(id)sender {
-    SKPDFView *pdfView = [(SKPDFDocument *)[self document] pdfView];
+    SKPDFView *pdfView = [(SKMainDocument *)[self document] pdfView];
     [pdfView scrollAnnotationToVisible:note];
     [pdfView setActiveAnnotation:note];
 }

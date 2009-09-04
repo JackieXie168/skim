@@ -38,7 +38,7 @@
 
 #import "SKPagesCommand.h"
 #import <Quartz/Quartz.h>
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "PDFSelection_SKExtensions.h"
 
 
@@ -50,7 +50,7 @@
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
     
-    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
+    if ([dPO isKindOfClass:[SKMainDocument class]]) {
         return [dPO valueForKey:@"pages"];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         return [NSArray arrayWithObjects:dPO, nil];
