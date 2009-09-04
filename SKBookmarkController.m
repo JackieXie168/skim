@@ -107,16 +107,16 @@ static SKBookmarkController *sharedBookmarkController = nil;
 
 + (id)sharedBookmarkController {
     if (sharedBookmarkController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedBookmarkController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedBookmarkController ?: [super allocWithZone:zone];
+    return [sharedBookmarkController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedBookmarkController == nil && (sharedBookmarkController = self = [super initWithWindowNibName:@"BookmarksWindow"])) {
+    if (sharedBookmarkController == nil && (self = [super initWithWindowNibName:@"BookmarksWindow"])) {
         recentDocuments = [[NSMutableArray alloc] init];
         
         NSMutableArray *bookmarks = [NSMutableArray array];
@@ -153,8 +153,10 @@ static SKBookmarkController *sharedBookmarkController = nil;
                                                  selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification
                                                    object:NSApp];
+        
+        sharedBookmarkController = [self retain];
     }
-    return sharedBookmarkController;
+    return self;
 }
 
 - (void)dealloc {
@@ -167,14 +169,6 @@ static SKBookmarkController *sharedBookmarkController = nil;
     [statusBar release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setupToolbar];

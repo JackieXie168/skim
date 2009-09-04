@@ -58,35 +58,27 @@ static id sharedRemoteStateWindow = nil;
 
 + (id)sharedRemoteStateWindow {
     if (sharedRemoteStateWindow == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedRemoteStateWindow;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedRemoteStateWindow ? sharedRemoteStateWindow : [super allocWithZone:zone];
+    return [sharedRemoteStateWindow retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
     if (sharedRemoteStateWindow == nil) {
         NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
         if (self = [super initWithContentRect:contentRect]) {
-            sharedRemoteStateWindow = self;
             [self setIgnoresMouseEvents:YES];
             [self setDisplaysWhenScreenProfileChanges:NO];
             [self setLevel:NSStatusWindowLevel];
             [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
+            sharedRemoteStateWindow = [self retain];
         }
     }
-    return sharedRemoteStateWindow;
+    return self;
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (CGFloat)defaultAlphaValue { return ALPHA_VALUE; }
 

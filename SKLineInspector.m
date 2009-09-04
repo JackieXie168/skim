@@ -59,7 +59,7 @@ static SKLineInspector *sharedLineInspector = nil;
 
 + (id)sharedLineInspector {
     if (sharedLineInspector == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedLineInspector;
 }
 
@@ -68,33 +68,26 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedLineInspector ?: [super allocWithZone:zone];
+    return [sharedLineInspector retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedLineInspector == nil && (sharedLineInspector = self = [super initWithWindowNibName:@"LineInspector"])) {
+    if (sharedLineInspector == nil && (self = [super initWithWindowNibName:@"LineInspector"])) {
         style = kPDFBorderStyleSolid;
         lineWidth = 1.0;
         dashPattern = nil;
         startLineStyle = kPDFLineStyleNone;
         endLineStyle = kPDFLineStyleNone;
         currentLineChangeAction = SKNoLineChangeAction;
+        sharedLineInspector = [self retain];
     }
-    return sharedLineInspector;
+    return self;
 }
 
 - (void)dealloc {
     [dashPattern release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];

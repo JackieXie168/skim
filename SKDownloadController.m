@@ -70,19 +70,20 @@ static SKDownloadController *sharedDownloadController = nil;
 
 + (id)sharedDownloadController {
     if (sharedDownloadController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedDownloadController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedDownloadController ?: [super allocWithZone:zone];
+    return [sharedDownloadController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedDownloadController == nil && (sharedDownloadController = self = [super initWithWindowNibName:@"DownloadsWindow"])) {
+    if (sharedDownloadController == nil && (self = [super initWithWindowNibName:@"DownloadsWindow"])) {
         downloads = [[NSMutableArray alloc] init];
+        sharedDownloadController = [self retain];
     }
-    return sharedDownloadController;
+    return self;
 }
 
 - (void)dealloc {
@@ -90,14 +91,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [downloads release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];

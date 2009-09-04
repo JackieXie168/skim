@@ -69,19 +69,19 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
 
 + (id)sharedToolTipWindow {
     if (sharedToolTipWindow == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedToolTipWindow;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedToolTipWindow ?: [super allocWithZone:zone];
+    return [sharedToolTipWindow retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedToolTipWindow == nil && (sharedToolTipWindow = self = [super initWithContentRect:NSZeroRect])) {
+    if (sharedToolTipWindow == nil && (self = [super initWithContentRect:NSZeroRect])) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
-		[self setOpaque:YES];
+        [self setOpaque:YES];
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
         [self setLevel:NSStatusWindowLevel];
@@ -102,8 +102,10 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
+        
+        sharedToolTipWindow = [self retain];
     }
-    return sharedToolTipWindow;
+    return self;
 }
 
 - (void)dealloc {
@@ -113,14 +115,6 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     [labelColor release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (NSFont *)font {
     return font;

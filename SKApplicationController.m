@@ -119,27 +119,19 @@ static id sharedApplicationController = nil;
 
 + (id)sharedApplicationController {
     if (sharedApplicationController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedApplicationController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedApplicationController ?: [super allocWithZone:zone];
+    return [sharedApplicationController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
     if (sharedApplicationController == nil)
-        sharedApplicationController = [super init];
+        sharedApplicationController = [[super init] retain];
     return sharedApplicationController;
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)awakeFromNib {
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];

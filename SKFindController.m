@@ -47,33 +47,26 @@ static SKFindController *sharedFindController = nil;
 
 + (id)sharedFindController {
     if (sharedFindController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedFindController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedFindController ?: [super allocWithZone:zone];
+    return [sharedFindController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedFindController == nil && (sharedFindController = self = [super initWithWindowNibName:@"FindPanel"])) {
+    if (sharedFindController == nil && (self = [super initWithWindowNibName:@"FindPanel"])) {
         ignoreCase = YES;
+        sharedFindController = [self retain];
     }
-    return sharedFindController;
+    return self;
 }
 
 - (void)dealloc {
     [fieldEditor release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
