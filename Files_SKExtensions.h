@@ -38,16 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-// This function is not thread safe
-
-NSString *SKDownloadDirectory();
 
 // These functions are thread safe
 
 extern BOOL SKFileIsInTrash(NSURL *fileURL);
-extern NSURL *SKResolvedURLFromPath(NSString *path);
 
-extern NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create);
 extern NSString *SKChewableItemsDirectory();
 extern NSString *SKUniqueTemporaryDirectory();
 extern NSString *SKUniqueChewableItemsDirectory();

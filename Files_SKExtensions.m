@@ -39,24 +39,6 @@
 #import "Files_SKExtensions.h"
 #import <CoreFoundation/CoreFoundation.h>
 
-NSString *SKDownloadDirectory() {
-    
-	static NSString *downloadsDirectory = nil;
-    
-    if (nil == downloadsDirectory) {
-        OSStatus err = fnfErr;
-        FSRef pathRef;
-        CFURLRef downloadsURL;
-        
-        err = FSFindFolder(kUserDomain, kDownloadsFolderType, TRUE, &pathRef);
-        if(err == noErr && (downloadsURL = CFURLCreateFromFSRef(CFAllocatorGetDefault(), &pathRef))) {
-            downloadsDirectory = (NSString *)CFURLCopyFileSystemPath(downloadsURL, kCFURLPOSIXPathStyle);
-            CFRelease(downloadsURL);
-        }
-    }
-    return downloadsDirectory;
-}
-
 BOOL SKFileIsInTrash(NSURL *fileURL) {
     NSCParameterAssert([fileURL isFileURL]);    
     FSRef fileRef;
@@ -69,35 +51,19 @@ BOOL SKFileIsInTrash(NSURL *fileURL) {
     return result;
 }
 
-extern NSURL *SKResolvedURLFromPath(NSString *path) {
-    NSURL *url = nil;
-    FSRef fileRef;
-    Boolean isFolder, isAlias;
-    if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &fileRef, NULL)) {
-        CFStringRef theUTI = NULL;
-        if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
-            FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kARMNoUI);
-       url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
-    }
-    return url ?: [NSURL fileURLWithPath:path];
-}
-
-NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
+static NSString *SKUniqueDirectory(NSString *basePath) {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
     CFRelease(uuid);
     
     BOOL success = YES;
-    
-    if (create) {
-        FSRef tmpRef;
-        UniCharCount length = [tmpDirName length];
-        UniChar *tmpName = (UniChar *)NSZoneMalloc(NULL, length * sizeof(UniChar));
-        [tmpDirName getCharacters:tmpName];
-        success = noErr == FSPathMakeRef((UInt8 *)[basePath fileSystemRepresentation], &tmpRef, NULL) &&
-                  noErr == FSCreateDirectoryUnicode(&tmpRef, length, tmpName, kFSCatInfoNone, NULL, NULL, NULL, NULL);
-        NSZoneFree(NULL, tmpName);
-    }
+    FSRef tmpRef;
+    UniCharCount length = [tmpDirName length];
+    UniChar *tmpName = (UniChar *)NSZoneMalloc(NULL, length * sizeof(UniChar));
+    [tmpDirName getCharacters:tmpName];
+    success = noErr == FSPathMakeRef((UInt8 *)[basePath fileSystemRepresentation], &tmpRef, NULL) &&
+              noErr == FSCreateDirectoryUnicode(&tmpRef, length, tmpName, kFSCatInfoNone, NULL, NULL, NULL, NULL);
+    NSZoneFree(NULL, tmpName);
     
     return success ? [basePath stringByAppendingPathComponent:tmpDirName] : nil;
 }
@@ -143,9 +109,9 @@ NSString *SKChewableItemsDirectory() {
 }
 
 NSString *SKUniqueTemporaryDirectory() {
-    return SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
+    return SKUniqueDirectory(NSTemporaryDirectory());
 }
 
 NSString *SKUniqueChewableItemsDirectory() {
-    return SKUniqueDirectoryCreating(SKChewableItemsDirectory(), YES);
+    return SKUniqueDirectory(SKChewableItemsDirectory());
 }
