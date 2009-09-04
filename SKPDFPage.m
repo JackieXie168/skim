@@ -10,6 +10,7 @@
 #import "SKStringConstants.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSData_SKExtensions.h"
+#import "SKPDFAnnotationTemporary.h"
 
 #define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
 #define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
