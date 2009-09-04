@@ -45,7 +45,7 @@
 #import "SKStringConstants.h"
 #import "SKRuntime.h"
 #import "SKApplicationController.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "BDAlias.h"
 #import "SKMainWindowController.h"
 
@@ -356,7 +356,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSURL *fileURL = [[BDAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
     if(fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
-    if(fileURL && NO == SKFileIsInTrash(fileURL)) {
+    if(fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL]) {
         if (document = [self documentForURL:fileURL]) {
             // the document was already open, don't call makeWindowControllers because that adds new empty windows
             [document applySetup:setup];
@@ -417,7 +417,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templateFiles = [NSMutableArray array];
-        NSEnumerator *pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
+        NSEnumerator *pathEnum = [[[NSFileManager defaultManager] applicationSupportDirectories] objectEnumerator];
         NSString *appSupportPath;
         
         while (appSupportPath = [pathEnum nextObject]) {

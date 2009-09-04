@@ -1,10 +1,10 @@
 //
-//  Files_SKExtensions.m
+//  NSFileManager_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/18/07.
+//  Created by Christiaan on 9/4/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,20 +36,60 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "Files_SKExtensions.h"
-#import <CoreFoundation/CoreFoundation.h>
+#import "NSFileManager_SKExtensions.h"
 
-BOOL SKFileIsInTrash(NSURL *fileURL) {
-    NSCParameterAssert([fileURL isFileURL]);    
+
+@implementation NSFileManager (SKExtensions)
+
+- (BOOL)isTrashedFileAtURL:(NSURL *)aURL {
+    NSCParameterAssert([aURL isFileURL]);    
     FSRef fileRef;
     Boolean result = false;
-    if (CFURLGetFSRef((CFURLRef)fileURL, &fileRef)) {
+    if (CFURLGetFSRef((CFURLRef)aURL, &fileRef)) {
         FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
         if (result == false)
             FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
     }
     return result;
 }
+
+- (NSArray *)applicationSupportDirectories {
+    static NSArray *applicationSupportDirectories = nil;
+    if (applicationSupportDirectories == nil) {
+        NSMutableArray *pathArray = [NSMutableArray array];
+        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
+        NSEnumerator *pathEnum = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES) objectEnumerator];
+        NSString *path;
+        while (path = [pathEnum nextObject])
+            [pathArray addObject:[path stringByAppendingPathComponent:appName]];
+        applicationSupportDirectories = [pathArray copy];
+    }
+    return applicationSupportDirectories;
+}
+
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
+    return [self pathForApplicationSupportFile:file ofType:extension inDirectory:nil];
+}
+
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *filename = [file stringByAppendingPathExtension:extension];
+    NSString *fullPath = nil;
+    NSEnumerator *pathEnum = [[[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]] objectEnumerator];
+    NSString *appSupportPath = nil;
+    
+    while (appSupportPath = [pathEnum nextObject]) {
+        fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
+        fullPath = [fullPath stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO)
+            fullPath = nil;
+        else break;
+    }
+    
+    return fullPath;
+}
+
+@end
 
 static NSString *SKUniqueDirectory(NSString *basePath) {
     CFUUIDRef uuid = CFUUIDCreate(NULL);

@@ -61,7 +61,7 @@
 #import "SKInfoWindowController.h"
 #import "SKLine.h"
 #import "SKApplicationController.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "SKFDFParser.h"
 #import "NSData_SKExtensions.h"
@@ -1537,7 +1537,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                         [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
                 }
             } else {
-                pathEnum = [[[SKApplicationController sharedApplicationController] applicationSupportDirectories] objectEnumerator];
+                pathEnum = [[[NSFileManager defaultManager] applicationSupportDirectories] objectEnumerator];
                 while (path = [pathEnum nextObject]) {
                     [searchPaths addObject:path];
                     [searchPaths addObject:[path stringByAppendingPathComponent:@"Scripts"]];

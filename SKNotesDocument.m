@@ -55,7 +55,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSView_SKExtensions.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"

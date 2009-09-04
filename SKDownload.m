@@ -38,7 +38,7 @@
 
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "SKRuntime.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
