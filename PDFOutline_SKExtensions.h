@@ -1,10 +1,10 @@
 //
-//  SKPDFOutline.h
+//  PDFOutline_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 9/11/08.
+//  Created by Christiaan on 9/4/09.
 /*
- This software is Copyright (c) 2008-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,31 +40,9 @@
 #import <Quartz/Quartz.h>
 
 
-@interface SKPDFOutline : NSObject {
-    PDFOutline *outline;
-    SKPDFOutline *parent;
-    NSMutableArray *children;
-}
-
-- (id)initWithOutline:(PDFOutline *)anOutline parent:(SKPDFOutline *)aParent;
-
-- (PDFDocument *)document;
-
-- (SKPDFOutline *)parent;
-
-- (NSUInteger)numberOfChildren;
-- (SKPDFOutline *)childAtIndex:(NSUInteger)anIndex;
-
-- (NSString *)label;
-
-- (PDFDestination *)destination;
-
-- (PDFAction *)action;
+@interface PDFOutline (SKExtensions)
 
 - (PDFPage *)page;
-
 - (NSString *)pageLabel;
-
-- (BOOL)isOpen;
 
 @end

@@ -60,7 +60,6 @@
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
 #import "SKSplitView.h"
-#import "SKPDFOutline.h"
 #import "SKLineInspector.h"
 #import "NSEvent_SKExtensions.h"
 
@@ -219,15 +218,11 @@
 }
 
 - (void)goToSelectedOutlineItem:(id)sender {
-    SKPDFOutline *outlineItem = [outlineView itemAtRow:[outlineView selectedRow]];
+    PDFOutline *outlineItem = [outlineView itemAtRow:[outlineView selectedRow]];
     if ([outlineItem destination])
         [pdfView goToDestination:[outlineItem destination]];
     else if ([outlineItem action])
         [pdfView performAction:[outlineItem action]];
-}
-
-- (IBAction):(id)sender {
-
 }
 
 - (IBAction)editNote:(id)sender{

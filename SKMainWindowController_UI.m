@@ -64,7 +64,7 @@
 #import "SKApplication.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKLineInspector.h"
-#import "SKPDFOutline.h"
+#import "PDFOutline_SKExtensions.h"
 #import "SKDocumentController.h"
 
 #define NOTES_KEY       @"notes"
@@ -598,8 +598,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (NSInteger)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
-            item = pdfOutline;
-        return [(SKPDFOutline *)item numberOfChildren];
+            item = [[pdfView document] outlineRoot];
+        return [(PDFOutline *)item numberOfChildren];
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
             return [[noteArrayController arrangedObjects] count];
@@ -612,8 +612,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (id)outlineView:(NSOutlineView *)ov child:(NSInteger)anIndex ofItem:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
-            item = pdfOutline;
-        id obj = [(SKPDFOutline *)item childAtIndex:anIndex];
+            item = [[pdfView document] outlineRoot];
+        id obj = [(PDFOutline *)item childAtIndex:anIndex];
         return obj;
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil)
@@ -627,8 +627,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item{
     if ([ov isEqual:outlineView]) {
         if (item == nil && [[pdfView document] isLocked] == NO)
-            item = pdfOutline;
-        return ([(SKPDFOutline *)item numberOfChildren] > 0);
+            item = [[pdfView document] outlineRoot];
+        return ([(PDFOutline *)item numberOfChildren] > 0);
     } else if ([ov isEqual:noteOutlineView]) {
         return [[item texts] count] > 0;
     }
@@ -639,9 +639,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([ov isEqual:outlineView]) {
         NSString *tcID = [tableColumn identifier];
         if([tcID isEqualToString:LABEL_COLUMNID]) {
-            return [(SKPDFOutline *)item label];
+            return [(PDFOutline *)item label];
         } else if([tcID isEqualToString:PAGE_COLUMNID]) {
-            return [(SKPDFOutline *)item pageLabel];
+            return [(PDFOutline *)item pageLabel];
         }
     } else if ([ov isEqual:noteOutlineView]) {
         NSString *tcID = [tableColumn  identifier];
@@ -1042,7 +1042,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSInteger i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
-            [array addObject:[[(SKPDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
+            [array addObject:[[(PDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
         return array;
     }
     return nil;
@@ -1417,7 +1417,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:mwcFlags.leftSidePaneState == (SKLeftSidePaneState)[menuItem tag] ? (([findTableView window] || [groupedFindTableView window]) ? NSMixedState : NSOnState) : NSOffState];
-        return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
+        return (SKLeftSidePaneState)[menuItem tag] == SKThumbnailSidePaneState || [[pdfView document] outlineRoot];
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:mwcFlags.rightSidePaneState == (SKRightSidePaneState)[menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;

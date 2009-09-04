@@ -100,7 +100,7 @@
 #import "RemoteControl.h"
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
-#import "SKPDFOutline.h"
+#import "PDFOutline_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -253,7 +253,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [dirtySnapshots release];
 	[searchResults release];
 	[groupedSearchResults release];
-    [pdfOutline release];
 	[thumbnails release];
 	[notes release];
 	[snapshots release];
@@ -428,9 +427,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[self document] windowControllerDidLoadNib:self];
     
     // Show/hide left side pane if necessary
-    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == (pdfOutline == nil))
+    BOOL hasOutline = ([[pdfView document] outlineRoot] != nil);
+    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == hasOutline)
         [self toggleLeftSidePane:self];
-    if (pdfOutline)
+    if (hasOutline)
         [self setLeftSidePaneState:SKOutlineSidePaneState];
     else
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
@@ -686,15 +686,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self allSnapshotsNeedUpdate];
     [noteOutlineView reloadData];
     
-    // update the outline
-    [pdfOutline release];
-    pdfOutline = [[SKPDFOutline alloc] initWithOutline:[pdfDoc outlineRoot] parent:nil];
-    
     mwcFlags.updatingOutlineSelection = 1;
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
     [outlineView reloadData];
 	for (i = 0; i < (NSUInteger)[outlineView numberOfRows]; i++) {
-		SKPDFOutline *item = [outlineView itemAtRow:i];
+		PDFOutline *item = [outlineView itemAtRow:i];
 		if ([item isOpen])
 			[outlineView expandItem:item];
 	}
@@ -702,12 +698,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self updateOutlineSelection];
     
     // handle the case as above where the outline has disappeared in a reload situation
-    if (nil == pdfOutline && currentLeftSideView == tocView) {
+    if (nil == [[pdfView document] outlineRoot] && currentLeftSideView == tocView) {
         [self fadeInThumbnailView];
         [leftSideButton setSelectedSegment:SKThumbnailSidePaneState];
     }
 
-    [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
+    [leftSideButton setEnabled:[[pdfView document] outlineRoot] != nil forSegment:SKOutlineSidePaneState];
 }
 
 - (SKProgressController *)progressController {
@@ -757,9 +753,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots makeObjectsPerformSelector:@selector(close)];
             [self removeAllObjectsFromSnapshots];
-            
-            [pdfOutline release];
-            pdfOutline = nil;
             
             [lastViewedPages removeAllObjects];
             
@@ -2501,13 +2494,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark Outline
 
 - (NSInteger)outlineRowForPageIndex:(NSUInteger)pageIndex {
-    if (pdfOutline == nil)
+    if ([[pdfView document] outlineRoot] == nil)
         return -1;
     
 	NSInteger i, numRows = [outlineView numberOfRows];
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
-		SKPDFOutline *outlineItem = [outlineView itemAtRow:i];
+		PDFOutline *outlineItem = [outlineView itemAtRow:i];
         PDFPage *page = [outlineItem page];
 		
         if (page == nil) {
@@ -2527,7 +2520,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)updateOutlineSelection{
 
 	// Skip out if this PDF has no outline.
-	if (pdfOutline == nil || mwcFlags.updatingOutlineSelection)
+	if ([[pdfView document] outlineRoot] == nil || mwcFlags.updatingOutlineSelection)
 		return;
 	
 	// Get index of current page.
