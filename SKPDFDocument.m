@@ -368,12 +368,12 @@ static char SKPDFDocumentDefaultsObservationContext;
                     NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
                     if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
                         if (fileExists)
-                            saveNotesOK = [fm removeFileAtPath:notesPath handler:nil];
+                            saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
                         if ([[self notes] count]) {
                             if (saveNotesOK)
-                                saveNotesOK = [fm movePath:tmpPath toPath:notesPath handler:nil];
+                                saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL];
                             else
-                                [fm removeFileAtPath:tmpPath handler:nil];
+                                [fm removeItemAtPath:tmpPath error:NULL];
                         }
                     }
                 }
@@ -418,7 +418,7 @@ static char SKPDFDocumentDefaultsObservationContext;
                 if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
                     if (tmpPath == nil)
                         tmpPath = SKUniqueTemporaryDirectory();
-                    [fm movePath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] handler:nil];
+                    [fm moveItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
                 }
             }
         }
@@ -428,8 +428,8 @@ static char SKPDFDocumentDefaultsObservationContext;
         if (tmpPath) {
             fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
             while (file = [fileEnum nextObject])
-                [fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] handler:nil];
-            [fm removeFileAtPath:tmpPath handler:nil];
+                [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
+            [fm removeItemAtPath:tmpPath error:NULL];
         }
         
         if (success)
