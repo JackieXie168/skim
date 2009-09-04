@@ -41,27 +41,9 @@
 #import "NSColor_SKExtensions.h"
 
 
-@interface NSOutlineView (SKApplePrivate)
-- (id)_highlightColorForCell:(NSCell *)cell;
-@end
-
 @implementation SKTocOutlineView
 
 + (BOOL)usesDefaultFontSize { return YES; }
-
-- (id)initWithFrame:(NSRect)frameRect {
-    if (self = [super initWithFrame:frameRect]) {
-        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder {
-    if (self = [super initWithCoder:coder]) {
-        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-    }
-    return self;
-}
 
 - (void)dealloc {
     if (trackingRects != NULL)
@@ -77,22 +59,22 @@ static CGFloat mainColorGraphite[3]     = {37779.0/65535.0, 41634.0/65535.0, 454
 static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSColor *color;
-    NSInteger row;
-    NSRect rect;
-    CGFloat *rgb;
-    BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
-    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-        rgb = isGraphite ? keyColorGraphite : keyColorBlue;
-    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-        rgb = isGraphite ? mainColorGraphite : mainColorBlue;
-    else
-        rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-    color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
-    
-    [NSGraphicsContext saveGraphicsState];
-    
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
+        NSColor *color;
+        NSInteger row;
+        NSRect rect;
+        CGFloat *rgb;
+        BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+            rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+        else
+            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
+        color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
+        
+        [NSGraphicsContext saveGraphicsState];
+        
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
         NSInteger i, count = MIN((NSInteger)[rows count], 5);
@@ -106,9 +88,9 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
             }
             [rowIndexes addIndex:row];
         }
+        
+        [NSGraphicsContext restoreGraphicsState];
     }
-    
-    [NSGraphicsContext restoreGraphicsState];
     
     [super highlightSelectionInClipRect:clipRect];
 }

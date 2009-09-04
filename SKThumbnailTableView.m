@@ -64,27 +64,7 @@ static void (*original_trackKnob)(id, SEL, id) = NULL;
 
 @end
 
-@interface NSTableView (SKApplePrivate)
-- (id)_highlightColorForCell:(NSCell *)cell;
-@end
-
 @implementation SKThumbnailTableView
-
-#define TIGER_BACKGROUNDCOLOR [NSColor colorWithCalibratedRed:0.905882 green:0.929412 blue:0.964706 alpha:1.0]
-
-- (id)initWithFrame:(NSRect)frameRect {
-    if (self = [super initWithFrame:frameRect]) {
-        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder {
-    if (self = [super initWithCoder:coder]) {
-        [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
-    }
-    return self;
-}
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -99,22 +79,21 @@ static CGFloat mainColorGraphite[3]     = {37779.0/65535.0, 41634.0/65535.0, 454
 static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSColor *color;
-    NSInteger row;
-    NSRect rect;
-    CGFloat *rgb;
-    BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
-    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-        rgb = isGraphite ? keyColorGraphite : keyColorBlue;
-    else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-        rgb = isGraphite ? mainColorGraphite : mainColorBlue;
-    else
-        rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-    color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
-    
-    [NSGraphicsContext saveGraphicsState];
-    
     if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
+        NSColor *color;
+        NSInteger row;
+        NSRect rect;
+        CGFloat *rgb;
+        BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
+        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+            rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+            rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+        else
+            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
+        color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
+        
+        [NSGraphicsContext saveGraphicsState];
         
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
@@ -129,9 +108,9 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
             }
             [rowIndexes addIndex:row];
         }
+        
+        [NSGraphicsContext restoreGraphicsState];
     }
-    
-    [NSGraphicsContext restoreGraphicsState];
     
     [super highlightSelectionInClipRect:clipRect];
 }
