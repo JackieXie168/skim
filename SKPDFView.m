@@ -1729,9 +1729,9 @@ enum {
         if (highlightAnnotation) {
             NSString *type = [highlightAnnotation type];
             if ([pboardType isEqualToString:NSColorPboardType]) {
-                if (([NSEvent currentModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
+                if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setInteriorColor:)])
                     [(id)highlightAnnotation setInteriorColor:[NSColor colorFromPasteboard:pboard]];
-                else if (([NSEvent currentModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
+                else if (([NSEvent standardModifierFlags] & NSAlternateKeyMask) && [highlightAnnotation respondsToSelector:@selector(setFontColor:)])
                     [(id)highlightAnnotation setFontColor:[NSColor colorFromPasteboard:pboard]];
                 else
                     [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
@@ -4240,7 +4240,7 @@ enum {
 - (void)doUpdateCursor {
     NSEvent *event = [NSEvent mouseEventWithType:NSMouseMoved
                                         location:[[self window] mouseLocationOutsideOfEventStream]
-                                   modifierFlags:[NSEvent currentModifierFlags]
+                                   modifierFlags:[NSEvent standardModifierFlags]
                                        timestamp:0
                                     windowNumber:[[self window] windowNumber]
                                          context:nil
