@@ -152,9 +152,6 @@ static char SKMainWindowDefaultsObservationContext;
 
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
-// this is defined on 10.5, however it's not included in the 10.5 SDK
-IOReturn IOPMAssertionCreateWithName(CFStringRef AssertionType, IOPMAssertionLevel AssertionLevel, CFStringRef AssertionName, IOPMAssertionID *AssertionID) AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER;                           
-
 @interface SKMainWindowController (SKPrivate)
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
@@ -1477,7 +1474,7 @@ IOReturn IOPMAssertionCreateWithName(CFStringRef AssertionType, IOPMAssertionLev
         [notesPdfView goToPage:[[notesPdfView document] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     
     // prevent sleep
-    if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim Presentation"), &activityAssertionID))
+    if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &activityAssertionID))
         activityAssertionID = kIOPMNullAssertionID;
     
     mwcFlags.isPresentation = 1;
