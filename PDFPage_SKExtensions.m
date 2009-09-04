@@ -60,26 +60,7 @@ NSString *SKPDFPageActionKey = @"action";
 NSString *SKPDFPageActionCrop = @"crop";
 NSString *SKPDFPageActionRotate = @"rotate";
 
-#define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
-#define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
-
 @implementation PDFPage (SKExtensions) 
-
-#define FOREGROUND_BOX_MARGIN 10.0
-
-// A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
-static CFMutableDictionaryRef bboxCache = NULL;
-static void (*original_dealloc)(id, SEL) = NULL;
-
-- (void)replacement_dealloc {
-    CFDictionaryRemoveValue(bboxCache, self);
-    original_dealloc(self, _cmd);
-}
-
-+ (void)load {
-    original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
-    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kSKNSRectDictionaryValueCallBacks);
-}
 
 static BOOL usesSequentialPageNumbering = NO;
 
@@ -91,67 +72,9 @@ static BOOL usesSequentialPageNumbering = NO;
     usesSequentialPageNumbering = flag;
 }
 
-- (NSBitmapImageRep *)newBitmapImageRepForBox:(PDFDisplayBox)box {
-    NSRect bounds = [self boundsForBox:box];
-    NSBitmapImageRep *imageRep;
-    imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-                                                       pixelsWide:NSWidth(bounds) 
-                                                       pixelsHigh:NSHeight(bounds) 
-                                                    bitsPerSample:8 
-                                                  samplesPerPixel:4
-                                                         hasAlpha:YES 
-                                                         isPlanar:NO 
-                                                   colorSpaceName:NSCalibratedRGBColorSpace 
-                                                     bitmapFormat:0 
-                                                      bytesPerRow:0 
-                                                     bitsPerPixel:32];
-    if (imageRep) {
-        [NSGraphicsContext saveGraphicsState];
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
-        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
-        if ([self rotation]) {
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            switch ([self rotation]) {
-                case 90:  [transform translateXBy:NSWidth(bounds) yBy:0.0]; break;
-                case 180: [transform translateXBy:NSHeight(bounds) yBy:NSWidth(bounds)]; break;
-                case 270: [transform translateXBy:0.0 yBy:NSHeight(bounds)]; break;
-            }
-            [transform rotateByDegrees:[self rotation]];
-            [transform concat];
-        }
-        [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
-        [self drawWithBox:box]; 
-        [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    return imageRep;
-}
-
+// this will be overridden in our custom subclass
 - (NSRect)foregroundBox {
-    NSRect *rectPtr = NULL;
-    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectPtr)) {
-        CGFloat marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginWidthKey];
-        CGFloat marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKAutoCropBoxMarginHeightKey];
-        NSBitmapImageRep *imageRep = [self newBitmapImageRepForBox:kPDFDisplayBoxMediaBox];
-        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        NSRect rect = [imageRep foregroundRect];
-        if (imageRep == nil) {
-            rect = bounds;
-        } else if (NSEqualRects(NSZeroRect, rect)) {
-            rect.origin.x = SKFloor(NSMidX(bounds));
-            rect.origin.x = SKCeil(NSMidY(bounds));
-        } else {
-            rect.origin.x += NSMinX(bounds);
-            rect.origin.y += NSMinY(bounds);
-        }
-        [imageRep release];
-        rect = NSIntersectionRect(NSInsetRect(rect, -marginWidth, -marginHeight), bounds);
-        rectPtr = &rect;
-        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectPtr);
-    }
-    // dereferencing here should always be safe (if not in the dictionary, it was initialized)
-    return *rectPtr;
+    return [self boundsForBox:kPDFDisplayBoxCropBox];
 }
 
 - (NSImage *)image {

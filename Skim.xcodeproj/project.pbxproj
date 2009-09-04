@@ -127,6 +127,8 @@
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
 		CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */; };
+		CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */; };
+		CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0D210515D3100161B87 /* SKPDFPage.m */; };
 		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
 		CE5BEA190C7C635400EBDCF7 /* NSGeometry_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */; };
 		CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */; };
@@ -669,6 +671,10 @@
 		CE5A82310E6C42BF008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE5BAF4210511A0F00161B87 /* PDFOutline_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFOutline_SKExtensions.h; sourceTree = "<group>"; };
 		CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFOutline_SKExtensions.m; sourceTree = "<group>"; };
+		CE5BB0CD10515CCC00161B87 /* SKPDFDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFDocument.h; sourceTree = "<group>"; };
+		CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFDocument.m; sourceTree = "<group>"; };
+		CE5BB0D110515D3100161B87 /* SKPDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFPage.h; sourceTree = "<group>"; };
+		CE5BB0D210515D3100161B87 /* SKPDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFPage.m; sourceTree = "<group>"; };
 		CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTypeSelectHelper.h; sourceTree = "<group>"; };
 		CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTypeSelectHelper.m; sourceTree = "<group>"; };
 		CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSGeometry_SKExtensions.h; sourceTree = "<group>"; };
@@ -1382,6 +1388,10 @@
 				CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */,
 				CEE54DEF0DA2EF0E0037169F /* SKPDFAnnotationTemporary.h */,
 				CEE54DF00DA2EF0E0037169F /* SKPDFAnnotationTemporary.m */,
+				CE5BB0CD10515CCC00161B87 /* SKPDFDocument.h */,
+				CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */,
+				CE5BB0D110515D3100161B87 /* SKPDFPage.h */,
+				CE5BB0D210515D3100161B87 /* SKPDFPage.m */,
 				CE3366DD0E28BCFA005F99E6 /* SKPDFSyncRecord.h */,
 				CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
@@ -2159,6 +2169,8 @@
 				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
 				CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */,
 				CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */,
+				CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */,
+				CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
