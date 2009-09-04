@@ -168,23 +168,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return self;
 }
 
-static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
-    CGFloat w = SKMax(NSWidth(rect2), NSWidth(rect1));
-    CGFloat h = SKMax(NSHeight(rect2), NSHeight(rect1));
-    // first check the vertical position; allow sub/superscripts
-    if (SKAbs(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && SKAbs(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
-        return NO;
-    // compare horizontal position
-    // rect1 before rect2
-    if (NSMinX(rect1) < NSMinX(rect2))
-        return NSMinX(rect2) - NSMaxX(rect1) < 1.2 * w;
-    // rect1 after rect2
-    if (NSMaxX(rect1) > NSMaxX(rect2))
-        return NSMinX(rect1) - NSMaxX(rect2) < 1.2 * w;
-    // rect1 on top of rect2
-    return YES;
-}
-
 - (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
     NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
