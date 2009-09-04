@@ -41,6 +41,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <SkimNotes/SkimNotes.h>
 #import "SKMainWindowController.h"
+#import "SKPDFDocument.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKConversionProgressController.h"
@@ -640,7 +641,7 @@ static char SKMainDocumentDefaultsObservationContext;
         data = [SKConversionProgressController PDFDataWithPostScriptData:data];
     
     if (data)
-        pdfDoc = [[PDFDocument alloc] initWithData:data];
+        pdfDoc = [[SKPDFDocument alloc] initWithData:data];
     
     [tmpData setPdfDocument:pdfDoc];
 
@@ -680,7 +681,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (pdfFile) {
             NSURL *pdfURL = [NSURL fileURLWithPath:pdfFile];
             if ((data = [[NSData alloc] initWithContentsOfURL:pdfURL options:NSUncachedRead error:&error]) &&
-                (pdfDoc = [[PDFDocument alloc] initWithURL:pdfURL])) {
+                (pdfDoc = [[SKPDFDocument alloc] initWithURL:pdfURL])) {
                 NSArray *array = [[NSFileManager defaultManager] readSkimNotesFromPDFBundleAtURL:absoluteURL error:&error];
                 if (array == nil) {
                     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
@@ -703,13 +704,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         if (fileData = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             if (SKIsPDFDocumentType(docType)) {
                 if (data = [fileData retain])
-                    pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
+                    pdfDoc = [[SKPDFDocument alloc] initWithURL:absoluteURL];
             } else if (SKIsPostScriptDocumentType(docType)) {
                 if (data = [[SKConversionProgressController PDFDataWithPostScriptData:fileData] retain])
-                    pdfDoc = [[PDFDocument alloc] initWithData:data];
+                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             } else if (SKIsDVIDocumentType(docType)) {
                 if (data = [[SKConversionProgressController PDFDataWithDVIFile:[absoluteURL path]] retain])
-                    pdfDoc = [[PDFDocument alloc] initWithData:data];
+                    pdfDoc = [[SKPDFDocument alloc] initWithData:data];
             }
         }
         if (pdfDoc) {
