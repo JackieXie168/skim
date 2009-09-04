@@ -1592,7 +1592,7 @@ enum {
 // we cannot use PDFAction and subclasses, because those are Leopard only
 - (void)performAction:(id)action {
     // PDFView does not handle the PDFActionRemoteGoTo, so we do it
-    if ([action isKindOfClass:NSClassFromString(@"PDFActionRemoteGoTo")]) {
+    if ([action isKindOfClass:[PDFActionRemoteGoTo class]]) {
         NSURL *fileURL = [action URL];
         NSError *error = nil;
         NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
