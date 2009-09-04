@@ -91,7 +91,7 @@
 
         <class name="document" code="docu"
             description="A Skim document.">
-            <cocoa class="SKPDFDocument"/>
+            <cocoa class="SKMainDocument"/>
             <element type="page" access="r"
                 description="Pages of the PDF file">
                 <cocoa key="pages"/>
