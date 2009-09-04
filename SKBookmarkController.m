@@ -103,20 +103,15 @@ static NSUInteger maxRecentDocumentsCount = 0;
         maxRecentDocumentsCount = 50;
 }
 
-static SKBookmarkController *sharedBookmarkController = nil;
-
 + (id)sharedBookmarkController {
+    static SKBookmarkController *sharedBookmarkController = nil;
     if (sharedBookmarkController == nil)
-        [[[self alloc] init] release];
+        sharedBookmarkController = [[self alloc] init];
     return sharedBookmarkController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedBookmarkController retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedBookmarkController == nil && (self = [super initWithWindowNibName:@"BookmarksWindow"])) {
+    if (self = [super initWithWindowNibName:@"BookmarksWindow"]) {
         recentDocuments = [[NSMutableArray alloc] init];
         
         NSMutableArray *bookmarks = [NSMutableArray array];
@@ -153,8 +148,6 @@ static SKBookmarkController *sharedBookmarkController = nil;
                                                  selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification
                                                    object:NSApp];
-        
-        sharedBookmarkController = [self retain];
     }
     return self;
 }

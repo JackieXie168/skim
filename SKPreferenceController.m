@@ -65,20 +65,15 @@ static char SKPreferenceWindowUpdaterObservationContext;
 
 @implementation SKPreferenceController
 
-static SKPreferenceController *sharedPrefenceController = nil;
-
 + (id)sharedPrefenceController {
+    static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)
-        [[[self alloc] init] release];
+        sharedPrefenceController = [[self alloc] init];
     return sharedPrefenceController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedPrefenceController retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedPrefenceController == nil && (self = [super initWithWindowNibName:@"PreferenceWindow"])) {
+    if (self = [super initWithWindowNibName:@"PreferenceWindow"]) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY] retain];
         
@@ -87,8 +82,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKPreferenceWindowDefaultsObservationContext];
         [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
         [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
-        
-        sharedPrefenceController = [self retain];
     }
     return self;
 }

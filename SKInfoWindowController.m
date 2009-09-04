@@ -61,8 +61,6 @@
 
 @implementation SKInfoWindowController
 
-static SKInfoWindowController *sharedInstance = nil;
-
 + (void)initialize {
     SKINITIALIZE;
     
@@ -72,19 +70,15 @@ static SKInfoWindowController *sharedInstance = nil;
 }
 
 + (id)sharedInstance {
+    static SKInfoWindowController *sharedInstance = nil;
     if (sharedInstance == nil)
-        [[[self alloc] init] release];
+        sharedInstance = [[self alloc] init];
     return sharedInstance;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedInstance retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedInstance == nil && (self = [super initWithWindowNibName:@"InfoWindow"])) {
+    if (self = [super initWithWindowNibName:@"InfoWindow"]){
         info = nil;
-        sharedInstance = [self retain];
     }
     return self;
 }

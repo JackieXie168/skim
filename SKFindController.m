@@ -43,22 +43,16 @@
 
 @implementation SKFindController
 
-static SKFindController *sharedFindController = nil;
-
 + (id)sharedFindController {
+    static SKFindController *sharedFindController = nil;
     if (sharedFindController == nil)
-        [[[self alloc] init] release];
+        sharedFindController = [[self alloc] init];
     return sharedFindController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedFindController retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedFindController == nil && (self = [super initWithWindowNibName:@"FindPanel"])) {
+    if (self = [super initWithWindowNibName:@"FindPanel"]) {
         ignoreCase = YES;
-        sharedFindController = [self retain];
     }
     return self;
 }

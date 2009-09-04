@@ -41,23 +41,15 @@
 
 @implementation SKReleaseNotesController
 
-static SKReleaseNotesController *sharedReleaseNotesController = nil;
-
 + (id)sharedReleaseNotesController {
+    static SKReleaseNotesController *sharedReleaseNotesController = nil;
     if (sharedReleaseNotesController == nil)
-        [[[self alloc] init] release];
+        sharedReleaseNotesController = [[self alloc] init];
     return sharedReleaseNotesController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedReleaseNotesController retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedReleaseNotesController == nil) {
-        sharedReleaseNotesController = [[super initWithWindowNibName:@"ReleaseNotes"] retain];
-    }
-    return self;
+    return (self = [super initWithWindowNibName:@"ReleaseNotes"]);
 }
 
 - (void)windowDidLoad {

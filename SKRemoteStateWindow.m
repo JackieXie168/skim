@@ -54,28 +54,20 @@
 
 @implementation SKRemoteStateWindow
 
-static id sharedRemoteStateWindow = nil;
-
 + (id)sharedRemoteStateWindow {
+    static id sharedRemoteStateWindow = nil;
     if (sharedRemoteStateWindow == nil)
-        [[[self alloc] init] release];
+        sharedRemoteStateWindow = [[self alloc] init];
     return sharedRemoteStateWindow;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedRemoteStateWindow retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedRemoteStateWindow == nil) {
-        NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
-        if (self = [super initWithContentRect:contentRect]) {
-            [self setIgnoresMouseEvents:YES];
-            [self setDisplaysWhenScreenProfileChanges:NO];
-            [self setLevel:NSStatusWindowLevel];
-            [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
-            sharedRemoteStateWindow = [self retain];
-        }
+    NSRect contentRect = SKRectFromCenterAndSize(NSZeroPoint, SKMakeSquareSize(WINDOW_SIZE));
+    if (self = [super initWithContentRect:contentRect]) {
+        [self setIgnoresMouseEvents:YES];
+        [self setDisplaysWhenScreenProfileChanges:NO];
+        [self setLevel:NSStatusWindowLevel];
+        [self setContentView:[[[SKRemoteStateView alloc] init] autorelease]];
     }
     return self;
 }
