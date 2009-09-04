@@ -304,7 +304,19 @@
     NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:SKResolvedURLFromPath(path) display:YES error:&error])
+        // resolve symlinks and aliases
+        NSURL *url = nil;
+        FSRef fileRef;
+        Boolean isFolder, isAlias;
+        if (noErr == FSPathMakeRef((const unsigned char *)[[path stringByResolvingSymlinksInPath] fileSystemRepresentation], &fileRef, NULL)) {
+            CFStringRef theUTI = NULL;
+            if (noErr == LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, (CFTypeRef *)&theUTI) && theUTI && UTTypeConformsTo(theUTI, kUTTypeResolvable))
+                FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &isFolder, &isAlias, kARMNoUI);
+           url = [(NSURL *)CFURLCreateFromFSRef(NULL, &fileRef) autorelease];
+        }
+        if (url == nil)
+            url = [NSURL fileURLWithPath:path];
+        if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES error:&error])
             [NSApp presentError:error];
     } else NSBeep();
 }

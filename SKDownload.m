@@ -335,7 +335,9 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    [URLDownload setDestination:[SKDownloadDirectory() stringByAppendingPathComponent:filename] allowOverwrite:NO];
+    NSArray *downloadDirs = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES);
+    if ([downloadDirs count])
+        [URLDownload setDestination:[[downloadDirs lastObject] stringByAppendingPathComponent:filename] allowOverwrite:NO];
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
