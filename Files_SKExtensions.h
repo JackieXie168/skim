@@ -45,16 +45,10 @@ NSString *SKDownloadDirectory();
 // These functions are thread safe
 
 extern BOOL SKFileIsInTrash(NSURL *fileURL);
-extern BOOL SKFileExistsAtPath(NSString *path);
-extern NSDate *SKFileModificationDateAtPath(NSString *path);
 extern NSURL *SKResolvedURLFromPath(NSString *path);
 
 extern NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create);
 extern NSString *SKChewableItemsDirectory();
 extern NSString *SKUniqueTemporaryDirectory();
 extern NSString *SKUniqueChewableItemsDirectory();
-
-extern OSErr FSDeleteContainerContents(const FSRef *container);
-extern OSErr FSDeleteContainer(const FSRef *container);
-extern OSErr FSPathDeleteContainer(const UInt8 *containerPath);
     

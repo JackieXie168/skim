@@ -141,6 +141,8 @@ struct SKServerFlags {
         // handshake, this sets the proxy at the other side
         [clientProxy setServerProxy:self];
         
+        fileManager = [[NSFileManager alloc] init];
+        
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
         
         NSRunLoop *rl = [NSRunLoop currentRunLoop];
@@ -159,6 +161,9 @@ struct SKServerFlags {
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
     @finally {
+        [fileManager release];
+        fileManager = nil;
+        
         // clean up the connection in the server thread
         [connection setRootObject:nil];
         
@@ -235,6 +240,7 @@ struct SKServerFlags {
     return file;
 }
 
+// this should only be used from the server thread
 - (void)setSyncFileName:(NSString *)newSyncFileName {
     @synchronized(self) {
         if (syncFileName != newSyncFileName) {
@@ -242,7 +248,7 @@ struct SKServerFlags {
             syncFileName = [newSyncFileName retain];
         }
         [lastModDate release];
-        lastModDate = [(syncFileName ? SKFileModificationDateAtPath(syncFileName) : nil) retain];
+        lastModDate = [(syncFileName ? [[fileManager attributesOfItemAtPath:syncFileName error:NULL] fileModificationDate] : nil) retain];
     }
 }
 
@@ -261,12 +267,12 @@ struct SKServerFlags {
         file = [file substringWithRange:NSMakeRange(1, [file length] - 2)];
     if ([file isAbsolutePath] == NO)
         file = [[[self fileName] stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
-    if (isTeX && SKFileExistsAtPath(file) == NO && [SKPDFSynchronizerTexExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
+    if (isTeX && [fileManager fileExistsAtPath:file] == NO && [SKPDFSynchronizerTexExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
         NSEnumerator *texExtensions = [SKPDFSynchronizerTexExtensions objectEnumerator];
         NSString *extension;
         while (extension = [texExtensions nextObject]) {
             NSString *tryFile = [file stringByAppendingPathExtension:extension];
-            if (SKFileExistsAtPath(tryFile)) {
+            if ([fileManager fileExistsAtPath:tryFile]) {
                 file = tryFile;
                 break;
             }
@@ -584,8 +590,8 @@ struct SKServerFlags {
     if (theFileName) {
         NSString *theSyncFileName = [self syncFileName];
         
-        if (theSyncFileName && SKFileExistsAtPath(theSyncFileName)) {
-            NSDate *modDate = SKFileModificationDateAtPath(theFileName);
+        if (theSyncFileName && [fileManager fileExistsAtPath:theSyncFileName]) {
+            NSDate *modDate = [[fileManager attributesOfItemAtPath:theFileName error:NULL] fileModificationDate];
             NSDate *currentModDate = [self lastModDate];
         
             if (currentModDate && [modDate compare:currentModDate] != NSOrderedDescending)
@@ -598,7 +604,7 @@ struct SKServerFlags {
             rv = [self loadSynctexFileForFile:theFileName];
             if (rv == NO) {
                 theSyncFileName = [theFileName stringByReplacingPathExtension:SKPDFSynchronizerPdfsyncExtension];
-                if (SKFileExistsAtPath(theSyncFileName))
+                if ([fileManager fileExistsAtPath:theSyncFileName])
                     rv = [self loadPdfsyncFile:theSyncFileName];
             }
         }
