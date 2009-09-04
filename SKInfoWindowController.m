@@ -133,7 +133,7 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     
     if (gotSize == NO) {
         // this seems to give the logical size
-        NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:[fileURL path] traverseLink:NO];
+        NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:NULL];
         logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
         isDir = [[fileAttrs fileType] isEqualToString:NSFileTypeDirectory];
     }
