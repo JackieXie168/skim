@@ -46,13 +46,9 @@
         if (hasBeenInitialized) \
             return; \
         hasBeenInitialized = YES;\
-    } while (0);
+    } while (0)
 
-enum {
-    SKAddOrReplace,
-    SKReplaceOnly,
-    SKAddOnly
-};
+enum { SKAddOrReplace, SKReplaceOnly, SKAddOnly };
 
 extern IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options);
 extern IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, NSInteger options);
