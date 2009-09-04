@@ -66,22 +66,16 @@ static char SKDownloadPropertiesObservationContext;
 
 @implementation SKDownloadController
 
-static SKDownloadController *sharedDownloadController = nil;
-
 + (id)sharedDownloadController {
+    static SKDownloadController *sharedDownloadController = nil;
     if (sharedDownloadController == nil)
-        [[[self alloc] init] release];
+        sharedDownloadController = [[self alloc] init];
     return sharedDownloadController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedDownloadController retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedDownloadController == nil && (self = [super initWithWindowNibName:@"DownloadsWindow"])) {
+    if (self = [super initWithWindowNibName:@"DownloadsWindow"]) {
         downloads = [[NSMutableArray alloc] init];
-        sharedDownloadController = [self retain];
     }
     return self;
 }

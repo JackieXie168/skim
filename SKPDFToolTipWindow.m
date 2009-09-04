@@ -65,20 +65,15 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 
 @implementation SKPDFToolTipWindow
 
-static SKPDFToolTipWindow *sharedToolTipWindow = nil;
-
 + (id)sharedToolTipWindow {
+    static SKPDFToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
-        [[[self alloc] init] release];
+        sharedToolTipWindow = [[self alloc] init];
     return sharedToolTipWindow;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedToolTipWindow retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedToolTipWindow == nil && (self = [super initWithContentRect:NSZeroRect])) {
+    if (self = [super initWithContentRect:NSZeroRect]) {
         [self setHidesOnDeactivate:NO];
         [self setIgnoresMouseEvents:YES];
         [self setOpaque:YES];
@@ -102,8 +97,6 @@ static SKPDFToolTipWindow *sharedToolTipWindow = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
-        
-        sharedToolTipWindow = [self retain];
     }
     return self;
 }

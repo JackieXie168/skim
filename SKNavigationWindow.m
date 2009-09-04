@@ -193,20 +193,15 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationToolTipWindow
 
-static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
-
 + (id)sharedToolTipWindow {
+    static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     if (sharedToolTipWindow == nil)
-        [[[self alloc] init] retain];
+        sharedToolTipWindow = [[self alloc] init];
     return sharedToolTipWindow;
 }
 
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedToolTipWindow retain] ?: [super allocWithZone:zone];
-}
-
 - (id)init {
-    if (sharedToolTipWindow == nil && (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES screen:[NSScreen mainScreen]])) {
+    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES screen:[NSScreen mainScreen]]) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
@@ -214,8 +209,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
         
         toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
         [[self contentView] addSubview:toolTipView];
-        
-        sharedToolTipWindow = [self retain];
     }
     return self;
 }
