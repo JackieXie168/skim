@@ -40,9 +40,16 @@
 #import <Carbon/Carbon.h>
 
 
+@interface NSEvent (SKSnowLeopardDeclarations)
++ (NSUInteger)modifierFlags;
+@end
+
 @implementation NSEvent (SKExtensions)
 
-+ (NSUInteger)currentModifierFlags {
++ (NSUInteger)standardModifierFlags {
+    if ([self respondsToSelector:@selector(modifierFlags)])
+        return [self modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+    
     NSUInteger flags = 0;
     UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
     if (currentKeyModifiers & cmdKey)
