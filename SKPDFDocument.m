@@ -448,7 +448,7 @@ static char SKPDFDocumentDefaultsObservationContext;
             [self updateChangeCount:NSChangeCleared];
             docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate] retain];
+            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[self fileName] error:NULL] fileModificationDate] retain];
         }
         [self checkFileUpdatesIfNeeded];
         docFlags.isSaving = NO;
@@ -768,7 +768,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             [pdfDoc release];
             docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[absoluteURL path] error:NULL] fileModificationDate] retain];
             
             NSDictionary *dictionary = nil;
             NSArray *array = nil;
@@ -1287,7 +1287,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)checkForFileModification:(NSTimer *)timer {
-    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
+    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[self fileName] error:NULL] fileModificationDate];
     if (nil == lastModifiedDate) {
         lastModifiedDate = [currentFileModifiedDate copy];
     } else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending) {
