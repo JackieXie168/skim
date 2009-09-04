@@ -39,7 +39,7 @@
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
 #import "BDAlias.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKMainWindowController.h"
 #import "Files_SKExtensions.h"
 #import "SKBookmarkOutlineView.h"

@@ -39,7 +39,7 @@
 #import "SKPresentationOptionsSheetController.h"
 #import <Quartz/Quartz.h>
 #import "SKMainWindowController.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKDocumentController.h"
 #import "SKTransitionInfo.h"
 #import "SKThumbnail.h"
@@ -308,7 +308,7 @@ static char *SKTransitionPropertiesObservationContext;
         return nil;
 }
 
-- (SKPDFDocument *)notesDocument {
+- (SKMainDocument *)notesDocument {
     [self window];
     return [[notesDocumentPopUpButton selectedItem] representedObject];
 }

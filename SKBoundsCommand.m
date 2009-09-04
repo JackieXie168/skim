@@ -38,7 +38,7 @@
 
 #import "SKBoundsCommand.h"
 #import <Quartz/Quartz.h>
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
@@ -57,7 +57,7 @@
     PDFDisplayBox box = [boxNumber integerValue] == SKScriptingMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
     NSRect bounds = NSZeroRect;
     
-    if ([dPO isKindOfClass:[SKPDFDocument class]]) {
+    if ([dPO isKindOfClass:[SKMainDocument class]]) {
         if ([page isKindOfClass:[PDFPage class]] == NO) {
             NSArray *pages = [dPO valueForKey:@"pages"];
             page = [pages count] ? [pages objectAtIndex:0] : nil;

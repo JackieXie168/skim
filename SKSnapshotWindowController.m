@@ -38,7 +38,7 @@
 
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKBorderlessImageWindow.h"
 #import <Quartz/Quartz.h>
 #import "SKSnapshotPDFView.h"

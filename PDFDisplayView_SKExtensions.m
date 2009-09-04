@@ -41,7 +41,7 @@
 #import "SKPDFView.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKRuntime.h"
 #import "SKAccessibilityFauxUIElement.h"
 
@@ -87,7 +87,7 @@ static void replacement_resetCursorRects(id self, SEL _cmd) {
 }
 
 static void replacement_passwordEntered(id self, SEL _cmd, id sender) {
-    SKPDFDocument *document = [[[self window] windowController] document];
+    SKMainDocument *document = [[[self window] windowController] document];
     original_passwordEntered(self, _cmd, sender);
     if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
         [document savePasswordInKeychain:[sender stringValue]];

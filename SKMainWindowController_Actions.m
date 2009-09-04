@@ -52,7 +52,7 @@
 #import "SKPresentationOptionsSheetController.h"
 #import "SKProgressController.h"
 #import "SKInfoWindowController.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKStatusBar.h"
 #import "SKSideWindow.h"
 #import "SKPDFToolTipWindow.h"

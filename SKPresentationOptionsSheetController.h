@@ -40,7 +40,7 @@
 #import "SKSheetController.h"
 #import "SKTransitionController.h"
 
-@class SKMainWindowController, SKPDFDocument, SKThumbnail, SKTransitionInfo, SKThumbnailTableView;
+@class SKMainWindowController, SKMainDocument, SKThumbnail, SKTransitionInfo, SKThumbnailTableView;
 
 @interface SKPresentationOptionsSheetController : SKSheetController {
     IBOutlet NSPopUpButton *transitionStylePopUpButton;
@@ -71,7 +71,7 @@
 
 - (NSArray *)pageTransitions;
 
-- (SKPDFDocument *)notesDocument;
+- (SKMainDocument *)notesDocument;
 
 - (BOOL)isScrolling;
 

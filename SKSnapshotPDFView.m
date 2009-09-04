@@ -42,7 +42,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKHighlightingPopUpButton.h"
 #import "PDFPage_SKExtensions.h"
-#import "SKPDFDocument.h"
+#import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKStringConstants.h"
 
@@ -436,7 +436,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
                 break;
         }
         
-        SKPDFDocument *document = (SKPDFDocument *)[[[self window] windowController] document];
+        SKMainDocument *document = (SKMainDocument *)[[[self window] windowController] document];
         
         if ([document respondsToSelector:@selector(synchronizer)]) {
             
