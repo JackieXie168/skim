@@ -47,7 +47,7 @@ static SKNotesPanelController *sharedController = nil;
 
 + (id)sharedController {
     if (sharedController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedController;
 }
 
@@ -56,23 +56,15 @@ static SKNotesPanelController *sharedController = nil;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedController ?: [super allocWithZone:[self zone]];
+    return [sharedController retain] ?: [super allocWithZone:[self zone]];
 }
 
 - (id)init {
     if (sharedController == nil && (self = [super initWithWindowNibName:@"NotesPanel"])) {
-        sharedController = self;
+        sharedController = [self retain];
     }
-    return sharedController;
+    return self;
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];

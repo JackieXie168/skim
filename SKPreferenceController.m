@@ -69,16 +69,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 + (id)sharedPrefenceController {
     if (sharedPrefenceController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedPrefenceController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedPrefenceController ?: [super allocWithZone:zone];
+    return [sharedPrefenceController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedPrefenceController == nil && (sharedPrefenceController = self = [super initWithWindowNibName:@"PreferenceWindow"])) {
+    if (sharedPrefenceController == nil && (self = [super initWithWindowNibName:@"PreferenceWindow"])) {
         NSString *initialUserDefaultsPath = [[NSBundle mainBundle] pathForResource:INITIALUSERDEFAULTS_KEY ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:initialUserDefaultsPath] valueForKey:RESETTABLEKEYS_KEY] retain];
         
@@ -87,8 +87,10 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [sudc addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKPreferenceWindowDefaultsObservationContext];
         [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"automaticallyChecksForUpdates" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
         [[SUUpdater sharedUpdater] addObserver:self forKeyPath:@"updateCheckInterval" options:0 context:&SKPreferenceWindowUpdaterObservationContext];
+        
+        sharedPrefenceController = [self retain];
     }
-    return sharedPrefenceController;
+    return self;
 }
 
 - (void)dealloc {
@@ -98,14 +100,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [resettableKeys release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 #define VALUES_KEY_PATH(key) [@"values." stringByAppendingString:key]
 

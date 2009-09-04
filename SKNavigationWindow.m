@@ -197,16 +197,16 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 + (id)sharedToolTipWindow {
     if (sharedToolTipWindow == nil)
-        [[self alloc] init];
+        [[[self alloc] init] retain];
     return sharedToolTipWindow;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedToolTipWindow ?: [super allocWithZone:zone];
+    return [sharedToolTipWindow retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedToolTipWindow == nil && (sharedToolTipWindow = self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES screen:[NSScreen mainScreen]])) {
+    if (sharedToolTipWindow == nil && (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES screen:[NSScreen mainScreen]])) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
@@ -214,17 +214,11 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
         
         toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
         [[self contentView] addSubview:toolTipView];
+        
+        sharedToolTipWindow = [self retain];
     }
     return self;
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
 

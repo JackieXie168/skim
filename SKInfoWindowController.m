@@ -73,19 +73,20 @@ static SKInfoWindowController *sharedInstance = nil;
 
 + (id)sharedInstance {
     if (sharedInstance == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedInstance;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedInstance ?: [super allocWithZone:zone];
+    return [sharedInstance retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
-    if (sharedInstance == nil && (sharedInstance = self = [super initWithWindowNibName:@"InfoWindow"])) {
+    if (sharedInstance == nil && (self = [super initWithWindowNibName:@"InfoWindow"])) {
         info = nil;
+        sharedInstance = [self retain];
     }
-    return sharedInstance;
+    return self;
 }
 
 - (void)dealloc {
@@ -93,14 +94,6 @@ static SKInfoWindowController *sharedInstance = nil;
     [info release];
     [super dealloc];
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKInfoWindowFrameAutosaveName];

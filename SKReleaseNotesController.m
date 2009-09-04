@@ -45,28 +45,20 @@ static SKReleaseNotesController *sharedReleaseNotesController = nil;
 
 + (id)sharedReleaseNotesController {
     if (sharedReleaseNotesController == nil)
-        [[self alloc] init];
+        [[[self alloc] init] release];
     return sharedReleaseNotesController;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
-    return sharedReleaseNotesController ?: [super allocWithZone:zone];
+    return [sharedReleaseNotesController retain] ?: [super allocWithZone:zone];
 }
 
 - (id)init {
     if (sharedReleaseNotesController == nil) {
-        sharedReleaseNotesController = [super initWithWindowNibName:@"ReleaseNotes"];
+        sharedReleaseNotesController = [[super initWithWindowNibName:@"ReleaseNotes"] retain];
     }
-    return sharedReleaseNotesController;
+    return self;
 }
-
-- (id)retain { return self; }
-
-- (id)autorelease { return self; }
-
-- (void)release {}
-
-- (NSUInteger)retainCount { return NSUIntegerMax; }
 
 - (void)windowDidLoad {
     [[self window] setTitle:NSLocalizedString(@"Release Notes", @"window title")];
