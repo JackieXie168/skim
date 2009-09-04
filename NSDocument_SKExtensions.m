@@ -39,6 +39,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKApplicationController.h"
 #import "SKTemplateParser.h"
+#import "NSFileManager_SKExtensions.h"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -53,7 +54,7 @@ static NSSet *supportedRichTextTypes = nil;
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSString *string = nil;
     if ([richTextTypes containsObject:fileType] == NO) {
-        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
         string = [SKTemplateParser stringByParsingTemplateString:templateString usingObject:self];
@@ -70,7 +71,7 @@ static NSSet *supportedRichTextTypes = nil;
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
     if ([supportedRichTextTypes containsObject:fileType]) {
-        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
@@ -86,7 +87,7 @@ static NSSet *supportedRichTextTypes = nil;
 - (NSFileWrapper *)notesFileWrapperUsingTemplateFile:(NSString *)templateFile {
     NSFileWrapper *fileWrapper = nil;
     if ([[templateFile pathExtension] caseInsensitiveCompare:@"rtfd"] == NSOrderedSame) {
-        NSString *templatePath = [[SKApplicationController sharedApplicationController] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
+        NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];

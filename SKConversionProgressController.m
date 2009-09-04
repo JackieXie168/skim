@@ -39,7 +39,7 @@
 #import "SKConversionProgressController.h"
 #import "NSString_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import <libkern/OSAtomic.h>
 

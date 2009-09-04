@@ -1,10 +1,10 @@
 //
-//  Files_SKExtensions.h
+//  NSFileManager_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/18/07.
+//  Created by Christiaan on 9/4/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,18 @@
 #import <Cocoa/Cocoa.h>
 
 
-// These functions are thread safe
+@interface NSFileManager (SKExtensions)
 
-extern BOOL SKFileIsInTrash(NSURL *fileURL);
+- (BOOL)isTrashedFileAtURL:(NSURL *)aURL;
+
+- (NSArray *)applicationSupportDirectories;
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath;
+
+@end
+
+// These functions are thread safe
 
 extern NSString *SKChewableItemsDirectory();
 extern NSString *SKUniqueTemporaryDirectory();
 extern NSString *SKUniqueChewableItemsDirectory();
-    

@@ -63,7 +63,7 @@
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "NSDocument_SKExtensions.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 #import "SKRuntime.h"
 #import <SkimNotes/SkimNotes.h>
@@ -90,6 +90,11 @@
 #define SKSpotlightLastSysVersionKey        @"lastSysVersion"
 
 
+@interface SKApplicationController (SKPrivate)
+- (void)doSpotlightImportIfNeeded;
+@end
+
+
 @implementation SKApplicationController
 
 + (void)initialize{
@@ -113,24 +118,6 @@
     
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
-}
-
-static id sharedApplicationController = nil;
-
-+ (id)sharedApplicationController {
-    if (sharedApplicationController == nil)
-        [[[self alloc] init] release];
-    return sharedApplicationController;
-}
-
-+ (id)allocWithZone:(NSZone *)zone {
-    return [sharedApplicationController retain] ?: [super allocWithZone:zone];
-}
-
-- (id)init {
-    if (sharedApplicationController == nil)
-        sharedApplicationController = [[super init] retain];
-    return sharedApplicationController;
 }
 
 - (void)awakeFromNib {
@@ -433,42 +420,6 @@ static id sharedApplicationController = nil;
             } else NSLog(@"%@ not found!", mdimportPath);
         }
     }
-}
-
-- (NSArray *)applicationSupportDirectories {
-    static NSArray *applicationSupportDirectories = nil;
-    if (applicationSupportDirectories == nil) {
-        NSMutableArray *pathArray = [NSMutableArray array];
-        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-        NSEnumerator *pathEnum = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES) objectEnumerator];
-        NSString *path;
-        while (path = [pathEnum nextObject])
-            [pathArray addObject:[path stringByAppendingPathComponent:appName]];
-        applicationSupportDirectories = [pathArray copy];
-    }
-    return applicationSupportDirectories;
-}
-
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
-    return [self pathForApplicationSupportFile:file ofType:extension inDirectory:nil];
-}
-
-- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension inDirectory:(NSString *)subpath {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *filename = [file stringByAppendingPathExtension:extension];
-    NSString *fullPath = nil;
-    NSEnumerator *pathEnum = [[[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]] objectEnumerator];
-    NSString *appSupportPath = nil;
-    
-    while (appSupportPath = [pathEnum nextObject]) {
-        fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
-        fullPath = [fullPath stringByAppendingPathComponent:filename];
-        if ([fm fileExistsAtPath:fullPath] == NO)
-            fullPath = nil;
-        else break;
-    }
-    
-    return fullPath;
 }
 
 #pragma mark Scripting support

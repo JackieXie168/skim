@@ -129,6 +129,7 @@
 		CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BAF4310511A0F00161B87 /* PDFOutline_SKExtensions.m */; };
 		CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */; };
 		CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB0D210515D3100161B87 /* SKPDFPage.m */; };
+		CE5BB21610517AEF00161B87 /* NSFileManager_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BB21510517AEF00161B87 /* NSFileManager_SKExtensions.m */; };
 		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
 		CE5BEA190C7C635400EBDCF7 /* NSGeometry_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */; };
 		CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */; };
@@ -247,7 +248,6 @@
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF82CC50EC4ADDA009652CF /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CC40EC4ADDA009652CF /* libssl.dylib */; };
 		CEF82CE60EC4B2FE009652CF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */; };
-		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
 		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
@@ -675,6 +675,8 @@
 		CE5BB0CE10515CCC00161B87 /* SKPDFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFDocument.m; sourceTree = "<group>"; };
 		CE5BB0D110515D3100161B87 /* SKPDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFPage.h; sourceTree = "<group>"; };
 		CE5BB0D210515D3100161B87 /* SKPDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFPage.m; sourceTree = "<group>"; };
+		CE5BB21410517AEF00161B87 /* NSFileManager_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKExtensions.h; sourceTree = "<group>"; };
+		CE5BB21510517AEF00161B87 /* NSFileManager_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKExtensions.m; sourceTree = "<group>"; };
 		CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTypeSelectHelper.h; sourceTree = "<group>"; };
 		CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTypeSelectHelper.m; sourceTree = "<group>"; };
 		CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSGeometry_SKExtensions.h; sourceTree = "<group>"; };
@@ -957,8 +959,6 @@
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEF82CC40EC4ADDA009652CF /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
-		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
-		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
 		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPreferences.tiff; sourceTree = "<group>"; };
 		CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFormatCommand.h; sourceTree = "<group>"; };
 		CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFormatCommand.m; sourceTree = "<group>"; };
@@ -1151,8 +1151,8 @@
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CEA182250C92E3300061A6D4 /* NSData_SKExtensions.h */,
 				CEA182260C92E3300061A6D4 /* NSData_SKExtensions.m */,
-				CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */,
-				CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */,
+				CE5BB21410517AEF00161B87 /* NSFileManager_SKExtensions.h */,
+				CE5BB21510517AEF00161B87 /* NSFileManager_SKExtensions.m */,
 				CE5BEA160C7C635400EBDCF7 /* NSGeometry_SKExtensions.h */,
 				CE5BEA170C7C635400EBDCF7 /* NSGeometry_SKExtensions.m */,
 				CE0EB4D40DD054DC0034DF92 /* NSInvocation_SKExtensions.h */,
@@ -2086,7 +2086,6 @@
 				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
 				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,
 				CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */,
-				CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */,
 				CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */,
 				CE5BEA190C7C635400EBDCF7 /* NSGeometry_SKExtensions.m in Sources */,
 				CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */,
@@ -2171,6 +2170,7 @@
 				CE5BAF4410511A0F00161B87 /* PDFOutline_SKExtensions.m in Sources */,
 				CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */,
 				CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */,
+				CE5BB21610517AEF00161B87 /* NSFileManager_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

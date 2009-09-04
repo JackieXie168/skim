@@ -43,7 +43,7 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import <CoreFoundation/CoreFoundation.h>
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKCFCallBacks.h"
 #import "SKRuntime.h"

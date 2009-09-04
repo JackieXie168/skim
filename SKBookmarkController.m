@@ -41,7 +41,7 @@
 #import "BDAlias.h"
 #import "SKMainDocument.h"
 #import "SKMainWindowController.h"
-#import "Files_SKExtensions.h"
+#import "NSFileManager_SKExtensions.h"
 #import "SKBookmarkOutlineView.h"
 #import "SKOutlineView.h"
 #import "SKTypeSelectHelper.h"
@@ -379,7 +379,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     } else {
         NSString *path = [bookmark path];
         NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
-        if (fileURL && NO == SKFileIsInTrash(fileURL) && 
+        if (fileURL && NO == [[NSFileManager defaultManager] isTrashedFileAtURL:fileURL] && 
             (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]))
             [[document mainWindowController] setPageNumber:[bookmark pageIndex] + 1];
     }
