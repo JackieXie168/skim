@@ -2113,20 +2113,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)registerForDocumentNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(handleDocumentBeginWrite:) 
-                             name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+                             name:PDFDocumentDidBeginWriteNotification object:[pdfView document]];
     [nc addObserver:self selector:@selector(handleDocumentEndWrite:) 
-                             name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+                             name:PDFDocumentDidEndWriteNotification object:[pdfView document]];
     [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
-                             name:@"PDFDidEndPageWrite" object:[pdfView document]];
+                             name:PDFDocumentDidEndPageWriteNotification object:[pdfView document]];
     [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
                              name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)unregisterForDocumentNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-    [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-    [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    [nc removeObserver:self name:PDFDocumentDidBeginWriteNotification object:[pdfView document]];
+    [nc removeObserver:self name:PDFDocumentDidEndWriteNotification object:[pdfView document]];
+    [nc removeObserver:self name:PDFDocumentDidEndPageWriteNotification object:[pdfView document]];
     [nc removeObserver:self name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
