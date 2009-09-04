@@ -343,8 +343,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     BOOL success = NO;
     
     NSInvocation *invocation;
+    NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
     
-    if ([self shouldKeepRunning] && [[[[NSFileManager alloc] init] autorelease] fileExistsAtPath:dviFile]) {
+    if ([self shouldKeepRunning] && [fm fileExistsAtPath:dviFile]) {
         NSTask *task = [NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
         if (task) {
             invocation = [NSInvocation invocationWithTarget:self selector:@selector(conversionStarted)];
@@ -390,7 +391,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         [self stopModalOnMainThread:success];
     }
     
-    FSPathDeleteContainer((UInt8 *)[tmpDir fileSystemRepresentation]);
+    [fm removeItemAtPath:tmpDir error:NULL];
     
     [pool release];
 }

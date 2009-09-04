@@ -60,6 +60,8 @@
     NSDate *lastModDate;
     BOOL isPdfsync;
     
+    NSFileManager *fileManager;
+    
     NSMutableArray *pages;
     NSMutableDictionary *lines;
     
