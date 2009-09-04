@@ -39,94 +39,6 @@
 #import "SKRuntime.h"
 #import <objc/objc-runtime.h>
 
-#define WEAK_NULL NULL
-
-// wrappers around 10.5 only functions, use 10.4 API when the function is not defined
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-
-#pragma mark 10.4 + 10.5
-
-extern void _objc_flush_caches(Class);
-
-static inline Class SK_object_getClass(id object) {
-    return object_getClass != WEAK_NULL ? object_getClass(object) : object->isa;
-}
-
-static inline IMP SK_method_getImplementation(Method aMethod) {
-    return method_getImplementation != WEAK_NULL ? method_getImplementation(aMethod) : aMethod->method_imp;
-}
-
-static inline const char *SK_method_getTypeEncoding(Method aMethod) {
-    return method_getTypeEncoding != WEAK_NULL ? method_getTypeEncoding(aMethod) : aMethod->method_types;
-}
-
-// generic implementation for class_addMethod/class_replaceMethod, but only for old API, modeled after actual runtime implementation of _class_addMethod
-static inline IMP _SK_class_addMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes, BOOL replace) {
-    IMP imp = NULL;
-    void *iterator = NULL;
-    struct objc_method_list *mlist;
-    Method m, method = NULL;
-    NSInteger i;
-    while (method == NULL && (mlist = class_nextMethodList(aClass, &iterator))) {
-        for (i = 0; i < mlist->method_count; i++) {
-            m = &mlist->method_list[i];
-            if (m->method_name == selector) {
-                method = m;
-                break;
-            }
-        }
-    }
-    if (method) {
-        imp = method->method_imp;
-        if (replace)
-            method->method_imp = methodImp;
-    } else {
-        mlist = (struct objc_method_list *)NSZoneCalloc(NSDefaultMallocZone(), 1, sizeof(struct objc_method_list));
-        
-        mlist->method_count = 1;
-        mlist->method_list[0].method_name = selector;
-        mlist->method_list[0].method_imp = methodImp;
-        mlist->method_list[0].method_types = strdup(methodTypes);
-        
-        class_addMethods(aClass, mlist);
-        
-        // Flush the method cache
-        _objc_flush_caches(aClass);
-    }
-    return imp;
-}
-
-static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    if (class_replaceMethod != WEAK_NULL)
-        return class_replaceMethod(aClass, selector, methodImp, methodTypes);
-    else
-        return _SK_class_addMethod(aClass, selector, methodImp, methodTypes, YES);
-}
-
-#else
-
-#pragma mark 10.5
-
-static inline Class SK_object_getClass(id object) {
-    return object_getClass(object);
-}
-
-static inline IMP SK_method_getImplementation(Method aMethod) {
-    return method_getImplementation(aMethod);
-}
-
-static inline const char *SK_method_getTypeEncoding(Method aMethod) {
-    return method_getTypeEncoding(aMethod);
-}
-
-static inline IMP SK_class_replaceMethod(Class aClass, SEL selector, IMP methodImp, const char *methodTypes) {
-    return class_replaceMethod(aClass, selector, methodImp, methodTypes);
-}
-
-#endif
-
-#pragma mark API
 
 // this is essentially class_replaceMethod, but handles instance/class methods, returns any inherited implementation, and can get the types from an inherited implementation
 IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char *types, BOOL isInstance, NSInteger options) {
@@ -134,19 +46,19 @@ IMP SKSetMethodImplementation(Class aClass, SEL aSelector, IMP anImp, const char
     if (anImp) {
         Method method = isInstance ? class_getInstanceMethod(aClass, aSelector) : class_getClassMethod(aClass, aSelector);
         if (method) {
-            imp = SK_method_getImplementation(method);
+            imp = method_getImplementation(method);
             if (types == NULL)
-                types = SK_method_getTypeEncoding(method);
+                types = method_getTypeEncoding(method);
         }
         if (types != NULL && (options != SKAddOnly || imp == NULL) && (options != SKReplaceOnly || imp != NULL))
-            SK_class_replaceMethod(isInstance ? aClass : SK_object_getClass(aClass), aSelector, anImp, types);
+            class_replaceMethod(isInstance ? aClass : object_getClass(aClass), aSelector, anImp, types);
     }
     return imp;
 }
 
 IMP SKSetMethodImplementationFromSelector(Class aClass, SEL aSelector, SEL impSelector, BOOL isInstance, NSInteger options) {
     Method method = isInstance ? class_getInstanceMethod(aClass, impSelector) : class_getClassMethod(aClass, impSelector);
-    return method ? SKSetMethodImplementation(aClass, aSelector, SK_method_getImplementation(method), SK_method_getTypeEncoding(method), isInstance, options) : NULL;
+    return method ? SKSetMethodImplementation(aClass, aSelector, method_getImplementation(method), method_getTypeEncoding(method), isInstance, options) : NULL;
 }
 
 IMP SKReplaceClassMethodImplementation(Class aClass, SEL aSelector, IMP anImp) {
