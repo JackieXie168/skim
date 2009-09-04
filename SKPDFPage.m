@@ -82,8 +82,4 @@
     return foregroundBox;
 }
 
-- (NSData *)contentBoundsAsQDRect {
-    return [NSData dataWithRectAsQDRect:[self foregroundBox]];
-}
-
 @end
