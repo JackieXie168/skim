@@ -294,7 +294,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 - (void)cleanup {
     [self cancel];
     if (filePath)
-        [[NSFileManager defaultManager] removeFileAtPath:[filePath stringByDeletingLastPathComponent] handler:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[filePath stringByDeletingLastPathComponent] error:NULL];
 }
 
 - (BOOL)canCancel {
@@ -364,7 +364,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
     [self setStatus:SKDownloadStatusFailed];
     if (filePath)
-        [[NSFileManager defaultManager] removeFileAtPath:filePath handler:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
     [self setFilePath:nil];
     if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
         [delegate downloadDidEnd:self];
