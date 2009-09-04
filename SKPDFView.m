@@ -1084,7 +1084,7 @@ enum {
                 [self doResizeReadingBarWithEvent:theEvent];
             else
                 [self doDragReadingBarWithEvent:theEvent];
-        } else if (area == kPDFNoArea || area == kPDFPageArea) {
+        } else if (area == kPDFNoArea) {
             [self doDragWithEvent:theEvent];
         } else {
             
