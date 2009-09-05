@@ -319,11 +319,12 @@ static char SKMainDocumentDefaultsObservationContext;
     
     NSInvocation *invocation = nil;
     if (delegate && didSaveSelector) {
-        NSMethodSignature *ms = [[delegate methodSignatureForSelector:didSaveSelector] retain];
-        invocation = [NSInvocation invocationWithMethodSignature:ms];
+        NSMethodSignature *ms = [delegate methodSignatureForSelector:didSaveSelector];
+        invocation = [[NSInvocation invocationWithMethodSignature:ms] retain];
         [invocation setTarget:delegate];
         [invocation setSelector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
+        [invocation retainArguments];
     }
     
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:NULL];
