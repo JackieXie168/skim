@@ -47,7 +47,7 @@
     CGFloat hCornerRadius;
     CGFloat vCornerRadius;
     CGFloat lineWidth;
-    NSUInteger dashCount;
+    unsigned int dashCount;
     CGFloat *dashPattern;
 }
 @end
@@ -73,8 +73,8 @@ static id (*original_dashPattern)(id, SEL) = NULL;
     id vars = [self valueForKey:@"pdfPriv"];
     NSMutableArray *pattern = [NSMutableArray array];
     NSUInteger i, count;
-    object_getInstanceVariable(vars, "dashCount", (void *)&count);
     CGFloat *dashPattern;
+    object_getInstanceVariable(vars, "dashCount", (void *)&count);
     object_getInstanceVariable(vars, "dashPattern", (void *)&dashPattern);
     for (i = 0; i < count; i++)
         [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
