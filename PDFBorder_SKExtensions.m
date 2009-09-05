@@ -40,7 +40,7 @@
 #import "SKRuntime.h"
 #import <objc/objc-runtime.h>
 
-/*
+
 @interface PDFBorderPrivateVars : NSObject
 {
     NSUInteger style;
@@ -51,7 +51,7 @@
     CGFloat *dashPattern;
 }
 @end
-*/
+
 
 @implementation PDFBorder (SKExtensions)
 
@@ -71,11 +71,10 @@ static id (*original_dashPattern)(id, SEL) = NULL;
 
 - (NSArray *)replacement_dashPattern {
     id vars = [self valueForKey:@"pdfPriv"];
+    NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntegerValue];
+    Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
+    CGFloat *dashPattern = *(CGFloat **)((void *)vars + ivar_getOffset(ivar));
     NSMutableArray *pattern = [NSMutableArray array];
-    NSUInteger i, count;
-    CGFloat *dashPattern;
-    object_getInstanceVariable(vars, "dashCount", (void *)&count);
-    object_getInstanceVariable(vars, "dashPattern", (void *)&dashPattern);
     for (i = 0; i < count; i++)
         [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
     return pattern;
