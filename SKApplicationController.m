@@ -85,6 +85,7 @@
 
 #define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
+#define SKIsRelaunchKey                     @"SKIsRelaunch"
 #define SKSpotlightVersionInfoKey           @"SKSpotlightVersionInfo"
 #define SKSpotlightLastImporterVersionKey   @"lastImporterVersion"
 #define SKSpotlightLastSysVersionKey        @"lastSysVersion"
@@ -144,7 +145,7 @@
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey] || [[NSUserDefaults standardUserDefaults] boolForKey:SKIsRelaunchKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files reverseObjectEnumerator];
         NSDictionary *dict;
@@ -155,6 +156,7 @@
             if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error)
                 [NSApp presentError:error];
         }
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:SKIsRelaunchKey];
     }
     
     return NO;
@@ -239,6 +241,10 @@
         return NO;
     }
     return YES;
+}
+
+- (void)updaterWillRelaunchApplication:(SUUpdater *)updater {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:SKIsRelaunchKey];
 }
 
 #pragma mark Services Support
