@@ -40,7 +40,7 @@
 #import "SKRuntime.h"
 #import <objc/objc-runtime.h>
 
-
+/*
 @interface PDFBorderPrivateVars : NSObject
 {
     NSUInteger style;
@@ -51,7 +51,7 @@
     CGFloat *dashPattern;
 }
 @end
-
+*/
 
 @implementation PDFBorder (SKExtensions)
 
@@ -81,9 +81,13 @@ static id (*original_dashPattern)(id, SEL) = NULL;
 }
 
 + (void)load {
-    // on 10.6 the implementation of -dashPattern is badly broken, probably due to the wrong type for _pdfPriv.dashCount
-    if (floor(NSAppKitVersionNumber) > 949)
-        original_dashPattern = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dashPattern), @selector(replacement_dashPattern));
+    // the implementation of -dashPattern is currently badly broken, probably due to the wrong type for _pdfPriv.dashCount
+    Class cls = NSClassFromString(@"PDFBorderPrivateVars");
+    if (cls) {
+        Ivar ivar = class_getInstanceVariable(cls, "dashCount");
+        if (ivar && 0 != strcmp(ivar_getTypeEncoding(ivar), @encode(NSUInteger)))
+            original_dashPattern = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dashPattern), @selector(replacement_dashPattern));
+    }
 }
 
 #endif
