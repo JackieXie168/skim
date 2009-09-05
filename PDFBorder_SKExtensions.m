@@ -70,13 +70,18 @@
 static id (*original_dashPattern)(id, SEL) = NULL;
 
 - (NSArray *)replacement_dashPattern {
-    id vars = [self valueForKey:@"pdfPriv"];
-    NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntegerValue];
-    Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
-    CGFloat *dashPattern = *(CGFloat **)((void *)vars + ivar_getOffset(ivar));
     NSMutableArray *pattern = [NSMutableArray array];
-    for (i = 0; i < count; i++)
-        [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
+    @try {
+        id vars = [self valueForKey:@"pdfPriv"];
+        NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntegerValue];
+        Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
+        if (ivar != NULL) {
+            CGFloat *dashPattern = *(CGFloat **)((void *)vars + ivar_getOffset(ivar));
+            for (i = 0; i < count; i++)
+                [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
+        }
+    }
+    @catch (id e) {}
     return pattern;
 }
 
