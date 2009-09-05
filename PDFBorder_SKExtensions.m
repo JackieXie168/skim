@@ -37,7 +37,21 @@
  */
 
 #import "PDFBorder_SKExtensions.h"
+#import "SKRuntime.h"
+#import <objc/objc-runtime.h>
 
+/*
+@interface PDFBorderPrivateVars : NSObject
+{
+    NSUInteger style;
+    CGFloat hCornerRadius;
+    CGFloat vCornerRadius;
+    CGFloat lineWidth;
+    NSUInteger dashCount;
+    CGFloat *dashPattern;
+}
+@end
+*/
 
 @implementation PDFBorder (SKExtensions)
 
@@ -50,5 +64,29 @@
     [copy setVerticalCornerRadius:[self verticalCornerRadius]];
     return copy;
 }
+
+#if __LP64__
+
+static id (*original_dashPattern)(id, SEL) = NULL;
+
+- (NSArray *)replacement_dashPattern {
+    id vars = [self valueForKey:@"pdfPriv"];
+    NSMutableArray *pattern = [NSMutableArray array];
+    NSUInteger i, count;
+    object_getInstanceVariable(vars, "dashCount", (void *)&count);
+    CGFloat *dashPattern;
+    object_getInstanceVariable(vars, "dashPattern", (void *)&dashPattern);
+    for (i = 0; i < count; i++)
+        [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
+    return pattern;
+}
+
++ (void)load {
+    // on 10.6 the implementation of -dashPattern is badly broken, probably due to the wrong type for _pdfPriv.dashCount
+    if (floor(NSAppKitVersionNumber) > 949)
+        original_dashPattern = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dashPattern), @selector(replacement_dashPattern));
+}
+
+#endif
 
 @end
