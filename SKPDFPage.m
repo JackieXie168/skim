@@ -11,6 +11,7 @@
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "SKPDFAnnotationTemporary.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define SKAutoCropBoxMarginWidthKey @"SKAutoCropBoxMarginWidth"
 #define SKAutoCropBoxMarginHeightKey @"SKAutoCropBoxMarginHeight"
@@ -69,13 +70,12 @@
         NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
         foregroundBox = [imageRep foregroundRect];
         if (imageRep == nil) {
-            foregroundBox = bounds;
-        } else if (NSEqualRects(NSZeroRect, foregroundBox)) {
-            foregroundBox.origin.x = SKFloor(NSMidX(bounds));
-            foregroundBox.origin.x = SKCeil(NSMidY(bounds));
+            foregroundBox = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        } else if (NSIsEmptyRect(foregroundBox)) {
+            foregroundBox.origin = SKIntegralPoint(SKCenterPoint(bounds));
+            foregroundBox.size = NSZeroSize;
         } else {
-            foregroundBox.origin.x += NSMinX(bounds);
-            foregroundBox.origin.y += NSMinY(bounds);
+            foregroundBox.origin = SKAddPoints(foregroundBox.origin, bounds.origin);
         }
         [imageRep release];
         foregroundBox = NSIntersectionRect(NSInsetRect(foregroundBox, -marginWidth, -marginHeight), bounds);
