@@ -165,7 +165,7 @@ Boolean GetMetadataForFile(void* thisInterface,
         if (sourcePath && [[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
             CFDictionarySetValue(attributes, kMDItemWhereFroms, [NSArray arrayWithObjects:sourcePath, nil]);
         
-        NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
+        NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:(NSString *)pathToFile error:NULL];
         NSDate *date;
         if (date = [fileAttributes objectForKey:NSFileModificationDate])
             CFDictionarySetValue(attributes, kMDItemContentModificationDate, date);

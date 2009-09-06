@@ -265,13 +265,13 @@ static char SKTableViewDefaultsObservationContext;
     
     if ([self window]) {
         NSRange rowRange = [self rowsInRect:[self visibleRect]];
-        NSRange columnRange = [self columnsInRect:[self visibleRect]];
-        NSUInteger row, column;
+        NSIndexSet *columnIndexes = [self columnIndexesInRect:[self visibleRect]];
+        NSUInteger row, column = [columnIndexes firstIndex];
         NSTableColumn *tableColumn;
         NSInteger userData;
         NSTrackingRectTag tag;
         
-        for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
+        while (column != NSNotFound) {
             tableColumn = [[self tableColumns] objectAtIndex:column];
             for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
                 if ([[self delegate] tableView:self shouldTrackTableColumn:tableColumn row:row]) {
@@ -280,6 +280,7 @@ static char SKTableViewDefaultsObservationContext;
                     CFArrayAppendValue(trackingRects, (const void *)tag);
                 }
             }
+            column = [columnIndexes indexGreaterThanIndex:column];
         }
     }
 }

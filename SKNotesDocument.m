@@ -258,7 +258,7 @@
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [self fileName];
+    NSString *fileName = [[self fileURL] path];
     
     if (fileName) {
         NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
@@ -301,7 +301,7 @@
 #pragma mark Actions
 
 - (IBAction)openPDF:(id)sender {
-    NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
+    NSString *path = [[[self fileURL] path] stringByReplacingPathExtension:@"pdf"];
     NSError *error = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         // resolve symlinks and aliases
@@ -678,7 +678,7 @@
     if ([[[[[self windowControllers] objectAtIndex:0] window] toolbar] customizationPaletteIsRunning])
         return NO;
     else if ([[toolbarItem itemIdentifier] isEqualToString:SKNotesDocumentOpenPDFToolbarItemIdentifier])
-        return [[NSFileManager defaultManager] fileExistsAtPath:[[self fileName] stringByReplacingPathExtension:@"pdf"]];
+        return [[NSFileManager defaultManager] fileExistsAtPath:[[[self fileURL] path] stringByReplacingPathExtension:@"pdf"]];
     return YES;
 }
 
