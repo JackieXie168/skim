@@ -37,7 +37,6 @@
  */
 
 #import "SKStatusBar.h"
-#import "NSBezierPath_CoreImageExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
 #define LEFT_MARGIN         5.0
@@ -58,17 +57,17 @@
 
 @implementation SKStatusBar
 
-+ (CIColor *)lowerColor{
-    static CIColor *lowerColor = nil;
++ (NSColor *)lowerColor{
+    static NSColor *lowerColor = nil;
     if (lowerColor == nil)
-        lowerColor = [[CIColor alloc] initWithColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0]];
+        lowerColor = [[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] retain];
     return lowerColor;
 }
 
-+ (CIColor *)upperColor{
-    static CIColor *upperColor = nil;
++ (NSColor *)upperColor{
+    static NSColor *upperColor = nil;
     if (upperColor == nil)
-        upperColor = [[CIColor alloc] initWithColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+        upperColor = [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] retain];
     return upperColor;
 }
 
@@ -86,7 +85,6 @@
         [rightCell setControlView:self];
         [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
 		progressIndicator = nil;
-        layer = NULL;
         leftTrackingRectTag = 0;
         rightTrackingRectTag = 0;
     }
@@ -94,7 +92,6 @@
 }
 
 - (void)dealloc {
-    CGLayerRelease(layer);
 	[leftCell release];
 	[rightCell release];
 	[super dealloc];
@@ -103,46 +100,6 @@
 - (BOOL)isOpaque{  return YES; }
 
 - (BOOL)isFlipped { return NO; }
-
-- (void)setBounds:(NSRect)aRect
-{
-    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
-    if (ABS(NSHeight(aRect) - NSHeight([self bounds])) > 0.01) {
-        CGLayerRelease(layer);
-        layer = NULL;
-    }
-    [super setBounds:aRect];
-}
-
-- (void)setBoundsSize:(NSSize)aSize
-{
-    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
-    if (ABS(aSize.height - NSHeight([self bounds])) > 0.01) {
-        CGLayerRelease(layer);
-        layer = NULL;
-    }
-    [super setBoundsSize:aSize];
-}
-
-- (void)setFrame:(NSRect)aRect
-{
-    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
-    if (ABS(NSHeight(aRect) - NSHeight([self frame])) > 0.01) {
-        CGLayerRelease(layer);
-        layer = NULL;
-    }
-    [super setFrame:aRect];
-}
-
-- (void)setFrameSize:(NSSize)aSize
-{
-    // since the gradient is vertical, we only have to reset the layer if the height changes; for most of our gradient views, this isn't likely to happen
-    if (ABS(aSize.height - NSHeight([self frame])) > 0.01) {
-        CGLayerRelease(layer);
-        layer = NULL;
-    }
-    [super setFrameSize:aSize];
-}
 
 - (void)getLeftFrame:(NSRect *)leftFrame rightFrame:(NSRect *)rightFrame {
     CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
@@ -160,36 +117,17 @@
 }
 
 - (void)drawRect:(NSRect)rect {
-    
-    CGContextRef viewContext = [[NSGraphicsContext currentContext] graphicsPort];
     NSRect bounds = [self bounds];
+    NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] lowerColor] endingColor:[[self class] upperColor]] autorelease];
     
-    if (NULL == layer) {
-        NSSize layerSize = bounds.size;
-        layer = CGLayerCreateWithContext(viewContext, NSSizeToCGSize(layerSize), NULL);
-        
-        CGContextRef layerContext = CGLayerGetContext(layer);
-        [NSGraphicsContext saveGraphicsState];
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:layerContext flipped:NO]];
-        NSRect layerRect = NSZeroRect;
-        layerRect.size = layerSize;
-        
-        [[NSBezierPath bezierPathWithRect:bounds] fillPathVerticallyWithStartColor:[[self class] lowerColor] endColor:[[self class] upperColor]];
-        [NSGraphicsContext restoreGraphicsState];
-    }
+    [gradient drawInRect:bounds angle:90.0];
     
-    // normal blend mode is copy
-    CGContextSaveGState(viewContext);
-    CGContextSetBlendMode(viewContext, kCGBlendModeNormal);
-    CGContextDrawLayerInRect(viewContext, NSRectToCGRect(bounds), layer);
-    CGContextRestoreGState(viewContext);
-
     NSRect textRect, ignored;
     CGFloat rightMargin = RIGHT_MARGIN;
-
+    
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
-    NSDivideRect([self bounds], &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(bounds, &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
     NSDivideRect(textRect, &ignored, &textRect, rightMargin, NSMaxXEdge);
 	
 	if (textRect.size.width < 0.0)
