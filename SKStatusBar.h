@@ -50,13 +50,12 @@ typedef NSInteger SKProgressIndicatorStyle;
 	id leftCell;
 	id rightCell;
 	NSProgressIndicator *progressIndicator;
-    CGLayerRef layer;
     NSTrackingRectTag leftTrackingRectTag;
     NSTrackingRectTag rightTrackingRectTag;
 }
 
-+ (CIColor *)lowerColor;
-+ (CIColor *)upperColor;
++ (NSColor *)lowerColor;
++ (NSColor *)upperColor;
 
 - (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset;
 
