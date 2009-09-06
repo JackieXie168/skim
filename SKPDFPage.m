@@ -85,7 +85,7 @@
 
 - (NSAttributedString *)attributedString {
     // on 10.6 the attributedstring is over-released by one
-    if (floor(NSAppKitVersionNumber) > 949)
+    if (floor(NSAppKitVersionNumber) <= 1038)
         return [[super attributedString] retain];
     return [super attributedString];
 }
