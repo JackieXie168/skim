@@ -137,26 +137,6 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     [super dealloc];
 }
 
-- (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
-	NSString *type = [super typeFromFileExtension:fileExtensionOrHFSFileType];
-    if (SKIsEmbeddedPDFDocumentType(type) || SKIsBarePDFDocumentType(type)) {
-        // fix of bug when reading a PDF file on 10.4
-        // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
-        type = SKPDFDocumentType;
-    }
-    else if (SKIsBarePostScriptDocumentType(type)) {
-        // fix of bug when reading a PostScript file on 10.4
-        // this is interpreted as SKBarePostScriptDocumentType, even though we don't declare that as a readable type
-        type = SKPostScriptDocumentType;
-    }
-    else if (SKIsBareDVIDocumentType(type)) {
-        // fix of bug when reading a DVI file on 10.4
-        // this is interpreted as SKBareDVIDocumentType, even though we don't declare that as a readable type
-        type = SKDVIDocumentType;
-    }
-	return type;
-}
-
 - (void)addDocument:(NSDocument *)document {
     [super addDocument:document];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerDidAddDocumentNotification 
