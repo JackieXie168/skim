@@ -66,8 +66,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
     
     SKMainWindowController *mainWindowController;
     
-    NSButton *autoRotateButton;
-    
     // variables to be saved:
     NSData *pdfData;
     NSData *psOrDviData;

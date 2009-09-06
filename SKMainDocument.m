@@ -151,7 +151,6 @@ static char SKMainDocumentDefaultsObservationContext;
     [readNotesAccessoryView release];
     [lastModifiedDate release];
     [progressController release];
-    [autoRotateButton release];
     [tmpData release];
     [super dealloc];
 }
@@ -415,7 +414,7 @@ static char SKMainDocumentDefaultsObservationContext;
         // we move everything that's not ours out of the way, so we can preserve version control info
         if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
             NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-            fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
+            fileEnum = [[fm contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
             while (file = [fileEnum nextObject]) {
                 if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
                     if (tmpPath == nil)
@@ -428,7 +427,7 @@ static char SKMainDocumentDefaultsObservationContext;
         success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
         
         if (tmpPath) {
-            fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
+            fileEnum = [[fm contentsOfDirectoryAtPath:tmpPath error:NULL] objectEnumerator];
             while (file = [fileEnum nextObject])
                 [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
             [fm removeItemAtPath:tmpPath error:NULL];
@@ -450,7 +449,7 @@ static char SKMainDocumentDefaultsObservationContext;
             [self updateChangeCount:NSChangeCleared];
             docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[self fileName] error:NULL] fileModificationDate] retain];
+            lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate] retain];
         }
         [self checkFileUpdatesIfNeeded];
         docFlags.isSaving = NO;
@@ -1203,11 +1202,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (void)revertDocumentToSaved:(id)sender { 	 
-     if ([self fileName]) { 	 
+     if ([self fileURL]) { 	 
          if ([self isDocumentEdited]) { 	 
              [super revertDocumentToSaved:sender]; 	 
          } else if (docFlags.fileChangedOnDisk) { 	 
-             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileName] lastPathComponent]] 	 
+             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[[self fileURL] path] lastPathComponent]] 	 
                                               defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
                                             alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
                                                 otherButton:nil 	 
@@ -1228,7 +1227,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 	if ([anItem action] == @selector(performFindPanelAction:)) {
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
 	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
-        NSString *fileName = [self fileName];
+        NSString *fileName = [[self fileURL] path];
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
         return [self isDocumentEdited] || docFlags.fileChangedOnDisk;
@@ -1289,7 +1288,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)checkForFileModification:(NSTimer *)timer {
-    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[self fileName] error:NULL] fileModificationDate];
+    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate];
     if (nil == lastModifiedDate) {
         lastModifiedDate = [currentFileModifiedDate copy];
     } else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending) {
@@ -1302,13 +1301,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)checkFileUpdatesIfNeeded {
-    if ([self fileName]) {
+    if ([self fileURL]) {
         [self stopCheckingFileUpdates];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isFileOnHFSVolume([self fileName])) {
-                watchedFile = [[self fileName] retain];
+            if (isFileOnHFSVolume([[self fileURL] path])) {
+                watchedFile = [[[self fileURL] path] retain];
                 
                 UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
                 [kQueue addPath:watchedFile];
@@ -1380,7 +1379,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)fileUpdated {
-    NSString *fileName = [self fileName];
+    NSString *fileName = [[self fileURL] path];
     
     // should never happen
     if (docFlags.isUpdatingFile)
@@ -1435,7 +1434,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     
     if ([watchedFile isEqualToString:path] || notification == nil) {
         // should never happen
-        if (notification && [path isEqualToString:[self fileName]] == NO)
+        if (notification && [path isEqualToString:[[self fileURL] path]] == NO)
             NSLog(@"*** received change notice for %@", path);
         
         if (docFlags.isUpdatingFile)
@@ -1493,7 +1492,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (void)setFileURL:(NSURL *)absoluteURL {
     // this shouldn't be necessary, but better be sure
-    if ([self fileName] && [[self fileURL] isEqual:absoluteURL] == NO)
+    if ([self fileURL] && [[self fileURL] isEqual:absoluteURL] == NO)
         [self stopCheckingFileUpdates];
     [super setFileURL:absoluteURL];
     if ([absoluteURL isFileURL])
@@ -1509,7 +1508,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (synchronizer == nil) {
         synchronizer = [[SKPDFSynchronizer alloc] init];
         [synchronizer setDelegate:self];
-        [synchronizer setFileName:[self fileName]];
+        [synchronizer setFileName:[[self fileURL] path]];
     }
     return synchronizer;
 }
@@ -1625,7 +1624,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [self fileName];
+    NSString *fileName = [[self fileURL] path];
     if (fileName) {
         NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
         
@@ -1729,30 +1728,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)setPrintInfo:(NSPrintInfo *)printInfo {
-    if (autoRotateButton) {
-        BOOL autoRotate = [autoRotateButton state] == NSOnState;
-        if (autoRotate != [[printInfo valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue]) {
-            [printInfo setValue:[NSNumber numberWithBool:autoRotate] forKeyPath:@"dictionary.PDFPrintAutoRotate"];
-            [[NSUserDefaults standardUserDefaults] setBool:autoRotate forKey:SKAutoRotatePrintedPagesKey];
-        }
-    }
     [[self undoManager] disableUndoRegistration];
     [super setPrintInfo:printInfo];
     [[self undoManager] enableUndoRegistration];
-}
-
-- (BOOL)preparePageLayout:(NSPageLayout *)pageLayout {
-    if (autoRotateButton == nil) {
-        autoRotateButton = [[NSButton alloc] init];
-        [autoRotateButton setBezelStyle:NSRoundedBezelStyle];
-        [autoRotateButton setButtonType:NSSwitchButton];
-        [autoRotateButton setTitle:NSLocalizedString(@"Auto Rotate Pages", @"Print layout sheet button title")];
-        [autoRotateButton sizeToFit];
-    }
-    BOOL autoRotate = [[[self printInfo] valueForKeyPath:@"dictionary.PDFPrintAutoRotate"] boolValue];
-    [autoRotateButton setState:autoRotate ? NSOnState : NSOffState];
-    [pageLayout setAccessoryView:autoRotateButton];
-    return YES;
 }
 
 - (NSArray *)snapshots {
@@ -1797,7 +1775,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             }
             if (saveOption == NSAlertDefaultReturn) {
                 const char *userName = [NSUserName() UTF8String];
-                const char *comment = [[self fileName] UTF8String];
+                const char *comment = [[[self fileURL] path] UTF8String];
                 
                 OSStatus err;
                 SecKeychainItemRef itemRef = NULL;    
@@ -2078,7 +2056,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command {
-    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
+    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[[self fileURL] path]]) {
         if (docFlags.isUpdatingFile == NO && [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
             [command setScriptErrorNumber:NSInternalScriptError];
             [command setScriptErrorString:@"Revert failed."];

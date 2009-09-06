@@ -50,7 +50,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKSnapshotPageCell.h"
-#import "SKRuntime.h"
 #import "PDFAnnotation_SKExtensions.h"
 
 #define EM_DASH_CHARACTER 0x2014
@@ -78,9 +77,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 @implementation SKSnapshotWindowController
 
-+ (void)initialize {
-    [self setKeys:[NSArray arrayWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil] triggerChangeNotificationsForDependentKey:PAGEANDWINDOW_KEY];
-    SKINITIALIZE;
++ (NSSet *)keyPathsForValuesAffectingPageAndWindow {
+    return [NSSet setWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil];
 }
 
 - (void)dealloc {

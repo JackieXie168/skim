@@ -71,10 +71,15 @@ static char SKFontWellFontSizeObservationContext;
     [self exposeBinding:FONTSIZE_KEY];
     [self exposeBinding:TEXTCOLOR_KEY];
     
-    [self setKeys:[NSArray arrayWithObjects:FONT_KEY, nil] triggerChangeNotificationsForDependentKey:FONTNAME_KEY];
-    [self setKeys:[NSArray arrayWithObjects:FONT_KEY, nil] triggerChangeNotificationsForDependentKey:FONTSIZE_KEY];
-    
     SKINITIALIZE;
+}
+
++ (NSSet *)keyPathsForValuesAffectingFontName {
+    return [NSSet setWithObjects:FONT_KEY, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFontSize {
+    return [NSSet setWithObjects:FONT_KEY, nil];
 }
 
 + (Class)cellClass {

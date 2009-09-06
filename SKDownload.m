@@ -39,7 +39,6 @@
 #import "SKDownload.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import "NSFileManager_SKExtensions.h"
-#import "SKRuntime.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadStatusKey = @"status";
@@ -56,20 +55,32 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @implementation SKDownload
 
-+ (NSArray *)infoKeys {
-    return [NSArray arrayWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
++ (NSSet *)infoKeys {
+    return [NSSet setWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
 }
 
-+ (void)initialize {
-    NSArray *keys = [NSArray arrayWithObjects:@"filePath", nil];
-    [self setKeys:keys triggerChangeNotificationsForDependentKey:@"fileName"];
-    [self setKeys:keys triggerChangeNotificationsForDependentKey:@"fileIcon"];
-    keys = [NSArray arrayWithObjects:SKDownloadStatusKey, nil];
-    [self setKeys:keys triggerChangeNotificationsForDependentKey:@"canCancel"];
-    [self setKeys:keys triggerChangeNotificationsForDependentKey:@"canRemove"];
-    [self setKeys:keys triggerChangeNotificationsForDependentKey:@"canResume"];
-    [self setKeys:[self infoKeys] triggerChangeNotificationsForDependentKey:@"info"];
-    SKINITIALIZE;
++ (NSSet *)keyPathsForValuesAffectingFileName {
+    return [NSSet setWithObjects:@"filePath", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFileIcon {
+    return [NSSet setWithObjects:@"filePath", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingCanCancel {
+    return [NSSet setWithObjects:@"filePath", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingCanRemove {
+    return [NSSet setWithObjects:@"filePath", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingCanResume {
+    return [NSSet setWithObjects:@"filePath", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingInfo {
+    return [self infoKeys];
 }
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id)aDelegate {
