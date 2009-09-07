@@ -7,6 +7,10 @@
     #import <Cocoa/Cocoa.h>
     #import <Quartz/Quartz.h>
 
+    #ifndef NSAppKitVersionNumber10_5
+        #define NSAppKitVersionNumber10_5 949
+    #endif
+
     #define __SKFILENAMEASNSSTRING \
       [[(id)CFStringCreateWithFileSystemRepresentation(NULL, __FILE__) autorelease] lastPathComponent]
 
