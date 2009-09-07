@@ -2246,7 +2246,7 @@ enum {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
-        NSRect rect = sel ? [sel boundsForPage:page] : SKRectFromCenterAndSize(point, SKMakeSquareSize(10.0));
+        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : SKRectFromCenterAndSize(point, SKMakeSquareSize(10.0));
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
@@ -2258,7 +2258,7 @@ enum {
                 [self setNeedsDisplay:YES];
                 [userInfo setObject:page forKey:SKPDFViewNewPageKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
-            } else if (sel && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode)) {
+            } else if ([sel hasCharacters] && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode)) {
                 [self setCurrentSelection:sel];
             }
         }
