@@ -97,13 +97,37 @@ static NSArray *createPointsFromStrings(NSArray *strings)
   | 2  3 |
   --------
  */        
-static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
+static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin, NSInteger rotation)
 {
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
-    NSPoint p0 = SKTopLeftPoint(r);
-    NSPoint p1 = SKTopRightPoint(r);
-    NSPoint p2 = SKBottomLeftPoint(r);
-    NSPoint p3 = SKBottomRightPoint(r);
+    NSPoint p0, p1, p2, p3;
+    switch (rotation) {
+        case 270:
+            p0 = SKTopRightPoint(r);
+            p1 = SKBottomRightPoint(r);
+            p2 = SKTopLeftPoint(r);
+            p3 = SKBottomLeftPoint(r);
+            break;
+        case 180:
+            p0 = SKBottomRightPoint(r);
+            p1 = SKBottomLeftPoint(r);
+            p2 = SKTopRightPoint(r);
+            p3 = SKTopLeftPoint(r);
+            break;
+        case 90:
+            p0 = SKBottomLeftPoint(r);
+            p1 = SKTopLeftPoint(r);
+            p2 = SKBottomRightPoint(r);
+            p3 = SKTopRightPoint(r);
+            break;
+        case 0:
+        default:
+            p0 = SKTopLeftPoint(r);
+            p1 = SKTopRightPoint(r);
+            p2 = SKBottomLeftPoint(r);
+            p3 = SKBottomRightPoint(r);
+            break;
+    }
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
@@ -156,7 +180,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         if (color)
             [self setColor:color];
         
-        NSArray *quadPoints = pointStrings ? createPointsFromStrings(pointStrings) : createQuadPointsWithBounds(bounds, bounds.origin);
+        NSArray *quadPoints = pointStrings ? createPointsFromStrings(pointStrings) : createQuadPointsWithBounds(bounds, bounds.origin, 0);
         [self setQuadrilateralPoints:quadPoints];
         [quadPoints release];
     }
@@ -175,6 +199,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         self = nil;
     } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         PDFPage *page = [[selection pages] objectAtIndex:0];
+        NSInteger rotation = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 ? [page rotation] : 0;
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;
         if (selection) {
@@ -198,7 +223,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                     CFArrayRef lines = [self lineRects];
                     iMax = CFArrayGetCount(lines);
                     for (i = 0; i < iMax; i++) {
-                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lines, i), [self bounds].origin);
+                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lines, i), [self bounds].origin, rotation);
                         [quadPoints addObjectsFromArray:quadLine];
                         [quadLine release];
                     }
