@@ -2230,6 +2230,16 @@ enum {
     [[self documentView] scrollRectToVisible:rect];
 }
 
+- (void)scrollPageToVisible:(PDFPage *)page {
+    NSRect ignored, rect = [page boundsForBox:[self displayBox]];
+    rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
+    if ([[self currentPage] isEqual:page] == NO)
+        [self goToPage:page];
+    [[self documentView] scrollRectToVisible:rect];
+    NSDivideRect(rect, &rect, &ignored, 1.0, NSMaxYEdge);
+    [[self documentView] scrollRectToVisible:rect];
+}
+
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
     [self scrollRect:[annotation bounds] inPageToVisible:[annotation page]];
 }
