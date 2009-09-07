@@ -487,14 +487,24 @@
     NSRect frame = [pdfView frame];
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
-    NSRect normalPageRect = [pdfView convertRect:pageRect fromPage:page];
-    CGFloat scaleFactor = [pdfView scaleFactor];
+    CGFloat scrollerWidth = 0.0;
+    CGFloat margin = [pdfView displaysPageBreaks] ? 8.0 : 0.0;
+    CGFloat scaleFactor;
+    NSUInteger pageCount = [[pdfView document] pageCount];
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
-        scaleFactor = ( NSWidth(frame) - [NSScroller scrollerWidth] ) / ( 8.0 + NSWidth(normalPageRect) / scaleFactor );
+        NSUInteger numCols = (pageCount > 1 && displayMode == kPDFDisplayTwoUp) ? 2 : 1;
+        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ) )
+            scrollerWidth = [NSScroller scrollerWidth];
+        scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( margin + NSWidth(pageRect) );
     } else {
         // zoom to height
-        scaleFactor = ( NSHeight(frame) - [NSScroller scrollerWidth] ) / ( 8.0 + NSHeight(normalPageRect) / scaleFactor );
+        NSUInteger numRows = pageCount;
+        if (displayMode == kPDFDisplayTwoUpContinuous)
+            numRows = [pdfView displaysAsBook] ? (1 + pageCount) / 2 : 1 + pageCount / 2;
+        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ) )
+            scrollerWidth = [NSScroller scrollerWidth];
+        scaleFactor = ( NSHeight(frame) - scrollerWidth ) / ( margin + NSHeight(pageRect) );
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
