@@ -160,25 +160,7 @@ static BOOL usesSequentialPageNumbering = NO;
     }
     
     if (NSIsEmptyRect(readingBarRect) == NO) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        switch ([self rotation]) {
-            case 0:
-                [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
-                break;
-            case 90:
-                [transform rotateByDegrees:-90.0];
-                [transform translateXBy:-NSMaxX(bounds) yBy:-NSMinY(bounds)];
-                break;
-            case 180:
-                [transform rotateByDegrees:180.0];
-                [transform translateXBy:-NSMaxX(bounds) yBy:-NSMaxY(bounds)];
-                break;
-            case 270:
-                [transform rotateByDegrees:90.0];
-                [transform translateXBy:-NSMinX(bounds) yBy:-NSMaxY(bounds)];
-                break;
-        }
-        [transform concat];
+        [self transformContextForBox:box];
         [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
             NSRect outRect, ignored;

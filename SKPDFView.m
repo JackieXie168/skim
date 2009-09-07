@@ -140,8 +140,6 @@ enum {
 - (void)addAnnotationWithType:(SKNoteType)annotationType defaultPoint:(NSPoint)point;
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 
-- (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
-
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
 
@@ -328,7 +326,7 @@ enum {
     // Let PDFView do most of the hard work.
     [super drawPage: pdfPage];
 	
-    [self transformCGContext:context forPage:pdfPage];
+    [pdfPage transformContextForBox:[self displayBox]];
     SKCGContextSetDefaultRGBColorSpace(context);
     
     if (bezierPaths && pathPageIndex == [pdfPage pageIndex]) {
@@ -2467,28 +2465,6 @@ enum {
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-- (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page {
-    NSRect boxRect = [page boundsForBox:[self displayBox]];
-    
-    switch ([page rotation]) {
-        case 0:
-            CGContextTranslateCTM(context, -NSMinX(boxRect), -NSMinY(boxRect));
-            break;
-        case 90:
-            CGContextRotateCTM(context, - M_PI / 2);
-            CGContextTranslateCTM(context, -NSMaxX(boxRect), -NSMinY(boxRect));
-            break;
-        case 180:
-            CGContextRotateCTM(context, M_PI);
-            CGContextTranslateCTM(context, -NSMaxX(boxRect), -NSMaxY(boxRect));
-            break;
-        case 270:
-            CGContextRotateCTM(context, M_PI / 2);
-            CGContextTranslateCTM(context, -NSMinX(boxRect), -NSMaxY(boxRect));
-            break;
     }
 }
 
