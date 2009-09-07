@@ -483,7 +483,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     
                     if (startPage != NSNotFound && startIndex != NSNotFound && endPage != NSNotFound && endIndex != NSNotFound) {
                         PDFSelection *sel = [document selectionFromPage:[document pageAtIndex:startPage] atCharacterIndex:startIndex toPage:[document pageAtIndex:endPage] atCharacterIndex:endIndex];
-                        if (sel) {
+                        if ([sel hasCharacters]) {
                             [selections addObject:sel];
                             doc = document;
                         }
@@ -497,7 +497,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 for (i = 0; i < numRanges; i++) {
                     PDFSelection *sel;
                     NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
-                    if (range.length && (sel = [container selectionForRange:range])) {
+                    if (range.length && (sel = [container selectionForRange:range]) && [sel hasCharacters]) {
                         [selections addObject:sel];
                         doc = [container document];
                     }

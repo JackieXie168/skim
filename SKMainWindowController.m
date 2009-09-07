@@ -1758,20 +1758,23 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [pages objectAtIndex:i];
-        NSRect bounds = NSInsetRect([sel boundsForPage:page], -4.0, -4.0);
-        SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
-        
-        // use a heavier line width at low magnification levels; would be nice if PDFAnnotation did this for us
-        PDFBorder *border = [[PDFBorder alloc] init];
-        [border setLineWidth:1.5 / ([pdfView scaleFactor])];
-        [border setStyle:kPDFBorderStyleSolid];
-        [circle setBorder:border];
-        [border release];
-        [circle setColor:color];
-        [page addAnnotation:circle];
-        [pdfView setNeedsDisplayForAnnotation:circle];
-        [circle release];
-        CFSetAddValue(temporaryAnnotations, (void *)circle);
+        NSRect bounds = [sel boundsForPage:page];
+        if (NSIsEmptyRect(bounds) == NO) {
+            bounds = NSInsetRect(bounds, -4.0, -4.0);
+            SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+            
+            // use a heavier line width at low magnification levels; would be nice if PDFAnnotation did this for us
+            PDFBorder *border = [[PDFBorder alloc] init];
+            [border setLineWidth:1.5 / ([pdfView scaleFactor])];
+            [border setStyle:kPDFBorderStyleSolid];
+            [circle setBorder:border];
+            [border release];
+            [circle setColor:color];
+            [page addAnnotation:circle];
+            [pdfView setNeedsDisplayForAnnotation:circle];
+            [circle release];
+            CFSetAddValue(temporaryAnnotations, (void *)circle);
+        }
     }
 }
 
@@ -1876,7 +1879,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
     }
     PDFSelection *selection = [self findString:string fromSelection:sel withOptions:options];
-    if (selection == nil && [sel string])
+    if ([selection hasCharacters] == NO && [sel hasCharacters])
         selection = [self findString:string fromSelection:nil withOptions:options];
     if (selection) {
         [pdfView setCurrentSelection:selection];
@@ -1914,10 +1917,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFSelection *firstSel = [selE nextObject];
     PDFSelection *currentSel = [[firstSel copy] autorelease];
     
-    while (sel = [selE nextObject])
-        [currentSel addSelection:sel];
+    while (sel = [selE nextObject]) {
+        if ([sel hasCharacters])
+            [currentSel addSelection:sel];
+    }
     
-    if (scroll && firstSel) {
+    if (scroll && [firstSel hasCharacters]) {
         PDFPage *page = [[currentSel pages] objectAtIndex:0];
         NSRect rect = NSIntersectionRect(NSInsetRect([currentSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
         [pdfView scrollRect:rect inPageToVisible:page];
@@ -1928,8 +1933,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     // add an annotation so it's easier to see the search result
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
         selE = [findResults objectEnumerator];
-        while (sel = [selE nextObject])
-            [self addAnnotationsForSelection:sel];
+        while (sel = [selE nextObject]) {
+            if ([sel hasCharacters])
+                [self addAnnotationsForSelection:sel];
+        }
     }
     
     if (highlightTimer)
@@ -1941,7 +1948,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         highlightTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(removeHighlightedSelections:) userInfo:nil repeats:NO] retain];
     }
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && firstSel)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimatedSearchHighlightKey] == NO && [firstSel hasCharacters])
         [pdfView setCurrentSelection:firstSel animate:YES];
     
     if (currentSel)

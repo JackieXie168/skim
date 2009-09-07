@@ -77,7 +77,7 @@
             page = [pages count] ? [pages objectAtIndex:0] : nil;
         }
         if (page)
-            bounds = [selection boundsForPage:page];
+            bounds = [selection hasCharacters] ? [selection boundsForPage:page] : NSZeroRect;
     }
     
     Rect qdBounds = SKQDRectFromNSRect(bounds);

@@ -45,6 +45,7 @@
 #import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKStringConstants.h"
+#import "PDFSelection_SKExtensions.h"
 
 
 @implementation SKSnapshotPDFView
@@ -445,7 +446,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             NSPoint location = [self convertPoint:mouseLoc toPage:page];
             NSUInteger pageIndex = [page pageIndex];
             PDFSelection *sel = [page selectionForLineAtPoint:location];
-            NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+            NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
             
             [[document synchronizer] findFileAndLineForLocation:location inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
         }
