@@ -482,23 +482,23 @@
     [pdfView setAutoScales:NO];
 }
 
-- (IBAction)alternateZoomToFit:(id)sender {log_method();
+- (IBAction)alternateZoomToFit:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     NSRect frame = [pdfView frame];
-    NSRect pageRect = [[pdfView currentPage] boundsForBox:[pdfView displayBox]];
-    NSRect normalPageRect = [pdfView convertRect:pageRect fromPage:[pdfView currentPage]];
+    PDFPage *page = [pdfView currentPage];
+    NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
+    NSRect normalPageRect = [pdfView convertRect:pageRect fromPage:page];
     CGFloat scaleFactor = [pdfView scaleFactor];
-    CGFloat margin = [pdfView displaysPageBreaks] == NO ? 0.0 : floor(NSAppKitVersionNumber) > 949 ? 20.0 : 10.0;
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
-        scaleFactor = NSWidth(frame) / ( margin + NSWidth(normalPageRect) / scaleFactor );
+        scaleFactor = ( NSWidth(frame) - [NSScroller scrollerWidth] ) / ( 8.0 + NSWidth(normalPageRect) / scaleFactor );
     } else {
         // zoom to height
-        scaleFactor = NSHeight(frame) / ( margin + NSHeight(normalPageRect) / scaleFactor );
+        scaleFactor = ( NSHeight(frame) - [NSScroller scrollerWidth] ) / ( 8.0 + NSHeight(normalPageRect) / scaleFactor );
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
-    [pdfView scrollPageToVisible:[pdfView currentPage]];
+    [pdfView scrollPageToVisible:page];
 }
 
 - (IBAction)zoomInActualOut:(id)sender {
