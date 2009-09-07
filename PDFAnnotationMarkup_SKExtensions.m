@@ -194,7 +194,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 
 - (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
     NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
-    if (selection == nil || NSIsEmptyRect(bounds)) {
+    if ([selection hasCharacters] == NO || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
     } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
@@ -292,7 +292,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
-        if (sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lines, i), -1.0, -1.0)]) {
+        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lines, i), -1.0, -1.0)]) && [sel hasCharacters]) {
             if (selection == nil)
                 selection = sel;
             else
@@ -368,7 +368,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 
 - (id)selectionSpecifier {
     PDFSelection *sel = [self selection];
-    return sel ? [sel objectSpecifier] : [NSArray array];
+    return [sel hasCharacters] ? [sel objectSpecifier] : [NSArray array];
 }
 
 - (void)setSelectionSpecifier:(id)specifier {

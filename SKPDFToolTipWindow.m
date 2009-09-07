@@ -44,6 +44,7 @@
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 
 #define WINDOW_OFFSET           20.0
 #define TEXT_MARGIN_X           2.0
@@ -231,7 +232,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             sourceRect.origin.y -= NSHeight(sourceRect);
             
             
-            if ([selection string]) {
+            if ([selection hasCharacters]) {
                 NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
                 CGFloat top = SKCeil(SKMax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
                 CGFloat left = SKFloor(SKMin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));

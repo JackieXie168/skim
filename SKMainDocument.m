@@ -2086,7 +2086,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[self synchronizer] findPageAndLocationForLine:[location index] inFile:[[source path] stringByReplacingPathExtension:@"tex"] options:options];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
-        if ([[selection pages] count]) {
+        if ([selection hasCharacters]) {
             PDFPage *page = [[selection pages] objectAtIndex:0];
             NSRect bounds = [selection boundsForPage:page];
             [[self pdfView] scrollRect:bounds inPageToVisible:page];
@@ -2143,7 +2143,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (page) {
         NSUInteger pageIndex = [page pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
-        NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
+        NSRect rect = [sel hasCharacters] ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         
         [[self synchronizer] findFileAndLineForLocation:point inRect:rect pageBounds:[page boundsForBox:kPDFDisplayBoxMediaBox] atPageIndex:pageIndex];
     }

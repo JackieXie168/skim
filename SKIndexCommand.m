@@ -65,7 +65,7 @@
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
         NSArray *pages = [selection pages];
-        if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0]))
+        if ([pages count] && [selection hasCharacters] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0]))
             idx = last ? [selection safeIndexOfLastCharacterOnPage:page] : [selection safeIndexOfFirstCharacterOnPage:page];
     }
     

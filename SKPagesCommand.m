@@ -58,7 +58,7 @@
         return [NSArray arrayWithObjects:[dPO page], nil];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
-        return selection ? [selection pages] : [NSArray array];
+        return [selection hasCharacters] ? [selection pages] : [NSArray array];
     }
     
     return nil;
