@@ -1352,8 +1352,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSString *extension = [fileName pathExtension];
     BOOL isDVI = NO;
     if (extension) {
-        NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-        if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd")))) {
+        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+        NSString *theUTI = [ws typeOfFile:fileName error:NULL];
+        if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
             fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
             if (fileName == nil)
                 return NO;
@@ -1592,12 +1593,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [cmdString insertString:editorCmd atIndex:0];
         [cmdString insertString:@"\"" atIndex:0];
         
-        NSString *extension = [editorCmd pathExtension];
-        if (extension) {
-            NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
-            if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("com.apple.applescript.script")) || UTTypeConformsTo((CFStringRef)theUTI, CFSTR("com.apple.applescript.text")))
-                [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
-        }
+        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+        NSString *theUTI = [ws typeOfFile:editorCmd error:NULL];
+        if ([ws type:theUTI conformsToType:@"com.apple.applescript.script"] || [ws type:theUTI conformsToType:@"com.apple.applescript.text"])
+            [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         
         [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent]];
     }
