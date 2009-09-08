@@ -90,7 +90,7 @@
 		CE39C6E70E9BCA7B003FF992 /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE39C6E60E9BCA7B003FF992 /* NotesDocument.nib */; };
 		CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
-		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
+		CE3A45530B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
@@ -551,8 +551,8 @@
 		CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNPDFAnnotationNote_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
 		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
-		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
-		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
+		CE3A45510B7A04A4006B64D3 /* NSBezierPath_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_SKExtensions.h; sourceTree = "<group>"; };
+		CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_SKExtensions.m; sourceTree = "<group>"; };
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; explicitFileType = text.sdef; fileEncoding = 4; path = Skim.sdef; sourceTree = "<group>"; };
 		CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSArray_SKExtensions.h; sourceTree = "<group>"; };
 		CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSArray_SKExtensions.m; sourceTree = "<group>"; };
@@ -1588,8 +1588,8 @@
 		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
 			isa = PBXGroup;
 			children = (
-				CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */,
-				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
+				CE3A45510B7A04A4006B64D3 /* NSBezierPath_SKExtensions.h */,
+				CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */,
 				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
 				F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */,
 				CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */,
@@ -2017,7 +2017,7 @@
 				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
 				CE3A3D2C0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m in Sources */,
 				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
-				CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */,
+				CE3A45530B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m in Sources */,
 				CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */,
 				CE4EC88C0B7E6EDB0091F228 /* SKSplitView.m in Sources */,
 				CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */,

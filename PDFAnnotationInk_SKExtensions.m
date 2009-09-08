@@ -44,7 +44,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSData_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 

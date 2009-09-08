@@ -40,7 +40,7 @@
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"

@@ -55,7 +55,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 
 FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {

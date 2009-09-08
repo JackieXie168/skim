@@ -38,7 +38,7 @@
 
 #import "SKRemoteStateWindow.h"
 #import "NSGeometry_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "SKStringConstants.h"
 
 #define ALPHA_VALUE 0.95

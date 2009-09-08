@@ -63,7 +63,7 @@
 #import "SKPDFAnnotationTemporary.h"
 #import "SKSplitView.h"
 #import "NSScrollView_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKTocOutlineView.h"
