@@ -47,6 +47,4 @@ extern NSString *SKPDFAnnotationScriptingPointListsKey;
 
 - (NSArray *)pointLists;
 
-- (void)setScriptingPointLists:(NSArray *)lists;
-
 @end
