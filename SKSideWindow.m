@@ -287,18 +287,18 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     if (edge == NSMinXEdge) {
         [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-        [NSBezierPath fillRightRoundRectInRect:topRect radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithRightRoundedRect:topRect radius:CORNER_RADIUS] fill];
         [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
-        [NSBezierPath fillRightRoundRectInRect:bottomRect radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithRightRoundedRect:bottomRect radius:CORNER_RADIUS] fill];
         [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
-        [NSBezierPath fillRightRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithRightRoundedRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS] fill];
     } else {
         [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
-        [NSBezierPath fillLeftRoundRectInRect:topRect radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithLeftRoundedRect:topRect radius:CORNER_RADIUS] fill];
         [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
-        [NSBezierPath fillLeftRoundRectInRect:bottomRect radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithLeftRoundedRect:bottomRect radius:CORNER_RADIUS] fill];
         [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
-        [NSBezierPath fillLeftRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
+        [[NSBezierPath bezierPathWithLeftRoundedRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS] fill];
     }
     
     [shade setShadowBlurRadius:0.0];

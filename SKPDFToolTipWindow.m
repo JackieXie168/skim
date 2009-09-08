@@ -264,7 +264,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             [image lockFocus];
             [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
             [labelColor setFill];
-            [NSBezierPath fillHorizontalOvalAroundRect:labelRect];
+            [[NSBezierPath bezierPathWithHorizontalOvalAroundRect:labelRect] fill];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
             [image unlockFocus];
             
