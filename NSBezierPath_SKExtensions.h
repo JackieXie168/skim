@@ -40,15 +40,9 @@
 
 @interface NSBezierPath (SKExtensions)
 
-+ (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)fillRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)strokeRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
++ (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius;
++ (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius;
 
-+ (void)fillHorizontalOvalAroundRect:(NSRect)rect;
-+ (void)strokeHorizontalOvalAroundRect:(NSRect)rect;
 + (NSBezierPath*)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect;
 
 - (NSRect)nonEmptyBounds;

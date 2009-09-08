@@ -41,20 +41,7 @@
 
 @implementation NSBezierPath (SKExtensions)
 
-+ (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
-{
-    NSBezierPath *p = [self bezierPathWithLeftRoundRectInRect:rect radius:radius];
-    [p fill];
-}
-
-
-+ (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
-{
-    NSBezierPath *p = [self bezierPathWithLeftRoundRectInRect:rect radius:radius];
-    [p stroke];
-}
-
-+ (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
++ (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
     radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
@@ -82,20 +69,7 @@
     return path;
 }
 
-+ (void)fillRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
-{
-    NSBezierPath *p = [self bezierPathWithRightRoundRectInRect:rect radius:radius];
-    [p fill];
-}
-
-
-+ (void)strokeRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
-{
-    NSBezierPath *p = [self bezierPathWithRightRoundRectInRect:rect radius:radius];
-    [p stroke];
-}
-
-+ (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
++ (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
     radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
@@ -121,19 +95,6 @@
     [path closePath];
     
     return path;
-}
-
-+ (void)fillHorizontalOvalAroundRect:(NSRect)rect
-{
-    NSBezierPath *p = [self bezierPathWithHorizontalOvalAroundRect:rect];
-    [p fill];
-}
-
-
-+ (void)strokeHorizontalOvalAroundRect:(NSRect)rect
-{
-    NSBezierPath *p = [self bezierPathWithHorizontalOvalAroundRect:rect];
-    [p stroke];
 }
 
 + (NSBezierPath *)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect
