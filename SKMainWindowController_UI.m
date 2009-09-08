@@ -190,14 +190,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)updateLineInspector {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    NSString *type = [annotation type];
     
-    if ([[self window] isMainWindow]) {
-        if ([annotation isSkimNote] && ([type isEqualToString:SKNFreeTextString] || [type isEqualToString:SKNCircleString] || [type isEqualToString:SKNSquareString] || [type isEqualToString:SKNLineString] || [type isEqualToString:SKNInkString])) {
-            mwcFlags.updatingLine = 1;
-            [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
-            mwcFlags.updatingLine = 0;
-        }
+    if ([[self window] isMainWindow] &&[annotation hasBorder]) {
+        mwcFlags.updatingLine = 1;
+        [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
+        mwcFlags.updatingLine = 0;
     }
 }
 
