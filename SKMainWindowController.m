@@ -152,6 +152,10 @@ static char SKMainWindowDefaultsObservationContext;
 
 NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
+@interface PDFAnnotation (SKPrivateDeclarations)
+- (void)setPage:(PDFPage *)newPage;
+@end
+
 @interface SKMainWindowController (SKPrivate)
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
