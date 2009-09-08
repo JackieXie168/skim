@@ -4046,7 +4046,7 @@ enum {
             outlineRect = [clipView convertRect:magRect fromView:nil];
             [aShadow set];
             [color set];
-            path = [NSBezierPath bezierPathWithRoundRectInRect:outlineRect radius:9.5];
+            path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:9.5 yRadius:9.5];
             [path fill];
             [clipView unlockFocus];
             
@@ -4057,7 +4057,7 @@ enum {
             [clipView lockFocus];
             outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
             [color set];
-            path = [NSBezierPath bezierPathWithRoundRectInRect:outlineRect radius:8.0];
+            path = [NSBezierPath bezierPathWithRoundedRect:outlineRect xRadius:8.0 yRadius:8.0];
             [path setLineWidth:3.0];
             [path stroke];
             [clipView unlockFocus];

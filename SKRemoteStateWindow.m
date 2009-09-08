@@ -113,13 +113,13 @@
     NSPoint center = SKCenterPoint(bounds);
     
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-    [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
+    [[NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:10.0 yRadius:10.0] fill];
     
     NSBezierPath *path = nil;
     
     if (remoteState == SKRemoteStateResize) {
         
-        path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 20.0, 20.0) radius:3.0];
+        path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 24.0, 24.0)]];
         
         NSBezierPath *arrow = [NSBezierPath bezierPath];

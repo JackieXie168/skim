@@ -179,11 +179,11 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [[NSGraphicsContext currentContext] saveGraphicsState];
     rect = NSInsetRect([self bounds], 1.0, 1.0);
     [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
-    [NSBezierPath fillRoundRectInRect:rect radius:10.0];
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
     [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] set];
     [NSBezierPath setDefaultLineWidth:1.0];
-    [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
+    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] stroke];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
@@ -538,7 +538,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setStroke];
     }
     
-	NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:frame radius:2.0];
+	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:frame xRadius:2.0 yRadius:2.0];
     [path fill];
     [path stroke];
 }
@@ -604,7 +604,7 @@ static inline NSBezierPath *previousButtonPath(NSSize size) {
 
 static inline NSBezierPath *zoomButtonPath(NSSize size) {
     NSRect bounds = {NSZeroPoint, size};
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 15.0, 15.0) xRadius:3.0 yRadius:3.0];
     CGFloat centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
     [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 19.0, 19.0)]];
@@ -641,7 +641,7 @@ static inline NSBezierPath *zoomButtonPath(NSSize size) {
 
 static inline NSBezierPath *alternateZoomButtonPath(NSSize size) {
     NSRect bounds = {NSZeroPoint, size};
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 15.0, 15.0) radius:3.0];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 15.0, 15.0) xRadius:3.0 yRadius:3.0];
     CGFloat centerX = NSMidX(bounds), centerY = NSMidY(bounds);
     
     [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 19.0, 19.0)]];
