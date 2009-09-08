@@ -259,6 +259,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 
     NSUInteger j, jMax = [quadPoints count] / 4;
     CFMutableArrayRef lines = [self lineRects];
+    NSPoint origin = [self bounds].origin;
     
     CFArrayRemoveAllValues(lines);
     
@@ -269,15 +270,18 @@ static void (*original_dealloc)(id, SEL) = NULL;
         NSValue *values[4];
         [quadPoints getObjects:values range:range];
         
-        NSPoint points[4];
-        NSUInteger i = 0;
-        for (i = 0; i < 4; i++)
-            points[i] = [values[i] pointValue];
+        NSPoint point;
+        NSUInteger i;
+        CGFloat minX = CGFLOAT_MAX, maxX = CGFLOAT_MIN, minY = CGFLOAT_MAX, maxY = CGFLOAT_MIN;
+        for (i = 0; i < 4; i++) {
+            point = [values[i] pointValue];
+            minX = SKMin(minX, point.x);
+            maxX = SKMax(maxX, point.x);
+            minY = SKMin(minY, point.y);
+            maxY = SKMax(maxY, point.y);
+        }
         
-        NSRect lineRect;
-        lineRect.size.height = points[1].y - points[2].y;
-        lineRect.size.width = points[1].x - points[2].x;
-        lineRect.origin = SKAddPoints(points[2], [self bounds].origin);
+        NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);
         CFArrayAppendValue(lines, &lineRect);
     }
 }
