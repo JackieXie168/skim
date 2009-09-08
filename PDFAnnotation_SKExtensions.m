@@ -88,11 +88,6 @@ enum {
     SKPDFAnnotationScriptingNoteClassCode = 'Note'
 };
 
-@interface PDFAnnotation (SKPrivateDeclarations)
-- (void)setPage:(PDFPage *)newPage;
-@end
-
-
 @implementation PDFAnnotation (SKExtensions)
 
 - (NSString *)fdfString {
