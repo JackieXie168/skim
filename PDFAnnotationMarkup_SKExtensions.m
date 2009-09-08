@@ -375,12 +375,6 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return [sel hasCharacters] ? [sel objectSpecifier] : [NSArray array];
 }
 
-- (void)setSelectionSpecifier:(id)specifier {
-    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
-    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
-        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
-}
-
 - (NSArray *)scriptingPointLists {
     NSPoint origin = [self bounds].origin;
     NSMutableArray *pointLists = [NSMutableArray array];

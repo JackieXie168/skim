@@ -284,12 +284,6 @@ enum {
     return 0;
 }
 
-- (void)setScriptingNoteType:(FourCharCode)type {
-    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
-    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
-        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
-}
-
 - (PDFPage *)scriptingPage {
     return [self page];
 }

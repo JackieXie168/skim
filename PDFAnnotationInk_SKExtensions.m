@@ -204,12 +204,6 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     return pointLists;
 }
 
-- (void)setScriptingPointLists:(NSArray *)lists {
-    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
-    if ([currentCommand isKindOfClass:[NSCreateCommand class]] == NO)
-        [currentCommand setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
-}
-
 #pragma mark Accessibility
 
 - (NSArray *)accessibilityAttributeNames {
