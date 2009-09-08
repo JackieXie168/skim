@@ -1865,50 +1865,32 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [zoomOutCursorImage setName:SKImageNameZoomOutCursor];
 }
 
-static NSSize smallImageSize = {32.0, 32.0};
-static NSSize tinyImageSize = {16.0, 16.0};
-
-+ (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code {
-	IconRef iconref;
-	OSErr myErr = GetIconRef (kOnSystemDisk, kSystemIconsCreator, code, &iconref);
-	
-	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(iconSize.width, iconSize.height)]; 
-	CGRect rect =  CGRectMake(0.0, 0.0, iconSize.width, iconSize.height);
-	
-	[image lockFocus];
-	PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort],
-                         &rect,
-						 kAlignAbsoluteCenter, //kAlignNone,
-						 kTransformNone,
-						 NULL /*inLabelColor*/,
-						 kPlotIconRefNormalFlags,
-						 iconref); 
-	[image unlockFocus]; 
-	
-	myErr = ReleaseIconRef(iconref);
-	
-	return [image autorelease];
-}
-
-+ (NSImage *)smallImageWithIconForToolboxCode:(OSType) code {
-    return [self iconWithSize:smallImageSize forToolboxCode:code];
-}
-
-+ (NSImage *)tinyImageWithIconForToolboxCode:(OSType) code {
-    return [self iconWithSize:tinyImageSize forToolboxCode:code];
-}
+#define smallImageSize NSMakeSize(32.0, 32.0)
+#define smallImageRect NSMakeRect(0.0, 0.0, 32.0, 32.0)
+#define tinyImageSize NSMakeSize(16.0, 16.0)
+#define tinyImageRect NSMakeRect(0.0, 0.0, 16.0, 16.0)
 
 + (NSImage *)smallFolderImage {
     static NSImage *image = nil;
-    if(image == nil)
-        image = [[self smallImageWithIconForToolboxCode:kGenericFolderIcon] retain];
+    if(image == nil) {
+        NSImage *folder = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+        image = [[NSImage alloc] initWithSize:smallImageSize];
+        [image lockFocus];
+        [folder drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
     return image;
 }
 
 + (NSImage *)tinyFolderImage {
     static NSImage *image = nil;
-    if(image == nil)
-        image = [[self tinyImageWithIconForToolboxCode:kGenericFolderIcon] retain];
+    if(image == nil) {
+        NSImage *folder = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+        image = [[NSImage alloc] initWithSize:tinyImageSize];
+        [image lockFocus];
+        [folder drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
     return image;
 }
 
@@ -1916,11 +1898,11 @@ static NSSize tinyImageSize = {16.0, 16.0};
     static NSImage *image = nil;
     if(image == nil){
         image = [[NSImage alloc] initWithSize:smallImageSize];
-        NSImage *genericDocImage = [self smallImageWithIconForToolboxCode:kGenericDocumentIcon];
-        NSImage *questionMark = [self iconWithSize:NSMakeSize(20.0, 20.0) forToolboxCode:kQuestionMarkIcon];
+        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
         [image lockFocus];
-        [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-        [questionMark compositeToPoint:NSMakePoint(6.0, 4.0) operation:NSCompositeSourceOver fraction:0.7];
+        [genericDocImage drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+        [questionMark drawInRect:NSMakeRect(6.0, 4.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
         [image unlockFocus];
     }
     return image;
@@ -1930,11 +1912,11 @@ static NSSize tinyImageSize = {16.0, 16.0};
     static NSImage *image = nil;
     if(image == nil){
         image = [[NSImage alloc] initWithSize:tinyImageSize];
-        NSImage *genericDocImage = [self tinyImageWithIconForToolboxCode:kGenericDocumentIcon];
-        NSImage *questionMark = [self iconWithSize:NSMakeSize(10.0, 10.0) forToolboxCode:kQuestionMarkIcon];
+        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
         [image lockFocus];
-        [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-        [questionMark compositeToPoint:NSMakePoint(3.0, 2.0) operation:NSCompositeSourceOver fraction:0.7];
+        [genericDocImage drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+        [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
         [image unlockFocus];
     }
     return image;
@@ -1944,11 +1926,10 @@ static NSSize tinyImageSize = {16.0, 16.0};
     static NSImage *image = nil;
     if(image == nil) {
         image = [[NSImage alloc] initWithSize:smallImageSize];
-        NSImage *multipleFilesImage = [[NSWorkspace sharedWorkspace] iconForFiles:[NSArray arrayWithObjects:@"", @"", nil]];
+        NSImage *multipleFilesImage = [NSImage imageNamed:NSImageNameMultipleDocuments];
         NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
-        NSRect targetRect = {NSZeroPoint, smallImageSize};
         [image lockFocus];
-        [multipleFilesImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [multipleFilesImage drawInRect:smallImageRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
         [image unlockFocus];
     }
     return image;
@@ -1958,11 +1939,34 @@ static NSSize tinyImageSize = {16.0, 16.0};
     static NSImage *image = nil;
     if(image == nil) {
         image = [[NSImage alloc] initWithSize:tinyImageSize];
-        NSImage *multipleFilesImage = [[NSWorkspace sharedWorkspace] iconForFiles:[NSArray arrayWithObjects:@"", @"", nil]];
+        NSImage *multipleFilesImage = [NSImage imageNamed:NSImageNameMultipleDocuments];
         NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
-        NSRect targetRect = {NSZeroPoint, tinyImageSize};
         [image lockFocus];
-        [multipleFilesImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [multipleFilesImage drawInRect:tinyImageRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
+    return image;
+}
+
++ (NSImage *)smallDeleteImage {
+    static NSImage *image = nil;
+    if(image == nil) {
+        NSImage *delete = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)];
+        image = [[NSImage alloc] initWithSize:smallImageSize];
+        [image lockFocus];
+        [delete drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+    }
+    return image;
+}
+
++ (NSImage *)tinyDeleteImage {
+    static NSImage *image = nil;
+    if(image == nil) {
+        NSImage *delete = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)];
+        image = [[NSImage alloc] initWithSize:tinyImageSize];
+        [image lockFocus];
+        [delete drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
         [image unlockFocus];
     }
     return image;
