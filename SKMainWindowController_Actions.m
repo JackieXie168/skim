@@ -493,7 +493,7 @@
     NSUInteger pageCount = [[pdfView document] pageCount];
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         // zoom to width
-        NSUInteger numCols = (pageCount > 1 && displayMode == kPDFDisplayTwoUp) ? 2 : 1;
+        NSUInteger numCols = (displayMode == kPDFDisplayTwoUp && pageCount > 1 && ([pdfView displaysAsBook] == NO || pageCount > 2)) ? 2 : 1;
         if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ) )
             scrollerWidth = [NSScroller scrollerWidth];
         scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( margin + NSWidth(pageRect) );
