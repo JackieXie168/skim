@@ -52,6 +52,9 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKMainWindowController.h"
 #import "NSAffineTransform_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
+#import "PDFAnnotationInk_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -459,6 +462,99 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [pdfView removeAnnotation:note];
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+}
+
+- (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"notes"]) {
+        PDFAnnotation *annotation = nil;
+        
+        NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
+        bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+        bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+        
+        FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
+        
+        if (type == 0) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+            [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+        } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
+            id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            PDFSelection *selection;
+            NSInteger markupType = 0;
+            
+            if (selSpec == nil) {
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+            } else if (selection = [PDFSelection selectionWithSpecifier:selSpec]) {
+                if (type == SKScriptingHighlightNote)
+                    markupType = kPDFMarkupTypeHighlight;
+                else if (type == SKScriptingUnderlineNote)
+                    markupType = kPDFMarkupTypeUnderline;
+                else if (type == SKScriptingStrikeOutNote)
+                    markupType = kPDFMarkupTypeStrikeOut;
+                annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
+            }
+        } else if (type == SKScriptingInkNote) {
+            NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+            if ([pointLists isKindOfClass:[NSArray class]] == NO) {
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+            } else {
+                NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
+                NSEnumerator *listEnum = [pointLists objectEnumerator];
+                NSArray *list;
+                while (list = [listEnum nextObject]) {
+                    if ([list isKindOfClass:[NSArray class]]) {
+                        NSBezierPath *path = [[NSBezierPath alloc] init];
+                        NSEnumerator *ptEnum = [list objectEnumerator];
+                        id pt;
+                        while (pt = [ptEnum nextObject]) {
+                            NSPoint point;
+                            if ([pt isKindOfClass:[NSData class]]) {
+                                point = [pt pointValueAsQDPoint];
+                            } else if ([pt isKindOfClass:[NSArray class]] && [pt count] == 2) {
+                                Point qdPoint;
+                                qdPoint.v = [[pt objectAtIndex:0] intValue];
+                                qdPoint.h = [[pt objectAtIndex:1] intValue];
+                                point = SKNSPointFromQDPoint(qdPoint);
+                            } else continue;
+                            if ([path elementCount])
+                                [path lineToPoint:point];
+                            else
+                                [path moveToPoint:point];
+                        }
+                        if ([path elementCount] > 1)
+                            [paths addObject:path];
+                        [path release];
+                    }
+                }
+                annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
+                [paths release];
+            }
+        } else if (type == SKScriptingTextNote) {
+            annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingAnchoredNote) {
+            bounds.size = SKNPDFAnnotationNoteSize;
+            annotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingCircleNote) {
+            annotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingSquareNote) {
+            annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingLineNote) {
+            annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+        }
+        if (annotation) {
+            NSMutableDictionary *props = [properties mutableCopy];
+            [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
+            [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
+            if ([props count])
+                [annotation setScriptingProperties:props];
+            [props release];
+        }
+        return annotation;
+    }
+    return [super newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
 - (id)handleGrabScriptCommand:(NSScriptCommand *)command {

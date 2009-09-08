@@ -77,6 +77,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "SKRuntime.h"
 #import "SKTextFieldSheetController.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -1962,6 +1963,23 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSMutableDictionary *info = [[[[SKInfoWindowController sharedInstance] infoForDocument:self] mutableCopy] autorelease];
     [info removeObjectForKey:@"KeywordsString"];
     return info;
+}
+
+- (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"notes"]) {
+        PDFAnnotation *annotation = nil;
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:[properties objectForKey:SKPDFAnnotationSelectionSpecifierKey]];
+        PDFPage *page = [[selection pages] count] ? [[selection pages] objectAtIndex:0] : nil;
+        if (page == nil) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
+        } else {
+            annotation = [page newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
+            if ([annotation respondsToSelector:@selector(setPage:)])
+                [annotation performSelector:@selector(setPage:) withObject:page];
+        }
+        return annotation;
+    }
+    return [super newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
 // fix a bug in Apple's implementation, which ignores the file type (for export), also make some more sensible choice of save operation
