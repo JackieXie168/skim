@@ -40,32 +40,16 @@
 
 @interface NSBezierPath (BDSKExtensions)
 
-+ (void)fillRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)strokeRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (NSBezierPath *)bezierPathWithLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (void)fillRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (void)strokeRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (NSBezierPath *)bezierPathWithRightRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)fillTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)strokeTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithTopRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)fillBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (void)strokeBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-+ (NSBezierPath *)bezierPathWithBottomRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
-
-+ (void)drawHighlightInRect:(NSRect)rect radius:(CGFloat)radius lineWidth:(CGFloat)lineWidth color:(NSColor *)color;
 
 + (void)fillHorizontalOvalAroundRect:(NSRect)rect;
 + (void)strokeHorizontalOvalAroundRect:(NSRect)rect;
 + (NSBezierPath*)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect;
-
-+ (void)fillStarInRect:(NSRect)rect;
-+ (void)fillInvertedStarInRect:(NSRect)rect;
-+ (NSBezierPath *)bezierPathWithStarInRect:(NSRect)rect;
-+ (NSBezierPath *)bezierPathWithInvertedStarInRect:(NSRect)rect;
 
 - (NSRect)nonEmptyBounds;
 
