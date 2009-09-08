@@ -333,9 +333,9 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     
     CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[response MIMEType], kUTTypeData);
     if (UTI) {
-        CFStringRef type = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassFilenameExtension);
+        NSString *type = [[NSWorkspace sharedWorkspace] preferredFilenameExtensionForType:(NSString *)UTI];
         if (type) {
-            [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:(NSString *)type]];
+            [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:type]];
             CFRelease(type);
         }
         CFRelease(UTI);
