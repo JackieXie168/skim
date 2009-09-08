@@ -39,6 +39,7 @@
 #import "NSEvent_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
+#define SKStandardModifierFlagsMask (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask)
 
 @interface NSEvent (SKSnowLeopardDeclarations)
 + (NSUInteger)modifierFlags;
@@ -48,7 +49,7 @@
 
 + (NSUInteger)standardModifierFlags {
     if ([self respondsToSelector:@selector(modifierFlags)])
-        return [self modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+        return [self modifierFlags] & SKStandardModifierFlagsMask;
     
     NSUInteger flags = 0;
     UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
@@ -69,7 +70,7 @@
 }
 
 - (NSUInteger)standardModifierFlags {
-    return [self modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
+    return [self modifierFlags] & SKStandardModifierFlagsMask;
 }
 
 - (unichar)firstCharacter {
