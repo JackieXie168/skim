@@ -56,7 +56,7 @@
 #import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "SKLineWell.h"
 #import <CoreServices/CoreServices.h>
 #import "NSGeometry_SKExtensions.h"

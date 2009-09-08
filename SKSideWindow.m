@@ -38,7 +38,7 @@
 
 #import "SKSideWindow.h"
 #import "SKMainWindowController.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "SKRuntime.h"
 

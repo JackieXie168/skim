@@ -37,7 +37,7 @@
  */
 
 #import "NSImage_SKExtensions.h"
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 @implementation NSImage (SKExtensions)
 

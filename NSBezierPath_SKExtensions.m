@@ -1,5 +1,5 @@
 //
-//  NSBezierPath_BDSKExtensions.m
+//  NSBezierPath_SKExtensions.m
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 10/22/05.
@@ -36,13 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 
 
-@implementation NSBezierPath (BDSKExtensions)
-
-// code from http://www.cocoadev.com/index.pl?NSBezierPathCategory
-// removed UK rect function calls, changed spacing/alignment
+@implementation NSBezierPath (SKExtensions)
 
 + (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius
 {
@@ -69,8 +66,6 @@
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMinXEdge); // Make rect with corners being centers of the corner circles.
     NSBezierPath *path = [self bezierPath];
-    
-    [path removeAllPoints];    
     
     // Now draw our rectangle:
     [path moveToPoint: NSMakePoint(NSMaxX(rect), NSMinY(rect))];
@@ -112,8 +107,6 @@
     NSRect ignored, innerRect;
     NSDivideRect(NSInsetRect(rect, 0.0, radius), &ignored, &innerRect, radius, NSMaxXEdge); // Make rect with corners being centers of the corner circles.
     NSBezierPath *path = [self bezierPath];
-    
-    [path removeAllPoints];    
     
     // Now draw our rectangle:
     [path moveToPoint: NSMakePoint(NSMinX(rect), NSMaxY(rect))];

@@ -1,5 +1,5 @@
 //
-//  NSBezierPath_BDSKExtensions.h
+//  NSBezierPath_SKExtensions.h
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 10/22/05.
@@ -38,7 +38,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSBezierPath (BDSKExtensions)
+@interface NSBezierPath (SKExtensions)
 
 + (void)fillLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;
 + (void)strokeLeftRoundRectInRect:(NSRect)rect radius:(CGFloat)radius;

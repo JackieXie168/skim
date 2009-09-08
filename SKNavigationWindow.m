@@ -38,7 +38,7 @@
 
 #import "SKNavigationWindow.h"
 #import <Quartz/Quartz.h>
-#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_SKExtensions.h"
 #import "SKMainWindowController.h"
 #import "NSParagraphStyle_SKExtensions.h"
 
