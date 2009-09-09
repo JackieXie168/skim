@@ -1608,12 +1608,15 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
-    PDFPage *page = [[self pdfDocument] pageAtIndex:pageIndex];
-    if (options & SKPDFSynchronizerFlippedMask)
-        point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
-        [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
-    [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex showReadingBar:(options & SKPDFSynchronizerShowReadingBarMask) != 0];
+    PDFDocument *pdfDoc = [self pdfDocument];
+    if (pageIndex < [pdfDoc pageCount]) {
+        PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
+        if (options & SKPDFSynchronizerFlippedMask)
+            point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
+            [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:page];
+        [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex showReadingBar:(options & SKPDFSynchronizerShowReadingBarMask) != 0];
+    }
 }
 
 
