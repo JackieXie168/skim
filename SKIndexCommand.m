@@ -64,8 +64,8 @@
         idx = [[((id)page ?: (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
-        NSArray *pages = [selection pages];
-        if ([pages count] && [selection hasCharacters] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0]))
+        page = last ? [selection safeLastPage] : [selection safeFirstPage];
+        if (page)
             idx = last ? [selection safeIndexOfLastCharacterOnPage:page] : [selection safeIndexOfFirstCharacterOnPage:page];
     }
     

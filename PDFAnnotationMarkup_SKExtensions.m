@@ -193,12 +193,12 @@ static void (*original_dealloc)(id, SEL) = NULL;
 }
 
 - (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
-    NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
+    NSRect bounds = [selection hasCharacters] ? [selection boundsForPage:[selection safeFirstPage]] : NSZeroRect;
     if ([selection hasCharacters] == NO || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
     } else if (self = [self initSkimNoteWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
-        PDFPage *page = [[selection pages] objectAtIndex:0];
+        PDFPage *page = [selection safeFirstPage];
         NSInteger rotation = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 ? [page rotation] : 0;
         NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         NSRect newBounds = NSZeroRect;

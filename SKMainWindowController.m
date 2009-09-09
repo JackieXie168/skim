@@ -1927,7 +1927,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     
     if (scroll && [firstSel hasCharacters]) {
-        PDFPage *page = [[currentSel pages] objectAtIndex:0];
+        PDFPage *page = [currentSel safeFirstPage];
         NSRect rect = NSIntersectionRect(NSInsetRect([currentSel boundsForPage:page], -50.0, -50.0), [page boundsForBox:kPDFDisplayBoxCropBox]);
         [pdfView scrollRect:rect inPageToVisible:page];
     }
@@ -2004,7 +2004,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
         [searchResults addObject:instance];
         
-        PDFPage *page = [[instance pages] objectAtIndex:0];
+        PDFPage *page = [instance safeFirstPage];
         SKGroupedSearchResult *result = [groupedSearchResults lastObject];
         NSUInteger maxCount = [result maxCount];
         if ([[result page] isEqual:page] == NO) {

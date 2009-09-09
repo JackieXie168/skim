@@ -57,13 +57,14 @@
         [selection addSelection:otherSelection];
     
     if (continuous) {
-        NSArray *pages = [selection pages];
-        PDFPage *firstPage = [pages objectAtIndex:0];
-        PDFPage *lastPage = [pages lastObject];
-        NSUInteger firstIndex = [selection safeIndexOfFirstCharacterOnPage:firstPage];
-        NSUInteger lastIndex = [selection safeIndexOfLastCharacterOnPage:lastPage];
-        if (firstIndex != NSNotFound && lastIndex != NSNotFound)
-            selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex - 1];
+        PDFPage *firstPage = [selection safeFirstPage];
+        PDFPage *lastPage = [selection safeLastPage];
+        if (firstPage && lastPage) {
+            NSUInteger firstIndex = [selection safeIndexOfFirstCharacterOnPage:firstPage];
+            NSUInteger lastIndex = [selection safeIndexOfLastCharacterOnPage:lastPage];
+            if (firstIndex != NSNotFound && lastIndex != NSNotFound)
+                selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex - 1];
+        }
     }
     return selection ? [selection objectSpecifier] : [NSArray array];
 }

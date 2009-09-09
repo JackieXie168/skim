@@ -44,11 +44,10 @@
 
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {
     PDFSelection *sel = selection;
-    NSArray *pages = [selection pages];
     
-    if ([pages count]) {
-        PDFPage *firstPage = [pages objectAtIndex:0];
-        PDFPage *lastPage = [pages lastObject];
+    if ([selection hasCharacters]) {
+        PDFPage *firstPage = [selection safeFirstPage];
+        PDFPage *lastPage = [selection safeLastPage];
         NSUInteger pageIndex = [self indexForPage:page];
         NSUInteger firstPageIndex = [self indexForPage:firstPage];
         NSUInteger lastPageIndex = [self indexForPage:lastPage];
