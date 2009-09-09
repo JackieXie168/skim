@@ -59,8 +59,7 @@
 
 // returns the label of the first page (if the selection spans multiple pages)
 - (NSString *)firstPageLabel { 
-    NSArray *pages = [self pages];
-    return [pages count] ? [[pages objectAtIndex:0] displayLabel] : nil;
+    return [[self safeFirstPage] displayLabel];
 }
 
 - (NSString *)cleanedString {
@@ -113,9 +112,8 @@
 
 - (PDFDestination *)destination {
     PDFDestination *destination = nil;
-    NSArray *pages = [self pages];
-    if ([pages count]) {
-        PDFPage *page = [pages objectAtIndex:0];
+    PDFPage *page = [self safeFirstPage];
+    if (page) {
         NSRect bounds = [self boundsForPage:page];
         destination = [[[PDFDestination alloc] initWithPage:page atPoint:NSMakePoint(NSMinX(bounds), NSMaxY(bounds))] autorelease];
     }
@@ -175,6 +173,64 @@
         for (i = 0; i < iMax; i++)
             [ranges addObject:[NSValue valueWithRange:[self rangeAtIndex:i onPage:page]]];
         return ranges;
+    }
+    return nil;
+}
+
+- (PDFPage *)safeFirstPage {
+    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+                return page;
+        }
+    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            NSInteger i, count = [self numberOfRangesOnPage:page];
+            for (i = 0; i < count; i++) {
+                if ([self rangeAtIndex:i onPage:page].length > 0)
+                    return page;
+            }
+        }
+    } else {
+        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            if (NSIsEmptyRect([self boundsForPage:page]) == NO)
+                return page;
+        }
+    }
+    return nil;
+}
+
+- (PDFPage *)safeLastPage {
+    if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
+                return page;
+        }
+    } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            NSInteger i, count = [self numberOfRangesOnPage:page];
+            for (i = 0; i < count; i++) {
+                if ([self rangeAtIndex:i onPage:page].length > 0)
+                    return page;
+            }
+        }
+    } else {
+        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
+        PDFPage *page;
+        while (page = [pageEnum nextObject]) {
+            if (NSIsEmptyRect([self boundsForPage:page]) == NO)
+                return page;
+        }
     }
     return nil;
 }
