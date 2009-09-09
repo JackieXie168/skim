@@ -37,8 +37,8 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKTypeSelectHelper.h"
 
-@class SKTypeSelectHelper;
 
 @protocol SKOutlineViewDelegate <NSOutlineViewDelegate>
 SKOPTIONAL(SKOutlineViewDelegate)
@@ -65,7 +65,7 @@ SKOPTIONAL(SKOutlineViewDataSource)
 @end
 
 
-@interface SKOutlineView : NSOutlineView {
+@interface SKOutlineView : NSOutlineView <SKTypeSelectDataSource> {
     SKTypeSelectHelper *typeSelectHelper;
 }
 

@@ -95,11 +95,13 @@ typedef NSInteger SKTypeSelectMatchOption;
 @end
 
 
-@interface NSObject (SKTypeSelectDataSource)
+@protocol SKTypeSelectDataSource <NSObject>
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper; // required
 - (NSUInteger)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper; // required
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(NSUInteger)itemIndex; // required
+
+SKOPTIONAL(SKTypeSelectDataSource)
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString; // optional
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString; // optional
