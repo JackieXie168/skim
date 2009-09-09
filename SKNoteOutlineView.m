@@ -346,7 +346,7 @@
         [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
 	
     [NSApp beginSheet:noteTypeSheet
-       modalForWindow:[[self delegate] respondsToSelector:@selector(window)] ? [(id)[self delegate] window] : [self window]
+       modalForWindow:[[self delegate] respondsToSelector:@selector(outlineViewWindowForSheet:)] ? [[self delegate] outlineViewWindowForSheet:self] : [self window]
         modalDelegate:self 
        didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
