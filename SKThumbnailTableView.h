@@ -41,12 +41,7 @@
 
 
 @protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKThumbnailTableViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKThumbnailTableViewDelegate)
 
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;

@@ -41,12 +41,7 @@
 @class SKTypeSelectHelper;
 
 @protocol SKTableViewDelegate <NSTableViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKTableViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKTableViewDelegate)
 
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;

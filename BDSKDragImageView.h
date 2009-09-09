@@ -41,12 +41,7 @@
 @class BDSKDragImageView;
 
 @protocol BDSKDragImageViewDelegate <NSObject>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (BDSKDragImageViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(BDSKDragImageViewDelegate)
 
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
@@ -56,11 +51,11 @@
 
 
 @interface BDSKDragImageView : NSImageView {
-	id delegate;
+	id SKCONFORM(BDSKDragImageViewDelegate) delegate;
 } 
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (id SKCONFORM(BDSKDragImageViewDelegate))delegate;
+- (void)setDelegate:(id SKCONFORM(BDSKDragImageViewDelegate))newDelegate;
 
 - (IBAction)show:(id)sender;
 

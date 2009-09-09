@@ -41,12 +41,7 @@
 @class SKTypeSelectHelper;
 
 @protocol SKOutlineViewDelegate <NSOutlineViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKOutlineViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKOutlineViewDelegate)
 
 - (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
@@ -63,12 +58,7 @@
 @end
 
 @protocol SKOutlineViewDataSource <NSOutlineViewDataSource>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKOutlineViewDataSource)
-#else
-@optional
-#endif
+SKOPTIONAL(SKOutlineViewDataSource)
 
 - (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
 

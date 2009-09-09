@@ -42,12 +42,7 @@
 
 
 @protocol SKSplitViewDelegate <NSSplitViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKSplitViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKSplitViewDelegate)
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(NSInteger)offset;
 @end
 
@@ -55,12 +50,16 @@
 @interface SKSplitView : NSSplitView {
     BOOL blendEnds;
 }
+
 + (NSColor *)startColor;
 + (NSColor *)endColor;
+
 - (BOOL)blendEnds;
 - (void)setBlendEnds:(BOOL)flag;
+
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 - (id <SKSplitViewDelegate>)delegate;
 - (void)setDelegate:(id <SKSplitViewDelegate>)newDelegate;
 #endif
+
 @end

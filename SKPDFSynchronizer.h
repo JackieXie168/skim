@@ -47,12 +47,7 @@ enum {
 @class SKPDFSynchronizer;
 
 @protocol SKPDFSynchronizerDelegate <NSObject>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKPDFSynchronizerDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKPDFSynchronizerDelegate)
 
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
@@ -61,15 +56,15 @@ enum {
 
 
 @interface SKPDFSynchronizer : NSObject {
-    id delegate;
+    id SKCONFORM(SKPDFSynchronizerDelegate) delegate;
     
     id server;
     id serverProxy;
     NSConnection *connection;
 }
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (id SKCONFORM(SKPDFSynchronizerDelegate))delegate;
+- (void)setDelegate:(id SKCONFORM(SKPDFSynchronizerDelegate))newDelegate;
 
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;

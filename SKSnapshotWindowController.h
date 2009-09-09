@@ -43,12 +43,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @class SKSnapshotWindowController;
 
 @protocol SKSnapshotWindowControllerDelegate <NSObject>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKSnapshotWindowControllerDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKSnapshotWindowControllerDelegate)
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller;
@@ -63,7 +58,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
     IBOutlet SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
-    id delegate;
+    id SKCONFORM(SKSnapshotWindowControllerDelegate) delegate;
     NSString *pageLabel;
     BOOL hasWindow;
     BOOL miniaturizing;
@@ -77,8 +72,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 - (void)redisplay;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (id SKCONFORM(SKSnapshotWindowControllerDelegate))delegate;
+- (void)setDelegate:(id SKCONFORM(SKSnapshotWindowControllerDelegate))newDelegate;
 
 - (PDFView *)pdfView;
 - (NSImage *)thumbnail;

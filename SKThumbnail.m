@@ -57,9 +57,9 @@
     [super dealloc];
 }
 
-- (id)delegate { return delegate; }
+- (id SKCONFORM(SKThumbnailDelegate))delegate { return delegate; }
 
-- (void)setDelegate:(id)newDelegate { delegate = newDelegate; }
+- (void)setDelegate:(id SKCONFORM(SKThumbnailDelegate))newDelegate { delegate = newDelegate; }
 
 - (BOOL)isDirty { return dirty; }
 

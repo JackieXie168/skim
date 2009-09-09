@@ -41,12 +41,7 @@
 
 
 @protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKNoteOutlineViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKNoteOutlineViewDelegate)
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
