@@ -177,6 +177,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [[[[self document] mainWindowController] window] makeMainWindow];
 }
 
+- (void)notifiyDidFinishSetup {
+    [[self delegate] snapshotControllerDidFinishSetup:self];
+}
 
 - (void)goToDestination:(PDFDestination *)destination {
     [pdfView goToDestination:destination];
@@ -204,7 +207,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
-        [[self delegate] performSelector:@selector(snapshotControllerDidFinishSetup:) withObject:self afterDelay:0.1];
+        [self performSelector:@selector(notifiyDidFinishSetup) withObject:nil afterDelay:0.1];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(CGFloat)factor goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {

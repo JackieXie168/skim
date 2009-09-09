@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKNotesPanelController : NSWindowController
+@interface SKNotesPanelController : NSWindowController <NSWindowDelegate>
 + (id)sharedController;
 + (BOOL)sharedControllerExists;
 - (IBAction)addNote:(id)sender;

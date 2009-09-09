@@ -92,7 +92,7 @@ typedef NSInteger SKInteractionMode;
 
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper;
 
-@interface SKPDFView : PDFView {
+@interface SKPDFView : PDFView <NSTextFieldDelegate> {
     SKToolMode toolMode;
     SKNoteType annotationMode;
     SKInteractionMode interactionMode;

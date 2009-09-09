@@ -385,7 +385,7 @@ static char SKMainDocumentDefaultsObservationContext;
             if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
                 NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                                   NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
-                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")]
+                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog"), nil]
                                                  defaultButton:NSLocalizedString(@"OK", @"Button title")
                                                alternateButton:nil
                                                    otherButton:nil
@@ -1766,7 +1766,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         const char *serviceName = [self keychainServiceName];
         if (serviceName != NULL) {
             if (saveOption == NSAlertOtherReturn) {
-                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog")]
+                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]
                                                  defaultButton:NSLocalizedString(@"Yes", @"Button title")
                                                alternateButton:NSLocalizedString(@"No", @"Button title")
                                                    otherButton:nil

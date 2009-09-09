@@ -40,6 +40,17 @@
 
 extern NSString *SKApplicationStartsTerminatingNotification;
 
+@protocol SKApplicationDelegate <NSApplicationDelegate>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (SKApplicationDelegate)
+#else
+@optional
+#endif
+- (void)applicationStartsTerminating:(NSNotification *)aNotification;
+@end
+
+
 @interface SKApplication : NSApplication {
     BOOL userAttentionDisabled;
 }
@@ -49,11 +60,9 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 - (NSArray *)allOrderedDocuments;
 
-@end
+- (id)delegate;
+- (void)setDelegate:(id)newDelegate;
 
-
-@interface NSObject (SKApplicationDelegate)
-- (void)applicationStartsTerminating:(NSNotification *)aNotification;
 @end
 
 

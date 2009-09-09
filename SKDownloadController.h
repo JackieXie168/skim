@@ -37,10 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKTableView.h"
+
 
 @class SKTableView, SKDownload;
 
-@interface SKDownloadController : NSWindowController {
+@interface SKDownloadController : NSWindowController <SKTableViewDelegate, NSTableViewDataSource> {
     IBOutlet NSArrayController *arrayController;
     IBOutlet SKTableView *tableView;
     IBOutlet NSButton *clearButton;

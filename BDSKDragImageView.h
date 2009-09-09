@@ -38,6 +38,22 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class BDSKDragImageView;
+
+@protocol BDSKDragImageViewDelegate <NSObject>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (BDSKDragImageViewDelegate)
+#else
+@optional
+#endif
+
+- (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
+- (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
+- (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view;
+
+@end
+
 
 @interface BDSKDragImageView : NSImageView {
 	id delegate;
@@ -48,10 +64,4 @@
 
 - (IBAction)show:(id)sender;
 
-@end
-
-@interface NSObject (BDSKDragImageViewDelegate)
-- (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
-- (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
-- (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view;
 @end

@@ -46,7 +46,7 @@ enum {
 };
 typedef NSInteger SKTypeSelectMatchOption;
 
-@interface SKTypeSelectHelper : NSObject {
+@interface SKTypeSelectHelper : NSObject <NSTextViewDelegate> {
     id dataSource;
     BOOL cycleResults;
     SKTypeSelectMatchOption matchOption;

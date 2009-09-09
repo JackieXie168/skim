@@ -37,12 +37,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKApplication.h"
 
 @class SUUpdater, SKLine, SKDownloadController;
 
 @class RemoteControlContainer;
 
-@interface SKApplicationController : NSObject {
+@interface SKApplicationController : NSObject <SKApplicationDelegate, NSMenuDelegate> {
     RemoteControlContainer *remoteControl;
     BOOL remoteScrolling;
 }

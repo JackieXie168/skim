@@ -359,4 +359,14 @@ static char SKTableViewDefaultsObservationContext;
         [[self delegate] tableView:self typeSelectHelper:aTypeSelectHelper updateSearchString:searchString];
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTableViewDelegate>)delegate {
+    return (id <SKTableViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKTableViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+#endif
+
 @end

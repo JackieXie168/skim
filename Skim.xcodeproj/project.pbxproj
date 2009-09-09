@@ -671,6 +671,7 @@
 		CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTableView.m; sourceTree = "<group>"; };
 		CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
+		CE5F23571057B75000B5A7B9 /* SKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCompatibility.h; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
@@ -1056,6 +1057,7 @@
 			children = (
 				32DBCF750370BD2300C91783 /* Skim_Prefix.pch */,
 				2A37F4B0FDCFA73011CA2CEA /* main.m */,
+				CE5F23571057B75000B5A7B9 /* SKCompatibility.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";

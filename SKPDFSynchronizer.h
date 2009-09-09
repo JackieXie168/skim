@@ -44,6 +44,22 @@ enum {
     SKPDFSynchronizerFlippedMask = 1 << 1,
 };
 
+@class SKPDFSynchronizer;
+
+@protocol SKPDFSynchronizerDelegate <NSObject>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (SKPDFSynchronizerDelegate)
+#else
+@optional
+#endif
+
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
+
+@end
+
+
 @interface SKPDFSynchronizer : NSObject {
     id delegate;
     
@@ -64,10 +80,4 @@ enum {
 // this must be called to stop the DO server from running in the server thread
 - (void)terminate;
 
-@end
-
-
-@interface NSObject (SKPDFSynchronizerDelegate)
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
 @end

@@ -43,7 +43,7 @@
 
 - (void)validate {
     if ([self view] && [[[self toolbar] delegate] respondsToSelector:@selector(validateToolbarItem:)]) {
-        BOOL enabled = [[[self toolbar] delegate] validateToolbarItem:self];
+        BOOL enabled = [(id)[[self toolbar] delegate] validateToolbarItem:self];
         [self setEnabled:enabled];
     }
     [super validate];
