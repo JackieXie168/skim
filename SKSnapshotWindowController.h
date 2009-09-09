@@ -43,7 +43,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @class SKSnapshotWindowController;
 
 @protocol SKSnapshotWindowControllerDelegate <NSObject>
-SKOPTIONAL(SKSnapshotWindowControllerDelegate)
+@optional
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller;

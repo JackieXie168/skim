@@ -41,7 +41,7 @@
 
 
 @protocol SKBookmarkOutlineViewDelegate <SKOutlineViewDelegate>
-SKOPTIONAL(SKBookmarkOutlineViewDelegate)
+@optional
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView drawSeparatorRowForItem:(id)item;
 

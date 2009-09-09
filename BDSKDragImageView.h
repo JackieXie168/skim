@@ -41,7 +41,7 @@
 @class BDSKDragImageView;
 
 @protocol BDSKDragImageViewDelegate <NSObject>
-SKOPTIONAL(BDSKDragImageViewDelegate)
+@optional
 
 - (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard;
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;

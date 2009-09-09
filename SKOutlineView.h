@@ -41,7 +41,7 @@
 
 
 @protocol SKOutlineViewDelegate <NSOutlineViewDelegate>
-SKOPTIONAL(SKOutlineViewDelegate)
+@optional
 
 - (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
@@ -58,7 +58,7 @@ SKOPTIONAL(SKOutlineViewDelegate)
 @end
 
 @protocol SKOutlineViewDataSource <NSOutlineViewDataSource>
-SKOPTIONAL(SKOutlineViewDataSource)
+@optional
 
 - (void)outlineView:(NSOutlineView *)anOutlineView dragEndedWithOperation:(NSDragOperation)operation;
 

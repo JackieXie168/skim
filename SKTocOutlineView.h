@@ -43,7 +43,7 @@
 
 
 @protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
-SKOPTIONAL(SKTocOutlineViewDelegate)
+@optional
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
