@@ -48,6 +48,7 @@ SKOPTIONAL(SKNoteOutlineViewDelegate)
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
 - (void)outlineViewInsertNewline:(NSOutlineView *)anOutlineView;
+- (NSWindow *)outlineViewWindowForSheet:(NSOutlineView *)anOutlineView;
 
 @end
 

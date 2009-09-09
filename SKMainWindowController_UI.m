@@ -1045,6 +1045,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return nil;
 }
 
+- (NSWindow *)outlineViewWindowForSheet:(NSOutlineView *)anOutlineView {
+    return [self window];
+}
+
 - (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString {
     if ([ov isEqual:noteOutlineView]) {
         [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"No match: \"%@\"", @"Status message"), searchString]];

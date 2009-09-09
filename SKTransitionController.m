@@ -111,16 +111,25 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
+@protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
+SKOPTIONAL(SKTransitionAnimationDelegate)
+- (void)display;
+@end
+
 @interface SKTransitionAnimation : NSAnimation {
     CIFilter *filter;
 }
 - (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
 - (CIImage *)currentImage;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTransitionAnimationDelegate>)delegate;
+- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate;
+#endif
 @end
 
 #pragma mark -
 
-@interface SKTransitionView : NSOpenGLView <NSAnimationDelegate> {
+@interface SKTransitionView : NSOpenGLView <SKTransitionAnimationDelegate> {
     SKTransitionAnimation *animation;
     CIImage *image;
     CIContext *context;
@@ -568,12 +577,22 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
     [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
-    [(id)[self delegate] display];
+    [[self delegate] display];
 }
 
 - (CIImage *)currentImage {
     return [filter valueForKey:@"outputImage"];
 }
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTransitionAnimationDelegate>)delegate {
+    return (id <SKTransitionAnimationDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+#endif
 
 @end
 
