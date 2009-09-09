@@ -62,7 +62,11 @@ extern NSSize SKNPDFAnnotationNoteSize;
     @abstract    A concrete <code>PDFAnnotation</code> subclass, a subclass of <code>PDFAnnotationText</code>, representing a Skim anchored note.
     @discussion  This is a <code>PDFAnnotationText</code> subclass containing a separate short string value, a longer rich text property, and an image property.
 */
-@interface SKNPDFAnnotationNote : PDFAnnotationText {
+@interface SKNPDFAnnotationNote : PDFAnnotationText
+#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+    <NSTextStorageDelegate>
+#endif
+{
     NSString *string;
     NSImage *image;
     NSTextStorage *textStorage;
