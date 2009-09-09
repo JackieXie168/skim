@@ -94,6 +94,11 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 static char SKMainDocumentDefaultsObservationContext;
 
 
+@interface PDFAnnotation (SKPrivateDeclarations)
+- (void)setPage:(PDFPage *)newPage;
+@end
+
+
 @interface SKTemporaryData : NSObject {
     PDFDocument *pdfDocument;
     NSArray *noteDicts;
