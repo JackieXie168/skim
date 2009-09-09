@@ -1561,7 +1561,7 @@ enum {
     PDFPage *page = [self currentPage];
     NSUInteger idx = 0;
     if ([selection hasCharacters]) {
-        page = [[selection pages] lastObject];
+        page = [selection safeLastPage];
         idx = [selection safeIndexOfLastCharacterOnPage:page];
         if (idx == NSNotFound)
             idx = 0;
@@ -1574,7 +1574,7 @@ enum {
     PDFPage *page = [self currentPage];
     NSUInteger idx = 0;
     if ([selection hasCharacters]) {
-        page = [[selection pages] objectAtIndex:0];
+        page = [selection safeFirstPage];
         idx = [selection safeIndexOfFirstCharacterOnPage:page];
         if (idx == NSNotFound)
             idx = 0;
@@ -1825,7 +1825,7 @@ enum {
         text = [selection cleanedString];
         
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
-		page = [[selection pages] objectAtIndex: 0];
+		page = [selection safeFirstPage];
 		bounds = [selection boundsForPage: page];
         if (annotationType == SKCircleNote || annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);

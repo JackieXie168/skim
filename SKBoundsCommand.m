@@ -73,8 +73,7 @@
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
         if ([page isKindOfClass:[PDFPage class]] == NO) {
-            NSArray *pages = [selection pages];
-            page = [pages count] ? [pages objectAtIndex:0] : nil;
+            page = [selection safeFirstPage];
         }
         if (page)
             bounds = [selection hasCharacters] ? [selection boundsForPage:page] : NSZeroRect;

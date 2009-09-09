@@ -1968,7 +1968,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[properties objectForKey:SKPDFAnnotationSelectionSpecifierKey]];
-        PDFPage *page = [[selection pages] count] ? [[selection pages] objectAtIndex:0] : nil;
+        PDFPage *page = [selection safeFirstPage];
         if (page == nil) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSReceiversCantHandleCommandScriptError]; 
         } else {
@@ -2104,7 +2104,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:[[command arguments] objectForKey:@"To"]];
         if ([selection hasCharacters]) {
-            PDFPage *page = [[selection pages] objectAtIndex:0];
+            PDFPage *page = [selection safeFirstPage];
             NSRect bounds = [selection boundsForPage:page];
             [[self pdfView] scrollRect:bounds inPageToVisible:page];
         }
