@@ -40,6 +40,23 @@
 #import "SKOutlineView.h";
 
 
+@protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (SKNoteOutlineViewDelegate)
+#else
+@optional
+#endif
+
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
+- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
+- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
+- (void)outlineViewInsertNewline:(NSOutlineView *)anOutlineView;
+
+@end
+
+
 @interface SKNoteOutlineView : SKOutlineView {    
     IBOutlet NSWindow *noteTypeSheet;
     IBOutlet NSMatrix *noteTypeMatrix;
@@ -56,13 +73,9 @@
 - (IBAction)selectNoteTypes:(id)sender;
 - (IBAction)dismissNoteTypeSheet:(id)sender;
 
-@end
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKNoteOutlineViewDelegate>)delegate;
+- (void)setDelegate:(id <SKNoteOutlineViewDelegate>)newDelegate;
+#endif
 
-
-@interface NSObject (SKNoteOutlineViewDelegate)
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(CGFloat)newHeight byItem:(id)item;
-- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
-- (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;
-- (void)outlineViewInsertNewline:(NSOutlineView *)anOutlineView;
 @end

@@ -164,4 +164,14 @@
     }
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKSplitViewDelegate>)delegate {
+    return (id <SKSplitViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKSplitViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+#endif
+
 @end

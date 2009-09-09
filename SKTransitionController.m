@@ -120,7 +120,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@interface SKTransitionView : NSOpenGLView {
+@interface SKTransitionView : NSOpenGLView <NSAnimationDelegate> {
     SKTransitionAnimation *animation;
     CIImage *image;
     CIContext *context;
@@ -568,7 +568,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
     [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
-    [[self delegate] display];
+    [(id)[self delegate] display];
 }
 
 - (CIImage *)currentImage {

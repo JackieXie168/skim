@@ -213,4 +213,14 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
 	}
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTocOutlineViewDelegate>)delegate {
+    return (id <SKTocOutlineViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+#endif
+
 @end

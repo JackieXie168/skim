@@ -2122,7 +2122,7 @@ enum {
             rv = YES;
         }
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
-       rv = [super control:control textView:textView doCommandBySelector:command];
+       rv = [(id)super control:control textView:textView doCommandBySelector:command];
     }
     return rv;
 }

@@ -40,7 +40,7 @@
 
 @class SKLineWell, SKFontWell;
 
-@interface SKPreferenceController : NSWindowController {
+@interface SKPreferenceController : NSWindowController <NSWindowDelegate, NSTabViewDelegate> {
     IBOutlet NSTabView *tabView;
     IBOutlet NSPopUpButton *updateIntervalPopUpButton;
     IBOutlet NSSlider *thumbnailSizeSlider;

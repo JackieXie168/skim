@@ -346,7 +346,7 @@
         [[noteTypeMatrix cellWithTag:i] setState:[[menu itemAtIndex:i] state]];
 	
     [NSApp beginSheet:noteTypeSheet
-       modalForWindow:[[self delegate] respondsToSelector:@selector(window)] ? [[self delegate] window] : [self window]
+       modalForWindow:[[self delegate] respondsToSelector:@selector(window)] ? [(id)[self delegate] window] : [self window]
         modalDelegate:self 
        didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
@@ -356,5 +356,16 @@
     [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
     [noteTypeSheet orderOut:self];
 }
+
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKNoteOutlineViewDelegate>)delegate {
+    return (id <SKNoteOutlineViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKNoteOutlineViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+#endif
 
 @end

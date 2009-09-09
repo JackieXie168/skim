@@ -1,10 +1,10 @@
 //
-//  SKBookmarkOutlineView.m
+//  SKCompatibility.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/2/08.
+//  Created by Christiaan on 9/9/09.
 /*
- This software is Copyright (c) 2008-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,38 +36,30 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKBookmarkOutlineView.h"
+#import <Cocoa/Cocoa.h>
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
 
-@implementation SKBookmarkOutlineView
+@protocol NSApplicationDelegate <NSObject> @end
+@protocol NSControlTextEditingDelegate <NSObject> @end
+@protocol NSTextFieldDelegate <NSControlTextEditingDelegate> @end
+@protocol NSTableViewDelegate <NSControlTextEditingDelegate> @end
+@protocol NSTableViewDataSource <NSObject> @end
+@protocol NSOutlineViewDelegate <NSControlTextEditingDelegate> @end
+@protocol NSOutlineViewDataSource <NSObject> @end
+@protocol NSToolbarDelegate <NSObject> @end
+@protocol NSMenuDelegate <NSObject> @end
+@protocol NSDrawerDelegate <NSObject> @end
+@protocol NSWindowDelegate <NSObject> @end
+@protocol NSAnimationDelegate <NSObject> @end
+@protocol NSTextDelegate <NSObject> @end
+@protocol NSTextViewDelegate <NSTextDelegate> @end
+@protocol NSTextStorageDelegate <NSObject> @end
+@protocol NSTabViewDelegate <NSObject> @end
+@protocol NSSplitViewDelegate <NSObject> @end
 
-+ (BOOL)usesDefaultFontSize { return YES; }
-
-#define SEPARATOR_LEFT_INDENT 20.0
-#define SEPARATOR_RIGHT_INDENT 2.0
-
-- (void)drawRow:(NSInteger)rowIndex clipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:drawSeparatorRowForItem:)] &&
-        [[self delegate] outlineView:self drawSeparatorRowForItem:[self itemAtRow:rowIndex]]) {
-        CGFloat indent = [self levelForItem:[self itemAtRow:rowIndex]] * [self indentationPerLevel];
-        NSRect rect = [self rectOfRow:rowIndex];
-        [[NSColor gridColor] setStroke];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + indent + SEPARATOR_LEFT_INDENT, SKFloor(NSMidY(rect)) + 0.5) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, SKFloor(NSMidY(rect)) + 0.5)];
-    } else {
-        [super drawRow:rowIndex clipRect:clipRect];
-    }
-}
-
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKBookmarkOutlineViewDelegate>)delegate {
-    return (id <SKBookmarkOutlineViewDelegate>)[super delegate];
-}
-
-- (void)setDelegate:(id <SKBookmarkOutlineViewDelegate>)newDelegate {
-    [super setDelegate:newDelegate];
-}
 #endif
 
-@end
+#ifndef NSAppKitVersionNumber10_5
+    #define NSAppKitVersionNumber10_5 949
+#endif

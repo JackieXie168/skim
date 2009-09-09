@@ -40,6 +40,36 @@
 
 @class SKTypeSelectHelper;
 
+@protocol SKTableViewDelegate <NSTableViewDelegate>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (SKTableViewDelegate)
+#else
+@optional
+#endif
+
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
+- (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+
+- (void)tableViewPaste:(NSTableView *)aTableView;
+- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
+
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+
+- (BOOL)tableView:(NSTableView *)aTableView shouldTrackTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+- (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
+
+- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
+- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+
+@end
+
+
 @interface SKTableView : NSTableView {
     CFMutableArrayRef trackingRects;
     SKTypeSelectHelper *typeSelectHelper;
@@ -62,28 +92,9 @@
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
-@end
-
-
-@interface NSObject (SKTableViewDelegate)
-
-- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-
-- (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
-
-- (void)tableViewPaste:(NSTableView *)aTableView;
-- (BOOL)tableViewCanPaste:(NSTableView *)aTableView;
-
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldTrackTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-- (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
-
-- (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionItems:(SKTypeSelectHelper *)aTypeSelectHelper;
-- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;
-- (void)tableView:(NSTableView *)aTableView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper updateSearchString:(NSString *)searchString;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTableViewDelegate>)delegate;
+- (void)setDelegate:(id <SKTableViewDelegate>)newDelegate;
+#endif
 
 @end

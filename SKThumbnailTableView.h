@@ -40,6 +40,20 @@
 #import "SKTableView.h"
 
 
+@protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+@end
+@interface NSObject (SKThumbnailTableViewDelegate)
+#else
+@optional
+#endif
+
+- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
+- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
+
+@end
+
+
 @class SKTypeSelectHelper;
 
 @interface SKThumbnailTableView : SKTableView
@@ -49,10 +63,9 @@
 
 - (BOOL)isScrolling;
 
-@end
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKThumbnailTableViewDelegate>)delegate;
+- (void)setDelegate:(id <SKThumbnailTableViewDelegate>)newDelegate;
+#endif
 
-
-@interface NSObject (SKThumbnailTableViewDelegate)
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
-- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 @end

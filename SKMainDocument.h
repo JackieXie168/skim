@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKPDFSynchronizer.h"
 
 extern NSString *SKSkimFileDidSaveNotification;
 
@@ -57,9 +58,9 @@ extern NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary 
 extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settings);
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine, SKProgressController, SKTemporaryData;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKLine, SKProgressController, SKTemporaryData;
 
-@interface SKMainDocument : NSDocument
+@interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
 {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;

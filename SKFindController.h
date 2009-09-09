@@ -40,7 +40,7 @@
 
 @class BDSKFindFieldEditor;
 
-@interface SKFindController : NSWindowController {
+@interface SKFindController : NSWindowController <NSWindowDelegate> {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
     IBOutlet NSObjectController *ownerController;

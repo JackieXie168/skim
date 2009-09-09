@@ -41,15 +41,27 @@
 #import "SKOutlineView.h"
 
 
-@interface SKTocOutlineView : SKOutlineView {
-    CFMutableArrayRef trackingRects;
-}
+
+@protocol SKTocOutlineViewDelegate <SKOutlineViewDelegate>
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
 @end
-
-
 @interface NSObject (SKTocOutlineViewDelegate)
+#else
+@optional
+#endif
+
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+
+@end
+
+@interface SKTocOutlineView : SKOutlineView {
+    CFMutableArrayRef trackingRects;
+}
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKTocOutlineViewDelegate>)delegate;
+- (void)setDelegate:(id <SKTocOutlineViewDelegate>)newDelegate;
+#endif
 @end

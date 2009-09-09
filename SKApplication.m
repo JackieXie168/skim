@@ -245,4 +245,12 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return orderedDocuments;
 }
 
+- (id)delegate {
+    return (id)[super delegate];
+}
+
+- (void)setDelegate:(id)newDelegate {
+    [super setDelegate:newDelegate];
+}
+
 @end
