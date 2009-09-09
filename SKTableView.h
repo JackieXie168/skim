@@ -37,8 +37,8 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKTypeSelectHelper.h"
 
-@class SKTypeSelectHelper;
 
 @protocol SKTableViewDelegate <NSTableViewDelegate>
 SKOPTIONAL(SKTableViewDelegate)
@@ -65,7 +65,7 @@ SKOPTIONAL(SKTableViewDelegate)
 @end
 
 
-@interface SKTableView : NSTableView {
+@interface SKTableView : NSTableView <SKTypeSelectDataSource> {
     CFMutableArrayRef trackingRects;
     SKTypeSelectHelper *typeSelectHelper;
 }
