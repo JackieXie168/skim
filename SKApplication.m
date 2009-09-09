@@ -245,12 +245,14 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
     return orderedDocuments;
 }
 
-- (id)delegate {
-    return (id)[super delegate];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKApplicationDelegate>)delegate {
+    return (id <SKApplicationDelegate>)[super delegate];
 }
 
-- (void)setDelegate:(id)newDelegate {
+- (void)setDelegate:(id <SKApplicationDelegate>)newDelegate {
     [super setDelegate:newDelegate];
 }
+#endif
 
 @end

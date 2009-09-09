@@ -53,6 +53,20 @@ enum {
 };
 typedef NSInteger SKDownloadStatus;
 
+
+@class SKDownload;
+
+@protocol SKDownloadDelegate <NSObject>
+SKOPTIONAL(SKDownloadDelegate)
+
+- (void)downloadDidStart:(SKDownload *)download;
+- (void)downloadDidBeginDownloading:(SKDownload *)download;
+- (void)downloadDidUpdate:(SKDownload *)download;
+- (void)downloadDidEnd:(SKDownload *)download;
+
+@end
+
+
 @interface SKDownload : NSObject {
     NSURL *URL;
     NSURLDownload *URLDownload;
@@ -62,13 +76,13 @@ typedef NSInteger SKDownloadStatus;
     NSImage *fileIcon;
     NSProgressIndicator *progressIndicator;
     NSInteger status;
-    id delegate;
+    id SKCONFORM(SKDownloadDelegate) delegate;
 }
 
-- (id)initWithURL:(NSURL *)aURL delegate:(id)aDelegate;
+- (id)initWithURL:(NSURL *)aURL delegate:(id SKCONFORM(SKDownloadDelegate))aDelegate;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (id SKCONFORM(SKDownloadDelegate))delegate;
+- (void)setDelegate:(id SKCONFORM(SKDownloadDelegate))newDelegate;
 
 - (SKDownloadStatus)status;
 
@@ -97,12 +111,4 @@ typedef NSInteger SKDownloadStatus;
 
 - (void)removeProgressIndicatorFromSuperview;
 
-@end
-
-
-@interface NSObject (SKDownloadDelegate)
-- (void)downloadDidStart:(SKDownload *)download;
-- (void)downloadDidBeginDownloading:(SKDownload *)download;
-- (void)downloadDidUpdate:(SKDownload *)download;
-- (void)downloadDidEnd:(SKDownload *)download;
 @end

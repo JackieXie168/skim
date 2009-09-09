@@ -39,18 +39,26 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class SKThumbnail;
+
+@protocol SKThumbnailDelegate <NSObject>
+SKOPTIONAL(SKThumbnailDelegate)
+- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
+@end
+
+
 @interface SKThumbnail : NSObject {
     NSImage *image;
     NSString *label;
     NSUInteger pageIndex;
     BOOL dirty;
-    id delegate;
+    id SKCONFORM(SKThumbnailDelegate) delegate;
 }
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (id SKCONFORM(SKThumbnailDelegate))delegate;
+- (void)setDelegate:(id SKCONFORM(SKThumbnailDelegate))newDelegate;
 
 - (BOOL)isDirty;
 - (void)setDirty:(BOOL)flag;
@@ -64,8 +72,4 @@
 
 - (NSSize)size;
 
-@end
-
-@interface NSObject (SKThumbnailDelegate)
-- (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
 @end

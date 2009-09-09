@@ -41,12 +41,7 @@
 
 
 @protocol SKBookmarkOutlineViewDelegate <SKOutlineViewDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKBookmarkOutlineViewDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKBookmarkOutlineViewDelegate)
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView drawSeparatorRowForItem:(id)item;
 

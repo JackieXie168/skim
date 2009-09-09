@@ -58,6 +58,14 @@
 @protocol NSTabViewDelegate <NSObject> @end
 @protocol NSSplitViewDelegate <NSObject> @end
 
+#define SKOPTIONAL(name) @end @interface NSObject (name)
+#define SKCONFORM(protocol) 
+
+#else
+
+#define SKOPTIONAL(name) @optional
+#define SKCONFORM(protocol) <protocol>
+
 #endif
 
 #ifndef NSAppKitVersionNumber10_5

@@ -43,6 +43,7 @@
 #import "SKTocOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKSnapshotWindowController.h"
+#import "SKThumbnail.h"
 
 enum {
     SKThumbnailSidePaneState,
@@ -70,11 +71,11 @@ enum {
 
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@class PDFAnnotation, PDFSelection, SKThumbnail, SKGroupedSearchResult;
+@class PDFAnnotation, PDFSelection, SKGroupedSearchResult;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
-@interface SKMainWindowController : NSWindowController <NSWindowDelegate, NSToolbarDelegate, NSDrawerDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource, SKTocOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKSplitViewDelegate, SKSnapshotWindowControllerDelegate> {
+@interface SKMainWindowController : NSWindowController <NSWindowDelegate, NSToolbarDelegate, NSDrawerDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource, SKTocOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKSplitViewDelegate, SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
     IBOutlet SKSplitView            *splitView;
     
     IBOutlet NSView                 *pdfContentView;

@@ -269,11 +269,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Acessors
 
-- (id)delegate {
+- (id SKCONFORM(SKSnapshotWindowControllerDelegate))delegate {
     return delegate;
 }
 
-- (void)setDelegate:(id)newDelegate {
+- (void)setDelegate:(id SKCONFORM(SKSnapshotWindowControllerDelegate))newDelegate {
     delegate = newDelegate;
 }
 

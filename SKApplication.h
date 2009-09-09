@@ -41,12 +41,7 @@
 extern NSString *SKApplicationStartsTerminatingNotification;
 
 @protocol SKApplicationDelegate <NSApplicationDelegate>
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
-@end
-@interface NSObject (SKApplicationDelegate)
-#else
-@optional
-#endif
+SKOPTIONAL(SKApplicationDelegate)
 - (void)applicationStartsTerminating:(NSNotification *)aNotification;
 @end
 
@@ -60,8 +55,10 @@ extern NSString *SKApplicationStartsTerminatingNotification;
 
 - (NSArray *)allOrderedDocuments;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+- (id <SKApplicationDelegate>)delegate;
+- (void)setDelegate:(id <SKApplicationDelegate>)newDelegate;
+#endif
 
 @end
 
