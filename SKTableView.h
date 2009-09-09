@@ -41,7 +41,7 @@
 
 
 @protocol SKTableViewDelegate <NSTableViewDelegate>
-SKOPTIONAL(SKTableViewDelegate)
+@optional
 
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;

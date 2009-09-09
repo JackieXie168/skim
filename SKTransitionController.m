@@ -112,7 +112,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 #pragma mark -
 
 @protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
-SKOPTIONAL(SKTransitionAnimationDelegate)
+@optional
 - (void)display;
 @end
 

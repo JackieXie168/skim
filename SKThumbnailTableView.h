@@ -41,7 +41,7 @@
 
 
 @protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
-SKOPTIONAL(SKThumbnailTableViewDelegate)
+@optional
 
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;

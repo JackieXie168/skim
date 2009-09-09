@@ -42,7 +42,7 @@
 
 
 @protocol SKSplitViewDelegate <NSSplitViewDelegate>
-SKOPTIONAL(SKSplitViewDelegate)
+@optional
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(NSInteger)offset;
 @end
 

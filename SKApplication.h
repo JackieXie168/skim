@@ -41,7 +41,7 @@
 extern NSString *SKApplicationStartsTerminatingNotification;
 
 @protocol SKApplicationDelegate <NSApplicationDelegate>
-SKOPTIONAL(SKApplicationDelegate)
+@optional
 - (void)applicationStartsTerminating:(NSNotification *)aNotification;
 @end
 
