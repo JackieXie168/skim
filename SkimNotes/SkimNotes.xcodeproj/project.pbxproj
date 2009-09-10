@@ -47,6 +47,7 @@
 		CE3776960E2FC52A00261604 /* SKNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE37768B0E2FC26100261604 /* SKNUtilities.m */; };
 		CE3776970E2FC53000261604 /* SKNUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = CE37768A0E2FC26100261604 /* SKNUtilities.h */; };
 		CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3907AF0E082C460015B0B7 /* SkimNotes.strings */; };
+		CE83E4261059A831007E3D28 /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE83E4251059A831007E3D28 /* ReleaseNotes.rtf */; };
 		CEA5F54E0E2CEDFB00F65088 /* SkimNotesBase.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEA5F54F0E2CEDFE00F65088 /* NSFileManager_SKNExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBA2BD30E05826D0000B2E6 /* NSFileManager_SKNExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEA5F5500E2CEDFF00F65088 /* NSFileManager_SKNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA2BD40E05826D0000B2E6 /* NSFileManager_SKNExtensions.m */; };
@@ -167,6 +168,7 @@
 		CE5280B10E41C137000F9CAC /* SkimNotes-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotes-Common.xcconfig"; sourceTree = "<group>"; };
 		CE5280B60E41C20A000F9CAC /* SkimNotesBase-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SkimNotesBase-Framework.xcconfig"; sourceTree = "<group>"; };
 		CE5A82DD0E6C5403008C0AA9 /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/SkimNotes.strings; sourceTree = "<group>"; };
+		CE83E4251059A831007E3D28 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
 		CEA5F53D0E2CED0E00F65088 /* SkimNotesBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SkimNotesBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA5F5490E2CED6D00F65088 /* SkimNotesBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase.h; sourceTree = "<group>"; };
 		CEA5F54C0E2CEDC400F65088 /* SkimNotesBase_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkimNotesBase_Prefix.pch; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 			children = (
 				CEBA303C0E06C92F0000B2E6 /* License.txt */,
 				CEBA305E0E06D5C30000B2E6 /* SkimNotes.rtf */,
+				CE83E4251059A831007E3D28 /* ReleaseNotes.rtf */,
 				CEBA2B620E0567290000B2E6 /* Shared Classes */,
 				08FB77AEFE84172EC02AAC07 /* Framework Classes */,
 				CEBA2B610E0566E60000B2E6 /* Tool Classes */,
@@ -550,6 +553,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3907B00E082C460015B0B7 /* SkimNotes.strings in Resources */,
+				CE83E4261059A831007E3D28 /* ReleaseNotes.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,7 +609,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
+			shellScript = "tmpdir=`/usr/bin/mktemp -d /tmp/net.sourceforge.skim-app.skimnotes.XXXX`\nbasedir=\"SkimNotes\"\nsourcedir=\"${basedir}/Source\"\ncd \"${tmpdir}\"\n/bin/mkdir \"${basedir}\"\n/bin/mkdir \"${sourcedir}\"\n/bin/cp -Rf \"${SOURCE_ROOT}\"/* \"${sourcedir}\"\n/bin/cp -Rf \"${BUILT_PRODUCTS_DIR}\"/{skimnotes,SkimNotes.framework,SkimNotesBase.framework,SkimNotes\\ Documentation} \"${basedir}\"\n/bin/cp -f \"${SOURCE_ROOT}\"/{License.txt,SkimNotes.rtf,ReleaseNotes.rtf} \"${basedir}\"\n/usr/bin/find \"${basedir}\" -type f \\( -name \".DS_Store\" -or -name \"*.pbxuser\" -or -name \"*.mode*\" \\) -delete\n/usr/bin/find \"${basedir}\" -type d -name \".svn\" -delete\n/usr/bin/tar czf \"${HOME}/Desktop/SkimNotes.tgz\" \"${basedir}\"\n/bin/rm -rf \"${tmpdir}\"\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
