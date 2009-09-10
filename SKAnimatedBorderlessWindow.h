@@ -39,9 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKAnimatedBorderlessWindow : NSWindow {
-    NSViewAnimation *animation;
-}
+@interface SKAnimatedBorderlessWindow : NSWindow
 
 - (id)initWithContentRect:(NSRect)contentRect screen:(NSScreen *)screen;
 - (id)initWithContentRect:(NSRect)contentRect;

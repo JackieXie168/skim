@@ -83,9 +83,6 @@
 
 - (void)stopAnimation {
     [self cancelDelayedAnimations];
-    [animation stopAnimation];
-    [animation release];
-    animation = nil;
 }
 
 - (void)cancelDelayedAnimations {
@@ -145,21 +142,6 @@
     [[self animator] setAlphaValue:[self defaultAlphaValue]];
     [NSAnimationContext endGrouping];
     [self fadeOutAfterTimeout];
-}
-
-- (void)animationDidEnd:(NSAnimation*)anAnimation {
-    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
-    [animation release];
-    animation = nil;
-    if (isFadeOut)
-        [self orderOut:self];
-    [self setAlphaValue:[self defaultAlphaValue]];
-}
-
-- (void)animationDidStop:(NSAnimation*)anAnimation {
-    [animation release];
-    animation = nil;
-    [self setAlphaValue:[self defaultAlphaValue]];
 }
 
 @end
