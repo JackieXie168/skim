@@ -1,6 +1,6 @@
 //
 //  NSBezierPath_SKExtensions.m
-//  Bibdesk
+//  Skim
 //
 //  Created by Adam Maxwell on 10/22/05.
 /*
