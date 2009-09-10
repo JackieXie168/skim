@@ -274,6 +274,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [rightSideDrawer release];
     [secondaryPdfEdgeView release];
     [presentationNotesDocument release];
+    [leftSideButton release];
+    [findButton release];
     [super dealloc];
 }
 
@@ -297,6 +299,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [pdfSplitView setFrame:[pdfContentView bounds]];
     [pdfContentView addSubview:pdfSplitView];
+    
+    [leftSideButton retain];
+    [findButton retain];
     
     [leftSideButton setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
     [leftSideButton setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
@@ -1627,75 +1632,123 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 #pragma mark Swapping tables
 
+- (void)finishTableAnimation:(NSDictionary *)info {
+    NSView *contentView = [info valueForKey:@"contentView"];
+    NSView *buttonView = [info valueForKey:@"buttonView"];
+    NSView *firstResponder = [info valueForKey:@"firstResponder"];
+    [contentView setWantsLayer:NO];
+    [buttonView setWantsLayer:NO];
+    [[firstResponder window] makeFirstResponder:firstResponder];
+    [[contentView window] recalculateKeyViewLoop];
+    mwcFlags.isAnimating = 0;
+}
+
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
-    if ([newView window] == nil) {
-        NSView *oldView = nil;
-        if (newView == noteView || newView == snapshotView) {
-            oldView = currentRightSideView;
-            currentRightSideView = newView;
-        } else {
-            oldView = currentLeftSideView;
-            currentLeftSideView = newView;
+    if ([newView window] != nil)
+        return;
+    
+    NSView *oldView = nil;
+    if (newView == noteView || newView == snapshotView) {
+        oldView = currentRightSideView;
+        currentRightSideView = newView;
+    } else {
+        oldView = currentLeftSideView;
+        currentLeftSideView = newView;
+    }
+    
+    BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
+    BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
+    BOOL changeButton = wasFind != isFind;
+    NSSegmentedControl *oldButton = wasFind ? findButton : leftSideButton;
+    NSSegmentedControl *newButton = isFind ? findButton : leftSideButton;
+    NSView *buttonView = [oldButton superview];
+    NSView *contentView = [oldView superview];
+    id firstResponder = [[oldView window] firstResponder];
+    
+    if ([firstResponder isDescendantOf:oldView])
+        firstResponder = [newView nextKeyView];
+    else if (wasFind != isFind && [firstResponder isEqual:oldButton])
+        firstResponder = newButton;
+    else
+        firstResponder = nil;
+
+    if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
+        [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+    
+    if (changeButton)
+        [newButton setFrame:[oldButton frame]];
+    [newView setFrame:[oldView frame]];
+    
+    if (animate == NO) {
+        if (changeButton)
+            [[oldButton superview] replaceSubview:oldButton with:newButton];
+        [contentView replaceSubview:oldView with:newView];
+        [[firstResponder window] makeFirstResponder:firstResponder];
+    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5) {
+        mwcFlags.isAnimating = 1;
+        
+        if (changeButton) {
+            [buttonView setWantsLayer:YES];
+            [buttonView displayIfNeeded];
         }
+        [contentView setWantsLayer:YES];
+        [contentView displayIfNeeded];
         
-        NSResponder *oldFirstResponder = [[oldView window] firstResponder];
-        BOOL wasFind = [oldView isEqual:findView] || [oldView isEqual:groupedFindView];
-        BOOL isFind = [newView isEqual:findView] || [newView isEqual:groupedFindView];
-        NSSegmentedControl *oldButton = wasFind ? findButton : leftSideButton;
-        NSSegmentedControl *newButton = isFind ? findButton : leftSideButton;
-        NSView *containerView = [newButton superview];
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:1.0]; 
+        if (changeButton)
+            [[buttonView animator] replaceSubview:oldButton with:newButton];
+        [[contentView animator] replaceSubview:oldView with:newView];
+        [NSAnimationContext endGrouping];
         
-        if ([oldView isEqual:tocView] || [oldView isEqual:findView] || [oldView isEqual:groupedFindView])
-            [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
+        NSMutableDictionary *info = [NSMutableDictionary dictionary];
+        if (changeButton)
+            [info setValue:buttonView forKey:@"buttonView"];
+        [info setValue:contentView forKey:@"contentView"];
+        [info setValue:firstResponder forKey:@"firstResponder"];
         
-        if (wasFind != isFind) {
-            [newButton setFrame:[oldButton frame]];
-            [newButton setHidden:animate];
+        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:1.0];
+    } else {
+        if (changeButton) {
+            [newButton setHidden:YES];
             [[oldButton superview] addSubview:newButton];
         }
         
-        [newView setFrame:[oldView frame]];
         [newView setHidden:animate];
         [[oldView superview] addSubview:newView];
         
-        if (animate) {
-            NSArray *viewAnimations = [NSArray arrayWithObjects:
-                [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-                [NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
+        NSArray *viewAnimations = [NSArray arrayWithObjects:
+            [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
+            [NSDictionary dictionaryWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
+        
+        NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
+        [animation setAnimationBlockingMode:NSAnimationBlocking];
+        [animation setDuration:0.7];
+        [animation setAnimationCurve:NSAnimationEaseIn];
+        mwcFlags.isAnimating = 1;
+        [animation startAnimation];
+        mwcFlags.isAnimating = 0;
+        
+        if (changeButton) {
+            viewAnimations = [NSArray arrayWithObjects:
+                [NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
+                [NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
             
-            NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
+            animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
             [animation setAnimationBlockingMode:NSAnimationBlocking];
-            [animation setDuration:0.7];
+            [animation setDuration:0.3];
             [animation setAnimationCurve:NSAnimationEaseIn];
-            mwcFlags.isAnimating = 1;
             [animation startAnimation];
-            mwcFlags.isAnimating = 0;
-            
-            if (wasFind != isFind) {
-                viewAnimations = [NSArray arrayWithObjects:
-                    [NSDictionary dictionaryWithObjectsAndKeys:oldButton, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
-                    [NSDictionary dictionaryWithObjectsAndKeys:newButton, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil], nil];
-                
-                animation = [[[NSViewAnimation alloc] initWithViewAnimations:viewAnimations] autorelease];
-                [animation setAnimationBlockingMode:NSAnimationBlocking];
-                [animation setDuration:0.3];
-                [animation setAnimationCurve:NSAnimationEaseIn];
-                [animation startAnimation];
-            }
         }
         
-        if ([oldFirstResponder isDescendantOf:oldView])
-            [[newView window] makeFirstResponder:[newView nextKeyView]];
+        [[firstResponder window] makeFirstResponder:firstResponder];
         [oldView removeFromSuperview];
         [oldView setHidden:NO];
         [[newView window] recalculateKeyViewLoop];
         
-        if (wasFind != isFind) {
-            [containerView addSubview:oldButton];
+        if (changeButton) {
             [oldButton setHidden:NO];
             [newButton setHidden:NO];
-            if ([oldFirstResponder isEqual:oldButton])
-                [[newButton window] makeFirstResponder:newButton];
         }
     }
 }
