@@ -1684,7 +1684,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [contentView replaceSubview:oldView with:newView];
         [[firstResponder window] makeFirstResponder:firstResponder];
-    } else if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5) {
+    } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
         mwcFlags.isAnimating = 1;
         
         if (changeButton) {
@@ -1695,7 +1695,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [contentView displayIfNeeded];
         
         [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:1.0]; 
+        [[NSAnimationContext currentContext] setDuration:0.7]; 
         if (changeButton)
             [[buttonView animator] replaceSubview:oldButton with:newButton];
         [[contentView animator] replaceSubview:oldView with:newView];
@@ -1707,7 +1707,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [info setValue:contentView forKey:@"contentView"];
         [info setValue:firstResponder forKey:@"firstResponder"];
         
-        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:1.0];
+        [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
     } else {
         if (changeButton) {
             [newButton setHidden:YES];
