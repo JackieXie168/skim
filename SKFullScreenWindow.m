@@ -56,17 +56,6 @@
     return self;
 }
 
-- (void)stopAnimation {
-    [animation stopAnimation];
-    [animation release];
-    animation = nil;
-}
-
-- (void)dealloc {
-    [self stopAnimation];
-    [super dealloc];
-}
-
 - (BOOL)canBecomeKeyWindow { return YES; }
 
 - (BOOL)canBecomeMainWindow { return YES; }
@@ -108,51 +97,35 @@
 }
 
 - (void)orderFront:(id)sender {
-    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super orderFront:sender];
 }
 
 - (void)makeKeyAndOrderFront:(id)sender {
-    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super makeKeyAndOrderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
-    [self stopAnimation];
     [super orderOut:sender];
     [self setAlphaValue:1.0];
 }
 
 - (void)fadeOutBlocking:(BOOL)block {
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
-    [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
-    [animation setDuration:0.7];
-    [animation setDelegate:self];
-    [animation startAnimation];
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:0.7];
+    [[self animator] setAlphaValue:0.0];
+    [NSAnimationContext endGrouping];
+    if (block) {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.7]];
+        [self orderOut:nil];
+    } else {
+        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:0.7];
+    }
 }
 
 - (void)fadeOut {
     return [self fadeOutBlocking:NO];
-}
-
-- (void)animationDidEnd:(NSAnimation *)anAnimation {
-    [animation release];
-    animation = nil;
-    [self orderOut:nil];
-    [self setAlphaValue:1.0];
-}
-
-- (void)animationDidStop:(NSAnimation *)anAnimation {
-    [animation release];
-    animation = nil;
-    [self orderOut:nil];
-    [self setAlphaValue:1.0];
 }
 
 @end

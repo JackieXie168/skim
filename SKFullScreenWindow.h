@@ -40,9 +40,7 @@
 #import "SKMainWindow.h"
 
 
-@interface SKFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
-    NSViewAnimation *animation;
-}
+@interface SKFullScreenWindow : SKMainWindow
 
 - (id)initWithScreen:(NSScreen *)screen;
 
