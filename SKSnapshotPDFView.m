@@ -1,6 +1,6 @@
 //
 //  SKSnapshotPDFView.m
-//  Bibdesk
+//  Skim
 //
 //  Created by Adam Maxwell on 07/23/05.
 /*
