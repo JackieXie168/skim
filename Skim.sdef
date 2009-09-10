@@ -9,22 +9,14 @@
         <cocoa name="NSCoreSuite"/>
 
         <class name="application" code="capp"
-            description="Skim's top level scripting object.">
-            <cocoa class="SKApplication"/>
+            description="The application's top level scripting object.">
+            <cocoa class="NSApplication"/>
             <element type="document" access="r"
-                description="The PDF files currently opened by Skim.">
+                description="The documents currently opened by the application.">
                 <cocoa key="orderedDocuments"/>
             </element>
             <element type="window" access="r">
                 <cocoa key="orderedWindows"/>
-            </element>
-            <element type="TeX line" access="r" hidden="yes"
-                description="Lines in a TeX source file.">
-                <cocoa key="lines"/>
-            </element>
-            <element type="rich text format" access="r" hidden="yes"
-                description="Rich text formats.">
-                <cocoa key="richTextFormat"/>
             </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The name of the application."/>
@@ -34,50 +26,6 @@
             </property>
             <property name="version" code="vers" type="text" access="r"
                 description="The version of the application."/>
-            <property name="default view settings" type="PDF view settings" code="DVSt"
-                description="The default PDF view settings for normal mode.">
-                <cocoa key="defaultPdfViewSettings"/>
-            </property>
-            <property name="default full screen view settings" type="PDF view settings" code="DFVS"
-                description="The default PDF view settings for full screen mode. An empty dictionary indicates that default view settings for normal mode are used.">
-                <cocoa key="defaultFullScreenPdfViewSettings"/>
-            </property>
-            <property name="background color" type="RGBA color" code="NBgC"
-                description="The default background color in normal mode.">
-                <cocoa key="backgroundColor"/>
-            </property>
-            <property name="full screen background color" type="RGBA color" code="FBgC"
-                description="The default background color in full screen mode.">
-                <cocoa key="fullScreenBackgroundColor"/>
-            </property>
-            <property name="default note colors" type="note colors" code="DNtC"
-                description="The default colors used for new notes.">
-                <cocoa key="defaultNoteColors"/>
-            </property>
-            <property name="default note line widths" type="note line widths" code="DNtW"
-                description="The default line width used for new notes.">
-                <cocoa key="defaultLineWidths"/>
-            </property>
-            <property name="default note line styles" type="note line styles" code="DNtS"
-                description="The default line styles used for new notes.">
-                <cocoa key="defaultLineStyles"/>
-            </property>
-            <property name="default note dash patterns" type="note dash patterns" code="DNtD"
-                description="The default dash patterns used for new notes.">
-                <cocoa key="defaultDashPatterns"/>
-            </property>
-            <property name="default note start line style" type="line ending style" code="DNSL"
-                description="The default start line style used for new lines.">
-                <cocoa key="defaultStartLineStyle"/>
-            </property>
-            <property name="default note end line style" type="line ending style" code="DNEL"
-                description="The default end line style used for new lines.">
-                <cocoa key="defaultEndLineStyle"/>
-            </property>
-            <property name="default note icon type" type="icon type" code="DNtI"
-                description="The default icon type used for new anchored notes.">
-                <cocoa key="defaultIconType"/>
-            </property>
 			<responds-to name="open">
 				<cocoa method="handleOpenScriptCommand:"/>
 			</responds-to>
@@ -90,24 +38,8 @@
         </class>
 
         <class name="document" code="docu"
-            description="A Skim document.">
-            <cocoa class="SKMainDocument"/>
-            <element type="page" access="r"
-                description="Pages of the PDF file">
-                <cocoa key="pages"/>
-            </element>
-            <element type="note" access="r"
-                description="Notes in the PDF file">
-                <cocoa key="notes"/>
-            </element>
-            <element type="TeX line" access="r" hidden="yes"
-                description="Lines in a TeX source file.">
-                <cocoa key="lines"/>
-            </element>
-            <contents name="text" code="ctxt" type="rich text" access="r"
-                description="The text of the document.">
-                <cocoa key="richText"/>
-            </contents>
+            description="A document.">
+            <cocoa class="NSDocument"/>
             <property name="name" code="pnam" type="text" access="r"
                 description="The document's name.">
                 <cocoa key="displayName"/>
@@ -124,35 +56,6 @@
                 description="The document's path.">
                 <cocoa key="fileName"/>
             </property>
-            <property name="current page" code="CPag" type="page"
-                description="The current page.">
-                <cocoa key="currentPage"/>
-            </property>
-            <property name="active note" code="ANot" type="note"
-                description="The active note.">
-                <cocoa key="activeNote"/>
-            </property>
-            <property name="selection" code="sele"
-                description="The selection of the document.">
-                <type type="specifier" list="yes"/>
-                <cocoa key="selectionSpecifier"/>
-            </property>
-            <property name="selection bounds" code="SelB" type="rectangle"
-                description="The bounds of the selection from the selection tool of the document (left, top, right, bottom).">
-                <cocoa key="selectionQDRect"/>
-            </property>
-            <property name="selection page" code="SelP" type="page"
-                description="The page for the selection from the selection tool of the document.">
-                <cocoa key="selectionPage"/>
-            </property>
-            <property name="view settings" type="PDF view settings" code="vSet"
-                description="The PDF view settings.">
-                <cocoa key="pdfViewSettings"/>
-            </property>
-            <property name="info" type="document attributes" code="DInf" access="r"
-                description="The attributes of the PDF document.">
-                <cocoa key="documentAttributes"/>
-            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -162,36 +65,6 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
-            <responds-to name="revert">
-                <cocoa method="handleRevertScriptCommand:"/>
-            </responds-to>
-            <responds-to name="go">
-                <cocoa method="handleGoToScriptCommand:"/>
-            </responds-to>
-            <responds-to name="convert notes">
-                <cocoa method="handleConvertNotesScriptCommand:"/>
-            </responds-to>
-            <responds-to name="find">
-                <cocoa method="handleFindScriptCommand:"/>
-            </responds-to>
-            <responds-to name="show TeX file">
-                <cocoa method="handleShowTeXScriptCommand:"/>
-            </responds-to>
-			<responds-to name="get bounds for">
-				<cocoa method=""/>
-			</responds-to>
-			<responds-to name="get text for">
-				<cocoa method=""/>
-			</responds-to>
-			<responds-to name="get index for">
-				<cocoa method=""/>
-			</responds-to>
-			<responds-to name="get pages for">
-				<cocoa method=""/>
-			</responds-to>
-			<responds-to name="format">
-				<cocoa method=""/>
-			</responds-to>
         </class>
 
         <class name="window" code="cwin"
@@ -256,18 +129,12 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
-            <responds-to name="revert">
-                <cocoa method="handleRevertScriptCommand:"/>
-            </responds-to>
         </class>
 
         <command name="open" code="aevtodoc"
             description="Open a document.">
 			<direct-parameter description="The file(s) to be opened.">
-                <!--
-                    Skeleton.sdef has the following line, however it breaks Tiger.
 				<type type="file"/>
-                -->
 				<type type="file" list="yes"/>
 			</direct-parameter>
 			<!--
@@ -513,6 +380,21 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="join" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get bounds for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="character" code="cha "
@@ -540,6 +422,21 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="join" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get bounds for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="paragraph" code="cpar"
@@ -567,6 +464,21 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="join" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get bounds for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="word" code="cwor"
@@ -594,6 +506,21 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="join" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get bounds for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="attribute run" code="catr"
@@ -621,6 +548,21 @@
             <element type="word"/>
             <element type="attribute run"/>
             <element type="attachment"/>
+			<responds-to name="join" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get bounds for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for" hidden="yes">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="attachment" code="atts" inherits="rich text"
@@ -652,6 +594,155 @@
             description="Skim specific commands and classes for dealing with PDF.">
 
         <cocoa name="SkimSuite"/>
+
+        <class-extension extends="application"
+            description="Skim's top level scripting object.">
+            <cocoa class="SKApplication"/>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
+            <element type="rich text format" access="r" hidden="yes"
+                description="Rich text formats.">
+                <cocoa key="richTextFormat"/>
+            </element>
+            <property name="default view settings" type="PDF view settings" code="DVSt"
+                description="The default PDF view settings for normal mode.">
+                <cocoa key="defaultPdfViewSettings"/>
+            </property>
+            <property name="default full screen view settings" type="PDF view settings" code="DFVS"
+                description="The default PDF view settings for full screen mode. An empty dictionary indicates that default view settings for normal mode are used.">
+                <cocoa key="defaultFullScreenPdfViewSettings"/>
+            </property>
+            <property name="background color" type="RGBA color" code="NBgC"
+                description="The default background color in normal mode.">
+                <cocoa key="backgroundColor"/>
+            </property>
+            <property name="full screen background color" type="RGBA color" code="FBgC"
+                description="The default background color in full screen mode.">
+                <cocoa key="fullScreenBackgroundColor"/>
+            </property>
+            <property name="default note colors" type="note colors" code="DNtC"
+                description="The default colors used for new notes.">
+                <cocoa key="defaultNoteColors"/>
+            </property>
+            <property name="default note line widths" type="note line widths" code="DNtW"
+                description="The default line width used for new notes.">
+                <cocoa key="defaultLineWidths"/>
+            </property>
+            <property name="default note line styles" type="note line styles" code="DNtS"
+                description="The default line styles used for new notes.">
+                <cocoa key="defaultLineStyles"/>
+            </property>
+            <property name="default note dash patterns" type="note dash patterns" code="DNtD"
+                description="The default dash patterns used for new notes.">
+                <cocoa key="defaultDashPatterns"/>
+            </property>
+            <property name="default note start line style" type="line ending style" code="DNSL"
+                description="The default start line style used for new lines.">
+                <cocoa key="defaultStartLineStyle"/>
+            </property>
+            <property name="default note end line style" type="line ending style" code="DNEL"
+                description="The default end line style used for new lines.">
+                <cocoa key="defaultEndLineStyle"/>
+            </property>
+            <property name="default note icon type" type="icon type" code="DNtI"
+                description="The default icon type used for new anchored notes.">
+                <cocoa key="defaultIconType"/>
+            </property>
+        </class-extension>
+
+        <class-extension extends="document"
+            description="A Skim document.">
+            <cocoa class="SKMainDocument"/>
+            <element type="page" access="r"
+                description="Pages of the PDF file">
+                <cocoa key="pages"/>
+            </element>
+            <element type="note" access="r"
+                description="Notes in the PDF file">
+                <cocoa key="notes"/>
+            </element>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
+            <contents name="text" code="ctxt" type="rich text" access="r"
+                description="The text of the document.">
+                <cocoa key="richText"/>
+            </contents>
+            <property name="current page" code="CPag" type="page"
+                description="The current page.">
+                <cocoa key="currentPage"/>
+            </property>
+            <property name="active note" code="ANot" type="note"
+                description="The active note.">
+                <cocoa key="activeNote"/>
+            </property>
+            <property name="selection" code="sele"
+                description="The selection of the document.">
+                <type type="specifier" list="yes"/>
+                <cocoa key="selectionSpecifier"/>
+            </property>
+            <property name="selection bounds" code="SelB" type="rectangle"
+                description="The bounds of the selection from the selection tool of the document (left, top, right, bottom).">
+                <cocoa key="selectionQDRect"/>
+            </property>
+            <property name="selection page" code="SelP" type="page"
+                description="The page for the selection from the selection tool of the document.">
+                <cocoa key="selectionPage"/>
+            </property>
+            <property name="view settings" type="PDF view settings" code="vSet"
+                description="The PDF view settings.">
+                <cocoa key="pdfViewSettings"/>
+            </property>
+            <property name="info" type="document attributes" code="DInf" access="r"
+                description="The attributes of the PDF document.">
+                <cocoa key="documentAttributes"/>
+            </property>
+            <responds-to name="revert">
+                <cocoa method="handleRevertScriptCommand:"/>
+            </responds-to>
+            <responds-to name="go">
+                <cocoa method="handleGoToScriptCommand:"/>
+            </responds-to>
+            <responds-to name="convert notes">
+                <cocoa method="handleConvertNotesScriptCommand:"/>
+            </responds-to>
+            <responds-to name="find">
+                <cocoa method="handleFindScriptCommand:"/>
+            </responds-to>
+            <responds-to name="show TeX file">
+                <cocoa method="handleShowTeXScriptCommand:"/>
+            </responds-to>
+			<responds-to name="get bounds for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get pages for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="format">
+				<cocoa method=""/>
+			</responds-to>
+        </class-extension>
+
+        <class-extension extends="window"
+            description="A window.">
+            <cocoa class="NSWindow"/>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
+            <responds-to name="revert">
+                <cocoa method="handleRevertScriptCommand:"/>
+            </responds-to>
+        </class-extension>
 
         <class name="page" plural="pages" code="Page"
             description="A page.">
@@ -1291,11 +1382,13 @@
             <direct-parameter
                 description="The selection to add to.">
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
             </direct-parameter>
             <parameter name="to" code="to  " optional="yes"
                 description="The selection to add.">
                 <cocoa key="To"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
             </parameter>
             <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
                 description="Join to a continuous selection?">
@@ -1331,6 +1424,7 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
                 description="The page on which to get the bounds.">
@@ -1354,6 +1448,7 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
                 <type type="RTF"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
@@ -1374,6 +1469,7 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
             </direct-parameter>
             <parameter name="on" type="page" code="on  " optional="yes"
                 description="The page on which to get the index.">
@@ -1398,6 +1494,7 @@
                 <type type="page"/>
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
             </direct-parameter>
             <result
                 description="The list of pages for the object.">
