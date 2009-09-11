@@ -71,12 +71,6 @@ static char *SKTransitionPropertiesObservationContext;
         separate = NO;
         transition = [[SKTransitionInfo alloc] init];
         transitions = nil;
-        
-        SKTransitionController *transitionController = [[controller pdfView] transitionController];
-        [transition setTransitionStyle:[transitionController transitionStyle]];
-        [transition setDuration:[transitionController duration]];
-        [transition setShouldRestrict:[transitionController shouldRestrict]];
-        [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     }
     return self;
 }
@@ -130,6 +124,12 @@ static char *SKTransitionPropertiesObservationContext;
         NSMenuItem *item = [transitionStylePopUpButton lastItem];
         [item setTag:SKCoreImageTransition + i];
     }
+    
+    SKTransitionController *transitionController = [[controller pdfView] transitionController];
+    [transition setTransitionStyle:[transitionController transitionStyle]];
+    [transition setDuration:[transitionController duration]];
+    [transition setShouldRestrict:[transitionController shouldRestrict]];
+    [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     
     // collapse the table
     [[self window] setFrame:NSInsetRect([[self window] frame], 0.5 * NSWidth([[tableView enclosingScrollView] frame]) + 4.0, 0.0) display:NO];
