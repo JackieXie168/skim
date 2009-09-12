@@ -1077,7 +1077,7 @@ enum {
         PDFPage *page = [self pageForPoint:p nearest:YES];
         p = [self convertPoint:p toPage:page];
         
-        if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
+        if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && area != kPDFLinkArea && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
             if (p.y < NSMinY([readingBar currentBounds]) + 3.0)
                 [self doResizeReadingBarWithEvent:theEvent];
             else
