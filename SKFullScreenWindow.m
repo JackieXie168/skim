@@ -116,7 +116,9 @@
     [NSAnimationContext beginGrouping];
     [[NSAnimationContext currentContext] setDuration:0.7];
     animating = block;
-    [[self animationForKey:@"alphaValue"] setDelegate:self];
+    CAAnimation *animation = [self animationForKey:@"alphaValue"];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:block ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setDelegate:self];
     [[self animator] setAlphaValue:0.0];
     [NSAnimationContext endGrouping];
     while (animating)
