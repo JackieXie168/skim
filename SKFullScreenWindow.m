@@ -52,6 +52,7 @@
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:[CABasicAnimation animation], @"alphaValue", nil]];
     }
     return self;
 }
@@ -114,18 +115,22 @@
 - (void)fadeOutBlocking:(BOOL)block {
     [NSAnimationContext beginGrouping];
     [[NSAnimationContext currentContext] setDuration:0.7];
+    animating = block;
+    [[self animationForKey:@"alphaValue"] setDelegate:self];
     [[self animator] setAlphaValue:0.0];
     [NSAnimationContext endGrouping];
-    if (block) {
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.7]];
-        [self orderOut:nil];
-    } else {
-        [self performSelector:@selector(orderOut:) withObject:nil afterDelay:0.7];
-    }
+    while (animating)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
 }
 
 - (void)fadeOut {
     return [self fadeOutBlocking:NO];
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    animating = NO;
+    [self orderOut:nil];
+    [theAnimation setDelegate:nil];
 }
 
 @end
