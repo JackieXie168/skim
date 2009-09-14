@@ -238,6 +238,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         
+        [fullScreenWindow orderOut:nil];
+        [blankingWindows makeObjectsPerformSelector:@selector(orderOut:) withObject:nil];
+        
         [ownerController setContent:nil];
     }
 }
