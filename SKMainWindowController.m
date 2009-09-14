@@ -1620,12 +1620,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [fullScreenWindow setDelegate:nil];
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
-    [mainWindow makeKeyWindow];
     [mainWindow display];
     [fullScreenWindow fadeOutBlocking:NO];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
+    [mainWindow makeKeyWindow];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
 }

@@ -58,4 +58,9 @@
     [super resignKeyWindow];
 }
 
+- (void)performClose:(id)sender {
+    if ([self delegate])
+        [super performClose:sender];
+}
+
 @end
