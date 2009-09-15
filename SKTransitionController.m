@@ -51,8 +51,8 @@
 
 #pragma mark Private Core Graphics types and functions
 
-typedef NSInteger CGSConnection;
-typedef NSInteger CGSWindow;
+typedef int CGSConnection;
+typedef int CGSWindow;
 
 typedef enum _CGSTransitionType {
     CGSNone,
@@ -91,14 +91,14 @@ typedef struct _CGSTransitionSpec {
     CGSTransitionType type;
     CGSTransitionOption option;
     CGSWindow wid; // Can be 0 for full-screen
-    CGFloat *backColour; // Null for black otherwise pointer to 3 CGFloat array with RGB value
+    float *backColour; // Null for black otherwise pointer to 3 CGFloat array with RGB value
 } CGSTransitionSpec;
 
 extern CGSConnection _CGSDefaultConnection(void) __attribute__((weak_import));
 
-extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, NSInteger *pTransitionHandle) __attribute__((weak_import));
-extern OSStatus CGSInvokeTransition(const CGSConnection cid, NSInteger transitionHandle, CGFloat duration) __attribute__((weak_import));
-extern OSStatus CGSReleaseTransition(const CGSConnection cid, NSInteger transitionHandle) __attribute__((weak_import));
+extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, int *pTransitionHandle) __attribute__((weak_import));
+extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration) __attribute__((weak_import));
+extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle) __attribute__((weak_import));
 
 #pragma mark Check whether the above functions are actually defined at run time
 
@@ -471,7 +471,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             }
             
             // declare our variables  
-            NSInteger handle = -1;
+            int handle = -1;
             CGSTransitionSpec spec;
             // specify our specifications
             spec.unknown1 = 0;
