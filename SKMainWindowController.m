@@ -1398,7 +1398,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:[self isPresentation] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
-    [pdfView setBackgroundColor:backgroundColor];
+    [pdfView setBackgroundColor:[self isPresentation] ? [NSColor clearColor] : backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
@@ -1459,7 +1459,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
-    [pdfView setDisplaysPageBreaks:YES];
+    [pdfView setDisplaysPageBreaks:NO];
     [scrollView setAutohidesScrollers:YES];
     [scrollView setHasHorizontalScroller:NO];
     [scrollView setHasVerticalScroller:NO];
@@ -1468,10 +1468,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
-    NSColor *backgroundColor = [NSColor blackColor];
-    [pdfView setBackgroundColor:backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
-    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [pdfView setBackgroundColor:[NSColor clearColor]];
+    [fullScreenWindow setBackgroundColor:[NSColor blackColor]];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
     SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
