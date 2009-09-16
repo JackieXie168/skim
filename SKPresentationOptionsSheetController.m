@@ -211,7 +211,7 @@ static char *SKTransitionPropertiesObservationContext;
             [transitionController setDuration:[transition duration]];
             [transitionController setShouldRestrict:[transition shouldRestrict]];
             [transitionController setPageTransitions:[self pageTransitions]];
-            [[transitionController undoManager] setActionName:NSLocalizedString(@"Change Transitions", @"Undo action name")];
+            [[controller undoManager] setActionName:NSLocalizedString(@"Change Transitions", @"Undo action name")];
         }
         [controller setPresentationNotesDocument:[self notesDocument]];
         [super dismiss:sender];

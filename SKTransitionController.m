@@ -204,7 +204,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
     if (transitionStyle != style) {
-        [[[self undoManager] prepareWithInvocationTarget:self] setTransitionStyle:transitionStyle];
         transitionStyle = style;
     }
 }
@@ -214,7 +213,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setDuration:(CGFloat)newDuration {
-    [(SKTransitionController *)[[self undoManager] prepareWithInvocationTarget:self] setDuration:duration];
     duration = newDuration;
 }
 
@@ -223,10 +221,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setShouldRestrict:(BOOL)flag {
-    if (shouldRestrict != flag) {
-        [[[self undoManager] prepareWithInvocationTarget:self] setShouldRestrict:shouldRestrict];
-        shouldRestrict = flag;
-    }
+    shouldRestrict = flag;
 }
 
 - (NSArray *)pageTransitions {
@@ -235,14 +230,9 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)setPageTransitions:(NSArray *)newPageTransitions {
     if (pageTransitions != newPageTransitions) {
-        [[[self undoManager] prepareWithInvocationTarget:self] setPageTransitions:pageTransitions];
         [pageTransitions release];
         pageTransitions = [newPageTransitions copy];
     }
-}
-
-- (NSUndoManager *)undoManager {
-    return [view respondsToSelector:@selector(undoManager)] ? [view undoManager] : nil;
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {

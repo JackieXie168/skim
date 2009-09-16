@@ -104,8 +104,6 @@ typedef NSUInteger SKAnimationTransitionStyle;
 - (NSArray *)pageTransitions;
 - (void)setPageTransitions:(NSArray *)newPageTransitions;
 
-- (NSUndoManager *)undoManager;
-
 - (void)prepareAnimationForRect:(NSRect)rect;
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
 - (void)animateForRect:(NSRect)rect forward:(BOOL)forward;
