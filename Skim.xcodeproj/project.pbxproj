@@ -56,7 +56,6 @@
 		CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0ECD1B0DE73604006EEDDB /* NSDocument_SKExtensions.m */; };
 		CE17F47E0F1A17E200E741DD /* SKPDFSynchronizerServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE17F47D0F1A17E200E741DD /* SKPDFSynchronizerServer.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
-		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
@@ -974,7 +973,6 @@
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
 				F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */,
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
-				CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
 				CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */,
 				CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */,

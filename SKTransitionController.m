@@ -43,9 +43,9 @@
 
 #import "SKTransitionController.h"
 #import "NSBitmapImageRep_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 #include <unistd.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl.h>
+#import <Quartz/Quartz.h>
 
 #define WEAK_NULL NULL
 
@@ -89,9 +89,9 @@ typedef enum _CGSTransitionOption {
 typedef struct _CGSTransitionSpec {
     uint32_t unknown1;
     CGSTransitionType type;
-    CGSTransitionOption option;
+    CGSTransitionOption option; // add 1<<7 for a transparent background
     CGSWindow wid; // Can be 0 for full-screen
-    float *backColour; // Null for black otherwise pointer to 3 CGFloat array with RGB value
+    float *backColour; // Null for black otherwise pointer to 3 float array with RGB value
 } CGSTransitionSpec;
 
 extern CGSConnection _CGSDefaultConnection(void) __attribute__((weak_import));
@@ -108,43 +108,15 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
            CGSInvokeTransition != WEAK_NULL &&
            CGSReleaseTransition != WEAK_NULL;
 }
-
 #pragma mark -
 
-@protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
-@optional
-- (void)display;
-@end
-
-@interface SKTransitionAnimation : NSAnimation {
-    CIFilter *filter;
+@interface SKTransitionWindow : NSWindow {
+    CALayer *imageLayer;
+    BOOL animating;
 }
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration;
-- (CIImage *)currentImage;
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTransitionAnimationDelegate>)delegate;
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate;
-#endif
-@end
-
-#pragma mark -
-
-@interface SKTransitionView : NSOpenGLView <SKTransitionAnimationDelegate> {
-    SKTransitionAnimation *animation;
-    CIImage *image;
-    CIContext *context;
-    BOOL needsReshape;
-}
-- (SKTransitionAnimation *)animation;
-- (void)setAnimation:(SKTransitionAnimation *)newAnimation;
-- (CIImage *)image;
-- (void)setImage:(CIImage *)newImage;
-- (CIImage *)currentImage;
-@end
-
-#pragma mark -
-
-@interface SKTransitionWindow : NSWindow
+- (void)setImage:(CGImageRef)newImage;
+- (void)setImage:(CGImageRef)newImage inRect:(NSRect)rect;
+- (void)animateImage:(CGImageRef)newImage usingFilter:(CIFilter *)newFilter duration:(NSTimeInterval)newDuration;
 @end
 
 #pragma mark -
@@ -211,7 +183,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)dealloc {
     [transitionWindow release];
-    [initialImage release];
+    [initialBitmap release];
     [filters release];
     [super dealloc];
 }
@@ -287,8 +259,9 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     static CIImage *inputShadingImage = nil;
     if (inputShadingImage == nil) {
         NSData *shadingBitmapData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"TransitionShading" ofType:@"tiff"]];
-        NSBitmapImageRep *shadingBitmap = [[[NSBitmapImageRep alloc] initWithData:shadingBitmapData] autorelease];
+        NSBitmapImageRep *shadingBitmap = [[NSBitmapImageRep alloc] initWithData:shadingBitmapData];
         inputShadingImage = [[CIImage alloc] initWithBitmapImageRep:shadingBitmap];
+        [shadingBitmap release];
     }
     return inputShadingImage;
 }
@@ -297,26 +270,20 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     static CIImage *inputMaskImage = nil;
     if (inputMaskImage == nil) {
         NSData *maskBitmapData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"TransitionMask" ofType:@"jpg"]];
-        NSBitmapImageRep *maskBitmap = [[[NSBitmapImageRep alloc] initWithData:maskBitmapData] autorelease];
+        NSBitmapImageRep *maskBitmap = [[NSBitmapImageRep alloc] initWithData:maskBitmapData];
         inputMaskImage = [[CIImage alloc] initWithBitmapImageRep:maskBitmap];
+        [maskBitmap release];
     }
     return inputMaskImage;
 }
 
-- (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
-    CIFilter *cropFilter = [self filterWithName:@"CICrop"];
-    [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputRectangle"];
-    [cropFilter setValue:image forKey:@"inputImage"];
-    return [cropFilter valueForKey:@"outputImage"];
-}
-
-- (CIImage *)translateImage:(CIImage *)image xBy:(CGFloat)dx yBy:(CGFloat)dy {
+- (CIImage *)translateImage:(CIImage *)image by:(NSPoint)distance {
     CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
     NSAffineTransform *affineTransform = [NSAffineTransform transform];
-    [affineTransform translateXBy:dx yBy:dy];
-    [translationFilter setValue:affineTransform forKey:@"inputTransform"];
-    [translationFilter setValue:image forKey:@"inputImage"];
-    return [translationFilter valueForKey:@"outputImage"];
+    [affineTransform translateXBy:distance.x yBy:distance.y];
+    [translationFilter setValue:affineTransform forKey:kCIInputTransformKey];
+    [translationFilter setValue:image forKey:kCIInputImageKey];
+    return [translationFilter valueForKey:kCIOutputImageKey];
 }
 
 - (CIImage *)scaleImage:(CIImage *)image toSize:(NSSize)size {
@@ -324,75 +291,70 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     CGRect extent = [image extent];
     CGFloat xScale = size.width / CGRectGetWidth(extent);
     CGFloat yScale = size.height / CGRectGetHeight(extent);
-    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:@"inputScale"];
-    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:@"inputAspectRatio"];
-    [scalingFilter setValue:image forKey:@"inputImage"];
-    return [scalingFilter valueForKey:@"outputImage"];
+    [scalingFilter setValue:[NSNumber numberWithDouble:yScale] forKey:kCIInputScaleKey];
+    [scalingFilter setValue:[NSNumber numberWithDouble:xScale / yScale] forKey:kCIInputAspectRatioKey];
+    [scalingFilter setValue:image forKey:kCIInputImageKey];
+    return [scalingFilter valueForKey:kCIOutputImageKey];
 }
 
-- (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+- (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
+    CIFilter *cropFilter = [self filterWithName:@"CICrop"];
+    [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputRectangle"];
+    [cropFilter setValue:image forKey:kCIInputImageKey];
+    return [cropFilter valueForKey:kCIOutputImageKey];
+}
+
+- (CIFilter *)transitionFilterForRect:(NSRect)rect forward:(BOOL)forward {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:currentTransitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
-    
-    NSRect bounds = [view bounds];
     
     NSEnumerator *keyEnum = [[transitionFilter inputKeys] objectEnumerator];
     NSString *key;
     
     while (key = [keyEnum nextObject]) {
         id value = nil;
-        if ([key isEqualToString:@"inputExtent"]) {
-            NSRect extent = currentShouldRestrict ? rect : bounds;
-            value = [CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)];
-        } else if ([key isEqualToString:@"inputAngle"]) {
+        if ([key isEqualToString:kCIInputCenterKey]) {
+            value = [CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)];
+        } else if ([key isEqualToString:kCIInputAngleKey]) {
             CGFloat angle = forward ? 0.0 : M_PI;
             if ([filterName isEqualToString:@"CIPageCurlTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
-        } else if ([key isEqualToString:@"inputCenter"]) {
-            value = [CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)];
-        } else if ([key isEqualToString:@"inputImage"]) {
-            value = initialCIImage;
-            if (NSEqualRects(rect, bounds) == NO)
-                value = [self cropImage:value toRect:rect];
-        } else if ([key isEqualToString:@"inputTargetImage"]) {
-            value = finalCIImage;
-            if (NSEqualRects(rect, bounds) == NO)
-                value = [self cropImage:value toRect:rect];
-        } else if ([key isEqualToString:@"inputShadingImage"]) {
+        } else if ([key isEqualToString:kCIInputShadingImageKey]) {
             value = [self inputShadingImage];
         } else if ([key isEqualToString:@"inputBacksideImage"]) {
-            value = initialCIImage;
-            if (NSEqualRects(rect, bounds) == NO)
+            value = [[[CIImage alloc] initWithBitmapImageRep:initialBitmap] autorelease];
+            if (currentShouldRestrict == NO)
                 value = [self cropImage:value toRect:rect];
-        } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
+            else if (NSEqualPoints(rect.origin, NSZeroPoint) == NO)
+                value = [self translateImage:value by:rect.origin];
+        } else if ([key isEqualToString:kCIInputImageKey] == NO && [key isEqualToString:kCIInputTargetImageKey] == NO &&
+                   [[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
             // Scale and translate our mask image to match the transition area size.
             value = [self scaleImage:[self inputMaskImage] toSize:rect.size];
-            if (NSEqualPoints(rect.origin, bounds.origin) == NO)
-                value = [self translateImage:value xBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
+            if (NSEqualPoints(rect.origin, NSZeroPoint) == NO)
+                value = [self translateImage:value by:rect.origin];
         } else continue;
         [transitionFilter setValue:value forKey:key];
     }
-    
     return transitionFilter;
 }
 
-- (CIImage *)newCurrentImage {
+- (NSBitmapImageRep *)newCurrentBitmap {
     NSRect bounds = [view bounds];
     NSBitmapImageRep *contentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
     
     [contentBitmap clear];
     [view cacheDisplayInRect:bounds toBitmapImageRep:contentBitmap];
     
-    return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+    return [contentBitmap retain];
 }
 
-- (NSWindow *)transitionWindow {
-    return transitionWindow;
-}
-
-- (SKTransitionView *)transitionView {
-    return (SKTransitionView *)[transitionWindow contentView];
+- (NSBitmapImageRep *)copyBitmap:(NSBitmapImageRep *)bitmap croppedToRect:(NSRect)rect {
+    CIImage *image = [[CIImage alloc] initWithBitmapImageRep:bitmap];
+    NSBitmapImageRep *croppedBitmap = [[NSBitmapImageRep alloc] initWithCIImage:[self cropImage:image toRect:rect]];
+    [image release];
+    return croppedBitmap;
 }
 
 - (void)prepareAnimationForRect:(NSRect)rect {
@@ -416,140 +378,141 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             currentShouldRestrict = [value boolValue];
     }
     
-	if (currentTransitionStyle == SKNoTransition) {
-        // Do nothing
-	} else if (currentTransitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsServicesTransitionsDefined()) {
-            if (currentShouldRestrict) {
-                [initialImage release];
-                initialImage = [self newCurrentImage];
-            }
-            // We don't want the window to draw the next state before the animation is run
-            [[view window] disableFlushWindow];
+	if (currentTransitionStyle >= SKCoreImageTransition) {
+        [initialBitmap release];
+        initialBitmap = [self newCurrentBitmap];
+        // We don't want the window to draw the next state before the animation is run
+        [[view window] disableFlushWindow];
+	} else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined()) {
+        if (currentShouldRestrict) {
+            [initialBitmap release];
+            initialBitmap = [self newCurrentBitmap];
         }
-    } else {
-        [initialImage release];
-        initialImage = [self newCurrentImage];
-        
         // We don't want the window to draw the next state before the animation is run
         [[view window] disableFlushWindow];
     }
     imageRect = rect;
 }
 
-- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
-	if (currentTransitionStyle == SKNoTransition) {
-        // Do nothing
-	} else if (currentTransitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsServicesTransitionsDefined()) {
-            
-            CIImage *finalImage = nil;
-            
-            if (currentShouldRestrict) {
-                if (initialImage == nil)
-                    [self prepareAnimationForRect:rect];
-                
-                NSRect bounds = [view bounds];
-                imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
-                
-                finalImage = [self newCurrentImage];
-                
-                CGFloat dx = NSMinX(bounds) - NSMinX(imageRect);
-                CGFloat dy = NSMinY(bounds) - NSMinY(imageRect);
-                initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
-                finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
-                
-                NSRect frame = [view convertRect:imageRect toView:nil];
-                frame.origin = [[view window] convertBaseToScreen:frame.origin];
-                
-                [[self transitionView] setImage:initialImage];
-                initialImage = nil;
-                
-                [[self transitionWindow] setFrame:frame display:YES];
-                [[self transitionWindow] orderBack:nil];
-                [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
-            }
-            
-            // declare our variables  
-            int handle = -1;
-            CGSTransitionSpec spec;
-            // specify our specifications
-            spec.unknown1 = 0;
-            spec.type =  currentTransitionStyle;
-            spec.option = forward ? CGSLeft : CGSRight;
-            spec.backColour = NULL;
-            spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
-            
-            // Let's get a connection
-            CGSConnection cgs = _CGSDefaultConnection();
-            
-            // Create a transition
-            CGSNewTransition(cgs, &spec, &handle);
-            
-            if (currentShouldRestrict) {
-                [[self transitionView] setImage:finalImage];
-                [[self transitionView] display];
-            }
-            
-            // Redraw the window
-            [[view window] display];
-            // Remember we disabled flushing in the previous method, we need to balance that.
-            [[view window] enableFlushWindow];
-            [[view window] flushWindow];
-            
-            CGSInvokeTransition(cgs, handle, currentDuration);
-            // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-            usleep((useconds_t)(currentDuration * 1000000));
-            
-            CGSReleaseTransition(cgs, handle);
-            handle = 0;
-            
-            if (currentShouldRestrict) {
-                [[view window] removeChildWindow:[self transitionWindow]];
-                [[self transitionWindow] orderOut:nil];
-                [[self transitionView] setImage:nil];
-            }
-		}
-	} else {
-        
-        if (initialImage == nil)
+- (void)animateCoreImageForRect:(NSRect)rect forward:(BOOL)forward {
+    if (initialBitmap == nil)
+        [self prepareAnimationForRect:rect];
+    
+    imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
+    
+    NSBitmapImageRep *finalBitmap = [self newCurrentBitmap];
+    
+    if (currentShouldRestrict) {
+        NSBitmapImageRep *tmpBitmap = initialBitmap;
+        initialBitmap = [self copyBitmap:tmpBitmap croppedToRect:imageRect];
+        [tmpBitmap release];
+        tmpBitmap = finalBitmap;
+        finalBitmap = [self copyBitmap:tmpBitmap croppedToRect:imageRect];
+        [tmpBitmap release];
+    }
+    
+    CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward];
+    NSRect frame = [view convertRect:[view frame] toView:nil];
+    frame.origin = [[view window] convertBaseToScreen:frame.origin];
+    
+    [transitionWindow setFrame:frame display:NO];
+    [transitionWindow setImage:[initialBitmap CGImage] inRect:(currentShouldRestrict ? imageRect : [view bounds])];
+    [transitionWindow orderBack:nil];
+    [[view window] addChildWindow:transitionWindow ordered:NSWindowAbove];
+    
+    [transitionWindow animateImage:[finalBitmap CGImage] usingFilter:transitionFilter duration:currentDuration];
+    
+    // Update the view and its window, so it shows the correct state when it is shown.
+    [view display];
+    // Remember we disabled flushing in the previous method, we need to balance that.
+    [[view window] enableFlushWindow];
+    [[view window] flushWindow];
+    
+    [[view window] removeChildWindow:transitionWindow];
+    [transitionWindow orderOut:nil];
+    [transitionWindow setImage:nil];
+    [finalBitmap release];
+}
+
+- (void)animateCoreGraphicsForRect:(NSRect)rect forward:(BOOL)forward {
+    NSBitmapImageRep *finalBitmap = nil;
+    NSWindow *window = [view window];
+    
+    if (currentShouldRestrict) {
+        if (initialBitmap == nil)
             [self prepareAnimationForRect:rect];
         
-        NSRect bounds = [view bounds];
-        imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
+        imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
         
-        CIImage *finalImage = [self newCurrentImage];
+        NSBitmapImageRep *tmpBitmap = initialBitmap;
+        initialBitmap = [self copyBitmap:tmpBitmap croppedToRect:rect];
+        [tmpBitmap release];
+        tmpBitmap = [self newCurrentBitmap];
+        finalBitmap = [self copyBitmap:tmpBitmap croppedToRect:rect];
+        [tmpBitmap release];
         
-        CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
-        
-        [finalImage release];
-        [initialImage release];
-        initialImage = nil;
-        
-        NSRect frame = [view convertRect:[view frame] toView:nil];
+        NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
-        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
-        [[self transitionView] setAnimation:animation];
-        [animation release];
+        [transitionWindow setFrame:frame display:NO];
+        imageRect.origin = NSZeroPoint;
+        [transitionWindow setImage:[initialBitmap CGImage] inRect:imageRect];
+        [transitionWindow orderBack:nil];
+        [[view window] addChildWindow:transitionWindow ordered:NSWindowAbove];
         
-        [[self transitionWindow] setFrame:frame display:NO];
-        [[self transitionWindow] orderBack:nil];
-        [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
-        
-        [animation startAnimation];
-        
-        // Update the view and its window, so it shows the correct state when it is shown.
-        [view display];
-        // Remember we disabled flushing in the previous method, we need to balance that.
-        [[view window] enableFlushWindow];
-        [[view window] flushWindow];
-        
-        [[view window] removeChildWindow:[self transitionWindow]];
-        [[self transitionWindow] orderOut:nil];
-        [[self transitionView] setAnimation:nil];
-        
+        window = transitionWindow;
     }
+    
+    // declare our variables  
+    int handle = -1;
+    CGSTransitionSpec spec;
+    // specify our specifications
+    spec.unknown1 = 0;
+    spec.type =  currentTransitionStyle;
+    spec.option = forward ? CGSLeft : CGSRight;
+    spec.backColour = NULL;
+    spec.wid = [window windowNumber];
+    
+    // Let's get a connection
+    CGSConnection cgs = _CGSDefaultConnection();
+    
+    // Create a transition
+    CGSNewTransition(cgs, &spec, &handle);
+    
+    if (currentShouldRestrict) {
+        [transitionWindow setImage:[finalBitmap CGImage]];
+        [transitionWindow display];
+    }
+    
+    // Redraw the window
+    [[view window] display];
+    // Remember we disabled flushing in the previous method, we need to balance that.
+    [[view window] enableFlushWindow];
+    [[view window] flushWindow];
+    
+    CGSInvokeTransition(cgs, handle, currentDuration);
+    // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
+    usleep((useconds_t)(currentDuration * 1000000));
+    
+    CGSReleaseTransition(cgs, handle);
+    handle = 0;
+    
+    if (currentShouldRestrict) {
+        [[view window] removeChildWindow:transitionWindow];
+        [transitionWindow orderOut:nil];
+        [transitionWindow setImage:nil];
+        [finalBitmap release];
+    }
+}
+
+- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
+	if (currentTransitionStyle >= SKCoreImageTransition)
+        [self animateCoreImageForRect:rect forward:forward];
+    else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
+        [self animateCoreGraphicsForRect:rect forward:forward];
+    
+    [initialBitmap release];
+    initialBitmap = nil;
     
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
@@ -560,194 +523,66 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@implementation SKTransitionAnimation
-
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration {
-    if (self = [super initWithDuration:duration animationCurve:NSAnimationEaseInOut]) {
-        filter = [aFilter retain];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [filter release];
-    [super dealloc];
-}
-
-- (void)setCurrentProgress:(NSAnimationProgress)progress {
-    [super setCurrentProgress:progress];
-    [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
-    [[self delegate] display];
-}
-
-- (CIImage *)currentImage {
-    return [filter valueForKey:@"outputImage"];
-}
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKTransitionAnimationDelegate>)delegate {
-    return (id <SKTransitionAnimationDelegate>)[super delegate];
-}
-
-- (void)setDelegate:(id <SKTransitionAnimationDelegate>)newDelegate {
-    [super setDelegate:newDelegate];
-}
-#endif
-
-@end
-
-#pragma mark -
-
-@implementation SKTransitionView
-
-+ (NSOpenGLPixelFormat *)defaultPixelFormat {
-    static NSOpenGLPixelFormat *pf;
-
-    if (pf == nil) {
-        NSOpenGLPixelFormatAttribute attr[] = {
-            NSOpenGLPFAAccelerated,
-            NSOpenGLPFANoRecovery,
-            NSOpenGLPFAColorSize, 32,
-            0
-        };
-        
-        pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr];
-    }
-
-    return pf;
-}
-
-- (void)dealloc {
-    [animation release];
-    [context release];
-    [super dealloc];
-}
-
-- (void)reshape	{
-    needsReshape = YES;
-}
-
-- (void)prepareOpenGL {
-    // Enable beam-synced updates.
-    GLint parm = 1;
-    [[self openGLContext] setValues:&parm forParameter:NSOpenGLCPSwapInterval];
-    
-    // Make sure that everything we don't need is disabled.
-    // Some of these are enabled by default and can slow down rendering.
-    
-    glDisable(GL_ALPHA_TEST);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_SCISSOR_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_DITHER);
-    glDisable(GL_CULL_FACE);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glDepthMask(GL_FALSE);
-    glStencilMask(0);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
-    
-    needsReshape = YES;
-}
-
-- (SKTransitionAnimation *)animation {
-    return animation;
-}
-
-- (void)setAnimation:(SKTransitionAnimation *)newAnimation {
-    if (animation != newAnimation) {
-        [animation release];
-        animation = [newAnimation retain];
-        [animation setDelegate:self];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (CIImage *)image {
-    return image;
-}
-
-- (void)setImage:(CIImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (CIImage *)currentImage {
-    return image ?: [animation currentImage];
-}
-
-- (CIContext *)ciContext {
-    if (context == nil) {
-        [[self openGLContext] makeCurrentContext];
-        
-        NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
-        
-        context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
-    }
-    return context;
-}
-
-- (void)updateMatrices {
-    NSRect bounds = [self bounds];
-    
-    [[self openGLContext] update];
-    
-    glViewport(0, 0, NSWidth(bounds), NSHeight(bounds));
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    
-    needsReshape = NO;
-}
-
-- (void)drawRect:(NSRect)rect {
-    
-    [[self openGLContext] makeCurrentContext];
-    
-    if (needsReshape)
-        [self updateMatrices];
-    
-    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-    glBegin(GL_POLYGON);
-        glVertex2f(NSMinX(rect), NSMinY(rect));
-        glVertex2f(NSMaxX(rect), NSMinY(rect));
-        glVertex2f(NSMaxX(rect), NSMaxY(rect));
-        glVertex2f(NSMinX(rect), NSMaxY(rect));
-    glEnd();
-    
-    CIImage *currentImage = [self currentImage];
-    if (currentImage) {
-        NSRect bounds = [self bounds];
-        [[self ciContext] drawImage:currentImage inRect:NSRectToCGRect(bounds) fromRect:NSRectToCGRect(bounds)];
-    }
-    
-    glFlush();
-}
-
-@end
-
-
 @implementation SKTransitionWindow
 
 - (id)init {
     if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
         [self setReleasedWhenClosed:NO];
         [self setIgnoresMouseEvents:YES];
-        SKTransitionView *view = [[SKTransitionView alloc] init];
-        [self setContentView:view];
-        [view release];
+        
+        CALayer *rootLayer = [CALayer layer];
+        CGColorRef color = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 1.0);
+        
+        [rootLayer setBackgroundColor:color];
+        CGColorRelease(color);
+        
+        [[self contentView] setLayer:rootLayer];
+        [[self contentView] setWantsLayer:YES];
+        
+        imageLayer = [CALayer layer];
+        [imageLayer setBounds:[rootLayer bounds]];
+        [imageLayer setPosition:[rootLayer position]];
+        [imageLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
+        [rootLayer addSublayer:imageLayer];
+        
+        animating = NO;
     }
     return self;
 }
 
 - (BOOL)canBecomeMainWindow { return NO; }
 - (BOOL)canBecomeKeyWindow { return NO; }
+
+- (void)setImage:(CGImageRef)newImage {
+    [self setImage:newImage inRect:NSZeroRect];
+}
+
+- (void)setImage:(CGImageRef)newImage inRect:(NSRect)rect {
+    [CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];
+    [imageLayer setContents:(id)newImage];
+    if (NSEqualRects(rect, NSZeroRect) == NO)
+        [imageLayer setFrame:NSRectToCGRect(rect)];
+    [[self contentView] setNeedsDisplay:YES];
+    [CATransaction setValue:[NSNumber numberWithBool:NO] forKey:kCATransactionDisableActions];
+}
+
+- (void)animateImage:(CGImageRef)newImage usingFilter:(CIFilter *)newFilter duration:(NSTimeInterval)newDuration {
+    CATransition *transition = [CATransition animation];
+    [transition setFilter:newFilter];
+    [transition setDuration:newDuration];
+    [transition setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [transition setDelegate:self];
+    animating = YES;
+    [imageLayer addAnimation:transition forKey:@"imageTransition"];
+    NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:1.0 + 2.0 * newDuration];
+    [imageLayer setContents:(id)newImage];
+    while (animating && [limitDate compare:[NSDate date]] != NSOrderedAscending)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
+    animating = NO;
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    animating = NO;
+}
 
 @end
