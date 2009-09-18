@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="133607063">
 				<int key="NSWindowStyleMask">31</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{242, 607}, {460, 315}}</string>
+				<string key="NSWindowRect">{{50, 489}, {460, 315}}</string>
 				<int key="NSWTFlags">-260571136</int>
 				<string key="NSWindowTitle">Document Info</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -67,7 +67,7 @@
 										<characters key="NS.bytes">1</characters>
 									</object>
 									<object class="NSView" key="NSView" id="909975500">
-										<reference key="NSNextResponder" ref="592584787"/>
+										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -353,7 +353,6 @@
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 25}, {414, 250}}</string>
-										<reference key="NSSuperview" ref="592584787"/>
 									</object>
 									<string key="NSLabel">Summary</string>
 									<reference key="NSColor" ref="831496339"/>
@@ -364,7 +363,7 @@
 										<characters key="NS.bytes">2</characters>
 									</object>
 									<object class="NSView" key="NSView" id="259113880">
-										<nil key="NSNextResponder"/>
+										<reference key="NSNextResponder" ref="592584787"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -779,20 +778,21 @@
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 25}, {414, 250}}</string>
+										<reference key="NSSuperview" ref="592584787"/>
 									</object>
 									<string key="NSLabel">Attributes</string>
 									<reference key="NSColor" ref="831496339"/>
 									<reference key="NSTabView" ref="592584787"/>
 								</object>
 							</object>
-							<reference key="NSSelectedTabViewItem" ref="584315374"/>
+							<reference key="NSSelectedTabViewItem" ref="594348141"/>
 							<reference key="NSFont" ref="26"/>
 							<int key="NSTvFlags">134217728</int>
 							<bool key="NSAllowTruncatedLabels">YES</bool>
 							<bool key="NSDrawsBackground">YES</bool>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
-								<reference ref="909975500"/>
+								<reference ref="259113880"/>
 							</object>
 						</object>
 					</object>
@@ -2021,9 +2021,9 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{34, 514}, {460, 315}}</string>
+					<string>{{50, 489}, {460, 315}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{34, 514}, {460, 315}}</string>
+					<string>{{50, 489}, {460, 315}}</string>
 					<boolean value="YES"/>
 					<boolean value="YES"/>
 					<string>{280, 273}</string>
