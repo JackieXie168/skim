@@ -1565,11 +1565,13 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    mwcFlags.isFadingOut = 0;
-}
-
-- (void)finishFadeOut {
-    mwcFlags.isChangingFullScreen = 0;
+    if ([theAnimation isKindOfClass:[CATransition class]]) {
+        mwcFlags.isFadingOut = 0;
+    } else {
+        [fullScreenWindow orderOut:nil];
+        mwcFlags.isChangingFullScreen = 0;
+    }
+    [theAnimation setDelegate:nil];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -1639,15 +1641,14 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow display];
-    [fullScreenWindow fadeOut];
+    [[[fullScreenWindow animations] valueForKey:@"alphaValue"] setDelegate:self];
+    [[fullScreenWindow animator] setAlphaValue:0.0];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
-    
-    [self performSelector:@selector(finishFadeOut) withObject:nil afterDelay:0.5];
 }
 
 #pragma mark Swapping tables
