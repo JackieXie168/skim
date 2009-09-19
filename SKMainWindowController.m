@@ -1678,25 +1678,25 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [newView setFrame:[oldView frame]];
     
     if (animate == NO) {
+        [contentView replaceSubview:oldView with:newView];
         if (changeButton)
             [[oldButton superview] replaceSubview:oldButton with:newButton];
-        [contentView replaceSubview:oldView with:newView];
         [[firstResponder window] makeFirstResponder:firstResponder];
     } else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
         mwcFlags.isAnimating = 1;
         
+        [contentView setWantsLayer:YES];
+        [contentView displayIfNeeded];
         if (changeButton) {
             [buttonView setWantsLayer:YES];
             [buttonView displayIfNeeded];
         }
-        [contentView setWantsLayer:YES];
-        [contentView displayIfNeeded];
         
         [NSAnimationContext beginGrouping];
         [[NSAnimationContext currentContext] setDuration:0.7]; 
+        [[contentView animator] replaceSubview:oldView with:newView];
         if (changeButton)
             [[buttonView animator] replaceSubview:oldButton with:newButton];
-        [[contentView animator] replaceSubview:oldView with:newView];
         [NSAnimationContext endGrouping];
         
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
@@ -1707,13 +1707,12 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         [self performSelector:@selector(finishTableAnimation:) withObject:info afterDelay:0.7];
     } else {
+        [newView setHidden:YES];
+        [[oldView superview] addSubview:newView];
         if (changeButton) {
             [newButton setHidden:YES];
             [[oldButton superview] addSubview:newButton];
         }
-        
-        [newView setHidden:animate];
-        [[oldView superview] addSubview:newView];
         
         NSArray *viewAnimations = [NSArray arrayWithObjects:
             [NSDictionary dictionaryWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil],
@@ -1745,8 +1744,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [[newView window] recalculateKeyViewLoop];
         
         if (changeButton) {
+            [oldButton removeFromSuperview];
             [oldButton setHidden:NO];
-            [newButton setHidden:NO];
         }
     }
 }
