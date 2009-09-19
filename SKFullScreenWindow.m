@@ -120,10 +120,4 @@
     [self performSelector:@selector(orderOut:) withObject:nil afterDelay:0.7];
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    animating = NO;
-    [self orderOut:nil];
-    [theAnimation setDelegate:nil];
-}
-
 @end
