@@ -1562,6 +1562,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setInteractionMode:SKPresentationMode screen:screen];
 }
 
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    mwcFlags.isFadingOut = 0;
+}
+
 - (IBAction)exitFullScreen:(id)sender {
     if ([self isFullScreen] == NO && [self isPresentation] == NO)
         return;
@@ -1572,12 +1576,24 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     
-    SKFullScreenWindow *bgWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
-    [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
-    [bgWindow setLevel:[fullScreenWindow level]];
-    [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
-    [fullScreenWindow setDelegate:nil];
-    [fullScreenWindow fadeOutBlocking:YES];
+    NSView *view = [self isFullScreen] ? (NSView *)pdfSplitView : (NSView *)pdfView;
+    NSView *contentView = [view superview];
+    NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:3.5];
+    CAAnimation *animation = [CATransition animation];
+    
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    [animation setDuration:0.5];
+    [animation setDelegate:self];
+    [contentView setAnimations:[NSDictionary dictionaryWithObject:animation forKey:@"subviews"]];
+    [contentView setWantsLayer:YES];
+    [contentView displayIfNeeded];
+    mwcFlags.isFadingOut = 1;
+    [[view animator] removeFromSuperview];
+    while (mwcFlags.isFadingOut && [limitDate compare:[NSDate date]] != NSOrderedAscending)
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+    mwcFlags.isFadingOut = 0;
+    [contentView setWantsLayer:NO];
+    [contentView setAnimations:nil];
     
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     // this should be done before exitPresentationMode to get a smooth transition
@@ -1599,10 +1615,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else
         [self applyPDFSettings:savedNormalSetup];
     
-    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
-    [fullScreenWindow displayIfNeeded];
-    [bgWindow orderOut:nil];
-    [bgWindow release];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
     SetSystemUIMode(kUIModeNormal, 0);
@@ -1619,7 +1631,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow display];
-    [fullScreenWindow fadeOutBlocking:NO];
+    [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
