@@ -126,12 +126,12 @@
 #pragma mark | Client protocol
 
 - (oneway void)foundLine:(NSInteger)line inFile:(bycopy NSString *)file {
-    if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
+    if ([server shouldKeepRunning])
         [delegate synchronizer:self foundLine:line inFile:file];
 }
 
 - (oneway void)foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
-    if ([server shouldKeepRunning] && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:options:)])
+    if ([server shouldKeepRunning])
         [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex options:options];
 }
 
