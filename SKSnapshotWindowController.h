@@ -58,7 +58,7 @@ extern NSString *SKSnapshotCurrentSetupKey;
 @interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate> {
     IBOutlet SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
-    id SKCONFORM(SKSnapshotWindowControllerDelegate) delegate;
+    id <SKSnapshotWindowControllerDelegate> delegate;
     NSString *pageLabel;
     BOOL hasWindow;
     BOOL miniaturizing;
@@ -72,8 +72,8 @@ extern NSString *SKSnapshotCurrentSetupKey;
 
 - (void)redisplay;
 
-- (id SKCONFORM(SKSnapshotWindowControllerDelegate))delegate;
-- (void)setDelegate:(id SKCONFORM(SKSnapshotWindowControllerDelegate))newDelegate;
+- (id <SKSnapshotWindowControllerDelegate>)delegate;
+- (void)setDelegate:(id <SKSnapshotWindowControllerDelegate>)newDelegate;
 
 - (PDFView *)pdfView;
 - (NSImage *)thumbnail;

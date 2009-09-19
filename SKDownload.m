@@ -83,7 +83,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
     return [self infoKeys];
 }
 
-- (id)initWithURL:(NSURL *)aURL delegate:(id SKCONFORM(SKDownloadDelegate))aDelegate {
+- (id)initWithURL:(NSURL *)aURL delegate:(<SKDownloadDelegate>)aDelegate {
     if (self = [super init]) {
         URL = [aURL retain];
         URLDownload = nil;
@@ -132,11 +132,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 #pragma mark Accessors
 
-- (id SKCONFORM(SKDownloadDelegate))delegate {
+- (<SKDownloadDelegate>)delegate {
     return delegate;
 }
 
-- (void)setDelegate:(id SKCONFORM(SKDownloadDelegate))newDelegate {
+- (void)setDelegate:(<SKDownloadDelegate>)newDelegate {
     delegate = newDelegate;
 }
 

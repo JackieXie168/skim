@@ -40,11 +40,11 @@
 
 @implementation BDSKDragImageView
 
-- (id SKCONFORM(BDSKDragImageViewDelegate))delegate {
+- (id <BDSKDragImageViewDelegate>)delegate {
     return delegate;
 }
 
-- (void)setDelegate:(id SKCONFORM(BDSKDragImageViewDelegate))newDelegate {
+- (void)setDelegate:(id <BDSKDragImageViewDelegate>)newDelegate {
 	delegate = newDelegate;
 }
 

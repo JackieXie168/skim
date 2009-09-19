@@ -56,15 +56,15 @@ enum {
 
 
 @interface SKPDFSynchronizer : NSObject {
-    id SKCONFORM(SKPDFSynchronizerDelegate) delegate;
+    id <SKPDFSynchronizerDelegate> delegate;
     
     id server;
     id serverProxy;
     NSConnection *connection;
 }
 
-- (id SKCONFORM(SKPDFSynchronizerDelegate))delegate;
-- (void)setDelegate:(id SKCONFORM(SKPDFSynchronizerDelegate))newDelegate;
+- (id <SKPDFSynchronizerDelegate>)delegate;
+- (void)setDelegate:(id <SKPDFSynchronizerDelegate>)newDelegate;
 
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;

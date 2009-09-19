@@ -51,11 +51,11 @@
 
 
 @interface BDSKDragImageView : NSImageView {
-	id SKCONFORM(BDSKDragImageViewDelegate) delegate;
+	id <BDSKDragImageViewDelegate> delegate;
 } 
 
-- (id SKCONFORM(BDSKDragImageViewDelegate))delegate;
-- (void)setDelegate:(id SKCONFORM(BDSKDragImageViewDelegate))newDelegate;
+- (id <BDSKDragImageViewDelegate>)delegate;
+- (void)setDelegate:(id <BDSKDragImageViewDelegate>)newDelegate;
 
 - (IBAction)show:(id)sender;
 
