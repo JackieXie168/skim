@@ -231,6 +231,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
         mwcFlags.isAnimating = 0;
+        mwcFlags.isFadingOut = 0;
+        mwcFlags.isChangingFullScreen = 0;
         mwcFlags.updatingColor = 0;
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
@@ -1499,7 +1501,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (IBAction)enterFullScreen:(id)sender {
-    if ([self isFullScreen])
+    if ([self isFullScreen] || mwcFlags.isChangingFullScreen)
         return;
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
@@ -1535,7 +1537,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (IBAction)enterPresentation:(id)sender {
-    if ([self isPresentation])
+    if ([self isPresentation] || mwcFlags.isChangingFullScreen)
         return;
     
     BOOL wasFullScreen = [self isFullScreen];
@@ -1566,10 +1568,16 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     mwcFlags.isFadingOut = 0;
 }
 
+- (void)finishFadeOut {
+    mwcFlags.isChangingFullScreen = 0;
+}
+
 - (IBAction)exitFullScreen:(id)sender {
     if ([self isFullScreen] == NO && [self isPresentation] == NO)
         return;
-
+    
+    mwcFlags.isChangingFullScreen = 1;
+    
     if ([self isFullScreen])
         [self hideSideWindows];
     
@@ -1638,6 +1646,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [mainWindow makeKeyWindow];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
+    
+    [self performSelector:@selector(finishFadeOut) withObject:nil afterDelay:0.5];
 }
 
 #pragma mark Swapping tables
