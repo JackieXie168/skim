@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <Quartz/Quartz.h>
 
 #pragma mark SKTransitionController
 
@@ -59,13 +60,13 @@ enum {
 };
 typedef NSUInteger SKAnimationTransitionStyle;
 
-@class SKTransitionWindow;
+@class CIImage, SKTransitionWindow, SKTransitionView;
 
 @interface SKTransitionController : NSObject {
     SKTransitionWindow *transitionWindow;
     
     NSView *view;
-    NSBitmapImageRep *initialBitmap;
+    CIImage *initialImage;
     NSRect imageRect;
     
     NSMutableDictionary *filters;
