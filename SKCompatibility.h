@@ -51,7 +51,6 @@
 @protocol NSMenuDelegate <NSObject> @end
 @protocol NSDrawerDelegate <NSObject> @end
 @protocol NSWindowDelegate <NSObject> @end
-@protocol NSAnimationDelegate <NSObject> @end
 @protocol NSTextDelegate <NSObject> @end
 @protocol NSTextViewDelegate <NSTextDelegate> @end
 @protocol NSTextStorageDelegate <NSObject> @end
