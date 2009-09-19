@@ -47,7 +47,6 @@ enum {
 @class SKPDFSynchronizer;
 
 @protocol SKPDFSynchronizerDelegate <NSObject>
-@optional
 
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
