@@ -1570,8 +1570,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     } else {
         [fullScreenWindow orderOut:nil];
         mwcFlags.isChangingFullScreen = 0;
+        [theAnimation setDelegate:nil];
     }
-    [theAnimation setDelegate:nil];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
