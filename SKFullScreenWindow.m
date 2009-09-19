@@ -52,7 +52,10 @@
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:[CABasicAnimation animation], @"alphaValue", nil]];
+        CAAnimation *animation = [CABasicAnimation animation];
+        [animation setDuration:0.5];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:animation, @"alphaValue", nil]];
     }
     return self;
 }
@@ -112,21 +115,9 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)fadeOutBlocking:(BOOL)block {
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:0.7];
-    animating = block;
-    CAAnimation *animation = [self animationForKey:@"alphaValue"];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:block ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseInEaseOut]];
-    [animation setDelegate:self];
-    [[self animator] setAlphaValue:0.0];
-    [NSAnimationContext endGrouping];
-    while (animating)
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
-}
-
 - (void)fadeOut {
-    return [self fadeOutBlocking:NO];
+    [[self animator] setAlphaValue:0.0];
+    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:0.7];
 }
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {

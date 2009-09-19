@@ -49,7 +49,6 @@
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)view;
 
-- (void)fadeOutBlocking:(BOOL)block;
 - (void)fadeOut;
 
 @end
