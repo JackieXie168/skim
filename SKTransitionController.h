@@ -60,10 +60,10 @@ enum {
 };
 typedef NSUInteger SKAnimationTransitionStyle;
 
-@class CIImage, SKTransitionWindow, SKTransitionView;
+@class CIImage, SKTransitionView;
 
 @interface SKTransitionController : NSObject {
-    SKTransitionWindow *transitionWindow;
+    NSWindow *transitionWindow;
     
     NSView *view;
     CIImage *initialImage;

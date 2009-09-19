@@ -144,11 +144,6 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-@interface SKTransitionWindow : NSWindow
-@end
-
-#pragma mark -
-
 @implementation SKTransitionController
 
 + (NSArray *)transitionFilterNames {
@@ -197,14 +192,19 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (id)initWithView:(NSView *)aView {
     if (self = [super init]) {
-        transitionWindow = [[SKTransitionWindow alloc] init];
         view = aView; // don't retain as it may retain us
+        
         transitionStyle = SKNoTransition;
         duration = 1.0;
         shouldRestrict = YES;
         currentTransitionStyle = SKNoTransition;
         currentDuration = 1.0;
         currentShouldRestrict = YES;
+        
+        transitionWindow = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [transitionWindow setReleasedWhenClosed:NO];
+        [transitionWindow setIgnoresMouseEvents:YES];
+        [transitionWindow setContentView:[[[SKTransitionView alloc] init] autorelease]];
     }
     return self;
 }
@@ -406,140 +406,135 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
             currentShouldRestrict = [value boolValue];
     }
     
-	if (currentTransitionStyle == SKNoTransition) {
-        // Do nothing
-	} else if (currentTransitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsServicesTransitionsDefined()) {
-            if (currentShouldRestrict) {
-                [initialImage release];
-                initialImage = [self newCurrentImage];
-            }
-            // We don't want the window to draw the next state before the animation is run
-            [[view window] disableFlushWindow];
-        }
-    } else {
+	if (currentTransitionStyle >= SKCoreImageTransition) {
         [initialImage release];
         initialImage = [self newCurrentImage];
-        
+        // We don't want the window to draw the next state before the animation is run
+        [[view window] disableFlushWindow];
+    } else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined()) {
+        if (currentShouldRestrict) {
+            [initialImage release];
+            initialImage = [self newCurrentImage];
+        }
         // We don't want the window to draw the next state before the animation is run
         [[view window] disableFlushWindow];
     }
     imageRect = rect;
 }
 
-- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
-	if (currentTransitionStyle == SKNoTransition) {
-        // Do nothing
-	} else if (currentTransitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsServicesTransitionsDefined()) {
-            
-            CIImage *finalImage = nil;
-            
-            if (currentShouldRestrict) {
-                if (initialImage == nil)
-                    [self prepareAnimationForRect:rect];
-                
-                NSRect bounds = [view bounds];
-                imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
-                
-                finalImage = [self newCurrentImage];
-                
-                CGFloat dx = NSMinX(bounds) - NSMinX(imageRect);
-                CGFloat dy = NSMinY(bounds) - NSMinY(imageRect);
-                initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
-                finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
-                
-                NSRect frame = [view convertRect:imageRect toView:nil];
-                frame.origin = [[view window] convertBaseToScreen:frame.origin];
-                
-                [[self transitionView] setImage:initialImage];
-                initialImage = nil;
-                
-                [[self transitionWindow] setFrame:frame display:YES];
-                [[self transitionWindow] orderBack:nil];
-                [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
-            }
-            
-            // declare our variables  
-            int handle = -1;
-            CGSTransitionSpec spec;
-            // specify our specifications
-            spec.unknown1 = 0;
-            spec.type =  currentTransitionStyle;
-            spec.option = forward ? CGSLeft : CGSRight;
-            spec.backColour = NULL;
-            spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
-            
-            // Let's get a connection
-            CGSConnection cgs = _CGSDefaultConnection();
-            
-            // Create a transition
-            CGSNewTransition(cgs, &spec, &handle);
-            
-            if (currentShouldRestrict) {
-                [[self transitionView] setImage:finalImage];
-                [[self transitionView] display];
-            }
-            
-            // Redraw the window
-            [[view window] display];
-            // Remember we disabled flushing in the previous method, we need to balance that.
-            [[view window] enableFlushWindow];
-            [[view window] flushWindow];
-            
-            CGSInvokeTransition(cgs, handle, currentDuration);
-            // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-            usleep((useconds_t)(currentDuration * 1000000));
-            
-            CGSReleaseTransition(cgs, handle);
-            handle = 0;
-            
-            if (currentShouldRestrict) {
-                [[view window] removeChildWindow:[self transitionWindow]];
-                [[self transitionWindow] orderOut:nil];
-                [[self transitionView] setImage:nil];
-            }
-		}
-	} else {
-        
+- (void)animateCoreGraphicsForRect:(NSRect)rect forward:(BOOL)forward {
+    CIImage *finalImage = nil;
+    
+    if (currentShouldRestrict) {
         if (initialImage == nil)
             [self prepareAnimationForRect:rect];
         
         NSRect bounds = [view bounds];
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
         
-        CIImage *finalImage = [self newCurrentImage];
+        finalImage = [self newCurrentImage];
         
-        CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
+        CGFloat dx = NSMinX(bounds) - NSMinX(imageRect);
+        CGFloat dy = NSMinY(bounds) - NSMinY(imageRect);
+        initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
+        finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
         
-        [finalImage release];
-        [initialImage release];
-        initialImage = nil;
-        
-        NSRect frame = [view convertRect:[view frame] toView:nil];
+        NSRect frame = [view convertRect:imageRect toView:nil];
         frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
-        SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
-        [[self transitionView] setAnimation:animation];
-        [animation release];
+        [[self transitionView] setImage:initialImage];
+        initialImage = nil;
         
-        [[self transitionWindow] setFrame:frame display:NO];
+        [[self transitionWindow] setFrame:frame display:YES];
         [[self transitionWindow] orderBack:nil];
         [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
-        
-        [animation startAnimation];
-        
-        // Update the view and its window, so it shows the correct state when it is shown.
-        [view display];
-        // Remember we disabled flushing in the previous method, we need to balance that.
-        [[view window] enableFlushWindow];
-        [[view window] flushWindow];
-        
+    }
+    
+    // declare our variables  
+    int handle = -1;
+    CGSTransitionSpec spec;
+    // specify our specifications
+    spec.unknown1 = 0;
+    spec.type =  currentTransitionStyle;
+    spec.option = forward ? CGSLeft : CGSRight;
+    spec.backColour = NULL;
+    spec.wid = [(currentShouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
+    
+    // Let's get a connection
+    CGSConnection cgs = _CGSDefaultConnection();
+    
+    // Create a transition
+    CGSNewTransition(cgs, &spec, &handle);
+    
+    if (currentShouldRestrict) {
+        [[self transitionView] setImage:finalImage];
+        [[self transitionView] display];
+    }
+    
+    // Redraw the window
+    [[view window] display];
+    // Remember we disabled flushing in the previous method, we need to balance that.
+    [[view window] enableFlushWindow];
+    [[view window] flushWindow];
+    
+    CGSInvokeTransition(cgs, handle, currentDuration);
+    // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
+    usleep((useconds_t)(currentDuration * 1000000));
+    
+    CGSReleaseTransition(cgs, handle);
+    handle = 0;
+    
+    if (currentShouldRestrict) {
         [[view window] removeChildWindow:[self transitionWindow]];
         [[self transitionWindow] orderOut:nil];
-        [[self transitionView] setAnimation:nil];
-        
+        [[self transitionView] setImage:nil];
     }
+}
+
+- (void)animateCoreImageForRect:(NSRect)rect forward:(BOOL)forward {
+    if (initialImage == nil)
+        [self prepareAnimationForRect:rect];
+    
+    NSRect bounds = [view bounds];
+    imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
+    
+    CIImage *finalImage = [self newCurrentImage];
+    
+    CIFilter *transitionFilter = [self transitionFilterForRect:imageRect forward:forward initialCIImage:initialImage finalCIImage:finalImage];
+    
+    [finalImage release];
+    [initialImage release];
+    initialImage = nil;
+    
+    NSRect frame = [view convertRect:[view frame] toView:nil];
+    frame.origin = [[view window] convertBaseToScreen:frame.origin];
+    
+    SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:currentDuration];
+    [[self transitionView] setAnimation:animation];
+    [animation release];
+    
+    [[self transitionWindow] setFrame:frame display:NO];
+    [[self transitionWindow] orderBack:nil];
+    [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
+    
+    [animation startAnimation];
+    
+    // Update the view and its window, so it shows the correct state when it is shown.
+    [view display];
+    // Remember we disabled flushing in the previous method, we need to balance that.
+    [[view window] enableFlushWindow];
+    [[view window] flushWindow];
+    
+    [[view window] removeChildWindow:[self transitionWindow]];
+    [[self transitionWindow] orderOut:nil];
+    [[self transitionView] setAnimation:nil];
+}
+
+- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
+	if (currentTransitionStyle >= SKCoreImageTransition)
+        [self animateCoreImageForRect:rect forward:forward];
+	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
+        [self animateCoreGraphicsForRect:rect forward:forward];
     
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
@@ -720,24 +715,5 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     
     glFlush();
 }
-
-@end
-
-
-@implementation SKTransitionWindow
-
-- (id)init {
-    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
-        [self setReleasedWhenClosed:NO];
-        [self setIgnoresMouseEvents:YES];
-        SKTransitionView *view = [[SKTransitionView alloc] init];
-        [self setContentView:view];
-        [view release];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeMainWindow { return NO; }
-- (BOOL)canBecomeKeyWindow { return NO; }
 
 @end
