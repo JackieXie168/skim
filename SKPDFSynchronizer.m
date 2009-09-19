@@ -97,11 +97,11 @@
 
 #pragma mark | Accessors
 
-- (id SKCONFORM(SKPDFSynchronizerDelegate))delegate {
+- (id <SKPDFSynchronizerDelegate>)delegate {
     return delegate;
 }
 
-- (void)setDelegate:(id SKCONFORM(SKPDFSynchronizerDelegate))newDelegate {
+- (void)setDelegate:(id <SKPDFSynchronizerDelegate>)newDelegate {
     delegate = newDelegate;
 }
 
