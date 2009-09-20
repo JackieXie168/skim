@@ -1592,7 +1592,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     CAAnimation *animation = [CATransition animation];
     
     // 10.5 has problems animating with a transparent background
-    if ([self isPresention])
+    if ([self isPresentation])
         [pdfView setBackgroundColor:[NSColor blackColor]];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
     [animation setDuration:0.5];
