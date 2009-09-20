@@ -48,7 +48,7 @@
 
 - (void)setColor:(NSColor *)color forKey:(NSString *)key {
     NSData *data = color ? [NSArchiver archivedDataWithRootObject:color] : nil;
-    return [self setObject:data forKey:key];
+    [self setObject:data forKey:key];
 }
 
 @end
