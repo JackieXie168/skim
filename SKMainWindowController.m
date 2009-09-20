@@ -1591,6 +1591,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:3.5];
     CAAnimation *animation = [CATransition animation];
     
+    // 10.5 has problems animating with a transparent background
+    if ([self isPresention])
+        [pdfView setBackgroundColor:[NSColor blackColor]];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
     [animation setDuration:0.5];
     [animation setDelegate:self];
