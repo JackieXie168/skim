@@ -904,8 +904,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     if ([[[self mainWindowController] notes] count]) {
         if (readNotesAccessoryView == nil) {
-            if (NO == [NSBundle loadNibNamed:@"ReadNotesAccessoryView" owner:self])
-                NSLog(@"Failed to load ReadNotesAccessoryView.nib");
+            replaceNotesCheckButton = [[[NSButton alloc] init] autorelease];
+            [replaceNotesCheckButton setButtonType:NSSwitchButton];
+            [replaceNotesCheckButton setTitle:NSLocalizedString(@"Replace existing notes", @"Button title")];
+            [replaceNotesCheckButton sizeToFit];
+            [replaceNotesCheckButton setFrameOrigin:NSMakePoint(16.0, 8.0)];
+            readNotesAccessoryView = [[NSView alloc] initWithFrame:NSInsetRect([replaceNotesCheckButton frame], -16.0, -8.0)];
+            [readNotesAccessoryView addSubview:replaceNotesCheckButton];
         }
         [oPanel setAccessoryView:readNotesAccessoryView];
         [replaceNotesCheckButton setState:NSOnState];

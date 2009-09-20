@@ -62,8 +62,8 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 
 @interface SKMainDocument : NSDocument <SKPDFSynchronizerDelegate>
 {
-    IBOutlet NSView *readNotesAccessoryView;
-    IBOutlet NSButton *replaceNotesCheckButton;
+    NSView *readNotesAccessoryView;
+    NSButton *replaceNotesCheckButton;
     
     SKMainWindowController *mainWindowController;
     
