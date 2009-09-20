@@ -54,7 +54,7 @@
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         CAAnimation *animation = [CABasicAnimation animation];
         [animation setDuration:0.5];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
         [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:animation, @"alphaValue", nil]];
     }
     return self;
