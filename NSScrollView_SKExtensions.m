@@ -109,11 +109,9 @@ static NSMapTable *scrollViewPlacardViews = nil;
         [scrollViewPlacardViews setObject:placardView forKey:self];
     }
     
-    NSEnumerator *viewEnum = [newPlacards objectEnumerator];
-    NSView *view;
     [placardView removeFromSuperview];
     [[[[placardView subviews] copy] autorelease] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    while (view = [viewEnum nextObject])
+    for (NSView *view in newPlacards)
         [placardView addSubview:view];
     
     if ([newPlacards count] != 0) {
@@ -166,9 +164,7 @@ static NSMapTable *scrollViewPlacardViews = nil;
 
 - (void)tile {
     NSSize size = NSMakeSize(0.0, [NSScroller scrollerWidth]);
-    NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-    NSView *view;
-    while (view = [viewEnum nextObject]) {
+    for (NSView *view in [self subviews]) {
         NSRect rect = [view frame];
         rect.origin.x = size.width;
         rect.origin.y = 0.0;

@@ -326,10 +326,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     
     NSRect bounds = [view bounds];
     
-    NSEnumerator *keyEnum = [[transitionFilter inputKeys] objectEnumerator];
-    NSString *key;
-    
-    while (key = [keyEnum nextObject]) {
+    for (NSString *key in [transitionFilter inputKeys]) {
         id value = nil;
         if ([key isEqualToString:@"inputExtent"]) {
             NSRect extent = currentShouldRestrict ? rect : bounds;

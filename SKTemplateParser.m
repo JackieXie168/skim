@@ -414,11 +414,9 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 }
 
 + (NSString *)stringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(NSInteger)anIndex {
-    NSEnumerator *tagEnum = [template objectEnumerator];
-    id tag;
     NSMutableString *result = [[NSMutableString alloc] init];
     
-    while (tag = [tagEnum nextObject]) {
+    for (id tag in template) {
         SKTemplateTagType type = [(SKTemplateTag *)tag type];
         
         if (type == SKTextTemplateTagType) {
@@ -667,11 +665,9 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 }
 
 + (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(NSInteger)anIndex {
-    NSEnumerator *tagEnum = [template objectEnumerator];
-    id tag;
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
     
-    while (tag = [tagEnum nextObject]) {
+    for (id tag in template) {
         SKTemplateTagType type = [(SKTemplateTag *)tag type];
         NSAttributedString *tmpAttrStr = nil;
         

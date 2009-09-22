@@ -156,12 +156,8 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 }
 
 - (NSString *)readableTypeFromFileExtension:(NSString *)extension {
-    NSEnumerator *classEnum = [[self documentClassNames] objectEnumerator];
-    NSString *className;
-    while (className = [classEnum nextObject]) {
-        NSEnumerator *typeEnum = [[NSClassFromString(className) readableTypes] objectEnumerator];
-        NSString *type;
-        while (type = [typeEnum nextObject]) {
+    for (NSString *className in [self documentClassNames]) {
+        for (NSString *type in [NSClassFromString(className) readableTypes]) {
             if ([[NSWorkspace sharedWorkspace] filenameExtension:extension isValidForType:type]) {
                 return type;
                 break;
@@ -397,16 +393,12 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (customExportTemplateFiles == nil) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSMutableArray *templateFiles = [NSMutableArray array];
-        NSEnumerator *pathEnum = [[[NSFileManager defaultManager] applicationSupportDirectories] objectEnumerator];
-        NSString *appSupportPath;
         
-        while (appSupportPath = [pathEnum nextObject]) {
+        for (NSString *appSupportPath in [[NSFileManager defaultManager] applicationSupportDirectories]) {
             NSString *templatesPath = [appSupportPath stringByAppendingPathComponent:@"Templates"];
             BOOL isDir;
             if ([fm fileExistsAtPath:templatesPath isDirectory:&isDir] && isDir) {
-                NSEnumerator *fileEnum = [[fm subpathsAtPath:templatesPath] objectEnumerator];
-                NSString *file;
-                while (file = [fileEnum nextObject]) {
+                for (NSString *file in [fm subpathsAtPath:templatesPath]) {
                     if ([file hasPrefix:@"."] == NO && [[file stringByDeletingPathExtension] isEqualToString:@"notesTemplate"] == NO)
                         [templateFiles addObject:file];
                 }

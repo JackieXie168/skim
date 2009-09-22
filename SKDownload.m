@@ -236,9 +236,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 - (NSDictionary *)info {
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
-    NSEnumerator *keyEnum = [[[self class] infoKeys] objectEnumerator];
-    NSString *key;
-    while (key = [keyEnum nextObject])
+    for (NSString *key in [[self class] infoKeys])
         [info setValue:[self valueForKey:key] forKey:key];
     return info;
 }

@@ -279,10 +279,8 @@ static BOOL usesSequentialPageNumbering = NO;
 - (NSArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    NSEnumerator *selEnum = [[sel selectionsByLine] objectEnumerator];
-    PDFSelection *s;
     
-    while (s = [selEnum nextObject]) {
+    for (PDFSelection *s in [sel selectionsByLine]) {
         NSRect r = [s boundsForPage:self];
         if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
             [lines addObject:[NSValue valueWithRect:r]];
@@ -341,10 +339,9 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (SKMainDocument *)containingDocument {
-    NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
-    SKMainDocument *document;
+    SKMainDocument *document = nil;
     
-    while (document = [docEnum nextObject]) {
+    for (SKMainDocument *document in [[NSDocumentController sharedDocumentController] documents]) {
         if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])
             break;
     }
@@ -433,11 +430,9 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSArray *)notes {
-    NSEnumerator *annEnum = [[self annotations] objectEnumerator];
-    PDFAnnotation *annotation;
     NSMutableArray *notes = [NSMutableArray array];
     
-    while (annotation = [annEnum nextObject]) {
+    for (PDFAnnotation *annotation in [self annotations]) {
         if ([annotation isSkimNote])
             [notes addObject:annotation];
     }
@@ -500,14 +495,10 @@ static BOOL usesSequentialPageNumbering = NO;
                 [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
             } else {
                 NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
-                NSEnumerator *listEnum = [pointLists objectEnumerator];
-                NSArray *list;
-                while (list = [listEnum nextObject]) {
+                for (NSArray *list in pointLists) {
                     if ([list isKindOfClass:[NSArray class]]) {
                         NSBezierPath *path = [[NSBezierPath alloc] init];
-                        NSEnumerator *ptEnum = [list objectEnumerator];
-                        id pt;
-                        while (pt = [ptEnum nextObject]) {
+                        for (id pt in list) {
                             NSPoint point;
                             if ([pt isKindOfClass:[NSData class]]) {
                                 point = [pt pointValueAsQDPoint];

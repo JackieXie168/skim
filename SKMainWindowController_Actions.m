@@ -47,7 +47,6 @@
 #import "NSImage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKSheetController.h"
 #import "SKTextFieldSheetController.h"
 #import "SKPresentationOptionsSheetController.h"
 #import "SKProgressController.h"
@@ -234,9 +233,7 @@
 
 - (IBAction)toggleHideNotes:(id)sender{
     BOOL wasHidden = [pdfView hideNotes];
-    NSEnumerator *noteEnum = [notes objectEnumerator];
-    PDFAnnotation *note;
-    while (note = [noteEnum nextObject]) {
+    for (PDFAnnotation *note in notes) {
         [note setShouldDisplay:wasHidden];
         [note setShouldPrint:wasHidden];
     }

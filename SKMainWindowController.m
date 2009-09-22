@@ -86,7 +86,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKProgressController.h"
 #import "SKSecondaryPDFView.h"
-#import "SKSheetController.h"
 #import "SKTextFieldSheetController.h"
 #import "SKColorSwatch.h"
 #import "SKRuntime.h"
@@ -654,10 +653,8 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
     NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
     id cell = [tableColumn dataCell];
     CGFloat labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
-    NSEnumerator *labelEnum = [pageLabels objectEnumerator];
-    NSString *label;
     
-    while (label = [labelEnum nextObject]) {
+    for (NSString *label in pageLabels) {
         [cell setStringValue:label];
         labelWidth = SKMax(labelWidth, [cell cellSize].width);
     }
@@ -817,14 +814,12 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
 }
     
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
-    NSEnumerator *e = [noteDicts objectEnumerator];
     PDFAnnotation *annotation;
-    NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *observableNotes = [self mutableArrayValueForKey:NOTES_KEY];
     
     // create new annotations from the dictionary and add them to their page and to the document
-    while (dict = [e nextObject]) {
+    for (NSDictionary *dict in noteDicts) {
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
             if (pageIndex == NSNotFound)
@@ -847,14 +842,11 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
 }
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
-    NSEnumerator *e = [[[notes copy] autorelease] objectEnumerator];
-    PDFAnnotation *annotation;
-    
     [pdfView removePDFToolTipRects];
     
     // remove the current annotations
     [pdfView setActiveAnnotation:nil];
-    while (annotation = [e nextObject])
+    for (PDFAnnotation *annotation in [[notes copy] autorelease])
         [pdfView removeAnnotation:annotation undoable:undoable];
     
     [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
@@ -1043,10 +1035,8 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
 
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)theIndex {
     PDFAnnotation *note = [notes objectAtIndex:theIndex];
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
     
-    while (wc = [wcEnum nextObject]) {
+    for (NSWindowController *wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
             [[wc window] orderOut:self];
             break;
@@ -1068,9 +1058,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
         NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [notes count])];
         [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:NOTES_KEY];
         
-        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-        NSWindowController *wc = [wcEnum nextObject];
-        while (wc = [wcEnum nextObject]) {
+        for (NSWindowController *wc in [[self document] windowControllers]) {
             if ([wc isNoteWindowController])
                 [[wc window] orderOut:self];
         }
@@ -1409,10 +1397,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
+    for (NSWindowController *wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:YES];
     }
@@ -1421,9 +1406,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
         [blankingWindows removeAllObjects];
-        NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
-        NSScreen *screenToBlank;
-        while (screenToBlank = [screenEnum nextObject]) {
+        for (NSScreen *screenToBlank in [NSScreen screens]) {
             if ([screenToBlank isEqual:screen] == NO) {
                 SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
                 [window setBackgroundColor:backgroundColor];
@@ -1636,10 +1619,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
     
     SetSystemUIMode(kUIModeNormal, 0);
     
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
+    for (NSWindowController *wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:NO];
     }
@@ -1923,9 +1903,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSInteger options = mwcFlags.caseInsensitiveSearch ? NSCaseInsensitiveSearch : 0;
         if (mwcFlags.wholeWordSearch) {
             NSMutableArray *words = [NSMutableArray array];
-            NSEnumerator *wordEnum = [[[sender stringValue] componentsSeparatedByString:@" "] objectEnumerator];
-            NSString *word;
-            while (word = [wordEnum nextObject]) {
+            for (NSString *word in [[sender stringValue] componentsSeparatedByString:@" "]) {
                 if ([word isEqualToString:@""] == NO)
                     [words addObject:word];
             }
@@ -2012,8 +1990,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     // add an annotation so it's easier to see the search result
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
-        selE = [findResults objectEnumerator];
-        while (sel = [selE nextObject]) {
+        for (sel in findResults) {
             if ([sel hasCharacters])
                 [self addAnnotationsForSelection:sel];
         }
@@ -2090,9 +2067,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [result addMatch:instance];
         
         if ([result count] > maxCount) {
-            NSEnumerator *resultEnum = [groupedSearchResults objectEnumerator];
             maxCount = [result count];
-            while (result = [resultEnum nextObject])
+            for (result in groupedSearchResults)
                 [result setMaxCount:maxCount];
         }
     }
@@ -2156,9 +2132,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [pdfView layoutDocumentView];
     if (page) {
         NSUInteger idx = [page pageIndex];
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
+        for (SKSnapshotWindowController *wc in snapshots) {
             if ([wc isPageVisible:page]) {
                 [self snapshotNeedsUpdate:wc];
                 [wc redisplay];
@@ -2239,10 +2213,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)showSnapshotsWithSetups:(NSArray *)setups {
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-    NSEnumerator *setupEnum = [setups objectEnumerator];
-    NSDictionary *setup;
     
-    while (setup = [setupEnum nextObject]) {
+    for (NSDictionary *setup in setups) {
         SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
         
         [swc setDelegate:self];
@@ -2323,9 +2295,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)showNote:(PDFAnnotation *)annotation {
     NSWindowController *wc = nil;
-    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-    
-    while (wc = [wcEnum nextObject]) {
+    for (wc in [[self document] windowControllers]) {
         if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation)
             break;
     }
@@ -2366,12 +2336,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)startObservingNotes:(NSArray *)newNotes {
     // Each note can have a different set of properties that need to be observed.
-    NSEnumerator *noteEnum = [newNotes objectEnumerator];
-    PDFAnnotation *note;
-    while (note = [noteEnum nextObject]) {
-        NSEnumerator *keyEnumerator = [[note keysForValuesToObserveForUndo] objectEnumerator];
-        NSString *key;
-        while (key = [keyEnumerator nextObject]) {
+    for (PDFAnnotation *note in newNotes) {
+        for (NSString *key in [note keysForValuesToObserveForUndo]) {
             // We use NSKeyValueObservingOptionOld because when something changes we want to record the old value, which is what has to be set in the undo operation. We use NSKeyValueObservingOptionNew because we compare the new value against the old value in an attempt to ignore changes that aren't really changes.
             [note addObserver:self forKeyPath:key options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKNPDFAnnotationPropertiesObservationContext];
         }
@@ -2380,21 +2346,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)stopObservingNotes:(NSArray *)oldNotes {
     // Do the opposite of what's done in -startObservingNotes:.
-    NSEnumerator *noteEnum = [oldNotes objectEnumerator];
-    PDFAnnotation *note;
-    while (note = [noteEnum nextObject]) {
-        NSEnumerator *keyEnumerator = [[note keysForValuesToObserveForUndo] objectEnumerator];
-        NSString *key;
-        while (key = [keyEnumerator nextObject])
+    for (PDFAnnotation *note in oldNotes) {
+        for (NSString *key in [note keysForValuesToObserveForUndo])
             [note removeObserver:self forKeyPath:key];
     }
 }
 
-- (void)setNoteProperties:(NSDictionary *)propertiesPerNote {
+- (void)setNoteProperties:(NSMapTable *)propertiesPerNote {
     // The passed-in dictionary is keyed by note...
-    NSEnumerator *noteEnum = [propertiesPerNote keyEnumerator];
-    PDFAnnotation *note;
-    while (note = [noteEnum nextObject]) {
+    for (PDFAnnotation *note in propertiesPerNote) {
         // ...with values that are dictionaries of properties, keyed by key-value coding key.
         NSDictionary *noteProperties = [propertiesPerNote objectForKey:note];
         // Use a relatively unpopular method. Here we're effectively "casting" a key path to a key (see how these dictionaries get built in -observeValueForKeyPath:ofObject:change:context:). It had better really be a key or things will get confused. For example, this is one of the things that would need updating if -[SKTNote keysForValuesToObserveForUndo] someday becomes -[SKTNote keyPathsForValuesToObserveForUndo].
@@ -2429,13 +2389,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                     [fullScreenWindow setBackgroundColor:color];
                     [[fullScreenWindow contentView] setNeedsDisplay:YES];
                     
-                    if ([blankingWindows count]) {
-                        NSWindow *window;
-                        NSEnumerator *windowEnum = [blankingWindows objectEnumerator];
-                        while (window = [windowEnum nextObject]) {
-                            [window setBackgroundColor:color];
-                            [[window contentView] setNeedsDisplay:YES];
-                        }
+                    for (NSWindow *window in blankingWindows) {
+                        [window setBackgroundColor:color];
+                        [[window contentView] setNeedsDisplay:YES];
                     }
                 }
             }
@@ -2518,9 +2474,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             
             [self updateThumbnailAtPageIndex:[note pageIndex]];
             
-            NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-            SKSnapshotWindowController *wc;
-            while (wc = [snapshotEnum nextObject]) {
+            for (SKSnapshotWindowController *wc in snapshots) {
                 if ([wc isPageVisible:[note page]]) {
                     [self snapshotNeedsUpdate:wc];
                     [wc setNeedsDisplayForAnnotation:note onPage:page];
@@ -2711,9 +2665,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)allThumbnailsNeedUpdate {
-    NSEnumerator *te = [thumbnails objectEnumerator];
-    SKThumbnail *tn;
-    while (tn = [te nextObject]) {
+    for (SKThumbnail *tn in thumbnails) {
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(makeImageForThumbnail:) object:tn];
         [tn setDirty:YES];
     }
@@ -2729,9 +2681,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
 	NSInteger i, count = [orderedNotes count];
     NSMutableIndexSet *selPageIndexes = [NSMutableIndexSet indexSet];
-    NSEnumerator *selEnum = [[self selectedNotes] objectEnumerator];
     
-    while (selAnnotation = [selEnum nextObject])
+    for (selAnnotation in [self selectedNotes])
         [selPageIndexes addIndex:[selAnnotation pageIndex]];
     
     if (count == 0 || [selPageIndexes containsIndex:pageIndex])

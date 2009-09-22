@@ -718,15 +718,13 @@
     NSToolbarItem *toolbarItem = [self toolbarItemForItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
     NSMenu *menu = [[toolbarItem menuFormRepresentation] submenu];
     
-    NSEnumerator *colorEnum = [[colorSwatch colors] objectEnumerator];
-    NSColor *color;
     NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
     NSRect lineRect = NSInsetRect(rect, 0.5, 0.5);
     NSRect swatchRect = NSInsetRect(rect, 1.0, 1.0);
     
     [menu removeAllItems];
     
-    while (color = [colorEnum nextObject]) {
+    for (NSColor *color in [colorSwatch colors]) {
         NSImage *image = [[NSImage alloc] initWithSize:rect.size];
         NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) keyEquivalent:@""];
         

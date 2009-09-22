@@ -91,9 +91,7 @@
 
 - (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector {
     NSMutableArray *transformedArray = [NSMutableArray arrayWithCapacity:[array count]];
-    NSEnumerator *objEnum = [array objectEnumerator];
-    id obj;
-    while (obj = [objEnum nextObject])
+    for (id obj in array)
         [transformedArray addObject:[valueTransformer performSelector:selector withObject:obj] ?: [NSNull null]];
     return transformedArray;
 }

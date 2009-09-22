@@ -154,10 +154,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     } else {
         NSView *gradientView = [imageView superview];
         NSTextField *textField = nil;
-        NSEnumerator *viewEnum = [[gradientView subviews] objectEnumerator];
-        id view;
         
-        while (view = [viewEnum nextObject]) {
+        for (id view in [gradientView subviews]) {
             if ([view isKindOfClass:[NSTextField class]] && [view isEditable]) {
                 textField = view;
                 break;

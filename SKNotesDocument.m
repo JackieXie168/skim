@@ -140,9 +140,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
 - (NSArray *)writableTypesForSaveOperation:(NSSaveOperationType)saveOperation {
     NSMutableArray *writableTypes = [[[super writableTypesForSaveOperation:saveOperation] mutableCopy] autorelease];
     if (saveOperation == NSSaveToOperation) {
-        NSEnumerator *fileEnum = [[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting] objectEnumerator];
-        NSString *file;
-        while (file = [fileEnum nextObject]) {
+        for (NSString *file in [[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]) {
             if ([[file pathExtension] caseInsensitiveCompare:@"rtfd"] != NSOrderedSame)
                 [writableTypes addObject:file];
         }
@@ -222,11 +220,9 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }
     if (array) {
-        NSEnumerator *dictEnum = [array objectEnumerator];
-        NSDictionary *dict;
         NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
         
-        while (dict = [dictEnum nextObject]) {
+        for (NSDictionary *dict in array) {
             SKNote *note = [[SKNote alloc] initWithSkimNoteProperties:dict];
             [newNotes addObject:note];
             [note release];
@@ -496,19 +492,16 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
     NSData *noteData = nil;
     NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
     NSMutableString *string = [NSMutableString string];
-    NSEnumerator *itemEnum;
     id item;
     
-    itemEnum = [items objectEnumerator];
-    while (item = [itemEnum nextObject]) {
+    for (item in items) {
         if ([item type] == nil || ([[item type] isEqualToString:SKNHighlightString] == NO && [[item type] isEqualToString:SKNUnderlineString] == NO && [[item type] isEqualToString:SKNStrikeOutString] == NO)) {
             noteData = [NSKeyedArchiver archivedDataWithRootObject:[([item type] ? item : [item note]) SkimNoteProperties]];
             [types addObject:SKSkimNotePboardType];
             break;
         }
     }
-    itemEnum = [items objectEnumerator];
-    while (item = [itemEnum nextObject]) {
+    for (item in items) {
         if ([string length])
             [string appendString:@"\n\n"];
         if ([attrString length])

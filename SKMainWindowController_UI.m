@@ -779,11 +779,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (NSArray *)noteItems:(NSArray *)items {
-    NSEnumerator *itemEnum = [items objectEnumerator];
-    PDFAnnotation *item;
     NSMutableArray *noteItems = [NSMutableArray array];
     
-    while (item = [itemEnum nextObject]) {
+    for (PDFAnnotation *item in items) {
         if ([item type] == nil) {
             item = [(SKNoteText *)item note];
         }
@@ -795,9 +793,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items  {
     if ([ov isEqual:noteOutlineView] && [items count]) {
-        NSEnumerator *itemEnum = [[self noteItems:items] objectEnumerator];
-        PDFAnnotation *item;
-        while (item = [itemEnum nextObject])
+        for (PDFAnnotation *item in [self noteItems:items])
             [pdfView removeAnnotation:item];
         [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
@@ -817,19 +813,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSData *noteData = nil;
         NSMutableAttributedString *attrString = [[items valueForKey:SKNPDFAnnotationTypeKey] containsObject:[NSNull null]] ? [[[NSMutableAttributedString alloc] init] autorelease] : nil;
         NSMutableString *string = [NSMutableString string];
-        NSEnumerator *itemEnum;
         id item;
         
-        itemEnum = [[self noteItems:items] objectEnumerator];
-        while (item = [itemEnum nextObject]) {
+        for (item in [self noteItems:items]) {
             if ([item isMovable]) {
                 noteData = [NSKeyedArchiver archivedDataWithRootObject:[item SkimNoteProperties]];
                 [types addObject:SKSkimNotePboardType];
                 break;
             }
         }
-        itemEnum = [items objectEnumerator];
-        while (item = [itemEnum nextObject]) {
+        for (item in items) {
             if ([string length])
                 [string appendString:@"\n\n"];
             if ([attrString length])
@@ -873,10 +866,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
     if ([ov isEqual:outlineView]) {
         NSMutableArray *array = [NSMutableArray array];
-        NSEnumerator *rowEnum = [lastViewedPages objectEnumerator];
-        NSNumber *rowNumber;
         
-        while (rowNumber = [rowEnum nextObject]) {
+        for (NSNumber *rowNumber in lastViewedPages) {
             NSInteger row = [self outlineRowForPageIndex:[rowNumber integerValue]];
             if (row != -1)
                 [array addObject:[NSNumber numberWithInteger:row]];
@@ -1620,9 +1611,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
+        for (SKSnapshotWindowController *wc in snapshots) {
             if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
@@ -1638,10 +1627,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if ([[self selectedNotes] containsObject:annotation])
             [noteOutlineView deselectAll:self];
         
-        NSWindowController *wc = nil;
-        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
-        
-        while (wc = [wcEnum nextObject]) {
+        for (NSWindowController *wc in [[self document] windowControllers]) {
             if ([wc isNoteWindowController] && [(SKNoteWindowController *)wc note] == annotation) {
                 [wc close];
                 break;
@@ -1656,9 +1642,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     }
     if (page) {
         [self updateThumbnailAtPageIndex:[page pageIndex]];
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
+        for (SKSnapshotWindowController *wc in snapshots) {
             if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
@@ -1675,9 +1659,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [self updateThumbnailAtPageIndex:[oldPage pageIndex]];
         if (newPage)
             [self updateThumbnailAtPageIndex:[newPage pageIndex]];
-        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-        SKSnapshotWindowController *wc;
-        while (wc = [snapshotEnum nextObject]) {
+        for (SKSnapshotWindowController *wc in snapshots) {
             if ([wc isPageVisible:oldPage] || [wc isPageVisible:newPage])
                 [self snapshotNeedsUpdate:wc];
         }
