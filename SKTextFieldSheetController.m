@@ -39,6 +39,7 @@
 #import "SKTextFieldSheetController.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
+#import "NSWindowController_SKExtensions.h"
 
 
 @implementation SKTextFieldSheetController

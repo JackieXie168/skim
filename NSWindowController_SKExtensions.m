@@ -37,6 +37,7 @@
  */
 
 #import "NSWindowController_SKExtensions.h"
+#import "NSInvocation_SKExtensions.h"
 
 
 @implementation NSWindowController (SKExtensions)
@@ -63,5 +64,35 @@
 - (BOOL)isNoteWindowController { return NO; }
 
 - (BOOL)isSnapshotWindowController { return NO; }
+
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+	NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
+    if (invocation) {
+		[invocation setArgument:&returnCode atIndex:3];
+		[invocation invoke];
+    }
+}
+
+- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
+    NSInvocation *invocation = nil;
+    if (delegate != nil && didEndSelector != NULL) {
+        invocation = [NSInvocation invocationWithTarget:delegate selector:didEndSelector argument:&self];
+		[invocation setArgument:&contextInfo atIndex:4];
+	}
+    
+	[self retain]; // make sure we stay around long enough
+	
+	[NSApp beginSheet:[self window]
+	   modalForWindow:window
+		modalDelegate:self
+	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
+		  contextInfo:[invocation retain]];
+}
+
+- (IBAction)dismiss:(id)sender {
+    [NSApp endSheet:[self window] returnCode:[sender tag]];
+    [[self window] orderOut:self];
+    [self release];
+}
 
 @end

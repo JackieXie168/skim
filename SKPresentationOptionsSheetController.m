@@ -48,6 +48,7 @@
 #import "SKMainWindowController.h"
 #import "SKPDFView.h"
 #import "SKPDFToolTipWindow.h"
+#import "NSWindowController_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER 0x2192
 
