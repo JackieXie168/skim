@@ -197,9 +197,7 @@ static Class SKBookmarkClass = Nil;
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark {
     if (self == bookmark)
         return YES;
-    NSEnumerator *childEnum = [[bookmark children] objectEnumerator];
-    SKBookmark *child;
-    while (child = [childEnum nextObject]) {
+    for (SKBookmark *child in [bookmark children]) {
         if ([self isDescendantOf:child])
             return YES;
     }
@@ -207,9 +205,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks {
-    NSEnumerator *bmEnum = [bookmarks objectEnumerator];
-    SKBookmark *bm = nil;
-    while (bm = [bmEnum nextObject]) {
+    for (SKBookmark *bm in bookmarks) {
         if ([self isDescendantOf:bm]) return YES;
     }
     return NO;
@@ -259,10 +255,8 @@ static Class SKBookmarkClass = Nil;
         return [[SKSeparatorBookmark alloc] init];
     } else if ([type isEqualToString:FOLDER_STRING] || [type isEqualToString:SESSION_STRING]) {
         Class bookmarkClass = [type isEqualToString:FOLDER_STRING] ? [SKFolderBookmark class] : [SKSessionBookmark class];
-        NSEnumerator *dictEnum = [[dictionary objectForKey:CHILDREN_KEY] objectEnumerator];
-        NSDictionary *dict;
         NSMutableArray *newChildren = [NSMutableArray array];
-        while (dict = [dictEnum nextObject])
+        for (NSDictionary *dict in [dictionary objectForKey:CHILDREN_KEY])
             [newChildren addObject:[SKBookmark bookmarkWithProperties:dict]];
         return [[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
     } else if ([dictionary objectForKey:@"windowFrame"]) {

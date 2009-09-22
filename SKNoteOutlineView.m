@@ -207,10 +207,8 @@
     if ([types count] < NUMBER_OF_TYPES) {
         NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
         NSMutableArray *predicateArray = [NSMutableArray array];
-        NSEnumerator *typeEnum = [types objectEnumerator];
-        NSString *type;
         
-        while (type = [typeEnum nextObject]) {
+        for (NSString *type in types) {
             NSExpression *rhs = [NSExpression expressionForConstantValue:type];
             NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
             [predicateArray addObject:predicate];

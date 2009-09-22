@@ -92,19 +92,17 @@ static char *SKTransitionPropertiesObservationContext;
     while ([notesDocumentPopUpButton numberOfItems] > 1)
         [notesDocumentPopUpButton removeItemAtIndex:[notesDocumentPopUpButton numberOfItems] - 1];
     
-    NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
     id doc;
     NSMutableArray *documents = [NSMutableArray array];
     NSUInteger pageCount = [[controller pdfDocument] pageCount];
-    while (doc = [docEnum nextObject]) {
+    for (doc in [[NSDocumentController sharedDocumentController] documents]) {
         if ([doc respondsToSelector:@selector(pdfDocument)] && doc != [controller document] && [[doc pdfDocument] pageCount] == pageCount)
             [documents addObject:doc];
     }
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];
     [documents sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
-    docEnum = [documents objectEnumerator];
-    while (doc = [docEnum nextObject]) {
+    for (doc in documents) {
         [notesDocumentPopUpButton addItemWithTitle:[doc displayName]];
         [[notesDocumentPopUpButton lastItem] setRepresentedObject:doc];
     }
@@ -169,19 +167,19 @@ static char *SKTransitionPropertiesObservationContext;
     NSMutableArray *array = [NSMutableArray array];
     NSDictionary *dictionary = [transition properties];
     NSEnumerator *ptEnum = [[[[controller pdfView] transitionController] pageTransitions] objectEnumerator];
-    NSEnumerator *tnEnum = [[controller thumbnails] objectEnumerator];
-    SKThumbnail *tn = [tnEnum nextObject];
-    SKThumbnail *next;
+    SKThumbnail *tn = nil;
     
-    while (next = [tnEnum nextObject]) {
-        SKTransitionInfo *info = [[SKTransitionInfo alloc] init];
-        [info setThumbnail:tn];
-        [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], RIGHTARROW_CHARACTER, [next label]]];
-        [info setProperties:([ptEnum nextObject] ?: dictionary)];
-        [array addObject:info];
-        [cell setStringValue:[info label]];
-        labelWidth = SKMax(labelWidth, SKCeil([cell cellSize].width));
-        [info release];
+    for (SKThumbnail *next in [controller thumbnails]) {
+        if (tn) {
+            SKTransitionInfo *info = [[SKTransitionInfo alloc] init];
+            [info setThumbnail:tn];
+            [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], RIGHTARROW_CHARACTER, [next label]]];
+            [info setProperties:([ptEnum nextObject] ?: dictionary)];
+            [array addObject:info];
+            [cell setStringValue:[info label]];
+            labelWidth = SKMax(labelWidth, SKCeil([cell cellSize].width));
+            [info release];
+        }
         tn = next;
     }
     
@@ -331,9 +329,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (void)startObservingTransitions:(NSArray *)infos {
-    NSEnumerator *infoEnum = [infos objectEnumerator];
-    SKTransitionInfo *info;
-    while (info = [infoEnum nextObject]) {
+    for (SKTransitionInfo *info in infos) {
         [info addObserver:self forKeyPath:TRANSITIONSTYLE_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKTransitionPropertiesObservationContext];
         [info addObserver:self forKeyPath:DURATION_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKTransitionPropertiesObservationContext];
         [info addObserver:self forKeyPath:SHOULDRESTRICT_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKTransitionPropertiesObservationContext];
@@ -341,9 +337,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (void)stopObservingTransitions:(NSArray *)infos {
-    NSEnumerator *infoEnum = [infos objectEnumerator];
-    SKTransitionInfo *info;
-    while (info = [infoEnum nextObject]) {
+    for (SKTransitionInfo *info in infos) {
         [info removeObserver:self forKeyPath:TRANSITIONSTYLE_KEY];
         [info removeObserver:self forKeyPath:DURATION_KEY];
         [info removeObserver:self forKeyPath:SHOULDRESTRICT_KEY];

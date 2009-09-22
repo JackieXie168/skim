@@ -2310,9 +2310,7 @@ enum {
         NSUInteger i;
         for (i = range.location; i < NSMaxRange(range); i++) {
             PDFPage *page = [pdfDoc pageAtIndex:i];
-            NSEnumerator *annotationEnum = [[page annotations] objectEnumerator];
-            PDFAnnotation *annotation;
-            while (annotation = [annotationEnum nextObject]) {
+            for (PDFAnnotation *annotation in [page annotations]) {
                 if ([annotation isLink] || [annotation isSkimNote])
                     [children addObject:[SKAccessibilityProxyFauxUIElement elementWithObject:annotation parent:[self documentView]]];
             }
@@ -3390,8 +3388,7 @@ enum {
         text = [[[activeAnnotation string] retain] autorelease];
         border = [[[activeAnnotation border] retain] autorelease];
         pathColor = [[activeAnnotation color] retain];
-        NSEnumerator *pathEnum = [bezierPaths objectEnumerator];
-        while (path = [pathEnum nextObject]) {
+        for (path in bezierPaths) {
             [path setLineCapStyle:NSRoundLineCapStyle];
             [path setLineJoinStyle:NSRoundLineJoinStyle];
             [path setLineWidth:[border lineWidth]];

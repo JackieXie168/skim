@@ -146,15 +146,13 @@
 }
 
 - (void)adjustSubviews {
-	NSEnumerator *viewEnum = [[contentView subviews] objectEnumerator];
-	NSView *view;
 	NSRect contentRect;
 	NSRect frame;
 	
 	[contentView setFrame:[self contentRect]];
 	contentRect = [contentView bounds];
 	 
-	while (view = [viewEnum nextObject]) {
+	for (NSView *view in [contentView subviews]) {
 		frame = [view frame];
 		if (NSContainsRect(contentRect, frame)) 
 			continue;

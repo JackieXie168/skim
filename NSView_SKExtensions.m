@@ -47,10 +47,9 @@
 	if ([self isKindOfClass:aClass])
 		return self;
 	
-	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-	NSView *view, *subview;
+	NSView *view;
 	
-	while (subview = [viewEnum nextObject]) {
+	for (NSView *subview in [self subviews]) {
 		if (view = [subview subviewOfClass:aClass])
 			return view;
 	}
@@ -94,10 +93,9 @@
 }
 
 - (id)activeFontWellSubview {
-	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-	NSView *view, *subview;
+	NSView *view;
 	
-	while (subview = [viewEnum nextObject]) {
+	for (NSView *subview in [self subviews]) {
 		if (view = [subview activeFontWellSubview])
 			return view;
 	}

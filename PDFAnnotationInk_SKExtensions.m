@@ -66,18 +66,15 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 - (id)initSkimNoteWithPaths:(NSArray *)paths {
     NSRect bounds = NSZeroRect;
     NSAffineTransform *transform = [NSAffineTransform transform];
-    NSEnumerator *pathEnum;
     NSBezierPath *path;
     
-    pathEnum = [paths objectEnumerator];
-    while (path = [pathEnum nextObject])
+    for (path in paths)
         bounds = NSUnionRect(bounds, [path nonEmptyBounds]);
     bounds = NSInsetRect(NSIntegralRect(bounds), -8.0, -8.0);
     [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)];
     
     if (self = [self initSkimNoteWithBounds:bounds]) {
-        pathEnum = [paths objectEnumerator];
-        while (path = [pathEnum nextObject]) {
+        for (path in paths) {
             [path transformUsingAffineTransform:transform];
             [self addBezierPath:path];
         }
@@ -87,14 +84,12 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
-    NSBezierPath *path;
     NSPoint point;
     NSInteger i, iMax;
     NSRect bounds = [self bounds];
     [fdfString appendFDFName:SKFDFAnnotationInkListKey];
     [fdfString appendString:@"["];
-    while (path = [pathEnum nextObject]) {
+    for (NSBezierPath *path in [self paths]) {
         iMax = [path elementCount];
         [fdfString appendString:@"["];
         for (i = 0; i < iMax; i++) {
@@ -118,11 +113,9 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     CGFloat delta = SKMax(2.0, 0.5 * [self lineWidth]);
     
     if ([super hitTest:point]) {
-        NSEnumerator *pathEnum = [[self paths] objectEnumerator];
-        NSBezierPath *path;
         NSPoint prevPoint, nextPoint = NSZeroPoint;
         NSInteger i, iMax;
-        while (path = [pathEnum nextObject]) {
+        for (NSBezierPath *path in [self paths]) {
             iMax = [path elementCount];
             for (i = 0; i < iMax; i++) {
                 prevPoint = nextPoint;
@@ -137,10 +130,8 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (NSRect)displayRectForBounds:(NSRect)bounds {
     CGFloat lineWidth = [self lineWidth];
-    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
-    NSBezierPath *path;
     NSRect rect = NSZeroRect;
-    while (path = [pathEnum nextObject])
+    for (NSBezierPath *path in [self paths])
         rect = NSUnionRect(rect, NSInsetRect([path nonEmptyBounds], -lineWidth, -lineWidth));
     rect.origin = SKAddPoints(rect.origin, bounds.origin);
     return NSUnionRect([super displayRectForBounds:bounds], NSIntegralRect(rect));
@@ -149,11 +140,9 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 - (NSArray *)pointLists {
     NSMutableArray *pointLists = [NSMutableArray array];
     NSMutableArray *pointValues;
-    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
-    NSBezierPath *path;
     NSPoint point;
     NSInteger i, iMax;
-    while (path = [pathEnum nextObject]) {
+    for (NSBezierPath *path in [self paths]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (i = 0; i < iMax; i++) {
@@ -187,11 +176,9 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
     NSPoint origin = [self bounds].origin;
     NSMutableArray *pointLists = [NSMutableArray array];
     NSMutableArray *pointValues;
-    NSEnumerator *pathEnum = [[self paths] objectEnumerator];
-    NSBezierPath *path;
     NSPoint point;
     NSInteger i, iMax;
-    while (path = [pathEnum nextObject]) {
+    for (NSBezierPath *path in [self paths]) {
         iMax = [path elementCount];
         pointValues = [[NSMutableArray alloc] initWithCapacity:iMax];
         for (i = 0; i < iMax; i++) {

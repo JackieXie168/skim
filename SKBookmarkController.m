@@ -129,10 +129,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
                 [recentDocuments addObjectsFromArray:[plist objectForKey:RECENTDOCUMENTS_KEY]];
-                NSEnumerator *dictEnum = [[plist objectForKey:BOOKMARKS_KEY] objectEnumerator];
-                NSDictionary *dict;
-                
-                while (dict = [dictEnum nextObject]) {
+                for (NSDictionary *dict in [plist objectForKey:BOOKMARKS_KEY]) {
                     SKBookmark *bookmark = [SKBookmark bookmarkWithProperties:dict];
                     if (bookmark)
                         [bookmarks addObject:bookmark];
@@ -207,12 +204,10 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 static NSArray *minimumCoverForBookmarks(NSArray *items) {
-    NSEnumerator *bmEnum = [items objectEnumerator];
-    SKBookmark *bm;
     SKBookmark *lastBm = nil;
     NSMutableArray *minimalCover = [NSMutableArray array];
     
-    while (bm = [bmEnum nextObject]) {
+    for (SKBookmark *bm in items) {
         if ([bm isDescendantOf:lastBm] == NO) {
             [minimalCover addObject:bm];
             lastBm = bm;
@@ -252,11 +247,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)addBookmarkForSetups:(NSArray *)setupDicts label:(NSString *)label toFolder:(SKBookmark *)folder {
-    NSEnumerator *setupEnum = [setupDicts objectEnumerator];
-    NSDictionary *setup;
     NSMutableArray *children = [NSMutableArray array];
     SKBookmark *bookmark;
-    while (setup = [setupEnum nextObject]) {
+    for (NSDictionary *setup in setupDicts) {
         if (bookmark = [SKBookmark bookmarkWithSetup:setup label:@""])
             [children addObject:bookmark];
     }
@@ -464,9 +457,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)startObservingBookmarks:(NSArray *)newBookmarks {
-    NSEnumerator *bmEnum = [newBookmarks objectEnumerator];
-    SKBookmark *bm;
-    while (bm = [bmEnum nextObject]) {
+    for (SKBookmark *bm in newBookmarks) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
             [bm addObserver:self forKeyPath:LABEL_KEY options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:&SKBookmarkPropertiesObservationContext];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
@@ -478,9 +469,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (void)stopObservingBookmarks:(NSArray *)oldBookmarks {
-    NSEnumerator *bmEnum = [oldBookmarks objectEnumerator];
-    SKBookmark *bm;
-    while (bm = [bmEnum nextObject]) {
+    for (SKBookmark *bm in oldBookmarks) {
         if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
             [bm removeObserver:self forKeyPath:LABEL_KEY];
             if ([bm bookmarkType] == SKBookmarkTypeFolder) {
@@ -653,13 +642,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
     
     if (type) {
-        NSEnumerator *bmEnum = [[self draggedBookmarks] objectEnumerator];
-        SKBookmark *bookmark;
-        
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
-		while (bookmark = [bmEnum nextObject]) {
+		for (SKBookmark *bookmark in [self draggedBookmarks]) {
             SKBookmark *parent = [bookmark parent];
             NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {

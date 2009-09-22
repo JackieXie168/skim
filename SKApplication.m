@@ -172,8 +172,7 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
                 nextIndex++;
             }
             
-            NSEnumerator *itemEnum = [subitems objectEnumerator];
-            while (anItem = [itemEnum nextObject])
+            for (anItem in subitems)
                 [windowsMenu insertItem:anItem atIndex:nextIndex++];
             
             if (nextIndex < [windowsMenu numberOfItems] && [[windowsMenu itemAtIndex:nextIndex] isSeparatorItem] == NO)

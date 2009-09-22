@@ -217,10 +217,7 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (NSFont *)font {
-    NSEnumerator *tcEnum = [[self tableColumns] objectEnumerator];
-    NSTableColumn *tc;
-    
-    while (tc = [tcEnum nextObject]) {
+    for (NSTableColumn *tc in [self tableColumns]) {
         NSCell *cell = [tc dataCell];
         if ([cell type] == NSTextCellType)
             return [cell font];
@@ -229,10 +226,7 @@ static char SKTableViewDefaultsObservationContext;
 }
 
 - (void)setFont:(NSFont *)font {
-    NSEnumerator *tcEnum = [[self tableColumns] objectEnumerator];
-    NSTableColumn *tc;
-    
-    while (tc = [tcEnum nextObject]) {
+    for (NSTableColumn *tc in [self tableColumns]) {
         NSCell *cell = [tc dataCell];
         if ([cell type] == NSTextCellType)
             [cell setFont:font];

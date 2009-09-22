@@ -415,14 +415,12 @@ static char SKMainDocumentDefaultsObservationContext;
         NSString *path = [absoluteURL path];
         NSString *tmpPath = nil;
         BOOL isDir = NO;
-        NSEnumerator *fileEnum;
         NSString *file;
         
         // we move everything that's not ours out of the way, so we can preserve version control info
         if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
             NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-            fileEnum = [[fm contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
-            while (file = [fileEnum nextObject]) {
+            for (file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
                 if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
                     if (tmpPath == nil)
                         tmpPath = SKUniqueTemporaryDirectory();
@@ -434,8 +432,7 @@ static char SKMainDocumentDefaultsObservationContext;
         success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
         
         if (tmpPath) {
-            fileEnum = [[fm contentsOfDirectoryAtPath:tmpPath error:NULL] objectEnumerator];
-            while (file = [fileEnum nextObject])
+            for (file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
                 [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
             [fm removeItemAtPath:tmpPath error:NULL];
         }
@@ -959,10 +956,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     for (i = 0; i < count; i++) {
         PDFPage *page = [pdfDoc pageAtIndex:i];
-        NSEnumerator *annEnum = [[[[page annotations] copy] autorelease] objectEnumerator];
-        PDFAnnotation *annotation;
         
-        while (annotation = [annEnum nextObject]) {
+        for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
             if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
                 NSDictionary *properties = [annotation SkimNoteProperties];
                 if ([[annotation type] isEqualToString:SKNTextString])
@@ -986,10 +981,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         count = [pdfDocWithoutNotes pageCount];
         for (i = 0; i < count; i++) {
             PDFPage *page = [pdfDocWithoutNotes pageAtIndex:i];
-            NSEnumerator *annEnum = [[[[page annotations] copy] autorelease] objectEnumerator];
-            PDFAnnotation *annotation;
             
-            while (annotation = [annEnum nextObject]) {
+            for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
                 if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
                     [page removeAnnotation:annotation];
             }
@@ -1535,7 +1528,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if ([editorCmd isAbsolutePath] == NO) {
             NSMutableArray *searchPaths = [NSMutableArray arrayWithObjects:@"/usr/bin", @"/usr/local/bin", nil];
-            NSEnumerator *pathEnum;
             NSString *path;
             NSString *toolPath;
             NSBundle *appBundle;
@@ -1550,15 +1542,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                         [searchPaths addObject:[[appBundle executablePath] stringByDeletingLastPathComponent]];
                 }
             } else {
-                pathEnum = [[[NSFileManager defaultManager] applicationSupportDirectories] objectEnumerator];
-                while (path = [pathEnum nextObject]) {
+                for (path in [[NSFileManager defaultManager] applicationSupportDirectories]) {
                     [searchPaths addObject:path];
                     [searchPaths addObject:[path stringByAppendingPathComponent:@"Scripts"]];
                 }
             }
             
-            pathEnum = [searchPaths objectEnumerator];
-            while (path = [pathEnum nextObject]) {
+            for (path in searchPaths) {
                 toolPath = [path stringByAppendingPathComponent:editorCmd];
                 if ([fm isExecutableFileAtPath:toolPath]) {
                     editorCmd = toolPath;

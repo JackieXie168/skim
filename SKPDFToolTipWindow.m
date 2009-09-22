@@ -399,12 +399,10 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
 @implementation NSScreen (SKExtensions)
 
 + (NSScreen *)screenForPoint:(NSPoint)point {
-    NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
-    NSScreen *aScreen;
     NSScreen *screen = nil;
     CGFloat distanceSquared = CGFLOAT_MAX;
     
-    while (aScreen = [screenEnum nextObject]) {
+    for (NSScreen *aScreen in [NSScreen screens]) {
         NSRect frame = [aScreen frame];
         
         if (NSPointInRect(point, frame))

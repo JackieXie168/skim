@@ -208,9 +208,7 @@ static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
         if (selection) {
             NSUInteger i, iMax;
             NSRect lineRect = NSZeroRect;
-            NSEnumerator *selEnum = [[selection selectionsByLine] objectEnumerator];
-            PDFSelection *sel;
-            while (sel = [selEnum nextObject]) {
+            for (PDFSelection *sel in [selection selectionsByLine]) {
                 lineRect = [sel boundsForPage:page];
                 if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
                      [[self lineRects] addPointer:&lineRect];
@@ -241,13 +239,11 @@ static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
 
 - (NSString *)fdfString {
     NSMutableString *fdfString = [[[super fdfString] mutableCopy] autorelease];
-    NSEnumerator *pointEnum = [[self quadrilateralPoints] objectEnumerator];
-    NSValue *value;
     NSPoint point;
     NSRect bounds = [self bounds];
     [fdfString appendFDFName:SKFDFAnnotationQuadrilateralPointsKey];
     [fdfString appendString:@"["];
-    while (value = [pointEnum nextObject]) {
+    for (NSValue *value in [self quadrilateralPoints]) {
         point = [value pointValue];
         [fdfString appendFormat:@"%f %f ", point.x + NSMinX(bounds), point.y + NSMinY(bounds)];
     }

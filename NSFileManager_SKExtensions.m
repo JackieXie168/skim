@@ -58,9 +58,7 @@
     if (applicationSupportDirectories == nil) {
         NSMutableArray *pathArray = [NSMutableArray array];
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-        NSEnumerator *pathEnum = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES) objectEnumerator];
-        NSString *path;
-        while (path = [pathEnum nextObject])
+        for (NSString *path in NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES))
             [pathArray addObject:[path stringByAppendingPathComponent:appName]];
         applicationSupportDirectories = [pathArray copy];
     }
@@ -75,10 +73,8 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *filename = [file stringByAppendingPathExtension:extension];
     NSString *fullPath = nil;
-    NSEnumerator *pathEnum = [[[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]] objectEnumerator];
-    NSString *appSupportPath = nil;
     
-    while (appSupportPath = [pathEnum nextObject]) {
+    for (NSString *appSupportPath in [[self applicationSupportDirectories] arrayByAddingObject:[[NSBundle mainBundle] sharedSupportPath]]) {
         fullPath = subpath ? [appSupportPath stringByAppendingPathComponent:subpath] : appSupportPath;
         fullPath = [fullPath stringByAppendingPathComponent:filename];
         if ([fm fileExistsAtPath:fullPath] == NO)

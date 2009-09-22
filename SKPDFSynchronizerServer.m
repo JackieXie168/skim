@@ -307,9 +307,7 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
     if ([file isAbsolutePath] == NO)
         file = [[[self fileName] stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
     if (isTeX && [fileManager fileExistsAtPath:file] == NO && [SKPDFSynchronizerTexExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
-        NSEnumerator *texExtensions = [SKPDFSynchronizerTexExtensions objectEnumerator];
-        NSString *extension;
-        while (extension = [texExtensions nextObject]) {
+        for (NSString *extension in SKPDFSynchronizerTexExtensions) {
             NSString *tryFile = [file stringByAppendingPathExtension:extension];
             if ([fileManager fileExistsAtPath:tryFile]) {
                 file = tryFile;
@@ -439,10 +437,8 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
                 NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"x" ascending:YES] autorelease];
                 NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
                 NSArray *lineSortDescriptors = [NSArray arrayWithObjects:lineSortDescriptor, nil];
-                NSEnumerator *arrayEnum = [lines objectEnumerator];
-                NSMutableArray *array;
                 
-                while (array = [arrayEnum nextObject])
+                for (NSMutableArray *array in lines)
                     [array sortUsingDescriptors:lineSortDescriptors];
                 [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
@@ -467,9 +463,8 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
         SKPDFSyncRecord *beforeRecord = nil;
         SKPDFSyncRecord *afterRecord = nil;
         NSMutableDictionary *atRecords = [NSMutableDictionary dictionary];
-        NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
         
-        while (record = [recordEnum nextObject]) {
+        for (record in [pages objectAtIndex:pageIndex]) {
             if ([record line] == 0)
                 continue;
             NSPoint p = [record point];
@@ -529,9 +524,8 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
         SKPDFSyncRecord *beforeRecord = nil;
         SKPDFSyncRecord *afterRecord = nil;
         SKPDFSyncRecord *atRecord = nil;
-        NSEnumerator *recordEnum = [theLines objectEnumerator];
         
-        while (record = [recordEnum nextObject]) {
+        for (record in theLines) {
             if ([record pageIndex] == NSNotFound)
                 continue;
             NSInteger l = [record line];

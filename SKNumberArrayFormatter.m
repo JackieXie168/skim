@@ -70,11 +70,9 @@
     if ([obj isKindOfClass:[NSNumber class]])
         obj = [NSArray arrayWithObjects:obj, nil];
     
-    NSEnumerator *numberEnum = [obj objectEnumerator];
-    NSNumber *number;
     NSMutableString *string = [NSMutableString string];
     
-    while (number = [numberEnum nextObject]) {
+    for (NSNumber *number in obj) {
         NSString *s = [numberFormatter stringForObjectValue:number];
         if ([s length]) {
             if ([string length])
@@ -86,15 +84,14 @@
 }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
-    NSEnumerator *stringEnum = [[string componentsSeparatedByString:@" "] objectEnumerator];
-    NSString *s;
     NSNumber *number;
     NSMutableArray *array = [NSMutableArray array];
     BOOL success = YES;
     
-    while (success && (s = [stringEnum nextObject])) {
+    for (NSString *s in [string componentsSeparatedByString:@" "]) {
         if ([s length] && (success = [numberFormatter getObjectValue:&number forString:s errorDescription:error]))
             [array addObject:number];
+        if (success = NO) break;
     }
     if (success)
         *obj = array;

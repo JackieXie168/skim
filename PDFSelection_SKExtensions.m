@@ -178,16 +178,12 @@
 
 - (PDFPage *)safeFirstPage {
     if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
                 return page;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             NSInteger i, count = [self numberOfRangesOnPage:page];
             for (i = 0; i < count; i++) {
                 if ([self rangeAtIndex:i onPage:page].length > 0)
@@ -195,9 +191,7 @@
             }
         }
     } else {
-        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             if (NSIsEmptyRect([self boundsForPage:page]) == NO)
                 return page;
         }
@@ -207,16 +201,12 @@
 
 - (PDFPage *)safeLastPage {
     if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
                 return page;
         }
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             NSInteger i, count = [self numberOfRangesOnPage:page];
             for (i = 0; i < count; i++) {
                 if ([self rangeAtIndex:i onPage:page].length > 0)
@@ -224,9 +214,7 @@
             }
         }
     } else {
-        NSEnumerator *pageEnum = [[self pages] reverseObjectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             if (NSIsEmptyRect([self boundsForPage:page]) == NO)
                 return page;
         }
@@ -236,17 +224,13 @@
 
 - (BOOL)hasCharacters {
     if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             if ([[self indexOfCharactersOnPage:page] firstIndex] != NSNotFound)
                 return YES;
         }
         return NO;
     } else if ([self respondsToSelector:@selector(numberOfRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-        PDFPage *page;
-        while (page = [pageEnum nextObject]) {
+        for (PDFPage *page in [self pages]) {
             NSInteger i, count = [self numberOfRangesOnPage:page];
             for (i = 0; i < count; i++) {
                 if ([self rangeAtIndex:i onPage:page].length > 0)
@@ -296,10 +280,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         if ([dicts count] == 0)
             return nil;
         
-        NSEnumerator *dictEnum = [dicts objectEnumerator];
-        NSMutableDictionary *dict;
-        
-        while (dict = [dictEnum nextObject]) {
+        for (NSMutableDictionary *dict in dicts) {
             NSTextStorage *containerText = [dict objectForKey:@"text"];
             NSPointerArray *textRanges = [dict objectForKey:@"ranges"];
             NSUInteger ri, numRanges = [textRanges count];
@@ -450,10 +431,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         if ([containers count] == 0)
             return nil;
         
-        NSEnumerator *containerEnum = [containers objectEnumerator];
-        id container;
-        
-        while (container = [containerEnum nextObject]) {
+        for (id container in containers) {
             NSTextStorage *containerText = [container valueForKey:key];
             if ([containerText isKindOfClass:[NSTextStorage class]] == NO || [containerText length] == 0)
                 continue;
@@ -494,19 +472,15 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
     }
     
     NSMutableArray *selections = [NSMutableArray array];
-    NSEnumerator *specEnum = [specifier objectEnumerator];
-    NSScriptObjectSpecifier *spec;
     
-    while (spec = [specEnum nextObject]) {
+    for (NSScriptObjectSpecifier *spec in specifier) {
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
         NSArray *dicts = characterRangesAndContainersForSpecifier(spec, YES, NO);
-        NSEnumerator *dictEnum = [dicts objectEnumerator];
-        NSDictionary *dict;
         PDFDocument *doc = nil;
         
-        while (dict = [dictEnum nextObject]) {
+        for (NSDictionary *dict in dicts) {
             id container = [dict objectForKey:@"container"];
             NSPointerArray *ranges = [dict objectForKey:@"ranges"];
             NSUInteger i, numRanges = [ranges count];
@@ -601,13 +575,9 @@ static inline void addSpecifierWithCharacterRangeAndPage(NSMutableArray *ranges,
 
 - (id)objectSpecifier {
     NSMutableArray *ranges = [NSMutableArray array];
-    NSEnumerator *pageEnum = [[self pages] objectEnumerator];
-    PDFPage *page;
-    while (page = [pageEnum nextObject]) {
-        NSEnumerator *rangeEnum = [[self safeRangesOnPage:page] objectEnumerator];
-        NSValue *value;
+    for (PDFPage *page in [self pages]) {
         NSRange lastRange = NSMakeRange(0, 0);
-        while (value = [rangeEnum nextObject]) {
+        for (NSValue *value in [self safeRangesOnPage:page]) {
             NSRange range = [value rangeValue];
             if (range.length == 0) {
             } else if (lastRange.length == 0) {
