@@ -37,6 +37,7 @@
  */
 
 #import "SKPDFSyncRecord.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 
 @implementation SKPDFSyncRecord
@@ -114,9 +115,7 @@
 
 - (id)init {
     if (self = [super init]) {
-        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
-        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-        records = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
+        records = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions integerPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
     }
     return self;
 }

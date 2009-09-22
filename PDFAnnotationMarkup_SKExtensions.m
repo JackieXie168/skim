@@ -49,6 +49,7 @@
 #import "NSData_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -144,14 +145,10 @@ static void (*original_dealloc)(id, SEL) = NULL;
     lineRectsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
-static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
-
 - (NSPointerArray *)lineRects {
     NSPointerArray *lineRects = [lineRectsTable objectForKey:self];
     if (lineRects == NULL) {
-        NSPointerFunctions *functions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-        [functions setSizeFunction:&rectSizeFunction];
-        lineRects = [[NSPointerArray alloc] initWithPointerFunctions:functions];
+        lineRects = [[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]];
         [lineRectsTable setObject:lineRects forKey:self];
         [lineRects release];;
     }

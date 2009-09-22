@@ -41,7 +41,7 @@
 
 @interface NSPointerFunctions (SKExtensions)
 
-+ (id)strongObjectsPointerFunctions;
++ (id)strongObjectPointerFunctions;
 + (id)integerPointerFunctions;
 + (id)floatPointerFunctions;
 + (id)rectPointerFunctions;

@@ -99,6 +99,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "PDFOutline_SKExtensions.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -201,8 +202,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         return [super automaticallyNotifiesObserversForKey:key];
 }
 
-static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); }
-
 - (id)init {
     if (self = [super initWithWindowNibName:@"MainWindow"]) {
         mwcFlags.isPresentation = 0;
@@ -220,10 +219,7 @@ static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); 
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
-        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality];
-        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-        [valueFunctions setSizeFunction:floatSizeFunction];
-        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
+        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions floatPointerFunctions] capacity:0];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
         mwcFlags.rightSidePaneState = SKNoteSidePaneState;

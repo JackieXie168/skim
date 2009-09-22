@@ -46,6 +46,7 @@
 #import "NSFileManager_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
 
@@ -59,46 +60,6 @@ struct SKServerFlags {
     volatile int32_t shouldKeepRunning;
     volatile int32_t serverReady;
 };
-
-#pragma mark -
-
-#define STACK_BUFFER_SIZE 256
-
-static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item)) {
-    return (CFStringGetLength(item1) == CFStringGetLength(item2) && CFStringCompareWithOptions(item1, item2, CFRangeMake(0, CFStringGetLength(item1)), kCFCompareCaseInsensitive) == kCFCompareEqualTo);
-}
-
-static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item)) {
-    if(item == NULL) return 0;
-    
-    uint32_t hash = 0;
-    CFAllocatorRef allocator = CFGetAllocator(item);
-    CFIndex len = CFStringGetLength(item);
-    
-    // use a generous length, in case the lowercase changes the number of characters
-    UniChar *buffer, stackBuffer[STACK_BUFFER_SIZE];
-    if (len + 10 >= STACK_BUFFER_SIZE)
-        buffer = (UniChar *)CFAllocatorAllocate(allocator, (len + 10) * sizeof(UniChar), 0);
-    else
-        buffer = stackBuffer;
-    CFStringGetCharacters(item, CFRangeMake(0, len), buffer);
-    
-    // If we create the string with external characters, CFStringGetCharactersPtr is guaranteed to succeed; since we're going to call CFStringGetCharacters anyway in fastHash if CFStringGetCharactsPtr fails, let's do it now when we lowercase the string
-    CFMutableStringRef mutableString = CFStringCreateMutableWithExternalCharactersNoCopy(allocator, buffer, len, len + 10, (buffer != stackBuffer ? allocator : kCFAllocatorNull));
-    CFStringLowercase(mutableString, NULL);
-    hash = CFHash(mutableString);
-    // if we used the allocator, this should free the buffer for us
-    CFRelease(mutableString);
-    return hash;
-}
-
-static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
-    NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-    NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-    [valueFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
-    [valueFunctions setHashFunction:&caseInsensitiveStringHash];
-    return [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
-}
 
 #pragma mark -
 
@@ -335,7 +296,7 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
     if (lines)
         [lines removeAllObjects];
     else
-        lines = createCaseInsensitiveStringKeysMapTable();
+        lines = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions caseInsensitiveStringPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
     
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
@@ -576,7 +537,7 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
         if (filenames)
             [filenames removeAllObjects];
         else
-            filenames = createCaseInsensitiveStringKeysMapTable();
+            filenames = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions caseInsensitiveStringPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {

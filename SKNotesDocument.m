@@ -60,6 +60,7 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -75,17 +76,12 @@
 #define TYPE_COLUMNID @"type"
 #define PAGE_COLUMNID @"page"
 
-static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); }
-
 @implementation SKNotesDocument
 
 - (id)init {
     if (self = [super init]) {
         notes = [[NSMutableArray alloc] initWithCapacity:10];
-        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality];
-        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-        [valueFunctions setSizeFunction:floatSizeFunction];
-        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
+        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions floatPointerFunctions] capacity:0];
         caseInsensitiveSearch = YES;
     }
     return self;
