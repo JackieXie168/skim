@@ -114,7 +114,9 @@
 
 - (id)init {
     if (self = [super init]) {
-        records = [[NSMutableDictionary alloc] init];
+        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
+        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+        records = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
     }
     return self;
 }
@@ -125,14 +127,12 @@
 }
 
 - (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex {
-    NSNumber *recordNumber = [[NSNumber alloc] initWithInteger:recordIndex];
-    SKPDFSyncRecord *record = [records objectForKey:recordNumber];
+    SKPDFSyncRecord *record = [records objectForKey:(id)recordIndex];
     if (record == nil) {
         record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
-        [records setObject:record forKey:recordNumber];
+        [records setObject:record forKey:(id)recordIndex];
         [record release];
     }
-    [recordNumber release];
     return record;
 }
 
