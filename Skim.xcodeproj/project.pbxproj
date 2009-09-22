@@ -111,6 +111,7 @@
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
+		CE42B8EC106996C60091F588 /* NSPointerFunctions_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE42B8EB106996C60091F588 /* NSPointerFunctions_SKExtensions.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
 		CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */; };
 		CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */; };
@@ -673,6 +674,8 @@
 		CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSValue_SKExtensions.m; sourceTree = "<group>"; };
 		CE4294A10BBD29120016FDC2 /* SKReadingBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKReadingBar.h; sourceTree = "<group>"; };
 		CE4294A20BBD29120016FDC2 /* SKReadingBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKReadingBar.m; sourceTree = "<group>"; };
+		CE42B8EA106996C60091F588 /* NSPointerFunctions_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSPointerFunctions_SKExtensions.h; sourceTree = "<group>"; };
+		CE42B8EB106996C60091F588 /* NSPointerFunctions_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSPointerFunctions_SKExtensions.m; sourceTree = "<group>"; };
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PSDocument.icns; sourceTree = "<group>"; };
 		CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKExtensions.h; sourceTree = "<group>"; };
 		CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationText_SKExtensions.m; sourceTree = "<group>"; };
@@ -1135,6 +1138,8 @@
 				CE3401E50E01388700A7FFE6 /* NSNumber_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
+				CE42B8EA106996C60091F588 /* NSPointerFunctions_SKExtensions.h */,
+				CE42B8EB106996C60091F588 /* NSPointerFunctions_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
 				CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
@@ -2124,6 +2129,7 @@
 				CE5BB0CF10515CCC00161B87 /* SKPDFDocument.m in Sources */,
 				CE5BB0D310515D3100161B87 /* SKPDFPage.m in Sources */,
 				CE5BB21610517AEF00161B87 /* NSFileManager_SKExtensions.m in Sources */,
+				CE42B8EC106996C60091F588 /* NSPointerFunctions_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -77,7 +77,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     return hash;
 }
 
-+ (id)strongObjectsPointerFunctions {
++ (id)strongObjectPointerFunctions {
     return [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
 }
 
