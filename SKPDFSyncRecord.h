@@ -71,7 +71,7 @@
 #pragma mark -
 
 @interface SKPDFSyncRecords : NSObject {
-    NSMutableDictionary *records;
+    NSMapTable *records;
 }
 - (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex;
 @end
