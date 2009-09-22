@@ -188,7 +188,6 @@
 		CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8EF60EA2A14700C16FE4 /* SKNote.m */; };
 		CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
-		CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE39050CA43E7300849B0F /* SKSheetController.m */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -833,8 +832,6 @@
 		CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteText.m; sourceTree = "<group>"; };
 		CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSecondaryPDFView.h; sourceTree = "<group>"; };
 		CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSecondaryPDFView.m; sourceTree = "<group>"; };
-		CEAE39040CA43E7300849B0F /* SKSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSheetController.h; sourceTree = "<group>"; };
-		CEAE39050CA43E7300849B0F /* SKSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSheetController.m; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -1246,8 +1243,6 @@
 				F97751620B37461000DF673B /* SKConversionProgressController.m */,
 				CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */,
 				CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */,
-				CEAE39040CA43E7300849B0F /* SKSheetController.h */,
-				CEAE39050CA43E7300849B0F /* SKSheetController.m */,
 				4530D7E60B27AAB9007C59F4 /* SKSnapshotWindowController.h */,
 				4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */,
 				CE05A86C0E90ED950060BB07 /* SKTextFieldSheetController.h */,
@@ -2058,7 +2053,6 @@
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
-				CEAE39070CA43E7300849B0F /* SKSheetController.m in Sources */,
 				CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */,
 				CEBF85E20CCE2DE70057A050 /* NSAffineTransform_SKExtensions.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,

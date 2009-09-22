@@ -78,6 +78,7 @@
 #import "SKRuntime.h"
 #import "SKTextFieldSheetController.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
+#import "NSWindowController_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"

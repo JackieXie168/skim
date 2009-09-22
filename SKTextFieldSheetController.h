@@ -37,10 +37,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SKSheetController.h"
 
 
-@interface SKTextFieldSheetController : SKSheetController {
+@interface SKTextFieldSheetController : NSWindowController {
     IBOutlet NSTextField *textField;
 }
 

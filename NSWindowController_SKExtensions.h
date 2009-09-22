@@ -46,4 +46,8 @@
 - (BOOL)isNoteWindowController;
 - (BOOL)isSnapshotWindowController;
 
+- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo;
+
+- (IBAction)dismiss:(id)sender;
+
 @end

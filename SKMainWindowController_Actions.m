@@ -62,6 +62,7 @@
 #import "SKSplitView.h"
 #import "SKLineInspector.h"
 #import "NSEvent_SKExtensions.h"
+#import "NSWindowController_SKExtensions.h"
 
 
 @implementation SKMainWindowController (Actions)
