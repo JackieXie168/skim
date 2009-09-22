@@ -127,7 +127,7 @@ typedef NSInteger SKInteractionMode;
     NSUInteger gesturePageIndex;
     
     NSInteger trackingRect;
-    CFMutableArrayRef PDFToolTipRects;
+    NSPointerArray *PDFToolTipRects;
     NSInteger PDFToolTipRect;
     
     NSInteger spellingTag;

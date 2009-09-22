@@ -60,8 +60,7 @@ static char SKTableViewDefaultsObservationContext;
         @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
         @catch (id e) {}
     }
-    if (trackingRects != NULL)
-        CFRelease(trackingRects);
+    [trackingRects release];
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [super dealloc];
@@ -247,10 +246,10 @@ static char SKTableViewDefaultsObservationContext;
 
 - (void)removeTrackingRects {
     if (trackingRects) {
-        CFIndex idx = CFArrayGetCount(trackingRects);
-        while(idx--)
-            [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
-        CFArrayRemoveAllValues(trackingRects);
+        NSUInteger idx = [trackingRects count];
+        while (idx--)
+            [self removeTrackingRect:(NSTrackingRectTag)[trackingRects pointerAtIndex:idx]];
+        [trackingRects setCount:0];
     }
 }
 
@@ -259,7 +258,7 @@ static char SKTableViewDefaultsObservationContext;
         return;
     
     if (trackingRects == nil)
-        trackingRects = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+        trackingRects = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
     else
         [self removeTrackingRects];
     
@@ -277,7 +276,7 @@ static char SKTableViewDefaultsObservationContext;
                 if ([[self delegate] tableView:self shouldTrackTableColumn:tableColumn row:row]) {
                     userData = row * [self numberOfColumns] + column;
                     tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
-                    CFArrayAppendValue(trackingRects, (const void *)tag);
+                    [trackingRects addPointer:(void *)tag];
                 }
             }
             column = [columnIndexes indexGreaterThanIndex:column];

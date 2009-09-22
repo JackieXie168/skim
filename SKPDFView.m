@@ -225,7 +225,7 @@ enum {
     gesturePageIndex = NSNotFound;
     
     trackingRect = 0;
-    PDFToolTipRects = CFArrayCreateMutable(NULL, 0, NULL);
+    PDFToolTipRects = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     
@@ -271,7 +271,7 @@ enum {
     [self doAutohide:NO];
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
-    CFRelease(PDFToolTipRects);
+    [PDFToolTipRects release];
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [transitionController release];
@@ -284,10 +284,10 @@ enum {
 #pragma mark Tool Tips
 
 - (void)removePDFToolTipRects {
-    CFIndex idx = CFArrayGetCount(PDFToolTipRects);
+    NSUInteger idx = [PDFToolTipRects count];
     while (idx--)
-        [[self documentView] removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(PDFToolTipRects, idx)];
-    CFArrayRemoveAllValues(PDFToolTipRects);
+        [[self documentView] removeTrackingRect:(NSTrackingRectTag)[PDFToolTipRects pointerAtIndex:idx]];
+    [PDFToolTipRects setCount:0];
 }
 
 - (void)resetPDFToolTipRects {
@@ -309,7 +309,7 @@ enum {
                     if (NSIsEmptyRect(rect) == NO) {
                         rect = [self convertRect:rect toView:[self documentView]];
                         NSTrackingRectTag tag = [[self documentView] addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
-                        CFArrayAppendValue(PDFToolTipRects, (void *)tag);
+                        [PDFToolTipRects addPointer:(void *)tag];
                     }
                 }
             }
@@ -1465,9 +1465,15 @@ enum {
     [super mouseEntered:theEvent];
     if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([NSApp isActive] && -1 != CFArrayGetFirstIndexOfValue(PDFToolTipRects, CFRangeMake(0, CFArrayGetCount(PDFToolTipRects)), (void *)trackingNumber)) {
-        [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[theEvent userData] atPoint:NSZeroPoint];
-        PDFToolTipRect = trackingNumber;
+    } else if ([NSApp isActive]) {
+        NSUInteger i = [PDFToolTipRects count];
+        while (i--) {
+            if (*(NSTrackingRectTag*)[PDFToolTipRects pointerAtIndex:i] == trackingNumber) {
+                [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[theEvent userData] atPoint:NSZeroPoint];
+                PDFToolTipRect = trackingNumber;
+                break;
+            }
+        }
     }
 }
  

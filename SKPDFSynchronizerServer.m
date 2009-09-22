@@ -45,7 +45,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import "NSFileManager_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKCFCallBacks.h"
 #import "SKRuntime.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
@@ -60,6 +59,46 @@ struct SKServerFlags {
     volatile int32_t shouldKeepRunning;
     volatile int32_t serverReady;
 };
+
+#pragma mark -
+
+#define STACK_BUFFER_SIZE 256
+
+static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item)) {
+    return (CFStringGetLength(item1) == CFStringGetLength(item2) && CFStringCompareWithOptions(item1, item2, CFRangeMake(0, CFStringGetLength(item1)), kCFCompareCaseInsensitive) == kCFCompareEqualTo);
+}
+
+static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item)) {
+    if(item == NULL) return 0;
+    
+    uint32_t hash = 0;
+    CFAllocatorRef allocator = CFGetAllocator(item);
+    CFIndex len = CFStringGetLength(item);
+    
+    // use a generous length, in case the lowercase changes the number of characters
+    UniChar *buffer, stackBuffer[STACK_BUFFER_SIZE];
+    if (len + 10 >= STACK_BUFFER_SIZE)
+        buffer = (UniChar *)CFAllocatorAllocate(allocator, (len + 10) * sizeof(UniChar), 0);
+    else
+        buffer = stackBuffer;
+    CFStringGetCharacters(item, CFRangeMake(0, len), buffer);
+    
+    // If we create the string with external characters, CFStringGetCharactersPtr is guaranteed to succeed; since we're going to call CFStringGetCharacters anyway in fastHash if CFStringGetCharactsPtr fails, let's do it now when we lowercase the string
+    CFMutableStringRef mutableString = CFStringCreateMutableWithExternalCharactersNoCopy(allocator, buffer, len, len + 10, (buffer != stackBuffer ? allocator : kCFAllocatorNull));
+    CFStringLowercase(mutableString, NULL);
+    hash = CFHash(mutableString);
+    // if we used the allocator, this should free the buffer for us
+    CFRelease(mutableString);
+    return hash;
+}
+
+static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
+    NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    [valueFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
+    [valueFunctions setHashFunction:&caseInsensitiveStringHash];
+    return [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
+}
 
 #pragma mark -
 
@@ -298,7 +337,7 @@ struct SKServerFlags {
     if (lines)
         [lines removeAllObjects];
     else
-        lines = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        lines = createCaseInsensitiveStringKeysMapTable();
     
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
@@ -399,9 +438,12 @@ struct SKServerFlags {
                 NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"line" ascending:YES] autorelease];
                 NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"x" ascending:YES] autorelease];
                 NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
+                NSArray *lineSortDescriptors = [NSArray arrayWithObjects:lineSortDescriptor, nil];
+                NSEnumerator *arrayEnum = [lines objectEnumerator];
+                NSMutableArray *array;
                 
-                [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
-                                                   withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
+                while (array = [arrayEnum nextObject])
+                    [array sortUsingDescriptors:lineSortDescriptors];
                 [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
                 
@@ -540,7 +582,7 @@ struct SKServerFlags {
         if (filenames)
             [filenames removeAllObjects];
         else
-            filenames = (NSMutableDictionary *)CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kSKCaseInsensitiveStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+            filenames = createCaseInsensitiveStringKeysMapTable();
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {

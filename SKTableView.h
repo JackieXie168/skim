@@ -66,7 +66,7 @@
 
 
 @interface SKTableView : NSTableView <SKTypeSelectDataSource> {
-    CFMutableArrayRef trackingRects;
+    NSPointerArray *trackingRects;
     SKTypeSelectHelper *typeSelectHelper;
 }
 

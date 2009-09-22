@@ -144,7 +144,6 @@
 		CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA1660C909886008BE480 /* SKFDFParser.m */; };
-		CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */ = {isa = PBXBuildFile; fileRef = CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */; };
 		CE665A140E1BF43700D0704D /* SKBookmarkOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE6A5B9D0D663491003B7CC3 /* ToolbarCustomize.tiff */; };
@@ -756,8 +755,6 @@
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE5FA1650C909886008BE480 /* SKFDFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFDFParser.h; sourceTree = "<group>"; };
 		CE5FA1660C909886008BE480 /* SKFDFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFDFParser.m; sourceTree = "<group>"; };
-		CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCFCallBacks.h; sourceTree = "<group>"; };
-		CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCFCallBacks.m; sourceTree = "<group>"; };
 		CE665A120E1BF43700D0704D /* SKBookmarkOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkOutlineView.h; sourceTree = "<group>"; };
 		CE665A130E1BF43700D0704D /* SKBookmarkOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkOutlineView.m; sourceTree = "<group>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
@@ -1393,8 +1390,6 @@
 		CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
-				CE64E8A10D92E670000AD050 /* SKCFCallBacks.h */,
-				CE64E8A20D92E670000AD050 /* SKCFCallBacks.m */,
 				CE1F67FD0E37552400E07E76 /* SKRuntime.h */,
 				CE09FC3B0E3886C100BDF413 /* SKRuntime.m */,
 				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
@@ -2077,7 +2072,6 @@
 				CE9B951E0D04657A00EB1A6C /* SKRemoteStateWindow.m in Sources */,
 				CE6DC7BB0D689138003A072F /* PDFDocument_SKExtensions.m in Sources */,
 				CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */,
-				CE64E8A30D92E670000AD050 /* SKCFCallBacks.m in Sources */,
 				CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */,
 				CEE54D880DA2E37B0037169F /* PDFAnnotation_SKExtensions.m in Sources */,
 				CEE54D930DA2E5E10037169F /* PDFAnnotationCircle_SKExtensions.m in Sources */,

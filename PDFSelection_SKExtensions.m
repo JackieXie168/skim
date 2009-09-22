@@ -42,7 +42,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKMainDocument.h"
-#import "SKCFCallbacks.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
@@ -279,12 +278,16 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     return range;
 }
 
+static NSUInteger rangeSizeFunction(const void *item) { return sizeof(NSRange); }
+
 static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier *specifier, BOOL continuous, BOOL continuousContainers) {
     if ([specifier isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
         return nil;
     
     NSMutableArray *rangeDicts = [NSMutableArray array];
     NSString *key = [specifier key];
+    NSPointerFunctions *functions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
+    [functions setSizeFunction:&rangeSizeFunction];
     
     if ([key isEqualToString:@"characters"] || [key isEqualToString:@"words"] || [key isEqualToString:@"paragraphs"] || [key isEqualToString:@"attributeRuns"]) {
         
@@ -298,12 +301,12 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
         while (dict = [dictEnum nextObject]) {
             NSTextStorage *containerText = [dict objectForKey:@"text"];
-            CFArrayRef textRanges = (CFArrayRef)[dict objectForKey:@"ranges"];
-            NSUInteger ri, numRanges = CFArrayGetCount(textRanges);
-            CFMutableArrayRef ranges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
+            NSPointerArray *textRanges = [dict objectForKey:@"ranges"];
+            NSUInteger ri, numRanges = [textRanges count];
+            NSPointerArray *ranges = [[NSPointerArray alloc] initWithPointerFunctions:functions];
             
             for (ri = 0; ri < numRanges; ri++) {
-                NSRange textRange = *(NSRange *)CFArrayGetValueAtIndex(textRanges, ri);
+                NSRange textRange = *(NSRange *)[textRanges pointerAtIndex:ri];
                 NSTextStorage *textStorage = nil;
                 if (NSEqualRanges(textRange, NSMakeRange(0, [containerText length])))
                     textStorage = [containerText retain];
@@ -312,13 +315,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 
                 // now get the ranges, which can be any kind of specifier
                 NSInteger startIndex, endIndex, i, count, *indices;
-                CFMutableArrayRef tmpRanges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
+                NSPointerArray *tmpRanges = [[NSPointerArray alloc] initWithPointerFunctions:functions];
                 
                 if ([specifier isKindOfClass:[NSPropertySpecifier class]]) {
                     // this should be the full range of characters, words, or paragraphs
                     NSRange range = NSMakeRange(0, [[textStorage valueForKey:key] count]);
                     if (range.length)
-                        CFArrayAppendValue(tmpRanges, &range);
+                        [tmpRanges addPointer:&range];
                 } else if ([specifier isKindOfClass:[NSRangeSpecifier class]]) {
                     // somehow getting the indices as for the general case sometimes leads to an exception for NSRangeSpecifier, so we get the indices of the start/endSpecifiers
                     NSScriptObjectSpecifier *startSpec = [(NSRangeSpecifier *)specifier startSpecifier];
@@ -339,7 +342,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                         }
                         if (startIndex >= 0 && endIndex >= 0) {
                             NSRange range = NSMakeRange(MIN(startIndex, endIndex), MAX(startIndex, endIndex) + 1 - MIN(startIndex, endIndex));
-                            CFArrayAppendValue(tmpRanges, &range);
+                            [tmpRanges addPointer:&range];
                         }
                     }
                 } else {
@@ -350,31 +353,31 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                         NSUInteger idx = indices[i];
                         if (range.length = 0 || idx > NSMaxRange(range)) {
                             if (range.length)
-                                CFArrayAppendValue(tmpRanges, &range);
+                                [tmpRanges addPointer:&range];
                             range = NSMakeRange(idx, 1);
                         } else {
                             ++(range.length);
                         }
                     }
                     if (range.length)
-                        CFArrayAppendValue(tmpRanges, &range);
+                        [tmpRanges addPointer:&range];
                 }
                 
-                count = CFArrayGetCount(tmpRanges);
+                count = [tmpRanges count];
                 if (count == 0) {
                 } else if ([key isEqualToString:@"characters"]) {
                     for (i = 0; i < count; i++) {
-                        NSRange range = *(NSRange *)CFArrayGetValueAtIndex(tmpRanges, i);
+                        NSRange range = *(NSRange *)[tmpRanges pointerAtIndex:i];
                         range.location += textRange.location;
                         range = NSIntersectionRange(range, textRange);
                         if (range.length) {
                             if (continuous) {
-                                CFArrayAppendValue(ranges, &range);
+                                [ranges addPointer:&range];
                             } else {
                                 NSUInteger j;
                                 for (j = range.location; j < NSMaxRange(range); j++) {
                                     NSRange r = NSMakeRange(j, 1);
-                                    CFArrayAppendValue(ranges, &r);
+                                    [ranges addPointer:&r];
                                 }
                             }
                         }
@@ -385,7 +388,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     NSArray *substrings = [[textStorage valueForKey:key] valueForKey:@"string"];
                     if ([substrings count]) {
                         for (i = 0; i < count; i++) {
-                            NSRange range = *(NSRange *)CFArrayGetValueAtIndex(tmpRanges, i);
+                            NSRange range = *(NSRange *)[tmpRanges pointerAtIndex:i];
                             startIndex = MIN(range.location, [substrings count] - 1);
                             endIndex = MIN(NSMaxRange(range) - 1, [substrings count] - 1);
                             if (endIndex == startIndex) endIndex = -1;
@@ -401,7 +404,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                 }
                                 endIndex = NSMaxRange(range) - 1;
                                 range = NSMakeRange(textRange.location + startIndex, endIndex + 1 - startIndex);
-                                CFArrayAppendValue(ranges, &range);
+                                [ranges addPointer:&range];
                             } else {
                                 if (endIndex == -1) endIndex = startIndex;
                                 NSInteger j;
@@ -410,22 +413,22 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                                     if (range.location == NSNotFound)
                                         continue;
                                     range.location += textRange.location;
-                                    CFArrayAppendValue(ranges, &range);
+                                    [ranges addPointer:&range];
                                 }
                             }
                         }
                     }
                 }
                 
-                CFRelease(tmpRanges);
+                [tmpRanges release];
                 [textStorage release];
             }
             
-            if (CFArrayGetCount(ranges)) {
-                [dict setObject:(id)ranges forKey:@"ranges"];
+            if ([ranges count]) {
+                [dict setObject:ranges forKey:@"ranges"];
                 [rangeDicts addObject:dict];
             }
-            CFRelease(ranges);
+            [ranges release];
         }
         
     } else {
@@ -454,13 +457,13 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSTextStorage *containerText = [container valueForKey:key];
             if ([containerText isKindOfClass:[NSTextStorage class]] == NO || [containerText length] == 0)
                 continue;
-            CFMutableArrayRef ranges = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kSKNSRangeArrayCallBacks);
+            NSPointerArray *ranges = [[NSPointerArray alloc] initWithPointerFunctions:functions];
             NSRange range = NSMakeRange(0, [containerText length]);
-            CFArrayAppendValue(ranges, &range);
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:(id)ranges, @"ranges", containerText, @"text", container, @"container", nil];
+            [ranges addPointer:&range];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:ranges, @"ranges", containerText, @"text", container, @"container", nil];
             [rangeDicts addObject:dict];
             [dict release];
-            CFRelease(ranges);
+            [ranges release];
         }
         
     }
@@ -505,8 +508,8 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
         
         while (dict = [dictEnum nextObject]) {
             id container = [dict objectForKey:@"container"];
-            CFArrayRef ranges = (CFArrayRef)[dict objectForKey:@"ranges"];
-            NSUInteger i, numRanges = CFArrayGetCount(ranges);
+            NSPointerArray *ranges = [dict objectForKey:@"ranges"];
+            NSUInteger i, numRanges = [ranges count];
             
             if ([container isKindOfClass:[SKMainDocument class]] && (doc == nil || [doc isEqual:[container pdfDocument]])) {
                 
@@ -518,7 +521,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                     pageLengths[page] = NSNotFound;
                 
                 for (i = 0; i < numRanges; i++) {
-                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
+                    NSRange range = *(NSRange *)[ranges pointerAtIndex:i];
                     NSUInteger pageStart = 0, startPage = NSNotFound, endPage = NSNotFound, startIndex = NSNotFound, endIndex = NSNotFound;
                     
                     for (page = 0; (page < numPages) && (pageStart < NSMaxRange(range)); page++) {
@@ -552,7 +555,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 
                 for (i = 0; i < numRanges; i++) {
                     PDFSelection *sel;
-                    NSRange range = *(NSRange *)CFArrayGetValueAtIndex(ranges, i);
+                    NSRange range = *(NSRange *)[ranges pointerAtIndex:i];
                     if (range.length && (sel = [container selectionForRange:range]) && [sel hasCharacters]) {
                         [selections addObject:sel];
                         doc = [container document];
