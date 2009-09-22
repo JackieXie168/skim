@@ -48,14 +48,17 @@ typedef NSInteger SKTypeSelectMatchOption;
 
 @interface SKTypeSelectHelper : NSObject <NSTextViewDelegate> {
     id dataSource;
-    BOOL cycleResults;
-    SKTypeSelectMatchOption matchOption;
-    BOOL matchesImmediately;
+    
+    struct _tshFlags {
+        unsigned int cycleResults:1;
+        unsigned int matchesImmediately:1;
+        unsigned int matchOption:2;
+        unsigned int processing:1;
+    } tshFlags;
     
     NSArray *searchCache;
     NSString *searchString;
     NSTimer *timer;
-    BOOL processing;
 }
 
 + (id)typeSelectHelper;

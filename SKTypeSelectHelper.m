@@ -77,10 +77,10 @@
         dataSource = nil;
         searchCache = nil;
         searchString = nil;
-        cycleResults = YES;
-        matchesImmediately = YES;
-        matchOption = aMatchOption;
-        processing = NO;
+        tshFlags.cycleResults = YES;
+        tshFlags.matchesImmediately = YES;
+        tshFlags.matchOption = aMatchOption;
+        tshFlags.processing = NO;
         timer = nil;
     }
     return self;
@@ -112,27 +112,27 @@
 }
 
 - (BOOL)cyclesSimilarResults {
-    return cycleResults;
+    return tshFlags.cycleResults;
 }
 
 - (void)setCyclesSimilarResults:(BOOL)newValue {
-    cycleResults = newValue;
+    tshFlags.cycleResults = newValue;
 }
 
 - (BOOL)matchesImmediately {
-    return matchesImmediately;
+    return tshFlags.matchesImmediately;
 }
 
 - (void)setMatchesImmediately:(BOOL)newValue {
-    matchesImmediately = newValue;
+    tshFlags.matchesImmediately = newValue;
 }
 
 - (SKTypeSelectMatchOption)matchOption {
-    return matchOption;
+    return tshFlags.matchOption;
 }
 
 - (void)setMatchOption:(SKTypeSelectMatchOption)newValue {
-    matchOption = newValue;
+    tshFlags.matchOption = newValue;
 }
 
 - (NSString *)searchString {
@@ -147,7 +147,7 @@
 }
 
 - (BOOL)isProcessing {
-    return processing;
+    return tshFlags.processing;
 }
 
 #pragma mark API
@@ -177,7 +177,7 @@
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
     
-    if (processing == NO) {
+    if (tshFlags.processing == NO) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWin];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWin];
@@ -196,10 +196,10 @@
     // Reset the timer if it hasn't expired yet
     [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
     
-    if (matchesImmediately)
-        [self searchWithStickyMatch:processing];
+    if (tshFlags.matchesImmediately)
+        [self searchWithStickyMatch:tshFlags.processing];
     
-    processing = YES;
+    tshFlags.processing = YES;
 }
 
 - (void)repeatSearch {
@@ -210,7 +210,7 @@
     
     [self startTimerForSelector:@selector(typeSelectCleanTimeout:)];
     
-    processing = NO;
+    tshFlags.processing = NO;
 }
 
 - (void)cancelSearch {
@@ -291,7 +291,7 @@
 }
 
 - (void)typeSelectSearchTimeout:(id)sender {
-    if (matchesImmediately == NO)
+    if (tshFlags.matchesImmediately == NO)
         [self searchWithStickyMatch:NO];
     [self typeSelectCleanTimeout:sender];
 }
@@ -301,7 +301,7 @@
         [dataSource typeSelectHelper:self updateSearchString:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
-    processing = NO;
+    tshFlags.processing = NO;
     
     NSWindow *keyWin = [NSApp keyWindow];
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
@@ -326,7 +326,7 @@
     if ([searchString length]) {
         NSUInteger selectedIndex, startIndex, foundIndex;
         
-        if (cycleResults) {
+        if (tshFlags.cycleResults) {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
             if (selectedIndex >= [[self searchCache] count])
                 selectedIndex = NSNotFound;
@@ -363,7 +363,7 @@
     BOOL looped = NO;
     NSInteger options = NSCaseInsensitiveSearch;
     
-    if (matchOption == SKPrefixMatch)
+    if (tshFlags.matchOption == SKPrefixMatch)
         options |= NSAnchoredSearch;
     
     while (looped == NO) {
@@ -376,7 +376,7 @@
         
         label = [[self searchCache] objectAtIndex:labelIndex];
         
-        if (matchOption == SKFullStringMatch) {
+        if (tshFlags.matchOption == SKFullStringMatch) {
             if ([label caseInsensitiveCompare:searchString] == NSOrderedSame)
                 return labelIndex;
         } else {
