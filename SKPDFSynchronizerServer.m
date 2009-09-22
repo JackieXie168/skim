@@ -438,7 +438,7 @@ static NSMapTable *createCaseInsensitiveStringKeysMapTable() {
                 NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
                 NSArray *lineSortDescriptors = [NSArray arrayWithObjects:lineSortDescriptor, nil];
                 
-                for (NSMutableArray *array in lines)
+                for (array in lines)
                     [array sortUsingDescriptors:lineSortDescriptors];
                 [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];

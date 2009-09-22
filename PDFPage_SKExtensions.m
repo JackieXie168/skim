@@ -341,7 +341,7 @@ static BOOL usesSequentialPageNumbering = NO;
 - (SKMainDocument *)containingDocument {
     SKMainDocument *document = nil;
     
-    for (SKMainDocument *document in [[NSDocumentController sharedDocumentController] documents]) {
+    for (document in [[NSDocumentController sharedDocumentController] documents]) {
         if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])
             break;
     }
