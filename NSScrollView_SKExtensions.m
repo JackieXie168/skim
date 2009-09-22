@@ -52,30 +52,30 @@ static void (*original_setAutohidesScrollers)(id, SEL, BOOL) = NULL;
 static void (*original_dealloc)(id, SEL) = NULL;
 static void (*original_tile)(id, SEL) = NULL;
 
-static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
+static NSMapTable *scrollViewPlacardViews = nil;
 
 - (void)replacement_dealloc;
 {
-    CFDictionaryRemoveValue(scrollViewPlacardViews, self);
+    [scrollViewPlacardViews removeObjectForKey:self];
     original_dealloc(self, _cmd);
 }
 
 - (void)replacement_setHasHorizontalScroller:(BOOL)flag;
 {
-    if (CFDictionaryContainsKey(scrollViewPlacardViews, self) == FALSE)
+    if ([scrollViewPlacardViews objectForKey:self] == nil)
         original_setHasHorizontalScroller(self, _cmd, flag);
 }
 
 - (void)replacement_setAutohidesScrollers:(BOOL)flag;
 {
-    if (CFDictionaryContainsKey(scrollViewPlacardViews, self) == FALSE)
+    if ([scrollViewPlacardViews objectForKey:self] == nil)
         original_setAutohidesScrollers(self, _cmd, flag);
 }
 
 - (void)replacement_tile {
     original_tile(self, _cmd);
     
-    BDSKPlacardView *placardView = (BDSKPlacardView *)CFDictionaryGetValue(scrollViewPlacardViews, self);
+    BDSKPlacardView *placardView = [scrollViewPlacardViews objectForKey:self];
     if (placardView) {
         NSScroller *scroller = [self horizontalScroller];
         NSRect placardFrame, scrollerFrame = [scroller frame];
@@ -95,18 +95,18 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
     original_tile = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(tile), @selector(replacement_tile));
     
     // dictionary doesn't retain keys, so no retain cycles; pointer equality used to compare views
-    scrollViewPlacardViews = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    scrollViewPlacardViews = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
 - (NSArray *)placards {
-    return [(NSView *)CFDictionaryGetValue(scrollViewPlacardViews, self) subviews];
+    return [[scrollViewPlacardViews objectForKey:self] subviews];
 }
 
 - (void)setPlacards:(NSArray *)newPlacards {
-    BDSKPlacardView *placardView = [(BDSKPlacardView *)CFDictionaryGetValue(scrollViewPlacardViews, self) retain];
+    BDSKPlacardView *placardView = [[scrollViewPlacardViews objectForKey:self] retain];
     if (placardView == nil && [newPlacards count]) {
         placardView = [[BDSKPlacardView alloc] init];
-        CFDictionarySetValue(scrollViewPlacardViews, self, placardView);
+        [scrollViewPlacardViews setObject:placardView forKey:self];
     }
     
     NSEnumerator *viewEnum = [newPlacards objectEnumerator];
@@ -120,7 +120,7 @@ static CFMutableDictionaryRef scrollViewPlacardViews = NULL;
         original_setHasHorizontalScroller(self, @selector(setHasHorizontalScroller:), YES);
         original_setAutohidesScrollers(self, @selector(setAutohidesScrollers:), NO);
     } else if (placardView) {
-        CFDictionaryRemoveValue(scrollViewPlacardViews, self);
+        [scrollViewPlacardViews removeObjectForKey:self];
     }
     [placardView release];
     

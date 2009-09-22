@@ -57,7 +57,6 @@
 #import "NSView_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "SKToolbarItem.h"
-#import "SKCFCallbacks.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
@@ -76,12 +75,17 @@
 #define TYPE_COLUMNID @"type"
 #define PAGE_COLUMNID @"page"
 
+static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); }
+
 @implementation SKNotesDocument
 
 - (id)init {
     if (self = [super init]) {
         notes = [[NSMutableArray alloc] initWithCapacity:10];
-        rowHeights = CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kSKFloatDictionaryValueCallBacks);
+        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality];
+        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
+        [valueFunctions setSizeFunction:floatSizeFunction];
+        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
         caseInsensitiveSearch = YES;
     }
     return self;
@@ -89,7 +93,7 @@
 
 - (void)dealloc {
     [notes release];
-	CFRelease(rowHeights);
+	[rowHeights release];
     [toolbarItems release];
     [statusBar release];
     [super dealloc];
@@ -369,7 +373,7 @@
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         CGFloat height = SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0);
-        CFDictionarySetValue(rowHeights, (const void *)item, &height);
+        [rowHeights setObject:(id)&height forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [outlineView reloadData];
@@ -536,8 +540,8 @@
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = 0.0;
-    if (CFDictionaryContainsKey(rowHeights, (const void *)item))
-        rowHeight = *(CGFloat *)CFDictionaryGetValue(rowHeights, (const void *)item);
+    if ([rowHeights objectForKey:item] != NULL)
+        rowHeight = *(CGFloat *)[rowHeights objectForKey:item];
     else if ([item type] == nil)
         rowHeight = 85.0;
     return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
@@ -548,7 +552,7 @@
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
-    CFDictionarySetValue(rowHeights, (const void *)item, &newHeight);
+    [rowHeights setObject:(id)&newHeight forKey:item];
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {

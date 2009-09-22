@@ -46,8 +46,7 @@
 + (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
-    if (trackingRects != NULL)
-        CFRelease(trackingRects);
+    [trackingRects release];
     [super dealloc];
 }
 
@@ -107,10 +106,10 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
 
 - (void)removeTrackingRects {
     if (trackingRects) {
-        CFIndex idx = CFArrayGetCount(trackingRects);
-        while(idx--)
-            [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
-        CFArrayRemoveAllValues(trackingRects);
+        NSUInteger idx = [trackingRects count];
+        while (idx--)
+            [self removeTrackingRect:(NSTrackingRectTag)[trackingRects pointerAtIndex:idx]];
+        [trackingRects setCount:0];
     }
 }
 
@@ -119,7 +118,7 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
         return;
     
     if (trackingRects == nil)
-        trackingRects = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+        trackingRects = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
     else
         [self removeTrackingRects];
     
@@ -137,7 +136,7 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
                 if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
                     userData = row * [self numberOfColumns] + column;
                     tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
-                    CFArrayAppendValue(trackingRects, (const void *)tag);
+                    [trackingRects addPointer:(void *)tag];
                 }
             }
             column = [columnIndexes indexGreaterThanIndex:column];

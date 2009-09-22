@@ -63,9 +63,9 @@
     NSFileManager *fileManager;
     
     NSMutableArray *pages;
-    NSMutableDictionary *lines;
+    NSMapTable *lines;
     
-    NSMutableDictionary *filenames;
+    NSMapTable *filenames;
     synctex_scanner_t scanner;
     
     id clientProxy;

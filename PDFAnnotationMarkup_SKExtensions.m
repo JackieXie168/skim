@@ -48,7 +48,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSData_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
-#import "SKCFCallBacks.h"
 #import "SKRuntime.h"
 
 
@@ -131,32 +130,36 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
-static CFMutableDictionaryRef lineRectsDict = NULL;
+static NSMapTable *lineRectsTable = nil;
 
 static void (*original_dealloc)(id, SEL) = NULL;
 
 - (void)replacement_dealloc {
-    CFDictionaryRemoveValue(lineRectsDict, self);
+    [lineRectsTable removeObjectForKey:self];
     original_dealloc(self, _cmd);
 }
 
 + (void)load {
     original_dealloc = (void (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
-    lineRectsDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    lineRectsTable = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
 }
 
-- (CFMutableArrayRef)lineRects {
-    CFMutableArrayRef lineRects = (CFMutableArrayRef)CFDictionaryGetValue(lineRectsDict, self);
+static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
+
+- (NSPointerArray *)lineRects {
+    NSPointerArray *lineRects = [lineRectsTable objectForKey:self];
     if (lineRects == NULL) {
-        lineRects = CFArrayCreateMutable(NULL, 0, &kSKNSRectArrayCallBacks);
-        CFDictionaryAddValue(lineRectsDict, self, lineRects);
-        CFRelease(lineRects);
+        NSPointerFunctions *functions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
+        [functions setSizeFunction:&rectSizeFunction];
+        lineRects = [[NSPointerArray alloc] initWithPointerFunctions:functions];
+        [lineRectsTable setObject:lineRects forKey:self];
+        [lineRects release];;
     }
     return lineRects;
 }
 
 - (BOOL)hasLineRects {
-    return CFDictionaryContainsKey(lineRectsDict, self);
+    return [lineRectsTable objectForKey:self] != nil;
 }
 
 + (NSColor *)defaultSkimNoteColorForMarkupType:(NSInteger)markupType
@@ -210,7 +213,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
             while (sel = [selEnum nextObject]) {
                 lineRect = [sel boundsForPage:page];
                 if (NSIsEmptyRect(lineRect) == NO && [[sel string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length) {
-                     CFArrayAppendValue([self lineRects], &lineRect);
+                     [[self lineRects] addPointer:&lineRect];
                      newBounds = NSUnionRect(lineRect, newBounds);
                 }
             } 
@@ -220,10 +223,10 @@ static void (*original_dealloc)(id, SEL) = NULL;
             } else {
                 [self setBounds:newBounds];
                 if ([self hasLineRects]) {
-                    CFArrayRef lines = [self lineRects];
-                    iMax = CFArrayGetCount(lines);
+                    NSPointerArray *lines = [self lineRects];
+                    iMax = [lines count];
                     for (i = 0; i < iMax; i++) {
-                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)CFArrayGetValueAtIndex(lines, i), [self bounds].origin, rotation);
+                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)[lines pointerAtIndex:i], [self bounds].origin, rotation);
                         [quadPoints addObjectsFromArray:quadLine];
                         [quadLine release];
                     }
@@ -257,13 +260,14 @@ static void (*original_dealloc)(id, SEL) = NULL;
     NSArray *quadPoints = [self quadrilateralPoints];
     NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
 
-    NSUInteger j, jMax = [quadPoints count] / 4;
-    CFMutableArrayRef lines = [self lineRects];
+    NSPointerArray *lines = [self lineRects];
+    NSUInteger j = [lines count], jMax = [quadPoints count] / 4;
     NSPoint origin = [self bounds].origin;
     
-    CFArrayRemoveAllValues(lines);
+    while ([lines count])
+        [lines removePointerAtIndex:0];
     
-    for (j = 0; j < jMax; j += 1) {
+    for (j = 0; j < jMax; j++) {
         
         NSRange range = NSMakeRange(4 * j, 4);
 
@@ -282,7 +286,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         }
         
         NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);
-        CFArrayAppendValue(lines, &lineRect);
+        [lines addPointer:&lineRect];
     }
 }
 
@@ -291,12 +295,12 @@ static void (*original_dealloc)(id, SEL) = NULL;
         [self regenerateLineRects];
     
     PDFSelection *sel, *selection = nil;
-    CFMutableArrayRef lines = [self lineRects];
-    NSUInteger i, iMax = CFArrayGetCount(lines);
+    NSPointerArray *lines = [self lineRects];
+    NSUInteger i, iMax = [lines count];
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
-        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)CFArrayGetValueAtIndex(lines, i), -1.0, -1.0)]) && [sel hasCharacters]) {
+        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)[lines pointerAtIndex:i], -1.0, -1.0)]) && [sel hasCharacters]) {
             if (selection == nil)
                 selection = sel;
             else
@@ -315,12 +319,12 @@ static void (*original_dealloc)(id, SEL) = NULL;
     if ([self hasLineRects] == NO)
         [self regenerateLineRects];
     
-    CFMutableArrayRef lines = [self lineRects];
-    NSUInteger i = CFArrayGetCount(lines);
+    NSPointerArray *lines = [self lineRects];
+    NSUInteger i = [lines count];
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
-        isContained = NSPointInRect(point, *(NSRect *)CFArrayGetValueAtIndex(lines, i));
+        isContained = NSPointInRect(point, *(NSRect *)[lines pointerAtIndex:i]);
     
     return isContained;
 }

@@ -121,7 +121,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSTableView            *findTableView;
     IBOutlet NSView                 *findView;
     NSMutableArray                  *searchResults;
-    CFMutableSetRef                 temporaryAnnotations;
+    NSMutableSet                    *temporaryAnnotations;
     NSTimer                         *temporaryAnnotationTimer;
     NSTimer                         *highlightTimer;
     
@@ -135,7 +135,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet SKNoteOutlineView      *noteOutlineView;
     IBOutlet NSView                 *noteView;
     NSMutableArray                  *notes;
-    CFMutableDictionaryRef          rowHeights;
+    NSMapTable                      *rowHeights;
     
     IBOutlet NSArrayController      *snapshotArrayController;
     IBOutlet SKThumbnailTableView   *snapshotTableView;
@@ -226,7 +226,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSDrawer                        *leftSideDrawer;
     NSDrawer                        *rightSideDrawer;
     
-    NSMutableDictionary             *undoGroupOldPropertiesPerNote;
+    NSMapTable                      *undoGroupOldPropertiesPerNote;
     
     struct _mwcFlags {
         unsigned int leftSidePaneState:1;

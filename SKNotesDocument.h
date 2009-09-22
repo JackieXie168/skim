@@ -48,7 +48,7 @@
     IBOutlet NSSearchField *searchField;
     NSMutableDictionary *toolbarItems;
     NSMutableArray *notes;
-    CFMutableDictionaryRef rowHeights;
+    NSMapTable *rowHeights;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
 }

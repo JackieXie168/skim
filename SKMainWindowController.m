@@ -91,7 +91,6 @@
 #import "SKColorSwatch.h"
 #import "SKRuntime.h"
 #import "SKApplicationController.h"
-#import "SKCFCallBacks.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
@@ -203,6 +202,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         return [super automaticallyNotifiesObserversForKey:key];
 }
 
+static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); }
+
 - (id)init {
     if (self = [super initWithWindowNibName:@"MainWindow"]) {
         mwcFlags.isPresentation = 0;
@@ -220,12 +221,15 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
-        rowHeights = CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kSKFloatDictionaryValueCallBacks);
+        NSPointerFunctions *keyFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality];
+        NSPointerFunctions *valueFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
+        [valueFunctions setSizeFunction:floatSizeFunction];
+        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:keyFunctions valuePointerFunctions:valueFunctions capacity:0];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
         mwcFlags.rightSidePaneState = SKNoteSidePaneState;
         mwcFlags.findPaneState = SKSingularFindPaneState;
-        temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
+        temporaryAnnotations = [[NSMutableSet alloc] init];
         pageLabel = nil;
         pageNumber = NSNotFound;
         markedPageIndex = NSNotFound;
@@ -250,7 +254,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
-    [(id)temporaryAnnotations release];
+    [temporaryAnnotations release];
     [dirtySnapshots release];
 	[searchResults release];
 	[groupedSearchResults release];
@@ -260,7 +264,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 	[tags release];
     [pageLabels release];
     [pageLabel release];
-	CFRelease(rowHeights);
+	[rowHeights release];
     [lastViewedPages release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -744,7 +748,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             [temporaryAnnotationTimer invalidate];
             [temporaryAnnotationTimer release];
             temporaryAnnotationTimer = nil;
-            CFSetRemoveAllValues(temporaryAnnotations);
+            [temporaryAnnotations removeAllObjects];
             
             // make sure these will not be activated, or they can lead to a crash
             [pdfView removePDFToolTipRects];
@@ -1050,8 +1054,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     
     if ([[note texts] count])
-        CFDictionaryRemoveValue(rowHeights, (const void *)[[note texts] lastObject]);
-    CFDictionaryRemoveValue(rowHeights, (const void *)note);
+        [rowHeights removeObjectForKey:[[note texts] lastObject]];
+    [rowHeights removeObjectForKey:note];
     
     // Stop observing the removed notes
     [self stopObservingNotes:[NSArray arrayWithObject:note]];
@@ -1071,7 +1075,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
                 [[wc window] orderOut:self];
         }
         
-        CFDictionaryRemoveAllValues(rowHeights);
+        [rowHeights removeAllObjects];
         
         [self stopObservingNotes:notes];
 
@@ -1849,7 +1853,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             [page addAnnotation:circle];
             [pdfView setNeedsDisplayForAnnotation:circle];
             [circle release];
-            CFSetAddValue(temporaryAnnotations, (void *)circle);
+            [temporaryAnnotations addObject:circle];
         }
     }
 }
@@ -1865,7 +1869,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [page addAnnotation:circle];
     [pdfView setNeedsDisplayForAnnotation:circle];
     [circle release];
-    CFSetAddValue(temporaryAnnotations, (void *)circle);
+    [temporaryAnnotations addObject:circle];
     temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
 }
 
@@ -1883,8 +1887,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [temporaryAnnotationTimer release];
     temporaryAnnotationTimer = nil;
     // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
-    CFSetApplyFunction(temporaryAnnotations, removeTemporaryAnnotations, self);
-    CFSetRemoveAllValues(temporaryAnnotations);
+    CFSetApplyFunction((CFSetRef)temporaryAnnotations, removeTemporaryAnnotations, self);
+    [temporaryAnnotations removeAllObjects];
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
@@ -2482,7 +2486,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSUndoManager *undoManager = [[self document] undoManager];
             if (undoGroupOldPropertiesPerNote == nil) {
                 // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
-                undoGroupOldPropertiesPerNote = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 0, &kSKPointerEqualObjectDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+                undoGroupOldPropertiesPerNote = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
                 // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
                 [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
             }
@@ -2493,7 +2497,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 // We have to create a dictionary to hold old values for the changed note
                 oldNoteProperties = [[NSMutableDictionary alloc] init];
                 // -setValue:forKey: copies, even if the callback doesn't, so we need to use CF functions
-                CFDictionarySetValue((CFMutableDictionaryRef)undoGroupOldPropertiesPerNote, note, oldNoteProperties);
+                [undoGroupOldPropertiesPerNote setObject:oldNoteProperties forKey:note];
                 [oldNoteProperties release];
             }
 
