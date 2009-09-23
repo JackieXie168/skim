@@ -76,7 +76,7 @@ typedef NSInteger SKDownloadStatus;
     NSImage *fileIcon;
     NSProgressIndicator *progressIndicator;
     NSInteger status;
-    <SKDownloadDelegate> delegate;
+    id <SKDownloadDelegate> delegate;
 }
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
