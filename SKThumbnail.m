@@ -57,9 +57,9 @@
     [super dealloc];
 }
 
-- (<SKThumbnailDelegate>)delegate { return delegate; }
+- (id <SKThumbnailDelegate>)delegate { return delegate; }
 
-- (void)setDelegate:(<SKThumbnailDelegate>)newDelegate { delegate = newDelegate; }
+- (void)setDelegate:(id <SKThumbnailDelegate>)newDelegate { delegate = newDelegate; }
 
 - (BOOL)isDirty { return dirty; }
 
