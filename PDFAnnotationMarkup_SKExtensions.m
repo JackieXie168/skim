@@ -91,7 +91,7 @@ static NSArray *createPointsFromStrings(NSArray *strings)
 
 /*
  http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
-  The docs are wrong (as is Adobe's spec).  The ordering is:
+  The docs are wrong (as is Adobe's spec).  The ordering at zero rotation is:
   --------
   | 0  1 |
   | 2  3 |
@@ -100,35 +100,13 @@ static NSArray *createPointsFromStrings(NSArray *strings)
 static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin, NSInteger rotation)
 {
     NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
-    NSPoint p0, p1, p2, p3;
-    switch (rotation) {
-        case 270:
-            p0 = SKTopRightPoint(r);
-            p1 = SKBottomRightPoint(r);
-            p2 = SKTopLeftPoint(r);
-            p3 = SKBottomLeftPoint(r);
-            break;
-        case 180:
-            p0 = SKBottomRightPoint(r);
-            p1 = SKBottomLeftPoint(r);
-            p2 = SKTopRightPoint(r);
-            p3 = SKTopLeftPoint(r);
-            break;
-        case 90:
-            p0 = SKBottomLeftPoint(r);
-            p1 = SKTopLeftPoint(r);
-            p2 = SKBottomRightPoint(r);
-            p3 = SKTopRightPoint(r);
-            break;
-        case 0:
-        default:
-            p0 = SKTopLeftPoint(r);
-            p1 = SKTopRightPoint(r);
-            p2 = SKBottomLeftPoint(r);
-            p3 = SKBottomRightPoint(r);
-            break;
-    }
-    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
+    NSInteger offset = rotation / 90;
+    NSPoint p[4];
+    p[offset] = SKTopLeftPoint(r);
+    p[(++offset)%4] = SKTopRightPoint(r);
+    p[(++offset)%4] = SKBottomRightPoint(r);
+    p[(++offset)%4] = SKBottomLeftPoint(r);
+    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p[0]], [NSValue valueWithPoint:p[1]], [NSValue valueWithPoint:p[3]], [NSValue valueWithPoint:p[2]], nil];
 }
 
 static NSMapTable *lineRectsTable = nil;
