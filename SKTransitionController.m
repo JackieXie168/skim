@@ -43,6 +43,8 @@
 
 #import "SKTransitionController.h"
 #import "NSBitmapImageRep_SKExtensions.h"
+#import <CoreFoundation/CoreFoundation.h>
+#import <Quartz/Quartz.h>
 #include <unistd.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
