@@ -66,7 +66,7 @@ static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSU
 static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)(const void *item)) {
     if(item == NULL) return 0;
     
-    uint32_t hash = 0;
+    NSUInteger hash = 0;
     CFAllocatorRef allocator = CFGetAllocator(item);
     CFIndex len = CFStringGetLength(item);
     
@@ -81,7 +81,7 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     // If we create the string with external characters, CFStringGetCharactersPtr is guaranteed to succeed; since we're going to call CFStringGetCharacters anyway in fastHash if CFStringGetCharactsPtr fails, let's do it now when we lowercase the string
     CFMutableStringRef mutableString = CFStringCreateMutableWithExternalCharactersNoCopy(allocator, buffer, len, len + 10, (buffer != stackBuffer ? allocator : kCFAllocatorNull));
     CFStringLowercase(mutableString, NULL);
-    hash = CFHash(mutableString);
+    hash = [(id)mutableString hash];
     // if we used the allocator, this should free the buffer for us
     CFRelease(mutableString);
     return hash;
