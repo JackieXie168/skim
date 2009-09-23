@@ -52,13 +52,13 @@
     NSString *label;
     NSUInteger pageIndex;
     BOOL dirty;
-    <SKThumbnailDelegate> delegate;
+    id <SKThumbnailDelegate> delegate;
 }
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
 
-- (<SKThumbnailDelegate>)delegate;
-- (void)setDelegate:(<SKThumbnailDelegate>)newDelegate;
+- (id <SKThumbnailDelegate>)delegate;
+- (void)setDelegate:(id <SKThumbnailDelegate>)newDelegate;
 
 - (BOOL)isDirty;
 - (void)setDirty:(BOOL)flag;

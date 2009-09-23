@@ -79,10 +79,10 @@ typedef NSInteger SKDownloadStatus;
     <SKDownloadDelegate> delegate;
 }
 
-- (id)initWithURL:(NSURL *)aURL delegate:(<SKDownloadDelegate>)aDelegate;
+- (id)initWithURL:(NSURL *)aURL delegate:(id <SKDownloadDelegate>)aDelegate;
 
-- (<SKDownloadDelegate>)delegate;
-- (void)setDelegate:(<SKDownloadDelegate>)newDelegate;
+- (id <SKDownloadDelegate>)delegate;
+- (void)setDelegate:(id <SKDownloadDelegate>)newDelegate;
 
 - (SKDownloadStatus)status;
 
