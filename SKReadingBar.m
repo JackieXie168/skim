@@ -183,7 +183,7 @@
     return didMove;
 }
 
-- (BOOL)goToPageForPoint:(NSPoint)point {
+- (BOOL)goToLineForPoint:(NSPoint)point {
     if ([lineRects count] == 0)
         return NO;
     NSInteger i = [lineRects count] - numberOfLines;
