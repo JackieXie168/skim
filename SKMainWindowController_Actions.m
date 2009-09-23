@@ -62,6 +62,7 @@
 #import "SKLineInspector.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 
 @implementation SKMainWindowController (Actions)
@@ -619,17 +620,18 @@
     [self cropPageAtIndex:[page pageIndex] toRect:rect];
 }
 
-- (void)cropPagesToRects:(NSArray *)rects {
+- (void)cropPagesToRects:(NSPointerArray *)rects {
     PDFPage *currentPage = [pdfView currentPage];
     NSRect visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
     
     NSInteger i, count = [[pdfView document] pageCount];
     NSInteger rectCount = [rects count];
-    NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
+    NSPointerArray *oldRects = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
     for (i = 0; i < count; i++) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
-        NSRect rect = NSIntersectionRect([[rects objectAtIndex:i % rectCount] rectValue], [page boundsForBox:kPDFDisplayBoxMediaBox]);
-        [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
+        NSRect rect = NSIntersectionRect(*(NSRectPointer)[rects pointerAtIndex:i % rectCount], [page boundsForBox:kPDFDisplayBoxMediaBox]);
+        NSRect oldRect = [page boundsForBox:kPDFDisplayBoxCropBox];
+        [oldRects addPointer:&oldRect];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     }
     
@@ -650,7 +652,7 @@
 
 - (IBAction)cropAll:(id)sender {
     NSRect rect[2] = {NSIntegralRect([pdfView currentSelectionRect]), NSZeroRect};
-    NSArray *rectArray;
+    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
     BOOL emptySelection = NSIsEmptyRect(rect[0]);
     
     if (emptySelection) {
@@ -680,9 +682,10 @@
         CGFloat h = SKMax(NSHeight(rect[0]), NSHeight(rect[1]));
         for (j = 0; j < 2; j++)
             rect[j] = NSMakeRect(SKFloor(NSMidX(rect[j]) - 0.5 * w), SKFloor(NSMidY(rect[j]) - 0.5 * h), w, h);
-        rectArray = [NSArray arrayWithObjects:[NSValue valueWithRect:rect[0]], [NSValue valueWithRect:rect[1]], nil];
+        [rectArray addPointer:rect];
+        [rectArray addPointer:rect + 1];
     } else {
-        rectArray = [NSArray arrayWithObject:[NSValue valueWithRect:rect[0]]];
+        [rectArray addPointer:rect];
     }
     
     [self cropPagesToRects:rectArray];
@@ -694,7 +697,7 @@
 }
 
 - (IBAction)autoCropAll:(id)sender {
-    NSMutableArray *rectArray = [NSMutableArray array];
+    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [[pdfView document] pageCount];
     
@@ -704,7 +707,8 @@
 	[[self progressController] beginSheetModalForWindow:[self window]];
     
     for (i = 0; i < iMax; i++) {
-        [rectArray addObject:[NSValue valueWithRect:[[pdfDoc pageAtIndex:i] foregroundBox]]];
+        NSRect rect = [[pdfDoc pageAtIndex:i] foregroundBox];
+        [rectArray addPointer:&rect];
         [[self progressController] incrementBy:1.0];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -715,7 +719,7 @@
 }
 
 - (IBAction)smartAutoCropAll:(id)sender {
-    NSMutableArray *rectArray = [NSMutableArray array];
+    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;
@@ -743,7 +747,7 @@
         rect.origin.y = NSMaxY(rect) - size.height;
         rect.size = size;
         rect = SKConstrainRect(rect, bounds);
-        [rectArray addObject:[NSValue valueWithRect:rect]];
+        [rectArray addPointer:&rect];
         if (i && i % 10 == 0) {
             [[self progressController] incrementBy:1.0];
             if (i && i % 100 == 0)

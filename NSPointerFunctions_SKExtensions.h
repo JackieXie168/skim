@@ -45,6 +45,7 @@
 + (id)integerPointerFunctions;
 + (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction descriptionFunction:(NSString *(*)(const void *))descriptionFunction;
 + (id)floatPointerFunctions;
++ (id)pointPointerFunctions;
 + (id)rectPointerFunctions;
 + (id)rangePointerFunctions;
 + (id)caseInsensitiveStringPointerFunctions;
