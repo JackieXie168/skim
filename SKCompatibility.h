@@ -63,3 +63,7 @@
 #ifndef NSAppKitVersionNumber10_5
     #define NSAppKitVersionNumber10_5 949
 #endif
+
+#ifndef NSAppKitVersionNumber10_6
+    #define NSAppKitVersionNumber10_6 1038
+#endif
