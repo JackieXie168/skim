@@ -102,7 +102,7 @@
     NSRect rect = NSZeroRect;
     NSInteger i, lastLine = [self currentLastLine];
     for (i = currentLine; i <= lastLine; i++)
-        rect = NSUnionRect(rect, [[lineRects objectAtIndex:i] rectValue]);
+        rect = NSUnionRect(rect, *(NSRectPointer)[lineRects pointerAtIndex:i]);
     return rect;
 }
 
@@ -148,7 +148,7 @@
     
     while (++i < iMax) {
         PDFPage *nextPage = [doc pageAtIndex:i];
-        NSArray *lines = [nextPage lineRects];
+        NSPointerArray *lines = [nextPage lineRects];
         if ([lines count]) {
             [page release];
             page = [nextPage retain];
@@ -169,7 +169,7 @@
     
     while (i-- > 0) {
         PDFPage *prevPage = [doc pageAtIndex:i];
-        NSArray *lines = [prevPage lineRects];
+        NSPointerArray *lines = [prevPage lineRects];
         if ([lines count]) {
             [page release];
             page = [prevPage retain];
@@ -188,7 +188,7 @@
         return NO;
     NSInteger i = [lineRects count] - numberOfLines;
     while (--i >= 0)
-        if (NSMaxY([[lineRects objectAtIndex:i] rectValue]) >= point.y) break;
+        if (NSMaxY(*(NSRectPointer)[lineRects pointerAtIndex:i]) >= point.y) break;
     currentLine = MAX(0, i);
     return YES;
 }

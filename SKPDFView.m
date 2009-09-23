@@ -112,7 +112,7 @@ static char SKPDFViewTransitionsObservationContext;
 static NSUInteger moveReadingBarModifiers = NSAlternateKeyMask;
 static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
-static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSArray *rectValues, BOOL lower);
+static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower);
 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, CGFloat radius);
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, CGFloat radius, bool active);
@@ -3747,7 +3747,7 @@ enum {
 
 - (void)doDragReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
-    NSArray *lineRects = [page lineRects];
+    NSPointerArray *lineRects = [page lineRects];
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, nil];
     
     NSEvent *lastMouseEvent = theEvent;
@@ -3833,7 +3833,7 @@ enum {
 - (void)doResizeReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     NSInteger firstLine = [readingBar currentLine];
-    NSArray *lineRects = [page lineRects];
+    NSPointerArray *lineRects = [page lineRects];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil];
     
     [[NSCursor resizeUpDownCursor] push];
@@ -4298,12 +4298,12 @@ enum {
 
 @end
 
-static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSArray *rectValues, BOOL lower) 
+static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArray *rectArray, BOOL lower) 
 {
-    NSInteger i = 0, iMax = [rectValues count];
+    NSInteger i = 0, iMax = [rectArray count];
     
     for (i = 0; i < iMax; i++) {
-        NSRect rect = [[rectValues objectAtIndex:i] rectValue];
+        NSRect rect = *(NSRectPointer)[rectArray pointerAtIndex:i];
         if (NSMaxY(rect) > y) {
             if (NSMinY(rect) <= y)
                 break;
