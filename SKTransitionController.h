@@ -37,10 +37,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <CoreFoundation/CoreFoundation.h>
-#import <Quartz/Quartz.h>
-
-#pragma mark SKTransitionController
 
 // this corresponds to the CGSTransitionType enum
 enum {
@@ -60,7 +56,7 @@ enum {
 };
 typedef NSUInteger SKAnimationTransitionStyle;
 
-@class CIImage, SKTransitionView;
+@class CIImage;
 
 @interface SKTransitionController : NSObject {
     NSWindow *transitionWindow;
