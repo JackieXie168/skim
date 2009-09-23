@@ -63,7 +63,7 @@
 }
 
 - (id)initWithName:(NSString *)aName {
-    NSData *aData = [[NSData alloc] initWithBase64String:aName withNewlines:NO];
+    NSData *aData = [[NSData alloc] initWithBase64String:aName];
     self = [self initWithData:aData];
     [aData release];
     return self;
@@ -80,7 +80,7 @@
 }
 
 - (NSString *)name {
-    return [data base64StringWithNewlines:NO];
+    return [data base64String];
 }
 
 - (NSTextStorage *)richText {
