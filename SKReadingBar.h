@@ -42,7 +42,7 @@
 
 @interface SKReadingBar : NSObject {
     PDFPage *page;
-    NSArray *lineRects;
+    NSPointerArray *lineRects;
     NSInteger currentLine;
     NSUInteger numberOfLines;
 }

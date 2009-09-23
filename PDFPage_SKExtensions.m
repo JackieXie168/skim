@@ -54,6 +54,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -276,7 +277,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return data;
 }
 
-- (NSArray *)lineRects {
+- (NSPointerArray *)lineRects {
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     
@@ -289,7 +290,7 @@ static BOOL usesSequentialPageNumbering = NO;
     [lines sortUsingSelector:@selector(boundsCompare:)];
     
     NSUInteger i, iMax = [lines count];
-    NSMutableArray *fullLines = [NSMutableArray array];
+    NSPointerArray *fullLines = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
     NSRect r1 = NSZeroRect;
     
     for (i = 0; i < iMax; i++) {
@@ -299,12 +300,12 @@ static BOOL usesSequentialPageNumbering = NO;
         } else if ((NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2))) {
             r1 = NSUnionRect(r1, r2);
         } else if (NSEqualRects(r1, NSZeroRect) == NO) {
-            [fullLines addObject:[NSValue valueWithRect:r1]];
+            [fullLines addPointer:&r1];
             r1 = r2;
         }
     }
     if (NSEqualRects(r1, NSZeroRect) == NO)
-        [fullLines addObject:[NSValue valueWithRect:r1]];
+        [fullLines addPointer:&r1];
     
     return fullLines;
 }

@@ -72,7 +72,7 @@ extern NSString *SKPDFPageActionRotate;
 - (NSData *)PDFDataForRect:(NSRect)rect;
 - (NSData *)TIFFDataForRect:(NSRect)rect;
 
-- (NSArray *)lineRects;
+- (NSPointerArray *)lineRects;
 
 - (NSUInteger)pageIndex;
 - (NSString *)sequentialLabel;
