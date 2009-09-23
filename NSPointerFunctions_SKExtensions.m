@@ -47,6 +47,12 @@ static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
 
 static NSUInteger rangeSizeFunction(const void *item) { return sizeof(NSRange); }
 
+static NSString *floatDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"%f", *(CGFloat *)item]; }
+
+static NSString *rectDescriptionFunction(const void *item) { return NSStringFromRect(*(NSRectPointer)item); }
+
+static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%ud, %ud)", (unsigned long)((*(NSRange *)item).location), (unsigned long)((*(NSRange *)item).length)]; }
+
 #define STACK_BUFFER_SIZE 256
 
 static BOOL caseInsensitiveStringEqual(const void *item1, const void *item2, NSUInteger (*size)(const void *item)) {
@@ -85,22 +91,23 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     return [self pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
 }
 
-+ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction {
++ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction descriptionFunction:(NSString *(*)(const void *))descriptionFunction {
     NSPointerFunctions *pointerFunctions = [self pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
     [pointerFunctions setSizeFunction:sizeFunction];
+    [pointerFunctions setDescriptionFunction:descriptionFunction];
     return pointerFunctions;
 }
 
 + (id)floatPointerFunctions {
-    return [self structPointerFunctionsWithSizeFunction:&floatSizeFunction];
+    return [self structPointerFunctionsWithSizeFunction:&floatSizeFunction descriptionFunction:&floatDescriptionFunction];
 }
 
 + (id)rectPointerFunctions {
-    return [self structPointerFunctionsWithSizeFunction:&rectSizeFunction];
+    return [self structPointerFunctionsWithSizeFunction:&rectSizeFunction descriptionFunction:&rectDescriptionFunction];
 }
 
 + (id)rangePointerFunctions {
-    return [self structPointerFunctionsWithSizeFunction:&rangeSizeFunction];
+    return [self structPointerFunctionsWithSizeFunction:&rangeSizeFunction descriptionFunction:&rangeDescriptionFunction];
 }
 
 + (id)caseInsensitiveStringPointerFunctions {
