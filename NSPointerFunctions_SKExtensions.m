@@ -78,33 +78,33 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
 }
 
 + (id)strongObjectPointerFunctions {
-    return [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    return [self pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
 }
 
 + (id)integerPointerFunctions {
-    return [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
+    return [self pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
+}
+
++ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction {
+    NSPointerFunctions *pointerFunctions = [self pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
+    [pointerFunctions setSizeFunction:sizeFunction];
+    return pointerFunctions;
 }
 
 + (id)floatPointerFunctions {
-    NSPointerFunctions *pointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-    [pointerFunctions setSizeFunction:&floatSizeFunction];
-    return pointerFunctions;
+    return [self structPointerFunctionsWithSizeFunction:&floatSizeFunction];
 }
 
 + (id)rectPointerFunctions {
-    NSPointerFunctions *pointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-    [pointerFunctions setSizeFunction:&rectSizeFunction];
-    return pointerFunctions;
+    return [self structPointerFunctionsWithSizeFunction:&rectSizeFunction];
 }
 
 + (id)rangePointerFunctions {
-    NSPointerFunctions *pointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-    [pointerFunctions setSizeFunction:&rangeSizeFunction];
-    return pointerFunctions;
+    return [self structPointerFunctionsWithSizeFunction:&rangeSizeFunction];
 }
 
 + (id)caseInsensitiveStringPointerFunctions {
-    NSPointerFunctions *pointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    NSPointerFunctions *pointerFunctions = [self pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
     [pointerFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
     [pointerFunctions setHashFunction:&caseInsensitiveStringHash];
     return pointerFunctions;

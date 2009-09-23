@@ -43,6 +43,7 @@
 
 + (id)strongObjectPointerFunctions;
 + (id)integerPointerFunctions;
++ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction;
 + (id)floatPointerFunctions;
 + (id)rectPointerFunctions;
 + (id)rangePointerFunctions;
