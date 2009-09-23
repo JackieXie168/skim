@@ -50,9 +50,7 @@
 - (NSString *)xmlString;
 
 - (id)initWithBase64String:(NSString *)base64String;
-- (id)initWithBase64String:(NSString *)base64String withNewlines:(BOOL)encodedWithNewlines;
 - (NSString *)base64String;
-- (NSString *)base64StringWithNewlines:(BOOL)encodeWithNewlines;
 
 + (NSData *)dataWithPointAsQDPoint:(NSPoint)point;
 + (NSData *)dataWithRectAsQDRect:(NSRect)rect;
