@@ -38,26 +38,29 @@
 
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import "NSPointerFunctions_SKExtensions.h"
 
 
 @implementation NSWindowController (SKExtensions)
 
 - (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name {
-    static NSMutableDictionary *nextWindowLocations = nil;
+    static NSMapTable *nextWindowLocations = nil;
     if (nextWindowLocations == nil)
-        nextWindowLocations = [[NSMutableDictionary alloc] init];
+        nextWindowLocations = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions pointPointerFunctions] capacity:0];
     
-    NSValue *value = [nextWindowLocations objectForKey:name];
-    NSPoint point = [value pointValue];
+    NSPointPointer pointPtr = (NSPointPointer)[nextWindowLocations objectForKey:name];
+    NSPoint point;
     
     [[self window] setFrameUsingName:name];
     [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:name] || value == nil) {
+    if ([[self window] setFrameAutosaveName:name] || pointPtr == NULL) {
         NSRect windowFrame = [[self window] frame];
         point = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
+    } else {
+        point = *pointPtr;
     }
     point = [[self window] cascadeTopLeftFromPoint:point];
-    [nextWindowLocations setObject:[NSValue valueWithPoint:point] forKey:name];
+    [nextWindowLocations setObject:(id)&point forKey:name];
 }
 
 

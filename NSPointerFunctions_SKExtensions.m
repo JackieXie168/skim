@@ -43,11 +43,15 @@
 
 static NSUInteger floatSizeFunction(const void *item) { return sizeof(CGFloat); }
 
+static NSUInteger pointSizeFunction(const void *item) { return sizeof(NSPoint); }
+
 static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
 
 static NSUInteger rangeSizeFunction(const void *item) { return sizeof(NSRange); }
 
 static NSString *floatDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"%f", *(CGFloat *)item]; }
+
+static NSString *pointDescriptionFunction(const void *item) { return NSStringFromPoint(*(NSPointPointer)item); }
 
 static NSString *rectDescriptionFunction(const void *item) { return NSStringFromRect(*(NSRectPointer)item); }
 
@@ -100,6 +104,10 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
 
 + (id)floatPointerFunctions {
     return [self structPointerFunctionsWithSizeFunction:&floatSizeFunction descriptionFunction:&floatDescriptionFunction];
+}
+
++ (id)pointPointerFunctions {
+    return [self structPointerFunctionsWithSizeFunction:&pointSizeFunction descriptionFunction:&pointDescriptionFunction];
 }
 
 + (id)rectPointerFunctions {
