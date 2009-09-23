@@ -43,7 +43,8 @@ enum {
     SKRemoteStateResize,
     SKRemoteStateScroll
 };
+typedef NSUInteger SKRemoteState;
 
 @interface SKRemoteStateWindow : SKAnimatedBorderlessWindow
-+ (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point;
++ (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point;
 @end

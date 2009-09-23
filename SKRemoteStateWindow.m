@@ -45,10 +45,10 @@
 #define WINDOW_SIZE 60.0
 
 @interface SKRemoteStateView : NSView {
-    NSInteger remoteState;
+    SKRemoteState remoteState;
 }
-- (NSInteger)remoteState;
-- (void)setRemoteState:(NSInteger)newRemoteState;
+- (SKRemoteState)remoteState;
+- (void)setRemoteState:(SKRemoteState)newRemoteState;
 @end
 
 
@@ -78,7 +78,7 @@
     return [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
 }
 
-- (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point {
+- (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point {
     if ([self autoHideTimeInterval] > 0.0) {
         [self stopAnimation];
         
@@ -89,7 +89,7 @@
     }
 }
 
-+ (void)showWithType:(NSInteger)remoteState atPoint:(NSPoint)point {
++ (void)showWithType:(SKRemoteState)remoteState atPoint:(NSPoint)point {
     [[self sharedRemoteStateWindow] showWithType:remoteState atPoint:point];
 }
 
@@ -99,11 +99,11 @@
 
 @implementation SKRemoteStateView
 
-- (NSInteger)remoteState {
+- (SKRemoteState)remoteState {
     return remoteState;
 }
 
-- (void)setRemoteState:(NSInteger)newRemoteState {
+- (void)setRemoteState:(SKRemoteState)newRemoteState {
     remoteState = newRemoteState;
     [self setNeedsDisplay:YES];
 }
