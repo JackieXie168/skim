@@ -51,7 +51,7 @@ static NSString *floatDescriptionFunction(const void *item) { return [NSString s
 
 static NSString *rectDescriptionFunction(const void *item) { return NSStringFromRect(*(NSRectPointer)item); }
 
-static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%ud, %ud)", (unsigned long)((*(NSRange *)item).location), (unsigned long)((*(NSRange *)item).length)]; }
+static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%lu, %lu)", (unsigned long)((*(NSRange *)item).location), (unsigned long)((*(NSRange *)item).length)]; }
 
 #define STACK_BUFFER_SIZE 256
 
