@@ -147,7 +147,7 @@
 // base 64 encoding/decoding methods modified from sample code on CocoaDev http://www.cocoadev.com/index.pl?BaseSixtyFour
 
 - (id)initWithBase64String:(NSString *)base64String {
-    return [self initWithBase64String:base64String withNewlines:YES];
+    return [self initWithBase64String:base64String withNewlines:NO];
 }
 
 - (id)initWithBase64String:(NSString *)base64String withNewlines:(BOOL)encodedWithNewlines {
@@ -177,7 +177,7 @@
 }
 
 - (NSString *)base64String {
-    return [self base64StringWithNewlines:YES];
+    return [self base64StringWithNewlines:NO];
 }
 
 - (NSString *)base64StringWithNewlines:(BOOL)encodeWithNewlines {
@@ -207,7 +207,7 @@
 #pragma mark Templating support
 
 - (NSString *)xmlString {
-    return [self base64String];
+    return [self base64StringWithNewlines:YES];
 }
 
 #pragma mark Scripting support
