@@ -61,6 +61,7 @@
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
 #import "NSPointerFunctions_SKExtensions.h"
+#import "SKFloatMapTable.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -81,7 +82,7 @@
 - (id)init {
     if (self = [super init]) {
         notes = [[NSMutableArray alloc] initWithCapacity:10];
-        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions floatPointerFunctions] capacity:0];
+        rowHeights = [[SKFloatMapTable alloc] init];
         caseInsensitiveSearch = YES;
     }
     return self;
@@ -364,8 +365,7 @@
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        CGFloat height = SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0);
-        NSMapInsert(rowHeights, item, &height);
+        [rowHeights setFloat:SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0) forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [outlineView reloadData];
@@ -529,8 +529,8 @@
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = 0.0;
-    if (NSMapGet(rowHeights, item) != NULL)
-        rowHeight = *(CGFloat *)NSMapGet(rowHeights, item);
+    if ([rowHeights hasKey:item])
+        rowHeight = [rowHeights floatForKey:item];
     else if ([item type] == nil)
         rowHeight = 85.0;
     return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
@@ -541,7 +541,7 @@
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
-    NSMapInsert(rowHeights, item, &newHeight);
+    [rowHeights setFloat:newHeight forKey:item];
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {

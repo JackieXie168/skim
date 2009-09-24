@@ -1,8 +1,8 @@
 //
-//  NSPointerFunctions_SKExtensions.h
+//  SKFloatMapTable.m
 //  Skim
 //
-//  Created by Christiaan on 9/23/09.
+//  Created by Christiaan on 9/24/09.
 /*
  This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
@@ -36,16 +36,56 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKFloatMapTable.h"
 
 
-@interface NSPointerFunctions (SKExtensions)
+@implementation SKFloatMapTable
 
-+ (id)strongObjectPointerFunctions;
-+ (id)integerPointerFunctions;
-+ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction descriptionFunction:(NSString *(*)(const void *))descriptionFunction;
-+ (id)rectPointerFunctions;
-+ (id)rangePointerFunctions;
-+ (id)caseInsensitiveStringPointerFunctions;
+- (id)init {
+    if (self = [super init]) {
+        table = NSCreateMapTable(NSObjectMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
+    }
+    return self;
+}
+
+- (void)dealloc {
+    NSFreeMapTable(table);
+    [super dealloc];
+}
+
+- (NSString *)description {
+    NSMutableString *desc = [NSMutableString stringWithFormat:@"<%@> { ", [self class]];
+    for (id key in NSAllMapTableKeys(table))
+        [desc appendFormat:@"%@ -> %f; ", key, *(CGFloat *)NSMapGet(table, key)];
+    [desc appendString:@"}"];
+    return desc;
+}
+
+- (NSUInteger)count {
+    return NSCountMapTable(table);
+}
+
+- (BOOL)hasKey:(id)key {
+    return NULL != NSMapGet(table, key);
+}
+
+- (CGFloat)floatForKey:(id)key {
+    CGFloat *floatPtr = (CGFloat *)NSMapGet(table, key);
+    return floatPtr == NULL ? 0.0 : *floatPtr;
+}
+
+- (void)setFloat:(CGFloat)aFloat forKey:(id)key {
+    CGFloat *floatPtr = NSZoneMalloc([self zone], sizeof(CGFloat));
+    *floatPtr = aFloat;
+    NSMapInsert(table, key, floatPtr);
+}
+
+- (void)removeFloatForKey:(id)key {
+    NSMapRemove(table, key);
+}
+
+- (void)removeAllFloats {
+    NSResetMapTable(table);
+}
 
 @end

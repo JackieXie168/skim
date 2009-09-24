@@ -100,6 +100,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "PDFOutline_SKExtensions.h"
 #import "NSPointerFunctions_SKExtensions.h"
+#import "SKFloatMapTable.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -219,7 +220,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
-        rowHeights = NSCreateMapTable(NSObjectMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
+        rowHeights = [[SKFloatMapTable alloc] init];
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
         mwcFlags.rightSidePaneState = SKNoteSidePaneState;
@@ -259,7 +260,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 	[tags release];
     [pageLabels release];
     [pageLabel release];
-	NSFreeMapTable(rowHeights);
+	[rowHeights release];
     [lastViewedPages release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -1040,8 +1041,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     
     if ([[note texts] count])
-        NSMapRemove(rowHeights, [[note texts] lastObject]);
-    NSMapRemove(rowHeights, note);
+        [rowHeights removeFloatForKey:[[note texts] lastObject]];
+    [rowHeights removeFloatForKey:note];
     
     // Stop observing the removed notes
     [self stopObservingNotes:[NSArray arrayWithObject:note]];
@@ -1059,7 +1060,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
                 [[wc window] orderOut:self];
         }
         
-        NSResetMapTable(rowHeights);
+        [rowHeights removeAllFloats];
         
         [self stopObservingNotes:notes];
 

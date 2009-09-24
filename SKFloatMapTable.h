@@ -1,8 +1,8 @@
 //
-//  NSPointerFunctions_SKExtensions.h
+//  SKFloatMapTable.h
 //  Skim
 //
-//  Created by Christiaan on 9/23/09.
+//  Created by Christiaan on 9/24/09.
 /*
  This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
@@ -39,13 +39,15 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSPointerFunctions (SKExtensions)
+@interface SKFloatMapTable : NSObject {
+    NSMapTable *table;
+}
 
-+ (id)strongObjectPointerFunctions;
-+ (id)integerPointerFunctions;
-+ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction descriptionFunction:(NSString *(*)(const void *))descriptionFunction;
-+ (id)rectPointerFunctions;
-+ (id)rangePointerFunctions;
-+ (id)caseInsensitiveStringPointerFunctions;
+- (NSUInteger)count;
+- (BOOL)hasKey:(id)key;
+- (CGFloat)floatForKey:(id)key;
+- (void)setFloat:(CGFloat)aFloat forKey:(id)key;
+- (void)removeFloatForKey:(id)key;
+- (void)removeAllFloats;
 
 @end
