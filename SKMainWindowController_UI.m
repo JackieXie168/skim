@@ -758,12 +758,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     if ([ov isEqual:noteOutlineView]) {
-        CGFloat rowHeight = 0.0;
-        if ([rowHeights hasKey:item])
-            rowHeight = [rowHeights floatForKey:item];
-        else if ([item type] == nil)
-            rowHeight = 85.0;
-        return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
+        CGFloat rowHeight = [rowHeights floatForKey:item];
+        return (rowHeight > 0.0 ? rowHeight : ([item type] ? [ov rowHeight] + 2.0 : 85.0));
     }
     return [ov rowHeight];
 }
