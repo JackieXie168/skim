@@ -219,7 +219,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         dirtySnapshots = [[NSMutableArray alloc] init];
         pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
-        rowHeights = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions floatPointerFunctions] capacity:0];
+        rowHeights = NSCreateMapTable(NSObjectMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
         savedNormalSetup = [[NSMutableDictionary alloc] init];
         mwcFlags.leftSidePaneState = SKThumbnailSidePaneState;
         mwcFlags.rightSidePaneState = SKNoteSidePaneState;
@@ -259,7 +259,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 	[tags release];
     [pageLabels release];
     [pageLabel release];
-	[rowHeights release];
+	NSFreeMapTable(rowHeights);
     [lastViewedPages release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -1040,8 +1040,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
     
     if ([[note texts] count])
-        [rowHeights removeObjectForKey:[[note texts] lastObject]];
-    [rowHeights removeObjectForKey:note];
+        NSMapRemove(rowHeights, [[note texts] lastObject]);
+    NSMapRemove(rowHeights, note);
     
     // Stop observing the removed notes
     [self stopObservingNotes:[NSArray arrayWithObject:note]];
@@ -1059,7 +1059,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
                 [[wc window] orderOut:self];
         }
         
-        [rowHeights removeAllObjects];
+        NSResetMapTable(rowHeights);
         
         [self stopObservingNotes:notes];
 
