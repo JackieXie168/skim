@@ -37,6 +37,7 @@
  */
 
 #import "SKRichTextFormat.h"
+#import "NSData_SKExtensions.h"
 
 
 @implementation SKRichTextFormat
@@ -62,7 +63,10 @@
 }
 
 - (id)initWithName:(NSString *)aName {
-    return [self initWithData:[aName dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *aData = [[NSData alloc] initWithBase64String:aName];
+    self = [self initWithData:aData];
+    [aData release];
+    return self;
 }
 
 - (void)dealloc {
@@ -76,7 +80,7 @@
 }
 
 - (NSString *)name {
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    return [data base64String];
 }
 
 - (NSTextStorage *)richText {
