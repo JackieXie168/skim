@@ -48,7 +48,7 @@
     if (nextWindowLocations == nil)
         nextWindowLocations = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions pointPointerFunctions] capacity:0];
     
-    NSPointPointer pointPtr = (NSPointPointer)[nextWindowLocations objectForKey:name];
+    NSPointPointer pointPtr = (NSPointPointer)NSMapGet(nextWindowLocations, name);
     NSPoint point;
     
     [[self window] setFrameUsingName:name];
@@ -60,7 +60,7 @@
         point = *pointPtr;
     }
     point = [[self window] cascadeTopLeftFromPoint:point];
-    [nextWindowLocations setObject:(id)&point forKey:name];
+    NSMapInsert(nextWindowLocations, name, &point);
 }
 
 

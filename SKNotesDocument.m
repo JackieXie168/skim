@@ -365,7 +365,7 @@
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         CGFloat height = SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0);
-        [rowHeights setObject:(id)&height forKey:item];
+        NSMapInsert(rowHeights, item, &height);
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [outlineView reloadData];
@@ -529,8 +529,8 @@
 
 - (CGFloat)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
     CGFloat rowHeight = 0.0;
-    if ([rowHeights objectForKey:item] != NULL)
-        rowHeight = *(CGFloat *)[rowHeights objectForKey:item];
+    if (NSMapGet(rowHeights, item) != NULL)
+        rowHeight = *(CGFloat *)NSMapGet(rowHeights, item);
     else if ([item type] == nil)
         rowHeight = 85.0;
     return rowHeight > 0.0 ? rowHeight : [ov rowHeight] + 2.0;
@@ -541,7 +541,7 @@
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
-    [rowHeights setObject:(id)&newHeight forKey:item];
+    NSMapInsert(rowHeights, item, &newHeight);
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
