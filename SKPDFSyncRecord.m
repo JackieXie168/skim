@@ -126,10 +126,10 @@
 }
 
 - (SKPDFSyncRecord *)recordForIndex:(NSInteger)recordIndex {
-    SKPDFSyncRecord *record = [records objectForKey:(id)recordIndex];
+    SKPDFSyncRecord *record = NSMapGet(records, (const void *)recordIndex);
     if (record == nil) {
         record = [[SKPDFSyncRecord alloc] initWithRecordIndex:recordIndex];
-        [records setObject:record forKey:(id)recordIndex];
+        NSMapInsert(records, (const void *)recordIndex, record);
         [record release];
     }
     return record;
