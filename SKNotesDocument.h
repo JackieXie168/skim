@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SKNoteOutlineView.h"
 
-@class SKNoteOutlineView, SKStatusBar;
+@class SKNoteOutlineView, SKStatusBar, SKFloatMapTable;
 
 @interface SKNotesDocument : NSDocument <NSWindowDelegate, NSToolbarDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource> {
     IBOutlet SKNoteOutlineView *outlineView;
@@ -48,7 +48,7 @@
     IBOutlet NSSearchField *searchField;
     NSMutableDictionary *toolbarItems;
     NSMutableArray *notes;
-    NSMapTable *rowHeights;
+    SKFloatMapTable *rowHeights;
     BOOL exportUsingPanel;
     BOOL caseInsensitiveSearch;
 }

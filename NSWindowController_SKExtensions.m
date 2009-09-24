@@ -46,7 +46,7 @@
 - (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name {
     static NSMapTable *nextWindowLocations = nil;
     if (nextWindowLocations == nil)
-        nextWindowLocations = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] valuePointerFunctions:[NSPointerFunctions pointPointerFunctions] capacity:0];
+        nextWindowLocations = NSCreateMapTable(NSObjectMapKeyCallBacks, NSOwnedPointerMapValueCallBacks, 0);
     
     NSPointPointer pointPtr = (NSPointPointer)NSMapGet(nextWindowLocations, name);
     NSPoint point;
@@ -59,8 +59,9 @@
     } else {
         point = *pointPtr;
     }
-    point = [[self window] cascadeTopLeftFromPoint:point];
-    NSMapInsert(nextWindowLocations, name, &point);
+    pointPtr = NSZoneMalloc(NSDefaultMallocZone(), sizeof(NSPoint));
+    *pointPtr = [[self window] cascadeTopLeftFromPoint:point];
+    NSMapInsert(nextWindowLocations, name, pointPtr);
 }
 
 

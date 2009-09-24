@@ -71,7 +71,7 @@ enum {
 
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@class PDFAnnotation, PDFSelection, SKGroupedSearchResult;
+@class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
 @class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
@@ -135,8 +135,8 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet SKNoteOutlineView      *noteOutlineView;
     IBOutlet NSView                 *noteView;
     NSMutableArray                  *notes;
-    NSMapTable                      *rowHeights;
-    
+    SKFloatMapTable                 *rowHeights;
+
     IBOutlet NSArrayController      *snapshotArrayController;
     IBOutlet SKThumbnailTableView   *snapshotTableView;
     IBOutlet NSView                 *snapshotView;
