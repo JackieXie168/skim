@@ -42,8 +42,6 @@
 #import "SKMainDocument.h"
 #import "SKMainWindowController.h"
 #import "NSFileManager_SKExtensions.h"
-#import "SKBookmarkOutlineView.h"
-#import "SKOutlineView.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
 #import "SKTextWithIconCell.h"
@@ -52,6 +50,7 @@
 #import "SKStringConstants.h"
 #import "SKRuntime.h"
 #import "SKDocumentController.h"
+#import "SKSeparatorCell.h"
 
 #define SKBookmarkRowsPboardType @"SKBookmarkRowsPboardType"
 
@@ -668,6 +667,12 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 #pragma mark NSOutlineView delegate methods
 
+- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if (tableColumn == nil)
+        return [item bookmarkType] == SKBookmarkTypeSeparator ? [[[SKSeparatorCell alloc] init] autorelease] : nil;
+    return [tableColumn dataCellForRow:[ov rowForItem:item]];
+}
+
 - (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     if ([[tableColumn identifier] isEqualToString:FILE_COLUMNID]) {
         if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession)
@@ -712,10 +717,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items {
     return [items count] > 0;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)ov drawSeparatorRowForItem:(id)item {
-    return [item bookmarkType] == SKBookmarkTypeSeparator;
 }
 
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
