@@ -156,7 +156,6 @@
             if (nil == [[NSDocumentController sharedDocumentController] openDocumentWithSetup:dict error:&error] && error)
                 [NSApp presentError:error];
         }
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:SKIsRelaunchKey];
     }
     
     return NO;
@@ -169,6 +168,8 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SKIsRelaunchKey];
+    
     [NSApp setServicesProvider:self];
     
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
