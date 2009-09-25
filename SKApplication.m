@@ -38,8 +38,6 @@
 
 #import "SKApplication.h"
 #import "SKMainDocument.h"
-#import "SKPDFView.h"
-#import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 
