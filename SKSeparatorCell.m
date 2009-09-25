@@ -1,10 +1,10 @@
 //
-//  SKBookmarkOutlineView.h
+//  SKSeparatorCell.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 7/2/08.
+//  Created by Christiaan on 9/25/09.
 /*
- This software is Copyright (c) 2008-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,23 +36,20 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
-#import "SKOutlineView.h"
+#import "SKSeparatorCell.h"
+
+#define SEPARATOR_LEFT_INDENT 4.0
+#define SEPARATOR_RIGHT_INDENT 2.0
 
 
-@protocol SKBookmarkOutlineViewDelegate <SKOutlineViewDelegate>
-@optional
+@implementation SKSeparatorCell
 
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView drawSeparatorRowForItem:(id)item;
-
-@end
-
-
-@interface SKBookmarkOutlineView : SKOutlineView
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKBookmarkOutlineViewDelegate>)delegate;
-- (void)setDelegate:(id <SKBookmarkOutlineViewDelegate>)newDelegate;
-#endif
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor gridColor] setStroke];
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame) + SEPARATOR_LEFT_INDENT, SKFloor(NSMidY(cellFrame)) + 0.5) toPoint:NSMakePoint(NSMaxX(cellFrame) - SEPARATOR_RIGHT_INDENT, SKFloor(NSMidY(cellFrame)) + 0.5)];
+    [NSGraphicsContext restoreGraphicsState];
+}
 
 @end

@@ -37,11 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "SKOutlineView.h"
 
-@class SKBookmark, SKBookmarkOutlineView, SKStatusBar;
+@class SKBookmark, SKStatusBar;
 
-@interface SKBookmarkController : NSWindowController <NSWindowDelegate, NSToolbarDelegate, NSOutlineViewDelegate, NSOutlineViewDataSource> {
-    IBOutlet SKBookmarkOutlineView *outlineView;
+@interface SKBookmarkController : NSWindowController <NSWindowDelegate, NSToolbarDelegate, SKOutlineViewDelegate, NSOutlineViewDataSource> {
+    IBOutlet SKOutlineView *outlineView;
     IBOutlet SKStatusBar *statusBar;
     SKBookmark *bookmarkRoot;
     NSMutableArray *recentDocuments;
