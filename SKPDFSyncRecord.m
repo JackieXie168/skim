@@ -115,13 +115,13 @@
 
 - (id)init {
     if (self = [super init]) {
-        records = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions integerPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
+        records = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
     }
     return self;
 }
 
 - (void)dealloc {
-    [records release];
+    NSFreeMapTable(records);
     [super dealloc];
 }
 
