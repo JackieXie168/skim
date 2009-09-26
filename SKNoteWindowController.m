@@ -176,15 +176,20 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [imageView unbind:@"value"];
         [imageView setCell:cell];
         
+        [textView unbind:@"attributedString"];
+        [[textView enclosingScrollView] removeFromSuperview];
+        
         NSSize minimumSize = [[self window] minSize];
-        NSSize maximumSize = [[self window] maxSize];
         frame = [[[self window] contentView] frame];
         frame.size.height = NSHeight([statusBar frame]) + NSHeight([gradientView frame]);
         frame = [[self window] frameRectForContentRect:frame];
-        minimumSize.height = maximumSize.height = NSHeight(frame);
+        minimumSize.height = NSHeight(frame);
         [[self window] setMinSize:minimumSize];
-        [[self window] setMaxSize:maximumSize];
         [[self window] setFrame:frame display:NO];
+        
+        [gradientView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [textField setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [[textField cell] setWraps:YES];
     }
     
     [statusBar setLeftAction:@selector(statusBarClicked:)];
