@@ -97,26 +97,6 @@
     return path;
 }
 
-+ (NSBezierPath *)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect
-{
-    CGFloat radius = 0.5f * rect.size.height;
-    NSBezierPath *path = [self bezierPath];
-    
-    [path removeAllPoints];
-    
-    // Now draw our rectangle:
-    [path moveToPoint: NSMakePoint(NSMinX(rect), NSMaxY(rect))];
-    
-    // Left half circle:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius startAngle:90.0 endAngle:270.0];
-    // Bottom edge and right half circle:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius startAngle:-90.0 endAngle:90.0];
-    // Top edge:
-    [path closePath];
-    
-    return path;
-}
-
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex {
     NSPoint points[3];
     if (NSCurveToBezierPathElement == [self elementAtIndex:anIndex associatedPoints:points])
