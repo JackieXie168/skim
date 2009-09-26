@@ -40,7 +40,6 @@
 #import "PDFPage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "NSBezierPath_SKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSAffineTransform_SKExtensions.h"
@@ -262,10 +261,20 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             image = [[NSImage alloc] initWithSize:targetRect.size];
             
             [image lockFocus];
+            
             [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+            
+            CGFloat radius = 0.5 * NSHeight(labelRect);
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            
+            [path moveToPoint:SKTopLeftPoint(labelRect)];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(labelRect), NSMidY(labelRect)) radius:radius startAngle:90.0 endAngle:270.0];
+            [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(labelRect), NSMidY(labelRect)) radius:radius startAngle:-90.0 endAngle:90.0];
+            [path closePath];
+            
             [labelColor setFill];
-            [[NSBezierPath bezierPathWithHorizontalOvalAroundRect:labelRect] fill];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
+            
             [image unlockFocus];
             
             [attrs release];

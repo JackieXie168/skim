@@ -43,8 +43,6 @@
 + (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius;
 + (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius;
 
-+ (NSBezierPath*)bezierPathWithHorizontalOvalAroundRect:(NSRect)rect;
-
 - (NSRect)nonEmptyBounds;
 
 - (NSPoint)associatedPointForElementAtIndex:(NSUInteger)anIndex;
