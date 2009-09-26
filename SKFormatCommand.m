@@ -89,9 +89,9 @@
                     else if ([ext isEqualToString:@"doc"])
                         docType = NSDocFormatTextDocumentType;
                     else if ([ext isEqualToString:@"docx"])
-                        docType = NSWordMLTextDocumentType;
-                    else if ([ext isEqualToString:@"odt"])
                         docType = NSOfficeOpenXMLTextDocumentType;
+                    else if ([ext isEqualToString:@"odt"])
+                        docType = NSOpenDocumentTextDocumentType;
                     if (docType && [docType isEqualToString:NSRTFTextDocumentType] == NO) {
                         [mutableDocAttrs setObject:docType forKey:NSDocumentTypeDocumentAttribute];
                         data = [attrText dataFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs error:NULL];
