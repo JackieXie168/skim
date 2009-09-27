@@ -233,17 +233,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     return note;
 }
 
-- (void)setSkimNote:(PDFAnnotation *)newNote {
-    if (note != newNote) {
-        [note removeObserver:self forKeyPath:SKNPDFAnnotationPageKey];
-        [note removeObserver:self forKeyPath:SKNPDFAnnotationBoundsKey];
-        [note release];
-        note = [newNote retain];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationPageKey options:0 context:NULL];
-        [note addObserver:self forKeyPath:SKNPDFAnnotationBoundsKey options:0 context:NULL];
-    }
-}
-
 - (BOOL)isNoteType {
     return [[note type] isEqualToString:SKNNoteString];
 }
