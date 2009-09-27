@@ -692,7 +692,7 @@
     [pdfView setCurrentSelectionRect:NSZeroRect];
 	
     if (emptySelection) {
-        [[self progressController] endSheet];
+        [[self progressController] dismiss:nil];
     }
 }
 
@@ -715,7 +715,7 @@
     }
     [self cropPagesToRects:rectArray];
 	
-    [[self progressController] endSheet];
+    [[self progressController] dismiss:nil];
 }
 
 - (IBAction)smartAutoCropAll:(id)sender {
@@ -757,7 +757,7 @@
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [self cropPagesToRects:rectArray];
 	
-    [[self progressController] endSheet];
+    [[self progressController] dismiss:nil];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
