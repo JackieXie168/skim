@@ -52,11 +52,10 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"
 
-#define SIZE_OFFSET 32.0
 #define EM_DASH_CHARACTER 0x2014
 
 #define SKNoteWindowFrameAutosaveName @"SKNoteWindow"
-#define SKGenericNoteWindowFrameAutosaveName @"SKGenericNoteWindow"
+#define SKAnyNoteWindowFrameAutosaveName @"SKAnyNoteWindow"
 
 #define SKKeepNoteWindowsOnTopKey @"SKKeepNoteWindowsOnTop"
 
@@ -153,6 +152,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         }
     } else {
         NSView *gradientView = [imageView superview];
+        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
         NSTextField *textField = nil;
         
         for (id view in [gradientView subviews]) {
@@ -162,34 +162,19 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             }
         }
         
-        NSRect frame, ignored;
-        NSDivideRect([gradientView frame], &ignored, &frame, SIZE_OFFSET, NSMinYEdge);
-        [gradientView setFrame:frame];
-        NSDivideRect([textField frame], &ignored, &frame, -SIZE_OFFSET, NSMaxXEdge);
-        [textField setFrame:frame];
-        NSDivideRect([imageView frame], &ignored, &frame, SIZE_OFFSET, NSMinXEdge);
-        NSDivideRect(frame, &ignored, &frame, SIZE_OFFSET, NSMinYEdge);
-        [imageView setFrame:frame];
-        
-        SKAnnotationTypeImageCell *cell = [[[SKAnnotationTypeImageCell alloc] init] autorelease];
-        [cell setObjectValue:[NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil]];
-        [imageView unbind:@"value"];
-        [imageView setCell:cell];
-        
+        frame.size.height += 1.0;
+        [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
-        [[textView enclosingScrollView] removeFromSuperview];
+        [textView setRichText:NO];
+        [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
         
         NSSize minimumSize = [[self window] minSize];
         frame = [[[self window] contentView] frame];
-        frame.size.height = NSHeight([statusBar frame]) + NSHeight([gradientView frame]);
+        frame.size.height = NSHeight([statusBar frame]) + 29.0;
         frame = [[self window] frameRectForContentRect:frame];
         minimumSize.height = NSHeight(frame);
         [[self window] setMinSize:minimumSize];
         [[self window] setFrame:frame display:NO];
-        
-        [gradientView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [textField setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [[textField cell] setWraps:YES];
     }
     
     [statusBar setLeftAction:@selector(statusBarClicked:)];
@@ -197,7 +182,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     
     [self updateStatusMessage];
     
-    [self setWindowFrameAutosaveNameOrCascade:[self isNoteType] ? SKNoteWindowFrameAutosaveName : SKGenericNoteWindowFrameAutosaveName];
+    [self setWindowFrameAutosaveNameOrCascade:[self isNoteType] ? SKNoteWindowFrameAutosaveName : SKAnyNoteWindowFrameAutosaveName];
 }
 
 - (BOOL)windowShouldClose:(id)window {
