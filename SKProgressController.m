@@ -38,6 +38,7 @@
 
 #import "SKProgressController.h"
 #import "SKApplication.h"
+#import "NSWindowController_SKExtensions.h"
 
 
 @implementation SKProgressController
@@ -105,17 +106,16 @@
     [[self progressBar] displayIfNeeded];
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window {
+- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
     [[self progressBar] startAnimation:self];
     [(SKApplication *)NSApp setUserAttentionDisabled:YES];
-    [NSApp beginSheet:[self window] modalForWindow:window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    [super beginSheetModalForWindow:window modalDelegate:delegate didEndSelector:didEndSelector contextInfo:contextInfo];
     [(SKApplication *)NSApp setUserAttentionDisabled:NO];
 }
 
-- (void)endSheet {
+- (IBAction)dismiss:(id)sender {
     [[self progressBar] stopAnimation:self];
-    [NSApp endSheet:[self window]];
-    [[self window] orderOut:self];
+    [super dismiss:sender];
 }
 
 - (void)show {

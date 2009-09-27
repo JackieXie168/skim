@@ -584,7 +584,7 @@ static char SKMainDocumentDefaultsObservationContext;
     tmpData = nil;
     
     if (disableAlert == NO)
-        [[self progressController] endSheet];
+        [[self progressController] dismiss:nil];
     
     return success;
 }
@@ -995,7 +995,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     
     [pdfDocWithoutNotes release];
     
-    [[self progressController] endSheet];
+    [[self progressController] dismiss:nil];
 }
 
 - (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {

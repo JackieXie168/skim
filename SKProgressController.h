@@ -63,9 +63,6 @@
 
 - (void)incrementBy:(double)delta;
 
-- (void)beginSheetModalForWindow:(NSWindow *)window;
-- (void)endSheet;
-
 - (void)show;
 - (void)hide;
 

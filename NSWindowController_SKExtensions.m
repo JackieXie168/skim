@@ -77,6 +77,10 @@
     }
 }
 
+- (void)beginSheetModalForWindow:(NSWindow *)window {
+    [self beginSheetModalForWindow:window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+}
+
 - (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)delegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo {
     NSInvocation *invocation = nil;
     if (delegate != nil && didEndSelector != NULL) {
