@@ -44,6 +44,7 @@
 #define SEPARATION          2.0
 #define VERTICAL_OFFSET     1.0
 #define PROGRESSBAR_WIDTH   100.0
+#define ICON_HEIGHT_OFFSET  2.0
 
 
 @interface SKStatusTextFieldCell : NSTextFieldCell {
@@ -84,6 +85,7 @@
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
         [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
+        iconCell = nil;
 		progressIndicator = nil;
         leftTrackingRectTag = 0;
         rightTrackingRectTag = 0;
@@ -94,6 +96,7 @@
 - (void)dealloc {
 	[leftCell release];
 	[rightCell release];
+	[iconCell release];
 	[super dealloc];
 }
 
@@ -105,10 +108,13 @@
     CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
     CGFloat rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
     NSRect ignored, rect = [self bounds];
+    CGFloat leftMargin = LEFT_MARGIN;
     CGFloat rightMargin = RIGHT_MARGIN;
+    if (iconCell)
+        leftMargin += NSHeight([self bounds]) - ICON_HEIGHT_OFFSET + SEPARATION;
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
-    NSDivideRect(rect, &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(rect, &ignored, &rect, leftMargin, NSMinXEdge);
     NSDivideRect(rect, &ignored, &rect, rightMargin, NSMaxXEdge);
     if (rightFrame != NULL)
         NSDivideRect(rect, rightFrame, &ignored, rightWidth, NSMaxXEdge);
@@ -122,13 +128,17 @@
     
     [gradient drawInRect:bounds angle:90.0];
     
-    NSRect textRect, ignored;
+    NSRect textRect, iconRect, ignored;
     CGFloat rightMargin = RIGHT_MARGIN;
+    CGFloat iconHeight = NSHeight(bounds) - ICON_HEIGHT_OFFSET;
     
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
     NSDivideRect(bounds, &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
-    NSDivideRect(textRect, &ignored, &textRect, rightMargin, NSMaxXEdge);
+    if (iconCell) {
+        NSDivideRect(textRect, &iconRect, &textRect, iconHeight, NSMinXEdge);
+        NSDivideRect(textRect, &ignored, &textRect, SEPARATION, NSMaxXEdge);
+    }
 	
 	if (textRect.size.width < 0.0)
 		textRect.size.width = 0.0;
@@ -139,6 +149,12 @@
     
 	[leftCell drawWithFrame:textRect inView:self];
 	[rightCell drawWithFrame:textRect inView:self];
+    
+    if (iconCell) {
+        iconRect = SKCenterRectVertically(iconRect, iconHeight, NO);
+        iconRect.origin.y += VERTICAL_OFFSET;
+        [iconCell drawWithFrame:iconRect inView:self];
+    }
 }
 
 - (BOOL)isVisible {
@@ -313,6 +329,19 @@
 
 - (void)setState:(NSInteger)newState {
     [self setRightState:newState];
+}
+
+- (id)iconCell {
+    return iconCell;
+}
+
+- (void)setIconCell:(id)newIconCell {
+    if (iconCell != newIconCell) {
+        [iconCell release];
+        iconCell = [newIconCell retain];
+        [[self superview] setNeedsDisplayInRect:[self frame]];
+        [self resetCursorRects];
+    }
 }
 
 #pragma mark Progress indicator

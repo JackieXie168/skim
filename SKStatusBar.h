@@ -49,6 +49,7 @@ typedef NSInteger SKProgressIndicatorStyle;
 @interface SKStatusBar : NSControl {
 	id leftCell;
 	id rightCell;
+    id iconCell;
 	NSProgressIndicator *progressIndicator;
     NSTrackingRectTag leftTrackingRectTag;
     NSTrackingRectTag rightTrackingRectTag;
@@ -96,6 +97,9 @@ typedef NSInteger SKProgressIndicatorStyle;
 
 - (NSFont *)font;
 - (void)setFont:(NSFont *)fontObject;
+
+- (id)iconCell;
+- (void)setIconCell:(id)newIconCell;
 
 - (NSProgressIndicator *)progressIndicator;
 

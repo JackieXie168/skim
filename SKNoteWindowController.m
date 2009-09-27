@@ -177,8 +177,12 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
         [[self window] setFrame:frame display:NO];
     }
     
+    SKAnnotationTypeImageCell *cell = [[[SKAnnotationTypeImageCell alloc] initImageCell:nil] autorelease];
+    [cell setObjectValue:[NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil]];
+    
     [statusBar setLeftAction:@selector(statusBarClicked:)];
     [statusBar setLeftTarget:self];
+    [statusBar setIconCell:cell];
     
     [self updateStatusMessage];
     
