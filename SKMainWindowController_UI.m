@@ -67,6 +67,7 @@
 #import "PDFOutline_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "SKFloatMapTable.h"
+#import "SKFindController.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1147,6 +1148,18 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         // fall back to just opening the file and ignore the destination
         [[NSWorkspace sharedWorkspace] openURL:fileURL];
     }
+}
+
+- (void)PDFViewPerformFind:(PDFView *)sender {
+    [[[SKFindController sharedFindController] window] makeKeyAndOrderFront:sender];
+}
+
+- (void)PDFViewPerformGoToPage:(PDFView *)sender {
+    [self doGoToPage:sender];
+}
+
+- (void)PDFViewPerformPrint:(PDFView *)sender {
+    [[self document] printDocument:sender];
 }
 
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
