@@ -451,12 +451,18 @@
 }
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute])
+    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
         return NSAccessibilityGroupRole;
-    else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute])
+    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
         return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
-    else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute])
-        return NSAccessibilityUnignoredChildren([NSArray arrayWithObjects:leftCell, rightCell, progressIndicator, nil]);
+    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
+        NSMutableArray *children = [NSMutableArray arrayWithObjects:leftCell, rightCell, nil];
+        if (iconCell)
+            [children addObject:iconCell];
+        if (progressIndicator)
+            [children addObject:progressIndicator];
+        return NSAccessibilityUnignoredChildren(children);
+    }
     return [super accessibilityAttributeValue:attribute];
 }
 
