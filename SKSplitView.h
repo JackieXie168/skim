@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class CIColor, SKSplitView;
+@class SKSplitView;
 
 
 @protocol SKSplitViewDelegate <NSSplitViewDelegate>
