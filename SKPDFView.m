@@ -83,9 +83,7 @@ NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationN
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
-NSString *SKPDFViewDisplayModeChangedNotification = @"SKPDFViewDisplayModeChangedNotification";
 NSString *SKPDFViewDisplayAsBookChangedNotification = @"SKPDFViewDisplayAsBookChangedNotification";
-NSString *SKPDFViewDisplayBoxChangedNotification = @"SKPDFViewDisplayBoxChangedNotification";
 
 NSString *SKPDFViewAnnotationKey = @"annotation";
 NSString *SKPDFViewPageKey = @"page";
@@ -234,9 +232,9 @@ enum {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                  name:PDFViewScaleChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
-                                                 name:SKPDFViewDisplayModeChangedNotification object:self];
+                                                 name:PDFViewDisplayModeChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
-                                                 name:SKPDFViewDisplayBoxChangedNotification object:self];
+                                                 name:PDFViewDisplayBoxChangedNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
                                                  name:SKPDFViewDisplayAsBookChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
@@ -559,7 +557,6 @@ enum {
         [self relayoutEditField];
         [accessibilityChildren release];
         accessibilityChildren = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayModeChangedNotification object:self userInfo:nil];
     }
 }
 
@@ -568,13 +565,6 @@ enum {
         [super setDisplaysAsBook:asBook];
         [self relayoutEditField];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayAsBookChangedNotification object:self userInfo:nil];
-    }
-}
-
-- (void)setDisplayBox:(PDFDisplayBox)displayBox {
-    if (displayBox != [self displayBox]) {
-        [super setDisplayBox:displayBox];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplayBoxChangedNotification object:self userInfo:nil];
     }
 }
 

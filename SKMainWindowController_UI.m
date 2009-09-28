@@ -1742,9 +1742,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [nc addObserver:self selector:@selector(handleMagnificationChangedNotification:) 
                              name:SKPDFViewMagnificationChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDisplayModeChangedNotification:) 
-                             name:SKPDFViewDisplayModeChangedNotification object:pdfView];
+                             name:PDFViewDisplayModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDisplayBoxChangedNotification:) 
-                             name:SKPDFViewDisplayBoxChangedNotification object:pdfView];
+                             name:PDFViewDisplayBoxChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                              name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
