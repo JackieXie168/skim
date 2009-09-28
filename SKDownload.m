@@ -68,15 +68,15 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 }
 
 + (NSSet *)keyPathsForValuesAffectingCanCancel {
-    return [NSSet setWithObjects:@"filePath", nil];
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingCanRemove {
-    return [NSSet setWithObjects:@"filePath", nil];
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingCanResume {
-    return [NSSet setWithObjects:@"filePath", nil];
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
 }
 
 + (NSSet *)keyPathsForValuesAffectingInfo {
