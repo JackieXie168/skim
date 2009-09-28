@@ -472,7 +472,7 @@
                 scale = NSWidth(bounds) / NSWidth(selRect);
             [pdfView setScaleFactor:scale];
         }
-        [pdfView scrollRect:selRect inPageToVisible:[pdfView currentSelectionPage]]; 
+        [pdfView goToRect:selRect onPage:[pdfView currentSelectionPage]]; 
     } else NSBeep();
 }
 

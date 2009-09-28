@@ -2110,7 +2110,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([selection hasCharacters]) {
             PDFPage *page = [selection safeFirstPage];
             NSRect bounds = [selection boundsForPage:page];
-            [[self pdfView] scrollRect:bounds inPageToVisible:page];
+            [[self pdfView] goToRect:bounds onPage:page];
         }
     }
 }
