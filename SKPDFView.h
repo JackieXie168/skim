@@ -195,7 +195,6 @@ typedef NSInteger SKInteractionMode;
 - (void)selectPreviousActiveAnnotation:(id)sender;
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
-- (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page;
 - (void)scrollPageToVisible:(PDFPage *)page;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar;
 

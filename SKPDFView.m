@@ -677,7 +677,7 @@ enum {
         readingBar = [[SKReadingBar alloc] initWithPage:[self currentPage]];
         [readingBar setNumberOfLines:MAX(1, [[NSUserDefaults standardUserDefaults] integerForKey:SKReadingBarNumberOfLinesKey])];
         [readingBar goToNextLine];
-        [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
+        [self goToRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) onPage:[readingBar page]];
         [userInfo setValue:[readingBar page] forKey:SKPDFViewNewPageKey];
     }
     [self setNeedsDisplay:YES];
@@ -1568,7 +1568,7 @@ enum {
     if (range.location != NSNotFound) {
         PDFSelection *selection = [page selectionForRange:range];
         [self setCurrentSelection:selection];
-        [self scrollRect:[selection boundsForPage:page] inPageToVisible:page];
+        [self goToRect:[selection boundsForPage:page] onPage:page];
         [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
     } else NSBeep();
 }
@@ -2238,25 +2238,16 @@ enum {
     }
 }
 
-- (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page {
-    rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
-    if ([[self currentPage] isEqual:page] == NO)
-        [self goToPage:page];
-    [[self documentView] scrollRectToVisible:rect];
-}
-
 - (void)scrollPageToVisible:(PDFPage *)page {
     NSRect ignored, rect = [page boundsForBox:[self displayBox]];
-    rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
     if ([[self currentPage] isEqual:page] == NO)
         [self goToPage:page];
-    [[self documentView] scrollRectToVisible:rect];
-    NSDivideRect(rect, &rect, &ignored, 1.0, NSMaxYEdge);
-    [[self documentView] scrollRectToVisible:rect];
+    NSDivideRect([self convertRect:rect fromPage:page], &rect, &ignored, 1.0, NSMaxYEdge);
+    [self goToRect:[self convertRect:rect toPage:page] onPage:page];
 }
 
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
-    [self scrollRect:[annotation bounds] inPageToVisible:[annotation page]];
+    [self goToRect:[annotation bounds] onPage:[annotation page]];
 }
 
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
@@ -2279,7 +2270,7 @@ enum {
                 [self setCurrentSelection:sel];
             }
         }
-        [self scrollRect:rect inPageToVisible:page];
+        [self goToRect:rect onPage:page];
     }
 }
 
@@ -2944,7 +2935,7 @@ enum {
             visibleRect = [self convertRect:visibleRect toPage:[readingBar page]];
             rect = NSInsetRect(rect, 0.0, - SKFloor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
-        [self scrollRect:rect inPageToVisible:[readingBar page]];
+        [self goToRect:rect onPage:[readingBar page]];
         [self setNeedsDisplay:YES];
         [userInfo setObject:[readingBar page] forKey:SKPDFViewNewPageKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
