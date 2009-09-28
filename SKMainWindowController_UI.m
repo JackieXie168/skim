@@ -1127,6 +1127,28 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 #pragma mark SKPDFView delegate protocol
 
+- (void)PDFViewOpenPDF:(PDFView *)sender forRemoteGoToAction:(PDFActionRemoteGoTo *)action {
+    NSURL *fileURL = [action URL];
+    NSError *error = nil;
+    NSDocumentController *sdc = [NSDocumentController sharedDocumentController];
+    id document = nil;
+    if ([sdc documentClassForType:[sdc typeForContentsOfURL:fileURL error:&error]] == [SKMainDocument class]) {
+        if (document = [sdc openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+            NSUInteger pageIndex = [action pageIndex];
+            if (pageIndex < [[document pdfDocument] pageCount]) {
+                PDFPage *page = [[document pdfDocument] pageAtIndex:pageIndex];
+                PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:[action point]] autorelease];
+                [[document pdfView] goToDestination:dest];
+            }
+        } else if (error) {
+            [NSApp presentError:error];
+        }
+    } else if (fileURL) {
+        // fall back to just opening the file and ignore the destination
+        [[NSWorkspace sharedWorkspace] openURL:fileURL];
+    }
+}
+
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation {
     [self showNote:annotation];
 }
