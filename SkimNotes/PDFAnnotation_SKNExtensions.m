@@ -89,11 +89,11 @@ NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
 
 static id SkimNotes = nil;
 
-static IMP originalDealloc = NULL;
+static IMP original_dealloc = NULL;
 
-static void replacementDealloc(id self, SEL _cmd) {
+static void replacement_dealloc(id self, SEL _cmd) {
     [SkimNotes removeObject:self];
-    originalDealloc(self, _cmd);
+    original_dealloc(self, _cmd);
 }
 
 + (void)load {
@@ -106,16 +106,16 @@ static void replacementDealloc(id self, SEL _cmd) {
     {
         Method deallocMethod = class_getInstanceMethod(self, @selector(dealloc));
 #if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
-        originalDealloc = method_setImplementation(deallocMethod, (IMP)replacementDealloc);
+        original_dealloc = method_setImplementation(deallocMethod, (IMP)replacement_dealloc);
 #else
 #if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
         if (method_setImplementation != NULL)
-            originalDealloc = method_setImplementation(deallocMethod, (IMP)replacementDealloc);
+            original_dealloc = method_setImplementation(deallocMethod, (IMP)replacement_dealloc);
         else
 #endif
         {
-            originalDealloc = deallocMethod->method_imp;
-            deallocMethod->method_imp = (IMP)replacementDealloc;
+            original_dealloc = deallocMethod->method_imp;
+            deallocMethod->method_imp = (IMP)replacement_dealloc;
             // Flush the method cache
             extern void _objc_flush_caches(Class);
             if (_objc_flush_caches != NULL)
@@ -492,3 +492,40 @@ static void replacementDealloc(id self, SEL _cmd) {
 }
 
 @end
+
+#pragma mark -
+
+#if __LP64__
+
+// the implementation of -[PDFBorder dashPattern] is currently badly broken in the 64-bit binary, probably due to the wrong type for _pdfPriv.dashCount
+
+@implementation PDFBorder (SKNExtensions)
+
+static NSArray *replacement_dashPattern(id self, SEL _cmd) {
+    NSMutableArray *pattern = [NSMutableArray array];
+    @try {
+        id vars = [self valueForKey:@"pdfPriv"];
+        NSUInteger i, count = [[vars valueForKey:@"dashCount"] unsignedIntegerValue];
+        Ivar ivar = object_getInstanceVariable(vars, "dashPattern", NULL);
+        if (ivar != NULL) {
+            CGFloat *dashPattern = *(CGFloat **)((void *)vars + ivar_getOffset(ivar));
+            for (i = 0; i < count; i++)
+                [pattern addObject:[NSNumber numberWithDouble:dashPattern[i]]];
+        }
+    }
+    @catch (id e) {}
+    return pattern;
+}
+
++ (void)load {
+    Class cls = NSClassFromString(@"PDFBorderPrivateVars");
+    if (cls) {
+        Ivar dashCountIvar = class_getInstanceVariable(cls, "dashCount");
+        if (dashCountIvar && 0 != strcmp(ivar_getTypeEncoding(dashCountIvar), @encode(NSUInteger)))
+            class_replaceMethod(self, @selector(dashPattern), (IMP)replacement_dashPattern, "@@:");
+    }
+}
+
+@end
+
+#endif
