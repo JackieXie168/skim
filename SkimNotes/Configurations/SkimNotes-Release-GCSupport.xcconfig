@@ -1,6 +1,0 @@
-// Common to all targets for Release with GC support
-
-#include "SkimNotes-Release.xcconfig"
-
-MACOSX_DEPLOYMENT_TARGET = 10.5
-GCC_ENABLE_OBJC_GC = supported
