@@ -704,9 +704,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
-            } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-                if (oldTableColumn == nil)
-                    ascending = NO;
             }
             sortDescriptors = sds;
             if (oldTableColumn)
