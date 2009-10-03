@@ -49,7 +49,7 @@ static CFStringRef FSRefToPathCopy(const FSRef *inRef);
 
 static Handle DataToHandle(CFDataRef inData)
 {
-    CFIndex	len;
+    size_t	len;
     Handle	handle = NULL;
     
     if (inData == NULL) {
@@ -62,7 +62,7 @@ static Handle DataToHandle(CFDataRef inData)
     
     if ((handle != NULL) && (len > 0)) {
         HLock(handle);
-        memmove((void *)CFDataGetBytePtr(inData), (void *)*handle, len);
+        memmove((void *)*handle, (const void *)CFDataGetBytePtr(inData), len);
         HUnlock(handle);
     }
     
