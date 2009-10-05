@@ -41,6 +41,49 @@
 
 @implementation NSColor (SKExtensions)
 
+typedef union _SKHSBAInt {
+    struct {
+        uint8_t h;
+        uint8_t s;
+        uint8_t b;
+        uint8_t a;
+    } hsba;
+    uint32_t uintValue;
+} SKHSBAInt;
+
+- (NSComparisonResult)colorCompare:(NSColor *)aColor {
+    NSColor *rgbColor1 = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    NSColor *rgbColor2 = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    if (rgbColor1 && rgbColor2) {
+        CGFloat h1 = 0.0, s1 = 0.0, b1 = 0.0, a1 = 0.0, h2 = 0.0, s2 = 0.0, b2 = 0.0, a2 = 0.0;
+        [rgbColor1 getHue:&h1 saturation:&s1 brightness:&b1 alpha:&a1];
+        [rgbColor2 getHue:&h2 saturation:&s2 brightness:&b2 alpha:&a2];
+        SKHSBAInt u1, u2;
+        u1.hsba.h = (uint8_t)(h1 * 255);
+        u1.hsba.s = (uint8_t)(s1 * 255);
+        u1.hsba.b = (uint8_t)(b1 * 255);
+        u1.hsba.a = (uint8_t)(a1 * 255);
+        u2.hsba.h = (uint8_t)(h2 * 255);
+        u2.hsba.s = (uint8_t)(s2 * 255);
+        u2.hsba.b = (uint8_t)(b2 * 255);
+        u2.hsba.a = (uint8_t)(a2 * 255);
+        uint32_t value1 = CFSwapInt32HostToBig(u1.uintValue);
+        uint32_t value2 = CFSwapInt32HostToBig(u2.uintValue);
+        if (value1 < value2)
+            return NSOrderedAscending;
+        else if (value1 > value2)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    } else if (rgbColor1) {
+        return NSOrderedDescending;
+    } else if (rgbColor2) {
+        return NSOrderedAscending;
+    } else {
+        return NSOrderedSame;
+    }
+}
+
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
     if ([descriptor numberOfItems] > 0) {
         CGFloat red, green, blue, alpha;

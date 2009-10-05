@@ -1,10 +1,10 @@
 //
-//  NSColor_SKExtensions.h
+//  SKColorCell.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 6/17/07.
+//  Created by Christiaan on 10/5/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,46 +36,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKColorCell.h"
 
-enum {
-    SKScriptingColorRed = 'Red ',
-    SKScriptingColorGreen = 'Gren',
-    SKScriptingColorBlue = 'Blue',
-    SKScriptingColorYellow = 'Yelw',
-    SKScriptingColorMagenta = 'Mgnt',
-    SKScriptingColorCyan = 'Cyan',
-    SKScriptingColorDarkRed = 'DRed',
-    SKScriptingColorDarkGreen = 'DGrn',
-    SKScriptingColorDarkBlue = 'DBlu',
-    SKScriptingColorBanana = 'Bana',
-    SKScriptingColorTurquoise = 'Turq',
-    SKScriptingColorViolet = 'Viol',
-    SKScriptingColorOrange = 'Orng',
-    SKScriptingColorDeepPink = 'DpPk',
-    SKScriptingColorSpringGreen = 'SprG',
-    SKScriptingColorAqua = 'Aqua',
-    SKScriptingColorLime = 'Lime',
-    SKScriptingColorDarkViolet = 'DVio',
-    SKScriptingColorPurple = 'Prpl',
-    SKScriptingColorTeal = 'Teal',
-    SKScriptingColorOlive = 'Oliv',
-    SKScriptingColorBrown = 'Brwn',
-    SKScriptingColorBlack = 'Blck',
-    SKScriptingColorWhite = 'Whit',
-    SKScriptingColorGray = 'Gray',
-    SKScriptingColorLightGray = 'LGry',
-    SKScriptingColorDarkGray = 'DGry',
-    SKScriptingColorClear = 'Clea'
-};
 
-@interface NSColor (SKExtensions)
+@implementation SKColorCell
 
-- (NSComparisonResult)colorCompare:(NSColor *)aColor;
+- (NSSize)cellSize {
+    return NSMakeSize(16.0, 16.0);
+}
 
-+ (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
-- (id)scriptingRgbaColorDescriptor;
-
-- (NSString *)accessibilityValue;
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSColor *color = [self objectValue];
+    if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
+        NSRect rect, ignored;
+        NSDivideRect(cellFrame, &ignored, &rect, 1.0, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
+        [color drawSwatchInRect:rect];
+    }
+}
 
 @end

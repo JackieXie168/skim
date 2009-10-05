@@ -1,10 +1,10 @@
 //
-//  NSColor_SKExtensions.h
+//  SKColorCell.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 6/17/07.
+//  Created by Christiaan on 10/5/09.
 /*
- This software is Copyright (c) 2007-2009
+ This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,44 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
-    SKScriptingColorRed = 'Red ',
-    SKScriptingColorGreen = 'Gren',
-    SKScriptingColorBlue = 'Blue',
-    SKScriptingColorYellow = 'Yelw',
-    SKScriptingColorMagenta = 'Mgnt',
-    SKScriptingColorCyan = 'Cyan',
-    SKScriptingColorDarkRed = 'DRed',
-    SKScriptingColorDarkGreen = 'DGrn',
-    SKScriptingColorDarkBlue = 'DBlu',
-    SKScriptingColorBanana = 'Bana',
-    SKScriptingColorTurquoise = 'Turq',
-    SKScriptingColorViolet = 'Viol',
-    SKScriptingColorOrange = 'Orng',
-    SKScriptingColorDeepPink = 'DpPk',
-    SKScriptingColorSpringGreen = 'SprG',
-    SKScriptingColorAqua = 'Aqua',
-    SKScriptingColorLime = 'Lime',
-    SKScriptingColorDarkViolet = 'DVio',
-    SKScriptingColorPurple = 'Prpl',
-    SKScriptingColorTeal = 'Teal',
-    SKScriptingColorOlive = 'Oliv',
-    SKScriptingColorBrown = 'Brwn',
-    SKScriptingColorBlack = 'Blck',
-    SKScriptingColorWhite = 'Whit',
-    SKScriptingColorGray = 'Gray',
-    SKScriptingColorLightGray = 'LGry',
-    SKScriptingColorDarkGray = 'DGry',
-    SKScriptingColorClear = 'Clea'
-};
 
-@interface NSColor (SKExtensions)
-
-- (NSComparisonResult)colorCompare:(NSColor *)aColor;
-
-+ (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
-- (id)scriptingRgbaColorDescriptor;
-
-- (NSString *)accessibilityValue;
-
+@interface SKColorCell : NSCell
 @end
