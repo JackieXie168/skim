@@ -51,7 +51,7 @@
     if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
         color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         NSRect rect = cellFrame;
-        CGFloat height = SKMin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
+        CGFloat height = SKMin(NSWidth(cellFrame), NSHeight(cellFrame));
         rect.origin.y = NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height);
         rect.origin.y = [controlView isFlipped] ? SKFloor(NSMinY(rect)) - 1.0 : SKCeil(NSMinY(rect)) + 1.0;
         rect.size.height = height;
