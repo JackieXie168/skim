@@ -37,6 +37,7 @@
  */
 
 #import "SKColorCell.h"
+#import "NSColor_SKExtensions.h"
 
 
 @implementation SKColorCell
@@ -55,6 +56,10 @@
         rect.size.height = height;
         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
     }
+}
+
+- (id)accessibilityValueAttribute {
+    return [[self objectValue] respondsToSelector:@selector(accessibilityValue)] ? [[self objectValue] accessibilityValue] : nil;
 }
 
 @end
