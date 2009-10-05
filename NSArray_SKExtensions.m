@@ -39,6 +39,7 @@
 #import "NSArray_SKExtensions.h"
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 @implementation NSArray (SKExtensions)
@@ -75,6 +76,14 @@
 
 - (NSArray *)arraySortedByTypeAndPageIndex {
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease], nil]];
+}
+
+- (NSArray *)arraySortedByColor {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease]]];
+}
+
+- (NSArray *)arraySortedByColorAndPageIndex {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES selector:@selector(compare:)] autorelease], nil]];
 }
 
 @end
