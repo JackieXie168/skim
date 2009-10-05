@@ -68,6 +68,7 @@
 #import "SKDocumentController.h"
 #import "SKFloatMapTable.h"
 #import "SKFindController.h"
+#import "NSColor_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -76,6 +77,7 @@
 #define LABEL_COLUMNID  @"label"
 #define NOTE_COLUMNID   @"note"
 #define TYPE_COLUMNID   @"type"
+#define COLOR_COLUMNID  @"color"
 #define IMAGE_COLUMNID  @"image"
 
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
@@ -651,6 +653,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             return [item type] ? (id)[item string] : (id)[item text];
         else if([tcID isEqualToString:TYPE_COLUMNID])
             return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [item type], SKAnnotationTypeImageCellTypeKey, nil];
+        else if([tcID isEqualToString:COLOR_COLUMNID])
+            return [item type] ? [item color] : nil;
         else if([tcID isEqualToString:PAGE_COLUMNID])
             return [[item page] displayLabel];
     }
@@ -702,6 +706,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:TYPE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationTypeKey ascending:YES selector:@selector(noteTypeCompare:)] autorelease] atIndex:0];
+            } else if ([tcID isEqualToString:COLOR_COLUMNID]) {
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationColorKey ascending:YES selector:@selector(colorCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:NOTE_COLUMNID]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationStringKey ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             }
