@@ -777,7 +777,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(CGFloat)newHeight byItem:(id)item {
     [rowHeights setFloat:newHeight forKey:item];
-    NSLog(@"%@",rowHeights);
 }
 
 - (NSArray *)noteItems:(NSArray *)items {
