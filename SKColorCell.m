@@ -48,9 +48,12 @@
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSColor *color = [self objectValue];
     if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
-        NSRect rect, ignored;
-        NSDivideRect(cellFrame, &ignored, &rect, 1.0, [controlView isFlipped] ? NSMaxYEdge : NSMinYEdge);
-        [color drawSwatchInRect:rect];
+        NSRect rect = cellFrame;
+        CGFloat height = SKMin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
+        rect.origin.y = NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height);
+        rect.origin.y = [controlView isFlipped] ? SKFloor(NSMinY(rect)) - 1.0 : SKCeil(NSMinY(rect)) + 1.0;
+        rect.size.height = height;
+        [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
     }
 }
 
