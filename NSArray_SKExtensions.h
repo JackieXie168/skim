@@ -50,5 +50,7 @@
 - (NSArray *)arraySortedByContents;
 - (NSArray *)arraySortedByTypeAndContents;
 - (NSArray *)arraySortedByTypeAndPageIndex;
+- (NSArray *)arraySortedByColor;
+- (NSArray *)arraySortedByColorAndPageIndex;
 
 @end
