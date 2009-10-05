@@ -49,6 +49,7 @@
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSColor *color = [self objectValue];
     if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
+        color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         NSRect rect = cellFrame;
         CGFloat height = SKMin(NSWidth(cellFrame), NSHeight(cellFrame) - 1.0);
         rect.origin.y = NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height);
