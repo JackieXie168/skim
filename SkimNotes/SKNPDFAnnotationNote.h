@@ -63,9 +63,6 @@ extern NSSize SKNPDFAnnotationNoteSize;
     @discussion  This is a <code>PDFAnnotationText</code> subclass containing a separate short string value, a longer rich text property, and an image property.
 */
 @interface SKNPDFAnnotationNote : PDFAnnotationText
-#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-    <NSTextStorageDelegate>
-#endif
 {
     NSString *string;
     NSImage *image;
