@@ -45,6 +45,11 @@ NSString *SKNPDFAnnotationImageKey = @"image";
 NSSize SKNPDFAnnotationNoteSize = {16.0, 16.0};
 
 
+#if defined(MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
+@interface SKNPDFAnnotationNote (SKNNSTextStorageDelegate) <NSTextStorageDelegate>
+@end
+#endif
+
 @implementation SKNPDFAnnotationNote
 
 - (void)updateContents {
