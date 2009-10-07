@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class BDSKFindFieldEditor;
 
 @interface SKFindController : NSWindowController <NSWindowDelegate> {
     IBOutlet NSTextField *findField;
@@ -47,7 +46,7 @@
     NSString *findString;
     NSInteger lastChangeCount;
     BOOL ignoreCase;
-    BDSKFindFieldEditor *fieldEditor;
+    NSTextView *fieldEditor;
 }
 
 + (id)sharedFindController;
