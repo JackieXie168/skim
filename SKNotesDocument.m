@@ -63,6 +63,7 @@
 #import "NSPointerFunctions_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "NSColor_SKExtensions.h"
+#import "SKColorCell.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -123,6 +124,7 @@
     [[searchField cell] setSearchMenuTemplate:menu];
     [[searchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
+    [[outlineView tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     [[[outlineView tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
     [[[outlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     
