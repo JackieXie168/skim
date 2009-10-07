@@ -101,6 +101,7 @@
 #import "PDFOutline_SKExtensions.h"
 #import "NSPointerFunctions_SKExtensions.h"
 #import "SKFloatMapTable.h"
+#import "SKColorCell.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER 0x00d7
 
@@ -113,8 +114,9 @@
 #define THUMBNAILS_KEY              @"thumbnails"
 #define SNAPSHOTS_KEY               @"snapshots"
 
-#define PAGE_COLUMNID @"page"
-#define NOTE_COLUMNID @"note"
+#define PAGE_COLUMNID  @"page"
+#define NOTE_COLUMNID  @"note"
+#define COLOR_COLUMNID @"color"
 
 #define RELEVANCE_COLUMNID  @"relevance"
 #define RESULTS_COLUMNID    @"results"
@@ -334,6 +336,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [[noteSearchField cell] setSearchMenuTemplate:menu];
     [[noteSearchField cell] setPlaceholderString:NSLocalizedString(@"Search", @"placeholder")];
     
+    [[noteOutlineView tableColumnWithIdentifier:COLOR_COLUMNID] setDataCell:[[[SKColorCell alloc] init] autorelease]];
     [[[noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Note", @"Table header title")];
     [[[noteOutlineView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
     [[[findTableView tableColumnWithIdentifier:PAGE_COLUMNID] headerCell] setTitle:NSLocalizedString(@"Page", @"Table header title")];
