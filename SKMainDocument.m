@@ -1662,19 +1662,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (NSArray *)fileIDStrings {
     if (pdfData == nil)
         return nil;
-    NSData *EOFPattern = [@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *trailerPattern = [@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *IDPattern = [@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *startArrayPattern = [@"[" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *endArrayPattern = [@"]" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *startStringPattern = [@"<" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSData *endStringPattern = [@">" dataUsingEncoding:NSISOLatin1StringEncoding];
-    NSUInteger patternLength = [EOFPattern length];
     NSRange range = NSMakeRange([pdfData length] - 1024, 1024);
     if (range.location < 0)
         range = NSMakeRange(0, [pdfData length]);
-    NSUInteger EOFIndex = [pdfData rangeOfData:EOFPattern options:NSDataSearchBackwards range:range].location;
-    NSUInteger trailerIndex, IDIndex, startArrayIndex, endArrayIndex, startStringIndex, endStringIndex;
+    NSUInteger EOFIndex = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:range].location;
     NSData *firstIDData = nil;
     NSData *secondIDData = nil;
     
@@ -1682,39 +1673,33 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         range = NSMakeRange(EOFIndex - 2048, 2048);
         if (range.location < 0)
             range = NSMakeRange(0, EOFIndex);
-        patternLength = [trailerPattern length];
-        trailerIndex = [pdfData rangeOfData:trailerPattern options:NSDataSearchBackwards range:range].location;
-        if (trailerIndex != NSNotFound) {
-            range = NSMakeRange(trailerIndex + patternLength, EOFIndex - trailerIndex - patternLength);
-            patternLength = [IDPattern length];
-            IDIndex = [pdfData rangeOfData:IDPattern options:0 range:range].location;
-            if (IDIndex != NSNotFound) {
-                range = NSMakeRange(IDIndex + patternLength, EOFIndex - IDIndex - patternLength);
-                patternLength = [startArrayPattern length];
-                startArrayIndex = [pdfData rangeOfData:startArrayPattern options:0 range:range].location;
-                if (startArrayIndex != NSNotFound) {
-                    range = NSMakeRange(startArrayIndex + patternLength, EOFIndex - startArrayIndex - patternLength);
-                    patternLength = [endArrayPattern length];
-                    endArrayIndex = [pdfData rangeOfData:endArrayPattern options:0 range:range].location;
-                    if (endArrayIndex != NSNotFound) {
-                        range = NSMakeRange(startArrayIndex + 1, endArrayIndex - startArrayIndex - 1);
-                        patternLength = [startStringPattern length];
-                        startStringIndex = [pdfData rangeOfData:startStringPattern options:0 range:range].location;
-                        if (startStringIndex != NSNotFound) {
-                            range = NSMakeRange(startStringIndex + patternLength, endArrayIndex - startStringIndex - patternLength);
-                            patternLength = [endStringPattern length];
-                            endStringIndex = [pdfData rangeOfData:endStringPattern options:0 range:range].location;
-                            if (endStringIndex != NSNotFound) {
-                                if (firstIDData = [pdfData subdataWithRange:NSMakeRange(startStringIndex + 1, endStringIndex - startStringIndex - 1)]) {
-                                    range = NSMakeRange(endStringIndex + patternLength, endArrayIndex - endStringIndex - patternLength);
-                                    patternLength = [startStringPattern length];
-                                    startStringIndex = [pdfData rangeOfData:startStringPattern options:0 range:range].location;
-                                    if (startStringIndex != NSNotFound) {
-                                        range = NSMakeRange(startStringIndex + patternLength, endArrayIndex - startStringIndex - patternLength);
-                                        patternLength = [endStringPattern length];
-                                        endStringIndex = [pdfData rangeOfData:endStringPattern options:0 range:range].location;
-                                        if (endStringIndex != NSNotFound) {
-                                            secondIDData = [pdfData subdataWithRange:NSMakeRange(startStringIndex + 1, endStringIndex - startStringIndex - 1)];
+        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:range];
+        if (trailerRange.location != NSNotFound) {
+            range = NSMakeRange(NSMaxRange(trailerRange), EOFIndex - NSMaxRange(trailerRange));
+            NSRange IDRange = [pdfData rangeOfData:[@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+            if (IDRange.location != NSNotFound) {
+                range = NSMakeRange(NSMaxRange(IDRange), EOFIndex - NSMaxRange(IDRange));
+                NSRange startArrayRange = [pdfData rangeOfData:[@"[" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+                if (startArrayRange.location != NSNotFound) {
+                    range = NSMakeRange(NSMaxRange(startArrayRange), EOFIndex - NSMaxRange(startArrayRange));
+                    NSRange endArrayRange = [pdfData rangeOfData:[@"]" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+                    if (endArrayRange.location != NSNotFound) {
+                        NSData *startStringPattern = [@"<" dataUsingEncoding:NSISOLatin1StringEncoding];
+                        NSData *endStringPattern = [@">" dataUsingEncoding:NSISOLatin1StringEncoding];
+                        range = NSMakeRange(startArrayRange.location + 1, endArrayRange.location - startArrayRange.location - 1);
+                        NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:range];
+                        if (startStringRange.location != NSNotFound) {
+                            range = NSMakeRange(NSMaxRange(startStringRange), endArrayRange.location - NSMaxRange(startStringRange));
+                            NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:range];
+                            if (endStringRange.location != NSNotFound) {
+                                if (firstIDData = [pdfData subdataWithRange:NSMakeRange(startStringRange.location + 1, endStringRange.location - startStringRange.location - 1)]) {
+                                    range = NSMakeRange(NSMaxRange(endStringRange), endArrayRange.location - NSMaxRange(endStringRange));
+                                    startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:range];
+                                    if (startStringRange.location != NSNotFound) {
+                                        range = NSMakeRange(NSMaxRange(startStringRange), endArrayRange.location - NSMaxRange(startStringRange));
+                                        endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:range];
+                                        if (endStringRange.location != NSNotFound) {
+                                            secondIDData = [pdfData subdataWithRange:NSMakeRange(startStringRange.location + 1, endStringRange.location - startStringRange.location - 1)];
                                         }
                                     }
                                 }
