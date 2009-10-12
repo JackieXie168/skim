@@ -54,7 +54,7 @@
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		edgeColors = [[decoder decodeObjectForKey:@"edgeColors"] retain];
+		edgeColors = [[decoder decodeObjectForKey:@"edgeColors"] mutableCopy];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 	}
 	return self;
@@ -105,7 +105,7 @@
 - (void)setEdgeColors:(NSArray *)colors {
 	if (colors != edgeColors) {
 		[edgeColors release];
-		edgeColors = [colors retain];
+		edgeColors = [colors mutableCopy];
 		[self setNeedsDisplay:YES];
 	}
 }
