@@ -56,9 +56,7 @@
     BOOL backward = (mask & NSDataSearchBackwards) != 0;
     BOOL anchored = (mask & NSDataSearchAnchored) != 0;
     
-    if (patternLength == 0)
-        return NSMakeRange(searchRange.location, 0);
-    if (patternLength > searchRange.length) {
+    if (patternLength == 0 || patternLength > searchRange.length) {
         // This test is a nice shortcut, but it's also necessary to avoid crashing: zero-length CFDatas will sometimes(?) return NULL for their bytes pointer, and the resulting pointer arithmetic can underflow.
         return NSMakeRange(NSNotFound, 0);
     }
