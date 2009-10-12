@@ -38,33 +38,29 @@
 
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "SKRuntime.h"
 #import <openssl/bio.h>
 #import <openssl/evp.h>
 
 @implementation NSData (SKExtensions)
 
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength {
-    return [self indexOfBytes:patternBytes length:patternLength options:0 range:NSMakeRange(0, [self length])];
-}
-
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask {
-    return [self indexOfBytes:patternBytes length:patternLength options:mask range:NSMakeRange(0, [self length])];
-}
-
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask range:(NSRange)searchRange {
+- (NSRange)Leopard_rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange {
+    NSUInteger patternLength = [dataToFind length];
     NSUInteger selfLength = [self length];
     if (searchRange.location > selfLength || NSMaxRange(searchRange) > selfLength)
         [NSException raise:NSRangeException format:@"Range {%lu,%lu} exceeds length %lu", (unsigned long)searchRange.location, (unsigned long)searchRange.length, (unsigned long)selfLength];
     
+    const void *patternBytes = [dataToFind bytes];
     const unsigned char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
     const unsigned char firstPatternByte = *(const char *)patternBytes;
-    BOOL backward = (mask & NSBackwardsSearch) != 0;
+    BOOL backward = (mask & NSDataSearchBackwards) != 0;
+    BOOL anchored = (mask & NSDataSearchAnchored) != 0;
     
     if (patternLength == 0)
-        return searchRange.location;
+        return NSMakeRange(searchRange.location, 0);
     if (patternLength > searchRange.length) {
         // This test is a nice shortcut, but it's also necessary to avoid crashing: zero-length CFDatas will sometimes(?) return NULL for their bytes pointer, and the resulting pointer arithmetic can underflow.
-        return NSNotFound;
+        return NSMakeRange(NSNotFound, 0);
     }
     
     selfBufferStart = [self bytes];
@@ -79,7 +75,10 @@
     
     for (;;) {
         if (memcmp(selfPtr, patternBytes, patternLength) == 0)
-            return (selfPtr - selfBufferStart);
+            return NSMakeRange(selfPtr - selfBufferStart, 0);
+        
+        if (anchored)
+            break;
         
         if (backward) {
             do {
@@ -96,7 +95,7 @@
                 break;
         }
     }
-    return NSNotFound;
+    return NSMakeRange(NSNotFound, 0);
 }
 
 - (NSData *)md5Signature {
@@ -249,6 +248,10 @@
 
 - (id)scriptingTiffPictureDescriptor {
     return [NSAppleEventDescriptor descriptorWithDescriptorType:'TIFF' data:self];
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
 }
 
 @end

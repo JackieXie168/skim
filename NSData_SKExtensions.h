@@ -41,10 +41,6 @@
 
 @interface NSData (SKExtensions)
 
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength;
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask;
-- (NSUInteger)indexOfBytes:(const void *)patternBytes length:(NSUInteger)patternLength options:(NSInteger)mask range:(NSRange)searchRange;
-
 - (NSData *)md5Signature;
 - (NSString *)hexString;
 - (NSString *)xmlString;
@@ -64,3 +60,15 @@
 - (id)scriptingTiffPictureDescriptor;
 
 @end
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5
+enum {
+   NSDataSearchBackwards = 1UL << 0,
+   NSDataSearchAnchored = 1UL << 1
+};
+typedef NSUInteger NSDataSearchOptions;
+
+@interface NSData (SKSnowLeopardExtensions)
+- (NSRange)rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange;
+@end
+#endif
