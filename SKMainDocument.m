@@ -1659,47 +1659,54 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self mainWindowController] pdfView];
 }
 
+inline NSRange SKRangeBetweenRanges(NSRange startRange, NSRange endRange) {
+    NSRange r;
+    r.location = NSMaxRange(startRange);
+    r.length = endRange.location - r.location;
+    return r;
+}
+
+inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
+    NSRange r;
+    if (end > length) {
+        r.location = end - length;
+        r.length = length;
+    } else {
+        r.location = 0;
+        r.length = end;
+    }
+    return r;
+}
+
 - (NSArray *)fileIDStrings {
     if (pdfData == nil)
         return nil;
-    NSRange range = NSMakeRange([pdfData length] - 1024, 1024);
-    if (range.location < 0)
-        range = NSMakeRange(0, [pdfData length]);
-    NSUInteger EOFIndex = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:range].location;
+    
     NSData *firstIDData = nil;
     NSData *secondIDData = nil;
+    NSRange EOFRange = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(1024UL, [pdfData length])];
     
-    if (EOFIndex != NSNotFound) {
-        range = NSMakeRange(EOFIndex - 2048, 2048);
-        if (range.location < 0)
-            range = NSMakeRange(0, EOFIndex);
-        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:range];
+    if (EOFRange.location != NSNotFound) {
+        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(2048UL, EOFRange.location)];
         if (trailerRange.location != NSNotFound) {
-            range = NSMakeRange(NSMaxRange(trailerRange), EOFIndex - NSMaxRange(trailerRange));
-            NSRange IDRange = [pdfData rangeOfData:[@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+            NSRange IDRange = [pdfData rangeOfData:[@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
             if (IDRange.location != NSNotFound) {
-                range = NSMakeRange(NSMaxRange(IDRange), EOFIndex - NSMaxRange(IDRange));
-                NSRange startArrayRange = [pdfData rangeOfData:[@"[" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+                NSRange startArrayRange = [pdfData rangeOfData:[@"[" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
                 if (startArrayRange.location != NSNotFound) {
-                    range = NSMakeRange(NSMaxRange(startArrayRange), EOFIndex - NSMaxRange(startArrayRange));
-                    NSRange endArrayRange = [pdfData rangeOfData:[@"]" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:range];
+                    NSRange endArrayRange = [pdfData rangeOfData:[@"]" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
                     if (endArrayRange.location != NSNotFound) {
                         NSData *startStringPattern = [@"<" dataUsingEncoding:NSISOLatin1StringEncoding];
                         NSData *endStringPattern = [@">" dataUsingEncoding:NSISOLatin1StringEncoding];
-                        range = NSMakeRange(startArrayRange.location + 1, endArrayRange.location - startArrayRange.location - 1);
-                        NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:range];
+                        NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(startArrayRange, endArrayRange)];
                         if (startStringRange.location != NSNotFound) {
-                            range = NSMakeRange(NSMaxRange(startStringRange), endArrayRange.location - NSMaxRange(startStringRange));
-                            NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:range];
+                            NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
                             if (endStringRange.location != NSNotFound) {
-                                if (firstIDData = [pdfData subdataWithRange:NSMakeRange(startStringRange.location + 1, endStringRange.location - startStringRange.location - 1)]) {
-                                    range = NSMakeRange(NSMaxRange(endStringRange), endArrayRange.location - NSMaxRange(endStringRange));
-                                    startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:range];
+                                if (firstIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)]) {
+                                    startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(endStringRange, endArrayRange)];
                                     if (startStringRange.location != NSNotFound) {
-                                        range = NSMakeRange(NSMaxRange(startStringRange), endArrayRange.location - NSMaxRange(startStringRange));
-                                        endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:range];
+                                        endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
                                         if (endStringRange.location != NSNotFound) {
-                                            secondIDData = [pdfData subdataWithRange:NSMakeRange(startStringRange.location + 1, endStringRange.location - startStringRange.location - 1)];
+                                            secondIDData = [pdfData subdataWithRange:SKRangeBetweenRanges(startStringRange, endStringRange)];
                                         }
                                     }
                                 }
