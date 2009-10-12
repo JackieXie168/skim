@@ -1375,7 +1375,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [fh seekToFileOffset:startPos];
     NSData *trailerData = [fh readDataToEndOfFile];
     NSRange range = NSMakeRange(0, [trailerData length]);
-    NSData *pattern = [@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding];
+    NSData *pattern = [NSData dataWithBytes:"%%EOF" length:5];
     NSDataSearchOptions options = NSDataSearchBackwards;
     
     if (isDVI) {
@@ -1684,19 +1684,19 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     
     NSData *firstIDData = nil;
     NSData *secondIDData = nil;
-    NSRange EOFRange = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd([pdfData length], 1024UL)];
+    NSRange EOFRange = [pdfData rangeOfData:[NSData dataWithBytes:"%%EOF" length:5] options:NSDataSearchBackwards range:SKMakeRangeFromEnd([pdfData length], 1024UL)];
     
     if (EOFRange.location != NSNotFound) {
-        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(EOFRange.location, 2048UL)];
+        NSRange trailerRange = [pdfData rangeOfData:[NSData dataWithBytes:"trailer" length:7] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(EOFRange.location, 2048UL)];
         if (trailerRange.location != NSNotFound) {
-            NSRange IDRange = [pdfData rangeOfData:[@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
+            NSRange IDRange = [pdfData rangeOfData:[NSData dataWithBytes:"/ID" length:3] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
             if (IDRange.location != NSNotFound) {
-                NSRange startArrayRange = [pdfData rangeOfData:[@"[" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
+                NSRange startArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"[" length:0] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
                 if (startArrayRange.location != NSNotFound) {
-                    NSRange endArrayRange = [pdfData rangeOfData:[@"]" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
+                    NSRange endArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"]" length:1] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
                     if (endArrayRange.location != NSNotFound) {
-                        NSData *startStringPattern = [@"<" dataUsingEncoding:NSISOLatin1StringEncoding];
-                        NSData *endStringPattern = [@">" dataUsingEncoding:NSISOLatin1StringEncoding];
+                        NSData *startStringPattern = [NSData dataWithBytes:"<" length:1];
+                        NSData *endStringPattern = [NSData dataWithBytes:">" length:1];
                         NSRange startStringRange = [pdfData rangeOfData:startStringPattern options:0 range:SKRangeBetweenRanges(startArrayRange, endArrayRange)];
                         if (startStringRange.location != NSNotFound) {
                             NSRange endStringRange = [pdfData rangeOfData:endStringPattern options:0 range:SKRangeBetweenRanges(startStringRange, endArrayRange)];
