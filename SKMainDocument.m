@@ -1684,10 +1684,10 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     
     NSData *firstIDData = nil;
     NSData *secondIDData = nil;
-    NSRange EOFRange = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(1024UL, [pdfData length])];
+    NSRange EOFRange = [pdfData rangeOfData:[@"%%EOF" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd([pdfData length], 1024UL)];
     
     if (EOFRange.location != NSNotFound) {
-        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(2048UL, EOFRange.location)];
+        NSRange trailerRange = [pdfData rangeOfData:[@"trailer" dataUsingEncoding:NSISOLatin1StringEncoding] options:NSDataSearchBackwards range:SKMakeRangeFromEnd(EOFRange.location, 2048UL)];
         if (trailerRange.location != NSNotFound) {
             NSRange IDRange = [pdfData rangeOfData:[@"/ID" dataUsingEncoding:NSISOLatin1StringEncoding] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
             if (IDRange.location != NSNotFound) {
