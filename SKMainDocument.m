@@ -1357,7 +1357,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     BOOL isDVI = NO;
     if (extension) {
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:fileName error:NULL];
+        NSString *theUTI = [ws typeOfFile:[[fileName stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
         if ([extension caseInsensitiveCompare:@"pdfd"] == NSOrderedSame || [ws type:theUTI conformsToType:@"net.sourceforge.skim-app.pdfd"]) {
             fileName = [[NSFileManager defaultManager] bundledFileWithExtension:@"pdf" inPDFBundleAtPath:fileName error:NULL];
             if (fileName == nil)
@@ -1597,7 +1597,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [cmdString insertString:@"\"" atIndex:0];
         
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        NSString *theUTI = [ws typeOfFile:editorCmd error:NULL];
+        NSString *theUTI = [ws typeOfFile:[[editorCmd stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
         if ([ws type:theUTI conformsToType:@"com.apple.applescript.script"] || [ws type:theUTI conformsToType:@"com.apple.applescript.text"])
             [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         
