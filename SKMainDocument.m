@@ -1379,7 +1379,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSDataSearchOptions options = NSDataSearchBackwards;
     
     if (isDVI) {
-        pattern = [[NSString stringWithFormat:@"%C%C%C%C", 0xFB02, 0xFB02, 0xFB02, 0xFB02] dataUsingEncoding:NSMacOSRomanStringEncoding];
+        const char bytes[4] = {0xDF, 0xDF, 0xDF, 0xDF};
+        pattern = [NSData dataWithBytes:bytes length:4];
         options |= NSDataSearchAnchored;
     }
     return NSNotFound != [trailerData rangeOfData:pattern options:options range:range].location;
