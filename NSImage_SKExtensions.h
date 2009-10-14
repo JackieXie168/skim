@@ -121,8 +121,6 @@ extern NSString *SKImageNameZoomOutCursor;
 
 @interface NSImage (SKExtensions)
 
-+ (void)makeToolbarImages;
-+ (void)makeAdornImages;
-+ (void)makeCursorImages;
++ (void)makeImages;
 
 @end

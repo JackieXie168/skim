@@ -162,9 +162,7 @@
 }    
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
-    [NSImage makeAdornImages];
-    [NSImage makeToolbarImages];
-    [NSImage makeCursorImages];
+    [NSImage makeImages];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{

@@ -1866,4 +1866,10 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [zoomOutCursorImage setName:SKImageNameZoomOutCursor];
 }
 
++ (void)makeImages {
+    [NSImage makeAdornImages];
+    [NSImage makeToolbarImages];
+    [NSImage makeCursorImages];
+}
+
 @end
