@@ -283,7 +283,7 @@ static Class SKBookmarkClass = Nil;
 + (NSImage *)missingFileImage {
     static NSImage *image = nil;
     if (image == nil) {
-        NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
         NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
         NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
         NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
