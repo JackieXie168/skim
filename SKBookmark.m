@@ -280,6 +280,30 @@ static Class SKBookmarkClass = Nil;
 
 @implementation SKFileBookmark
 
++ (NSImage *)missingFileImage {
+    static NSImage *image = nil;
+    if (image == nil) {
+        NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
+        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
+        [tmpImage lockFocus];
+        [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+        [questionMark drawInRect:NSMakeRect(6.0, 4.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
+        [tmpImage unlockFocus];
+        [image addRepresentation:[[tmpImage representations] lastObject]];
+        [tmpImage release];
+        tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [tmpImage lockFocus];
+        [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+        [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
+        [tmpImage unlockFocus];
+        [image addRepresentation:[[tmpImage representations] lastObject]];
+        [tmpImage release];
+    }
+    return image;
+}
+
 - (id)initWithAlias:(BDAlias *)anAlias pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
     if (self = [super init]) {
         if (anAlias) {
@@ -342,33 +366,8 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    static NSMutableDictionary *tinyIcons = nil;
-    
     NSString *filePath = [self path];
-    
-    if (filePath == nil)
-        return [NSImage tinyMissingFileImage];
-    
-    NSString *extension = [filePath pathExtension];
-    NSImage *icon = [tinyIcons objectForKey:extension];
-    
-    if (icon == nil) {
-        if (tinyIcons == nil)
-            tinyIcons = [[NSMutableDictionary alloc] init];
-        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:extension];
-        if (image) {
-            NSRect sourceRect = {NSZeroPoint, [image size]};
-            NSRect targetRect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
-            icon = [[NSImage alloc] initWithSize:targetRect.size];
-            [icon lockFocus];
-            [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-            [image drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-            [icon unlockFocus];
-            [tinyIcons setObject:icon forKey:extension];
-            [icon release];
-        }
-    }
-    return icon;
+    return filePath ? [[NSWorkspace sharedWorkspace] iconForFile:filePath] : [[self class] missingFileImage];
 }
 
 - (NSUInteger)pageIndex {
@@ -428,7 +427,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    return [NSImage tinyFolderImage];
+    return [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
 }
 
 - (NSString *)label {
@@ -479,7 +478,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSImage *)icon {
-    return [NSImage tinyMultipleFilesImage];
+    return [NSImage imageNamed:NSImageNameMultipleDocuments];
 }
 
 @end

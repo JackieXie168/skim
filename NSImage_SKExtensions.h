@@ -125,21 +125,4 @@ extern NSString *SKImageNameZoomOutCursor;
 + (void)makeAdornImages;
 + (void)makeCursorImages;
 
-+ (NSImage *)smallFolderImage;
-+ (NSImage *)tinyFolderImage;
-
-+ (NSImage *)smallMissingFileImage;
-+ (NSImage *)tinyMissingFileImage;
-
-+ (NSImage *)smallMultipleFilesImage;
-+ (NSImage *)tinyMultipleFilesImage;
-
-+ (NSImage *)smallDeleteImage;
-+ (NSImage *)tinyDeleteImage;
-
-- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta;
-- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta;
-- (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta;
-- (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta;
-
 @end

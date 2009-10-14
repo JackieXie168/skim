@@ -146,4 +146,24 @@
     return self;
 }
 
+- (void)setImageAndSize:(NSImage *)image {
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_4];
+    CGFloat lineHeight = [layoutManager defaultLineHeightForFont:[NSFont menuFontOfSize:0]];
+    [layoutManager release];
+    NSSize dstSize = { lineHeight, lineHeight };
+    NSSize srcSize = [image size];
+    if (NSEqualSizes(srcSize, dstSize)) {
+        [self setImage:image];
+    } else {
+        NSImage *newImage = [[NSImage alloc] initWithSize:dstSize];
+        [newImage lockFocus];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        [image drawInRect:NSMakeRect(0, 0, dstSize.width, dstSize.height) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [newImage unlockFocus];
+        [self setImage:newImage];
+        [newImage release];
+    }
+}
+        
 @end

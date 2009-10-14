@@ -1330,8 +1330,9 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [toolbarSelectToolImage unlockFocus];
     [toolbarSelectToolImage setName:SKImageNameToolbarSelectTool];
     
-    toolbarNewFolderImage = [[self smallFolderImage] copy];
+    toolbarNewFolderImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
     [toolbarNewFolderImage lockFocus];
+    [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     [[self class] drawAddBadgeAtPoint:NSMakePoint(18.0, 18.0)];
     [toolbarNewFolderImage unlockFocus];
     [toolbarNewFolderImage setName:SKImageNameToolbarNewFolder];
@@ -1863,151 +1864,6 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [NSGraphicsContext restoreGraphicsState];
     [zoomOutCursorImage unlockFocus];
     [zoomOutCursorImage setName:SKImageNameZoomOutCursor];
-}
-
-#define smallImageSize NSMakeSize(32.0, 32.0)
-#define smallImageRect NSMakeRect(0.0, 0.0, 32.0, 32.0)
-#define tinyImageSize NSMakeSize(16.0, 16.0)
-#define tinyImageRect NSMakeRect(0.0, 0.0, 16.0, 16.0)
-
-+ (NSImage *)smallFolderImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        NSImage *folder = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
-        image = [[NSImage alloc] initWithSize:smallImageSize];
-        [image lockFocus];
-        [folder drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)tinyFolderImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        NSImage *folder = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
-        image = [[NSImage alloc] initWithSize:tinyImageSize];
-        [image lockFocus];
-        [folder drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)smallMissingFileImage {
-    static NSImage *image = nil;
-    if(image == nil){
-        image = [[NSImage alloc] initWithSize:smallImageSize];
-        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-        [image lockFocus];
-        [genericDocImage drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
-        [questionMark drawInRect:NSMakeRect(6.0, 4.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)tinyMissingFileImage {
-    static NSImage *image = nil;
-    if(image == nil){
-        image = [[NSImage alloc] initWithSize:tinyImageSize];
-        NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-        NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-        [image lockFocus];
-        [genericDocImage drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
-        [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)smallMultipleFilesImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        image = [[NSImage alloc] initWithSize:smallImageSize];
-        NSImage *multipleFilesImage = [NSImage imageNamed:NSImageNameMultipleDocuments];
-        NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
-        [image lockFocus];
-        [multipleFilesImage drawInRect:smallImageRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)tinyMultipleFilesImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        image = [[NSImage alloc] initWithSize:tinyImageSize];
-        NSImage *multipleFilesImage = [NSImage imageNamed:NSImageNameMultipleDocuments];
-        NSRect sourceRect = {NSZeroPoint, [multipleFilesImage size]};
-        [image lockFocus];
-        [multipleFilesImage drawInRect:tinyImageRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)smallDeleteImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        NSImage *delete = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)];
-        image = [[NSImage alloc] initWithSize:smallImageSize];
-        [image lockFocus];
-        [delete drawInRect:smallImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)tinyDeleteImage {
-    static NSImage *image = nil;
-    if(image == nil) {
-        NSImage *delete = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)];
-        image = [[NSImage alloc] initWithSize:tinyImageSize];
-        [image lockFocus];
-        [delete drawInRect:tinyImageRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-- (void)drawFlippedInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    [self drawMirrored:NO andFlipped:YES inRect:dstRect fromRect:srcRect operation:op fraction:delta];
-}
-
-- (void)drawFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    [self drawMirrored:NO andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
-}
-
-- (void)drawMirroredAndFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    [self drawMirrored:YES andFlipped:isFlipped inRect:dstRect fromRect:srcRect operation:op fraction:delta];
-}
-
-- (void)drawMirrored:(BOOL)isMirrored andFlipped:(BOOL)isFlipped inRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)delta {
-    if (isMirrored || isFlipped) {
-        CGFloat dx1 = 0.0, dx2 = 0.0, dy1 = 0.0, dy2 = 0.0, sx = 1.0, sy = 1.0;
-        if (isMirrored) {
-            sx = -1.0;
-            dx1 = NSMaxX(dstRect);
-            dx2 = -NSMinX(dstRect);
-        }
-        if (isFlipped) {
-            sy = -1.0;
-            dy1 = NSMaxY(dstRect);
-            dy2 = -NSMinY(dstRect);
-        }
-        [NSGraphicsContext saveGraphicsState];
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        [transform translateXBy:dx1 yBy:dy1];
-        [transform scaleXBy:sx yBy:sy];
-        [transform translateXBy:dx2 yBy:dy2];
-        [transform concat];
-        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-        [NSGraphicsContext restoreGraphicsState];
-    } else {
-        [self drawInRect:dstRect fromRect:srcRect operation:op fraction:delta];
-    }
 }
 
 @end
