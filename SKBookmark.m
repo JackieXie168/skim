@@ -286,20 +286,17 @@ static Class SKBookmarkClass = Nil;
         image = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
         NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
         NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(32.0, 32.0)];
-        [tmpImage lockFocus];
+        [image lockFocus];
         [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
         [questionMark drawInRect:NSMakeRect(6.0, 4.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [tmpImage unlockFocus];
-        [image addRepresentation:[[tmpImage representations] lastObject]];
-        [tmpImage release];
-        tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
-        [tmpImage lockFocus];
+        [image unlockFocus];
+        NSImage *tinyImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [tinyImage lockFocus];
         [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
         [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-        [tmpImage unlockFocus];
-        [image addRepresentation:[[tmpImage representations] lastObject]];
-        [tmpImage release];
+        [tinyImage unlockFocus];
+        [image addRepresentation:[[tinyImage representations] lastObject]];
+        [tinyImage release];
     }
     return image;
 }
