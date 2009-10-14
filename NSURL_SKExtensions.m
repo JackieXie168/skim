@@ -110,8 +110,10 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     
     NSString *name = [self isFileURL] ? [self path] : [self relativeString];
     if (name) {
-        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
-        [image setSize:NSMakeSize(16, 16)];
+        NSImage *image = [[[NSImage alloc] initWithSize:NSMakeSize(16, 16)] autorelease];
+        [image lockFocus];
+        [[[NSWorkspace sharedWorkspace] iconForFile:name] drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
         name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
         
         NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
