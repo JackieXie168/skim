@@ -135,6 +135,7 @@
     if (progressIndicator)
         rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
     NSDivideRect(bounds, &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
+    NSDivideRect(textRect, &ignored, &textRect, rightMargin, NSMaxXEdge);
     if (iconCell) {
         NSDivideRect(textRect, &iconRect, &textRect, iconHeight, NSMinXEdge);
         NSDivideRect(textRect, &ignored, &textRect, SEPARATION, NSMaxXEdge);
