@@ -8,333 +8,261 @@
 
         <cocoa name="NSCoreSuite"/>
 
+		<command name="open" code="aevtodoc" description="Open a document.">
+			<direct-parameter description="The file(s) to be opened.">
+				<type type="file"/>
+				<type type="file" list="yes"/>
+			</direct-parameter>
+			<result description="The opened document(s).">
+				<type type="document"/>
+				<type type="document" list="yes"/>
+			</result>
+		</command>
+
+		<enumeration name="save options" code="savo">
+			<enumerator name="yes" code="yes " description="Save the file."/>
+			<enumerator name="no" code="no  " description="Do not save the file."/>
+			<enumerator name="ask" code="ask " description="Ask the user whether or not to save the file."/>
+		</enumeration>
+
+		<command name="close" code="coreclos" description="Close a document.">
+			<cocoa class="NSCloseCommand"/>
+			<direct-parameter type="specifier" description="the document(s) or window(s) to close."/>
+			<parameter name="saving" code="savo" type="save options" optional="yes" description="Should changes be saved before closing?">
+				<cocoa key="SaveOptions"/>
+			</parameter>
+			<parameter name="saving in" code="kfil" type="file" optional="yes" description="The file in which to save the document, if so.">
+				<cocoa key="File"/>
+			</parameter>
+		</command>
+
+		<command name="save" code="coresave" description="Save a document.">
+			<direct-parameter type="specifier" description="The document(s) or window(s) to save."/>
+			<parameter name="in" code="kfil" type="file" optional="yes" description="The file in which to save the document. If this is set, this acts like Save As or Export.">
+				<cocoa key="File"/>
+			</parameter>
+			<parameter name="as" code="fltp" type="text" optional="yes" description="The file format to use. If this is set, this acts like Export. Should be one of &quot;PDF&quot;, &quot;PDF Bundle&quot;, &quot;PDF Without Notes&quot;, &quot;PDF With Embedded Notes&quot;, &quot;PostScript&quot;, &quot;PostScript Without Notes&quot;, &quot;DVI&quot;, &quot;DVI Without Notes&quot;, &quot;Skim Notes&quot;, &quot;Notes as Text&quot;, &quot;Notes as RTF&quot;, &quot;Notes as RTFD&quot;, and &quot;Notes as FDF&quot;, or the name of a custom export template.">
+				<cocoa key="FileType"/>
+			</parameter>
+		</command>
+
+		<enumeration name="printing error handling" code="enum">
+			<enumerator name="standard" code="lwst" description="Standard PostScript error handling">
+				<cocoa boolean-value="NO"/>
+			</enumerator>
+			<enumerator name="detailed" code="lwdt" description="print a detailed report of PostScript errors">
+				<cocoa boolean-value="YES"/>
+			</enumerator>
+		</enumeration>
+
+		<record-type name="print settings" code="pset">
+			<property name="copies" code="lwcp" type="integer" description="the number of copies of a document to be printed">
+				<cocoa key="NSCopies"/>
+			</property>
+			<property name="collating" code="lwcl" type="boolean" description="Should printed copies be collated?">
+				<cocoa key="NSMustCollate"/>
+			</property>
+			<property name="starting page" code="lwfp" type="integer" description="the first page of the document to be printed">
+				<cocoa key="NSFirstPage"/>
+			</property>
+			<property name="ending page" code="lwlp" type="integer" description="the last page of the document to be printed">
+				<cocoa key="NSLastPage"/>
+			</property>
+			<property name="pages across" code="lwla" type="integer" description="number of logical pages laid across a physical page">
+				<cocoa key="NSPagesAcross"/>
+			</property>
+			<property name="pages down" code="lwld" type="integer" description="number of logical pages laid out down a physical page">
+				<cocoa key="NSPagesDown"/>
+			</property>
+			<property name="requested print time" code="lwqt" type="date" description="the time at which the desktop printer should print the document">
+				<cocoa key="NSPrintTime"/>
+			</property>
+			<property name="error handling" code="lweh" type="printing error handling" description="how errors are handled">
+				<cocoa key="NSDetailedErrorReporting"/>
+			</property>
+			<property name="fax number" code="faxn" type="text" description="for fax number">
+				<cocoa key="NSFaxNumber"/>
+			</property>
+			<property name="target printer" code="trpr" type="text" description="for target printer">
+				<cocoa key="NSPrinterName"/>
+			</property>
+		</record-type>
+
+		<command name="print" code="aevtpdoc" description="Print a document.">
+			<direct-parameter description="The file(s), document(s), or window(s) to be printed.">
+				<type type="file" list="yes"/>
+				<type type="specifier"/>
+			</direct-parameter>
+			<parameter name="with properties" code="prdt" type="print settings" optional="yes" description="The print settings to use.">
+				<cocoa key="PrintSettings"/>
+			</parameter>
+			<parameter name="print dialog" code="pdlg" type="boolean" optional="yes" description="Should the application show the print dialog?">
+				<cocoa key="ShowPrintDialog"/>
+			</parameter>
+		</command>
+
+		<command name="quit" code="aevtquit" description="Quit the application.">
+			<cocoa class="NSQuitCommand"/>
+			<parameter name="saving" code="savo" type="save options" optional="yes" description="Should changes be saved before quitting?">
+				<cocoa key="SaveOptions"/>
+			</parameter>
+		</command>
+
+		<command name="count" code="corecnte" description="Return the number of elements of a particular class within an object.">
+			<cocoa class="NSCountCommand"/>
+			<direct-parameter type="specifier" description="The objects to be counted."/>
+			<parameter name="each" code="kocl" type="type" optional="yes" description="The class of objects to be counted." hidden="yes">
+				<cocoa key="ObjectClass"/>
+			</parameter>
+			<result type="integer" description="The count."/>
+		</command>
+
+		<command name="delete" code="coredelo" description="Delete an object.">
+			<cocoa class="NSDeleteCommand"/>
+			<direct-parameter type="specifier" description="The object(s) to delete."/>
+		</command>
+
+		<command name="duplicate" code="coreclon" description="Copy an object.">
+			<cocoa class="NSCloneCommand"/>
+			<direct-parameter type="specifier" description="The object(s) to copy."/>
+			<parameter name="to" code="insh" type="location specifier" description="The location for the new copy or copies." optional="yes">
+				<cocoa key="ToLocation"/>
+			</parameter>
+			<parameter name="with properties" code="prdt" type="record" description="Properties to set in the new copy or copies right away." optional="yes">
+				<cocoa key="WithProperties"/>
+			</parameter>
+		</command>
+
+		<command name="exists" code="coredoex" description="Verify that an object exists.">
+			<cocoa class="NSExistsCommand"/>
+			<direct-parameter type="any" description="The object(s) to check."/>
+			<result type="boolean" description="Did the object(s) exist?"/>
+		</command>
+
+		<command name="make" code="corecrel" description="Create a new object.">
+			<cocoa class="NSCreateCommand"/>
+			<parameter name="new" code="kocl" type="type" description="The class of the new object.">
+				<cocoa key="ObjectClass"/>
+			</parameter>
+			<parameter name="at" code="insh" type="location specifier" optional="yes" description="The location at which to insert the object.">
+				<cocoa key="Location"/>
+			</parameter>
+			<parameter name="with data" code="data" type="any" optional="yes" description="The initial contents of the object.">
+				<cocoa key="ObjectData"/>
+			</parameter>
+			<parameter name="with properties" code="prdt" type="record" optional="yes" description="The initial values for properties of the object.">
+				<cocoa key="KeyDictionary"/>
+			</parameter>
+			<result type="specifier" description="The new object."/>
+		</command>
+
+		<command name="move" code="coremove" description="Move an object to a new location.">
+			<cocoa class="NSMoveCommand"/>
+			<direct-parameter type="specifier" description="The object(s) to move."/>
+			<parameter name="to" code="insh" type="location specifier" description="The new location for the object(s).">
+				<cocoa key="ToLocation"/>
+			</parameter>
+		</command>
+
         <class name="application" code="capp"
             description="The application's top level scripting object.">
             <cocoa class="NSApplication"/>
-            <element type="document" access="r"
-                description="The documents currently opened by the application.">
-                <cocoa key="orderedDocuments"/>
-            </element>
-            <element type="window" access="r">
-                <cocoa key="orderedWindows"/>
-            </element>
-            <property name="name" code="pnam" type="text" access="r"
-                description="The name of the application."/>
-            <property name="frontmost" code="pisf" type="boolean" access="r"
-                description="Is this the frontmost (active) application?">
-                <cocoa key="isActive"/>
-            </property>
-            <property name="version" code="vers" type="text" access="r"
-                description="The version of the application."/>
-			<responds-to name="open">
+			<property name="name" code="pnam" type="text" access="r" description="The name of the application."/>
+			<property name="frontmost" code="pisf" type="boolean" access="r" description="Is this the active application?">
+				<cocoa key="isActive"/>
+			</property>
+			<property name="version" code="vers" type="text" access="r" description="The version number of the application."/>
+			<element type="document">
+				<cocoa key="orderedDocuments"/>
+			</element>
+			<element type="window" access="r">
+				<cocoa key="orderedWindows"/>
+			</element>
+			<responds-to command="open">
 				<cocoa method="handleOpenScriptCommand:"/>
 			</responds-to>
-			<responds-to name="print">
+			<responds-to command="print">
 				<cocoa method="handlePrintScriptCommand:"/>
 			</responds-to>
-            <responds-to name="quit">
-                <cocoa method="handleQuitScriptCommand:"/>
-            </responds-to>
+			<responds-to command="quit">
+				<cocoa method="handleQuitScriptCommand:"/>
+			</responds-to>
         </class>
 
         <class name="document" code="docu"
             description="A document.">
             <cocoa class="NSDocument"/>
-            <property name="name" code="pnam" type="text" access="r"
-                description="The document's name.">
-                <cocoa key="displayName"/>
-            </property>
-            <property name="modified" code="imod" type="boolean" access="r"
-                description="Has the document been modified since the last save?">
-                <cocoa key="isDocumentEdited"/>
-            </property>
-            <property name="file" code="file" type="file" access="r"
-                description="The document's location on disk.">
-                <cocoa key="fileURL"/>
-            </property>
-            <property name="path" code="ppth" type="text"
+			<property name="name" code="pnam" type="text" access="r" description="Its name.">
+				<cocoa key="displayName"/>
+			</property>
+			<property name="modified" code="imod" type="boolean" access="r" description="Has it been modified since the last save?">
+				<cocoa key="isDocumentEdited"/>
+			</property>
+			<property name="file" code="file" type="file" access="r" description="Its location on disk, if it has one.">
+				<cocoa key="fileURL"/>
+			</property>
+            <property name="path" code="ppth" type="text" access="r" hidden="yes"
                 description="The document's path.">
                 <cocoa key="fileName"/>
             </property>
-            <responds-to name="close">
-                <cocoa method="handleCloseScriptCommand:"/>
-            </responds-to>
-            <responds-to name="print">
-                <cocoa method="handlePrintScriptCommand:"/>
-            </responds-to>
-            <responds-to name="save">
-                <cocoa method="handleSaveScriptCommand:"/>
-            </responds-to>
+			<responds-to command="close">
+				<cocoa method="handleCloseScriptCommand:"/>
+			</responds-to>
+			<responds-to command="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
+			<responds-to command="save">
+				<cocoa method="handleSaveScriptCommand:"/>
+			</responds-to>
         </class>
 
         <class name="window" code="cwin"
             description="A window.">
             <cocoa class="NSWindow"/>
-            <element type="TeX line" access="r" hidden="yes"
-                description="Lines in a TeX source file.">
-                <cocoa key="lines"/>
-            </element>
-            <property name="name" code="pnam" type="text" access="r"
-                description="The full title of the window.">
-                <cocoa key="title"/>
-            </property>
-            <property name="id" code="ID  " type="integer" access="r"
-                description="The unique identifier of the window.">
-                <cocoa key="uniqueID"/>
-            </property>
-            <property name="index" code="pidx" type="integer"
-                description="The index of the window, ordered front to back.">
-                <cocoa key="orderedIndex"/>
-            </property>
-            <property name="bounds" code="pbnd" type="rectangle"
-                description="The bounding rectangle of the window.">
-                <cocoa key="boundsAsQDRect"/>
-            </property>
-            <property name="closeable" code="hclb" type="boolean" access="r"
-                description="Whether the window has a close box.">
-                <cocoa key="hasCloseBox"/>
-            </property>
-            <property name="minimizable" code="ismn" type="boolean" access="r"
-                description="Whether the window can be minimized.">
-                <cocoa key="isMiniaturizable"/>
-            </property>
-            <property name="minimized" code="pmnd" type="boolean"
-                description="Whether the window is currently minimized.">
-                <cocoa key="isMiniaturized"/>
-            </property>
-            <property name="resizable" code="prsz" type="boolean" access="r"
-                description="Whether the window can be resized.">
-                <cocoa key="isResizable"/>
-            </property>
-            <property name="visible" code="pvis" type="boolean"
-                description="Whether the window is currently visible.">
-                <cocoa key="isVisible"/>
-            </property>
-            <property name="zoomable" code="iszm" type="boolean" access="r"
-                description="Whether the window can be zoomed.">
-                <cocoa key="isZoomable"/>
-            </property>
-            <property name="zoomed" code="pzum" type="boolean"
-                description="Whether the window is currently zoomed.">
-                <cocoa key="isZoomed"/>
-            </property>
-            <property name="document" code="docu" type="document" access="r"
-                description="The document whose contents are being displayed in the window."/>
-            <responds-to name="close">
-                <cocoa method="handleCloseScriptCommand:"/>
-            </responds-to>
-            <responds-to name="print">
-                <cocoa method="handlePrintScriptCommand:"/>
-            </responds-to>
-            <responds-to name="save">
-                <cocoa method="handleSaveScriptCommand:"/>
-            </responds-to>
+			<property name="name" code="pnam" type="text" access="r" description="The title of the window.">
+				<cocoa key="title"/>
+			</property>
+			<property name="id" code="ID  " type="integer" access="r" description="The unique identifier of the window.">
+				<cocoa key="uniqueID"/>
+			</property>
+			<property name="index" code="pidx" type="integer" description="The index of the window, ordered front to back.">
+				<cocoa key="orderedIndex"/>
+			</property>
+			<property name="bounds" code="pbnd" type="rectangle" description="The bounding rectangle of the window.">
+				<cocoa key="boundsAsQDRect"/>
+			</property>
+			<property name="closeable" code="hclb" type="boolean" access="r" description="Does the window have a close button?">
+				<cocoa key="hasCloseBox"/>
+			</property>
+			<property name="miniaturizable" code="ismn" type="boolean" access="r" description="Does the window have a minimize button?">
+				<cocoa key="isMiniaturizable"/>
+			</property>
+			<property name="miniaturized" code="pmnd" type="boolean" description="Is the window minimized right now?">
+				<cocoa key="isMiniaturized"/>
+			</property>
+			<property name="resizable" code="prsz" type="boolean" access="r" description="Can the window be resized?">
+				<cocoa key="isResizable"/>
+			</property>
+			<property name="visible" code="pvis" type="boolean" description="Is the window visible right now?">
+				<cocoa key="isVisible"/>
+			</property>
+			<property name="zoomable" code="iszm" type="boolean" access="r" description="Does the window have a zoom button?">
+				<cocoa key="isZoomable"/>
+			</property>
+			<property name="zoomed" code="pzum" type="boolean" description="Is the window zoomed right now?">
+				<cocoa key="isZoomed"/>
+			</property>
+			<property name="document" code="docu" type="document" access="r" description="The document whose contents are displayed in the window."/>
+			<responds-to command="close">
+				<cocoa method="handleCloseScriptCommand:"/>
+			</responds-to>
+			<responds-to command="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
+			<responds-to command="save">
+				<cocoa method="handleSaveScriptCommand:"/>
+			</responds-to>
         </class>
-
-        <command name="open" code="aevtodoc"
-            description="Open a document.">
-			<direct-parameter description="The file(s) to be opened.">
-				<type type="file"/>
-				<type type="file" list="yes"/>
-			</direct-parameter>
-			<!--
-				According to TN2106, 'open' should return the resulting document
-				object.  However, the Cocoa implementation does not do this yet.
-			<result type="specifier"/>
-			-->
-        </command>
-
-        <enumeration name="save options" code="savo">
-            <enumerator name="yes" code="yes "
-				description="Save the file."/>
-            <enumerator name="no" code="no  "
-				description="Do not save the file."/>
-            <enumerator name="ask" code="ask "
-                description="Ask the user whether or not to save the file."/>
-        </enumeration>
-
-        <command name="close" code="coreclos"
-            description="Close a document.">
-            <cocoa class="NSCloseCommand"/>
-            <direct-parameter type="specifier"
-                description="the document(s) or window(s) to close."/>
-            <parameter name="saving" code="savo" type="save options" optional="yes"
-                description="Whether or not changes should be saved before closing.">
-                <cocoa key="SaveOptions"/>
-            </parameter>
-            <parameter name="saving in" code="kfil" type="file" optional="yes"
-                description="The file in which to save the document.">
-                <cocoa key="File"/>
-            </parameter>
-        </command>
-
-        <command name="save" code="coresave"
-            description="Save a document.">
-            <direct-parameter type="specifier"
-                description="The document(s) or window(s) to save."/>
-            <parameter name="in" code="kfil" type="file" optional="yes"
-                description="The file in which to save the document. If this is set, this acts like Save As or Export.">
-                <cocoa key="File"/>
-            </parameter>
-            <parameter name="as" code="fltp" type="text" optional="yes"
-                description="The type of file to save. If this is set, this acts like Export. Should be one of &quot;PDF&quot;, &quot;PDF Bundle&quot;, &quot;PDF Without Notes&quot;, &quot;PDF With Embedded Notes&quot;, &quot;PostScript&quot;, &quot;PostScript Without Notes&quot;, &quot;DVI&quot;, &quot;DVI Without Notes&quot;, &quot;Skim Notes&quot;, &quot;Notes as Text&quot;, &quot;Notes as RTF&quot;, &quot;Notes as RTFD&quot;, and &quot;Notes as FDF&quot;, or the name of a custom export template.">
-                <cocoa key="FileType"/>
-            </parameter>
-        </command>
-
-        <enumeration name="printing error handling" code="enum">
-            <enumerator name="standard" code="lwst"
-                description="Standard PostScript error handling"/>
-            <enumerator name="detailed" code="lwdt"
-                description="print a detailed report of PostScript errors"/>
-        </enumeration>
-
-        <record-type name="print settings" code="pset">
-            <property name="copies" code="lwcp" type="integer"
-                description="the number of copies of a document to be printed">
-                <cocoa key="NSCopies"/>
-            </property>
-            <property name="collating" code="lwcl" type="boolean"
-                description="Should printed copies be collated?">
-                <cocoa key="NSMustCollate"/>
-            </property>
-            <property name="starting page" code="lwfp" type="integer"
-                description="the first page of the document to be printed">
-                <cocoa key="NSFirstPage"/>
-            </property>
-            <property name="ending page" code="lwlp" type="integer"
-                description="the last page of the document to be printed">
-                <cocoa key="NSLastPage"/>
-            </property>
-            <property name="pages across" code="lwla" type="integer"
-                description="number of logical pages laid across a physical page">
-                <cocoa key="NSPagesAcross"/>
-            </property>
-            <property name="pages down" code="lwld" type="integer"
-                description="number of logical pages laid out down a physical page">
-                <cocoa key="NSPagesDown"/>
-            </property>
-            <property name="error handling" code="lweh" type="printing error handling"
-                description="how errors are handled">
-                <cocoa key="NSDetailedErrorReporting"/>
-            </property>
-            <property name="fax number" code="faxn" type="text"
-                description="for fax number">
-                <cocoa key="NSFaxNumber"/>
-            </property>
-            <property name="target printer" code="trpr" type="text"
-                description="for target printer">
-                <cocoa key="NSPrinterName"/>
-            </property>
-        </record-type>
-
-        <command name="print" code="aevtpdoc"
-            description="Print a document.">
-            <direct-parameter
-                description="The file(s), document(s), or window(s) to be printed.">
-                <type type="file" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <parameter name="with properties" code="prdt" type="print settings" optional="yes"
-                description="The print settings to use.">
-                <cocoa key="PrintSettings"/>
-            </parameter>
-            <parameter name="print dialog" code="pdlg" type="boolean" optional="yes"
-                description="Should the application show the print dialog?">
-                <cocoa key="ShowPrintDialog"/>
-            </parameter>
-        </command>
-
-        <command name="quit" code="aevtquit"
-            description="Quit the application.">
-            <cocoa class="NSQuitCommand"/>
-            <parameter name="saving" code="savo" type="save options" optional="yes"
-                description="Whether or not changed documents should be saved before closing.">
-                <cocoa key="SaveOptions"/>
-            </parameter>
-        </command>
-
-        <command name="count" code="corecnte"
-            description="Return the number of elements of a particular class within an object.">
-            <cocoa class="NSCountCommand"/>
-            <direct-parameter type="specifier"
-                description="the object whose elements are to be counted"/>
-            <parameter name="each" code="kocl" type="type" optional="yes"
-                description="The class of objects to be counted.">
-                <cocoa key="ObjectClass"/>
-            </parameter>
-            <result type="integer"
-				description="the number of elements"/>
-        </command>
-
-        <command name="delete" code="coredelo"
-            description="Delete an object.">
-            <cocoa class="NSDeleteCommand"/>
-            <direct-parameter type="specifier"
-            description="the object to delete"/>
-        </command>
-
-        <command name="duplicate" code="coreclon"
-            description="Copy object(s) and put the copies at a new location.">
-            <cocoa class="NSCloneCommand"/>
-            <direct-parameter type="specifier"
-                description="the object(s) to duplicate"/>
-            <parameter name="to" code="insh" type="location specifier" optional="yes"
-                description="The location for the new object(s).">
-                <cocoa key="ToLocation"/>
-            </parameter>
-            <parameter name="with properties" code="prdt" type="record" optional="yes"
-                description="Properties to be set in the new duplicated object(s).">
-                <cocoa key="WithProperties"/>
-            </parameter>
-            <result type="specifier"
-				description="the duplicated object(s)"/>
-        </command>
-
-        <command name="exists" code="coredoex"
-            description="Verify if an object exists.">
-            <cocoa class="NSExistsCommand"/>
-            <direct-parameter type="any"
-				description="the object in question"/>
-            <result type="boolean"
-				description="true if it exists, false if not"/>
-        </command>
-
-        <command name="make" code="corecrel"
-            description="Make a new object.">
-            <cocoa class="NSCreateCommand"/>
-            <parameter name="new" code="kocl" type="type"
-                description="The class of the new object.">
-                <cocoa key="ObjectClass"/>
-            </parameter>
-            <parameter name="at" code="insh" type="location specifier" optional="yes"
-                description="The location at which to insert the object.">
-                <cocoa key="Location"/>
-            </parameter>
-            <parameter name="with data" code="data" type="any" optional="yes"
-                description="The initial contents of the object.">
-                <cocoa key="ObjectData"/>
-            </parameter>
-            <parameter name="with properties" code="prdt" type="record" optional="yes"
-                description="The initial values for properties of the object.">
-                <cocoa key="KeyDictionary"/>
-            </parameter>
-            <result type="specifier"
-				description="to the new object. Returns nothing for 'with data'."/>
-        </command>
-
-        <command name="move" code="coremove"
-            description="Move object(s) to a new location.">
-            <cocoa class="NSMoveCommand"/>
-            <direct-parameter type="specifier"
-				description="the object(s) to move"/>
-            <parameter name="to" code="insh" type="location specifier"
-                description="The new location for the object(s).">
-                <cocoa key="ToLocation"/>
-            </parameter>
-            <result type="specifier"
-				description="the moved object(s)"/>
-        </command>
         
     </suite>
 
@@ -594,6 +522,238 @@
             description="Skim specific commands and classes for dealing with PDF.">
 
         <cocoa name="SkimSuite"/>
+
+        <command name="revert" code="SKIMRvrt"
+            description="Revert a document. Don't use this when you have turned on the auto-relead functionality.">
+            <direct-parameter type="specifier"
+                description="The document(s) or window(s) to revert."/>
+        </command>
+
+        <command name="go" code="SKIMGoTo"
+            description="Go to a location.">
+            <direct-parameter type="document"
+                description="The document in which to scroll."/>
+            <parameter name="to" code="to  "
+                description="The page, note, TeX line, or selection to go to.">
+                <type type="specifier"/>
+                <type type="specifier" list="yes"/>
+                <cocoa key="To"/>
+            </parameter>
+			<parameter name="from" code="from" type="file" optional="yes" 
+				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
+				<cocoa key="Source"/> 
+			</parameter>
+			<parameter name="showing reading bar" code="RBar" type="boolean" optional="yes" 
+				description="Whether to move the reading bar instead of selecting. Only applies for a TeX line."> 
+				<cocoa key="ShowReadingBar"/> 
+			</parameter>
+        </command>
+
+        <command name="convert notes" code="SKIMConv"
+            description="Convert in a document PDF annotations to Skim notes.">
+            <direct-parameter type="document"
+                description="The document(s) for which to convert notes."/>
+        </command>
+
+        <command name="find" code="SKIMFind"
+            description="Find text in a document.">
+            <direct-parameter type="document"
+                description="The document in which to search."/>
+            <parameter name="text" code="ctxt" type="text"
+                description="The text to search for.">
+                <cocoa key="Text"/>
+            </parameter>
+            <parameter name="from" code="from" optional="yes"
+                description="The selection to search from.">
+                <type type="specifier" list="yes"/>
+                <cocoa key="From"/>
+            </parameter>
+            <parameter name="backward search" code="Back" type="boolean" optional="yes"
+                description="Search backward?">
+                <cocoa key="Backward"/>
+            </parameter>
+            <parameter name="case sensitive search" code="casS" type="boolean" optional="yes"
+                description="Is the search case sensitive?">
+                <cocoa key="CaseSensitive"/>
+            </parameter>
+            <result
+                description="Selection for the found text as a list of character ranges.">
+                <type type="specifier" list="yes"/>
+            </result>
+        </command>
+
+        <command name="join" code="SKIMJoin"
+            description="Join selection(s).">
+            <cocoa class="SKJoinCommand"/>
+            <direct-parameter
+                description="The selection to add to.">
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </direct-parameter>
+            <parameter name="to" code="to  " optional="yes"
+                description="The selection to add.">
+                <cocoa key="To"/>
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </parameter>
+            <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
+                description="Join to a continuous selection?">
+                <cocoa key="Continuous"/>
+            </parameter>
+            <result
+                description="The joined selection.">
+                <type type="specifier" list="yes"/>
+            </result>
+        </command>
+
+        <command name="show TeX file" code="SKIMSTeX"
+            description="Show the LaTeX source file.">
+            <direct-parameter type="document"
+                description="The document to show the TeX source for."/>
+            <parameter name="from" code="from" type="point" optional="yes"
+                description="The point from the page to show the TeX line for.">
+                <cocoa key="Point"/>
+            </parameter>
+            <parameter name="at" code="at  " type="page" optional="yes"
+                description="The page to show the TeX line for.">
+                <cocoa key="Page"/>
+            </parameter>
+        </command>
+
+        <command name="get bounds for" code="SKIMBnds"
+            description="Get the bounds of a page, note, or selection.">
+            <synonym name="bounds for"/>
+            <cocoa class="SKBoundsCommand"/>
+            <direct-parameter
+                description="The document, page, note, or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the bounds.">
+                <cocoa key="Page"/>
+            </parameter>
+            <parameter name="for" type="PDF display box" code="for " optional="yes"
+                description="The display box for which to take the bounds.">
+                <cocoa key="Box"/>
+            </parameter>
+            <result type="rectangle"
+                description="The bounds of the object."/>
+        </command>
+
+        <command name="get text for" code="SKIMText"
+            description="Get the text of a document, page, note, selection, or raw RTF data.">
+            <synonym name="text for"/>
+            <cocoa class="SKTextCommand"/>
+            <direct-parameter
+                description="The document, page, note, selection, or raw RTF data.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+                <type type="RTF"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the text.">
+                <cocoa key="Page"/>
+            </parameter>
+            <result type="specifier"
+                description="The rich text of the object."/>
+        </command>
+
+        <command name="get index for" code="SKIMIndx"
+            description="Get the index of a document, page, note, or selection.">
+            <cocoa class="SKIndexCommand"/>
+            <synonym name="index for"/>
+            <direct-parameter
+                description="The document, page, note, or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the index.">
+                <cocoa key="Page"/>
+            </parameter>
+            <parameter name="last" type="boolean" code="Last" optional="yes"
+                description="Gets the index of the last character of a selection.">
+                <cocoa key="Last"/>
+            </parameter>
+            <result type="integer"
+                description="The index for the object. Returns 0 if no index was found.">
+            </result>
+        </command>
+
+        <command name="get pages for" code="SKIMPags"
+            description="Get the pages of a document, page, note, or selection.">
+            <cocoa class="SKPagesCommand"/>
+            <synonym name="pages for"/>
+            <direct-parameter
+                description="The document, page, note, or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+                <type type="specifier"/>
+            </direct-parameter>
+            <result
+                description="The list of pages for the object.">
+                <type type="page" list="yes"/>
+            </result>
+        </command>
+
+        <command name="grab" code="SKIMGrab"
+            description="Grab a picture from a page.">
+            <direct-parameter type="page"
+                description="The page for the picture."/>
+            <parameter name="for" type="rectangle" code="for " optional="yes"
+                description="The bounds for the picture.">
+                <cocoa key="Bounds"/>
+            </parameter>
+            <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes" hidden="yes"
+                description="Whether to return TIFF data. By default returns PDF data.">
+                <cocoa key="AsTIFF"/>
+            </parameter>
+            <parameter name="as" type="type" code="rtyp" optional="yes"
+                description="The type of data to return. Currently 'PDF' and 'TIFF picture' are supported. Defaults to PDF.">
+                <cocoa key="Type"/>
+            </parameter>
+            <result type="any"
+                description="The PDF or TIFF data of the picture."/>
+        </command>
+
+        <command name="format" code="SKIMFrmt"
+            description="Format an object using a template.">
+            <cocoa class="SKFormatCommand"/>
+            <direct-parameter
+                description="The object to format using a template.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+            </direct-parameter>
+            <parameter name="using template" code="Tmpl"
+                description="The template to use as a file, text, or rich text.">
+                <type type="file"/>
+                <type type="text"/>
+                <type type="rich text"/>
+                <cocoa key="template"/>
+            </parameter>
+            <parameter name="to" type="file" code="to  " optional="yes"
+                description="The file to write the resulting text to.">
+                <cocoa key="to"/>
+            </parameter>
+            <result
+                description="The text or rich text generated using the template.">
+                <type type="text"/>
+                <type type="specifier"/>
+            </result>
+        </command>
 
         <class-extension extends="application"
             description="Skim's top level scripting object.">
@@ -1316,238 +1476,6 @@
             <enumerator name="two up continuous" code="2UpC"
                 description="Display pages side-by-side vertically continuously."/>
         </enumeration>
-
-        <command name="revert" code="SKIMRvrt"
-            description="Revert a document. Don't use this when you have turned on the auto-relead functionality.">
-            <direct-parameter type="specifier"
-                description="The document(s) or window(s) to revert."/>
-        </command>
-
-        <command name="go" code="SKIMGoTo"
-            description="Go to a location.">
-            <direct-parameter type="document"
-                description="The document in which to scroll."/>
-            <parameter name="to" code="to  "
-                description="The page, note, TeX line, or selection to go to.">
-                <type type="specifier"/>
-                <type type="specifier" list="yes"/>
-                <cocoa key="To"/>
-            </parameter>
-			<parameter name="from" code="from" type="file" optional="yes" 
-				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
-				<cocoa key="Source"/> 
-			</parameter>
-			<parameter name="showing reading bar" code="RBar" type="boolean" optional="yes" 
-				description="Whether to move the reading bar instead of selecting. Only applies for a TeX line."> 
-				<cocoa key="ShowReadingBar"/> 
-			</parameter>
-        </command>
-
-        <command name="convert notes" code="SKIMConv"
-            description="Convert in a document PDF annotations to Skim notes.">
-            <direct-parameter type="document"
-                description="The document(s) for which to convert notes."/>
-        </command>
-
-        <command name="find" code="SKIMFind"
-            description="Find text in a document.">
-            <direct-parameter type="document"
-                description="The document in which to search."/>
-            <parameter name="text" code="ctxt" type="text"
-                description="The text to search for.">
-                <cocoa key="Text"/>
-            </parameter>
-            <parameter name="from" code="from" optional="yes"
-                description="The selection to search from.">
-                <type type="specifier" list="yes"/>
-                <cocoa key="From"/>
-            </parameter>
-            <parameter name="backward search" code="Back" type="boolean" optional="yes"
-                description="Search backward?">
-                <cocoa key="Backward"/>
-            </parameter>
-            <parameter name="case sensitive search" code="casS" type="boolean" optional="yes"
-                description="Is the search case sensitive?">
-                <cocoa key="CaseSensitive"/>
-            </parameter>
-            <result
-                description="Selection for the found text as a list of character ranges.">
-                <type type="specifier" list="yes"/>
-            </result>
-        </command>
-
-        <command name="join" code="SKIMJoin"
-            description="Join selection(s).">
-            <cocoa class="SKJoinCommand"/>
-            <direct-parameter
-                description="The selection to add to.">
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <parameter name="to" code="to  " optional="yes"
-                description="The selection to add.">
-                <cocoa key="To"/>
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </parameter>
-            <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
-                description="Join to a continuous selection?">
-                <cocoa key="Continuous"/>
-            </parameter>
-            <result
-                description="The joined selection.">
-                <type type="specifier" list="yes"/>
-            </result>
-        </command>
-
-        <command name="show TeX file" code="SKIMSTeX"
-            description="Show the LaTeX source file.">
-            <direct-parameter type="document"
-                description="The document to show the TeX source for."/>
-            <parameter name="from" code="from" type="point" optional="yes"
-                description="The point from the page to show the TeX line for.">
-                <cocoa key="Point"/>
-            </parameter>
-            <parameter name="at" code="at  " type="page" optional="yes"
-                description="The page to show the TeX line for.">
-                <cocoa key="Page"/>
-            </parameter>
-        </command>
-
-        <command name="get bounds for" code="SKIMBnds"
-            description="Get the bounds of a page, note, or selection.">
-            <synonym name="bounds for"/>
-            <cocoa class="SKBoundsCommand"/>
-            <direct-parameter
-                description="The document, page, note, or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <parameter name="on" type="page" code="on  " optional="yes"
-                description="The page on which to get the bounds.">
-                <cocoa key="Page"/>
-            </parameter>
-            <parameter name="for" type="PDF display box" code="for " optional="yes"
-                description="The display box for which to take the bounds.">
-                <cocoa key="Box"/>
-            </parameter>
-            <result type="rectangle"
-                description="The bounds of the object."/>
-        </command>
-
-        <command name="get text for" code="SKIMText"
-            description="Get the text of a document, page, note, selection, or raw RTF data.">
-            <synonym name="text for"/>
-            <cocoa class="SKTextCommand"/>
-            <direct-parameter
-                description="The document, page, note, selection, or raw RTF data.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-                <type type="RTF"/>
-            </direct-parameter>
-            <parameter name="on" type="page" code="on  " optional="yes"
-                description="The page on which to get the text.">
-                <cocoa key="Page"/>
-            </parameter>
-            <result type="specifier"
-                description="The rich text of the object."/>
-        </command>
-
-        <command name="get index for" code="SKIMIndx"
-            description="Get the index of a document, page, note, or selection.">
-            <cocoa class="SKIndexCommand"/>
-            <synonym name="index for"/>
-            <direct-parameter
-                description="The document, page, note, or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <parameter name="on" type="page" code="on  " optional="yes"
-                description="The page on which to get the index.">
-                <cocoa key="Page"/>
-            </parameter>
-            <parameter name="last" type="boolean" code="Last" optional="yes"
-                description="Gets the index of the last character of a selection.">
-                <cocoa key="Last"/>
-            </parameter>
-            <result type="integer"
-                description="The index for the object. Returns 0 if no index was found.">
-            </result>
-        </command>
-
-        <command name="get pages for" code="SKIMPags"
-            description="Get the pages of a document, page, note, or selection.">
-            <cocoa class="SKPagesCommand"/>
-            <synonym name="pages for"/>
-            <direct-parameter
-                description="The document, page, note, or selection.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <result
-                description="The list of pages for the object.">
-                <type type="page" list="yes"/>
-            </result>
-        </command>
-
-        <command name="grab" code="SKIMGrab"
-            description="Grab a picture from a page.">
-            <direct-parameter type="page"
-                description="The page for the picture."/>
-            <parameter name="for" type="rectangle" code="for " optional="yes"
-                description="The bounds for the picture.">
-                <cocoa key="Bounds"/>
-            </parameter>
-            <parameter name="TIFF format" type="boolean" code="Tiff" optional="yes" hidden="yes"
-                description="Whether to return TIFF data. By default returns PDF data.">
-                <cocoa key="AsTIFF"/>
-            </parameter>
-            <parameter name="as" type="type" code="rtyp" optional="yes"
-                description="The type of data to return. Currently 'PDF' and 'TIFF picture' are supported. Defaults to PDF.">
-                <cocoa key="Type"/>
-            </parameter>
-            <result type="any"
-                description="The PDF or TIFF data of the picture."/>
-        </command>
-
-        <command name="format" code="SKIMFrmt"
-            description="Format an object using a template.">
-            <cocoa class="SKFormatCommand"/>
-            <direct-parameter
-                description="The object to format using a template.">
-                <type type="document"/>
-                <type type="page"/>
-                <type type="note"/>
-            </direct-parameter>
-            <parameter name="using template" code="Tmpl"
-                description="The template to use as a file, text, or rich text.">
-                <type type="file"/>
-                <type type="text"/>
-                <type type="rich text"/>
-                <cocoa key="template"/>
-            </parameter>
-            <parameter name="to" type="file" code="to  " optional="yes"
-                description="The file to write the resulting text to.">
-                <cocoa key="to"/>
-            </parameter>
-            <result
-                description="The text or rich text generated using the template.">
-                <type type="text"/>
-                <type type="specifier"/>
-            </result>
-        </command>
 
     </suite>
 
