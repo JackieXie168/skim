@@ -349,7 +349,7 @@
                 case SKBookmarkTypeFolder:
                     item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
                     [item setRepresentedObject:bm];
-                    [item setImage:[bm icon]];
+                    [item setImageAndSize:[bm icon]];
                     [[item submenu] setDelegate:self];
                     break;
                 case SKBookmarkTypeSeparator:
@@ -358,7 +358,7 @@
                 default:
                     item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:) target:self];
                     [item setRepresentedObject:bm];
-                    [item setImage:[bm icon]];
+                    [item setImageAndSize:[bm icon]];
                     break;
             }
         }

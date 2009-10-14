@@ -102,13 +102,12 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
     
     if (nil != img) {
         
-        NSRect srcRect = NSZeroRect;
-        srcRect.size = [img size];
+        NSSize imgSize = [img size];
         
         NSRect drawFrame = iconRect;
-        CGFloat ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
-        drawFrame.size.width = ratio * srcRect.size.width;
-        drawFrame.size.height = ratio * srcRect.size.height;
+        CGFloat ratio = MIN(NSWidth(drawFrame) / imgSize.width, NSHeight(drawFrame) / imgSize.height);
+        drawFrame.size.width = ratio * imgSize.width;
+        drawFrame.size.height = ratio * imgSize.height;
         
         drawFrame = SKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
         
@@ -118,7 +117,15 @@ static SKTextWithIconFormatter *textWithIconFormatter = nil;
         // this is the critical part that NSImageCell doesn't do
         [ctxt setImageInterpolation:NSImageInterpolationHigh];
         
-        [img drawFlipped:[controlView isFlipped] inRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
+        if ([controlView isFlipped]) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            [transform translateXBy:0.0 yBy:NSMaxY(drawFrame)];
+            [transform scaleXBy:1.0 yBy:-1.0];
+            [transform translateXBy:0.0 yBy:-NSMinY(drawFrame)];
+            [transform concat];
+            [img drawInRect:drawFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        }
+        [img drawInRect:drawFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
         
         [ctxt restoreGraphicsState];
     }

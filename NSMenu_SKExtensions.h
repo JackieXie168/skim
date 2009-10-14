@@ -70,4 +70,6 @@
 - (id)initWithTitle:(NSString *)aString imageNamed:(NSString *)anImageName action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag;
 - (id)initWithTitle:(NSString *)aString submenu:(NSMenu *)aSubmenu;
 
+- (void)setImageAndSize:(NSImage *)image;
+
 @end
