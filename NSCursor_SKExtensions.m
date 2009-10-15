@@ -99,7 +99,7 @@
 + (NSCursor *)cameraCursor {
     static NSCursor *cameraCursor = nil;
     if (nil == cameraCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"CameraCursor"] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameCameraCursor] copy] autorelease];
         cameraCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
     }
     return cameraCursor;

@@ -121,6 +121,7 @@ NSString *SKImageNameResizeRightUpCursor = @"ResizeRightUpCursor";
 NSString *SKImageNameResizeLeftUpCursor = @"ResizeLeftUpCursor";
 NSString *SKImageNameZoomInCursor = @"ZoomInCursor";
 NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
+NSString *SKImageNameCameraCursor = @"CameraCursor";
 
 - (NSImage *)copyWithMenuBadge {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
@@ -1537,6 +1538,7 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     static NSImage *resizeRightUpCursorImage = nil;
     static NSImage *zoomInCursorImage = nil;
     static NSImage *zoomOutCursorImage = nil;
+    static NSImage *cameraCursorImage = nil;
     
     if (resizeLeftDownCursorImage)
         return;
@@ -1864,6 +1866,30 @@ NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
     [NSGraphicsContext restoreGraphicsState];
     [zoomOutCursorImage unlockFocus];
     [zoomOutCursorImage setName:SKImageNameZoomOutCursor];
+    
+    cameraCursorImage = [[NSImage alloc] initWithSize:size];
+    [cameraCursorImage lockFocus];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    [[NSBezierPath bezierPathWithRect:NSMakeRect(0, 2, 16, 11)] fill];
+    [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.7, 6.7, 8.6, 8.6)] fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor blackColor] set];
+    [[NSBezierPath bezierPathWithRect:NSMakeRect(1, 3, 14, 9)] fill];
+    [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(5, 8, 6, 6)] fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.3, 4.3, 7.4, 7.4)] stroke];
+    path = [NSBezierPath bezierPath];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(8, 8) radius:1.8 startAngle:45 endAngle:225];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [cameraCursorImage unlockFocus];
+    [zoomOutCursorImage setName:SKImageNameCameraCursor];
 }
 
 + (void)makeImages {
