@@ -224,11 +224,9 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
-        [remoteControl setListeningToRemote:NO];
-        [remoteControl release];
-        remoteControl = nil;
-    }
+    [remoteControl setListeningToRemote:NO];
+    [remoteControl release];
+    remoteControl = nil;
 }
 
 #pragma mark Updater
