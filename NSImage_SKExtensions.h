@@ -118,6 +118,7 @@ extern NSString *SKImageNameResizeRightUpCursor;
 extern NSString *SKImageNameResizeLeftUpCursor;
 extern NSString *SKImageNameZoomInCursor;
 extern NSString *SKImageNameZoomOutCursor;
+extern NSString *SKImageNameCameraCursor;
 
 @interface NSImage (SKExtensions)
 
