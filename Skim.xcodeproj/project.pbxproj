@@ -242,7 +242,6 @@
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF82CC50EC4ADDA009652CF /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CC40EC4ADDA009652CF /* libssl.dylib */; };
 		CEF82CE60EC4B2FE009652CF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */; };
-		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in Copy Files: Spotlight */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
@@ -941,7 +940,6 @@
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEF82CC40EC4ADDA009652CF /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		CEF82CE50EC4B2FE009652CF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
-		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPreferences.tiff; sourceTree = "<group>"; };
 		CEFBC968103C5CBF00535C74 /* SKFormatCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFormatCommand.h; sourceTree = "<group>"; };
 		CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFormatCommand.m; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
@@ -1486,7 +1484,6 @@
 				CE6A5BB10D663771003B7CC3 /* ToolbarPrint.tiff */,
 				CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */,
 				CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */,
-				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
 				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
@@ -1850,7 +1847,6 @@
 				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
 				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
-				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 				CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */,
