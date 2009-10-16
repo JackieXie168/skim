@@ -52,7 +52,7 @@
         color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         NSRect rect = cellFrame;
         CGFloat height = SKMin(NSWidth(cellFrame), NSHeight(cellFrame));
-        CGFloat offset = NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - height);
+        CGFloat offset = 0.5 * (NSHeight(cellFrame) - height);
         rect.origin.y += [controlView isFlipped] ? SKFloor(offset) - 1.0 : SKCeil(offset) + 1.0;
         rect.size.height = height;
         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
