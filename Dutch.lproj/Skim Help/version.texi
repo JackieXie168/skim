@@ -1,1 +1,1 @@
-@set VERSION 1.3b1
+@set VERSION 1.3
