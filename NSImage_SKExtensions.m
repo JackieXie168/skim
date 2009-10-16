@@ -1889,7 +1889,7 @@ NSString *SKImageNameCameraCursor = @"CameraCursor";
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     [cameraCursorImage unlockFocus];
-    [zoomOutCursorImage setName:SKImageNameCameraCursor];
+    [cameraCursorImage setName:SKImageNameCameraCursor];
 }
 
 + (void)makeImages {
