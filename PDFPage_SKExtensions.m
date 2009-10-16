@@ -1,0 +1,574 @@
+//
+//  PDFPage_SKExtensions.m
+//  Skim
+//
+//  Created by Christiaan Hofman on 2/16/07.
+/*
+ This software is Copyright (c) 2007-2009
+ Christiaan Hofman. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+ - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+ - Neither the name of Christiaan Hofman nor the names of any
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#import "PDFPage_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
+#import "SKPDFAnnotationTemporary.h"
+#import "SKMainDocument.h"
+#import "SKPDFView.h"
+#import "PDFSelection_SKExtensions.h"
+#import "SKRuntime.h"
+#import "NSBitmapImageRep_SKExtensions.h"
+#import "SKStringConstants.h"
+#import "NSCharacterSet_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
+#import "NSData_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
+#import "SKMainWindowController.h"
+#import "NSAffineTransform_SKExtensions.h"
+#import "PDFAnnotation_SKExtensions.h"
+#import "PDFAnnotationMarkup_SKExtensions.h"
+#import "PDFAnnotationInk_SKExtensions.h"
+#import "NSPointerFunctions_SKExtensions.h"
+
+NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
+
+NSString *SKPDFPagePageKey = @"page";
+NSString *SKPDFPageActionKey = @"action";
+NSString *SKPDFPageActionCrop = @"crop";
+NSString *SKPDFPageActionRotate = @"rotate";
+
+@implementation PDFPage (SKExtensions) 
+
+static BOOL usesSequentialPageNumbering = NO;
+
++ (BOOL)usesSequentialPageNumbering {
+    return usesSequentialPageNumbering;
+}
+
++ (void)setUsesSequentialPageNumbering:(BOOL)flag {
+    usesSequentialPageNumbering = flag;
+}
+
+// this will be overridden in our custom subclass
+- (NSRect)foregroundBox {
+    return [self boundsForBox:kPDFDisplayBoxCropBox];
+}
+
+- (NSImage *)image {
+    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+}
+
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
+    return  [self thumbnailWithSize:aSize forBox:box readingBarRect:NSZeroRect];
+}
+
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
+    CGFloat shadowBlurRadius = SKRound(aSize / 32.0);
+    CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
+}
+
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
+    NSRect bounds = [self boundsForBox:box];
+    NSSize pageSize = bounds.size;
+    BOOL isScaled = aSize > 0.0;
+    BOOL hasShadow = shadowBlurRadius > 0.0;
+    CGFloat scale = 1.0;
+    NSSize thumbnailSize;
+    NSRect pageRect = NSZeroRect;
+    NSImage *image;
+    NSImage *pageImage = nil;
+    
+    if ([self rotation] % 180 == 90)
+        pageSize = NSMakeSize(pageSize.height, pageSize.width);
+    
+    if (isScaled) {
+        if (pageSize.height > pageSize.width)
+            thumbnailSize = NSMakeSize(SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
+        else
+            thumbnailSize = NSMakeSize(aSize, SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.height / pageSize.width + 2.0 * shadowBlurRadius));
+        scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
+    } else {
+        thumbnailSize = NSMakeSize(pageSize.width + 2.0 * shadowBlurRadius, pageSize.height + 2.0 * shadowBlurRadius);
+    }
+    
+    image = [[NSImage alloc] initWithSize:thumbnailSize];
+    [image lockFocus];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    if (hasShadow) {
+        NSShadow *aShadow = [[NSShadow alloc] init];
+        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+        [aShadow setShadowBlurRadius:shadowBlurRadius];
+        [aShadow setShadowOffset:shadowOffset];
+        [aShadow set];
+        [aShadow release];
+    }
+    pageRect.size = thumbnailSize;
+    pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
+    pageRect.origin.x -= shadowOffset.width;
+    pageRect.origin.y -= shadowOffset.height;
+    NSRectFill(pageRect);
+    [NSGraphicsContext restoreGraphicsState];
+    
+    if (isScaled || hasShadow) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        if (isScaled)
+            [transform scaleBy:scale];
+        if (hasShadow)
+            [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
+        [transform concat];
+    }
+    
+    if (isScaled) {
+        // drawing the page with an active transform can sometimes lead to a deadlock in CG, rdar://problem/5447966
+        pageImage = [[NSImage alloc] initWithSize:pageSize];
+        [pageImage lockFocus];
+    }
+    [[self annotations] makeObjectsPerformSelector:@selector(hideIfTemporary)];
+    [self drawWithBox:box]; 
+    [[self annotations] makeObjectsPerformSelector:@selector(displayIfTemporary)];
+    if (isScaled) {
+        [pageImage unlockFocus];
+        [pageImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [pageImage release];
+    }
+    
+    if (NSIsEmptyRect(readingBarRect) == NO) {
+        [self transformContextForBox:box];
+        [[[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey] setFill];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
+            NSRect outRect, ignored;
+            NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge);
+            [NSBezierPath fillRect:outRect];
+            NSDivideRect(bounds, &outRect, &ignored, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge);
+            [NSBezierPath fillRect:outRect];
+        } else {
+            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
+            [NSBezierPath fillRect:readingBarRect];
+        }
+    }
+    
+    [image unlockFocus];
+    
+    return [image autorelease];
+}
+
+- (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)aSize {
+    NSImage *image = [self thumbnailWithSize:aSize forBox:kPDFDisplayBoxCropBox];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    NSString *filename = [NSString stringWithFormat:@"page_%lu.tiff", (unsigned long)([self pageIndex] + 1)];
+    [wrapper setFilename:filename];
+    [wrapper setPreferredFilename:filename];
+
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
+    return attrString;
+}
+
+- (NSAttributedString *)thumbnailAttachment { return [self thumbnailAttachmentWithSize:0.0]; }
+
+- (NSAttributedString *)thumbnail512Attachment { return [self thumbnailAttachmentWithSize:512.0]; }
+
+- (NSAttributedString *)thumbnail256Attachment { return [self thumbnailAttachmentWithSize:256.0]; }
+
+- (NSAttributedString *)thumbnail128Attachment { return [self thumbnailAttachmentWithSize:128.0]; }
+
+- (NSAttributedString *)thumbnail64Attachment { return [self thumbnailAttachmentWithSize:64.0]; }
+
+- (NSAttributedString *)thumbnail32Attachment { return [self thumbnailAttachmentWithSize:32.0]; }
+
+- (NSData *)PDFDataForRect:(NSRect)rect {
+    NSData *data = [self dataRepresentation];
+    
+    if (NSEqualRects(rect, NSZeroRect))
+        return data;
+    if (NSIsEmptyRect(rect))
+        return nil;
+    
+    if ([self rotation]) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        NSRect bounds = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        switch ([self rotation]) {
+            case 90:  [transform translateXBy:0.0 yBy:NSWidth(bounds)]; break;
+            case 180: [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)]; break;
+            case 270: [transform translateXBy:NSHeight(bounds) yBy:0.0]; break;
+        }
+        [transform rotateByDegrees:-[self rotation]];
+        rect = [transform transformRect:rect];
+    }
+    
+    PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:data];
+    PDFPage *page = [pdfDoc pageAtIndex:0];
+    
+    [page setBounds:rect forBox:kPDFDisplayBoxMediaBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxCropBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
+    [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
+    data = [page dataRepresentation];
+    [pdfDoc release];
+    
+    return data;
+}
+
+- (NSData *)TIFFDataForRect:(NSRect)rect {
+    PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 shadowOffset:NSZeroSize readingBarRect:NSZeroRect];
+    NSRect bounds = [self boundsForBox:box];
+    
+    if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))
+        return [pageImage TIFFRepresentation];
+    if (NSIsEmptyRect(rect))
+        return nil;
+    
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    switch ([self rotation]) {
+        case 0:   [transform translateXBy:-NSMinX(bounds) yBy:-NSMinY(bounds)]; break;
+        case 90:  [transform translateXBy:-NSMinY(bounds) yBy:NSMaxX(bounds)]; break;
+        case 180: [transform translateXBy:NSMaxX(bounds) yBy:NSMaxY(bounds)]; break;
+        case 270: [transform translateXBy:NSMaxY(bounds) yBy:-NSMinX(bounds)]; break;
+    }
+    [transform rotateByDegrees:-[self rotation]];
+    
+    NSRect sourceRect = [transform transformRect:rect];
+    NSRect targetRect = {NSZeroPoint, sourceRect.size};
+    
+    NSImage *image = [[NSImage alloc] initWithSize:targetRect.size];
+    [image lockFocus];
+    [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+    [image unlockFocus];
+    
+    NSData *data = [image TIFFRepresentation];
+    [image release];
+    
+    return data;
+}
+
+- (NSPointerArray *)lineRects {
+    NSMutableArray *lines = [NSMutableArray array];
+    PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+    
+    for (PDFSelection *s in [sel selectionsByLine]) {
+        NSRect r = [s boundsForPage:self];
+        if (NSIsEmptyRect(r) == NO && [[s string] rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet]].length)
+            [lines addObject:[NSValue valueWithRect:r]];
+    } 
+    
+    [lines sortUsingSelector:@selector(boundsCompare:)];
+    
+    NSUInteger i, iMax = [lines count];
+    NSPointerArray *fullLines = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSRect r1 = NSZeroRect;
+    
+    for (i = 0; i < iMax; i++) {
+        NSRect r2 = [[lines objectAtIndex:i] rectValue];
+        if (NSEqualRects(r1, NSZeroRect)) {
+            r1 = r2;
+        } else if ((NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2))) {
+            r1 = NSUnionRect(r1, r2);
+        } else if (NSEqualRects(r1, NSZeroRect) == NO) {
+            [fullLines addPointer:&r1];
+            r1 = r2;
+        }
+    }
+    if (NSEqualRects(r1, NSZeroRect) == NO)
+        [fullLines addPointer:&r1];
+    
+    return fullLines;
+}
+
+- (NSUInteger)pageIndex {
+    return [[self document] indexForPage:self];
+}
+
+- (NSString *)sequentialLabel {
+    return [NSString stringWithFormat:@"%lu", (unsigned long)([self pageIndex] + 1)];
+}
+
+- (NSString *)displayLabel {
+    NSString *label = nil;
+    if ([[self class] usesSequentialPageNumbering] == NO)
+        label = [self label];
+    return label ?: [self sequentialLabel];
+}
+
+#pragma mark Scripting support
+
+- (NSScriptObjectSpecifier *)objectSpecifier {
+    SKMainDocument *document = [self containingDocument];
+	NSUInteger idx = [self pageIndex];
+    
+    if (document && idx != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:idx] autorelease];
+    } else {
+        return nil;
+    }
+}
+
+- (SKMainDocument *)containingDocument {
+    SKMainDocument *document = nil;
+    
+    for (document in [[NSDocumentController sharedDocumentController] documents]) {
+        if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])
+            break;
+    }
+    
+    return document;
+}
+
+- (NSUInteger)index {
+    return [self pageIndex] + 1;
+}
+
+- (NSInteger)rotationAngle {
+    return [self rotation];
+}
+
+- (void)setRotationAngle:(NSInteger)angle {
+    if (angle != [self rotation]) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
+        [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        [self setRotation:angle];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", self, @"page", nil]];
+    }
+}
+
+- (NSData *)boundsAsQDRect {
+    return [NSData dataWithRectAsQDRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+}
+
+- (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
+    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setBoundsAsQDRect:[self boundsAsQDRect]];
+        [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
+        if (NSWidth(newBounds) < 0.0)
+            newBounds.size.width = 0.0;
+        if (NSHeight(newBounds) < 0.0)
+            newBounds.size.height = 0.0;
+        [self setBounds:newBounds forBox:kPDFDisplayBoxCropBox];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
+    }
+}
+
+- (NSData *)mediaBoundsAsQDRect {
+    return [NSData dataWithRectAsQDRect:[self boundsForBox:kPDFDisplayBoxMediaBox]];
+}
+
+- (void)setMediaBoundsAsQDRect:(NSData *)inQDBoundsAsData {
+    if (inQDBoundsAsData && [inQDBoundsAsData isEqual:[NSNull null]] == NO) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setMediaBoundsAsQDRect:[self mediaBoundsAsQDRect]];
+        [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        NSRect newBounds = [inQDBoundsAsData rectValueAsQDRect];
+        if (NSWidth(newBounds) < 0.0)
+            newBounds.size.width = 0.0;
+        if (NSHeight(newBounds) < 0.0)
+            newBounds.size.height = 0.0;
+        [self setBounds:newBounds forBox:kPDFDisplayBoxMediaBox];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
+    }
+}
+
+- (NSData *)contentBoundsAsQDRect {
+    return [NSData dataWithRectAsQDRect:[self foregroundBox]];
+}
+
+- (NSTextStorage *)richText {
+    NSAttributedString *attrString = [self attributedString];
+    return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
+}
+
+- (NSArray *)notes {
+    NSMutableArray *notes = [NSMutableArray array];
+    
+    for (PDFAnnotation *annotation in [self annotations]) {
+        if ([annotation isSkimNote])
+            [notes addObject:annotation];
+    }
+    return notes;
+}
+
+- (void)insertInNotes:(id)newNote {
+    SKPDFView *pdfView = [[self containingDocument] pdfView];
+    
+    [pdfView addAnnotation:newNote toPage:self];
+    [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+}
+
+- (void)insertInNotes:(id)newNote atIndex:(NSUInteger)anIndex {
+    [self insertInNotes:newNote];
+}
+
+- (void)removeFromNotesAtIndex:(NSUInteger)anIndex {
+    PDFAnnotation *note = [[self notes] objectAtIndex:anIndex];
+    SKPDFView *pdfView = [[self containingDocument] pdfView];
+    
+    [pdfView removeAnnotation:note];
+    [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+}
+
+- (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
+    if ([key isEqualToString:@"notes"]) {
+        PDFAnnotation *annotation = nil;
+        
+        NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
+        bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+        bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+        
+        FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
+        
+        if (type == 0) {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+            [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+        } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
+            id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            PDFSelection *selection;
+            NSInteger markupType = 0;
+            
+            if (selSpec == nil) {
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+            } else if (selection = [PDFSelection selectionWithSpecifier:selSpec]) {
+                if (type == SKScriptingHighlightNote)
+                    markupType = kPDFMarkupTypeHighlight;
+                else if (type == SKScriptingUnderlineNote)
+                    markupType = kPDFMarkupTypeUnderline;
+                else if (type == SKScriptingStrikeOutNote)
+                    markupType = kPDFMarkupTypeStrikeOut;
+                annotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:markupType];
+            }
+        } else if (type == SKScriptingInkNote) {
+            NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+            if ([pointLists isKindOfClass:[NSArray class]] == NO) {
+                [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+            } else {
+                NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:[pointLists count]];
+                for (NSArray *list in pointLists) {
+                    if ([list isKindOfClass:[NSArray class]]) {
+                        NSBezierPath *path = [[NSBezierPath alloc] init];
+                        for (id pt in list) {
+                            NSPoint point;
+                            if ([pt isKindOfClass:[NSData class]]) {
+                                point = [pt pointValueAsQDPoint];
+                            } else if ([pt isKindOfClass:[NSArray class]] && [pt count] == 2) {
+                                Point qdPoint;
+                                qdPoint.v = [[pt objectAtIndex:0] intValue];
+                                qdPoint.h = [[pt objectAtIndex:1] intValue];
+                                point = SKNSPointFromQDPoint(qdPoint);
+                            } else continue;
+                            if ([path elementCount])
+                                [path lineToPoint:point];
+                            else
+                                [path moveToPoint:point];
+                        }
+                        if ([path elementCount] > 1)
+                            [paths addObject:path];
+                        [path release];
+                    }
+                }
+                annotation = [[PDFAnnotationInk alloc] initSkimNoteWithPaths:paths];
+                [paths release];
+            }
+        } else if (type == SKScriptingTextNote) {
+            annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingAnchoredNote) {
+            bounds.size = SKNPDFAnnotationNoteSize;
+            annotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingCircleNote) {
+            annotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingSquareNote) {
+            annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
+        } else if (type == SKScriptingLineNote) {
+            annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+        }
+        if (annotation) {
+            NSMutableDictionary *props = [properties mutableCopy];
+            [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
+            [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
+            [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
+            if ([props count])
+                [annotation setScriptingProperties:props];
+            [props release];
+        }
+        return annotation;
+    }
+    return [super newScriptingObjectOfClass:class forValueForKey:key withContentsValue:contentsValue properties:properties];
+}
+
+- (id)handleGrabScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    NSData *boundsData = [args objectForKey:@"Bounds"];
+    id asTIFFNumber = [args objectForKey:@"AsTIFF"];
+    id asTypeNumber = [args objectForKey:@"Type"];
+    NSRect bounds = [boundsData respondsToSelector:@selector(rectValueAsQDRect)] ? [boundsData rectValueAsQDRect] : NSZeroRect;
+    FourCharCode asType = [asTypeNumber respondsToSelector:@selector(unsignedLongValue)] ? [asTypeNumber unsignedLongValue] : 0; 
+    BOOL asTIFF = [asTIFFNumber respondsToSelector:@selector(boolValue)] ? [asTIFFNumber boolValue] : NO; 
+    
+    NSData *data = nil;
+    DescType type = 0;
+    
+    if (asTIFF || asType == 'TIFF') {
+        data = [self TIFFDataForRect:bounds];
+        type = 'TIFF';
+    } else {
+        data = [self PDFDataForRect:bounds];
+        type = 'PDF ';
+    }
+    
+    return data ? [NSAppleEventDescriptor descriptorWithDescriptorType:type data:data] : nil;
+}
+
+@end
