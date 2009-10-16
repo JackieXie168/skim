@@ -47,19 +47,19 @@
 - (NSRange)Leopard_rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange {
     NSUInteger patternLength = [dataToFind length];
     NSUInteger selfLength = [self length];
+    
     if (searchRange.location > selfLength || NSMaxRange(searchRange) > selfLength)
         [NSException raise:NSRangeException format:@"Range {%lu,%lu} exceeds length %lu", (unsigned long)searchRange.location, (unsigned long)searchRange.length, (unsigned long)selfLength];
+    
+    // This test is a nice shortcut, but it's also necessary to avoid crashing: zero-length NSDatas will sometimes(?) return NULL for their bytes pointer, and the resulting pointer arithmetic can underflow.
+    if (patternLength == 0 || patternLength > searchRange.length)
+        return NSMakeRange(NSNotFound, 0);
     
     const void *patternBytes = [dataToFind bytes];
     const unsigned char *selfBufferStart, *selfPtr, *selfPtrEnd, *selfPtrMax;
     const unsigned char firstPatternByte = *(const char *)patternBytes;
     BOOL backward = (mask & NSDataSearchBackwards) != 0;
     BOOL anchored = (mask & NSDataSearchAnchored) != 0;
-    
-    if (patternLength == 0 || patternLength > searchRange.length) {
-        // This test is a nice shortcut, but it's also necessary to avoid crashing: zero-length CFDatas will sometimes(?) return NULL for their bytes pointer, and the resulting pointer arithmetic can underflow.
-        return NSMakeRange(NSNotFound, 0);
-    }
     
     selfBufferStart = [self bytes];
     selfPtrMax = selfBufferStart + NSMaxRange(searchRange) + 1 - patternLength;
@@ -249,6 +249,7 @@
 }
 
 + (void)load {
+    // this should do nothing on Snow Leopard
     SKAddInstanceMethodImplementationFromSelector(self, @selector(rangeOfData:options:range:), @selector(Leopard_rangeOfData:options:range:));
 }
 

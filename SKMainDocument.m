@@ -1692,7 +1692,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
         if (trailerRange.location != NSNotFound) {
             NSRange IDRange = [pdfData rangeOfData:[NSData dataWithBytes:"/ID" length:3] options:0 range:SKRangeBetweenRanges(trailerRange, EOFRange)];
             if (IDRange.location != NSNotFound) {
-                NSRange startArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"[" length:0] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
+                NSRange startArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"[" length:1] options:0 range:SKRangeBetweenRanges(IDRange, EOFRange)];
                 if (startArrayRange.location != NSNotFound) {
                     NSRange endArrayRange = [pdfData rangeOfData:[NSData dataWithBytes:"]" length:1] options:0 range:SKRangeBetweenRanges(startArrayRange, EOFRange)];
                     if (endArrayRange.location != NSNotFound) {
