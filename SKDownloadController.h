@@ -53,6 +53,10 @@
 
 + (id)sharedDownloadController;
 
++ (NSImage *)cancelImage;
++ (NSImage *)deleteImage;
++ (NSImage *)resumeImage;
+
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL;
 
 - (IBAction)clearDownloads:(id)sender;

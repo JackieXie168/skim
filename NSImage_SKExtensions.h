@@ -120,10 +120,6 @@ extern NSString *SKImageNameZoomInCursor;
 extern NSString *SKImageNameZoomOutCursor;
 extern NSString *SKImageNameCameraCursor;
 
-extern NSString *SKImageNameCancel;
-extern NSString *SKImageNameDelete;
-extern NSString *SKImageNameResume;
-
 @interface NSImage (SKExtensions)
 
 + (void)makeImages;
