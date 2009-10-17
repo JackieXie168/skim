@@ -125,6 +125,22 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
     [self setNeedsDisplay:YES];
 }
 
+- (BOOL)becomeFirstResponder {
+    if ([super becomeFirstResponder]) {
+        [self setNeedsDisplay:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)resignFirstResponder {
+    if ([super resignFirstResponder]) {
+        [self setNeedsDisplay:YES];
+        return YES;
+    }
+    return NO;
+}
+
 - (BOOL)isScrolling { return isScrolling; }
 
 - (void)handleScrollerWillScroll:(NSNotification *)note {
