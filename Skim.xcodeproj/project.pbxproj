@@ -182,10 +182,7 @@
 		CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA557E0C6DE030006BD633 /* SKDownloadController.m */; };
 		CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA559C0C6DE235006BD633 /* SKDownload.m */; };
 		CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA55B50C6DE452006BD633 /* SKProgressCell.m */; };
-		CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D20C6DEE83006BD633 /* Cancel.tiff */; };
-		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
 		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
-		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAA8EF80EA2A14700C16FE4 /* SKNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8EF60EA2A14700C16FE4 /* SKNote.m */; };
 		CEAA8F2F0EA2A86200C16FE4 /* SKNoteText.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA8F2D0EA2A86200C16FE4 /* SKNoteText.m */; };
 		CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */; };
@@ -825,11 +822,8 @@
 		CEAA559C0C6DE235006BD633 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownload.m; sourceTree = "<group>"; };
 		CEAA55B40C6DE452006BD633 /* SKProgressCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressCell.h; sourceTree = "<group>"; };
 		CEAA55B50C6DE452006BD633 /* SKProgressCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressCell.m; sourceTree = "<group>"; };
-		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cancel.tiff; sourceTree = "<group>"; };
-		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Delete.tiff; sourceTree = "<group>"; };
 		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
 		CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURL_SKExtensions.m; sourceTree = "<group>"; };
-		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Resume.tiff; sourceTree = "<group>"; };
 		CEAA8EF50EA2A14700C16FE4 /* SKNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNote.h; sourceTree = "<group>"; };
 		CEAA8EF60EA2A14700C16FE4 /* SKNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNote.m; sourceTree = "<group>"; };
 		CEAA8F2C0EA2A86200C16FE4 /* SKNoteText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteText.h; sourceTree = "<group>"; };
@@ -1483,9 +1477,6 @@
 				CE04582F0FB6FAB0003CAF5D /* Scroller_Divider.tiff */,
 				CE0458300FB6FAB0003CAF5D /* Scroller_Background.tiff */,
 				CE7B85FC0CCF4AA800793F46 /* SmallMenu.tiff */,
-				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
-				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
-				CEAA68EA0C71242F006BD633 /* Resume.tiff */,
 				CE6DC9930D699F21003A072F /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 			);
@@ -1840,9 +1831,6 @@
 				CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */,
 				CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */,
 				CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */,
-				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
-				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
-				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
 				CE7B85FD0CCF4AA800793F46 /* SmallMenu.tiff in Resources */,
 				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 				CE6A5B9E0D663491003B7CC3 /* ToolbarCustomize.tiff in Resources */,
