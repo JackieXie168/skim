@@ -123,10 +123,6 @@ NSString *SKImageNameZoomInCursor = @"ZoomInCursor";
 NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
 NSString *SKImageNameCameraCursor = @"CameraCursor";
 
-NSString *SKImageNameCancel = @"Cancel";
-NSString *SKImageNameDelete = @"Delete";
-NSString *SKImageNameResume = @"Resume";
-
 - (NSImage *)copyWithMenuBadge {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
     [arrowPath moveToPoint:NSMakePoint(23.5, 7.0)];
@@ -1896,59 +1892,10 @@ NSString *SKImageNameResume = @"Resume";
     [cameraCursorImage setName:SKImageNameCameraCursor];
 }
 
-+ (void)makeDownloadImages {
-    static NSImage *cancelImage = nil;
-    static NSImage *deleteImage = nil;
-    static NSImage *resumeImage = nil;
-    
-    if (cancelImage)
-        return;
-    
-    NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
-    NSSize size = rect.size;
-    
-    cancelImage = [[NSImage alloc] initWithSize:size];
-    [cancelImage lockFocus];
-    [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [cancelImage unlockFocus];
-    [cancelImage setName:SKImageNameCancel];
-
-    NSImage *tmpImage = [[NSImage alloc] initWithSize:size];
-    [tmpImage lockFocus];
-    [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSColor lightGrayColor] setFill];
-    NSRectFillUsingOperation(rect, NSCompositeSourceAtop);
-    [tmpImage unlockFocus];
-    deleteImage = [[NSImage alloc] initWithSize:size];
-    [deleteImage lockFocus];
-    [[NSColor whiteColor] setFill];
-    [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
-    [tmpImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [tmpImage release];
-    [deleteImage unlockFocus];
-    [deleteImage setName:SKImageNameDelete];
-    
-    tmpImage = [[NSImage alloc] initWithSize:size];
-    [tmpImage lockFocus];
-    [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSColor orangeColor] setFill];
-    NSRectFillUsingOperation(rect, NSCompositeSourceAtop);
-    [tmpImage unlockFocus];
-    resumeImage = [[NSImage alloc] initWithSize:size];
-    [resumeImage lockFocus];
-    [[NSColor whiteColor] setFill];
-    [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
-    [tmpImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [tmpImage release];
-    [resumeImage unlockFocus];
-    [resumeImage setName:SKImageNameResume];
-}
-
 + (void)makeImages {
     [self makeAdornImages];
     [self makeToolbarImages];
     [self makeCursorImages];
-    [self makeDownloadImages];
 }
 
 @end

@@ -107,6 +107,59 @@ static char SKDownloadPropertiesObservationContext;
     return download;
 }
 
+#pragma mark Images
+
++ (NSImage *)cancelImage {
+    static NSImage *cancelImage = nil;
+    if (cancelImage == nil) {    
+        cancelImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [cancelImage lockFocus];
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [cancelImage unlockFocus];
+    }
+    return cancelImage;
+}
+
++ (NSImage *)deleteImage {
+    static NSImage *deleteImage = nil;
+    if (deleteImage == nil) {
+        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [tmpImage lockFocus];
+        [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [[NSColor lightGrayColor] setFill];
+        NSRectFillUsingOperation(NSMakeRect(0.0, 0.0, 16.0, 16.0), NSCompositeSourceAtop);
+        [tmpImage unlockFocus];
+        deleteImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [deleteImage lockFocus];
+        [[NSColor whiteColor] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
+        [tmpImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [tmpImage release];
+        [deleteImage unlockFocus];
+    }
+    return deleteImage;
+}
+
++ (NSImage *)resumeImage {
+    static NSImage *resumeImage = nil;
+    if (resumeImage == nil) {
+        NSImage *tmpImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [tmpImage lockFocus];
+        [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSMakeRect(1.0, 1.0, 14.0, 14.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [[NSColor orangeColor] setFill];
+        NSRectFillUsingOperation(NSMakeRect(0.0, 0.0, 16.0, 16.0), NSCompositeSourceAtop);
+        [tmpImage unlockFocus];
+        resumeImage = [[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)];
+        [resumeImage lockFocus];
+        [[NSColor whiteColor] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(2.0, 2.0, 12.0, 12.0)] fill];
+        [tmpImage drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [tmpImage release];
+        [resumeImage unlockFocus];
+    }
+    return resumeImage;
+}
+
 #pragma mark Accessors
 
 - (NSArray *)downloads {
@@ -294,11 +347,11 @@ static char SKDownloadPropertiesObservationContext;
     
     if ([identifier isEqualToString:CANCEL_COLUMNID]) {
         if ([download canCancel]) {
-            [cell setImage:[NSImage imageNamed:@"Cancel"]];
+            [cell setImage:[[self class] cancelImage]];
             [cell setAction:@selector(cancelDownload:)];
             [cell setTarget:self];
         } else if ([download canRemove]) {
-            [cell setImage:[NSImage imageNamed:@"Delete"]];
+            [cell setImage:[[self class] deleteImage]];
             [cell setAction:@selector(removeDownload:)];
             [cell setTarget:self];
         } else {
@@ -308,7 +361,7 @@ static char SKDownloadPropertiesObservationContext;
         }
     } else if ([identifier isEqualToString:RESUME_COLUMNID]) {
         if ([download canResume]) {
-            [cell setImage:[NSImage imageNamed:@"Resume"]];
+            [cell setImage:[[self class] resumeImage]];
             [cell setAction:@selector(resumeDownload:)];
             [cell setTarget:self];
         } else {
