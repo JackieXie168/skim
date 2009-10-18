@@ -137,7 +137,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
             
         }
         
-        bookmarkRoot = [[SKBookmark alloc] initFolderWithChildren:bookmarks label:nil];
+        bookmarkRoot = [[SKBookmark alloc] initRootWithChildren:bookmarks];
         [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
         
 		[[NSNotificationCenter defaultCenter] addObserver:self
