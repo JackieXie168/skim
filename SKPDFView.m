@@ -1458,7 +1458,7 @@ enum {
     } else if ([NSApp isActive]) {
         NSUInteger i = [PDFToolTipRects count];
         while (i--) {
-            if (*(NSTrackingRectTag*)[PDFToolTipRects pointerAtIndex:i] == trackingNumber) {
+            if ((NSTrackingRectTag)[PDFToolTipRects pointerAtIndex:i] == trackingNumber) {
                 [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:(id)[theEvent userData] atPoint:NSZeroPoint];
                 PDFToolTipRect = trackingNumber;
                 break;
