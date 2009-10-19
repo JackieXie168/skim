@@ -104,7 +104,7 @@
 
 - (BOOL)isFlipped { return NO; }
 
-- (void)getLeftFrame:(NSRect *)leftFrame rightFrame:(NSRect *)rightFrame {
+- (void)getLeftFrame:(NSRectPointer)leftFrame rightFrame:(NSRectPointer)rightFrame {
     CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
     CGFloat rightWidth = [[rightCell stringValue] length] ? [rightCell cellSize].width : 0.0;
     NSRect ignored, rect = [self bounds];

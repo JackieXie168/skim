@@ -495,7 +495,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark Miniaturize / Deminiaturize
 
-- (void)getMiniRect:(NSRect *)miniRect maxiRect:(NSRect *)maxiRect forDockingRect:(NSRect)dockRect {
+- (void)getMiniRect:(NSRectPointer)miniRect maxiRect:(NSRectPointer)maxiRect forDockingRect:(NSRect)dockRect {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect clipRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
     CGFloat thumbRatio = NSHeight(clipRect) / NSWidth(clipRect);
