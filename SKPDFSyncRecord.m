@@ -37,7 +37,7 @@
  */
 
 #import "SKPDFSyncRecord.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 
 @implementation SKPDFSyncRecord

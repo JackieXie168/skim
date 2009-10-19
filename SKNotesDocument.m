@@ -60,7 +60,7 @@
 #import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "NSColor_SKExtensions.h"
 #import "SKColorCell.h"

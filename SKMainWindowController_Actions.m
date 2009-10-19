@@ -62,7 +62,7 @@
 #import "SKLineInspector.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 
 @implementation SKMainWindowController (Actions)
@@ -626,7 +626,7 @@
     
     NSInteger i, count = [[pdfView document] pageCount];
     NSInteger rectCount = [rects count];
-    NSPointerArray *oldRects = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSPointerArray *oldRects = [NSPointerArray rectPointerArray];
     for (i = 0; i < count; i++) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
         NSRect rect = NSIntersectionRect(*(NSRectPointer)[rects pointerAtIndex:i % rectCount], [page boundsForBox:kPDFDisplayBoxMediaBox]);
@@ -652,7 +652,7 @@
 
 - (IBAction)cropAll:(id)sender {
     NSRect rect[2] = {NSIntegralRect([pdfView currentSelectionRect]), NSZeroRect};
-    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSPointerArray *rectArray = [NSPointerArray rectPointerArray];
     BOOL emptySelection = NSIsEmptyRect(rect[0]);
     
     if (emptySelection) {
@@ -697,7 +697,7 @@
 }
 
 - (IBAction)autoCropAll:(id)sender {
-    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSPointerArray *rectArray = [NSPointerArray rectPointerArray];
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [[pdfView document] pageCount];
     
@@ -719,7 +719,7 @@
 }
 
 - (IBAction)smartAutoCropAll:(id)sender {
-    NSPointerArray *rectArray = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSPointerArray *rectArray = [NSPointerArray rectPointerArray];
     PDFDocument *pdfDoc = [pdfView document];
     NSInteger i, iMax = [pdfDoc pageCount];
     NSSize size = NSZeroSize;

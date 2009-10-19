@@ -46,7 +46,7 @@
 #import "NSFileManager_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKRuntime.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSMapTable_SKExtensions.h"
 
 #define PDFSYNC_TO_PDF(coord) ((CGFloat)coord / 65536.0)
 
@@ -296,7 +296,7 @@ struct SKServerFlags {
     if (lines)
         [lines removeAllObjects];
     else
-        lines = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions caseInsensitiveStringPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
+        lines = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
     
     [self setSyncFileName:theFileName];
     isPdfsync = YES;
@@ -537,7 +537,7 @@ struct SKServerFlags {
         if (filenames)
             [filenames removeAllObjects];
         else
-            filenames = [[NSMapTable alloc] initWithKeyPointerFunctions:[NSPointerFunctions caseInsensitiveStringPointerFunctions] valuePointerFunctions:[NSPointerFunctions strongObjectPointerFunctions] capacity:0];
+            filenames = [[NSMapTable alloc] initForCaseInsensitiveStringKeys];
         NSString *filename;
         synctex_node_t node = synctex_scanner_input(scanner);
         do {

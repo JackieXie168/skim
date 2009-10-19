@@ -49,7 +49,7 @@
 #import "NSData_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "SKRuntime.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 
 NSString *SKPDFAnnotationSelectionSpecifierKey = @"selectionSpecifier";
@@ -126,7 +126,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
 - (NSPointerArray *)lineRects {
     NSPointerArray *lineRects = [lineRectsTable objectForKey:self];
     if (lineRects == NULL) {
-        lineRects = [[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]];
+        lineRects = [[NSPointerArray alloc] initForRectPointers];
         [lineRectsTable setObject:lineRects forKey:self];
         [lineRects release];;
     }

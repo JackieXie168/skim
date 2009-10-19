@@ -38,7 +38,7 @@
 
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 
 @implementation NSWindowController (SKExtensions)

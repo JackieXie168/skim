@@ -1,8 +1,8 @@
 //
-//  NSPointerFunctions_SKExtensions.m
+//  NSMapTable_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan on 9/23/09.
+//  Created by Christiaan on 10/19/09.
 /*
  This software is Copyright (c) 2009
  Christiaan Hofman. All rights reserved.
@@ -36,18 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSMapTable_SKExtensions.h"
 
 
-@implementation NSPointerFunctions (SKExtensions)
-
-static NSUInteger rectSizeFunction(const void *item) { return sizeof(NSRect); }
-
-static NSUInteger rangeSizeFunction(const void *item) { return sizeof(NSRange); }
-
-static NSString *rectDescriptionFunction(const void *item) { return NSStringFromRect(*(NSRectPointer)item); }
-
-static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%lu, %lu)", (unsigned long)((*(NSRange *)item).location), (unsigned long)((*(NSRange *)item).length)]; }
+@implementation NSMapTable (SKExtensions)
 
 #define STACK_BUFFER_SIZE 256
 
@@ -79,34 +71,12 @@ static NSUInteger caseInsensitiveStringHash(const void *item, NSUInteger (*size)
     return hash;
 }
 
-+ (id)strongObjectPointerFunctions {
-    return [self pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-}
-
-+ (id)integerPointerFunctions {
-    return [self pointerFunctionsWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
-}
-
-+ (id)structPointerFunctionsWithSizeFunction:(NSUInteger (*)(const void *))sizeFunction descriptionFunction:(NSString *(*)(const void *))descriptionFunction {
-    NSPointerFunctions *pointerFunctions = [self pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsCopyIn | NSPointerFunctionsStructPersonality];
-    [pointerFunctions setSizeFunction:sizeFunction];
-    [pointerFunctions setDescriptionFunction:descriptionFunction];
-    return pointerFunctions;
-}
-
-+ (id)rectPointerFunctions {
-    return [self structPointerFunctionsWithSizeFunction:&rectSizeFunction descriptionFunction:&rectDescriptionFunction];
-}
-
-+ (id)rangePointerFunctions {
-    return [self structPointerFunctionsWithSizeFunction:&rangeSizeFunction descriptionFunction:&rangeDescriptionFunction];
-}
-
-+ (id)caseInsensitiveStringPointerFunctions {
-    NSPointerFunctions *pointerFunctions = [self pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-    [pointerFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
-    [pointerFunctions setHashFunction:&caseInsensitiveStringHash];
-    return pointerFunctions;
+- (id)initForCaseInsensitiveStringKeys {
+    NSPointerFunctions *keyPointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    [keyPointerFunctions setIsEqualFunction:&caseInsensitiveStringEqual];
+    [keyPointerFunctions setHashFunction:&caseInsensitiveStringHash];
+    NSPointerFunctions *valuePointerFunctions = [NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
+    return [self initWithKeyPointerFunctions:keyPointerFunctions valuePointerFunctions:valuePointerFunctions capacity:0];
 }
 
 @end
