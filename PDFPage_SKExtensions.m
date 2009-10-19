@@ -54,7 +54,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -290,7 +290,7 @@ static BOOL usesSequentialPageNumbering = NO;
     [lines sortUsingSelector:@selector(boundsCompare:)];
     
     NSUInteger i, iMax = [lines count];
-    NSPointerArray *fullLines = [[[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rectPointerFunctions]] autorelease];
+    NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
     NSRect r1 = NSZeroRect;
     
     for (i = 0; i < iMax; i++) {

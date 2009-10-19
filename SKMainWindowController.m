@@ -99,7 +99,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "PDFOutline_SKExtensions.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 #import "SKFloatMapTable.h"
 #import "SKColorCell.h"
 

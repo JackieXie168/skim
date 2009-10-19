@@ -42,7 +42,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKMainDocument.h"
-#import "NSPointerFunctions_SKExtensions.h"
+#import "NSPointerArray_SKExtensions.h"
 
 #define ELLIPSIS_CHARACTER 0x2026
 
@@ -281,7 +281,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSTextStorage *containerText = [dict objectForKey:@"text"];
             NSPointerArray *textRanges = [dict objectForKey:@"ranges"];
             NSUInteger ri, numRanges = [textRanges count];
-            NSPointerArray *ranges = [[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rangePointerFunctions]];
+            NSPointerArray *ranges = [[NSPointerArray alloc] initForRangePointers];
             
             for (ri = 0; ri < numRanges; ri++) {
                 NSRange textRange = *(NSRange *)[textRanges pointerAtIndex:ri];
@@ -293,7 +293,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
                 
                 // now get the ranges, which can be any kind of specifier
                 NSInteger startIndex, endIndex, i, count, *indices;
-                NSPointerArray *tmpRanges = [[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rangePointerFunctions]];
+                NSPointerArray *tmpRanges = [[NSPointerArray alloc] initForRangePointers];
                 
                 if ([specifier isKindOfClass:[NSPropertySpecifier class]]) {
                     // this should be the full range of characters, words, or paragraphs
@@ -432,7 +432,7 @@ static NSArray *characterRangesAndContainersForSpecifier(NSScriptObjectSpecifier
             NSTextStorage *containerText = [container valueForKey:key];
             if ([containerText isKindOfClass:[NSTextStorage class]] == NO || [containerText length] == 0)
                 continue;
-            NSPointerArray *ranges = [[NSPointerArray alloc] initWithPointerFunctions:[NSPointerFunctions rangePointerFunctions]];
+            NSPointerArray *ranges = [[NSPointerArray alloc] initForRangePointers];
             NSRange range = NSMakeRange(0, [containerText length]);
             [ranges addPointer:&range];
             NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:ranges, @"ranges", containerText, @"text", container, @"container", nil];
