@@ -199,7 +199,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
                     NSPointerArray *lines = [self lineRects];
                     iMax = [lines count];
                     for (i = 0; i < iMax; i++) {
-                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRect *)[lines pointerAtIndex:i], [self bounds].origin, rotation);
+                        NSArray *quadLine = createQuadPointsWithBounds(*(NSRectPointer)[lines pointerAtIndex:i], [self bounds].origin, rotation);
                         [quadPoints addObjectsFromArray:quadLine];
                         [quadLine release];
                     }
@@ -271,7 +271,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
-        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRect *)[lines pointerAtIndex:i], -1.0, -1.0)]) && [sel hasCharacters]) {
+        if ((sel = [[self page] selectionForRect:NSInsetRect(*(NSRectPointer)[lines pointerAtIndex:i], -1.0, -1.0)]) && [sel hasCharacters]) {
             if (selection == nil)
                 selection = sel;
             else
@@ -295,7 +295,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
     BOOL isContained = NO;
     
     while (i-- && NO == isContained)
-        isContained = NSPointInRect(point, *(NSRect *)[lines pointerAtIndex:i]);
+        isContained = NSPointInRect(point, *(NSRectPointer)[lines pointerAtIndex:i]);
     
     return isContained;
 }
