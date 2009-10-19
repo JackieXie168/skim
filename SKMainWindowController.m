@@ -437,7 +437,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     // Show/hide left side pane if necessary
     BOOL hasOutline = ([[pdfView document] outlineRoot] != nil);
-    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] == hasOutline)
+    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] != hasOutline)
         [self toggleLeftSidePane:self];
     if (hasOutline)
         [self setLeftSidePaneState:SKOutlineSidePaneState];
