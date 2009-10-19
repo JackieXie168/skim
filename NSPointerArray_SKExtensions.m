@@ -47,7 +47,7 @@ static NSUInteger rangeSizeFunction(const void *item) { return sizeof(NSRange); 
 
 static NSString *rectDescriptionFunction(const void *item) { return NSStringFromRect(*(NSRectPointer)item); }
 
-static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%lu, %lu)", (unsigned long)((*(NSRange *)item).location), (unsigned long)((*(NSRange *)item).length)]; }
+static NSString *rangeDescriptionFunction(const void *item) { return [NSString stringWithFormat:@"(%lu, %lu)", (unsigned long)(((NSRange *)item)->location), (unsigned long)(((NSRange *)item)->length)]; }
 
 + (id)rectPointerArray { return [[[self alloc] initForRectPointers] autorelease]; }
 
