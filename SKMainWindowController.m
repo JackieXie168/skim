@@ -275,6 +275,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [textColorAccessoryView release];
     [leftSideDrawer release];
     [rightSideDrawer release];
+    [pdfView release];
+    [pdfSplitView release];
     [secondaryPdfEdgeView release];
     [presentationNotesDocument release];
     [leftSideButton release];
@@ -383,6 +385,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Set up the window
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
+    [pdfView retain];
+    [pdfSplitView retain];
     
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
@@ -1560,13 +1564,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([self isFullScreen]) {
         [pdfSplitView setFrame:[pdfContentView bounds]];
         [pdfContentView addSubview:pdfSplitView];
-        [pdfSplitView release];
         [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
         [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
     } else {
         [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
         [pdfEdgeView addSubview:pdfView]; 
-        [pdfView release];
     }
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
@@ -1635,7 +1637,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [contentView setAnimations:[NSDictionary dictionaryWithObject:animation forKey:@"subviews"]];
     [contentView setWantsLayer:YES];
     [contentView displayIfNeeded];
-    [view retain];
     [[view animator] removeFromSuperview];
 }
 
