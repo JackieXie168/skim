@@ -1576,6 +1576,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     NSView *view = [self isFullScreen] ? (NSView *)pdfSplitView : (NSView *)pdfView;
     NSView *contentView = [view superview];
     NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:3.5];
+    NSDate *endDate;
     CAAnimation *animation = [CATransition animation];
     
     // 10.5 has problems animating with a transparent background
@@ -1588,9 +1589,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [contentView setWantsLayer:YES];
     [contentView displayIfNeeded];
     mwcFlags.isFadingOut = 1;
+    endDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
     [[view animator] removeFromSuperview];
     while (mwcFlags.isFadingOut && [limitDate compare:[NSDate date]] != NSOrderedAscending)
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        [[NSRunLoop currentRunLoop] runUntilDate:endDate];
     mwcFlags.isFadingOut = 0;
     [contentView setWantsLayer:NO];
     [contentView setAnimations:nil];
