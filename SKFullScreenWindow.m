@@ -40,6 +40,7 @@
 #import "SKMainWindowController.h"
 #import "NSEvent_SKExtensions.h"
 
+#define FADEOUT_DURATION 0.5
 
 @implementation SKFullScreenWindow
 
@@ -53,7 +54,7 @@
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
         CAAnimation *animation = [CABasicAnimation animation];
-        [animation setDuration:0.5];
+        [animation setDuration:FADEOUT_DURATION];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
         [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:animation, @"alphaValue", nil]];
     }
@@ -117,7 +118,7 @@
 
 - (void)fadeOut {
     [[self animator] setAlphaValue:0.0];
-    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:0.7];
+    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:FADEOUT_DURATION];
 }
 
 @end
