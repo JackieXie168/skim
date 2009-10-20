@@ -1551,49 +1551,10 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setInteractionMode:SKPresentationMode screen:screen];
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    if ([theAnimation isKindOfClass:[CATransition class]]) {
-        mwcFlags.isFadingOut = 0;
-    } else {
-        [fullScreenWindow orderOut:nil];
-        mwcFlags.isChangingFullScreen = 0;
-        [theAnimation setDelegate:nil];
-    }
-}
-
-- (IBAction)exitFullScreen:(id)sender {
-    if ([self isFullScreen] == NO && [self isPresentation] == NO)
-        return;
-    
-    mwcFlags.isChangingFullScreen = 1;
-    
-    if ([self isFullScreen])
-        [self hideSideWindows];
-    
-    if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
-        [fullScreenWindow makeFirstResponder:nil];
-    
-    NSView *view = [self isFullScreen] ? (NSView *)pdfSplitView : (NSView *)pdfView;
-    NSView *contentView = [view superview];
-    NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:3.5];
-    NSDate *endDate;
-    CAAnimation *animation = [CATransition animation];
-    
-    // 10.5 has problems animating with a transparent background
-    if ([self isPresentation])
-        [pdfView setBackgroundColor:[NSColor blackColor]];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-    [animation setDuration:0.5];
-    [animation setDelegate:self];
-    [contentView setAnimations:[NSDictionary dictionaryWithObject:animation forKey:@"subviews"]];
-    [contentView setWantsLayer:YES];
-    [contentView displayIfNeeded];
-    mwcFlags.isFadingOut = 1;
-    endDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
-    [[view animator] removeFromSuperview];
-    while (mwcFlags.isFadingOut && [limitDate compare:[NSDate date]] != NSOrderedAscending)
-        [[NSRunLoop currentRunLoop] runUntilDate:endDate];
+- (void)finishExitFullScreen {
     mwcFlags.isFadingOut = 0;
+    
+    NSView *contentView = [fullScreenWindow contentView];
     [contentView setWantsLayer:NO];
     [contentView setAnimations:nil];
     
@@ -1602,11 +1563,13 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     if ([self isFullScreen]) {
         [pdfSplitView setFrame:[pdfContentView bounds]];
         [pdfContentView addSubview:pdfSplitView];
+        [pdfSplitView release];
         [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
         [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
     } else {
         [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
         [pdfEdgeView addSubview:pdfView]; 
+        [pdfView release];
     }
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
@@ -1638,6 +1601,46 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [mainWindow makeKeyWindow];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    if ([theAnimation isKindOfClass:[CATransition class]]) {
+        [self finishExitFullScreen];
+    } else {
+        [fullScreenWindow orderOut:nil];
+        mwcFlags.isChangingFullScreen = 0;
+        [theAnimation setDelegate:nil];
+    }
+}
+
+- (IBAction)exitFullScreen:(id)sender {
+    if ([self isFullScreen] == NO && [self isPresentation] == NO)
+        return;
+    
+    mwcFlags.isChangingFullScreen = 1;
+    
+    if ([self isFullScreen])
+        [self hideSideWindows];
+    
+    if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
+        [fullScreenWindow makeFirstResponder:nil];
+    
+    NSView *view = [self isFullScreen] ? (NSView *)pdfSplitView : (NSView *)pdfView;
+    NSView *contentView = [view superview]; // this should be [fullScreenWindow contentView]
+    CAAnimation *animation = [CATransition animation];
+    
+    // 10.5 has problems animating with a transparent background
+    if ([self isPresentation])
+        [pdfView setBackgroundColor:[NSColor blackColor]];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    [animation setDuration:0.5];
+    [animation setDelegate:self];
+    [contentView setAnimations:[NSDictionary dictionaryWithObject:animation forKey:@"subviews"]];
+    [contentView setWantsLayer:YES];
+    [contentView displayIfNeeded];
+    [view retain];
+    mwcFlags.isFadingOut = 1;
+    [[view animator] removeFromSuperview];
 }
 
 #pragma mark Swapping tables
