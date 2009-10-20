@@ -538,9 +538,9 @@ static BOOL usesSequentialPageNumbering = NO;
             NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
             NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:class];
             if ([properties count]) {
-                for (NSString *key in properties) {
-                    if ([classDesc hasWritablePropertyForKey:key])
-                        [validProps setValue:[annotation coerceValue:[properties objectForKey:key] forKey:key] forKey:key];
+                for (NSString *aKey in properties) {
+                    if ([classDesc hasWritablePropertyForKey:aKey])
+                        [validProps setValue:[annotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
                 }
                 if ([validProps count])
                     [annotation setScriptingProperties:validProps];
