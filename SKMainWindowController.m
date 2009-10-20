@@ -233,7 +233,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
         mwcFlags.isAnimating = 0;
-        mwcFlags.isFadingOut = 0;
         mwcFlags.isChangingFullScreen = 0;
         mwcFlags.updatingColor = 0;
         mwcFlags.updatingFont = 0;
@@ -1552,8 +1551,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)finishExitFullScreen {
-    mwcFlags.isFadingOut = 0;
-    
     NSView *contentView = [fullScreenWindow contentView];
     [contentView setWantsLayer:NO];
     [contentView setAnimations:nil];
@@ -1639,7 +1636,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [contentView setWantsLayer:YES];
     [contentView displayIfNeeded];
     [view retain];
-    mwcFlags.isFadingOut = 1;
     [[view animator] removeFromSuperview];
 }
 
