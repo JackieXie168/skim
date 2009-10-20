@@ -535,13 +535,16 @@ static BOOL usesSequentialPageNumbering = NO;
             annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
         }
         if (annotation) {
-            NSMutableDictionary *props = [properties mutableCopy];
-            [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
-            [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
-            [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
-            if ([props count])
-                [annotation setScriptingProperties:props];
-            [props release];
+            NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
+            NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:class];
+            if ([properties count]) {
+                for (NSString *key in properties) {
+                    if ([classDesc hasWritablePropertyForKey:key])
+                        [validProps setValue:[annotation coerceValue:[properties objectForKey:key] forKey:key] forKey:key];
+                }
+                if ([validProps count])
+                    [annotation setScriptingProperties:validProps];
+            }
         }
         return annotation;
     }
