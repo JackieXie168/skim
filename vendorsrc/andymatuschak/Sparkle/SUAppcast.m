@@ -60,7 +60,11 @@
 	NSArray *xmlItems = nil;
 	NSMutableArray *appcastItems = [NSMutableArray array];
 	
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
     [[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
+#else
+    [[NSFileManager defaultManager] removeItemAtPath:downloadFilename error:NULL];
+#endif
     [downloadFilename release];
     downloadFilename = nil;
     
@@ -177,8 +181,14 @@
 {
 	CFRelease(download);
     
-    if (downloadFilename)
-        [[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
+	if (downloadFilename)
+	{
+#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4
+		[[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
+#else
+		[[NSFileManager defaultManager] removeItemAtPath:downloadFilename error:NULL];
+#endif
+	}
     [downloadFilename release];
     downloadFilename = nil;
     
