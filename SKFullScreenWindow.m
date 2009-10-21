@@ -40,7 +40,6 @@
 #import "SKMainWindowController.h"
 #import "NSEvent_SKExtensions.h"
 
-#define FADEOUT_DURATION 0.5
 
 @implementation SKFullScreenWindow
 
@@ -53,10 +52,6 @@
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-        CAAnimation *alphaAnimation = [CABasicAnimation animation];
-        [alphaAnimation setDuration:FADEOUT_DURATION];
-        [alphaAnimation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:alphaAnimation, @"alphaValue", nil]];
     }
     return self;
 }
@@ -130,16 +125,24 @@
     [self setAlphaValue:1.0];
 }
 
-- (void)fadeOutBlocking {
+- (void)fadeOutBlocking:(BOOL)block {
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
     [fadeOutDict release];
     
-    [animation setAnimationBlockingMode:NSAnimationBlocking];
-    [animation setAnimationCurve:NSAnimationEaseIn];
-    [animation setDuration:FADEOUT_DURATION];
+    [animation setAnimationBlockingMode:block ? NSAnimationBlocking : NSAnimationNonblockingThreaded];
+    [animation setAnimationCurve:block ? NSAnimationEaseIn : NSAnimationEaseInOut];
+    [animation setDuration:0.5];
     [animation setDelegate:self];
     [animation startAnimation];
+}
+
+- (void)fadeOutBlocking {
+    [self fadeOutBlocking:YES];
+}
+
+- (void)fadeOut {
+    [self fadeOutBlocking:NO];
 }
 
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
@@ -154,11 +157,6 @@
     animation = nil;
     [self orderOut:nil];
     [self setAlphaValue:1.0];
-}
-
-- (void)fadeOut {
-    [[self animator] setAlphaValue:0.0];
-    [self performSelector:@selector(orderOut:) withObject:nil afterDelay:FADEOUT_DURATION];
 }
 
 @end
