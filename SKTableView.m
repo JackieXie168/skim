@@ -94,6 +94,8 @@ static char SKTableViewDefaultsObservationContext;
 
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
     if (typeSelectHelper != newTypeSelectHelper) {
+        if ([typeSelectHelper dataSource] == self)
+            [typeSelectHelper setDataSource:nil];
         [typeSelectHelper release];
         typeSelectHelper = [newTypeSelectHelper retain];
         [typeSelectHelper setDataSource:self];
