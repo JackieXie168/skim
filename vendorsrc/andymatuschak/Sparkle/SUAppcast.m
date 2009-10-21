@@ -177,7 +177,8 @@
 {
 	CFRelease(download);
     
-    [[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
+    if (downloadFilename)
+        [[NSFileManager defaultManager] removeFileAtPath:downloadFilename handler:nil];
     [downloadFilename release];
     downloadFilename = nil;
     
