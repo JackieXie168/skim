@@ -135,6 +135,8 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView registerForDraggedTypes:[NSArray arrayWithObject:SKTransitionPboardType]];
     
+    [tableView setBackgroundColor:[[NSColor controlAlternatingRowBackgroundColors] lastObject]];
+    
     SKTypeSelectHelper *typeSelectHelper = [SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch];
     [typeSelectHelper setMatchesImmediately:NO];
     [typeSelectHelper setCyclesSimilarResults:NO];
