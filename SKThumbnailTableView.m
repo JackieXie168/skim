@@ -80,36 +80,51 @@ static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 406
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
-        NSColor *color;
+        NSColor *color = nil;
         NSInteger row;
         NSRect rect;
         CGFloat *rgb;
         BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-            rgb = isGraphite ? keyColorGraphite : keyColorBlue;
-        else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-            rgb = isGraphite ? mainColorGraphite : mainColorBlue;
-        else
-            rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-        color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
         
-        [NSGraphicsContext saveGraphicsState];
-        
-        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-        NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-        NSInteger i, count = MIN((NSInteger)[rows count], 5);
-        
-        for (i = 0; i < count; i++) {
-            row = [[rows objectAtIndex:i] integerValue];
-            rect = [self rectOfRow:row];
-            if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
-                [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];
-                [NSBezierPath fillRect:rect];
-            }
-            [rowIndexes addIndex:row];
+        switch ([self selectionHighlightStyle]) {
+            case NSTableViewSelectionHighlightStyleSourceList:
+                if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                    rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+                else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
+                    rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+                else
+                    rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
+                color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
+                break;
+            case NSTableViewSelectionHighlightStyleRegular:
+                if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+                    color = [NSColor selectedControlColor];
+                else
+                    color = [NSColor secondarySelectedControlColor];
+                break;
+            default:
+                break;
         }
         
-        [NSGraphicsContext restoreGraphicsState];
+        if (color) {
+            [NSGraphicsContext saveGraphicsState];
+            
+            NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+            NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
+            NSInteger i, count = MIN((NSInteger)[rows count], 5);
+            
+            for (i = 0; i < count; i++) {
+                row = [[rows objectAtIndex:i] integerValue];
+                rect = [self rectOfRow:row];
+                if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
+                    [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];
+                    [NSBezierPath fillRect:rect];
+                }
+                [rowIndexes addIndex:row];
+            }
+            
+            [NSGraphicsContext restoreGraphicsState];
+        }
     }
     
     [super highlightSelectionInClipRect:clipRect];
