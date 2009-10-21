@@ -53,12 +53,23 @@
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-        CAAnimation *animation = [CABasicAnimation animation];
-        [animation setDuration:FADEOUT_DURATION];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
-        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:animation, @"alphaValue", nil]];
+        CAAnimation *alphaAnimation = [CABasicAnimation animation];
+        [alphaAnimation setDuration:FADEOUT_DURATION];
+        [alphaAnimation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [self setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:alphaAnimation, @"alphaValue", nil]];
     }
     return self;
+}
+
+- (void)stopAnimation {
+    [animation stopAnimation];
+    [animation release];
+    animation = nil;
+}
+
+- (void)dealloc {
+    [self stopAnimation];
+    [super dealloc];
 }
 
 - (BOOL)canBecomeKeyWindow { return YES; }
@@ -102,17 +113,46 @@
 }
 
 - (void)orderFront:(id)sender {
+    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super orderFront:sender];
 }
 
 - (void)makeKeyAndOrderFront:(id)sender {
+    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super makeKeyAndOrderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
+    [self stopAnimation];
     [super orderOut:sender];
+    [self setAlphaValue:1.0];
+}
+
+- (void)fadeOutBlocking {
+    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    [fadeOutDict release];
+    
+    [animation setAnimationBlockingMode:NSAnimationBlocking];
+    [animation setAnimationCurve:NSAnimationEaseIn];
+    [animation setDuration:FADEOUT_DURATION];
+    [animation setDelegate:self];
+    [animation startAnimation];
+}
+
+- (void)animationDidEnd:(NSAnimation *)anAnimation {
+    [animation release];
+    animation = nil;
+    [self orderOut:nil];
+    [self setAlphaValue:1.0];
+}
+
+- (void)animationDidStop:(NSAnimation *)anAnimation {
+    [animation release];
+    animation = nil;
+    [self orderOut:nil];
     [self setAlphaValue:1.0];
 }
 

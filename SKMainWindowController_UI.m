@@ -242,9 +242,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         
-        [fullScreenWindow orderOut:nil];
-        [blankingWindows makeObjectsPerformSelector:@selector(orderOut:) withObject:nil];
-        
         [ownerController setContent:nil];
     }
 }
@@ -1469,13 +1466,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        return [[self pdfDocument] isLocked] == NO && mwcFlags.isChangingFullScreen == 0;
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(togglePresentation:)) {
         if ([self isPresentation])
             [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
-        return [[self pdfDocument] isLocked] == NO && mwcFlags.isChangingFullScreen == 0;
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(performFit:)) {

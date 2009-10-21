@@ -233,7 +233,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         markedPageIndex = NSNotFound;
         beforeMarkedPageIndex = NSNotFound;
         mwcFlags.isAnimating = 0;
-        mwcFlags.isChangingFullScreen = 0;
         mwcFlags.updatingColor = 0;
         mwcFlags.updatingFont = 0;
         mwcFlags.updatingLine = 0;
@@ -1491,7 +1490,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (IBAction)enterFullScreen:(id)sender {
-    if ([self isFullScreen] || mwcFlags.isChangingFullScreen)
+    if ([self isFullScreen])
         return;
     
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
@@ -1527,7 +1526,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (IBAction)enterPresentation:(id)sender {
-    if ([self isPresentation] || mwcFlags.isChangingFullScreen)
+    if ([self isPresentation])
         return;
     
     BOOL wasFullScreen = [self isFullScreen];
@@ -1554,10 +1553,22 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setInteractionMode:SKPresentationMode screen:screen];
 }
 
-- (void)finishExitFullScreen {
-    NSView *contentView = [fullScreenWindow contentView];
-    [contentView setWantsLayer:NO];
-    [contentView setAnimations:nil];
+- (IBAction)exitFullScreen:(id)sender {
+    if ([self isFullScreen] == NO && [self isPresentation] == NO)
+        return;
+    
+    if ([self isFullScreen])
+        [self hideSideWindows];
+    
+    if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
+        [fullScreenWindow makeFirstResponder:nil];
+    
+    SKFullScreenWindow *bgWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen]];
+    [bgWindow setBackgroundColor:[fullScreenWindow backgroundColor]];
+    [bgWindow setLevel:[fullScreenWindow level]];
+    [bgWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
+    [fullScreenWindow setDelegate:nil];
+    [fullScreenWindow fadeOutBlocking];
     
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     // this should be done before exitPresentationMode to get a smooth transition
@@ -1579,65 +1590,32 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else
         [self applyPDFSettings:savedNormalSetup];
     
+    [fullScreenWindow orderWindow:NSWindowBelow relativeTo:[bgWindow windowNumber]];
+    [fullScreenWindow displayIfNeeded];
+    [bgWindow orderOut:nil];
+    [bgWindow release];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
     SetSystemUIMode(kUIModeNormal, 0);
     
-    for (NSWindowController *wc in [[self document] windowControllers]) {
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
         if ([wc isNoteWindowController] || [wc isSnapshotWindowController])
             [(id)wc setForceOnTop:NO];
     }
     
-    [fullScreenWindow setDelegate:nil];
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow display];
-    [[[fullScreenWindow animations] valueForKey:@"alphaValue"] setDelegate:self];
-    [[fullScreenWindow animator] setAlphaValue:0.0];
+    [fullScreenWindow fadeOut];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
-}
-
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    if ([theAnimation isKindOfClass:[CATransition class]]) {
-        [self finishExitFullScreen];
-    } else {
-        [fullScreenWindow orderOut:nil];
-        mwcFlags.isChangingFullScreen = 0;
-        [theAnimation setDelegate:nil];
-    }
-}
-
-- (IBAction)exitFullScreen:(id)sender {
-    if ([self isFullScreen] == NO && [self isPresentation] == NO)
-        return;
-    
-    mwcFlags.isChangingFullScreen = 1;
-    
-    if ([self isFullScreen])
-        [self hideSideWindows];
-    
-    if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
-        [fullScreenWindow makeFirstResponder:nil];
-    
-    NSView *view = [self isFullScreen] ? (NSView *)pdfSplitView : (NSView *)pdfView;
-    NSView *contentView = [view superview]; // this should be [fullScreenWindow contentView]
-    CAAnimation *animation = [CATransition animation];
-    
-    // 10.5 has problems animating with a transparent background
-    if ([self isPresentation])
-        [pdfView setBackgroundColor:[NSColor blackColor]];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-    [animation setDuration:0.5];
-    [animation setDelegate:self];
-    [contentView setAnimations:[NSDictionary dictionaryWithObject:animation forKey:@"subviews"]];
-    [contentView setWantsLayer:YES];
-    [contentView displayIfNeeded];
-    [[view animator] removeFromSuperview];
 }
 
 #pragma mark Swapping tables
