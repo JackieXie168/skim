@@ -114,8 +114,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 #pragma mark -
 
 @protocol SKTransitionAnimationDelegate <NSAnimationDelegate>
-@optional
-- (void)display;
+- (void)animationDidUpdate:(NSAnimation *)anAnimation;
 @end
 
 @interface SKTransitionAnimation : NSAnimation {
@@ -561,7 +560,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [super setCurrentProgress:progress];
     [filter setValue:[NSNumber numberWithDouble:[self currentValue]] forKey:@"inputTime"];
-    [[self delegate] display];
+    [[self delegate] animationDidUpdate:self];
 }
 
 - (CIImage *)currentImage {
@@ -632,6 +631,10 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
     glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
     
     needsReshape = YES;
+}
+
+- (void)animationDidUpdate:(NSAnimation *)anAnimation {
+    [self display];
 }
 
 - (SKTransitionAnimation *)animation {
