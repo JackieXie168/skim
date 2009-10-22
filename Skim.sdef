@@ -535,8 +535,8 @@
                 description="The document in which to scroll."/>
             <parameter name="to" code="to  "
                 description="The page, note, TeX line, or selection to go to.">
-                <type type="specifier"/>
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
                 <cocoa key="To"/>
             </parameter>
 			<parameter name="from" code="from" type="file" optional="yes" 
