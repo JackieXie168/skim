@@ -55,7 +55,7 @@ NSString *SKNSkimTextNotes(NSArray *noteDicts) {
         NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
         NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
-        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
+        if (pageIndex == NSNotFound || pageIndex == INT_MAX)
             pageIndex = 0;
         
         [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
@@ -82,7 +82,7 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
         NSString *string = [dict objectForKey:NOTE_CONTENTS_KEY];
         NSAttributedString *text = [dict objectForKey:NOTE_TEXT_KEY];
         
-        if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
+        if (pageIndex == NSNotFound || pageIndex == INT_MAX)
             pageIndex = 0;
         
         [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
