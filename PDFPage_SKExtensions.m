@@ -468,9 +468,7 @@ static BOOL usesSequentialPageNumbering = NO;
         
         FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
         
-        if (contentsValue) {
-            annotation = [contentsValue copy];
-        } else if (type == 0) {
+        if (type == 0) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
             [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
         } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
@@ -538,14 +536,18 @@ static BOOL usesSequentialPageNumbering = NO;
         if (annotation) {
             NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
             NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:class];
-            if ([properties count]) {
-                for (NSString *aKey in properties) {
-                    if ([classDesc hasWritablePropertyForKey:aKey])
-                        [validProps setValue:[annotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
-                }
-                if ([validProps count])
-                    [annotation setScriptingProperties:validProps];
+            
+            if (contentsValue) {
+                NSString *contentsKey = [classDesc defaultSubcontainerAttributeKey];
+                if (contentsKey)
+                    [validProps setObject:[annotation coerceValue:contentsValue forKey:contentsKey] forKey:contentsKey];
             }
+            for (NSString *aKey in properties) {
+                if ([classDesc hasWritablePropertyForKey:aKey])
+                    [validProps setValue:[annotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
+            }
+            if ([validProps count])
+                [annotation setScriptingProperties:validProps];
         }
         return annotation;
     }
