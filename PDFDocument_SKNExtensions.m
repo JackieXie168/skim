@@ -79,7 +79,7 @@
     while (dict = [e nextObject]) {
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict]) {
-            if (pageIndex == NSNotFound || pageIndex == UINT_MAX)
+            if (pageIndex == NSNotFound || pageIndex == INT_MAX)
                 pageIndex = 0;
             else if (pageIndex >= [self pageCount])
                 pageIndex = [self pageCount] - 1;
