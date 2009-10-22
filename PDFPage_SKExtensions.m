@@ -463,9 +463,10 @@ static BOOL usesSequentialPageNumbering = NO;
         PDFAnnotation *annotation = nil;
         NSMutableDictionary *props = [[properties mutableCopy] autorelease];
         
-        NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
+        NSRect bounds = NSZeroRect;
         bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
+        bounds = NSIntegralRect(SKRectFromCenterAndSize(SKIntegralPoint(SKCenterPoint([self boundsForBox:kPDFDisplayBoxCropBox])), bounds.size));
         
         FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
         [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
