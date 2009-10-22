@@ -2118,7 +2118,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
         [command setScriptErrorString:@"The text to find is missing or is not a string."];
         return nil;
     } else {
-        id from = [args objectForKey:@"From"];
+        id from = [[command arguments] objectForKey:@"From"];
         id backward = [args objectForKey:@"Backward"];
         id caseSensitive = [args objectForKey:@"CaseSensitive"];
         PDFSelection *selection = nil;
