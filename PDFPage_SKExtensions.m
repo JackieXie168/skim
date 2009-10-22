@@ -468,7 +468,9 @@ static BOOL usesSequentialPageNumbering = NO;
         
         FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
         
-        if (type == 0) {
+        if (contentsValue) {
+            annotation = [contentsValue copy];
+        } else if (type == 0) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
             [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
         } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
