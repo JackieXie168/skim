@@ -461,12 +461,14 @@ static BOOL usesSequentialPageNumbering = NO;
 - (id)newScriptingObjectOfClass:(Class)class forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"notes"]) {
         PDFAnnotation *annotation = nil;
+        NSMutableDictionary *props = [[properties mutableCopy] autorelease];
         
         NSRect bounds = NSMakeRect(100.0, 100.0, 0.0, 0.0);
         bounds.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
         bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
         
         FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
+        [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
         
         if (type == 0) {
             [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -475,7 +477,7 @@ static BOOL usesSequentialPageNumbering = NO;
             id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
-            
+            [props removeObjectForKey:SKPDFAnnotationSelectionSpecifierKey];
             if (selSpec == nil) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
@@ -490,6 +492,7 @@ static BOOL usesSequentialPageNumbering = NO;
             }
         } else if (type == SKScriptingInkNote) {
             NSArray *pointLists = [properties objectForKey:SKPDFAnnotationScriptingPointListsKey];
+            [props removeObjectForKey:SKPDFAnnotationScriptingPointListsKey];
             if ([pointLists isKindOfClass:[NSArray class]] == NO) {
                 [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
@@ -534,20 +537,13 @@ static BOOL usesSequentialPageNumbering = NO;
             annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
         }
         if (annotation) {
-            NSMutableDictionary *validProps = [NSMutableDictionary dictionary];
-            NSScriptClassDescription *classDesc = [NSScriptClassDescription classDescriptionForClass:class];
-            
             if (contentsValue) {
-                NSString *contentsKey = [classDesc defaultSubcontainerAttributeKey];
-                if (contentsKey)
-                    [validProps setObject:[annotation coerceValue:contentsValue forKey:contentsKey] forKey:contentsKey];
+                NSString *contentsKey = [[NSScriptClassDescription classDescriptionForClass:class] defaultSubcontainerAttributeKey];
+                if (contentsKey && [props objectForKey:contentsKey] == nil)
+                    [props setObject:contentsValue forKey:contentsKey];
             }
-            for (NSString *aKey in properties) {
-                if ([classDesc hasWritablePropertyForKey:aKey])
-                    [validProps setValue:[annotation coerceValue:[properties objectForKey:aKey] forKey:aKey] forKey:aKey];
-            }
-            if ([validProps count])
-                [annotation setScriptingProperties:validProps];
+            if ([props count])
+                [annotation setScriptingProperties:[annotation coerceValue:props forKey:@"scriptingProperties"]];
         }
         return annotation;
     }
