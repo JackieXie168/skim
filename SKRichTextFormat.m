@@ -38,6 +38,7 @@
 
 #import "SKRichTextFormat.h"
 #import "NSData_SKExtensions.h"
+#import "SKApplication.h"
 
 
 @implementation SKRichTextFormat
@@ -75,7 +76,7 @@
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    NSScriptClassDescription *containerClassDescription = (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApplication class]];
+    NSScriptClassDescription *containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[SKApplication class]];
     return [[[NSNameSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"richTextFormat" name:[self name]] autorelease];
 }
 

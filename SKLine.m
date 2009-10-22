@@ -37,6 +37,7 @@
  */
 
 #import "SKLine.h"
+#import "SKApplication.h"
 
 
 @implementation SKLine
@@ -49,7 +50,7 @@
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    NSScriptClassDescription *containerClassDescription = (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApplication class]];
+    NSScriptClassDescription *containerClassDescription = [NSScriptClassDescription classDescriptionForClass:[SKApplication class]];
     return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:index] autorelease];
 }
 
