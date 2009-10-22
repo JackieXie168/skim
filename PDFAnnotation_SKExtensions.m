@@ -302,7 +302,7 @@ enum {
 }
 
 - (id)richText {
-    return [NSNull null];
+    return nil;
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
@@ -326,7 +326,7 @@ enum {
 }
 
 - (NSString *)fontName {
-    return (id)[NSNull null];
+    return nil;
 }
 
 - (CGFloat)fontSize {
@@ -334,7 +334,7 @@ enum {
 }
 
 - (NSColor *)scriptingFontColor {
-    return (id)[NSNull null];
+    return nil;
 }
 
 - (FourCharCode)scriptingBorderStyle {
@@ -346,11 +346,11 @@ enum {
 }
 
 - (NSData *)startPointAsQDPoint {
-    return (id)[NSNull null];
+    return nil;
 }
 
 - (NSData *)endPointAsQDPoint {
-    return (id)[NSNull null];
+    return nil;
 }
 
 - (FourCharCode)scriptingStartLineStyle {
@@ -362,11 +362,11 @@ enum {
 }
 
 - (id)selectionSpecifier {
-    return [NSNull null];
+    return nil;
 }
 
 - (NSArray *)scriptingPointLists {
-    return (id)[NSNull null];
+    return nil;
 }
 
 #pragma mark Accessibility

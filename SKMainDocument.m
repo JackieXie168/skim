@@ -1890,7 +1890,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 
 - (id)activeNote {
     id note = [[self pdfView] activeAnnotation];
-    return [note isSkimNote] ? note : [NSNull null];
+    return note;
 }
 
 - (void)setActiveNote:(id)note {
@@ -1940,8 +1940,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
 }
 
 - (id)selectionPage {
-    PDFPage *page = [[self pdfView] currentSelectionPage];
-    return (id)page ?: (id)[NSNull null];
+    return [[self pdfView] currentSelectionPage];
 }
 
 - (void)setSelectionPage:(PDFPage *)page {
@@ -2178,7 +2177,7 @@ static id (*original_document)(id, SEL) = NULL;
 
 - (id)replacement_document {
     id document = original_document(self, _cmd);
-    return [[NSApp orderedDocuments] containsObject:document] ? document : [NSNull null];
+    return [[NSApp orderedDocuments] containsObject:document] ? document : nil;
 }
 
 + (void)load {
