@@ -289,12 +289,11 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [lines sortUsingSelector:@selector(boundsCompare:)];
     
-    NSUInteger i, iMax = [lines count];
     NSPointerArray *fullLines = [NSPointerArray rectPointerArray];
     NSRect r1 = NSZeroRect;
     
-    for (i = 0; i < iMax; i++) {
-        NSRect r2 = [[lines objectAtIndex:i] rectValue];
+    for (NSValue *line in lines) {
+        NSRect r2 = [line rectValue];
         if (NSEqualRects(r1, NSZeroRect)) {
             r1 = r2;
         } else if ((NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2))) {

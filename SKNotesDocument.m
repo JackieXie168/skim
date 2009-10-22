@@ -362,10 +362,7 @@
         [(NSMutableArray *)items removeObject:[NSNull null]];
     }
     
-    NSInteger i, count = [items count];
-    
-    for (i = 0; i < count; i++) {
-        id item = [items objectAtIndex:i];
+    for (id item in items) {
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];

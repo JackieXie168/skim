@@ -299,9 +299,7 @@ enum {
         for (i = range.location; i < iMax; i++) {
             PDFPage *page = [[self document] pageAtIndex:i];
             NSArray *annotations = [page annotations];
-            NSUInteger j, jMax = [annotations count];
-            for (j = 0; j < jMax; j++) {
-                PDFAnnotation *annotation = [annotations objectAtIndex:j];
+            for (PDFAnnotation *annotation in annotations) {
                 if ([[annotation type] isEqualToString:SKNNoteString] || [annotation isLink]) {
                     NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
                     if (NSIsEmptyRect(rect) == NO) {

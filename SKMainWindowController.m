@@ -1793,11 +1793,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     NSArray *pages = [sel pages];
-    NSInteger i, iMax = [pages count];
     NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey] ?: [NSColor redColor];
     
-    for (i = 0; i < iMax; i++) {
-        PDFPage *page = [pages objectAtIndex:i];
+    for (PDFPage *page in pages) {
         NSRect bounds = [sel boundsForPage:page];
         if (NSIsEmptyRect(bounds) == NO) {
             bounds = NSInsetRect(bounds, -4.0, -4.0);
