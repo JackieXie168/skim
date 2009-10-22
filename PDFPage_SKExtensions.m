@@ -470,10 +470,7 @@ static BOOL usesSequentialPageNumbering = NO;
         FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
         [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
         
-        if (type == 0) {
-            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
-            [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
-        } else if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
+        if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
             id selSpec = [properties objectForKey:SKPDFAnnotationSelectionSpecifierKey];
             PDFSelection *selection;
             NSInteger markupType = 0;
@@ -535,7 +532,13 @@ static BOOL usesSequentialPageNumbering = NO;
             annotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
         } else if (type == SKScriptingLineNote) {
             annotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+        } else if (contentsValue) {
+            annotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+        } else {
+            [[NSScriptCommand currentCommand] setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+            [[NSScriptCommand currentCommand] setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
         }
+
         if (annotation) {
             if (contentsValue) {
                 NSString *contentsKey = [[NSScriptClassDescription classDescriptionForClass:class] defaultSubcontainerAttributeKey];
