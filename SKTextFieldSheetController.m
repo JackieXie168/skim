@@ -89,9 +89,7 @@
 - (NSString *)windowNibName { return @"BookmarkSheet"; }
 
 - (void)addMenuItemsForBookmarks:(NSArray *)bookmarks level:(NSInteger)level toMenu:(NSMenu *)menu {
-    NSInteger i, iMax = [bookmarks count];
-    for (i = 0; i < iMax; i++) {
-        SKBookmark *bm = [bookmarks objectAtIndex:i];
+    for (SKBookmark *bm in bookmarks) {
         if ([bm bookmarkType] == SKBookmarkTypeFolder) {
             NSString *label = [bm label];
             NSMenuItem *item = [menu addItemWithTitle:label ?: @"" action:NULL keyEquivalent:@""];
