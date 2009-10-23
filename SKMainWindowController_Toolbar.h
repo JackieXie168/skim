@@ -40,6 +40,6 @@
 #import "SKMainWindowController.h"
 
 
-@interface SKMainWindowController (Toolbar)
+@interface SKMainWindowController (Toolbar) <NSToolbarDelegate>
 - (void)setupToolbar;
 @end

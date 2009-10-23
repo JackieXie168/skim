@@ -38,9 +38,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKMainWindowController.h"
+#import "SKSplitView.h"
+#import "SKThumbnailTableView.h"
+#import "SKTocOutlineView.h"
+#import "SKNoteOutlineView.h"
 
 
-@interface SKMainWindowController (UI)
+@interface SKMainWindowController (UI) <NSWindowDelegate, NSDrawerDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource, SKTocOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKSplitViewDelegate>
 
 - (void)registerForNotifications;
 

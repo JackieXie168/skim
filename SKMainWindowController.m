@@ -42,7 +42,6 @@
 #import <Quartz/Quartz.h>
 #import <Carbon/Carbon.h>
 #import "SKStringConstants.h"
-#import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
 #import "SKBookmarkController.h"
