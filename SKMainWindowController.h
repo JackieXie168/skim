@@ -38,10 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>
-#import "SKSplitView.h"
-#import "SKThumbnailTableView.h"
-#import "SKTocOutlineView.h"
-#import "SKNoteOutlineView.h"
 #import "SKSnapshotWindowController.h"
 #import "SKThumbnail.h"
 
@@ -72,10 +68,10 @@ enum {
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
-@class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar;
+@class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
-@interface SKMainWindowController : NSWindowController <NSWindowDelegate, NSToolbarDelegate, NSDrawerDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource, SKTocOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKSplitViewDelegate, SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
+@interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
     IBOutlet SKSplitView            *splitView;
     
     IBOutlet NSView                 *pdfContentView;

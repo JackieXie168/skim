@@ -37,11 +37,7 @@
  */
 
 #import "SKMainWindowController_UI.h"
-#import "SKTocOutlineView.h"
-#import "SKNoteOutlineView.h"
-#import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
-#import "SKSplitView.h"
 #import "SKPDFView.h"
 #import "SKStatusBar.h"
 #import "SKSnapshotWindowController.h"
