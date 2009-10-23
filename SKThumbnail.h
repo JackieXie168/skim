@@ -42,7 +42,6 @@
 @class SKThumbnail;
 
 @protocol SKThumbnailDelegate <NSObject>
-@optional
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
 @end
 
