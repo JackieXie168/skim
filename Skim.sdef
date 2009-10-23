@@ -569,6 +569,7 @@
             <parameter name="from" code="from" optional="yes"
                 description="The selection to search from.">
                 <type type="specifier" list="yes"/>
+                <type type="specifier"/>
                 <cocoa key="From"/>
             </parameter>
             <parameter name="backward search" code="Back" type="boolean" optional="yes"
