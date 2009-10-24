@@ -334,13 +334,12 @@
     
     if ([bm isKindOfClass:[SKBookmark class]]) {
         NSArray *bookmarks = [bm children];
-        NSInteger i = [menu numberOfItems], numBookmarks = [bookmarks count];
+        NSInteger i = [menu numberOfItems];
         while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
             [menu removeItemAtIndex:i];
-        if ([menu numberOfItems] > 0 && numBookmarks > 0)
+        if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
             [menu addItem:[NSMenuItem separatorItem]];
-        for (i = 0; i < numBookmarks; i++) {
-            bm = [bookmarks objectAtIndex:i];
+        for (bm in bookmarks) {
             switch ([bm bookmarkType]) {
                 case SKBookmarkTypeFolder:
                     item = [menu addItemWithTitle:[bm label] submenu:[[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:[bm label]] autorelease]];
