@@ -45,15 +45,17 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 @implementation NSDocument (SKExtensions)
 
-static NSSet *richTextTypes = nil;
-static NSSet *supportedRichTextTypes = nil;
-
-- (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
+static NSSet *richTextTypes() {
+    static NSSet *richTextTypes = nil;
     if (richTextTypes == nil)
         richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
+    return richTextTypes;
+}
+
+- (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSString *string = nil;
-    if ([richTextTypes containsObject:fileType] == NO) {
+    if ([richTextTypes() containsObject:fileType] == NO) {
         NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSError *error = nil;
         NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:&error];
@@ -64,13 +66,9 @@ static NSSet *supportedRichTextTypes = nil;
 }
 
 - (NSData *)notesDataUsingTemplateFile:(NSString *)templateFile {
-    if (richTextTypes == nil)
-        richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
-    if (supportedRichTextTypes == nil)
-        supportedRichTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", nil];
     NSString *fileType = [[templateFile pathExtension] lowercaseString];
     NSData *data = nil;
-    if ([supportedRichTextTypes containsObject:fileType]) {
+    if ([richTextTypes() containsObject:fileType]) {
         NSString *templatePath = [[NSFileManager defaultManager] pathForApplicationSupportFile:[templateFile stringByDeletingPathExtension] ofType:[templateFile pathExtension] inDirectory:@"Templates"];
         NSDictionary *docAttributes = nil;
         NSError *error = nil;
@@ -78,7 +76,7 @@ static NSSet *supportedRichTextTypes = nil;
         NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplateAttributedString:templateAttrString usingObject:self];
         data = [attrString dataFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes error:&error];
         [templateAttrString release];
-    } else if ([richTextTypes containsObject:fileType] == NO) {
+    } else {
         data = [[self notesStringUsingTemplateFile:templateFile] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
     }
     return data;
