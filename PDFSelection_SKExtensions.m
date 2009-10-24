@@ -247,12 +247,10 @@
 static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, NSUInteger anIndex) {
     NSUInteger length = [string length];
     NSRange range = NSMakeRange(0, 0);
-    NSUInteger i, iMax = [substrings count];
     
-    if (anIndex >= iMax)
+    if (anIndex >= [substrings count])
         return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i <= anIndex; i++) {
-        NSString *substring = [substrings objectAtIndex:i];
+    for (NSString *substring in substrings) {
         NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
         if ([substring length] == 0)
             continue;
