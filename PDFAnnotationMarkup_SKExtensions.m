@@ -78,10 +78,9 @@ static NSArray *createPointsFromStrings(NSArray *strings)
 {
     if (strings == nil)
         return nil;
-    NSInteger i, iMax = [strings count];
-    NSMutableArray *points = [[NSMutableArray alloc] initWithCapacity:iMax];
-    for (i = 0; i < iMax; i++) {
-        NSPoint p = NSPointFromString([strings objectAtIndex:i]);
+    NSMutableArray *points = [[NSMutableArray alloc] init];
+    for (NSString *string in strings) {
+        NSPoint p = NSPointFromString(string);
         NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
         [points addObject:value];
         [value release];
