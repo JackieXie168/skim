@@ -336,6 +336,12 @@ static char SKMainDocumentDefaultsObservationContext;
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveFromPanel:contextInfo:) contextInfo:invocation];
 }
 
+#ifdef __LP64__
+#define PERMISSIONS_MODE(catalogInfo) catalogInfo.permissions.mode
+#else
+#define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode;
+#endif
+
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
     NSURL *absoluteURL = [info objectForKey:@"URL"];
@@ -390,14 +396,8 @@ static char SKMainDocumentDefaultsObservationContext;
             FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
             if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
                 noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
-                FSPermissionInfo *permissions;
-#ifdef __LP64__
-                permissions = &catalogInfo.permissions;
-#else
-                permissions = (FSPermissionInfo *)catalogInfo.permissions;
-#endif
                 isLocked = (catalogInfo.nodeFlags & kFSNodeLockedMask) != 0;
-                isReadOnly = (permissions->mode & 0x80) == 0;
+                isReadOnly = (PERMISSIONS_MODE(catalogInfo) & 0x80) == 0;
                 
                 if (isLocked || isReadOnly) {
                     FSCatalogInfo tmpCatalogInfo = catalogInfo;
@@ -406,11 +406,7 @@ static char SKMainDocumentDefaultsObservationContext;
                         whichInfo |= kFSNodeLockedMask;
                     }
                     if (isReadOnly) {
-#ifdef __LP64__
-                        tmpCatalogInfo.permissions.mode |= 0x80;
-#else
-                        ((FSPermissionInfo *)tmpCatalogInfo.permissions)->mode |= 0x80;
-#endif
+                        PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
                         whichInfo |= kFSCatInfoPermissions;
                     }
                     (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
