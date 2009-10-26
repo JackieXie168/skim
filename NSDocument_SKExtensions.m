@@ -46,10 +46,10 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 @implementation NSDocument (SKExtensions)
 
 static NSSet *richTextTypes() {
-    static NSSet *richTextTypes = nil;
-    if (richTextTypes == nil)
-        richTextTypes = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
-    return richTextTypes;
+    static NSSet *types = nil;
+    if (types == nil)
+        types = [[NSSet alloc] initWithObjects:@"rtf", @"doc", @"docx", @"odt", @"rtfd", nil];
+    return types;
 }
 
 - (NSString *)notesStringUsingTemplateFile:(NSString *)templateFile {
