@@ -309,7 +309,7 @@ static char SKMainDocumentDefaultsObservationContext;
     return success;
 }
 
-- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo { 
+- (void)document:(NSDocument *)doc didSaveFromPanel:(BOOL)didSave contextInfo:(void *)contextInfo { 
     docFlags.exportUsingPanel = NO;
     if (contextInfo != NULL) {
         NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
@@ -333,26 +333,21 @@ static char SKMainDocumentDefaultsObservationContext;
         [invocation retainArguments];
     }
     
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:NULL];
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveFromPanel:contextInfo:) contextInfo:invocation];
 }
 
-- (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
-    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [self stopCheckingFileUpdates];
-        docFlags.isSaving = YES;
-    } else if (docFlags.exportUsingPanel) {
-        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
-    }
-    
-    BOOL success = NO;
-    NSError *error = nil;
+- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo {
+    NSDictionary *info = [(id)contextInfo autorelease];
+    NSURL *absoluteURL = [info objectForKey:@"URL"];
+    NSString *typeName = [info objectForKey:@"type"];
+    NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] intValue];
     
     // we check for notes and may save a .skim as well:
     if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         
-        if (success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error]) {
+        if (didSave) {
             
             BOOL saveNotesOK = NO;
             
@@ -404,51 +399,30 @@ static char SKMainDocumentDefaultsObservationContext;
             if (options)
                 [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
             
-            if (success)
-                [[NSDistributedNotificationCenter defaultCenter]
-                    postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
+            [[NSDistributedNotificationCenter defaultCenter]
+                postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
         }
         
     } else if (SKIsPDFBundleDocumentType(typeName)) {
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [absoluteURL path];
-        NSString *tmpPath = nil;
-        BOOL isDir = NO;
-        NSString *file;
-        
-        // we move everything that's not ours out of the way, so we can preserve version control info
-        if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-            NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-            for (file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
-                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
-                    if (tmpPath == nil)
-                        tmpPath = SKUniqueTemporaryDirectory();
-                    [fm moveItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
-                }
-            }
-        }
-        
-        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
+        NSString *tmpPath = [info objectForKey:@"tmpPath"];
         
         if (tmpPath) {
-            for (file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
+            for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
                 [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
             [fm removeItemAtPath:tmpPath error:NULL];
         }
         
-        if (success)
+        if (didSave)
             [[NSDistributedNotificationCenter defaultCenter]
                 postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
-        
-    } else {
-        
-        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:&error];
         
     }
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        if (success) {
+        if (didSave) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
             docFlags.fileChangedOnDisk = NO;
@@ -459,10 +433,57 @@ static char SKMainDocumentDefaultsObservationContext;
         docFlags.isSaving = NO;
     }
     
-    if (success == NO && outError != NULL)
-        *outError = error ? : [NSError errorWithDomain:SKDocumentErrorDomain code:SKWriteFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    NSInvocation *invocation = [info objectForKey:@"callback"];
+    if (invocation) {
+        [invocation setArgument:&doc atIndex:2];
+        [invocation setArgument:&didSave atIndex:3];
+        [invocation invoke];
+    }
+}
+
+// Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDoucment needs to ask the user for permission, for instance to override a file lock
+- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
+    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+        [self stopCheckingFileUpdates];
+        docFlags.isSaving = YES;
+    } else if (docFlags.exportUsingPanel) {
+        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
+    }
     
-    return success;
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, @"URL", typeName, @"type", [NSNumber numberWithInt:saveOperation], @"saveOperation", nil];
+    NSInvocation *invocation = nil;
+    if (delegate && didSaveSelector) {
+        NSMethodSignature *ms = [delegate methodSignatureForSelector:didSaveSelector];
+        invocation = [NSInvocation invocationWithMethodSignature:ms];
+        [invocation setTarget:delegate];
+        [invocation setSelector:didSaveSelector];
+        [invocation setArgument:&contextInfo atIndex:4];
+        [invocation retainArguments];
+        [info setObject:invocation forKey:@"callback"];
+    }
+    
+    if (SKIsPDFBundleDocumentType(typeName)) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *path = [absoluteURL path];
+        NSString *tmpPath = [info objectForKey:@"tmpPath"];
+        BOOL isDir = NO;
+        
+        // we move everything that's not ours out of the way, so we can preserve version control info
+        if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
+            NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
+            for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
+                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
+                    if (tmpPath == nil)
+                        tmpPath = SKUniqueTemporaryDirectory();
+                    [fm moveItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
+                }
+            }
+        }
+        if (tmpPath)
+            [info setObject:tmpPath forKey:@"tmpPath"];
+    }
+    
+    [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
