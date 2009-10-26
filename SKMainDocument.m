@@ -389,28 +389,24 @@ static char SKMainDocumentDefaultsObservationContext;
                 
             }
             
-            BOOL isLocked = NO;
-            BOOL isReadOnly = NO;
             FSRef fileRef;
             FSCatalogInfo catalogInfo;
             FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
+            
             if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
                 noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
-                isLocked = (catalogInfo.nodeFlags & kFSNodeLockedMask) != 0;
-                isReadOnly = (PERMISSIONS_MODE(catalogInfo) & 0x80) == 0;
                 
-                if (isLocked || isReadOnly) {
-                    FSCatalogInfo tmpCatalogInfo = catalogInfo;
-                    if (isLocked) {
-                        tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-                        whichInfo |= kFSCatInfoNodeFlags;
-                    }
-                    if (isReadOnly) {
-                        PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
-                        whichInfo |= kFSCatInfoPermissions;
-                    }
-                    (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
+                FSCatalogInfo tmpCatalogInfo = catalogInfo;
+                if ((catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
+                    tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+                    whichInfo |= kFSCatInfoNodeFlags;
                 }
+                if ((PERMISSIONS_MODE(catalogInfo) & 0x80) == 0) {
+                    PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
+                    whichInfo |= kFSCatInfoPermissions;
+                }
+                if (whichInfo != kFSCatInfoNone)
+                    (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
             }
             
             if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
@@ -429,7 +425,7 @@ static char SKMainDocumentDefaultsObservationContext;
             if (options)
                 [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
             
-            if (isLocked || isReadOnly)
+            if (whichInfo != kFSCatInfoNone)
                 (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
             
             [[NSDistributedNotificationCenter defaultCenter]
