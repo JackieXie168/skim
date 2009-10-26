@@ -511,9 +511,9 @@ static char SKMainDocumentDefaultsObservationContext;
                     [fm moveItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
                 }
             }
+            if (tmpPath)
+                [info setObject:tmpPath forKey:@"tmpPath"];
         }
-        if (tmpPath)
-            [info setObject:tmpPath forKey:@"tmpPath"];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
