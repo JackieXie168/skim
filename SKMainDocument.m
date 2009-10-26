@@ -339,7 +339,7 @@ static char SKMainDocumentDefaultsObservationContext;
 #ifdef __LP64__
 #define PERMISSIONS_MODE(catalogInfo) catalogInfo.permissions.mode
 #else
-#define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode;
+#define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
 #endif
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo {
