@@ -383,6 +383,18 @@ static char SKMainDocumentDefaultsObservationContext;
                 
             }
             
+            BOOL isLocked = NO;
+            FSRef fileRef;
+            FSCatalogInfo catalogInfo;
+            if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
+                noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL)) {
+                if (isLocked = (catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
+                    FSCatalogInfo unlockedCatalogInfo = catalogInfo;
+                    unlockedCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+                    (void)FSSetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &unlockedCatalogInfo);
+                }
+            }
+            
             if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
                 NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
                                                   NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
@@ -398,6 +410,9 @@ static char SKMainDocumentDefaultsObservationContext;
             [[SKNExtendedAttributeManager sharedManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             if (options)
                 [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
+            
+            if (isLocked)
+                (void)FSSetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &catalogInfo);
             
             [[NSDistributedNotificationCenter defaultCenter]
                 postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
