@@ -384,14 +384,36 @@ static char SKMainDocumentDefaultsObservationContext;
             }
             
             BOOL isLocked = NO;
+            BOOL isReadOnly = NO;
             FSRef fileRef;
             FSCatalogInfo catalogInfo;
+            FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
             if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
-                noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL)) {
-                if (isLocked = (catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
-                    FSCatalogInfo unlockedCatalogInfo = catalogInfo;
-                    unlockedCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-                    (void)FSSetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &unlockedCatalogInfo);
+                noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
+                FSPermissionInfo *permissions;
+#ifdef __LP64__
+                permissions = &catalogInfo.permissions;
+#else
+                permissions = (FSPermissionInfo *)catalogInfo.permissions;
+#endif
+                isLocked = (catalogInfo.nodeFlags & kFSNodeLockedMask) != 0;
+                isReadOnly = (permissions->mode & 0x80) == 0;
+                
+                if (isLocked || isReadOnly) {
+                    FSCatalogInfo tmpCatalogInfo = catalogInfo;
+                    if (isLocked) {
+                        tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+                        whichInfo |= kFSNodeLockedMask;
+                    }
+                    if (isReadOnly) {
+#ifdef __LP64__
+                        tmpCatalogInfo.permissions.mode |= 0x80;
+#else
+                        ((FSPermissionInfo *)tmpCatalogInfo.permissions)->mode |= 0x80;
+#endif
+                        whichInfo |= kFSCatInfoPermissions;
+                    }
+                    (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
                 }
             }
             
@@ -411,8 +433,8 @@ static char SKMainDocumentDefaultsObservationContext;
             if (options)
                 [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
             
-            if (isLocked)
-                (void)FSSetCatalogInfo(&fileRef, kFSCatInfoNodeFlags, &catalogInfo);
+            if (isLocked || isReadOnly)
+                (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
             
             [[NSDistributedNotificationCenter defaultCenter]
                 postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
