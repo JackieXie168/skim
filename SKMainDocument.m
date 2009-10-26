@@ -403,7 +403,7 @@ static char SKMainDocumentDefaultsObservationContext;
                     FSCatalogInfo tmpCatalogInfo = catalogInfo;
                     if (isLocked) {
                         tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-                        whichInfo |= kFSNodeLockedMask;
+                        whichInfo |= kFSCatInfoNodeFlags;
                     }
                     if (isReadOnly) {
                         PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
