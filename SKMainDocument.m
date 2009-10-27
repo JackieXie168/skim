@@ -79,6 +79,7 @@
 #import "SKTextFieldSheetController.h"
 #import "PDFAnnotationMarkup_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
+#import "NSInvocation_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -325,12 +326,8 @@ static char SKMainDocumentDefaultsObservationContext;
     
     NSInvocation *invocation = nil;
     if (delegate && didSaveSelector) {
-        NSMethodSignature *ms = [delegate methodSignatureForSelector:didSaveSelector];
-        invocation = [[NSInvocation invocationWithMethodSignature:ms] retain];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didSaveSelector];
+        invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
-        [invocation retainArguments];
     }
     
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveFromPanel:contextInfo:) contextInfo:invocation];
@@ -342,7 +339,82 @@ static char SKMainDocumentDefaultsObservationContext;
 #define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
 #endif
 
-- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void  *)contextInfo {
+- (void)saveNotesToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL saveNotesOK = NO;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
+        NSString *notesPath = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
+        BOOL fileExists = [fm fileExistsAtPath:notesPath];
+        
+        if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
+            NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
+                                             defaultButton:NSLocalizedString(@"Save", @"Button title")
+                                           alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                               otherButton:nil
+                                 informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
+            
+            saveNotesOK = NSAlertDefaultReturn == [alert runModal];
+        } else {
+            saveNotesOK = YES;
+        }
+        
+        if (saveNotesOK) {
+            NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+            if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
+                if (fileExists)
+                    saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
+                if ([[self notes] count]) {
+                    if (saveNotesOK)
+                        saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL];
+                    else
+                        [fm removeItemAtPath:tmpPath error:NULL];
+                }
+            }
+        }
+    }
+    
+    FSRef fileRef;
+    FSCatalogInfo catalogInfo;
+    FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
+    
+    if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
+        noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
+        
+        FSCatalogInfo tmpCatalogInfo = catalogInfo;
+        if ((catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
+            tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+            whichInfo |= kFSCatInfoNodeFlags;
+        }
+        if ((PERMISSIONS_MODE(catalogInfo) & 0x80) == 0) {
+            PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
+            whichInfo |= kFSCatInfoPermissions;
+        }
+        if (whichInfo != kFSCatInfoNone)
+            (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
+    }
+    
+    if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
+        NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
+                                          NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
+        NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog"), nil]
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
+        [alert runModal];
+    }
+    
+    NSDictionary *options = [[self mainWindowController] presentationOptions];
+    [[SKNExtendedAttributeManager sharedManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
+    if (options)
+        [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
+    
+    if (whichInfo != kFSCatInfoNone)
+        (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
+}
+
+- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
     NSURL *absoluteURL = [info objectForKey:@"URL"];
     NSString *typeName = [info objectForKey:@"type"];
@@ -350,104 +422,17 @@ static char SKMainDocumentDefaultsObservationContext;
     
     // we check for notes and may save a .skim as well:
     if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
-        
-        NSFileManager *fm = [NSFileManager defaultManager];
-        
-        if (didSave) {
-            
-            BOOL saveNotesOK = NO;
-            
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-                NSString *notesPath = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
-                BOOL fileExists = [fm fileExistsAtPath:notesPath];
-                
-                if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
-                    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
-                                                     defaultButton:NSLocalizedString(@"Save", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                                       otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
-                    
-                    saveNotesOK = NSAlertDefaultReturn == [alert runModal];
-                } else {
-                    saveNotesOK = YES;
-                }
-                
-                if (saveNotesOK) {
-                    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-                    if ([[self notes] count] == 0 || [self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
-                        if (fileExists)
-                            saveNotesOK = [fm removeItemAtPath:notesPath error:NULL];
-                        if ([[self notes] count]) {
-                            if (saveNotesOK)
-                                saveNotesOK = [fm moveItemAtPath:tmpPath toPath:notesPath error:NULL];
-                            else
-                                [fm removeItemAtPath:tmpPath error:NULL];
-                        }
-                    }
-                }
-                
-            }
-            
-            FSRef fileRef;
-            FSCatalogInfo catalogInfo;
-            FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
-            
-            if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
-                noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
-                
-                FSCatalogInfo tmpCatalogInfo = catalogInfo;
-                if ((catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
-                    tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-                    whichInfo |= kFSCatInfoNodeFlags;
-                }
-                if ((PERMISSIONS_MODE(catalogInfo) & 0x80) == 0) {
-                    PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
-                    whichInfo |= kFSCatInfoPermissions;
-                }
-                if (whichInfo != kFSCatInfoNone)
-                    (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
-            }
-            
-            if (NO == [[NSFileManager defaultManager] writeSkimNotes:[[self notes] valueForKey:@"SkimNoteProperties"] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
-                NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
-                                                  NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
-                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog"), nil]
-                                                 defaultButton:NSLocalizedString(@"OK", @"Button title")
-                                               alternateButton:nil
-                                                   otherButton:nil
-                                     informativeTextWithFormat:[NSString stringWithFormat:message, [[absoluteURL path] lastPathComponent]]];
-                [alert runModal];
-            }
-            
-            NSDictionary *options = [[self mainWindowController] presentationOptions];
-            [[SKNExtendedAttributeManager sharedManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
-            if (options)
-                [[SKNExtendedAttributeManager sharedManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
-            
-            if (whichInfo != kFSCatInfoNone)
-                (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
-            
-            [[NSDistributedNotificationCenter defaultCenter]
-                postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
-        }
-        
+        if (didSave)
+            [self saveNotesToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation];
     } else if (SKIsPDFBundleDocumentType(typeName)) {
-        
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSString *path = [absoluteURL path];
         NSString *tmpPath = [info objectForKey:@"tmpPath"];
-        
         if (tmpPath) {
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSString *path = [absoluteURL path];
             for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
                 [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
             [fm removeItemAtPath:tmpPath error:NULL];
         }
-        
-        if (didSave)
-            [[NSDistributedNotificationCenter defaultCenter]
-                postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
-        
     }
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
@@ -461,6 +446,9 @@ static char SKMainDocumentDefaultsObservationContext;
         [self checkFileUpdatesIfNeeded];
         docFlags.isSaving = NO;
     }
+    
+    if (didSave && [[self class] isNativeType:typeName])
+        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     
     NSInvocation *invocation = [info objectForKey:@"callback"];
     if (invocation) {
@@ -480,14 +468,9 @@ static char SKMainDocumentDefaultsObservationContext;
     }
     
     NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, @"URL", typeName, @"type", [NSNumber numberWithInt:saveOperation], @"saveOperation", nil];
-    NSInvocation *invocation = nil;
     if (delegate && didSaveSelector) {
-        NSMethodSignature *ms = [delegate methodSignatureForSelector:didSaveSelector];
-        invocation = [NSInvocation invocationWithMethodSignature:ms];
-        [invocation setTarget:delegate];
-        [invocation setSelector:didSaveSelector];
+        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
-        [invocation retainArguments];
         [info setObject:invocation forKey:@"callback"];
     }
     
