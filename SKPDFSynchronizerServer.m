@@ -399,7 +399,7 @@ struct SKServerFlags {
                 NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
                 NSArray *lineSortDescriptors = [NSArray arrayWithObjects:lineSortDescriptor, nil];
                 
-                for (array in lines)
+                for (array in [lines objectEnumerator])
                     [array sortUsingDescriptors:lineSortDescriptors];
                 [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                                        withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
