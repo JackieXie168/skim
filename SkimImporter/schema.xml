@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<schema version="1.0" xmlns="http://www.apple.com/metadata"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://www.apple.com/metadata file:///System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Resources/MetadataSchema.xsd">
+    <note>
+        Custom attributes that this metadata importer supports.  Below
+	is an example of a multivalued string attribute.  Other types
+	are CFNumber, CFDate, CFBoolean and CFData.		      
+    </note>
+    <attributes>
+        <attribute name="net_sourceforge_skim_app_dimensions" multivalued="false" type="CFString"/>
+    </attributes>
+
+    <types>
+        <type name="net.sourceforge.skim-app.pdfd">
+            <note>
+		The keys that this metadata importer handles.
+            </note>
+            <allattrs>
+                net_sourceforge_skim_app_dimensions
+            </allattrs>
+            <displayattrs>
+                kMDItemTitle
+                kMDItemAuthors
+                kMDItemCreator
+                kMDItemNumberOfPages
+                net_sourceforge_skim_app_dimensions
+                kMDItemVersion
+                kMDItemCreator
+                kMDItemEncodingApplications
+                kMDItemSecurityMethod
+                kMDItemKeywords
+            </displayattrs>
+        </type>
+        <type name="net.sourceforge.skim-app.skimnotes">
+            <note>
+		The keys that this metadata importer handles.
+            </note>
+            <allattrs>
+            </allattrs>
+            <displayattrs>
+                kMDItemWhereFroms
+            </displayattrs>
+        </type>
+    </types>
+</schema>
+
