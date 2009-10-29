@@ -482,6 +482,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     [outlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
+    [[self window] recalculateKeyViewLoop];
+    [[self window] makeFirstResponder:pdfView];
+    
     // This update toolbar item and other states
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
