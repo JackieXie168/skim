@@ -246,7 +246,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         
         NSPoint point;
         NSUInteger i;
-        CGFloat minX = CGFLOAT_MAX, maxX = CGFLOAT_MIN, minY = CGFLOAT_MAX, maxY = CGFLOAT_MIN;
+        CGFloat minX = CGFLOAT_MAX, maxX = -CGFLOAT_MAX, minY = CGFLOAT_MAX, maxY = -CGFLOAT_MAX;
         for (i = 0; i < 4; i++) {
             point = [values[i] pointValue];
             minX = SKMin(minX, point.x);
