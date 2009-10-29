@@ -127,7 +127,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 
 - (id)init {
     if (self = [super init]) {
-        [self setAutosavingDelay:[[NSUserDefaults standardUserDefaults] integerForKey:SKAutosaveIntervalKey]];
+        [self setAutosavingDelay:[[NSUserDefaults standardUserDefaults] doubleForKey:SKAutosaveIntervalKey]];
     }
     return self;
 }
