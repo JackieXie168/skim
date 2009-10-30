@@ -435,19 +435,25 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
             } else if (type == SKCollectionTemplateTagType) {
                 
-                if ([keyValue respondsToSelector:@selector(objectEnumerator)]) {
-                    NSEnumerator *itemE = [keyValue objectEnumerator];
-                    id nextItem, item = [itemE nextObject];
-                    NSArray *itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
+                if ([keyValue conformsToProtocol:@protocol(NSFastEnumeration)]) {
+                    NSArray *itemTemplate = nil;
                     NSInteger idx = 0;
-                    while (item) {
-                        nextItem = [itemE nextObject];
-                        if (nextItem == nil)
-                            itemTemplate = [tag itemTemplate];
-                        keyValue = [self stringFromTemplateArray:itemTemplate usingObject:item atIndex:++idx];
+                    id prevItem = nil;
+                    for (id item in keyValue) {
+                        if (prevItem) {
+                            if (itemTemplate == nil)
+                                itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
+                            keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                            if (keyValue != nil)
+                                [result appendString:keyValue];
+                        }
+                        prevItem = item;
+                    }
+                    if (prevItem) {
+                        itemTemplate = [tag itemTemplate];
+                        keyValue = [self stringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
                         if (keyValue != nil)
                             [result appendString:keyValue];
-                        item = nextItem;
                     }
                 }
                 
@@ -687,19 +693,25 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
             } else if (type == SKCollectionTemplateTagType) {
                 
-                if ([keyValue respondsToSelector:@selector(objectEnumerator)]) {
-                    NSEnumerator *itemE = [keyValue objectEnumerator];
-                    id nextItem, item = [itemE nextObject];
-                    NSArray *itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
+                if ([keyValue conformsToProtocol:@protocol(NSFastEnumeration)]) {
+                    NSArray *itemTemplate = nil;
                     NSInteger idx = 0;
-                    while (item) {
-                        nextItem = [itemE nextObject];
-                        if (nextItem == nil)
-                            itemTemplate = [tag itemTemplate];
-                        tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:item atIndex:++idx];
+                    id prevItem = nil;
+                    for (id item in keyValue) {
+                        if (prevItem) {
+                            if (itemTemplate == nil)
+                                itemTemplate = [[tag itemTemplate] arrayByAddingObjectsFromArray:[tag separatorTemplate]];
+                            tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
+                            if (tmpAttrStr != nil)
+                                [result appendAttributedString:tmpAttrStr];
+                        }
+                        prevItem = item;
+                    }
+                    if (prevItem) {
+                        itemTemplate = [tag itemTemplate];
+                        tmpAttrStr = [self attributedStringFromTemplateArray:itemTemplate usingObject:prevItem atIndex:++idx];
                         if (tmpAttrStr != nil)
                             [result appendAttributedString:tmpAttrStr];
-                        item = nextItem;
                     }
                 }
                 
