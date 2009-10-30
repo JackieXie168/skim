@@ -89,6 +89,7 @@
 		progressIndicator = nil;
         leftTrackingRectTag = 0;
         rightTrackingRectTag = 0;
+        drawsGradient = YES;
     }
     return self;
 }
@@ -100,7 +101,7 @@
 	[super dealloc];
 }
 
-- (BOOL)isOpaque{  return YES; }
+- (BOOL)isOpaque{  return drawsGradient; }
 
 - (BOOL)isFlipped { return NO; }
 
@@ -124,9 +125,11 @@
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] lowerColor] endingColor:[[self class] upperColor]] autorelease];
     
-    [gradient drawInRect:bounds angle:90.0];
+    if (drawsGradient) {
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] lowerColor] endingColor:[[self class] upperColor]] autorelease];
+        [gradient drawInRect:bounds angle:90.0];
+    }
     
     NSRect textRect, iconRect, ignored;
     CGFloat rightMargin = RIGHT_MARGIN;
@@ -160,6 +163,14 @@
 
 - (BOOL)isVisible {
 	return [self superview] && [self isHidden] == NO;
+}
+
+- (BOOL)drawsGradient {
+    return drawsGradient;
+}
+
+- (void)setDrawsGradient:(BOOL)newDrawsGradient {
+    drawsGradient = newDrawsGradient;
 }
 
 - (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset {

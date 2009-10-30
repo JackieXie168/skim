@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10B504</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.InterfaceBuilderVersion">740</string>
 		<string key="IBDocument.AppKitVersion">1038.2</string>
 		<string key="IBDocument.HIToolboxVersion">437.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">740</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -67,7 +67,7 @@
 										<object class="NSTableView" id="1004335941">
 											<reference key="NSNextResponder" ref="236095235"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrameSize">{360, 283}</string>
+											<string key="NSFrameSize">{360, 284}</string>
 											<reference key="NSSuperview" ref="236095235"/>
 											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
@@ -252,7 +252,7 @@
 											<int key="NSTableViewDraggingDestinationStyle">1</int>
 										</object>
 									</object>
-									<string key="NSFrame">{{1, 1}, {360, 283}}</string>
+									<string key="NSFrameSize">{360, 284}</string>
 									<reference key="NSSuperview" ref="724888155"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="1004335941"/>
@@ -290,11 +290,11 @@
 									<double key="NSPercent">0.96875</double>
 								</object>
 							</object>
-							<string key="NSFrame">{{-1, 32}, {362, 285}}</string>
+							<string key="NSFrame">{{0, 32}, {360, 284}}</string>
 							<reference key="NSSuperview" ref="790599253"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="236095235"/>
-							<int key="NSsFlags">530</int>
+							<int key="NSsFlags">528</int>
 							<reference key="NSVScroller" ref="572715788"/>
 							<reference key="NSHScroller" ref="597204701"/>
 							<reference key="NSContentView" ref="236095235"/>
@@ -364,7 +364,7 @@
 							<string key="NSFrameSize">{360, 32}</string>
 							<reference key="NSSuperview" ref="790599253"/>
 							<reference key="NSWindow"/>
-							<string key="NSClassName">BDSKGradientView</string>
+							<string key="NSClassName">NSView</string>
 							<string key="NSExtension">NSView</string>
 						</object>
 					</object>
@@ -1236,22 +1236,6 @@
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKGradientView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKGradientView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKGradientView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
 					<string key="superclassName">NSObject</string>
