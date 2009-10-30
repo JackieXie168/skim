@@ -51,6 +51,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKAnnotationTypeImageCell.h"
 #import "NSString_SKExtensions.h"
+#import "BDSKEdgeView.h"
 
 #define EM_DASH_CHARACTER 0x2014
 
@@ -132,11 +133,22 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)windowDidLoad {
-    [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
+    [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
+    [[self window] setContentBorderThickness:22.0 forEdge:NSMinYEdge];
+    
+    [statusBar setDrawsGradient:NO];
+    
     if ([self isNoteType]) {
+        NSScrollView *scrollView = [[[textView enclosingScrollView] retain] autorelease];
+        BDSKEdgeView *edgeView = [[[BDSKEdgeView alloc] initWithFrame:[scrollView frame]] autorelease];
+        [edgeView setEdges:BDSKMaxYEdgeMask];
+        [edgeView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [[scrollView superview] addSubview:edgeView];
+        [edgeView setContentView:scrollView];
+        
         if ([[textView string] length] == 0) {
             NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey];
             CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey];
@@ -162,7 +174,6 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
             }
         }
         
-        frame.size.height += 1.0;
         [[textView enclosingScrollView] setFrame:frame];
         [textView unbind:@"attributedString"];
         [textView setRichText:NO];
