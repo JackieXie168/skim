@@ -89,6 +89,9 @@ static char SKDownloadPropertiesObservationContext;
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     
+    [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
+    [[self window] setContentBorderThickness:32.0 forEdge:NSMinYEdge];
+    
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
