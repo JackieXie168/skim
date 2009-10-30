@@ -844,7 +844,7 @@
         [statusBar setRightAction:@selector(statusBarClicked:)];
         [statusBar setRightTarget:self];
     }
-    [statusBar toggleBelowView:splitView offset:1.0];
+    [statusBar toggleBelowView:[splitView superview]];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
 }
 

@@ -53,18 +53,11 @@ typedef NSInteger SKProgressIndicatorStyle;
 	NSProgressIndicator *progressIndicator;
     NSTrackingRectTag leftTrackingRectTag;
     NSTrackingRectTag rightTrackingRectTag;
-    BOOL drawsGradient;
 }
 
-+ (NSColor *)lowerColor;
-+ (NSColor *)upperColor;
-
-- (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset;
+- (void)toggleBelowView:(NSView *)view;
 
 - (BOOL)isVisible;
-
-- (BOOL)drawsGradient;
-- (void)setDrawsGradient:(BOOL)newDrawsGradient;
 
 - (NSString *)leftStringValue;
 - (void)setLeftStringValue:(NSString *)aString;

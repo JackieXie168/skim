@@ -388,7 +388,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
-    [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+    [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
     if ([sud boolForKey:SKShowStatusBarKey])
         [self toggleStatusBar:nil];

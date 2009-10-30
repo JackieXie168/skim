@@ -165,7 +165,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [self setWindowFrameAutosaveName:SKBookmarksWindowFrameAutosaveName];
     
     [statusBar retain];
-    [statusBar setDrawsGradient:NO];
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowBookmarkStatusBarKey] == NO)
         [self toggleStatusBar:nil];
@@ -443,8 +442,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
-    [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:0.0];
-    [[self window] setContentBorderThickness:[statusBar isVisible] ? 22.0 : 0.0 forEdge:NSMinYEdge];
+    [statusBar toggleBelowView:[outlineView enclosingScrollView]];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowBookmarkStatusBarKey];
 }
 

@@ -115,7 +115,8 @@
     
     [aController setWindowFrameAutosaveNameOrCascade:SKNotesDocumentWindowFrameAutosaveName];
     
-    [statusBar retain];
+    [[aController window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
         [self toggleStatusBar:nil];
     
@@ -336,7 +337,7 @@
         statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([[outlineView enclosingScrollView] frame]), 22.0)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
     }
-    [statusBar toggleBelowView:[outlineView enclosingScrollView] offset:1.0];
+    [statusBar toggleBelowView:[outlineView enclosingScrollView]];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowNotesStatusBarKey];
 }
 

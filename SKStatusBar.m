@@ -58,20 +58,6 @@
 
 @implementation SKStatusBar
 
-+ (NSColor *)lowerColor{
-    static NSColor *lowerColor = nil;
-    if (lowerColor == nil)
-        lowerColor = [[NSColor colorWithCalibratedWhite:0.75 alpha:1.0] retain];
-    return lowerColor;
-}
-
-+ (NSColor *)upperColor{
-    static NSColor *upperColor = nil;
-    if (upperColor == nil)
-        upperColor = [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] retain];
-    return upperColor;
-}
-
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -89,7 +75,6 @@
 		progressIndicator = nil;
         leftTrackingRectTag = 0;
         rightTrackingRectTag = 0;
-        drawsGradient = YES;
     }
     return self;
 }
@@ -100,10 +85,6 @@
 	[iconCell release];
 	[super dealloc];
 }
-
-- (BOOL)isOpaque{  return drawsGradient; }
-
-- (BOOL)isFlipped { return NO; }
 
 - (void)getLeftFrame:(NSRectPointer)leftFrame rightFrame:(NSRectPointer)rightFrame {
     CGFloat leftWidth = [[leftCell stringValue] length] ? [leftCell cellSize].width : 0.0;
@@ -125,12 +106,6 @@
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    
-    if (drawsGradient) {
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] lowerColor] endingColor:[[self class] upperColor]] autorelease];
-        [gradient drawInRect:bounds angle:90.0];
-    }
-    
     NSRect textRect, iconRect, ignored;
     CGFloat rightMargin = RIGHT_MARGIN;
     CGFloat iconHeight = NSHeight(bounds) - ICON_HEIGHT_OFFSET;
@@ -165,34 +140,28 @@
 	return [self superview] && [self isHidden] == NO;
 }
 
-- (BOOL)drawsGradient {
-    return drawsGradient;
-}
-
-- (void)setDrawsGradient:(BOOL)newDrawsGradient {
-    drawsGradient = newDrawsGradient;
-}
-
-- (void)toggleBelowView:(NSView *)view offset:(CGFloat)offset {
+- (void)toggleBelowView:(NSView *)view {
 	NSRect viewFrame = [view frame];
 	NSView *contentView = [view superview];
 	NSRect statusRect = [contentView bounds];
-	CGFloat shiftHeight = NSHeight([self frame]) + offset;
-	statusRect.size.height = NSHeight([self frame]);
+	CGFloat statusHeight = NSHeight([self frame]);
+	statusRect.size.height = statusHeight;
 	
 	if ([self superview]) {
-		viewFrame.size.height += shiftHeight;
+		viewFrame.size.height += statusHeight;
 		if ([contentView isFlipped] == NO)
-			viewFrame.origin.y -= shiftHeight;
+			viewFrame.origin.y -= statusHeight;
 		[self removeFromSuperview];
+        [[view window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
 	} else {
-		viewFrame.size.height -= shiftHeight;
+		viewFrame.size.height -= statusHeight;
 		if ([contentView isFlipped] == NO)
-			viewFrame.origin.y += shiftHeight;
+			viewFrame.origin.y += statusHeight;
 		else 
-			statusRect.origin.y = NSMaxY([contentView bounds]) - NSHeight(statusRect);
+			statusRect.origin.y = NSMaxY([contentView bounds]) - statusHeight;
 		[self setFrame:statusRect];
 		[contentView  addSubview:self positioned:NSWindowBelow relativeTo:nil];
+        [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
 	}
 	[view setFrame:viewFrame];
 	[contentView setNeedsDisplay:YES];
