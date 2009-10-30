@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10B504</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.InterfaceBuilderVersion">740</string>
 		<string key="IBDocument.AppKitVersion">1038.2</string>
 		<string key="IBDocument.HIToolboxVersion">437.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">740</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -271,7 +271,7 @@
 											<bool key="NSOutlineViewAutoresizesOutlineColumnKey">NO</bool>
 										</object>
 									</object>
-									<string key="NSFrame">{{1, 17}, {480, 344}}</string>
+									<string key="NSFrame">{{0, 17}, {480, 344}}</string>
 									<reference key="NSSuperview" ref="49078310"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="977420889"/>
@@ -307,7 +307,7 @@
 										<bool key="EncodedWithXMLCoder">YES</bool>
 										<reference ref="343473479"/>
 									</object>
-									<string key="NSFrame">{{1, 0}, {480, 17}}</string>
+									<string key="NSFrameSize">{480, 17}</string>
 									<reference key="NSSuperview" ref="49078310"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="343473479"/>
@@ -317,11 +317,11 @@
 								</object>
 								<reference ref="401432550"/>
 							</object>
-							<string key="NSFrame">{{-1, -1}, {482, 362}}</string>
+							<string key="NSFrameSize">{480, 361}</string>
 							<reference key="NSSuperview" ref="651604019"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="57712247"/>
-							<int key="NSsFlags">530</int>
+							<int key="NSsFlags">528</int>
 							<reference key="NSVScroller" ref="581873432"/>
 							<reference key="NSHScroller" ref="886273936"/>
 							<reference key="NSContentView" ref="57712247"/>
