@@ -228,7 +228,7 @@
 								<object class="NSButton" id="767326501">
 									<reference key="NSNextResponder" ref="728425878"/>
 									<int key="NSvFlags">289</int>
-									<string key="NSFrame">{{217, 3}, {114, 18}}</string>
+									<string key="NSFrame">{{214, 3}, {114, 18}}</string>
 									<reference key="NSSuperview" ref="728425878"/>
 									<reference key="NSWindow"/>
 									<bool key="NSEnabled">YES</bool>
@@ -1157,6 +1157,7 @@
 					<string>112.ImportedFromIB2</string>
 					<string>113.IBPluginDependency</string>
 					<string>113.ImportedFromIB2</string>
+					<string>114.IBEditorWindowLastContentRect</string>
 					<string>114.IBPluginDependency</string>
 					<string>114.ImportedFromIB2</string>
 					<string>115.IBPluginDependency</string>
@@ -1226,6 +1227,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
+					<string>{{0, 707}, {119, 83}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
