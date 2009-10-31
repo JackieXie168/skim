@@ -851,12 +851,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return NO;
 }
 
-- (void)outlineViewInsertNewline:(NSOutlineView *)ov {
-    if ([ov isEqual:noteOutlineView]) {
-        [self selectSelectedNote:ov];
-    }
-}
-
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
     if ([ov isEqual:outlineView]) {
         NSMutableArray *array = [NSMutableArray array];
