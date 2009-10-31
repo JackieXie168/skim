@@ -139,6 +139,8 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     [[self window] setContentBorderThickness:22.0 forEdge:NSMinYEdge];
     
+    [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
+    
     if ([self isNoteType]) {
         NSScrollView *scrollView = [[[textView enclosingScrollView] retain] autorelease];
         BDSKEdgeView *edgeView = [[[BDSKEdgeView alloc] initWithFrame:[scrollView frame]] autorelease];
