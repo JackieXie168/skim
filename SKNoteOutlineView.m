@@ -115,16 +115,11 @@
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     
-    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifiers == 0) {
-        if ([[self delegate] respondsToSelector:@selector(outlineViewInsertNewline:)])
-            [[self delegate] outlineViewInsertNewline:self];
-        else NSBeep();
-    } else {
-        [super keyDown:theEvent];
-        if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
-            [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
-            [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
-        }
+    [super keyDown:theEvent];
+    
+    if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
+        [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
+        [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
     }
 }
 

@@ -112,7 +112,10 @@ static char SKTableViewDefaultsObservationContext;
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
+	if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifierFlags == 0) {
+        if ([self doubleAction] == NULL || [self sendAction:[self doubleAction] to:[self target]] == NO)
+            NSBeep();
+    } else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
