@@ -987,11 +987,11 @@ enum {
                    (modifiers == 0)) {
             [self editActiveAnnotation:self];
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
-                   (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
-            [self selectNextActiveAnnotation:self];
-        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
                    (eventChar == SKEscapeCharacter) && (modifiers == NSAlternateKeyMask)) {
             [self setActiveAnnotation:nil];
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
+                   (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
+            [self selectNextActiveAnnotation:self];
         // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
                    (((eventChar == NSBackTabCharacter) && ((modifiers & ~NSShiftKeyMask) == NSAlternateKeyMask)) || 
@@ -1046,7 +1046,6 @@ enum {
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
-        return;
     } else if (interactionMode == SKPresentationMode) {
         if (hideNotes == NO && ([theEvent subtype] == NSTabletProximityEventSubtype || [theEvent subtype] == NSTabletPointEventSubtype)) {
             [self doDrawFreehandNoteWithEvent:theEvent];
@@ -1061,10 +1060,7 @@ enum {
                     break;
             }
         }
-        return;
-    }
-    
-    if (modifiers & NSCommandKeyMask) {
+    } else if (modifiers & NSCommandKeyMask) {
         if (modifiers & NSShiftKeyMask)
             [self doPdfsyncWithEvent:theEvent];
         else
