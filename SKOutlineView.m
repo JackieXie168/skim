@@ -127,7 +127,10 @@ static char SKOutlineViewDefaultsObservationContext;
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
     
-    if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
+    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifierFlags == 0) {
+        if ([self doubleAction] == NULL || [self sendAction:[self doubleAction] to:[self target]] == NO)
+            NSBeep();
+    } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToEndOfDocument:nil];
