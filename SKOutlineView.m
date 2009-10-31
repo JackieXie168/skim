@@ -43,6 +43,8 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 
+#define SPACE_CHARACTER 0x20
+
 static char SKOutlineViewDefaultsObservationContext;
 
 
@@ -130,6 +132,10 @@ static char SKOutlineViewDefaultsObservationContext;
     if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifierFlags == 0) {
         if ([self doubleAction] == NULL || [self sendAction:[self doubleAction] to:[self target]] == NO)
             NSBeep();
+    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
+        [[self enclosingScrollView] pageDown:nil];
+    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
+        [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
