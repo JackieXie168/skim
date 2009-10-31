@@ -43,6 +43,8 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 
+#define SPACE_CHARACTER 0x20
+
 static char SKTableViewDefaultsObservationContext;
 
 
@@ -117,6 +119,10 @@ static char SKTableViewDefaultsObservationContext;
             NSBeep();
     } else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
+    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == 0) {
+        [[self enclosingScrollView] pageDown:nil];
+    } else if ((eventChar == SPACE_CHARACTER) && modifierFlags == NSShiftKeyMask) {
+        [[self enclosingScrollView] pageUp:nil];
     } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
     } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
