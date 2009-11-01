@@ -214,7 +214,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     
     CGFloat                         lastLeftSidePaneWidth;
     CGFloat                         lastRightSidePaneWidth;
-    CGFloat                         lastSecondaryPdfViewPaneHeight;
     
     CGFloat                         thumbnailCacheSize;
     CGFloat                         snapshotCacheSize;

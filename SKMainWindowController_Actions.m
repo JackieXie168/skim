@@ -1097,11 +1097,9 @@
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastRightSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
-            position -= lastRightSidePaneWidth;
+            position -= lastRightSidePaneWidth + [splitView dividerThickness];
         }
         [splitView setPosition:position ofDividerAtIndex:1];
-        
-        [self splitViewDidResizeSubviews:nil];
     }
     if ([currentRightSideView isEqual:noteView])
         [noteOutlineView sizeToFit];
