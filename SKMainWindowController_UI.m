@@ -1177,6 +1177,10 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (BOOL)splitView:(NSSplitView *)sender shouldCollapseSubview:(NSView *)subview forDoubleClickOnDividerAtIndex:(NSInteger)dividerIndex {
     if ([sender isEqual:splitView]) {
+        if (dividerIndex == 0)
+            lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
+        else
+            lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
         return [subview isEqual:centerContentView] == NO;
     } else if ([sender isEqual:pdfSplitView]) {
         return [subview isEqual:secondaryPdfContentView];
@@ -1189,26 +1193,14 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex {
-    if ([sender isEqual:splitView]) {
-        if (dividerIndex == 1)
-            return proposedMax - 100;
-        else
-            return proposedMax;
-    } else if ([sender isEqual:pdfSplitView]) {
-        return proposedMax;
-    }
+    if ([sender isEqual:splitView] && dividerIndex == 1)
+        return proposedMax - [splitView dividerThickness] - 100.0;
     return proposedMax;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
-    if ([sender isEqual:splitView]) {
-        if (dividerIndex == 0)
-            return proposedMin + 100;
-        else
-            return proposedMin;
-    } else if ([sender isEqual:pdfSplitView]) {
-        return proposedMin;
-    }
+    if ([sender isEqual:splitView] && dividerIndex == 0)
+        return proposedMin + 100.0;
     return proposedMin;
 }
 

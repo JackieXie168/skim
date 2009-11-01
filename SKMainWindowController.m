@@ -508,7 +508,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
     if (mwcFlags.usesDrawers == 0) {
         [splitView setPosition:leftSideWidth ofDividerAtIndex:0];
-        [splitView setPosition:[splitView maxPossiblePositionOfDividerAtIndex:1] - rightSideWidth ofDividerAtIndex:1];
+        [splitView setPosition:[splitView maxPossiblePositionOfDividerAtIndex:1] - [splitView dividerThickness] - rightSideWidth ofDividerAtIndex:1];
     } else {
         if (leftSideWidth > 0.0) {
             [leftSideDrawer setContentSize:NSMakeSize(leftSideWidth, NSHeight([leftSideContentView frame]))];
