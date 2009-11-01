@@ -38,140 +38,38 @@
 
 #import "SKSplitView.h"
 
-#define END_JOIN_WIDTH 3.0f
 
 @implementation SKSplitView
 
-+ (NSColor *)startColor{
-    static NSColor *startColor = nil;
-    if (startColor == nil)
-        startColor = [[NSColor colorWithCalibratedWhite:0.95 alpha:1.0] retain];
-    return startColor;
-}
-
-+ (NSColor *)endColor{
-    static NSColor *endColor = nil;
-    if (endColor == nil)
-        endColor = [[NSColor colorWithCalibratedWhite:0.85 alpha:1.0] retain];
-   return endColor;
-}
-
-- (id)initWithFrame:(NSRect)frameRect{
-    if (self = [super initWithFrame:frameRect]) {
-        blendEnds = NO;
-    }
-    return self;
-}
-
 - (id)initWithCoder:(NSCoder *)coder{
     if (self = [super initWithCoder:coder]) {
-        blendEnds = NO;
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5 && [self dividerStyle] == NSSplitViewDividerStyleThick)
+            [self setDividerStyle:3]; // NSSplitViewDividerStylePaneSplitter
     }
     return self;
-}
-
-- (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] > 1 && [[self delegate] respondsToSelector:@selector(splitView:doubleClickedDividerAt:)]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSArray *subviews = [self subviews];
-        NSInteger i, count = [subviews count];
-        id view;
-        NSRect divRect;
-
-        for (i = 0; i < (count-1); i++) {
-            view = [subviews objectAtIndex:i];
-            divRect = [view frame];
-            if ([self isVertical]) {
-                divRect.origin.x = NSMaxX (divRect);
-                divRect.size.width = [self dividerThickness];
-            } else {
-                divRect.origin.y = NSMaxY (divRect);
-                divRect.size.height = [self dividerThickness];
-            }
-            
-            if (NSMouseInRect(mouseLoc, divRect, [self isFlipped])) {
-                [[self delegate] splitView:self doubleClickedDividerAt:i];
-                return;
-            }
-        }
-    }
-    [super mouseDown:theEvent];
 }
 
 - (void)drawDividerInRect:(NSRect)aRect {
-    NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] startColor] endingColor:[[self class] endColor]] autorelease];
-    [gradient drawInRect:aRect angle:[self isVertical] ? 0.0 : 90.0];
-
-    if (blendEnds) {
-        NSRect endRect, ignored;
+	if ([self dividerStyle] == NSSplitViewDividerStyleThick) {
+        NSRect topRect, bottomRect, innerRect;
+        NSDivideRect(aRect, &topRect, &innerRect, 1.0, NSMaxYEdge);
+        NSDivideRect(innerRect, &bottomRect, &innerRect, 1.0, NSMinYEdge);
         
-        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMinYEdge : NSMinXEdge);
-        gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] endColor] endingColor:[[[self class] endColor] colorWithAlphaComponent:0.0]] autorelease];
-        [gradient drawInRect:endRect angle:[self isVertical] ? 90.0 : 0.0];
-        NSDivideRect(aRect, &endRect, &ignored, END_JOIN_WIDTH, [self isVertical] ? NSMaxYEdge : NSMaxXEdge);
-        gradient = [[[NSGradient alloc] initWithStartingColor:[[self class] startColor] endingColor:[[[self class] startColor] colorWithAlphaComponent:0.0]] autorelease];
-        [gradient drawInRect:endRect angle:[self isVertical] ? 270.0 : 180.0];
+        [NSGraphicsContext saveGraphicsState];
+        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.98 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.91 alpha:1.0]] autorelease];
+        [gradient drawInRect:innerRect angle:90.0];
+        [[NSColor colorWithDeviceWhite:0.69 alpha:1.0] setFill];
+        NSRectFill(topRect);
+        NSRectFill(bottomRect);
+        [NSGraphicsContext restoreGraphicsState];
     }
-    
-    [NSGraphicsContext saveGraphicsState];
-    
-    // Draw the handle
-    NSPoint startPoint, endPoint;
-    CGFloat handleSize = 20.0;
-    NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-    
-    [shade setShadowBlurRadius:0.0];
-    [shade setShadowColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]];
-    [NSBezierPath setDefaultLineWidth:1.0];
-    if ([self isVertical]) {
-        handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSHeight(aRect)));
-        startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
-        endPoint = NSMakePoint(startPoint.x, startPoint.y + handleSize);
-        [shade setShadowOffset:NSMakeSize(1.0, 0.0)];
-        [shade set];
-        [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        startPoint.x += 2.0;
-        endPoint.x += 2.0;
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-    } else {
-        handleSize = SKMin(handleSize, 2.0 * SKFloor(0.5 * NSWidth(aRect)));
-        startPoint = NSMakePoint(NSMidX(aRect) - 0.5 * handleSize, NSMinY(aRect) + 1.5);
-        endPoint = NSMakePoint(startPoint.x + handleSize, startPoint.y);
-        [shade setShadowOffset:NSMakeSize(0.0, -1.0)];
-        [shade set];
-        [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] set];
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        startPoint.y += 2.0;
-        endPoint.y += 2.0;
-        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-    }
-    
-    [NSGraphicsContext restoreGraphicsState];
+    [super drawDividerInRect:aRect];
 }
 
 - (CGFloat)dividerThickness {
-	return 6.0;
+	if ([self dividerStyle] == NSSplitViewDividerStyleThick)
+        return 10.0;
+    return [super dividerThickness];
 }
-
-- (BOOL)blendEnds {
-    return blendEnds;
-}
-
-- (void)setBlendEnds:(BOOL)flag {
-    if (blendEnds != flag) {
-        blendEnds = flag;
-    }
-}
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
-- (id <SKSplitViewDelegate>)delegate {
-    return (id <SKSplitViewDelegate>)[super delegate];
-}
-
-- (void)setDelegate:(id <SKSplitViewDelegate>)newDelegate {
-    [super setDelegate:newDelegate];
-}
-#endif
 
 @end

@@ -844,7 +844,7 @@
         [statusBar setRightAction:@selector(statusBarClicked:)];
         [statusBar setRightTarget:self];
     }
-    [statusBar toggleBelowView:[splitView superview]];
+    [statusBar toggleBelowView:splitView];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
 }
 
@@ -1048,28 +1048,17 @@
             [leftSideDrawer openOnEdge:NSMinXEdge];
         }
     } else {
-        NSRect sideFrame = [leftSideContentView frame];
-        NSRect pdfFrame = [pdfContentView frame];
-        
+        CGFloat position = 0.0;
         if ([self leftSidePaneIsOpen]) {
-            if (mwcFlags.leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
-                [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
-            lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
-            pdfFrame.size.width += lastLeftSidePaneWidth;
-            sideFrame.size.width = 0.0;
+            lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
         } else {
             if(lastLeftSidePaneWidth <= 0.0)
                 lastLeftSidePaneWidth = 250.0; // a reasonable value to start
-            if (lastLeftSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-                lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth(pdfFrame));
-            pdfFrame.size.width -= lastLeftSidePaneWidth;
-            sideFrame.size.width = lastLeftSidePaneWidth;
+            if (lastLeftSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
+                lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
+            position = lastLeftSidePaneWidth;
         }
-        pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
-        [leftSideContentView setFrame:sideFrame];
-        [pdfContentView setFrame:pdfFrame];
-        [splitView setNeedsDisplay:YES];
-        [[self window] invalidateCursorRectsForView:splitView];
+        [splitView setPosition:position ofDividerAtIndex:0];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -1100,26 +1089,17 @@
         else
             [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
-        NSRect sideFrame = [rightSideContentView frame];
-        NSRect pdfFrame = [pdfContentView frame];
-        
+        CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
         if ([self rightSidePaneIsOpen]) {
-            lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
-            pdfFrame.size.width += lastRightSidePaneWidth;
-            sideFrame.size.width = 0.0;
+            lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
         } else {
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
-            if (lastRightSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-                lastRightSidePaneWidth = SKFloor(0.5 * NSWidth(pdfFrame));
-            pdfFrame.size.width -= lastRightSidePaneWidth;
-            sideFrame.size.width = lastRightSidePaneWidth;
+            if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
+                lastRightSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
+            position -= lastRightSidePaneWidth;
         }
-        sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
-        [rightSideContentView setFrame:sideFrame];
-        [pdfContentView setFrame:pdfFrame];
-        [splitView setNeedsDisplay:YES];
-        [[self window] invalidateCursorRectsForView:splitView];
+        [splitView setPosition:position ofDividerAtIndex:1];
         
         [self splitViewDidResizeSubviews:nil];
     }
@@ -1153,9 +1133,7 @@
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([secondaryPdfView window]) {
         
-        [secondaryPdfEdgeView removeFromSuperview];
-        if ([self isFullScreen])
-            [pdfEdgeView setEdges:BDSKNoEdgeMask];
+        [secondaryPdfContentView removeFromSuperview];
         
     } else {
         
@@ -1164,15 +1142,15 @@
         NSDivideRect(tmpFrame, &frame1, &frame2, SKRound(0.7 * NSHeight(tmpFrame)), NSMaxYEdge);
         NSDivideRect(frame2, &tmpFrame, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
         
-        [pdfEdgeView setFrame:frame1];
+        [pdfContentView setFrame:frame1];
         
         if (secondaryPdfView == nil) {
-            secondaryPdfEdgeView = [[BDSKEdgeView alloc] initWithFrame:frame2];
-            secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[[secondaryPdfEdgeView contentView] bounds]];
+            secondaryPdfContentView = [[NSView alloc] initWithFrame:frame2];
+            secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[secondaryPdfContentView bounds]];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-            [secondaryPdfEdgeView addSubview:secondaryPdfView];
+            [secondaryPdfContentView addSubview:secondaryPdfView];
             [secondaryPdfView release];
-            [pdfSplitView addSubview:secondaryPdfEdgeView];
+            [pdfSplitView addSubview:secondaryPdfContentView];
             // Because of a PDFView bug, display properties can not be changed before it is placed in a window
             [secondaryPdfView setSynchronizedPDFView:pdfView];
             [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
@@ -1182,15 +1160,8 @@
             [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];
         } else {
-            [secondaryPdfEdgeView setFrame:frame2];
-            [pdfSplitView addSubview:secondaryPdfEdgeView];
-        }
-        if ([self isFullScreen]) {
-            [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
-            [pdfEdgeView setEdges:BDSKMinYEdgeMask];
-        } else {
-            [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
-            [pdfEdgeView setEdges:BDSKEveryEdgeMask];
+            [secondaryPdfContentView setFrame:frame2];
+            [pdfSplitView addSubview:secondaryPdfContentView];
         }
         
         [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];

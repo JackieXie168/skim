@@ -275,7 +275,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [rightSideDrawer release];
     [pdfView release];
     [pdfSplitView release];
-    [secondaryPdfEdgeView release];
+    [secondaryPdfContentView release];
     [presentationNotesDocument release];
     [leftSideButton release];
     [findButton release];
@@ -296,12 +296,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
     
-    [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
-    [pdfSplitView setFrame:[pdfContentView bounds]];
-    [pdfContentView addSubview:pdfSplitView];
+    [pdfSplitView setFrame:[centerContentView bounds]];
+    [centerContentView addSubview:pdfSplitView];
     
     [leftSideButton retain];
     [findButton retain];
@@ -316,12 +315,16 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
     [leftSideContentView setAutoresizesSubviews:YES];
     [rightSideContentView setAutoresizesSubviews:YES];
+    [centerContentView setAutoresizesSubviews:YES];
     [pdfContentView setAutoresizesSubviews:YES];
-    [pdfEdgeView setAutoresizesSubviews:YES];
     
-    [leftSideView setFrame:[leftSideContentView bounds]];
+    NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
+    rect.size.height -= 1;
+    [leftSideView setFrame:rect];
     [leftSideContentView addSubview:leftSideView];
-    [rightSideView setFrame:[rightSideContentView bounds]];
+    NSInsetRect([rightSideContentView bounds], -1, -1);
+    [rightSideView setFrame:rect];
+    rect.size.height -= 1;
     [rightSideContentView addSubview:rightSideView];
     
     NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
@@ -352,7 +355,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [groupedFindTableView setDoubleAction:@selector(goToSelectedFindResults:)];
     [groupedFindTableView setTarget:self];
     
-    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
+    [pdfView setFrame:[pdfContentView bounds]];
     
     if (mwcFlags.usesDrawers) {
         leftSideDrawer = [[NSDrawer alloc] initWithContentSize:[leftSideContentView frame].size preferredEdge:NSMinXEdge];
@@ -367,9 +370,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [rightSideEdgeView setEdges:BDSKNoEdgeMask];
         [rightSideDrawer openOnEdge:NSMaxXEdge];
         [rightSideDrawer setDelegate:self];
-        [pdfContentView setFrame:[splitView bounds]];
-    } else {
-        [pdfSplitView setBlendEnds:YES];
+        [centerContentView setFrame:[splitView bounds]];
     }
     
     [outlineView setAutoresizesOutlineColumn: NO];
@@ -446,8 +447,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
     
     // Due to a bug in Leopard we should only resize and swap in the PDFView after loading the PDFDocument
-    [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-    [pdfEdgeView addSubview:pdfView];
+    [pdfView setFrame:[pdfContentView bounds]];
+    [pdfContentView addSubview:pdfView];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     
@@ -505,37 +506,22 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 }
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
-    NSRect frame;
-    if (leftSideWidth >= 0.0) {
-        frame = [leftSideContentView frame];
-        frame.size.width = leftSideWidth;
-        if (mwcFlags.usesDrawers == 0) {
-            [leftSideContentView setFrame:frame];
-        } else if (leftSideWidth > 0.0) {
-            [leftSideDrawer setContentSize:frame.size];
+    if (mwcFlags.usesDrawers == 0) {
+        [splitView setPosition:leftSideWidth ofDividerAtIndex:0];
+        [splitView setPosition:[splitView maxPossiblePositionOfDividerAtIndex:1] - rightSideWidth ofDividerAtIndex:1];
+    } else {
+        if (leftSideWidth > 0.0) {
+            [leftSideDrawer setContentSize:NSMakeSize(leftSideWidth, NSHeight([leftSideContentView frame]))];
             [leftSideDrawer openOnEdge:NSMinXEdge];
         } else {
             [leftSideDrawer close];
         }
-    }
-    if (rightSideWidth >= 0.0) {
-        frame = [rightSideContentView frame];
-        frame.size.width = rightSideWidth;
-        if (mwcFlags.usesDrawers == 0) {
-            frame.origin.x = NSMaxX([splitView bounds]) - rightSideWidth;
-            [rightSideContentView setFrame:frame];
-        } else if (rightSideWidth > 0.0) {
-            [rightSideDrawer setContentSize:frame.size];
+        if (rightSideWidth > 0.0) {
+            [rightSideDrawer setContentSize:NSMakeSize(leftSideWidth, NSHeight([rightSideContentView frame]))];
             [rightSideDrawer openOnEdge:NSMaxXEdge];
         } else {
             [rightSideDrawer close];
         }
-    }
-    if (mwcFlags.usesDrawers == 0) {
-        frame = [pdfContentView frame];
-        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentView frame]) - NSWidth([rightSideContentView frame]) - 2 * [splitView dividerThickness];
-        frame.origin.x = NSMaxX([leftSideContentView frame]) + [splitView dividerThickness];
-        [pdfContentView setFrame:frame];
     }
 }
 
@@ -993,7 +979,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else if (mwcFlags.usesDrawers)
         state = [leftSideDrawer state];
     else
-        state = NSWidth([leftSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = [splitView isSubviewCollapsed:leftSideContentView] == NO;//NSWidth([leftSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -1004,7 +990,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     else if (mwcFlags.usesDrawers)
         state = [rightSideDrawer state];
     else
-        state = NSWidth([rightSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
+        state = [splitView isSubviewCollapsed:rightSideContentView] == NO;//NSWidth([rightSideContentView frame]) > 0.0 ? NSDrawerOpenState : NSDrawerClosedState;
     return state == NSDrawerOpenState || state == NSDrawerOpeningState;
 }
 
@@ -1319,7 +1305,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideView])
             [leftSideWindow makeFirstResponder:nil];
-        [leftSideView setFrame:[leftSideContentView bounds]];
+        NSRect rect = NSInsetRect([leftSideContentView bounds], -1, -1);
+        rect.size.height -= 1;
+        [leftSideView setFrame:rect];
         [leftSideContentView addSubview:leftSideView];
         
         if (mwcFlags.usesDrawers == 0) {
@@ -1341,7 +1329,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideView])
             [rightSideWindow makeFirstResponder:nil];
-        [rightSideView setFrame:[rightSideContentView bounds]];
+        NSRect rect = NSInsetRect([rightSideContentView bounds], -1, -1);
+        rect.size.height -= 1;
+        [rightSideView setFrame:rect];
         [rightSideContentView addSubview:rightSideView];
         
         if (mwcFlags.usesDrawers == 0) {
@@ -1391,8 +1381,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [fullScreenWindow setMainView:pdfView];
     } else {
         [fullScreenWindow setMainView:pdfSplitView];
-        [pdfEdgeView setEdges:[secondaryPdfView window] ? BDSKMinYEdgeMask : BDSKNoEdgeMask];
-        [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
     }
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:[self isPresentation] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
@@ -1503,11 +1491,9 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     if ([self isPresentation]) {
         [self exitPresentationMode];
-        [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-        [pdfEdgeView addSubview:pdfView];
+        [pdfView setFrame:[pdfContentView bounds]];
+        [pdfContentView addSubview:pdfView];
         [fullScreenWindow setMainView:pdfSplitView];
-        [pdfEdgeView setEdges:[secondaryPdfView window] ? BDSKMinYEdgeMask : BDSKNoEdgeMask];
-        [secondaryPdfEdgeView setEdges:BDSKMaxYEdgeMask];
     } else {
         [self saveNormalSetup];
         [self goFullScreen];
@@ -1542,10 +1528,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         SetSystemUIMode(kUIModeNormal, kUIOptionDisableProcessSwitch);
     
     if (wasFullScreen) {
-        [pdfSplitView setFrame:[pdfContentView bounds]];
-        [pdfContentView addSubview:pdfSplitView];
-        [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-        [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+        [pdfSplitView setFrame:[centerContentView bounds]];
+        [centerContentView addSubview:pdfSplitView];
         [fullScreenWindow setMainView:pdfView];
         [self hideSideWindows];
     } else {
@@ -1575,13 +1559,11 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setInteractionMode:SKNormalMode screen:[[self window] screen]];
     // this should be done before exitPresentationMode to get a smooth transition
     if ([self isFullScreen]) {
-        [pdfSplitView setFrame:[pdfContentView bounds]];
-        [pdfContentView addSubview:pdfSplitView];
-        [pdfEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-        [secondaryPdfEdgeView setEdges:BDSKEveryEdgeMask];
+        [pdfSplitView setFrame:[centerContentView bounds]];
+        [centerContentView addSubview:pdfSplitView];
     } else {
-        [pdfView setFrame:[[pdfEdgeView contentView] bounds]];
-        [pdfEdgeView addSubview:pdfView]; 
+        [pdfView setFrame:[pdfContentView bounds]];
+        [pdfContentView addSubview:pdfView]; 
     }
     [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [secondaryPdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
