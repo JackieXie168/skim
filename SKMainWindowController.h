@@ -72,14 +72,14 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
-    IBOutlet SKSplitView            *splitView;
+    IBOutlet NSSplitView            *splitView;
     
-    IBOutlet NSView                 *pdfContentView;
+    IBOutlet NSView                 *centerContentView;
     IBOutlet SKSplitView            *pdfSplitView;
-    IBOutlet BDSKEdgeView           *pdfEdgeView;
+    IBOutlet NSView                 *pdfContentView;
     IBOutlet SKPDFView              *pdfView;
     
-    BDSKEdgeView                    *secondaryPdfEdgeView;
+    NSView                          *secondaryPdfContentView;
     SKSecondaryPDFView              *secondaryPdfView;
     
     IBOutlet NSView                 *leftSideContentView;
