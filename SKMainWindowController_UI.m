@@ -1164,7 +1164,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     mwcFlags.isEditingPDF = NO;
 }
 
-#pragma mark SKSplitView delegate protocol
+#pragma mark NSSplitView delegate protocol
 
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview {
     if ([sender isEqual:splitView]) {
