@@ -1059,8 +1059,6 @@
             position = lastLeftSidePaneWidth;
         }
         [splitView setPosition:position ofDividerAtIndex:0];
-        
-        [self splitViewDidResizeSubviews:nil];
     }
     if ([currentLeftSideView isEqual:thumbnailView])
         [thumbnailTableView sizeToFit];
