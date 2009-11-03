@@ -90,7 +90,7 @@ static char SKDownloadPropertiesObservationContext;
     [self setWindowFrameAutosaveName:SKDownloadsWindowFrameAutosaveName];
     
     [[self window] setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
-    [[self window] setContentBorderThickness:32.0 forEdge:NSMinYEdge];
+    [[self window] setContentBorderThickness:24.0 forEdge:NSMinYEdge];
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelper]];
     
