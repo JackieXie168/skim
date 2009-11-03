@@ -151,8 +151,8 @@
 		viewFrame.size.height += statusHeight;
 		if ([contentView isFlipped] == NO)
 			viewFrame.origin.y -= statusHeight;
-		[self removeFromSuperview];
         [[view window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+		[self removeFromSuperview];
 	} else {
 		viewFrame.size.height -= statusHeight;
 		if ([contentView isFlipped] == NO)
@@ -160,8 +160,8 @@
 		else 
 			statusRect.origin.y = NSMaxY([contentView bounds]) - statusHeight;
 		[self setFrame:statusRect];
-		[contentView  addSubview:self positioned:NSWindowBelow relativeTo:nil];
         [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
+		[contentView addSubview:self positioned:NSWindowBelow relativeTo:nil];
 	}
 	[view setFrame:viewFrame];
 	[contentView setNeedsDisplay:YES];
@@ -171,18 +171,24 @@
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
-    if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped])) {
+    if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped]) && [rightCell action]) {
         while ([theEvent type] != NSLeftMouseUp)
             theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped]))
-            [rightCell performClick:self];
-    } else if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped])) {
+        if (NSMouseInRect(mouseLoc, rightRect, [self isFlipped])) {
+            [rightCell setNextState];
+            [NSApp sendAction:[rightCell action] to:[rightCell target] from:self];
+        }
+    } else if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped]) && [leftCell action]) {
         while ([theEvent type] != NSLeftMouseUp)
             theEvent = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask];
         mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped]))
-            [leftCell performClick:self];
+        if (NSMouseInRect(mouseLoc, leftRect, [self isFlipped])) {
+            [leftCell setNextState];
+            [NSApp sendAction:[leftCell action] to:[leftCell target] from:self];
+        }
+    } else {
+        [super mouseDown:theEvent];
     }
 }
 

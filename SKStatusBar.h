@@ -46,7 +46,7 @@ enum {
 typedef NSInteger SKProgressIndicatorStyle;
 
 
-@interface SKStatusBar : NSControl {
+@interface SKStatusBar : NSView {
 	id leftCell;
 	id rightCell;
     id iconCell;
