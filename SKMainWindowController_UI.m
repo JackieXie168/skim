@@ -1194,7 +1194,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex {
     if ([sender isEqual:splitView] && dividerIndex == 1)
-        return proposedMax - [splitView dividerThickness] - 100.0;
+        return proposedMax - 100.0;
     return proposedMax;
 }
 
