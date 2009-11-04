@@ -56,6 +56,7 @@
 - (NSUInteger)pageIndex;
 - (NSString *)string;
 - (NSAttributedString *)text;
+- (NSColor *)color;
 
 - (id)page;
 

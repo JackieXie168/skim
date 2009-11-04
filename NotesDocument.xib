@@ -175,6 +175,7 @@
 													<reference key="NSTableView" ref="977420889"/>
 												</object>
 												<object class="NSTableColumn" id="34399184">
+													<string key="NSIdentifier">color</string>
 													<double key="NSWidth">16</double>
 													<double key="NSMinWidth">16</double>
 													<double key="NSMaxWidth">16</double>
@@ -1221,7 +1222,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKStatusBar</string>
-					<string key="superclassName">NSControl</string>
+					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -1257,7 +1258,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">SKStatusBar</string>
-					<string key="superclassName">NSControl</string>
+					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
