@@ -101,6 +101,10 @@
     return [properties valueForKey:SKNPDFAnnotationTextKey];
 }
 
+- (NSColor *)color {
+    return [properties valueForKey:SKNPDFAnnotationColorKey];
+}
+
 - (id)page {
     NSUInteger pageIndex = [self pageIndex];
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], @"pageIndex", [NSString stringWithFormat:@"%lu", (unsigned long)(pageIndex + 1)], @"label", nil];
