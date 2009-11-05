@@ -276,8 +276,6 @@ static char SKMainDocumentDefaultsObservationContext;
         [writableTypes removeObject:SKBareDVIDocumentType];
     }
     if (saveOperation == NSSaveToOperation) {
-        if ([[self pdfDocument] isEncrypted])
-            [writableTypes removeObject:SKEmbeddedPDFDocumentType];
         [writableTypes addObjectsFromArray:[[NSDocumentController sharedDocumentController] customExportTemplateFilesResetting]];
     }
     return writableTypes;
