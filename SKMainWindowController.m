@@ -1598,6 +1598,8 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
+    // the page number may have changed
+    [self synchronizeWindowTitleWithDocumentName];
     
     [blankingWindows makeObjectsPerformSelector:@selector(fadeOut)];
 }
