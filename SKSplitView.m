@@ -72,4 +72,10 @@
     return [super dividerThickness];
 }
 
+- (void)adjustSubviews {
+    [super adjustSubviews];
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_5)
+        [self resetCursorRects];
+}
+
 @end
