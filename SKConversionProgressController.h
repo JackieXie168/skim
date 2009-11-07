@@ -42,24 +42,13 @@
     IBOutlet NSButton *cancelButton;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField *textField;
+    NSString *fileType;
+    CGPSConverterRef converter;
+    volatile int32_t convertingPS;
+    volatile int32_t taskShouldStop;
 }
 + (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 + (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 - (IBAction)cancel:(id)sender;
 - (IBAction)close:(id)sender;
-@end
-
-
-@interface SKPSProgressController : SKConversionProgressController {
-    CGPSConverterRef converter;
-}
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
-@end
-
-
-@interface SKDVIProgressController : SKPSProgressController {
-    volatile int32_t convertingPS;
-    volatile int32_t taskShouldStop;
-}
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 @end

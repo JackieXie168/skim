@@ -41,6 +41,7 @@
 #import "NSTask_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
+#import "SKDocumentController.h"
 #import <libkern/OSAtomic.h>
 
 #define PROVIDER_KEY    @"provider"
@@ -57,13 +58,11 @@ enum {
 };
 
 @interface SKConversionProgressController (Private)
-- (NSInteger)runModalConversionWithInfo:(NSDictionary *)info;
-- (void)doConversionWithInfo:(NSDictionary *)info;
-- (void)stopModalOnMainThread:(BOOL)success;
+- (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
 - (void)converterWasStopped;
-- (NSString *)fileType;
 - (void)setButtonTitle:(NSString *)title action:(SEL)action;
 @end
 
@@ -101,31 +100,43 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 @implementation SKConversionProgressController
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData
-{
-    return [[[[SKPSProgressController alloc] init] autorelease] PDFDataWithPostScriptData:psData];
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
+    return [[[[self alloc] init] autorelease] PDFDataWithPostScriptData:psData];
 }
 
-+ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile
-{
-    return [[[[SKDVIProgressController alloc] init] autorelease] PDFDataWithDVIFile:dviFile];
++ (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
+    return [[[[self alloc] init] autorelease] PDFDataWithDVIFile:dviFile];
 }
 
-- (void)awakeFromNib
-{
+- (void)dealloc {
+    if (converter) CFRelease(converter);
+    [super dealloc];
+}
+
+- (void)awakeFromNib {
     [[self window] setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
     [progressBar setUsesThreadedAnimation:YES];
     [self setButtonTitle:NSLocalizedString(@"Cancel", @"Button title") action:@selector(cancel:)];
-    [[self window] setTitle:[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:[self fileType]]]];
+    [[self window] setTitle:[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [[NSDocumentController sharedDocumentController] displayNameForType:fileType]]];
 }
 
 - (NSString *)windowNibName { return @"ConversionProgressWindow"; }
 
 - (IBAction)close:(id)sender { [self close]; }
 
-- (IBAction)cancel:(id)sender {}
+- (IBAction)cancel:(id)sender {
+    OSMemoryBarrier();
+    if (convertingPS) {
+        if (CGPSConverterAbort(converter) == false)
+            [self converterWasStopped];
+    } else if (taskShouldStop == 0) {
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&taskShouldStop);
+    } else {
+        [self converterWasStopped];
+    }
+}
 
-- (NSInteger)runModalConversionWithInfo:(NSDictionary *)info {
+- (NSInteger)runModalSelector:(SEL)selector withObject:(NSDictionary *)info {
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     BOOL didDetach = NO;
@@ -135,7 +146,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         // we run this inside the modal session since the thread could end before runModalForWindow starts
         if (NO == didDetach) {
-            [NSThread detachNewThreadSelector:@selector(doConversionWithInfo:) toTarget:self withObject:info];
+            [NSThread detachNewThreadSelector:selector toTarget:self withObject:info];
             didDetach = YES;
         }
         
@@ -151,8 +162,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     return rv;
 }
-
-- (void)doConversionWithInfo:(NSDictionary *)info { [self stopModalOnMainThread:NO]; }   
  
 - (void)stopModalOnMainThread:(BOOL)success {
     NSInteger val = (success ? SKConversionSucceeded : SKConversionFailed);
@@ -165,8 +174,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
     [self setButtonTitle:NSLocalizedString(@"Close", @"Button title") action:@selector(close:)];
 }
-
-- (NSString *)fileType { return @""; }
 
 - (void)conversionCompleted:(BOOL)didComplete;
 {
@@ -192,27 +199,27 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [cancelButton setFrame:frame];
 }
 
-@end
+#pragma mark PostScript
 
-#pragma mark -
+- (void)doPSConversionWithInfo:(NSDictionary *)info {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    CGDataProviderRef provider = (void *)[info objectForKey:PROVIDER_KEY];
+    CGDataConsumerRef consumer = (void *)[info objectForKey:CONSUMER_KEY];
+    Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
+    
+    [self stopModalOnMainThread:success];
+    
+    [pool release];
+}    
 
-@implementation SKPSProgressController
-
-- (void)dealloc
-{
-    if (converter) CFRelease(converter);
-    [super dealloc];
-}
-
-- (IBAction)cancel:(id)sender
-{
-    if (CGPSConverterAbort(converter) == false)
-        [self converterWasStopped];
-}
-
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData
-{
+- (NSData *)PDFDataWithPostScriptData:(NSData *)psData {
     NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
+    
+    fileType = SKPostScriptDocumentType;
+    
+    convertingPS = 1;
+    taskShouldStop = 1;
     
     // pass self as info
     converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
@@ -225,7 +232,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, PROVIDER_KEY, (id)consumer, CONSUMER_KEY, nil];
     
-    NSInteger rv = [self runModalConversionWithInfo:dictionary];
+    NSInteger rv = [self runModalSelector:@selector(doPSConversionWithInfo:) withObject:dictionary];
     
     CGDataProviderRelease(provider);
     CGDataConsumerRelease(consumer);
@@ -238,28 +245,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return [(id)pdfData autorelease];
 }
 
-- (void)doConversionWithInfo:(NSDictionary *)info;
-{
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    CGDataProviderRef provider = (void *)[info objectForKey:PROVIDER_KEY];
-    CGDataConsumerRef consumer = (void *)[info objectForKey:CONSUMER_KEY];
-    Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
-    
-    [self stopModalOnMainThread:success];
-    
-    [pool release];
-}    
-
-- (NSString *)fileType {
-    return @"PostScript";
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKDVIProgressController
+#pragma mark DVI
 
 + (NSString *)dviToolPath {
     static NSString *dviToolPath = nil;
@@ -292,45 +278,12 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     return dviToolPath;
 }
 
-- (IBAction)cancel:(id)sender
-{
-    OSMemoryBarrier();
-    if (convertingPS)
-        [super cancel:sender];
-    else if (taskShouldStop == 0)
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&taskShouldStop);
-    else
-        [self converterWasStopped];
-}
-
-- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
-    NSString *dviToolPath = [[self class] dviToolPath];
-    NSMutableData *pdfData = nil;
-    
-    if (dviToolPath) {
-        taskShouldStop = 0;
-        pdfData = [[NSMutableData alloc] init];
-        
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, DVIFILE_KEY, pdfData, PDFPATH_KEY, dviToolPath, DVITOOLPATH_KEY, nil];
-        
-        NSInteger rv = [self runModalConversionWithInfo:dictionary];
-        
-        if (rv != SKConversionSucceeded) {
-            [pdfData release];
-            pdfData = nil;
-        }
-    } else {
-        NSBeep();
-    }
-    return [pdfData autorelease];
-}
-
 - (BOOL)shouldKeepRunning {
     OSMemoryBarrier();
     return taskShouldStop == 0;
 }
 
-- (void)doConversionWithInfo:(NSDictionary *)info {
+- (void)doDVIConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *dviFile = [info objectForKey:DVIFILE_KEY];
@@ -377,7 +330,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&convertingPS);
         
-        [super doConversionWithInfo:dictionary];
+        [self doPSConversionWithInfo:dictionary];
         
         CGDataProviderRelease(provider);
         CGDataConsumerRelease(consumer);
@@ -396,8 +349,29 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [pool release];
 }
 
-- (NSString *)fileType {
-    return @"DVI";
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
+    NSString *dviToolPath = [[self class] dviToolPath];
+    NSMutableData *pdfData = nil;
+    
+    if (dviToolPath) {
+        fileType = SKDVIDocumentType;
+        
+        convertingPS = 0;
+        taskShouldStop = 0;
+        pdfData = [[NSMutableData alloc] init];
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, DVIFILE_KEY, pdfData, PDFPATH_KEY, dviToolPath, DVITOOLPATH_KEY, nil];
+        
+        NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
+        
+        if (rv != SKConversionSucceeded) {
+            [pdfData release];
+            pdfData = nil;
+        }
+    } else {
+        NSBeep();
+    }
+    return [pdfData autorelease];
 }
 
 @end
