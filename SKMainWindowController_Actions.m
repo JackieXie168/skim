@@ -1062,7 +1062,7 @@
             [leftSideDrawer openOnEdge:NSMinXEdge];
         }
     } else if (mwcFlags.isAnimating == 0) {
-        CGFloat position = 0.0;
+        CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
         NSSize sideSize = [leftSideContentView frame].size;
         NSSize centerSize = [centerContentView frame].size;
         if ([self leftSidePaneIsOpen]) {
