@@ -1177,11 +1177,11 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 
 - (BOOL)splitView:(NSSplitView *)sender shouldCollapseSubview:(NSView *)subview forDoubleClickOnDividerAtIndex:(NSInteger)dividerIndex {
     if ([sender isEqual:splitView]) {
-        if (dividerIndex == 0)
-            lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
-        else
-            lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
-        return [subview isEqual:centerContentView] == NO;
+        if ([subview isEqual:leftSideContentView])
+            [self toggleLeftSidePane:sender];
+        else if ([subview isEqual:rightSideContentView])
+            [self toggleRightSidePane:sender];
+        return NO;
     } else if ([sender isEqual:pdfSplitView]) {
         return [subview isEqual:secondaryPdfContentView];
     }
