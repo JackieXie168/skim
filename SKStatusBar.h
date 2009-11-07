@@ -53,11 +53,13 @@ typedef NSInteger SKProgressIndicatorStyle;
 	NSProgressIndicator *progressIndicator;
     NSTrackingRectTag leftTrackingRectTag;
     NSTrackingRectTag rightTrackingRectTag;
+    BOOL animating;
 }
 
-- (void)toggleBelowView:(NSView *)view;
+- (void)toggleBelowView:(NSView *)view animate:(BOOL)animate;
 
 - (BOOL)isVisible;
+- (BOOL)isAnimating;
 
 - (NSString *)leftStringValue;
 - (void)setLeftStringValue:(NSString *)aString;

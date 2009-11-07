@@ -39,6 +39,8 @@
 #import "SKStatusBar.h"
 #import "NSGeometry_SKExtensions.h"
 
+#define SKDisableStatusAnimationKey @"SKDisableStatusAnimation"
+
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
 #define SEPARATION          2.0
@@ -75,6 +77,7 @@
 		progressIndicator = nil;
         leftTrackingRectTag = 0;
         rightTrackingRectTag = 0;
+        animating = NO;
     }
     return self;
 }
@@ -140,31 +143,62 @@
 	return [self superview] && [self isHidden] == NO;
 }
 
-- (void)toggleBelowView:(NSView *)view {
+- (BOOL)isAnimating {
+    return animating;
+}
+
+- (void)endAnimation:(NSNumber *)remove {
+    if ([remove boolValue]) {
+        [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+		[self removeFromSuperview];
+    }
+    animating = NO;
+}
+
+- (void)toggleBelowView:(NSView *)view animate:(BOOL)animate {
+    if (animating)
+        return;
+    
 	NSRect viewFrame = [view frame];
 	NSView *contentView = [view superview];
 	NSRect statusRect = [contentView bounds];
 	CGFloat statusHeight = NSHeight([self frame]);
+    BOOL remove = (nil != [self superview]);
 	statusRect.size.height = statusHeight;
 	
-	if ([self superview]) {
-		viewFrame.size.height += statusHeight;
-		if ([contentView isFlipped] == NO)
-			viewFrame.origin.y -= statusHeight;
-        [[view window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
-		[self removeFromSuperview];
-	} else {
-		viewFrame.size.height -= statusHeight;
-		if ([contentView isFlipped] == NO)
-			viewFrame.origin.y += statusHeight;
-		else 
-			statusRect.origin.y = NSMaxY([contentView bounds]) - statusHeight;
-		[self setFrame:statusRect];
+	if (remove == NO) {
         [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
+		if ([contentView isFlipped])
+			statusRect.origin.y = NSMaxY([contentView bounds]);
+		else
+            statusRect.origin.y -= statusHeight;
+        [self setFrame:statusRect];
 		[contentView addSubview:self positioned:NSWindowBelow relativeTo:nil];
+        statusHeight = -statusHeight;
 	}
-	[view setFrame:viewFrame];
-	[contentView setNeedsDisplay:YES];
+    viewFrame.size.height += statusHeight;
+    if ([contentView isFlipped]) {
+        statusRect.origin.y += statusHeight;
+    } else {
+        viewFrame.origin.y -= statusHeight;
+        statusRect.origin.y -= statusHeight;
+    }
+    if (animate && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableStatusAnimationKey] == NO) {
+        animating = YES;
+        [NSAnimationContext beginGrouping];
+        [[view animator] setFrame:viewFrame];
+        [[self animator] setFrame:statusRect];
+        [NSAnimationContext endGrouping];
+        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:remove] afterDelay:[[NSAnimationContext currentContext] duration]];
+    } else {
+        [view setFrame:viewFrame];
+        if (remove) {
+            [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+            [self removeFromSuperview];
+        } else {
+            [self setFrame:statusRect];
+        }
+    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
