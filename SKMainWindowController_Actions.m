@@ -844,8 +844,8 @@
         [statusBar setRightAction:@selector(statusBarClicked:)];
         [statusBar setRightTarget:self];
     }
-    [statusBar toggleBelowView:splitView];
-    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
+    [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowStatusBarKey];
+    [statusBar toggleBelowView:splitView animate:sender != nil];
 }
 
 - (IBAction)searchPDF:(id)sender {

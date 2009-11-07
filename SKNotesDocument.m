@@ -337,8 +337,8 @@
         statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([[outlineView enclosingScrollView] frame]), 22.0)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
     }
-    [statusBar toggleBelowView:[outlineView enclosingScrollView]];
-    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowNotesStatusBarKey];
+    [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowNotesStatusBarKey];
+    [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }
 
 - (void)copyNotes:(id)sender {

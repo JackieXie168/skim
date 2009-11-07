@@ -444,8 +444,8 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
-    [statusBar toggleBelowView:[outlineView enclosingScrollView]];
-    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowBookmarkStatusBarKey];
+    [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowBookmarkStatusBarKey];
+    [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }
 
 #pragma mark Undo support
