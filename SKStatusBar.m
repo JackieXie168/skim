@@ -147,8 +147,8 @@
     return animating;
 }
 
-- (void)endAnimation:(NSNumber *)remove {
-    if ([remove boolValue]) {
+- (void)endAnimation:(NSNumber *)visible {
+    if ([visible boolValue] == NO) {
         [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
 		[self removeFromSuperview];
     }
@@ -163,10 +163,10 @@
 	NSView *contentView = [view superview];
 	NSRect statusRect = [contentView bounds];
 	CGFloat statusHeight = NSHeight([self frame]);
-    BOOL remove = (nil != [self superview]);
+    BOOL visible = (nil == [self superview]);
 	statusRect.size.height = statusHeight;
 	
-	if (remove == NO) {
+	if (visible) {
         [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
 		if ([contentView isFlipped])
 			statusRect.origin.y = NSMaxY([contentView bounds]);
@@ -189,14 +189,14 @@
         [[view animator] setFrame:viewFrame];
         [[self animator] setFrame:statusRect];
         [NSAnimationContext endGrouping];
-        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:remove] afterDelay:[[NSAnimationContext currentContext] duration]];
+        [self performSelector:@selector(endAnimation:) withObject:[NSNumber numberWithBool:visible] afterDelay:[[NSAnimationContext currentContext] duration]];
     } else {
         [view setFrame:viewFrame];
-        if (remove) {
+        if (visible) {
+            [self setFrame:statusRect];
+        } else {
             [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
             [self removeFromSuperview];
-        } else {
-            [self setFrame:statusRect];
         }
     }
 }
