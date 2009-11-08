@@ -1204,6 +1204,49 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     return proposedMin;
 }
 
+- (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+    if ([sender isEqual:splitView] && mwcFlags.usesDrawers == 0) {
+        NSView *leftView = [[sender subviews] objectAtIndex:0];
+        NSView *mainView = [[sender subviews] objectAtIndex:1];
+        NSView *rightView = [[sender subviews] objectAtIndex:2];
+        BOOL leftCollapsed = [sender isSubviewCollapsed:leftView];
+        BOOL rightCollapsed = [sender isSubviewCollapsed:rightView];
+        NSSize leftSize = [leftView frame].size;
+        NSSize mainSize = [mainView frame].size;
+        NSSize rightSize = [rightView frame].size;
+        CGFloat contentWidth = NSWidth([sender frame]);
+        
+        if (leftCollapsed)
+            leftSize.width = 0.0;
+        else
+            contentWidth -= [sender dividerThickness];
+        if (rightCollapsed)
+            rightSize.width = 0.0;
+        else
+            contentWidth -= [sender dividerThickness];
+        
+        if (contentWidth < leftSize.width + rightSize.width) {
+            CGFloat oldContentWidth = oldSize.width;
+            if (leftCollapsed == NO)
+                oldContentWidth -= [sender dividerThickness];
+            if (rightCollapsed == NO)
+                oldContentWidth -= [sender dividerThickness];
+            CGFloat resizeFactor = contentWidth / oldContentWidth;
+            leftSize.width = SKFloor(resizeFactor * leftSize.width);
+            rightSize.width = SKFloor(resizeFactor * rightSize.width);
+        }
+        
+        mainSize.width = contentWidth - leftSize.width - rightSize.width;
+        leftSize.height = rightSize.height = mainSize.height = NSHeight([sender frame]);
+        if (leftCollapsed == NO)
+            [leftView setFrameSize:leftSize];
+        if (rightCollapsed == NO)
+            [rightView setFrameSize:rightSize];
+        [mainView setFrameSize:mainSize];
+    }
+    [sender adjustSubviews];
+}
+
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
     id sender = [notification object];
     if (([sender isEqual:splitView] || sender == nil) && [[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0 && mwcFlags.usesDrawers == 0) {
