@@ -450,8 +450,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [pdfView setFrame:[pdfContentView bounds]];
     [pdfContentView addSubview:pdfView];
     
-    [[self window] makeFirstResponder:[pdfView documentView]];
-    
     // Go to page?
     NSUInteger pageIndex = NSNotFound;
     if (hasWindowSetup)
