@@ -1054,7 +1054,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)convertNotes:(id)sender {
-    if (SKIsPDFDocumentType([self fileType]) == NO || SKIsPDFBundleDocumentType([self fileType]) == NO) {
+    if (SKIsPDFDocumentType([self fileType]) == NO && SKIsPDFBundleDocumentType([self fileType]) == NO) {
         NSBeep();
         return;
     }
