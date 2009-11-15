@@ -71,6 +71,10 @@ enum {
 
 @interface NSColor (SKExtensions)
 
++ (NSColor *)keySourceListHighlightColor;
++ (NSColor *)mainSourceListHighlightColor;
++ (NSColor *)disabledSourceListHighlightColor;
+
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
