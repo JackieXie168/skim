@@ -42,44 +42,44 @@
 @implementation NSColor (SKExtensions)
 
 + (NSColor *)keySourceListHighlightColor {
-    static NSColor *blueColor = nil;
+    static NSColor *color = nil;
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
             graphiteColor = [[NSColor colorWithDeviceRed:24672.0/65535.0 green:29812.0/65535.0 blue:35466.0/65535.0 alpha:1.0] retain];
         return graphiteColor;
     } else {
-        if (blueColor == nil)
-            blueColor = [[NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0] retain];
-        return blueColor;
+        if (color == nil)
+            color = [[NSColor colorWithDeviceRed:14135.0/65535.0 green:29298.0/65535.0 blue:48830.0/65535.0 alpha:1.0] retain];
+        return color;
     }
 }
 
 + (NSColor *)mainSourceListHighlightColor {
-    static NSColor *blueColor = nil;
+    static NSColor *color = nil;
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
             graphiteColor = [[NSColor colorWithDeviceRed:37779.0/65535.0 green:41634.0/65535.0 blue:45489.0/65535.0 alpha:1.0] retain];
         return graphiteColor;
     } else {
-        if (blueColor == nil)
-            blueColor = [[NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0] retain];
-        return blueColor;
+        if (color == nil)
+            color = [[NSColor colorWithDeviceRed:34695.0/65535.0 green:39064.0/65535.0 blue:48316.0/65535.0 alpha:1.0] retain];
+        return color;
     }
 }
 
 + (NSColor *)disabledSourceListHighlightColor {
-    static NSColor *blueColor = nil;
+    static NSColor *color = nil;
     static NSColor *graphiteColor = nil;
     if ([NSColor currentControlTint] == NSGraphiteControlTint) {
         if (graphiteColor == nil)
             graphiteColor = [[NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0] retain];
         return graphiteColor;
     } else {
-        if (blueColor == nil)
-            blueColor = [[NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0] retain];
-        return blueColor;
+        if (color == nil)
+            color = [[NSColor colorWithDeviceRed:40606.0/65535.0 green:40606.0/65535.0 blue:40606.0/65535.0 alpha:1.0] retain];
+        return color;
     }
 }
 
