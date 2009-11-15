@@ -50,30 +50,20 @@
     [super dealloc];
 }
 
-static CGFloat keyColorBlue[3]          = {14135.0/65535.0, 29298.0/65535.0, 48830.0/65535.0};
-static CGFloat mainColorBlue[3]         = {34695.0/65535.0, 39064.0/65535.0, 48316.0/65535.0};
-static CGFloat disabledColorBlue[3]     = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
-static CGFloat keyColorGraphite[3]      = {24672.0/65535.0, 29812.0/65535.0, 35466.0/65535.0};
-static CGFloat mainColorGraphite[3]     = {37779.0/65535.0, 41634.0/65535.0, 45489.0/65535.0};
-static CGFloat disabledColorGraphite[3] = {40606.0/65535.0, 40606.0/65535.0, 40606.0/65535.0};
-
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
         NSColor *color = nil;
         NSInteger row;
         NSRect rect;
-        CGFloat *rgb;
-        BOOL isGraphite = [NSColor currentControlTint] == NSGraphiteControlTint;
         
         switch ([self selectionHighlightStyle]) {
             case NSTableViewSelectionHighlightStyleSourceList:
                 if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
-                    rgb = isGraphite ? keyColorGraphite : keyColorBlue;
+                    color = [NSColor keySourceListHighlightColor];
                 else if ([[self window] isMainWindow] || [[self window] isKeyWindow])
-                    rgb = isGraphite ? mainColorGraphite : mainColorBlue;
+                    color = [NSColor mainSourceListHighlightColor];
                 else
-                    rgb = isGraphite ? disabledColorGraphite : disabledColorBlue;
-                color = [NSColor colorWithDeviceRed:rgb[0] green:rgb[1] blue:rgb[2] alpha:1.0];
+                    color = [NSColor disabledSourceListHighlightColor];
                 break;
             case NSTableViewSelectionHighlightStyleRegular:
                 if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
