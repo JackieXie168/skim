@@ -933,7 +933,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         [cell setObjectValue:[item type] ? (id)[item string] : (id)[item text]];
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
-        [rowHeights setFloat:SKMax(NSHeight(rect) + 3.0, rowHeight + 2.0) forKey:item];
+        NSLog(@"%f %f",NSHeight(rect),rowHeight);
+        [rowHeights setFloat:SKMax(NSHeight(rect), rowHeight) + 2.0 forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [noteOutlineView reloadData];
