@@ -940,6 +940,17 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [noteOutlineView reloadData];
 }
 
+- (void)resetHeightOfNoteRows:(id)sender {
+    NSArray *items = [sender representedObject];
+    if (items == nil) {
+        [rowHeights removeAllFloats];
+    } else {
+        for (id item in items)
+            [rowHeights removeFloatForKey:item];
+    }
+    [noteOutlineView reloadData];
+}
+
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSMenu *menu = nil;
     NSMenuItem *menuItem;
