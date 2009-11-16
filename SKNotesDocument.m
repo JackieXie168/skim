@@ -373,6 +373,17 @@
     [outlineView reloadData];
 }
 
+- (void)resetHeightOfNoteRows:(id)sender {
+    NSArray *items = [sender representedObject];
+    if (items == nil) {
+        [rowHeights removeAllFloats];
+    } else {
+        for (id item in items)
+            [rowHeights removeFloatForKey:item];
+    }
+    [outlineView reloadData];
+}
+
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender {
     caseInsensitiveSearch = NO == caseInsensitiveSearch;
     if ([[searchField stringValue] length])
