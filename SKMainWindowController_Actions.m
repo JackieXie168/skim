@@ -1122,7 +1122,7 @@
             lastSplitPDFHeight = SKFloor(0.3 * NSHeight(frame));
         
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
-        NSPoint point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position);
+        NSPoint point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
         PDFPage *page = [pdfView pageForPoint:point nearest:YES];
         
         if (secondaryPdfView == nil) {
