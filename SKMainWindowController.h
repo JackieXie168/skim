@@ -72,7 +72,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
-    IBOutlet NSSplitView            *splitView;
+    IBOutlet SKSplitView            *splitView;
     
     IBOutlet NSView                 *centerContentView;
     IBOutlet SKSplitView            *pdfSplitView;

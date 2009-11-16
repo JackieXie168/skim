@@ -1028,19 +1028,6 @@
         [self searchNotes:noteSearchField];
 }
 
-- (void)endLeftSidePaneAnimation:(NSNumber *)position {
-    [splitView setPosition:[position doubleValue] ofDividerAtIndex:0];
-    if ([currentLeftSideView isEqual:thumbnailView])
-        [thumbnailTableView sizeToFit];
-    else if ([currentLeftSideView isEqual:outlineView])
-        [outlineView sizeToFit];
-    else if ([currentLeftSideView isEqual:findView])
-        [findTableView sizeToFit];
-    else if ([currentLeftSideView isEqual:groupedFindView])
-        [groupedFindTableView sizeToFit];
-    mwcFlags.isAnimating = 0;
-}
-
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
         [[SKPDFToolTipWindow sharedToolTipWindow] fadeOut];
@@ -1061,46 +1048,20 @@
         } else {
             [leftSideDrawer openOnEdge:NSMinXEdge];
         }
-    } else if (mwcFlags.isAnimating == 0) {
+    } else {
         CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
-        NSSize sideSize = [leftSideContentView frame].size;
-        NSSize centerSize = [centerContentView frame].size;
+        BOOL shouldAnimate = (sender != nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey] == NO);
         if ([self leftSidePaneIsOpen]) {
-            lastLeftSidePaneWidth = sideSize.width;
-            centerSize.width += sideSize.width;
-            sideSize.width = 0.0;
+            lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
         } else {
             if(lastLeftSidePaneWidth <= 0.0)
                 lastLeftSidePaneWidth = 250.0; // a reasonable value to start
-            if (lastLeftSidePaneWidth > 0.5 * centerSize.width)
-                lastLeftSidePaneWidth = SKFloor(0.5 * centerSize.width);
+            if (lastLeftSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
+                lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
             position = lastLeftSidePaneWidth;
-            sideSize.width = 0.0;
-            [leftSideContentView setFrameSize:sideSize];
-            [leftSideContentView setHidden:NO];
-            centerSize.width -= lastLeftSidePaneWidth + [splitView dividerThickness];
-            sideSize.width = lastLeftSidePaneWidth;
         }
-        if (sender == nil || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey]) {
-            [self endLeftSidePaneAnimation:[NSNumber numberWithDouble:position]];
-        } else {
-            mwcFlags.isAnimating = 1;
-            [NSAnimationContext beginGrouping];
-            [[leftSideContentView animator] setFrameSize:sideSize];
-            [[centerContentView animator] setFrameSize:centerSize];
-            [NSAnimationContext endGrouping];
-            [self performSelector:@selector(endLeftSidePaneAnimation:) withObject:[NSNumber numberWithDouble:position] afterDelay:[[NSAnimationContext currentContext] duration]];
-        }
+        [splitView setPosition:position ofDividerAtIndex:0 animate:shouldAnimate];
     }
-}
-
-- (void)endRightSidePaneAnimation:(NSNumber *)position {
-    [splitView setPosition:[position doubleValue] ofDividerAtIndex:1];
-    if ([currentRightSideView isEqual:noteView])
-        [noteOutlineView sizeToFit];
-    else if ([currentRightSideView isEqual:snapshotView])
-        [snapshotTableView sizeToFit];
-    mwcFlags.isAnimating = 0;
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
@@ -1119,36 +1080,19 @@
             [rightSideDrawer close];
         else
             [rightSideDrawer openOnEdge:NSMaxXEdge];
-    } else if (mwcFlags.isAnimating == 0) {
+    } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
-        NSSize sideSize = [rightSideContentView frame].size;
-        NSSize centerSize = [centerContentView frame].size;
+        BOOL shouldAnimate = (sender != nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey] == NO);
         if ([self rightSidePaneIsOpen]) {
             lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
-            centerSize.width += sideSize.width;
-            sideSize.width = 0.0;
         } else {
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastRightSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
-            sideSize.width = 0.0;
-            [rightSideContentView setFrameSize:sideSize];
-            [rightSideContentView setHidden:NO];
-            centerSize.width -= lastRightSidePaneWidth + [splitView dividerThickness];
-            sideSize.width = lastRightSidePaneWidth;
         }
-        if (sender == nil || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey]) {
-            [self endRightSidePaneAnimation:[NSNumber numberWithDouble:position]];
-        } else {
-            mwcFlags.isAnimating = 1;
-            [NSAnimationContext beginGrouping];
-            [[rightSideContentView animator] setFrameSize:sideSize];
-            [[centerContentView animator] setFrameSize:centerSize];
-            [NSAnimationContext endGrouping];
-            [self performSelector:@selector(endRightSidePaneAnimation:) withObject:[NSNumber numberWithDouble:position] afterDelay:[[NSAnimationContext currentContext] duration]];
-        }
+        [splitView setPosition:position ofDividerAtIndex:1 animate:shouldAnimate];
     }
 }
 
