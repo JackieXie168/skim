@@ -78,6 +78,10 @@
         [self resetCursorRects];
 }
 
+- (BOOL)isAnimating {
+    return animating;
+}
+
 - (void)endAnimation:(NSDictionary *)info {
     [self setPosition:[[info objectForKey:@"position"] doubleValue] ofDividerAtIndex:[[info objectForKey:@"dividerIndex"] integerValue]];
     animating = NO;

@@ -1109,6 +1109,9 @@
 }
 
 - (IBAction)toggleSplitPDF:(id)sender {
+    if ([pdfSplitView isAnimating])
+        return;
+    
     if ([secondaryPdfView window]) {
         
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
