@@ -65,6 +65,7 @@
 #import "SKFloatMapTable.h"
 #import "SKFindController.h"
 #import "NSColor_SKExtensions.h"
+#import "SKSplitView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1193,9 +1194,20 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             [self toggleLeftSidePane:sender];
         else if ([subview isEqual:rightSideContentView])
             [self toggleRightSidePane:sender];
-        return NO;
     } else if ([sender isEqual:pdfSplitView]) {
-        return [subview isEqual:secondaryPdfContentView];
+        if ([subview isEqual:secondaryPdfContentView]) {
+            CGFloat position = [pdfSplitView maxPossiblePositionOfDividerAtIndex:dividerIndex];
+            if ([pdfSplitView isSubviewCollapsed:secondaryPdfContentView]) {
+                if (lastSplitPDFHeight <= 0.0)
+                    lastSplitPDFHeight = 200.0;
+                if (lastSplitPDFHeight > NSHeight([pdfContentView frame]))
+                    lastSplitPDFHeight = SKFloor(0.5 * NSHeight([pdfContentView frame]));
+                position -= lastSplitPDFHeight;
+            } else {
+                lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
+            }
+            [pdfSplitView setPosition:position ofDividerAtIndex:dividerIndex animate:YES];
+        }
     }
     return NO;
 }

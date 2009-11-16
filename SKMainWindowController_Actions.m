@@ -1108,33 +1108,24 @@
     [self setFindPaneState:[sender tag]];
 }
 
-- (void)scrollSecondaryPdfView {
-    NSPoint point = [pdfView bounds].origin;
-    PDFPage *page = [pdfView pageForPoint:point nearest:YES];
-    point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
-    [secondaryPdfView goToPage:page];
-    [[secondaryPdfView documentView] scrollPoint:point];
-    [secondaryPdfView layoutDocumentView];
-}
-
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([secondaryPdfView window]) {
         
-        [secondaryPdfContentView removeFromSuperview];
+        [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
+        [secondaryPdfContentView performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
         
     } else {
         
-        NSRect frame1, frame2, tmpFrame = [pdfSplitView bounds];
-        
-        NSDivideRect(tmpFrame, &frame1, &frame2, SKRound(0.7 * NSHeight(tmpFrame)), NSMaxYEdge);
-        NSDivideRect(frame2, &tmpFrame, &frame2, [pdfSplitView dividerThickness], NSMaxYEdge);
-        
-        [pdfContentView setFrame:frame1];
+        NSRect frame = [pdfSplitView bounds];
+        CGFloat position = SKRound(0.7 * NSHeight(frame)) - [pdfSplitView dividerThickness];
+        NSPoint point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position);
+        PDFPage *page = [pdfView pageForPoint:point nearest:YES];
         
         if (secondaryPdfView == nil) {
-            secondaryPdfContentView = [[NSView alloc] initWithFrame:frame2];
+            secondaryPdfContentView = [[NSView alloc] init];
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[secondaryPdfContentView bounds]];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [secondaryPdfContentView setHidden:YES];
             [secondaryPdfContentView addSubview:secondaryPdfView];
             [secondaryPdfView release];
             [pdfSplitView addSubview:secondaryPdfContentView];
@@ -1147,14 +1138,18 @@
             [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];
         } else {
-            [secondaryPdfContentView setFrame:frame2];
+            [secondaryPdfContentView setHidden:YES];
             [pdfSplitView addSubview:secondaryPdfContentView];
         }
         
-        [self performSelector:@selector(scrollSecondaryPdfView) withObject:nil afterDelay:0.0];
+        [pdfSplitView setPosition:position ofDividerAtIndex:0 animate:YES];
+        
+        point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
+        [secondaryPdfView goToPage:page];
+        [[secondaryPdfView documentView] scrollPoint:point];
+        [secondaryPdfView layoutDocumentView];
     }
     
-    [pdfSplitView adjustSubviews];
     [[self window] recalculateKeyViewLoop];
     if ([self isFullScreen])
         [[self window] makeFirstResponder:pdfView];
