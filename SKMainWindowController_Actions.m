@@ -64,7 +64,6 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
 
-#define SKDisableSplitViewAnimationKey @"SKDisableSplitViewAnimation"
 
 @implementation SKMainWindowController (Actions)
 
@@ -1050,7 +1049,6 @@
         }
     } else {
         CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
-        BOOL shouldAnimate = (sender != nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey] == NO);
         if ([self leftSidePaneIsOpen]) {
             lastLeftSidePaneWidth = NSWidth([leftSideContentView frame]);
         } else {
@@ -1060,7 +1058,7 @@
                 lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
             position = lastLeftSidePaneWidth;
         }
-        [splitView setPosition:position ofDividerAtIndex:0 animate:shouldAnimate];
+        [splitView setPosition:position ofDividerAtIndex:0 animate:sender != nil];
     }
 }
 
@@ -1082,7 +1080,6 @@
             [rightSideDrawer openOnEdge:NSMaxXEdge];
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
-        BOOL shouldAnimate = (sender != nil && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSplitViewAnimationKey] == NO);
         if ([self rightSidePaneIsOpen]) {
             lastRightSidePaneWidth = NSWidth([rightSideContentView frame]);
         } else {
@@ -1092,7 +1089,7 @@
                 lastRightSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
         }
-        [splitView setPosition:position ofDividerAtIndex:1 animate:shouldAnimate];
+        [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
     }
 }
 

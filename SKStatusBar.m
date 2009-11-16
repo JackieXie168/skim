@@ -39,8 +39,6 @@
 #import "SKStatusBar.h"
 #import "NSGeometry_SKExtensions.h"
 
-#define SKDisableStatusAnimationKey @"SKDisableStatusAnimation"
-
 #define LEFT_MARGIN         5.0
 #define RIGHT_MARGIN        15.0
 #define SEPARATION          2.0
@@ -187,7 +185,7 @@
         viewFrame.origin.y -= statusHeight;
         statusRect.origin.y -= statusHeight;
     }
-    if (animate && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableStatusAnimationKey] == NO) {
+    if (animate) {
         animating = YES;
         [NSAnimationContext beginGrouping];
         [[view animator] setFrame:viewFrame];
