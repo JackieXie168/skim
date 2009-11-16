@@ -42,5 +42,6 @@
 @interface SKSplitView : NSSplitView {
     BOOL animating;
 }
+- (BOOL)isAnimating;
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate;
 @end
