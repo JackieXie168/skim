@@ -625,21 +625,21 @@ static char SKMainDocumentDefaultsObservationContext;
     
     // only set the creator code for our native types
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && (SKIsPDFDocumentType(typeName) || SKIsPDFBundleDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName) || SKIsNotesDocumentType(typeName)))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || 
         SKIsPDFDocumentType(typeName) || SKIsEmbeddedPDFDocumentType(typeName) || SKIsBarePDFDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'PDF '] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'PDF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdfd"] || SKIsPDFBundleDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'PDFD'] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'PDFD'] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"skim"] || SKIsNotesDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'SKNT'] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'SKNT'] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"fdf"] || SKIsNotesFDFDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'FDF '] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'FDF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || SKIsNotesRTFDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'RTF '] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'RTF '] forKey:NSFileHFSTypeCode];
     else if ([[[absoluteURL path] pathExtension] isEqualToString:@"txt"] || SKIsNotesTextDocumentType(typeName))
-        [dict setObject:[NSNumber numberWithUnsignedLong:'TEXT'] forKey:NSFileHFSTypeCode];
+        [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
 }
@@ -2237,14 +2237,14 @@ NSDictionary *SKScriptingPDFViewSettingsFromPDFViewSettings(NSDictionary *settin
         case kPDFDisplayTwoUp: displayMode = SKScriptingDisplayTwoUp; break;
         case kPDFDisplayTwoUpContinuous: displayMode = SKScriptingDisplayTwoUpContinuous; break;
     }
-    [setup setObject:[NSNumber numberWithUnsignedLong:displayMode] forKey:@"displayMode"];
+    [setup setObject:[NSNumber numberWithUnsignedInt:displayMode] forKey:@"displayMode"];
     
     FourCharCode displayBox = 0;
     switch ([[setup objectForKey:@"displayBox"] integerValue]) {
         case kPDFDisplayBoxMediaBox: displayBox = SKScriptingMediaBox; break;
         case kPDFDisplayBoxCropBox: displayBox = SKScriptingCropBox; break;
     }
-    [setup setObject:[NSNumber numberWithUnsignedLong:displayBox] forKey:@"displayBox"];
+    [setup setObject:[NSNumber numberWithUnsignedInt:displayBox] forKey:@"displayBox"];
     
     return setup;
 }
@@ -2255,7 +2255,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     
     if (number = [setup objectForKey:@"displayMode"]) {
         NSInteger displayMode = 0;
-        switch ([number unsignedLongValue]) {
+        switch ([number unsignedIntValue]) {
             case SKScriptingDisplaySinglePage: displayMode = kPDFDisplaySinglePage; break;
             case SKScriptingDisplaySinglePageContinuous: displayMode = kPDFDisplaySinglePageContinuous; break;
             case SKScriptingDisplayTwoUp: displayMode = kPDFDisplayTwoUp; break;
@@ -2266,7 +2266,7 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
     
     if (number = [setup objectForKey:@"displayBox"]) {
         NSInteger displayBox = 0;
-        switch ([number unsignedLongValue]) {
+        switch ([number unsignedIntValue]) {
             case SKScriptingMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
             case SKScriptingCropBox: displayBox = kPDFDisplayBoxCropBox; break;
         }

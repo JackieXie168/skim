@@ -468,7 +468,7 @@ static BOOL usesSequentialPageNumbering = NO;
         bounds.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
         bounds = NSIntegralRect(SKRectFromCenterAndSize(SKIntegralPoint(SKCenterPoint([self boundsForBox:kPDFDisplayBoxCropBox])), bounds.size));
         
-        FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedLongValue];
+        FourCharCode type = [[properties objectForKey:SKPDFAnnotationScriptingNoteTypeKey] unsignedIntValue];
         [props removeObjectForKey:SKPDFAnnotationScriptingNoteTypeKey];
         
         if (type == SKScriptingHighlightNote || type == SKScriptingStrikeOutNote || type == SKScriptingUnderlineNote) {
@@ -560,7 +560,7 @@ static BOOL usesSequentialPageNumbering = NO;
     id asTIFFNumber = [args objectForKey:@"AsTIFF"];
     id asTypeNumber = [args objectForKey:@"Type"];
     NSRect bounds = [boundsData respondsToSelector:@selector(rectValueAsQDRect)] ? [boundsData rectValueAsQDRect] : NSZeroRect;
-    FourCharCode asType = [asTypeNumber respondsToSelector:@selector(unsignedLongValue)] ? [asTypeNumber unsignedLongValue] : 0; 
+    FourCharCode asType = [asTypeNumber respondsToSelector:@selector(unsignedIntValue)] ? [asTypeNumber unsignedIntValue] : 0; 
     BOOL asTIFF = [asTIFFNumber respondsToSelector:@selector(boolValue)] ? [asTIFFNumber boolValue] : NO; 
     
     NSData *data = nil;

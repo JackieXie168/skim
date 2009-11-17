@@ -555,11 +555,11 @@
 - (NSDictionary *)defaultLineStyles {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], SKNFreeTextString, 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], SKNCircleString, 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], SKNSquareString, 
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], SKNLineString,
-        [NSNumber numberWithUnsignedLong:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKInkNoteLineStyleKey])], SKNInkString,
+        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKFreeTextNoteLineStyleKey])], SKNFreeTextString, 
+        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKCircleNoteLineStyleKey])], SKNCircleString, 
+        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKSquareNoteLineStyleKey])], SKNSquareString, 
+        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKLineNoteLineStyleKey])], SKNLineString,
+        [NSNumber numberWithUnsignedInt:SKScriptingBorderStyleFromBorderStyle([sud integerForKey:SKInkNoteLineStyleKey])], SKNInkString,
         nil];
 }
 
@@ -567,15 +567,15 @@
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSNumber *number;
     if (number = [dict objectForKey:SKNFreeTextString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKFreeTextNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKFreeTextNoteLineStyleKey];
     if (number = [dict objectForKey:SKNCircleString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKCircleNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKCircleNoteLineStyleKey];
     if (number = [dict objectForKey:SKNSquareString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKSquareNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKSquareNoteLineStyleKey];
     if (number = [dict objectForKey:SKNLineString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKLineNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKLineNoteLineStyleKey];
     if (number = [dict objectForKey:SKNInkString])
-        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedLongValue]) forKey:SKInkNoteLineStyleKey];
+        [sud setInteger:SKBorderStyleFromScriptingBorderStyle([number unsignedIntValue]) forKey:SKInkNoteLineStyleKey];
 }
 
 - (NSDictionary *)defaultDashPatterns {
