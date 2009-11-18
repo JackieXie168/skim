@@ -331,7 +331,7 @@ static char SKMainDocumentDefaultsObservationContext;
     [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveFromPanel:contextInfo:) contextInfo:invocation];
 }
 
-#ifdef __LP64__
+#if __LP64__
 #define PERMISSIONS_MODE(catalogInfo) catalogInfo.permissions.mode
 #else
 #define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
