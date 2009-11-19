@@ -114,6 +114,7 @@ extern NSString *SKBlankAllScreensInFullScreenKey;
 extern NSString *SKFullScreenNavigationOptionKey;
 extern NSString *SKPresentationNavigationOptionKey;
 extern NSString *SKAutoHidePresentationContentsKey;
+extern NSString *SKUseNormalLevelForPresentationKey;
 extern NSString *SKAutoOpenDownloadsWindowKey;
 extern NSString *SKAutoRemoveFinishedDownloadsKey;
 extern NSString *SKAutoCloseDownloadsWindowKey;

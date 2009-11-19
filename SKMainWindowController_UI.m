@@ -1603,13 +1603,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation]) {
+    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey]) {
         [fullScreenWindow setLevel:NSNormalWindowLevel];
     }
 }
 
 - (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation]) {
+    if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey]) {
         [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     }
 }
