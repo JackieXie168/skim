@@ -1363,6 +1363,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen] ?: [NSScreen mainScreen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    NSInteger level = [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel;
     
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
@@ -1381,7 +1382,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
         [fullScreenWindow setMainView:pdfSplitView];
     }
     [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:[self isPresentation] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
+    [fullScreenWindow setLevel:level];
     [pdfView setBackgroundColor:[self isPresentation] ? [NSColor clearColor] : backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
@@ -1449,7 +1450,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     [pdfView setBackgroundColor:[NSColor clearColor]];
     [fullScreenWindow setBackgroundColor:[NSColor blackColor]];
-    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    [fullScreenWindow setLevel:[[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
     
     SKPDFView *notesPdfView = [[self presentationNotesDocument] pdfView];
     if (notesPdfView)

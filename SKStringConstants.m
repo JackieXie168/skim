@@ -115,6 +115,7 @@ NSString *SKBlankAllScreensInFullScreenKey = @"SKBlankAllScreensInFullScreen";
 NSString *SKFullScreenNavigationOptionKey = @"SKFullScreenNavigationOption";
 NSString *SKPresentationNavigationOptionKey = @"SKPresentationNavigationOption";
 NSString *SKAutoHidePresentationContentsKey = @"SKAutoHidePresentationContents";
+NSString *SKUseNormalLevelForPresentationKey = @"SKUseNormalLevelForPresentation";
 NSString *SKAutoOpenDownloadsWindowKey = @"SKAutoOpenDownloadsWindow";
 NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
 NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
