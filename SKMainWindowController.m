@@ -2041,12 +2041,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
     if (mwcFlags.findPanelFind == 0) {
         NSString *message = [NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis];
-        [findArrayController removeObjects:searchResults];
+        [self setSearchResults:nil];
         [[[findTableView tableColumnWithIdentifier:RESULTS_COLUMNID] headerCell] setStringValue:message];
         [[findTableView headerView] setNeedsDisplay:YES];
         [[[groupedFindTableView tableColumnWithIdentifier:RELEVANCE_COLUMNID] headerCell] setStringValue:message];
         [[groupedFindTableView headerView] setNeedsDisplay:YES];
-        [groupedFindArrayController removeObjects:groupedSearchResults];
+        [self setGroupedSearchResults:nil];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
         [[statusBar progressIndicator] setDoubleValue:0.0];
