@@ -1845,7 +1845,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             string = [string substringWithRange:NSMakeRange(0, range.location)];
     }
     [searchField setStringValue:string];
-    [searchField sendAction:[searchField action] to:[searchField target]];
+    [self performSelector:@selector(search:) withObject:searchField afterDelay:0.0];
 }
 
 - (IBAction)search:(id)sender {
