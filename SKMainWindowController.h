@@ -374,8 +374,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
 
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
-- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable;
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace;
 
 - (void)setOpenMetaTags:(NSArray *)tags;
 - (void)setOpenMetaRating:(double)rating;

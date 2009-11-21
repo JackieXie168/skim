@@ -1912,12 +1912,7 @@ enum {
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
-    [self addAnnotation:annotation toPage:page undoable:YES];
-}
-
-- (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page undoable:(BOOL)undoable {
-    if (undoable)
-        [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [annotation setShouldDisplay:hideNotes == NO];
     [annotation setShouldPrint:hideNotes == NO];
     [page addAnnotation:annotation];
@@ -1945,16 +1940,11 @@ enum {
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
-    [self removeAnnotation:annotation undoable:YES];
-}
-
-- (void)removeAnnotation:(PDFAnnotation *)annotation undoable:(BOOL)undoable {
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
     BOOL wasNote = [[wasAnnotation type] isEqualToString:SKNNoteString];
     
-    if (undoable)
-        [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
+    [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
         [self commitEditing];
 	if (activeAnnotation == annotation)
