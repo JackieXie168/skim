@@ -176,7 +176,7 @@ static char SKMainDocumentDefaultsObservationContext;
         [self tryToUnlockDocument:[tmpData pdfDocument]];
     [[self mainWindowController] setPdfDocument:[tmpData pdfDocument]];
     
-    [[self mainWindowController] setAnnotationsFromDictionaries:[tmpData noteDicts] undoable:NO];
+    [[self mainWindowController] addAnnotationsFromDictionaries:[tmpData noteDicts] replace:YES];
     
     if ([tmpData presentationOptions])
         [[self mainWindowController] setPresentationOptions:[tmpData presentationOptions]];
@@ -914,13 +914,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }
         
         if (array) {
-            if ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState) {
-                [[self mainWindowController] setAnnotationsFromDictionaries:array undoable:YES];
-                [[self undoManager] setActionName:NSLocalizedString(@"Replace Notes", @"Undo action name")];
-            } else {
-                [[self mainWindowController] addAnnotationsFromDictionaries:array undoable:YES];
-                [[self undoManager] setActionName:NSLocalizedString(@"Add Notes", @"Undo action name")];
-            }
+            BOOL replace = ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState);
+            [[self mainWindowController] addAnnotationsFromDictionaries:array replace:replace];
+            [[self undoManager] setActionName:replace ? NSLocalizedString(@"Replace Notes", @"Undo action name") : NSLocalizedString(@"Add Notes", @"Undo action name")];
         } else
             NSBeep();
         

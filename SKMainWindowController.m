@@ -801,10 +801,18 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     }
 }
     
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts replace:(BOOL)replace {
     PDFAnnotation *annotation;
     PDFDocument *pdfDoc = [pdfView document];
     NSMutableArray *observableNotes = [self mutableArrayValueForKey:NOTES_KEY];
+    
+    if (replace) {
+        [pdfView removePDFToolTipRects];
+        // remove the current annotations
+        [pdfView setActiveAnnotation:nil];
+        for (annotation in [[notes copy] autorelease])
+            [pdfView removeAnnotation:annotation];
+    }
     
     // create new annotations from the dictionary and add them to their page and to the document
     for (NSDictionary *dict in noteDicts) {
@@ -815,7 +823,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
             else if (pageIndex >= [pdfDoc pageCount])
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-            [pdfView addAnnotation:annotation toPage:page undoable:undoable];
+            [pdfView addAnnotation:annotation toPage:page];
             // this is necessary for the initial load of the document, as the notification handler is not yet registered
             if ([observableNotes containsObject:annotation] == NO)
                 [observableNotes addObject:annotation];
@@ -828,18 +836,6 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     [self allThumbnailsNeedUpdate];
     [pdfView resetPDFToolTipRects];
 }
-
-- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts undoable:(BOOL)undoable{
-    [pdfView removePDFToolTipRects];
-    
-    // remove the current annotations
-    [pdfView setActiveAnnotation:nil];
-    for (PDFAnnotation *annotation in [[notes copy] autorelease])
-        [pdfView removeAnnotation:annotation undoable:undoable];
-    
-    [self addAnnotationsFromDictionaries:noteDicts undoable:undoable];
-}
-
 
 - (void)setOpenMetaTags:(NSArray *)newTags {
     if (tags != newTags) {
