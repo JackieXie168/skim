@@ -117,32 +117,21 @@
 					if ([delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)] &&
 						[delegate dragImageView:self writeDataToPasteboard:pboard]) {
                    
-						NSImage *dragImage = nil;
-                        NSPoint dragPoint = mouseLoc;
-						if ([delegate respondsToSelector:@selector(dragImageForDragImageView:)]) {
-							dragImage = [delegate dragImageForDragImageView:self];
-                            NSSize imageSize = [dragImage size];
-                            dragPoint.x -= SKFloor(0.5 * imageSize.width);
-                            dragPoint.y -= SKFloor(0.5 * imageSize.height);
-						}
-                        if (dragImage == nil) {
-                            NSRect rect = [self bounds];
-                            
-                            dragPoint = rect.origin;
-                            rect.origin = NSZeroPoint;
-                            
-                            NSImage *image = [[NSImage alloc] initWithSize:rect.size];
+                        NSRect rect = [self bounds];
+                        NSPoint dragPoint = rect.origin;
+                        rect.origin = NSZeroPoint;
+                        
+                        NSImage *image = [[NSImage alloc] initWithSize:rect.size];
 
-                            [image lockFocus];
-                            [[self cell] drawInteriorWithFrame:rect inView:self];
-                            [image lockFocus];
-                            
-                            dragImage = [[[NSImage alloc] initWithSize:rect.size] autorelease];
-                            [dragImage lockFocus];
-                            [image compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-                            [dragImage unlockFocus];
-                            [image release];
-                        }
+                        [image lockFocus];
+                        [[self cell] drawInteriorWithFrame:rect inView:self];
+                        [image lockFocus];
+                        
+                        NSImage *dragImage = [[[NSImage alloc] initWithSize:rect.size] autorelease];
+                        [dragImage lockFocus];
+                        [image compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
+                        [dragImage unlockFocus];
+                        [image release];
                         [self dragImage:dragImage at:dragPoint offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
                     }
 					keepOn = NO;
