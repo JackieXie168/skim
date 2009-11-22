@@ -414,39 +414,45 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
-    NSURL *absoluteURL = [info objectForKey:@"URL"];
-    NSString *typeName = [info objectForKey:@"type"];
     NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] intValue];
+    NSString *tmpPath = nil;
     
-    // we check for notes and may save a .skim as well:
-    if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
-        if (didSave)
+    if (didSave) {
+        NSURL *absoluteURL = [info objectForKey:@"URL"];
+        NSString *typeName = [info objectForKey:@"type"];
+        
+        if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
+            // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation];
-    } else if (SKIsPDFBundleDocumentType(typeName)) {
-        NSString *tmpPath = [info objectForKey:@"tmpPath"];
-        if (tmpPath) {
-            NSFileManager *fm = [NSFileManager defaultManager];
-            NSString *path = [absoluteURL path];
-            for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
-                [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
-            [fm removeItemAtPath:tmpPath error:NULL];
+        } else if (SKIsPDFBundleDocumentType(typeName)) {
+            // move extra package content like version info to the new location
+            if (tmpPath = [info objectForKey:@"tmpPath"]) {
+                NSFileManager *fm = [NSFileManager defaultManager];
+                NSString *path = [absoluteURL path];
+                for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
+                    [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
+            }
         }
-    }
     
-    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        if (didSave) {
+        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
             docFlags.fileChangedOnDisk = NO;
             [lastModifiedDate release];
             lastModifiedDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fileURL] path] error:NULL] fileModificationDate] retain];
         }
+    
+        if ([[self class] isNativeType:typeName])
+            [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
+    }
+    
+    if (tmpPath)
+        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
+    
+    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [self checkFileUpdatesIfNeeded];
         docFlags.isSaving = NO;
     }
-    
-    if (didSave && [[self class] isNativeType:typeName])
-        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     
     NSInvocation *invocation = [info objectForKey:@"callback"];
     if (invocation) {
