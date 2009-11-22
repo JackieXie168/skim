@@ -472,25 +472,21 @@ static char SKMainDocumentDefaultsObservationContext;
         [info setObject:invocation forKey:@"callback"];
     }
     
-    if (SKIsPDFBundleDocumentType(typeName)) {
+    if (SKIsPDFBundleDocumentType(typeName) && SKIsPDFBundleDocumentType([self fileType]) && [self fileURL]) {
         NSFileManager *fm = [NSFileManager defaultManager];
-        NSString *path = [absoluteURL path];
-        NSString *tmpPath = [info objectForKey:@"tmpPath"];
-        BOOL isDir = NO;
-        
+        NSString *path = [[self fileURL] path];
+        NSString *tmpPath = nil;
         // we move everything that's not ours out of the way, so we can preserve version control info
-        if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-            NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-            for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
-                if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
-                    if (tmpPath == nil)
-                        tmpPath = SKUniqueTemporaryDirectory();
-                    [fm moveItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
-                }
+        NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
+        for (NSString *file in [fm contentsOfDirectoryAtPath:path error:NULL]) {
+            if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]] == NO) {
+                if (tmpPath == nil)
+                    tmpPath = SKUniqueTemporaryDirectory();
+                [fm copyItemAtPath:[path stringByAppendingPathComponent:file] toPath:[tmpPath stringByAppendingPathComponent:file] error:NULL];
             }
-            if (tmpPath)
-                [info setObject:tmpPath forKey:@"tmpPath"];
         }
+        if (tmpPath)
+            [info setObject:tmpPath forKey:@"tmpPath"];
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSave:contextInfo:) contextInfo:info];
