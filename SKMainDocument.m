@@ -502,8 +502,7 @@ static char SKMainDocumentDefaultsObservationContext;
     if (SKIsEmbeddedPDFDocumentType(typeName)) {
         // this must be checked before PDF, as we check for comformance to the UTI
         [[self mainWindowController] removeTemporaryAnnotations];
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"user", (id)kCGPDFContextUserPassword, @"owner", (id)kCGPDFContextOwnerPassword, nil];
-        didWrite = [[self pdfDocument] writeToURL:absoluteURL withOptions:options];
+        didWrite = [[self pdfDocument] writeToURL:absoluteURL];
     } else if (SKIsPDFDocumentType(typeName) || SKIsBarePDFDocumentType(typeName)) {
         didWrite = [pdfData writeToURL:absoluteURL options:0 error:&error];
     } else if (SKIsPostScriptDocumentType(typeName) || SKIsBarePostScriptDocumentType(typeName)) {
