@@ -38,25 +38,12 @@
 
 #import "BDSKGradientView.h"
 
-@interface BDSKGradientView (Private)
-
-- (void)setDefaultColors;
-
-@end
 
 @implementation BDSKGradientView
 
-- (id)initWithFrame:(NSRect)frame
-{
-    self = [super initWithFrame:frame];
-    [self setDefaultColors];
-    return self;
-}
-
 - (void)dealloc
 {
-    [lowerColor release];
-    [upperColor release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
 
@@ -64,43 +51,41 @@
 {        
     // fill entire view, not just the (possibly clipped) aRect
     if ([[self window] styleMask] & NSClosableWindowMask) {
+        BOOL keyOrMain = [[self window] isMainWindow] || [[self window] isKeyWindow];
+        NSColor *lowerColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.75 : 0.8 alpha:1.0];
+        NSColor *upperColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.9 : 0.95 alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:lowerColor endingColor:upperColor] autorelease];
         [gradient drawInRect:[self bounds] angle:90.0];
     }
 }
 
-- (void)setLowerColor:(NSColor *)color
-{
-    if (lowerColor != color) {
-        [lowerColor release];
-        lowerColor = [color retain];
+- (void)handleKeyOrMainStateChangedNotification:(NSNotification *)note {
+    [self setNeedsDisplay:YES];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    NSWindow *window = [self window];
+    if (window) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
+        [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
+        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:window];
+        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:window];
     }
 }
 
-- (void)setUpperColor:(NSColor *)color
-{
-    if (upperColor != color) {
-        [upperColor release];
-        upperColor = [color retain];
+- (void)viewDidMoveToWindow {
+    NSWindow *window = [self window];
+    if (window) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
+        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
+        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
+        [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
     }
-}    
-
-- (NSColor *)lowerColor { return lowerColor; }
-- (NSColor *)upperColor { return upperColor; }
+}
 
 // required in order for redisplay to work properly with the controls
 - (BOOL)isOpaque{  return ([[self window] styleMask] & NSClosableWindowMask) != 0; }
-- (BOOL)isFlipped { return NO; }
-
-@end
-
-@implementation BDSKGradientView (Private)
-
-// provides an example implementation
-- (void)setDefaultColors
-{
-    [self setLowerColor:[NSColor colorWithCalibratedWhite:0.75 alpha:1.0]];
-    [self setUpperColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
-}
 
 @end
