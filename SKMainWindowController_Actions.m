@@ -908,9 +908,9 @@
 
 - (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
-        [pdfView takePasswordFrom:[controller textField]];
-        if ([[pdfView document] isLocked] == NO)
-            [[self document] savePasswordInKeychain:[controller stringValue]];
+        NSString *password = [controller stringValue];
+        if ([[pdfView document] unlockWithPassword:password])
+            [[self document] savePasswordInKeychain:password];
     }
 }
 
