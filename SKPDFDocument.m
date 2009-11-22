@@ -66,4 +66,14 @@
     return printOperation;
 }
 
+- (BOOL)unlockWithPassword:(NSString *)password {
+    BOOL wasLocked = [self isLocked];
+    if ([super unlockWithPassword:password]) {
+        if (wasLocked && [[self delegate] respondsToSelector:@selector(document:didUnlockWithPassword:)])
+            [[self delegate] document:self didUnlockWithPassword:password];
+        return YES;
+    }
+    return NO;
+}
+
 @end

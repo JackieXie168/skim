@@ -46,8 +46,6 @@
 #import "SKAccessibilityFauxUIElement.h"
 
 @interface NSView (SKPDFDisplayViewPrivateDeclarations)
-- (void)passwordEntered:(id)sender;
-
 - (NSRange)accessibilityRangeForSelection:(id)selection;
 - (id)selectionForAccessibilityRange:(NSRange)range;
 @end
@@ -69,7 +67,6 @@ static id SKGetPDFView(id self) {
 }
 
 static void (*original_resetCursorRects)(id, SEL) = NULL;
-static void (*original_passwordEntered)(id, SEL, id) = NULL;
 
 static id (*original_accessibilityAttributeNames)(id, SEL) = NULL;
 static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
@@ -84,13 +81,6 @@ static void replacement_resetCursorRects(id self, SEL _cmd) {
     id pdfView = SKGetPDFView(self);
     if ([pdfView respondsToSelector:@selector(resetPDFToolTipRects)])
         [pdfView resetPDFToolTipRects];
-}
-
-static void replacement_passwordEntered(id self, SEL _cmd, id sender) {
-    SKMainDocument *document = [[[self window] windowController] document];
-    original_passwordEntered(self, _cmd, sender);
-    if ([document respondsToSelector:@selector(savePasswordInKeychain:)])
-        [document savePasswordInKeychain:[sender stringValue]];
 }
 
 #pragma mark Accessibility
@@ -221,7 +211,6 @@ void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass) {
         original_resetCursorRects = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacement_resetCursorRects);
-        original_passwordEntered = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(passwordEntered:), (IMP)replacement_passwordEntered);
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
