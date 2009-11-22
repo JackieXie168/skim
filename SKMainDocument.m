@@ -478,7 +478,7 @@ static char SKMainDocumentDefaultsObservationContext;
         [info setObject:invocation forKey:@"callback"];
     }
     
-    if (SKIsPDFBundleDocumentType(typeName) && SKIsPDFBundleDocumentType([self fileType]) && [self fileURL]) {
+    if (SKIsPDFBundleDocumentType(typeName) && SKIsPDFBundleDocumentType([self fileType]) && [self fileURL] && saveOperation != NSSaveToOperation) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [[self fileURL] path];
         NSString *tmpPath = nil;
