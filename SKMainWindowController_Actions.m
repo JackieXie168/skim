@@ -907,8 +907,10 @@
 }
 
 - (void)passwordSheetDidEnd:(SKPasswordSheetController *)controller returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton)
+    if (returnCode == NSOKButton) {
+        [[controller window] orderOut:nil];
         [[pdfView document] unlockWithPassword:[controller stringValue]];
+    }
 }
 
 - (IBAction)password:(id)sender {
