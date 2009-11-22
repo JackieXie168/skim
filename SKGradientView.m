@@ -1,6 +1,6 @@
 //
-//  BDSKGradientView.m
-//  Bibdesk
+//  SKGradientView.m
+//  Skim
 //
 //  Created by Adam Maxwell on 10/26/05.
 /*
@@ -36,10 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "BDSKGradientView.h"
+#import "SKGradientView.h"
 
 
-@implementation BDSKGradientView
+@implementation SKGradientView
 
 - (void)dealloc
 {

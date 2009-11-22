@@ -54,7 +54,7 @@
 #import "SKPDFView.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
-#import "BDSKGradientView.h"
+#import "SKGradientView.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"
