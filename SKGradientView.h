@@ -1,6 +1,6 @@
 //
-//  BDSKGradientView.h
-//  Bibdesk
+//  SKGradientView.h
+//  Skim
 //
 //  Created by Adam Maxwell on 10/26/05.
 /*
@@ -39,5 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface BDSKGradientView : NSView
+@interface SKGradientView : NSView
 @end

@@ -82,7 +82,7 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
-		CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */; };
+		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE225ADD108C7458007BCDB5 /* NSMapTable_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE225ADC108C7458007BCDB5 /* NSMapTable_SKExtensions.m */; };
@@ -614,8 +614,8 @@
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
 		CE1F67FD0E37552400E07E76 /* SKRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRuntime.h; sourceTree = "<group>"; };
-		CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKGradientView.h; sourceTree = "<group>"; };
-		CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKGradientView.m; sourceTree = "<group>"; };
+		CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKGradientView.h; sourceTree = "<group>"; };
+		CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKGradientView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
@@ -1295,6 +1295,8 @@
 				CECDDBAC0C5BB95F0026AAEC /* SKFindTableView.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
 				CECF61FE0DB258D600587D96 /* SKFontWell.m */,
+				CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */,
+				CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */,
 				CE80A81C0FDAB1690086A46C /* SKHighlightingPopUpButton.h */,
 				CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */,
 				CEE0F5E90EBB3DEC000A7A8C /* SKLevelIndicatorCell.h */,
@@ -1339,8 +1341,6 @@
 				CE0710140B89BDD600733CC8 /* BDSKContainerView.m */,
 				CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */,
 				CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */,
-				CE20938E0C5F9A8D009D3EFB /* BDSKGradientView.h */,
-				CE20938F0C5F9A8D009D3EFB /* BDSKGradientView.m */,
 				CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */,
 				CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */,
 				CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */,
@@ -2032,7 +2032,7 @@
 				CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */,
 				CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */,
 				CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */,
-				CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */,
+				CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */,
 				CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */,
 				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
 				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,

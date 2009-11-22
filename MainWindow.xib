@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10B504</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">740</string>
-		<string key="IBDocument.AppKitVersion">1038.2</string>
-		<string key="IBDocument.HIToolboxVersion">437.00</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
@@ -58,7 +58,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{131.131, 86}</string>
 				<object class="NSView" key="NSWindowView" id="454447583">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -72,7 +72,6 @@
 									<int key="NSvFlags">256</int>
 									<string key="NSFrameSize">{250, 600}</string>
 									<reference key="NSSuperview" ref="943255459"/>
-									<reference key="NSWindow"/>
 									<object class="NSMutableString" key="NSClassName">
 										<characters key="NS.bytes">NSView</characters>
 									</object>
@@ -83,7 +82,6 @@
 									<int key="NSvFlags">256</int>
 									<string key="NSFrame">{{251, 0}, {498, 600}}</string>
 									<reference key="NSSuperview" ref="943255459"/>
-									<reference key="NSWindow"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 								<object class="NSCustomView" id="648893916">
@@ -91,7 +89,6 @@
 									<int key="NSvFlags">256</int>
 									<string key="NSFrame">{{750, 0}, {250, 600}}</string>
 									<reference key="NSSuperview" ref="943255459"/>
-									<reference key="NSWindow"/>
 									<object class="NSMutableString" key="NSClassName">
 										<characters key="NS.bytes">NSView</characters>
 									</object>
@@ -100,14 +97,11 @@
 							</object>
 							<string key="NSFrameSize">{1000, 600}</string>
 							<reference key="NSSuperview" ref="454447583"/>
-							<reference key="NSWindow"/>
 							<bool key="NSIsVertical">YES</bool>
 							<int key="NSDividerStyle">2</int>
 						</object>
 					</object>
 					<string key="NSFrameSize">{1000, 600}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{131.131, 108}</string>
@@ -2386,7 +2380,7 @@
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 			</object>
 			<object class="NSCustomView" id="1030771598">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2400,6 +2394,7 @@
 								<int key="NSvFlags">274</int>
 								<string key="NSFrameSize">{200, 355}</string>
 								<reference key="NSSuperview" ref="970806220"/>
+								<reference key="NSWindow"/>
 								<object class="NSMutableString" key="NSClassName">
 									<characters key="NS.bytes">NSView</characters>
 								</object>
@@ -2408,6 +2403,7 @@
 						</object>
 						<string key="NSFrameSize">{200, 355}</string>
 						<reference key="NSSuperview" ref="1030771598"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 					<object class="NSCustomView" id="803871987">
@@ -2435,6 +2431,7 @@
 														<int key="NSvFlags">260</int>
 														<string key="NSFrame">{{10, 8}, {57, 25}}</string>
 														<reference key="NSSuperview" ref="465709875"/>
+														<reference key="NSWindow"/>
 														<bool key="NSEnabled">YES</bool>
 														<object class="NSSegmentedCell" key="NSCell" id="564124321">
 															<int key="NSCellFlags">67239424</int>
@@ -2470,6 +2467,7 @@
 												</object>
 												<string key="NSFrameSize">{77, 42}</string>
 												<reference key="NSSuperview" ref="492286223"/>
+												<reference key="NSWindow"/>
 												<string key="NSClassName">NSView</string>
 											</object>
 											<object class="NSSearchField" id="230297191">
@@ -2477,6 +2475,7 @@
 												<int key="NSvFlags">258</int>
 												<string key="NSFrame">{{75, 11}, {115, 22}}</string>
 												<reference key="NSSuperview" ref="492286223"/>
+												<reference key="NSWindow"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="408786421">
 													<int key="NSCellFlags">343014976</int>
@@ -2536,30 +2535,35 @@
 										</object>
 										<string key="NSFrameSize">{200, 45}</string>
 										<reference key="NSSuperview" ref="164814492"/>
-										<string key="NSClassName">BDSKGradientView</string>
+										<reference key="NSWindow"/>
+										<string key="NSClassName">SKGradientView</string>
 										<string key="NSExtension">NSView</string>
 									</object>
 								</object>
 								<string key="NSFrameSize">{200, 45}</string>
 								<reference key="NSSuperview" ref="803871987"/>
+								<reference key="NSWindow"/>
 								<string key="NSClassName">BDSKCollapsibleView</string>
 								<string key="NSExtension">NSView</string>
 							</object>
 						</object>
 						<string key="NSFrame">{{0, 355}, {200, 45}}</string>
 						<reference key="NSSuperview" ref="1030771598"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">BDSKEdgeView</string>
 						<string key="NSExtension">NSView</string>
 					</object>
 				</object>
 				<string key="NSFrameSize">{200, 400}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="423240084">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2573,12 +2577,14 @@
 								<int key="NSvFlags">274</int>
 								<string key="NSFrameSize">{200, 355}</string>
 								<reference key="NSSuperview" ref="339115281"/>
+								<reference key="NSWindow"/>
 								<string key="NSClassName">NSView</string>
 								<string key="NSExtension">NSResponder</string>
 							</object>
 						</object>
 						<string key="NSFrameSize">{200, 355}</string>
 						<reference key="NSSuperview" ref="423240084"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">NSView</string>
 					</object>
 					<object class="NSCustomView" id="508562391">
@@ -2601,6 +2607,7 @@
 												<int key="NSvFlags">260</int>
 												<string key="NSFrame">{{10, 8}, {57, 25}}</string>
 												<reference key="NSSuperview" ref="297639197"/>
+												<reference key="NSWindow"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSegmentedCell" key="NSCell" id="545140611">
 													<int key="NSCellFlags">67239424</int>
@@ -2638,6 +2645,7 @@
 												<int key="NSvFlags">258</int>
 												<string key="NSFrame">{{75, 11}, {115, 22}}</string>
 												<reference key="NSSuperview" ref="297639197"/>
+												<reference key="NSWindow"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="634734041">
 													<int key="NSCellFlags">343014976</int>
@@ -2697,23 +2705,28 @@
 										</object>
 										<string key="NSFrameSize">{200, 45}</string>
 										<reference key="NSSuperview" ref="641058940"/>
-										<string key="NSClassName">BDSKGradientView</string>
+										<reference key="NSWindow"/>
+										<string key="NSClassName">SKGradientView</string>
 										<string key="NSExtension">NSView</string>
 									</object>
 								</object>
 								<string key="NSFrameSize">{200, 45}</string>
 								<reference key="NSSuperview" ref="508562391"/>
+								<reference key="NSWindow"/>
 								<string key="NSClassName">BDSKCollapsibleView</string>
 								<string key="NSExtension">NSView</string>
 							</object>
 						</object>
 						<string key="NSFrame">{{0, 355}, {200, 45}}</string>
 						<reference key="NSSuperview" ref="423240084"/>
+						<reference key="NSWindow"/>
 						<string key="NSClassName">BDSKEdgeView</string>
 						<string key="NSExtension">NSView</string>
 					</object>
 				</object>
 				<string key="NSFrameSize">{200, 400}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -6188,6 +6201,7 @@
 					<string>691.ImportedFromIB2</string>
 					<string>692.IBPluginDependency</string>
 					<string>692.ImportedFromIB2</string>
+					<string>694.IBEditorWindowLastContentRect</string>
 					<string>694.IBPluginDependency</string>
 					<string>694.ImportedFromIB2</string>
 					<string>695.IBPluginDependency</string>
@@ -6574,6 +6588,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
+					<string>{{57, 402}, {200, 400}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6765,22 +6780,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">BDSKEdgeView</string>
 					<string key="superclassName">BDSKContainerView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKGradientView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">BDSKGradientView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BDSKGradientView</string>
-					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -7215,6 +7214,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">SKGradientView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SKGradientView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">SKLevelIndicatorCell</string>
 					<string key="superclassName">NSLevelIndicatorCell</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -7559,7 +7566,7 @@
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
 							<string>BDSKEdgeView</string>
-							<string>BDSKGradientView</string>
+							<string>SKGradientView</string>
 							<string>NSView</string>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
@@ -7586,7 +7593,7 @@
 							<string>BDSKCollapsibleView</string>
 							<string>NSView</string>
 							<string>BDSKEdgeView</string>
-							<string>BDSKGradientView</string>
+							<string>SKGradientView</string>
 							<string>NSView</string>
 							<string>NSSegmentedControl</string>
 							<string>NSSegmentedControl</string>
@@ -7597,7 +7604,7 @@
 							<string>NSArrayController</string>
 							<string>SKThumbnailTableView</string>
 							<string>NSView</string>
-							<string>NSSplitView</string>
+							<string>SKSplitView</string>
 							<string>NSSegmentedControl</string>
 							<string>NSArrayController</string>
 							<string>SKThumbnailTableView</string>

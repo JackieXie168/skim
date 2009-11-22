@@ -68,7 +68,7 @@ enum {
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class PDFAnnotation, PDFSelection, SKGroupedSearchResult, SKFloatMapTable;
-@class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
+@class SKPDFView, SKSecondaryPDFView, BDSKCollapsibleView, BDSKEdgeView, SKGradientView, SKColorSwatch, SKStatusBar, SKSplitView, SKThumbnailTableView, SKNoteOutlineView, SKTocOutlineView;
 @class SKMainDocument, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKProgressController, SKPageSheetController, SKScaleSheetController, SKPasswordSheetController, SKBookmarkSheetController, SKPresentationOptionsSheetController;
 
 @interface SKMainWindowController : NSWindowController <SKSnapshotWindowControllerDelegate, SKThumbnailDelegate> {
@@ -86,7 +86,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView                 *leftSideView;
     IBOutlet BDSKEdgeView           *leftSideEdgeView;
     IBOutlet BDSKCollapsibleView    *leftSideCollapsibleView;
-    IBOutlet BDSKGradientView       *leftSideGradientView;
+    IBOutlet SKGradientView       *leftSideGradientView;
     IBOutlet NSSegmentedControl     *leftSideButton;
     IBOutlet NSSearchField          *searchField;
     
@@ -94,7 +94,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     IBOutlet NSView                 *rightSideView;
     IBOutlet BDSKEdgeView           *rightSideEdgeView;
     IBOutlet BDSKCollapsibleView    *rightSideCollapsibleView;
-    IBOutlet BDSKGradientView       *rightSideGradientView;
+    IBOutlet SKGradientView       *rightSideGradientView;
     IBOutlet NSSegmentedControl     *rightSideButton;
     IBOutlet NSSearchField          *noteSearchField;
     
