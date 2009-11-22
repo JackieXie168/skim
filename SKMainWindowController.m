@@ -2081,6 +2081,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self updatePageLabelsAndOutline];
 }
 
+- (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {log_method();
+    [[self document] savePasswordInKeychain:password];
+}
+
 #pragma mark PDFDocument notifications
 
 - (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {

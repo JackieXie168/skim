@@ -42,3 +42,8 @@
 
 @interface SKPDFDocument : PDFDocument
 @end
+
+@interface NSObject (SKPDFDocumentDelegate)
+- (void)document:(PDFDocument *)document didUnlockWithPassword:(NSString *)password;
+@end
+
