@@ -86,6 +86,6 @@
 }
 
 // required in order for redisplay to work properly with the controls
-- (BOOL)isOpaque{  return ([[self window] styleMask] & NSClosableWindowMask) != 0; }
+- (BOOL)isOpaque{  return [[self window] styleMask] != NSBorderlessWindowMask; }
 
 @end
