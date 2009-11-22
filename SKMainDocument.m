@@ -415,7 +415,7 @@ static char SKMainDocumentDefaultsObservationContext;
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
     NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] intValue];
-    NSString *tmpPath = nil;
+    NSString *tmpPath = [info objectForKey:@"tmpPath"];
     
     if (didSave) {
         NSURL *absoluteURL = [info objectForKey:@"URL"];
@@ -424,14 +424,12 @@ static char SKMainDocumentDefaultsObservationContext;
         if (SKIsPDFDocumentType(typeName) || SKIsPostScriptDocumentType(typeName) || SKIsDVIDocumentType(typeName)) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation];
-        } else if (SKIsPDFBundleDocumentType(typeName)) {
+        } else if (SKIsPDFBundleDocumentType(typeName) && tmpPath) {
             // move extra package content like version info to the new location
-            if (tmpPath = [info objectForKey:@"tmpPath"]) {
-                NSFileManager *fm = [NSFileManager defaultManager];
-                NSString *path = [absoluteURL path];
-                for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
-                    [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
-            }
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSString *path = [absoluteURL path];
+            for (NSString *file in [fm contentsOfDirectoryAtPath:tmpPath error:NULL])
+                [fm moveItemAtPath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] error:NULL];
         }
     
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
