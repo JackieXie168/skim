@@ -1782,61 +1782,69 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     return NULL;
 }
 
+- (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    NSString *password = [(NSString *)contextInfo autorelease];
+    if (returnCode == NSAlertDefaultReturn) {
+        const char *serviceName = [self keychainServiceName];
+        if (serviceName != NULL) {
+            const char *userName = [NSUserName() UTF8String];
+            const char *comment = [[[self fileURL] path] UTF8String];
+            
+            OSStatus err;
+            SecKeychainItemRef itemRef = NULL;    
+            const void *passwordData = NULL;
+            UInt32 passwordLength = 0;
+            
+            // first see if the password exists in the keychain
+            err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, (void **)&passwordData, &itemRef);
+            
+            if(err == noErr){
+                // password was on keychain, so flush the buffer and then modify the keychain
+                SecKeychainItemFreeContent(NULL, (void *)passwordData);
+                passwordData = NULL;
+                
+                passwordData = [password UTF8String];
+                SecKeychainAttribute attrs[] = {
+                    { kSecAccountItemAttr, strlen(userName), (char *)userName },
+                    { kSecServiceItemAttr, strlen(serviceName), (char *)serviceName },
+                    { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
+                const SecKeychainAttributeList attributes = { comment == NULL ? 2 : 3, attrs };
+                
+                err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
+            } else if(err == errSecItemNotFound){
+                // password not on keychain, so add it
+                passwordData = [password UTF8String];
+                err = SecKeychainAddGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, strlen(passwordData), passwordData, &itemRef);    
+                if (err == noErr && comment != NULL) {
+                    SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(comment), (char *)comment } };
+                    const SecKeychainAttributeList attributes = { 1, attrs };
+                    
+                    err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
+                }
+            } else 
+                NSLog(@"Error %d occurred setting password", err);
+        }
+    }
+}
+
 - (void)savePasswordInKeychain:(NSString *)aPassword {
     if ([[self pdfDocument] isLocked])
         return;
     
     NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
-    if (saveOption != NSAlertAlternateReturn) {
-        const char *serviceName = [self keychainServiceName];
-        if (serviceName != NULL) {
-            if (saveOption == NSAlertOtherReturn) {
-                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]
-                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:NSLocalizedString(@"No", @"Button title")
-                                                   otherButton:nil
-                                     informativeTextWithFormat:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
-                saveOption = [alert runModal];
-            }
-            if (saveOption == NSAlertDefaultReturn) {
-                const char *userName = [NSUserName() UTF8String];
-                const char *comment = [[[self fileURL] path] UTF8String];
-                
-                OSStatus err;
-                SecKeychainItemRef itemRef = NULL;    
-                const void *passwordData = NULL;
-                UInt32 passwordLength = 0;
-                
-                // first see if the password exists in the keychain
-                err = SecKeychainFindGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, &passwordLength, (void **)&passwordData, &itemRef);
-                
-                if(err == noErr){
-                    // password was on keychain, so flush the buffer and then modify the keychain
-                    SecKeychainItemFreeContent(NULL, (void *)passwordData);
-                    passwordData = NULL;
-                    
-                    passwordData = [aPassword UTF8String];
-                    SecKeychainAttribute attrs[] = {
-                        { kSecAccountItemAttr, strlen(userName), (char *)userName },
-                        { kSecServiceItemAttr, strlen(serviceName), (char *)serviceName },
-                        { kSecCommentItemAttr, comment == NULL ? 0 : strlen(comment), (char *)comment } };
-                    const SecKeychainAttributeList attributes = { comment == NULL ? 2 : 3, attrs };
-                    
-                    err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
-                } else if(err == errSecItemNotFound){
-                    // password not on keychain, so add it
-                    passwordData = [aPassword UTF8String];
-                    err = SecKeychainAddGenericPassword(NULL, strlen(serviceName), serviceName, strlen(userName), userName, strlen(passwordData), passwordData, &itemRef);    
-                    if (err == noErr && comment != NULL) {
-                        SecKeychainAttribute attrs[] = { { kSecCommentItemAttr, strlen(comment), (char *)comment } };
-                        const SecKeychainAttributeList attributes = { 1, attrs };
-                        
-                        err = SecKeychainItemModifyAttributesAndData(itemRef, &attributes, strlen(passwordData), passwordData);
-                    }
-                } else 
-                    NSLog(@"Error %d occurred setting password", err);
-            }
-        }
+    if (saveOption == NSAlertDefaultReturn) {
+        [self passwordAlertDidEnd:nil returnCode:saveOption contextInfo:[aPassword retain]];
+    } else if (saveOption == NSAlertOtherReturn) {
+        NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]
+                                         defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                       alternateButton:NSLocalizedString(@"No", @"Button title")
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
+        NSWindow *window = [[self mainWindowController] window];
+        if ([window attachedSheet])
+            [self passwordAlertDidEnd:nil returnCode:[alert runModal] contextInfo:[aPassword retain]];
+        else
+            [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[aPassword retain]];
     }
 }
 
