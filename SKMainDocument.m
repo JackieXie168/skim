@@ -395,7 +395,7 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
-    NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] intValue];
+    NSSaveOperationType saveOperation = [[info objectForKey:@"saveOperation"] unsignedIntegerValue];
     NSString *tmpPath = [info objectForKey:@"tmpPath"];
     
     if (didSave) {
@@ -453,7 +453,7 @@ static char SKMainDocumentDefaultsObservationContext;
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
     }
     
-    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, @"URL", typeName, @"type", [NSNumber numberWithInt:saveOperation], @"saveOperation", nil];
+    NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithObjectsAndKeys:absoluteURL, @"URL", typeName, @"type", [NSNumber numberWithUnsignedInteger:saveOperation], @"saveOperation", nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
