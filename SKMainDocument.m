@@ -2058,9 +2058,8 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
             if (requiredExtension && [requiredExtension caseInsensitiveCompare:extension] != NSOrderedSame) {
                 [command setScriptErrorNumber:NSArgumentsWrongScriptError];
                 [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."]];
-            } else if ([self saveToURL:fileURL ofType:fileType forSaveOperation:saveOperation error:NULL] == NO) {
-                [command setScriptErrorNumber:NSInternalScriptError];
-                [command setScriptErrorString:saveOperation == NSSaveToOperation ? @"Unable to export." : @"Unable to save."];
+            } else {
+                [self saveToURL:fileURL ofType:fileType forSaveOperation:saveOperation delegate:nil didSaveSelector:NULL contextInfo:NULL];
             }
         }
     } else if (fileType) {
