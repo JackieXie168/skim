@@ -293,42 +293,23 @@ static char SKMainDocumentDefaultsObservationContext;
     BOOL success = [super prepareSavePanel:savePanel];
     if (success && docFlags.exportUsingPanel) {
         NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
-        if (formatPopup) {
-            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
-            if (lastExportedType) {
-                NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
-                if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
-                    [formatPopup selectItemAtIndex:idx];
-                    [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
-                    [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
-                }
+        NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
+        if (formatPopup && lastExportedType) {
+            NSInteger idx = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+            if (idx != -1 && idx != [formatPopup indexOfSelectedItem]) {
+                [formatPopup selectItemAtIndex:idx];
+                [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+                [savePanel setAllowedFileTypes:[NSArray arrayWithObjects:[self fileNameExtensionForType:lastExportedType saveOperation:NSSaveToOperation], nil]];
             }
         }
     }
     return success;
 }
 
-- (void)document:(NSDocument *)doc didSaveFromPanel:(BOOL)didSave contextInfo:(void *)contextInfo { 
-    docFlags.exportUsingPanel = NO;
-    if (contextInfo != NULL) {
-        NSInvocation *invocation = [(NSInvocation *)contextInfo autorelease];
-        [invocation setArgument:&doc atIndex:2];
-        [invocation setArgument:&didSave atIndex:3];
-        [invocation invoke];
-    }
-}
-
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
     docFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
-    
-    NSInvocation *invocation = nil;
-    if (delegate && didSaveSelector) {
-        invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
-        [invocation setArgument:&contextInfo atIndex:4];
-    }
-    
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveFromPanel:contextInfo:) contextInfo:invocation];
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
 #ifdef __LP64__
@@ -451,6 +432,9 @@ static char SKMainDocumentDefaultsObservationContext;
         [self checkFileUpdatesIfNeeded];
         docFlags.isSaving = NO;
     }
+    
+    // in case we saved using the panel we should reset this for the next save
+    docFlags.exportUsingPanel = NO;
     
     NSInvocation *invocation = [info objectForKey:@"callback"];
     if (invocation) {
