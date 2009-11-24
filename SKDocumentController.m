@@ -178,14 +178,11 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     } else if ([self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
         if ([inAbsoluteURL isFileURL]) {
-            NSString *fileName = [inAbsoluteURL path];
-            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-            NSData *leadingData = [fh readDataOfLength:headerLength];
-            if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
+            NSData *leadingData = [[NSFileHandle fileHandleForReadingAtPath:[inAbsoluteURL path]] readDataOfLength:headerLength];
+            if ([pdfHeaderData isEqual:leadingData])
                 type = SKPDFDocumentType;
-            } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
+            else if ([psHeaderData isEqual:leadingData])
                 type = SKPostScriptDocumentType;
-            }
         }
         if (type == nil && outError)
             *outError = error;
