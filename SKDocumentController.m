@@ -171,11 +171,9 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
     
     NSError *error = nil;
     NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
-    BOOL isDir;
     
     // folders are not recognized, so we have to check for those ourselves, rdar://problem/7056540
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[inAbsoluteURL path] isDirectory:&isDir] && isDir &&
-        [[NSWorkspace sharedWorkspace] isFilePackageAtPath:[inAbsoluteURL path]] == NO) {
+    if ([[NSWorkspace sharedWorkspace] type:[[NSWorkspace sharedWorkspace] typeOfFile:[inAbsoluteURL path] error:NULL] conformsToType:(NSString *)kUTTypeFolder]) {
         type = SKFolderDocumentType;
     } else if ([self documentClassForType:type] == NULL) {
         // "open -f" creates a temporary file with a .txt extension, we want to be able to open these file as it can be very handy to e.g. display man pages and pretty printed text file from the command line
