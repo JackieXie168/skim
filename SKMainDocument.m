@@ -365,8 +365,8 @@ static char SKMainDocumentDefaultsObservationContext;
             tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
             whichInfo |= kFSCatInfoNodeFlags;
         }
-        if ((PERMISSIONS_MODE(catalogInfo) & 0x80) == 0) {
-            PERMISSIONS_MODE(tmpCatalogInfo) |= 0x80;
+        if ((PERMISSIONS_MODE(catalogInfo) & S_IWUSR) == 0) {
+            PERMISSIONS_MODE(tmpCatalogInfo) |= S_IWUSR;
             whichInfo |= kFSCatInfoPermissions;
         }
         if (whichInfo != kFSCatInfoNone)
