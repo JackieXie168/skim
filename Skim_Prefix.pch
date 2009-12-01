@@ -22,8 +22,8 @@
 
     #else
 
-       #define log_method();
-       #define log_function();
+       #define log_method()
+       #define log_function()
 
     #endif
 
@@ -34,20 +34,22 @@
     #if defined (DEBUG)
 
        #define log_function() \
-         fprintf(stderr, "%s (%s line %d)", __PRETTY_FUNCTION__, __FILENAME__, __LINE__) \
-         fflush(stderr);
+         do { \
+            fprintf(stderr, "%s (%s line %d)", __PRETTY_FUNCTION__, __FILENAME__, __LINE__) \
+            fflush(stderr); \
+         } while (0)
     
     #else
     
-       #define log_function();
+       #define log_function()
 
     #endif
 
 #endif
 
-#define SKDESTROY(variable) ({ [variable release]; variable = nil; })
-#define SKCFDESTROY(variable) ({ if (variable) CFRelease(variable); variable = NULL; })
-#define SKZONEDESTROY(variable) ({ if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; })
+#define SKDESTROY(variable) do { [variable release]; variable = nil; } while (0)
+#define SKCFDESTROY(variable) do { if (variable) CFRelease(variable); variable = NULL; } while (0)
+#define SKZONEDESTROY(variable) do { if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; } while (0)
 
 #if __LP64__
 #define SKRound(f)      round(f)
