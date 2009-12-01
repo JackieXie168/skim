@@ -58,8 +58,7 @@
 
 - (void)stopAnimation {
     [animation stopAnimation];
-    [animation release];
-    animation = nil;
+    SKDESTROY(animation);
 }
 
 - (void)dealloc {
@@ -146,15 +145,13 @@
 }
 
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
-    [animation release];
-    animation = nil;
+    SKDESTROY(animation);
     [self orderOut:nil];
     [self setAlphaValue:1.0];
 }
 
 - (void)animationDidStop:(NSAnimation *)anAnimation {
-    [animation release];
-    animation = nil;
+    SKDESTROY(animation);
     [self orderOut:nil];
     [self setAlphaValue:1.0];
 }

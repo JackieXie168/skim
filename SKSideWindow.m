@@ -262,8 +262,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         acceptsMouseOver = flag;
         if (timer) {
             [timer invalidate];
-            [timer release];
-            timer = nil;
+            SKDESTROY(timer);
         }
     }
 }
@@ -435,8 +434,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         return;
     if (timer) {
         [timer invalidate];
-        [timer release];
-        timer = nil;
+        SKDESTROY(timer);
     }
     //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
     [(SKSideWindow *)[self window] slideOut];
@@ -444,8 +442,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (void)slideInWithTimer:(NSTimer *)aTimer {
     [timer invalidate];
-    [timer release];
-    timer = nil;
+    SKDESTROY(timer);
     [(SKSideWindow *)[self window] slideIn];
 }
 
@@ -457,8 +454,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
     } else if (timer) {
         [timer invalidate];
-        [timer release];
-        timer = nil;
+        SKDESTROY(timer);
     }
 }
 

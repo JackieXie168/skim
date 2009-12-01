@@ -238,8 +238,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)orderOut:(id)sender {
     [[self parentWindow] removeChildWindow:self];
     [super orderOut:sender];
-    [view release];
-    view = nil;
+    SKDESTROY(view);
 }
 
 - (NSView *)view {
