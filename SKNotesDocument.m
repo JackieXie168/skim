@@ -92,10 +92,10 @@
 }
 
 - (void)dealloc {
-    [notes release];
-	[rowHeights release];
-    [toolbarItems release];
-    [statusBar release];
+    SKDESTROY(notes);
+	SKDESTROY(rowHeights);
+    SKDESTROY(toolbarItems);
+    SKDESTROY(statusBar);
     [super dealloc];
 }
 

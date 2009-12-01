@@ -58,8 +58,8 @@
 }
 
 - (void)dealloc {
-    [thumbnail release];
-    [label release];
+    SKDESTROY(thumbnail);
+    SKDESTROY(label);
     [super dealloc];
 }
 

@@ -55,7 +55,7 @@
                 [mutableVersionString appendFormat:@"%@%ld", sep, (long)component];
                 
                 componentCount++;
-                components = realloc(components, sizeof(*components) * componentCount);
+                components = (NSInteger *)NSZoneRealloc(NSDefaultMallocZone(), components, sizeof(NSInteger) * componentCount);
                 components[componentCount - 1] = component;
             
                 if ([scanner isAtEnd] == NO) {
@@ -84,7 +84,7 @@
                         if (releaseType != SKReleaseVersionType) {
                             // we scanned an "a", "b", "d", "f", or "rc"
                             componentCount++;
-                            components = realloc(components, sizeof(*components) * componentCount);
+                            components = (NSInteger *)NSZoneRealloc(NSDefaultMallocZone(), components, sizeof(NSInteger) * componentCount);
                             components[componentCount - 1] = -releaseType;
                             
                             sep = @"";
@@ -118,10 +118,9 @@
 
 - (void)dealloc;
 {
-    [originalVersionString release];
-    [cleanVersionString release];
-    if (components)
-        free(components);
+    SKDESTROY(originalVersionString);
+    SKDESTROY(cleanVersionString);
+    SKZONEDESTROY(components);
     [super dealloc];
 }
 

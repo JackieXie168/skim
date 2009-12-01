@@ -68,7 +68,7 @@
 }
 
 - (void)dealloc {
-	[edgeColors release];
+	SKDESTROY(edgeColors);
 	[super dealloc];
 }
 

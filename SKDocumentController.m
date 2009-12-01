@@ -133,7 +133,7 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 }
 
 - (void)dealloc {
-    [customExportTemplateFiles release];
+    SKDESTROY(customExportTemplateFiles);
     [super dealloc];
 }
 

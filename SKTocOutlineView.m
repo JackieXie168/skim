@@ -46,7 +46,7 @@
 + (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
-    [trackingRects release];
+    SKDESTROY(trackingRects);
     [super dealloc];
 }
 

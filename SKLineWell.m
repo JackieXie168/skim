@@ -138,7 +138,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self unbind:SKLineWellEndLineStyleKey];
     if (lwFlags.active)
         [self deactivate];
-    [dashPattern release];
+    SKDESTROY(dashPattern);
     [super dealloc];
 }
 

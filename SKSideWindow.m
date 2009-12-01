@@ -239,8 +239,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 
 - (void)dealloc {
     [timer invalidate];
-    [timer release];
-    timer = nil;
+    SKDESTROY(timer);
     [super dealloc];
 }
 

@@ -102,10 +102,10 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 }
 
 - (void)dealloc {
-    [font release];
-    [backgroundColor release];
-    [labelFont release];
-    [labelColor release];
+    SKDESTROY(font);
+    SKDESTROY(backgroundColor);
+    SKDESTROY(labelFont);
+    SKDESTROY(labelColor);
     [super dealloc];
 }
 

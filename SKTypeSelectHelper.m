@@ -93,8 +93,8 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
-    [searchString release];
-    [searchCache release];
+    SKDESTROY(searchString);
+    SKDESTROY(searchCache);
     [super dealloc];
 }
 

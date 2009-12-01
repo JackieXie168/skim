@@ -62,9 +62,9 @@ static char SKTableViewDefaultsObservationContext;
         @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKTableFontSizeKey]; }
         @catch (id e) {}
     }
-    [trackingRects release];
+    SKDESTROY(trackingRects);
     [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
+    SKDESTROY(typeSelectHelper);
     [super dealloc];
 }
 

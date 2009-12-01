@@ -81,7 +81,7 @@
 }
 
 - (void)dealloc {
-    [valueTransformer release];
+    SKDESTROY(valueTransformer);
     [super dealloc];
 }
 

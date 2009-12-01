@@ -150,16 +150,16 @@ static char SKMainDocumentDefaultsObservationContext;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [mainWindowController release];
+    SKDESTROY(mainWindowController);
     [synchronizer terminate];
-    [synchronizer release];
-    [watchedFile release];
-    [pdfData release];
-    [psOrDviData release];
-    [readNotesAccessoryView release];
-    [lastModifiedDate release];
-    [progressController release];
-    [tmpData release];
+    SKDESTROY(synchronizer);
+    SKDESTROY(watchedFile);
+    SKDESTROY(pdfData);
+    SKDESTROY(psOrDviData);
+    SKDESTROY(readNotesAccessoryView);
+    SKDESTROY(lastModifiedDate);
+    SKDESTROY(progressController);
+    SKDESTROY(tmpData);
     [super dealloc];
 }
 
@@ -2278,10 +2278,10 @@ NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary *settin
 }
 
 - (void)dealloc {
-    [pdfDocument release];
-    [noteDicts release];
-    [presentationOptions release];
-    [openMetaTags release];
+    SKDESTROY(pdfDocument);
+    SKDESTROY(noteDicts);
+    SKDESTROY(presentationOptions);
+    SKDESTROY(openMetaTags);
     [super dealloc];
 }
 

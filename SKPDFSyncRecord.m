@@ -54,7 +54,7 @@
 }
 
 - (void)dealloc {
-    [file release];
+    SKDESTROY(file);
     [super dealloc];
 }
 

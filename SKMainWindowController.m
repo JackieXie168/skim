@@ -244,41 +244,41 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
 
 - (void)dealloc {
     [self stopObservingNotes:[self notes]];
-    [undoGroupOldPropertiesPerNote release];
+    SKDESTROY(undoGroupOldPropertiesPerNote);
     @try { [colorSwatch unbind:@"colors"]; }
     @catch (id e) {}
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
-    [temporaryAnnotations release];
-    [dirtySnapshots release];
-	[searchResults release];
-	[groupedSearchResults release];
-	[thumbnails release];
-	[notes release];
-	[snapshots release];
-	[tags release];
-    [pageLabels release];
-    [pageLabel release];
-	[rowHeights release];
-    [lastViewedPages release];
-	[leftSideWindow release];
-	[rightSideWindow release];
-	[fullScreenWindow release];
-    [mainWindow release];
-    [statusBar release];
-    [toolbarItems release];
-    [savedNormalSetup release];
-    [progressController release];
-    [colorAccessoryView release];
-    [textColorAccessoryView release];
-    [leftSideDrawer release];
-    [rightSideDrawer release];
-    [pdfView release];
-    [pdfSplitView release];
-    [secondaryPdfContentView release];
-    [presentationNotesDocument release];
-    [leftSideButton release];
-    [findButton release];
+    SKDESTROY(temporaryAnnotations);
+    SKDESTROY(dirtySnapshots);
+	SKDESTROY(searchResults);
+	SKDESTROY(groupedSearchResults);
+	SKDESTROY(thumbnails);
+	SKDESTROY(notes);
+	SKDESTROY(snapshots);
+	SKDESTROY(tags);
+    SKDESTROY(pageLabels);
+    SKDESTROY(pageLabel);
+	SKDESTROY(rowHeights);
+    SKDESTROY(lastViewedPages);
+	SKDESTROY(leftSideWindow);
+	SKDESTROY(rightSideWindow);
+	SKDESTROY(fullScreenWindow);
+    SKDESTROY(mainWindow);
+    SKDESTROY(statusBar);
+    SKDESTROY(toolbarItems);
+    SKDESTROY(savedNormalSetup);
+    SKDESTROY(progressController);
+    SKDESTROY(colorAccessoryView);
+    SKDESTROY(textColorAccessoryView);
+    SKDESTROY(leftSideDrawer);
+    SKDESTROY(rightSideDrawer);
+    SKDESTROY(pdfView);
+    SKDESTROY(pdfSplitView);
+    SKDESTROY(secondaryPdfContentView);
+    SKDESTROY(presentationNotesDocument);
+    SKDESTROY(leftSideButton);
+    SKDESTROY(findButton);
     [super dealloc];
 }
 

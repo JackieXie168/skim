@@ -108,11 +108,11 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self cancel];
-    [URL release];
-    [URLDownload release];
-    [filePath release];
-    [fileIcon release];
-    [progressIndicator release];
+    SKDESTROY(URL);
+    SKDESTROY(URLDownload);
+    SKDESTROY(filePath);
+    SKDESTROY(fileIcon);
+    SKDESTROY(progressIndicator);
     [super dealloc];
 }
 

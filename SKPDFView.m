@@ -269,13 +269,13 @@ enum {
     [self doAutohide:NO];
     [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
     [self removePDFToolTipRects];
-    [PDFToolTipRects release];
+    SKDESTROY(PDFToolTipRects);
     [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
-    [transitionController release];
-    [navWindow release];
-    [readingBar release];
-    [accessibilityChildren release];
+    SKDESTROY(typeSelectHelper);
+    SKDESTROY(transitionController);
+    SKDESTROY(navWindow);
+    SKDESTROY(readingBar);
+    SKDESTROY(accessibilityChildren);
     [super dealloc];
 }
 

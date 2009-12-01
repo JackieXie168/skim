@@ -45,6 +45,10 @@
 
 #endif
 
+#define SKDESTROY(variable) ({ [variable release]; variable = nil; })
+#define SKCFDESTROY(variable) ({ if (variable) CFRelease(variable); variable = NULL; })
+#define SKZONEDESTROY(variable) ({ if (variable) NSZoneFree(NSZoneFromPointer((void*)variable), (void *)variable); variable = NULL; })
+
 #if __LP64__
 #define SKRound(f)      round(f)
 #define SKFloor(f)      floor(f)

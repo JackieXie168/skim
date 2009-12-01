@@ -147,8 +147,8 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [zoomButton release];
-    [zoomSlider release];
+    SKDESTROY(zoomButton);
+    SKDESTROY(zoomSlider);
     [super dealloc];
 }
 
@@ -264,7 +264,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)dealloc {
-    [stringValue release];
+    SKDESTROY(stringValue);
     [super dealloc];
 }
 
@@ -369,10 +369,10 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)dealloc {
-    [toolTip release];
-    [alternateToolTip release];
-    [path release];
-    [alternatePath release];
+    SKDESTROY(toolTip);
+    SKDESTROY(alternateToolTip);
+    SKDESTROY(path);
+    SKDESTROY(alternatePath);
     [super dealloc];
 }
 
@@ -468,7 +468,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 }
 
 - (void)dealloc {
-    [toolTip release];
+    SKDESTROY(toolTip);
     [super dealloc];
 }
 

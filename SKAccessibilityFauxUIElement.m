@@ -168,7 +168,7 @@ static SEL SKAttributeGetter(NSString *attribute) {
 }
 
 - (void)dealloc {
-    [object release];
+    SKDESTROY(object);
     [super dealloc];
 }
 

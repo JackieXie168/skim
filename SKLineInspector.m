@@ -80,7 +80,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)dealloc {
-    [dashPattern release];
+    SKDESTROY(dashPattern);
     [super dealloc];
 }
 

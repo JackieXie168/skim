@@ -56,7 +56,7 @@
 }
 
 - (void)dealloc {
-    [keyPath release];
+    SKDESTROY(keyPath);
     [super dealloc];
 }
 
@@ -80,7 +80,7 @@
 }
 
 - (void)dealloc {
-    [attributes release];
+    SKDESTROY(attributes);
     [super dealloc];
 }
 
@@ -105,10 +105,10 @@
 }
 
 - (void)dealloc {
-    [itemTemplateString release];
-    [separatorTemplateString release];
-    [itemTemplate release];
-    [separatorTemplate release];
+    SKDESTROY(itemTemplateString);
+    SKDESTROY(separatorTemplateString);
+    SKDESTROY(itemTemplate);
+    SKDESTROY(separatorTemplate);
     [super dealloc];
 }
 
@@ -143,10 +143,10 @@
 }
 
 - (void)dealloc {
-    [itemTemplateAttributedString release];
-    [separatorTemplateAttributedString release];
-    [itemTemplate release];
-    [separatorTemplate release];
+    SKDESTROY(itemTemplateAttributedString);
+    SKDESTROY(separatorTemplateAttributedString);
+    SKDESTROY(itemTemplate);
+    SKDESTROY(separatorTemplate);
     [super dealloc];
 }
 
@@ -180,8 +180,8 @@
 }
 
 - (void)dealloc {
-    [subtemplates release];
-    [matchStrings release];
+    SKDESTROY(subtemplates);
+    SKDESTROY(matchStrings);
     [super dealloc];
 }
 
@@ -237,7 +237,7 @@
 }
 
 - (void)dealloc {
-    [text release];
+    SKDESTROY(text);
     [super dealloc];
 }
 
@@ -272,7 +272,7 @@
 }
 
 - (void)dealloc {
-    [attributedText release];
+    SKDESTROY(attributedText);
     [super dealloc];
 }
 

@@ -477,7 +477,7 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)dealloc {
-    [textColor release];
+    SKDESTROY(textColor);
     [super dealloc];
 }
 
