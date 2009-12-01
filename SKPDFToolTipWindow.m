@@ -163,8 +163,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
 - (NSTimeInterval)autoHideTimeInterval { return AUTO_HIDE_TIME_INTERVAL; }
 
 - (void)willClose {
-    [context release];
-    context = nil;
+    SKDESTROY(context);
     point = NSZeroPoint;
 }
 
