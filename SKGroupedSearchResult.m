@@ -56,8 +56,8 @@ NSString *SKGroupedSearchResultCountKey = @"count";
 }
 
 - (void)dealloc {
-    [page release];
-    [matches release];
+    SKDESTROY(page);
+    SKDESTROY(matches);
     [super dealloc];
 }
 

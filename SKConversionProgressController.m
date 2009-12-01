@@ -109,7 +109,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 }
 
 - (void)dealloc {
-    if (converter) CFRelease(converter);
+    SKCFDESTROY(converter);
     [super dealloc];
 }
 
@@ -238,8 +238,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     CGDataConsumerRelease(consumer);
     
     if (rv != SKConversionSucceeded) {
-        CFRelease(pdfData);
-        pdfData = nil;
+        SKCFDESTROY(pdfData);
     }
     
     return [(id)pdfData autorelease];
@@ -365,8 +364,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         NSInteger rv = [self runModalSelector:@selector(doDVIConversionWithInfo:) withObject:dictionary];
         
         if (rv != SKConversionSucceeded) {
-            [pdfData release];
-            pdfData = nil;
+            SKDESTROY(pdfData);
         }
     } else {
         NSBeep();

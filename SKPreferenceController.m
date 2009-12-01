@@ -90,7 +90,7 @@ static char SKPreferenceWindowUpdaterObservationContext;
     [sudc removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
     [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"automaticallyChecksForUpdates"];
     [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:@"updateCheckInterval"];
-    [resettableKeys release];
+    SKDESTROY(resettableKeys);
     [super dealloc];
 }
 

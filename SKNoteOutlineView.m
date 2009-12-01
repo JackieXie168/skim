@@ -50,7 +50,7 @@
 + (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
-    [noteTypeSheet release];
+    SKDESTROY(noteTypeSheet);
     [super dealloc];
 }
 

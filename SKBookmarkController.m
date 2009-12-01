@@ -151,11 +151,11 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)dealloc {
     [self stopObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [bookmarkRoot release];
-    [recentDocuments release];
-    [draggedBookmarks release];
-    [toolbarItems release];
-    [statusBar release];
+    SKDESTROY(bookmarkRoot);
+    SKDESTROY(recentDocuments);
+    SKDESTROY(draggedBookmarks);
+    SKDESTROY(toolbarItems);
+    SKDESTROY(statusBar);
     [super dealloc];
 }
 

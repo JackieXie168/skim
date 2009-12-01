@@ -98,12 +98,12 @@ struct SKServerFlags {
 
 - (void)dealloc {
     NSZoneFree(NSDefaultMallocZone(), serverFlags);
-    [pages release];
-    [lines release];
-    [filenames release];
-    [fileName release];
-    [syncFileName release];
-    [lastModDate release];
+    SKDESTROY(pages);
+    SKDESTROY(lines);
+    SKDESTROY(filenames);
+    SKDESTROY(fileName);
+    SKDESTROY(syncFileName);
+    SKDESTROY(lastModDate);
     [super dealloc];
 }
 
@@ -161,8 +161,7 @@ struct SKServerFlags {
         OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&serverFlags->serverReady);
     }
     @finally {
-        [fileManager release];
-        fileManager = nil;
+        SKDESTROY(fileManager);
         
         // clean up the connection in the server thread
         [connection setRootObject:nil];
@@ -171,11 +170,8 @@ struct SKServerFlags {
         [[connection receivePort] invalidate];
         [[connection sendPort] invalidate];
         [connection invalidate];
-        [connection release];
-        connection = nil;
-        
-        [clientProxy release];
-        clientProxy = nil;    
+        SKDESTROY(connection);
+        SKDESTROY(clientProxy);    
         
         if (scanner) {
             synctex_scanner_free(scanner);
@@ -221,10 +217,8 @@ struct SKServerFlags {
     @synchronized(self) {
         if (fileName != newFileName) {
             if ([fileName isEqualToString:newFileName] == NO) {
-                [syncFileName release];
-                syncFileName = nil;
-                [lastModDate release];
-                lastModDate = nil;
+                SKDESTROY(syncFileName);
+                SKDESTROY(lastModDate);
             }
             [fileName release];
             fileName = [newFileName retain];

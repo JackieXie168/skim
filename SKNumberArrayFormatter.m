@@ -62,7 +62,7 @@
 }
 
 - (void)dealloc {
-    [numberFormatter release];
+    SKDESTROY(numberFormatter);
     [super dealloc];
 }
  

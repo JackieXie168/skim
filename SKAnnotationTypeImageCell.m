@@ -55,7 +55,7 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 }
 
 - (void)dealloc {
-    [type release];
+    SKDESTROY(type);
     [super dealloc];
 }
 

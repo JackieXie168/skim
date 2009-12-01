@@ -82,7 +82,7 @@ static char SKDownloadPropertiesObservationContext;
 
 - (void)dealloc {
     [self endObservingDownloads:downloads];
-    [downloads release];
+    SKDESTROY(downloads);
     [super dealloc];
 }
 

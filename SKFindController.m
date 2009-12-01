@@ -58,7 +58,7 @@
 }
 
 - (void)dealloc {
-    [fieldEditor release];
+    SKDESTROY(fieldEditor);
     [super dealloc];
 }
 

@@ -341,10 +341,10 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [alias release];
-    [aliasData release];
-    [label release];
-    [setup release];
+    SKDESTROY(alias);
+    SKDESTROY(aliasData);
+    SKDESTROY(label);
+    SKDESTROY(setup);
     [super dealloc];
 }
 
@@ -418,8 +418,8 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)dealloc {
-    [label release];
-    [children release];
+    SKDESTROY(label);
+    SKDESTROY(children);
     [super dealloc];
 }
 

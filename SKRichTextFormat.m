@@ -71,7 +71,7 @@
 }
 
 - (void)dealloc {
-    [data release];
+    SKDESTROY(data);
     [super dealloc];
 }
 

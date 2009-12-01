@@ -114,7 +114,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)dealloc {
     if ([self infoForBinding:COLORS_KEY])
         [self unbind:COLORS_KEY];
-    [colors release];
+    SKDESTROY(colors);
     [super dealloc];
 }
 

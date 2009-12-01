@@ -85,7 +85,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [info release];
+    SKDESTROY(info);
     [super dealloc];
 }
 

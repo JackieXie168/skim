@@ -83,8 +83,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-    [thumbnail release];
-    [pageLabel release];
+    SKDESTROY(thumbnail);
+    SKDESTROY(pageLabel);
     [super dealloc];
 }
 

@@ -62,7 +62,7 @@
 }
 
 - (void)dealloc {
-    [server release];
+    SKDESTROY(server);
     [super dealloc];
 }
 
@@ -79,11 +79,8 @@
     // clean up the connection in the main thread; don't invalidate the ports, since they're still in use
     [connection setRootObject:nil];
     [connection invalidate];
-    [connection release];
-    connection = nil;
-    
-    [serverProxy release];
-    serverProxy = nil;    
+    SKDESTROY(connection);
+    SKDESTROY(serverProxy);    
 }
 
 #pragma mark | Client protocol

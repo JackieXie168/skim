@@ -66,10 +66,10 @@
 }
 
 - (void)dealloc {
-    [properties release];
-    [type release];
-    [contents release];
-    [texts release];
+    SKDESTROY(properties);
+    SKDESTROY(type);
+    SKDESTROY(contents);
+    SKDESTROY(texts);
     [super dealloc];
 }
 

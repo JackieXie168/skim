@@ -138,7 +138,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [synchronizedPDFView release];
+    SKDESTROY(synchronizedPDFView);
     [super dealloc];
 }
 

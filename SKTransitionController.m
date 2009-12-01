@@ -211,9 +211,9 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
-    [transitionWindow release];
-    [initialImage release];
-    [filters release];
+    SKDESTROY(transitionWindow);
+    SKDESTROY(initialImage);
+    SKDESTROY(filters);
     [super dealloc];
 }
 
@@ -553,7 +553,7 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
-    [filter release];
+    SKDESTROY(filter);
     [super dealloc];
 }
 
@@ -601,8 +601,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)dealloc {
-    [animation release];
-    [context release];
+    SKDESTROY(animation);
+    SKDESTROY(context);
     [super dealloc];
 }
 

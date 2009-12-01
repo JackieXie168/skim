@@ -80,9 +80,9 @@ static char *SKTransitionPropertiesObservationContext;
     [self stopObservingTransitions:[NSArray arrayWithObject:transition]];
     [self stopObservingTransitions:transitions];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    [transition release];
-    [transitions release];
-    [undoManager release];
+    SKDESTROY(transition);
+    SKDESTROY(transitions);
+    SKDESTROY(undoManager);
     [super dealloc];
 }
 

@@ -57,8 +57,8 @@
 }
 
 - (void)dealloc {
-    [page release];
-    [lineRects release];
+    SKDESTROY(page);
+    SKDESTROY(lineRects);
     [super dealloc];
 }
 

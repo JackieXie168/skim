@@ -58,7 +58,7 @@ static char SKOutlineViewDefaultsObservationContext;
         @catch (id e) {}
     }
     [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
+    SKDESTROY(typeSelectHelper);
     [super dealloc];
 }
 

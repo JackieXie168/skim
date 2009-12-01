@@ -81,9 +81,9 @@
 }
 
 - (void)dealloc {
-	[leftCell release];
-	[rightCell release];
-	[iconCell release];
+	SKDESTROY(leftCell);
+	SKDESTROY(rightCell);
+	SKDESTROY(iconCell);
 	[super dealloc];
 }
 
