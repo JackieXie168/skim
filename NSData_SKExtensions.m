@@ -41,6 +41,7 @@
 #import "SKRuntime.h"
 #import <openssl/bio.h>
 #import <openssl/evp.h>
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation NSData (SKExtensions)
 
@@ -96,58 +97,31 @@
     return NSMakeRange(NSNotFound, 0);
 }
 
-- (NSData *)md5Signature {
-    EVP_MD_CTX md5context;
-    unsigned char signature[EVP_MAX_MD_SIZE];
-    unsigned int signatureLength = 0;
-    unsigned int blockSize = 4096;
+- (NSString *)md5String {
+    CC_MD5_CTX md5context;
+    NSUInteger signatureLength = CC_MD5_DIGEST_LENGTH;
+    unsigned char signature[signatureLength];
+    NSUInteger blockSize = 4096;
     char buffer[blockSize];
-    unsigned int length = [self length];
+    NSUInteger length = [self length];
     NSRange range = NSMakeRange(0, MIN(blockSize, length));
     
-    EVP_DigestInit(&md5context, EVP_md5());
+    CC_MD5_Init(&md5context);
     while (range.length > 0) {
         [self getBytes:buffer range:range];
-        EVP_DigestUpdate(&md5context, buffer, range.length);
+        CC_MD5_Update(&md5context, (const void *)buffer, (CC_LONG)range.length);
         range.location = NSMaxRange(range);
         range.length = MIN(blockSize, length - range.location);
     }
-    EVP_DigestFinal_ex(&md5context, signature, &signatureLength);
-    EVP_MD_CTX_cleanup(&md5context);
-
-    return [NSData dataWithBytes:signature length:signatureLength];
-}
-
-- (NSString *)hexString {
-    const char *inputBytes, *inputBytesPtr;
-    NSUInteger inputBytesLength, outputBufferLength;
-    unichar *outputBuffer, *outputBufferEnd;
-    unichar *outputBufferPtr;
-    const char hexChars[] = "0123456789abcdef";
-    NSString *hexString;
-
-    inputBytes = [self bytes];
-    inputBytesLength = [self length];
-    outputBufferLength = inputBytesLength * 2;
-    outputBuffer = NSZoneMalloc(NULL, outputBufferLength * sizeof(unichar));
-    outputBufferEnd = outputBuffer + outputBufferLength;
-
-    inputBytesPtr = inputBytes;
-    outputBufferPtr = outputBuffer;
-
-    while (outputBufferPtr < outputBufferEnd) {
-        unsigned char inputByte;
-
-        inputByte = *inputBytesPtr++;
-        *outputBufferPtr++ = hexChars[(inputByte & 0xf0) >> 4];
-        *outputBufferPtr++ = hexChars[inputByte & 0x0f];
-    }
-
-    hexString = [[NSString allocWithZone:[self zone]] initWithCharacters:outputBuffer length:outputBufferLength];
-
-    NSZoneFree(NULL, outputBuffer);
-
-    return [hexString autorelease];
+    CC_MD5_Final(signature, &md5context);
+    
+    NSMutableString *md5String = [NSMutableString stringWithCapacity:signatureLength];
+    NSUInteger i;
+    
+    for (i = 0; i < signatureLength; i++)
+        [md5String appendFormat:@"%02x", signature[i]];
+    
+    return md5String;
 }
 
 // base 64 encoding/decoding methods modified from sample code on CocoaDev http://www.cocoadev.com/index.pl?BaseSixtyFour
