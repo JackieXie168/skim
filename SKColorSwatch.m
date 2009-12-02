@@ -135,7 +135,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     NSRect bounds = [self bounds];
     NSInteger count = [colors count];
     
-    bounds.size.width = SKMin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
+    bounds.size.width = fmin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
     CGFloat grays[4] = {0.5, 0.75, 0.75, 0.75};

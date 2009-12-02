@@ -110,7 +110,7 @@ NSString *SKPDFAnnotationScriptingPointListsKey = @"scriptingPointLists";
 
 - (BOOL)hitTest:(NSPoint)point {
     NSPoint relPoint = SKSubstractPoints(point, [self bounds].origin);
-    CGFloat delta = SKMax(2.0, 0.5 * [self lineWidth]);
+    CGFloat delta = fmax(2.0, 0.5 * [self lineWidth]);
     
     if ([super hitTest:point]) {
         NSPoint prevPoint, nextPoint = NSZeroPoint;

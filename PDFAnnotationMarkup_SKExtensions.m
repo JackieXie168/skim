@@ -249,10 +249,10 @@ static void (*original_dealloc)(id, SEL) = NULL;
         CGFloat minX = CGFLOAT_MAX, maxX = -CGFLOAT_MAX, minY = CGFLOAT_MAX, maxY = -CGFLOAT_MAX;
         for (i = 0; i < 4; i++) {
             point = [values[i] pointValue];
-            minX = SKMin(minX, point.x);
-            maxX = SKMax(maxX, point.x);
-            minY = SKMin(minY, point.y);
-            maxY = SKMax(maxY, point.y);
+            minX = fmin(minX, point.x);
+            maxX = fmax(maxX, point.x);
+            minY = fmin(minY, point.y);
+            maxY = fmax(maxY, point.y);
         }
         
         NSRect lineRect = NSMakeRect(origin.x + minX, origin.y + minY, maxX - minX, maxY - minY);

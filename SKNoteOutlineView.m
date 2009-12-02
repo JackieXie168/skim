@@ -75,7 +75,7 @@
 			case NSLeftMouseDragged:
             {
                 NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                CGFloat currentHeight = SKMax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
+                CGFloat currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
                 
                 [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
                 [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
@@ -145,7 +145,7 @@
             BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
             NSColor *color = [NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7];
             NSRect rect = [self rectOfRow:row];
-            CGFloat x = SKCeil(NSMidX(rect));
+            CGFloat x = ceil(NSMidX(rect));
             CGFloat y = NSMaxY(rect) - 1.5;
             
             [color set];

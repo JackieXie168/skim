@@ -158,9 +158,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     NSRect bounds = [self bounds];
     
     if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-        CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
-        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
-        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset);
+        CGFloat offset = 0.5 * lineWidth - floor(0.5 * lineWidth);
+        NSPoint startPoint = NSMakePoint(NSMinX(bounds) + ceil(0.5 * NSHeight(bounds)), round(NSMidY(bounds)) - offset);
+        NSPoint endPoint = NSMakePoint(NSMaxX(bounds) - ceil(0.5 * NSHeight(bounds)), round(NSMidY(bounds)) - offset);
         
         switch (startLineStyle) {
             case kPDFLineStyleNone:
@@ -223,9 +223,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                 break;
         }
     } else if ([self displayStyle] == SKLineWellDisplayStyleSimpleLine) {
-        CGFloat offset = 0.5 * lineWidth - SKFloor(0.5 * lineWidth);
-        [path moveToPoint:NSMakePoint(NSMinX(bounds) + SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
-        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - SKCeil(0.5 * NSHeight(bounds)), SKRound(NSMidY(bounds)) - offset)];
+        CGFloat offset = 0.5 * lineWidth - floor(0.5 * lineWidth);
+        [path moveToPoint:NSMakePoint(NSMinX(bounds) + ceil(0.5 * NSHeight(bounds)), round(NSMidY(bounds)) - offset)];
+        [path lineToPoint:NSMakePoint(NSMaxX(bounds) - ceil(0.5 * NSHeight(bounds)), round(NSMidY(bounds)) - offset)];
     } else if ([self displayStyle] == SKLineWellDisplayStyleRectangle) {
         CGFloat inset = 7.0 + 0.5 * lineWidth;
         [path appendBezierPathWithRect:NSInsetRect(bounds, inset, inset)];
@@ -520,7 +520,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)setLineWidth:(CGFloat)width {
-    if (SKAbs(lineWidth - width) > 0.00001) {
+    if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self changedValueForKey:SKLineWellLineWidthKey];
     }

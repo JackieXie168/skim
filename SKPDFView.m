@@ -343,7 +343,7 @@ enum {
         NSRect bounds = [activeAnnotation bounds];
         NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
         if (isLink) {
-            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(NSRectToCGRect(rect), SKFloor(0.3 * NSHeight(rect)));
+            CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(NSRectToCGRect(rect), floor(0.3 * NSHeight(rect)));
             CGFloat color[4] = { 0.0, 0.0, 0.0, 0.1 };
             CGContextSetFillColor(context, color);
             CGContextBeginPath(context);
@@ -430,10 +430,10 @@ enum {
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
     CGFloat scale = [self scaleFactor];
-	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
-	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
-	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
-	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
+	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
+	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
+	CGFloat minX = floor(NSMinX(aRect) - scale);
+	CGFloat minY = floor(NSMinY(aRect) - scale);
 	
     aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
     if (NSIsEmptyRect(aRect) == NO)
@@ -1440,7 +1440,7 @@ enum {
 
 - (void)magnifyWheel:(NSEvent *)theEvent {
     CGFloat dy = [theEvent deltaY];
-    dy = dy > 0 ? SKMin(0.2, dy) : SKMax(-0.2, dy);
+    dy = dy > 0 ? fmin(0.2, dy) : fmax(-0.2, dy);
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 
@@ -1504,9 +1504,9 @@ enum {
         return;
     if ([theEvent respondsToSelector:@selector(rotation)])
         gestureRotation -= [theEvent rotation];
-    if (SKAbs(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
-        [self rotatePageAtIndex:gesturePageIndex by:90.0 * SKRound(gestureRotation / 90.0)];
-        gestureRotation -= 90.0 * SKRound(gestureRotation / 90.0);
+    if (fabs(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
+        [self rotatePageAtIndex:gesturePageIndex by:90.0 * round(gestureRotation / 90.0)];
+        gestureRotation -= 90.0 * round(gestureRotation / 90.0);
     }
 }
 
@@ -2127,7 +2127,7 @@ enum {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
-            point = [[self window] convertBaseToScreen:NSMakePoint(SKRound(point.x), SKRound(point.y))];
+            point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
             [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2176,7 +2176,7 @@ enum {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
             point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
-            point = [[self window] convertBaseToScreen:NSMakePoint(SKRound(point.x), SKRound(point.y))];
+            point = [[self window] convertBaseToScreen:NSMakePoint(round(point.x), round(point.y))];
             [[SKPDFToolTipWindow sharedToolTipWindow] showForPDFContext:annotation atPoint:point];
         } else {
             [[SKPDFToolTipWindow sharedToolTipWindow] orderOut:self];
@@ -2707,19 +2707,19 @@ enum {
                 break;
         }
         
-        endPoint.x = SKFloor(endPoint.x);
-        endPoint.y = SKFloor(endPoint.y);
+        endPoint.x = floor(endPoint.x);
+        endPoint.y = floor(endPoint.y);
         
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
             newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;
-                newBounds.origin.x = SKFloor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+                newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
             }
             if (NSHeight(newBounds) < 8.0) {
                 newBounds.size.height = 8.0;
-                newBounds.origin.y = SKFloor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+                newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
             startPoint = SKSubstractPoints(startPoint, newBounds.origin);
@@ -2879,7 +2879,7 @@ enum {
         if ([self displayMode] == kPDFDisplaySinglePageContinuous || [self displayMode] == kPDFDisplayTwoUpContinuous) {
             NSRect visibleRect = [self convertRect:[[self documentView] visibleRect] fromView:[self documentView]];
             visibleRect = [self convertRect:visibleRect toPage:[readingBar page]];
-            rect = NSInsetRect(rect, 0.0, - SKFloor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
+            rect = NSInsetRect(rect, 0.0, - floor( ( NSHeight(visibleRect) - NSHeight(rect) ) / 2.0 ) );
         }
         [self goToRect:rect onPage:[readingBar page]];
         [self setNeedsDisplay:YES];
@@ -2925,31 +2925,31 @@ enum {
             NSPoint *draggedPoint = (dragMask & BDSKMinXEdgeMask) ? &startPoint : &endPoint;
             
             *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
-            draggedPoint->x = SKFloor(draggedPoint->x);
-            draggedPoint->y = SKFloor(draggedPoint->y);
+            draggedPoint->x = floor(draggedPoint->x);
+            draggedPoint->y = floor(draggedPoint->y);
             
             newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;
-                newBounds.origin.x = SKFloor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+                newBounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
             }
             if (NSHeight(newBounds) < 8.0) {
                 newBounds.size.height = 8.0;
-                newBounds.origin.y = SKFloor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+                newBounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 NSPoint *fixedPoint = (dragMask & BDSKMinXEdgeMask) ? &endPoint : &startPoint;
                 NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
-                CGFloat dx = SKAbs(diffPoint.x), dy = SKAbs(diffPoint.y);
+                CGFloat dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
                 
                 if (dx < 0.4 * dy) {
                     diffPoint.x = 0.0;
                 } else if (dy < 0.4 * dx) {
                     diffPoint.y = 0.0;
                 } else {
-                    dx = SKMin(dx, dy);
+                    dx = fmin(dx, dy);
                     diffPoint.x = diffPoint.x < 0.0 ? -dx : dx;
                     diffPoint.y = diffPoint.y < 0.0 ? -dx : dx;
                 }
@@ -2974,17 +2974,17 @@ enum {
                 CGFloat height = NSHeight(newBounds);
                 
                 if (dragMask & BDSKMaxXEdgeMask)
-                    width = SKMax(8.0, width + relPoint.x);
+                    width = fmax(8.0, width + relPoint.x);
                 else if (dragMask & BDSKMinXEdgeMask)
-                    width = SKMax(8.0, width - relPoint.x);
+                    width = fmax(8.0, width - relPoint.x);
                 if (dragMask & BDSKMaxYEdgeMask)
-                    height = SKMax(8.0, height + relPoint.y);
+                    height = fmax(8.0, height + relPoint.y);
                 else if (dragMask & BDSKMinYEdgeMask)
-                    height = SKMax(8.0, height - relPoint.y);
+                    height = fmax(8.0, height - relPoint.y);
                 
                 if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
                     if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
-                        width = height = SKMax(width, height);
+                        width = height = fmax(width, height);
                     else
                         height = width;
                 } else {
@@ -2993,17 +2993,17 @@ enum {
                 
                 if (dragMask & BDSKMinXEdgeMask) {
                     if (NSMaxX(newBounds) - width < NSMinX(pageBounds))
-                        width = height = SKMax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
+                        width = height = fmax(8.0, NSMaxX(newBounds) - NSMinX(pageBounds));
                 } else {
                     if (NSMinX(newBounds) + width > NSMaxX(pageBounds))
-                        width = height = SKMax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
+                        width = height = fmax(8.0, NSMaxX(pageBounds) - NSMinX(newBounds));
                 }
                 if (dragMask & BDSKMinYEdgeMask) {
                     if (NSMaxY(newBounds) - height < NSMinY(pageBounds))
-                        width = height = SKMax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
+                        width = height = fmax(8.0, NSMaxY(newBounds) - NSMinY(pageBounds));
                 } else {
                     if (NSMinY(newBounds) + height > NSMaxY(pageBounds))
-                        width = height = SKMax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
+                        width = height = fmax(8.0, NSMaxY(pageBounds) - NSMinY(newBounds));
                 }
                 
                 if (dragMask & BDSKMinXEdgeMask)
@@ -3489,11 +3489,11 @@ enum {
             
             if (dragMask & (BDSKMinXEdgeMask | BDSKMaxXEdgeMask)) {
                 if (dragMask & (BDSKMinYEdgeMask | BDSKMaxYEdgeMask))
-                    square = SKMax(SKAbs(width), SKAbs(height));
+                    square = fmax(fabs(width), fabs(height));
                 else
-                    square = SKAbs(width);
+                    square = fabs(width);
             } else {
-                square = SKAbs(height);
+                square = fabs(height);
             }
             
             if (dragMask & BDSKMinXEdgeMask) {
@@ -4258,7 +4258,7 @@ static inline NSInteger SKIndexOfRectAtYInOrderedRects(CGFloat y,  NSPointerArra
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, CGFloat radius)
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = SKMin(radius, 0.5f * SKMin(rect.size.width, rect.size.height));
+    radius = fmin(radius, 0.5f * fmin(rect.size.width, rect.size.height));
     
     CGMutablePathRef path = CGPathCreateMutable();
     

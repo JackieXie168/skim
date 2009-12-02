@@ -118,7 +118,7 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    CGFloat delta = SKMax(2.0, 0.5 * [self lineWidth]);
+    CGFloat delta = fmax(2.0, 0.5 * [self lineWidth]);
     return SKPointNearLineFromPointToPoint(SKSubstractPoints(point, [self bounds].origin), [self startPoint], [self endPoint], 4.0, delta);
 }
 
@@ -173,11 +173,11 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         
         if (NSWidth(bounds) < 8.0) {
             bounds.size.width = 8.0;
-            bounds.origin.x = SKFloor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+            bounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
         }
         if (NSHeight(bounds) < 8.0) {
             bounds.size.height = 8.0;
-            bounds.origin.y = SKFloor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+            bounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
         startPoint = SKSubstractPoints(startPoint, bounds.origin);
@@ -193,8 +193,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (NSData *)startPointAsQDPoint {
     NSRect bounds = [self bounds];
     NSPoint startPoint = SKAddPoints([self startPoint], bounds.origin);
-    startPoint.x = SKFloor(startPoint.x);
-    startPoint.y = SKFloor(startPoint.y);
+    startPoint.x = floor(startPoint.x);
+    startPoint.y = floor(startPoint.y);
     return [NSData dataWithPointAsQDPoint:startPoint];
 }
 
@@ -209,11 +209,11 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
         
         if (NSWidth(bounds) < 8.0) {
             bounds.size.width = 8.0;
-            bounds.origin.x = SKFloor(0.5 * (startPoint.x + endPoint.x) - 4.0);
+            bounds.origin.x = floor(0.5 * (startPoint.x + endPoint.x) - 4.0);
         }
         if (NSHeight(bounds) < 8.0) {
             bounds.size.height = 8.0;
-            bounds.origin.y = SKFloor(0.5 * (startPoint.y + endPoint.y) - 4.0);
+            bounds.origin.y = floor(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
         startPoint = SKSubstractPoints(startPoint, bounds.origin);
@@ -229,8 +229,8 @@ NSString *SKPDFAnnotationScriptingEndLineStyleKey = @"scriptingEndLineStyle";
 - (NSData *)endPointAsQDPoint {
     NSRect bounds = [self bounds];
     NSPoint endPoint = SKAddPoints([self endPoint], bounds.origin);
-    endPoint.x = SKFloor(endPoint.x);
-    endPoint.y = SKFloor(endPoint.y);
+    endPoint.x = floor(endPoint.x);
+    endPoint.y = floor(endPoint.y);
     return [NSData dataWithPointAsQDPoint:endPoint];
 }
 

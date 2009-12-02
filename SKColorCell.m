@@ -51,9 +51,9 @@
     if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
         color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         NSRect rect = NSInsetRect(cellFrame, 1.0, 1.0);
-        CGFloat height = SKMin(NSWidth(rect), NSHeight(rect));
+        CGFloat height = fmin(NSWidth(rect), NSHeight(rect));
         CGFloat offset = 0.5 * (NSHeight(rect) - height);
-        rect.origin.y += [controlView isFlipped] ? SKFloor(offset) - 1.0 : SKCeil(offset) + 1.0;
+        rect.origin.y += [controlView isFlipped] ? floor(offset) - 1.0 : ceil(offset) + 1.0;
         rect.size.height = height;
         [NSGraphicsContext saveGraphicsState];
         [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] addClip];

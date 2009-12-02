@@ -403,23 +403,23 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     SKMin(thumbSize.height, roundedThumbnailSize));
+                                     fmin(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return SKMax([tv rowHeight], SKMin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width], 
-                                     SKMin(thumbSize.height, roundedSnapshotThumbnailSize));
+                                     fmin(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < [tv rowHeight])
             return [tv rowHeight];
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return SKMax([tv rowHeight], SKMin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
     return [tv rowHeight];
 }
@@ -935,7 +935,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
         NSAttributedString *attrString = [cell attributedStringValue];
         NSRect rect = [attrString boundingRectWithSize:[item type] ? size : smallSize options:NSStringDrawingUsesLineFragmentOrigin];
         
-        [rowHeights setFloat:SKMax(NSHeight(rect), rowHeight) + 2.0 forKey:item];
+        [rowHeights setFloat:fmax(NSHeight(rect), rowHeight) + 2.0 forKey:item];
     }
     // don't use noteHeightOfRowsWithIndexesChanged: as this only updates the visible rows and the scrollers
     [noteOutlineView reloadData];
@@ -1201,7 +1201,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
                 if (lastSplitPDFHeight <= 0.0)
                     lastSplitPDFHeight = 200.0;
                 if (lastSplitPDFHeight > NSHeight([pdfContentView frame]))
-                    lastSplitPDFHeight = SKFloor(0.5 * NSHeight([pdfContentView frame]));
+                    lastSplitPDFHeight = floor(0.5 * NSHeight([pdfContentView frame]));
                 position -= lastSplitPDFHeight;
             } else {
                 lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
@@ -1258,8 +1258,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
             if (rightCollapsed == NO)
                 oldContentWidth -= [sender dividerThickness];
             CGFloat resizeFactor = contentWidth / oldContentWidth;
-            leftSize.width = SKFloor(resizeFactor * leftSize.width);
-            rightSize.width = SKFloor(resizeFactor * rightSize.width);
+            leftSize.width = floor(resizeFactor * leftSize.width);
+            rightSize.width = floor(resizeFactor * rightSize.width);
         }
         
         mainSize.width = contentWidth - leftSize.width - rightSize.width;
@@ -1409,7 +1409,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     } else if (action == @selector(doZoomOut:)) {
         return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(doZoomToSelection:)) {
@@ -1563,9 +1563,9 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchor
     [zoomInOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[pdfView canZoomIn] forSegment:1];
     [zoomInActualOutButton setEnabled:[pdfView canZoomOut] forSegment:0];
-    [zoomInActualOutButton setEnabled:SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
+    [zoomInActualOutButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01 forSegment:1];
     [zoomInActualOutButton setEnabled:[pdfView canZoomIn] forSegment:2];
-    [zoomActualButton setEnabled:SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01];
+    [zoomActualButton setEnabled:fabs([pdfView scaleFactor] - 1.0 ) > 0.01];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {

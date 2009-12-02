@@ -110,10 +110,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [pdfView convertRect:rect fromPage:page];
     CGFloat scale = [pdfView scaleFactor];
-	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
-	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
-	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
-	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
+	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
+	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
+	CGFloat minX = floor(NSMinX(aRect) - scale);
+	CGFloat minY = floor(NSMinY(aRect) - scale);
 	
     aRect = NSIntersectionRect([pdfView bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
     if (NSIsEmptyRect(aRect) == NO)
@@ -381,7 +381,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return SKAbs([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return YES;
     } else if (action == @selector(toggleAutoScale:)) {
@@ -394,8 +394,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size {
-    CGFloat shadowBlurRadius = SKRound(size / 32.0);
-    CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
+    CGFloat shadowBlurRadius = round(size / 32.0);
+    CGFloat shadowOffset = - ceil(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
 }
 
@@ -414,9 +414,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if (isScaled) {
         if (NSHeight(bounds) > NSWidth(bounds))
-            thumbnailSize = NSMakeSize(SKRound((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
+            thumbnailSize = NSMakeSize(round((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
-            thumbnailSize = NSMakeSize(size, SKRound((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
+            thumbnailSize = NSMakeSize(size, round((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
         scaleX = (thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds);
         scaleY = (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds);
     } else {

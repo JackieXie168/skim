@@ -155,10 +155,10 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
     CGFloat scale = [self scaleFactor];
-	CGFloat maxX = SKCeil(NSMaxX(aRect) + scale);
-	CGFloat maxY = SKCeil(NSMaxY(aRect) + scale);
-	CGFloat minX = SKFloor(NSMinX(aRect) - scale);
-	CGFloat minY = SKFloor(NSMinY(aRect) - scale);
+	CGFloat maxX = ceil(NSMaxX(aRect) + scale);
+	CGFloat maxY = ceil(NSMaxY(aRect) + scale);
+	CGFloat minX = floor(NSMinX(aRect) - scale);
+	CGFloat minY = floor(NSMinY(aRect) - scale);
 	
     aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
     if (NSIsEmptyRect(aRect) == NO)
@@ -556,8 +556,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if (SKAbs(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
+    if (fabs(pinchZoomFactor - 1.0) > 0.1)
+        [self setScaleFactor:fmax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
     pinchZoomFactor = 1.0;
     if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
@@ -565,9 +565,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
-        pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
+        pinchZoomFactor *= 1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification]));
         CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
-        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKMinDefaultScaleMenuFactor)];
+        NSUInteger i = [self indexForScaleFactor:fmax(scaleFactor, SKMinDefaultScaleMenuFactor)];
         if (i != [self indexForScaleFactor:[self scaleFactor]]) {
             [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
             pinchZoomFactor = scaleFactor / [self scaleFactor];
