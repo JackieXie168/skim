@@ -36,12 +36,23 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// For base 64 encoding/decoding:
+//
+//  Created by Matt Gallagher on 2009/06/03.
+//  Copyright 2009 Matt Gallagher. All rights reserved.
+//
+//  Permission is given to use this source code file, free of charge, in any
+//  project, commercial or otherwise, entirely at your risk, with the condition
+//  that any redistribution (in part or whole) of source code must retain
+//  this copyright and permission notice. Attribution in compiled projects is
+//  appreciated but not required.
+//
+
 #import "NSData_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKRuntime.h"
-#import <openssl/bio.h>
-#import <openssl/evp.h>
 #import <CommonCrypto/CommonDigest.h>
+
 
 @implementation NSData (SKExtensions)
 
@@ -124,55 +135,142 @@
     return md5String;
 }
 
-// base 64 encoding/decoding methods modified from sample code on CocoaDev http://www.cocoadev.com/index.pl?BaseSixtyFour
+// The following code is taken and modified from Matt Gallagher's code at http://cocoawithlove.com/2009/06/base64-encoding-options-on-mac-and.html
+
+// Mapping from 6 bit pattern to ASCII character.
+static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+// Definition for "masked-out" areas of the     base64DecodeTable mapping
+#define xx 65
+
+// Mapping from ASCII character to 6 bit pattern.
+static unsigned char base64DecodeTable[256] =
+{
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 62, xx, xx, xx, 63, 
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, xx, xx, xx, xx, xx, xx, 
+    xx,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, xx, xx, xx, xx, xx, 
+    xx, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+    xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, xx, 
+};
+
+// Fundamental sizes of the binary and base64 encode/decode units in bytes
+#define BINARY_UNIT_SIZE 3
+#define BASE64_UNIT_SIZE 4
 
 - (id)initWithBase64String:(NSString *)base64String {
-    // Create a memory buffer containing Base64 encoded string data
-    BIO *mem = BIO_new_mem_buf((void *)[base64String cStringUsingEncoding:NSASCIIStringEncoding], [base64String lengthOfBytesUsingEncoding:NSASCIIStringEncoding]);
+    NSData *data = [base64String dataUsingEncoding:NSASCIIStringEncoding];
+    size_t length = [data length];
+    const unsigned char *inputBuffer = (const unsigned char *)[data bytes];
+    size_t outputBufferSize = (length / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE;
+    unsigned char *outputBuffer = (unsigned char *)malloc(outputBufferSize);
     
-    // Push a Base64 filter so that reading from the buffer decodes it
-    BIO *b64 = BIO_new(BIO_f_base64());
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    mem = BIO_push(b64, mem);
+    size_t i = 0, j = 0;
+    while (i < length) {
+		// Accumulate 4 valid characters (ignore everything else)
+		unsigned char accumulated[BASE64_UNIT_SIZE];
+		size_t accumulateIndex = 0;
+		while (i < length) {
+			unsigned char decode = base64DecodeTable[inputBuffer[i++]];
+			if (decode != xx) {
+				accumulated[accumulateIndex] = decode;
+				accumulateIndex++;
+				
+				if (accumulateIndex == BASE64_UNIT_SIZE)
+					break;
+			}
+		}
+		
+		// Store the 6 bits from each of the 4 characters as 3 bytes
+		outputBuffer[j] = (accumulated[0] << 2) | (accumulated[1] >> 4);
+		outputBuffer[j + 1] = (accumulated[1] << 4) | (accumulated[2] >> 2);
+		outputBuffer[j + 2] = (accumulated[2] << 6) | accumulated[3];
+		j += accumulateIndex - 1;
+    }
     
-    // Decode into an NSMutableData
-    NSMutableData *data = [[NSMutableData alloc] init];
-    char inbuf[512];
-    NSInteger inlen;
-    while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0)
-        [data appendBytes:inbuf length:inlen];
+    NSData *result = [self initWithBytes:outputBuffer length:j];
     
-    // Clean up and go home
-    BIO_free_all(mem);
+    free(outputBuffer);
     
-    self = [self initWithData:data];
-    [data release];
-    
-    return self;
+    return result;
 }
 
 - (NSString *)base64StringWithNewlines:(BOOL)encodeWithNewlines {
-    // Create a memory buffer which will contain the Base64 encoded string
-    BIO *mem = BIO_new(BIO_s_mem());
+    size_t length = [self length];
+    const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
     
-    // Push on a Base64 filter so that writing to the buffer encodes the data
-    BIO *b64 = BIO_new(BIO_f_base64());
-    if (encodeWithNewlines == NO)
-        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    mem = BIO_push(b64, mem);
+    #define MAX_NUM_PADDING_CHARS 2
+    #define OUTPUT_LINE_LENGTH 64
+    #define INPUT_LINE_LENGTH ((OUTPUT_LINE_LENGTH / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE)
     
-    // Encode all the data
-    int rv = BIO_write(mem, [self bytes], [self length]);
-    rv = BIO_flush(mem);
+    // Byte accurate calculation of final buffer size
+    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE;
+    if (encodeWithNewlines)
+		outputBufferSize += (outputBufferSize / OUTPUT_LINE_LENGTH);
     
-    // Create a new string from the data in the memory buffer
-    char *base64Pointer;
-    long base64Length = BIO_get_mem_data(mem, &base64Pointer);
-    NSString *base64String = [[[NSString alloc] initWithBytes:base64Pointer length:base64Length encoding:NSASCIIStringEncoding] autorelease];
+    // Include space for a terminating zero
+    outputBufferSize += 1;
+
+    // Allocate the output buffer
+    char *outputBuffer = (char *)malloc(outputBufferSize);
+    if (outputBuffer == NULL)
+		return NULL;
+
+    size_t i = 0;
+    size_t j = 0;
+    const size_t lineLength = encodeWithNewlines ? INPUT_LINE_LENGTH : length;
+    size_t lineEnd = lineLength;
     
-    // Clean up and go home
-    BIO_free_all(mem);
-    return base64String;
+    while (true) {
+		if (lineEnd > length)
+			lineEnd = length;
+
+		for (; i + BINARY_UNIT_SIZE - 1 < lineEnd; i += BINARY_UNIT_SIZE) {
+			// Inner loop: turn 48 bytes into 64 base64 characters
+			outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
+			outputBuffer[j++] = base64EncodeTable[((inputBuffer[i] & 0x03) << 4) | ((inputBuffer[i + 1] & 0xF0) >> 4)];
+			outputBuffer[j++] = base64EncodeTable[((inputBuffer[i + 1] & 0x0F) << 2) | ((inputBuffer[i + 2] & 0xC0) >> 6)];
+			outputBuffer[j++] = base64EncodeTable[inputBuffer[i + 2] & 0x3F];
+		}
+		
+		if (lineEnd == length)
+			break;
+		
+		// Add the newline
+		outputBuffer[j++] = '\n';
+		lineEnd += lineLength;
+    }
+    
+    if (i + 1 < length) {
+		// Handle the single '=' case
+		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
+		outputBuffer[j++] = base64EncodeTable[((inputBuffer[i] & 0x03) << 4) | ((inputBuffer[i + 1] & 0xF0) >> 4)];
+		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i + 1] & 0x0F) << 2];
+		outputBuffer[j++] = '=';
+    } else if (i < length) {
+		// Handle the double '=' case
+		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
+		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0x03) << 4];
+		outputBuffer[j++] = '=';
+		outputBuffer[j++] = '=';
+    }
+    outputBuffer[j] = 0;
+    
+    NSString *result = [[[NSString alloc] initWithBytes:outputBuffer length:j encoding:NSASCIIStringEncoding] autorelease];
+    
+    free(outputBuffer);
+    
+    return result;
 }
 
 - (NSString *)base64String {
