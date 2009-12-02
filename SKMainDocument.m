@@ -1760,7 +1760,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     NSArray *fileIDStrings = [self fileIDStrings];
     if ([fileIDStrings count])
         return [[@"Skim - " stringByAppendingString:[fileIDStrings objectAtIndex:0]] UTF8String];
-    NSString *md5HexString = [[pdfData md5Signature] hexString];
+    NSString *md5HexString = [pdfData md5String];
     if (md5HexString)
         return [[@"Skim - " stringByAppendingString:md5HexString] UTF8String];
     return NULL;

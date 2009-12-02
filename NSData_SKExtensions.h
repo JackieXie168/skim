@@ -41,8 +41,7 @@
 
 @interface NSData (SKExtensions)
 
-- (NSData *)md5Signature;
-- (NSString *)hexString;
+- (NSString *)md5String;
 - (NSString *)xmlString;
 
 - (id)initWithBase64String:(NSString *)base64String;
