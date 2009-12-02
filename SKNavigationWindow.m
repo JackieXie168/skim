@@ -225,7 +225,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     NSRect newFrame = [self frameRectForContentRect:[toolTipView frame]];
     NSRect viewRect = [view convertRect:[view bounds] toView:nil];
     viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
-    newFrame.origin = NSMakePoint(SKCeil(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
+    newFrame.origin = NSMakePoint(ceil(NSMidX(viewRect) - 0.5 * NSWidth(newFrame)), NSMaxY(viewRect) + LABEL_OFFSET);
     [self setFrame:newFrame display:YES];
     [self setLevel:[[view window] level]];
     if ([self parentWindow] != [view window])
@@ -296,7 +296,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (void)sizeToFit {
     NSSize size = [[self attributedStringValue] size];
-    size.width = SKCeil(size.width + 2 * LABEL_TEXT_MARGIN);
+    size.width = ceil(size.width + 2 * LABEL_TEXT_MARGIN);
     size.height += 2 * LABEL_TEXT_MARGIN;
     [self setFrameSize:size];
 }

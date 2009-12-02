@@ -89,8 +89,8 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
-    CGFloat shadowBlurRadius = SKRound(aSize / 32.0);
-    CGFloat shadowOffset = - SKCeil(shadowBlurRadius * 0.75);
+    CGFloat shadowBlurRadius = round(aSize / 32.0);
+    CGFloat shadowOffset = - ceil(shadowBlurRadius * 0.75);
     return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
 }
 
@@ -110,10 +110,10 @@ static BOOL usesSequentialPageNumbering = NO;
     
     if (isScaled) {
         if (pageSize.height > pageSize.width)
-            thumbnailSize = NSMakeSize(SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
+            thumbnailSize = NSMakeSize(round((aSize - 2.0 * shadowBlurRadius) * pageSize.width / pageSize.height + 2.0 * shadowBlurRadius), aSize);
         else
-            thumbnailSize = NSMakeSize(aSize, SKRound((aSize - 2.0 * shadowBlurRadius) * pageSize.height / pageSize.width + 2.0 * shadowBlurRadius));
-        scale = SKMin((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
+            thumbnailSize = NSMakeSize(aSize, round((aSize - 2.0 * shadowBlurRadius) * pageSize.height / pageSize.width + 2.0 * shadowBlurRadius));
+        scale = fmin((thumbnailSize.width - 2.0 * shadowBlurRadius) / pageSize.width, (thumbnailSize.height - 2.0 * shadowBlurRadius) / pageSize.height);
     } else {
         thumbnailSize = NSMakeSize(pageSize.width + 2.0 * shadowBlurRadius, pageSize.height + 2.0 * shadowBlurRadius);
     }

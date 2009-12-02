@@ -232,8 +232,8 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             
             if ([selection hasCharacters]) {
                 NSRect selBounds = [transform transformRect:[selection boundsForPage:page]];
-                CGFloat top = SKCeil(SKMax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
-                CGFloat left = SKFloor(SKMin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
+                CGFloat top = ceil(fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
+                CGFloat left = floor(fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
                 if (top < NSMaxY(sourceRect))
                     sourceRect.origin.y = top - NSHeight(sourceRect);
                 if (left > NSMinX(sourceRect))
@@ -248,8 +248,8 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page displayLabel]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
             
-            labelRect.size.width = SKFloor(NSWidth(labelRect));
-            labelRect.size.height = 2.0 * SKFloor(0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
+            labelRect.size.width = floor(NSWidth(labelRect));
+            labelRect.size.height = 2.0 * floor(0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
             labelRect.origin.x = NSWidth(sourceRect) - NSWidth(labelRect) - 0.5 * NSHeight(labelRect) - TEXT_MARGIN_X;
             labelRect.origin.y = TEXT_MARGIN_Y;
             labelRect = NSIntegralRect(labelRect);
@@ -321,7 +321,7 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
         
         NSRect textRect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
         
-        textRect.size.height = SKMin(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
+        textRect.size.height = fmin(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
         textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
         
         image = [[NSImage alloc] initWithSize:NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size];

@@ -44,7 +44,7 @@
 + (NSBezierPath *)bezierPathWithLeftRoundedRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
+    radius = fmin(radius, fmin(0.5f * NSHeight(rect), NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -72,7 +72,7 @@
 + (NSBezierPath *)bezierPathWithRightRoundedRect:(NSRect)rect radius:(CGFloat)radius
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = SKMin(radius, SKMin(0.5f * NSHeight(rect), NSWidth(rect)));
+    radius = fmin(radius, fmin(0.5f * NSHeight(rect), NSWidth(rect)));
     
     // Make sure silly values simply lead to un-rounded corners:
     if( radius <= 0 )
@@ -115,10 +115,10 @@
             if (i == 0) {
                 minPoint = maxPoint = point;
             } else {
-                minPoint.x = SKMin(minPoint.x, point.x);
-                minPoint.y = SKMin(minPoint.y, point.y);
-                maxPoint.x = SKMax(maxPoint.x, point.x);
-                maxPoint.y = SKMax(maxPoint.y, point.y);
+                minPoint.x = fmin(minPoint.x, point.x);
+                minPoint.y = fmin(minPoint.y, point.y);
+                maxPoint.x = fmax(maxPoint.x, point.x);
+                maxPoint.y = fmax(maxPoint.y, point.y);
             }
         }
         bounds = NSMakeRect(minPoint.x - 0.1, minPoint.y - 0.1, maxPoint.x - minPoint.x + 0.2, maxPoint.y - minPoint.y + 0.2);

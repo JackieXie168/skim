@@ -434,7 +434,7 @@ struct SKServerFlags {
                 afterRecord = record;
                 break;
             } else {
-                [atRecords setObject:record forKey:[NSNumber numberWithDouble:SKAbs(p.x - point.x)]];
+                [atRecords setObject:record forKey:[NSNumber numberWithDouble:fabs(p.x - point.x)]];
             }
         }
         

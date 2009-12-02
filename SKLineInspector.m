@@ -424,7 +424,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setLineWidth:(CGFloat)width {
-    if (SKAbs(lineWidth - width) > 0.00001) {
+    if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self notifyChangeAction:SKLineWidthLineChangeAction];
     }

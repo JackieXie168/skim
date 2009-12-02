@@ -408,8 +408,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)endGestureWithEvent:(NSEvent *)theEvent {
-    if (SKAbs(pinchZoomFactor - 1.0) > 0.1)
-        [self setScaleFactor:SKMax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
+    if (fabs(pinchZoomFactor - 1.0) > 0.1)
+        [self setScaleFactor:fmax(pinchZoomFactor * [self scaleFactor], SKMinDefaultScaleMenuFactor)];
     pinchZoomFactor = 1.0;
     if ([[SKSnapshotPDFView superclass] instancesRespondToSelector:_cmd])
         [super endGestureWithEvent:theEvent];
@@ -417,9 +417,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
-        pinchZoomFactor *= 1.0 + SKMax(-0.5, SKMin(1.0 , [theEvent magnification]));
+        pinchZoomFactor *= 1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification]));
         CGFloat scaleFactor = pinchZoomFactor * [self scaleFactor];
-        NSUInteger i = [self indexForScaleFactor:SKMax(scaleFactor, SKMinDefaultScaleMenuFactor)];
+        NSUInteger i = [self indexForScaleFactor:fmax(scaleFactor, SKMinDefaultScaleMenuFactor)];
         if (i != [self indexForScaleFactor:[self scaleFactor]]) {
             [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
             pinchZoomFactor = scaleFactor / [self scaleFactor];

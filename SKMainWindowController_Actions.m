@@ -678,10 +678,10 @@
                 }
             }
         }
-        CGFloat w = SKMax(NSWidth(rect[0]), NSWidth(rect[1]));
-        CGFloat h = SKMax(NSHeight(rect[0]), NSHeight(rect[1]));
+        CGFloat w = fmax(NSWidth(rect[0]), NSWidth(rect[1]));
+        CGFloat h = fmax(NSHeight(rect[0]), NSHeight(rect[1]));
         for (j = 0; j < 2; j++)
-            rect[j] = NSMakeRect(SKFloor(NSMidX(rect[j]) - 0.5 * w), SKFloor(NSMidY(rect[j]) - 0.5 * h), w, h);
+            rect[j] = NSMakeRect(floor(NSMidX(rect[j]) - 0.5 * w), floor(NSMidY(rect[j]) - 0.5 * h), w, h);
         [rectArray addPointer:rect];
         [rectArray addPointer:rect + 1];
     } else {
@@ -731,8 +731,8 @@
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
-        size.width = SKMax(size.width, NSWidth(bbox));
-        size.height = SKMax(size.height, NSHeight(bbox));
+        size.width = fmax(size.width, NSWidth(bbox));
+        size.height = fmax(size.height, NSHeight(bbox));
         [[self progressController] incrementBy:1.0];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -896,8 +896,8 @@
         size.height /= scaleFactor;
     
     // Calculate the new size for the window
-    size.width = SKCeil(NSWidth(frame) + size.width - oldSize.width);
-    size.height = SKCeil(NSHeight(frame) + size.height - oldSize.height);
+    size.width = ceil(NSWidth(frame) + size.width - oldSize.width);
+    size.height = ceil(NSHeight(frame) + size.height - oldSize.height);
     // Align the window frame from the old topleft point and constrain to the screen
     frame.origin.y = NSMaxY(frame) - size.height;
     frame.size = size;
@@ -1054,7 +1054,7 @@
             if(lastLeftSidePaneWidth <= 0.0)
                 lastLeftSidePaneWidth = 250.0; // a reasonable value to start
             if (lastLeftSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
-                lastLeftSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
+                lastLeftSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position = lastLeftSidePaneWidth;
         }
         [splitView setPosition:position ofDividerAtIndex:0 animate:sender != nil];
@@ -1085,7 +1085,7 @@
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = 250.0; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
-                lastRightSidePaneWidth = SKFloor(0.5 * NSWidth([centerContentView frame]));
+                lastRightSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
         }
         [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
@@ -1118,7 +1118,7 @@
         NSRect frame = [pdfSplitView bounds];
         
         if (lastSplitPDFHeight <= 0.0)
-            lastSplitPDFHeight = SKFloor(0.3 * NSHeight(frame));
+            lastSplitPDFHeight = floor(0.3 * NSHeight(frame));
         
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
         NSPoint point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);

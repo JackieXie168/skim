@@ -193,7 +193,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     [cancelButton setAction:action];
     NSRect frame = [cancelButton frame];
     [cancelButton sizeToFit];
-    CGFloat width = SKMax(NSWidth([cancelButton frame]), 90.0);
+    CGFloat width = fmax(NSWidth([cancelButton frame]), 90.0);
     frame.origin.x = NSMaxX(frame) - width;
     frame.size.width = width;
     [cancelButton setFrame:frame];

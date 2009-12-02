@@ -179,7 +179,7 @@ static char *SKTransitionPropertiesObservationContext;
             [info setProperties:([ptEnum nextObject] ?: dictionary)];
             [array addObject:info];
             [cell setStringValue:[info label]];
-            labelWidth = SKMax(labelWidth, SKCeil([cell cellSize].width));
+            labelWidth = fmax(labelWidth, ceil([cell cellSize].width));
             [info release];
         }
         tn = next;
@@ -244,7 +244,7 @@ static char *SKTransitionPropertiesObservationContext;
             
             extraWidth = NSWidth([scrollView frame]) + 8.0;
             frame.size.width += extraWidth;
-            frame.origin.x -= SKFloor(0.5 * extraWidth);
+            frame.origin.x -= floor(0.5 * extraWidth);
             [window setFrame:frame display:isVisible animate:isVisible];
             [scrollView setHidden:NO];
         } else {
@@ -253,7 +253,7 @@ static char *SKTransitionPropertiesObservationContext;
             [scrollView setHidden:YES];
             extraWidth = NSWidth([scrollView frame]) + 8.0;
             frame.size.width -= extraWidth;
-            frame.origin.x += SKFloor(0.5 * extraWidth);
+            frame.origin.x += floor(0.5 * extraWidth);
             [window setFrame:frame display:isVisible animate:isVisible];
         }
         [[[self undoManager] prepareWithInvocationTarget:self] setSeparate:separate == NO];

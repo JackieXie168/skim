@@ -123,7 +123,7 @@
 	if (textRect.size.width < 0.0)
 		textRect.size.width = 0.0;
 	
-    CGFloat height = SKMax([leftCell cellSize].height, [rightCell cellSize].height);
+    CGFloat height = fmax([leftCell cellSize].height, [rightCell cellSize].height);
     textRect = SKCenterRectVertically(textRect, height, NO);
     textRect.origin.y += VERTICAL_OFFSET;
     
@@ -408,7 +408,7 @@
         if (size.width < 0.01) size.width = PROGRESSBAR_WIDTH;
         NSDivideRect([self bounds], &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
         NSDivideRect(rect, &rect, &ignored, size.width, NSMaxXEdge);
-        rect.origin.y = SKFloor(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
+        rect.origin.y = floor(NSMidY(rect) - 0.5 * size.height) + VERTICAL_OFFSET;
         rect.size.height = size.height;
 		[progressIndicator setFrame:rect];
 		

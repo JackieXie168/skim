@@ -644,7 +644,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     
     for (NSString *label in pageLabels) {
         [cell setStringValue:label];
-        labelWidth = SKMax(labelWidth, [cell cellSize].width);
+        labelWidth = fmax(labelWidth, [cell cellSize].width);
     }
     
     [tableColumn setMinWidth:labelWidth];
@@ -2554,7 +2554,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [thumbnail setImage:image];
     
     newSize = [image size];
-    if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0)
+    if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
         [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:[thumbnail pageIndex]]];
 }
 
@@ -2590,7 +2590,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
-        CGFloat width = 0.8 * SKMin(NSWidth(imgRect), NSHeight(imgRect));
+        CGFloat width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
         imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
         [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
@@ -2608,12 +2608,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnailSizeIfNeeded {
-    roundedThumbnailSize = SKRound([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
+    roundedThumbnailSize = round([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
 
     CGFloat defaultSize = roundedThumbnailSize;
     CGFloat thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (SKAbs(thumbnailSize - thumbnailCacheSize) > 0.1) {
+    if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
         thumbnailCacheSize = thumbnailSize;
         
         if ([self countOfThumbnails])
@@ -2683,11 +2683,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark Snapshots
 
 - (void)resetSnapshotSizeIfNeeded {
-    roundedSnapshotThumbnailSize = SKRound([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
+    roundedSnapshotThumbnailSize = round([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
     CGFloat defaultSize = roundedSnapshotThumbnailSize;
     CGFloat snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (SKAbs(snapshotSize - snapshotCacheSize) > 0.1) {
+    if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
         snapshotCacheSize = snapshotSize;
         
         if (snapshotTimer) {
@@ -2728,7 +2728,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [dirtySnapshots removeObject:controller];
         
         newSize = [image size];
-        if (SKAbs(newSize.width - oldSize.width) > 1.0 || SKAbs(newSize.height - oldSize.height) > 1.0) {
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
             NSUInteger idx = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
         }
