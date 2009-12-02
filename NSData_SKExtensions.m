@@ -100,9 +100,18 @@
     EVP_MD_CTX md5context;
     unsigned char signature[EVP_MAX_MD_SIZE];
     unsigned int signatureLength = 0;
+    unsigned int blockSize = 4096;
+    char buffer[blockSize];
+    unsigned int length = [self length];
+    NSRange range = NSMakeRange(0, MIN(blockSize, length));
     
     EVP_DigestInit(&md5context, EVP_md5());
-    EVP_DigestUpdate(&md5context, [self bytes], [self length]);
+    while (range.length > 0) {
+        [self getBytes:buffer range:range];
+        EVP_DigestUpdate(&md5context, buffer, range.length);
+        range.location = NSMaxRange(range);
+        range.length = MIN(blockSize, length - range.location);
+    }
     EVP_DigestFinal_ex(&md5context, signature, &signatureLength);
     EVP_MD_CTX_cleanup(&md5context);
 
