@@ -50,7 +50,7 @@
 - (void)drawRect:(NSRect)aRect
 {        
     // fill entire view, not just the (possibly clipped) aRect
-    if ([[self window] styleMask] & NSClosableWindowMask) {
+    if ([[self window] styleMask] != NSBorderlessWindowMask) {
         BOOL keyOrMain = [[self window] isMainWindow] || [[self window] isKeyWindow];
         NSColor *lowerColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.75 : 0.8 alpha:1.0];
         NSColor *upperColor = [NSColor colorWithCalibratedWhite:keyOrMain ? 0.9 : 0.95 alpha:1.0];
@@ -65,7 +65,7 @@
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     NSWindow *window = [self window];
-    if (window) {
+    if ([window styleMask] != NSBorderlessWindowMask) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
         [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
@@ -76,7 +76,7 @@
 
 - (void)viewDidMoveToWindow {
     NSWindow *window = [self window];
-    if (window) {
+    if ([window styleMask] != NSBorderlessWindowMask) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
         [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
