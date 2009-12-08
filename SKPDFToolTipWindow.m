@@ -272,6 +272,8 @@ NSString *SKToolTipHeightKey = @"SKToolTipHeight";
             [path closePath];
             
             [labelColor setFill];
+            [path fill];
+            
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
             
             [image unlockFocus];
