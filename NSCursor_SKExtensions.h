@@ -48,5 +48,14 @@
 + (NSCursor *)resizeRightUpCursor;
 + (NSCursor *)resizeRightDownCursor;
 + (NSCursor *)cameraCursor;
++ (NSCursor *)textNoteCursor;
++ (NSCursor *)anchoredNoteCursor;
++ (NSCursor *)circleNoteCursor;
++ (NSCursor *)squareNoteCursor;
++ (NSCursor *)highlightNoteCursor;
++ (NSCursor *)underlineNoteCursor;
++ (NSCursor *)strikeOutNoteCursor;
++ (NSCursor *)lineNoteCursor;
++ (NSCursor *)inkNoteCursor;
 
 @end

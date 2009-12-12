@@ -4083,6 +4083,66 @@ enum {
     }
 }
 
+- (NSCursor *)cursorForNoteToolMode {
+    switch (annotationMode) {
+        case SKFreeTextNote:  return [NSCursor textNoteCursor];
+        case SKAnchoredNote:  return [NSCursor anchoredNoteCursor];
+        case SKCircleNote:    return [NSCursor circleNoteCursor];
+        case SKSquareNote:    return [NSCursor squareNoteCursor];
+        case SKHighlightNote: return [NSCursor highlightNoteCursor];
+        case SKUnderlineNote: return [NSCursor underlineNoteCursor];
+        case SKStrikeOutNote: return [NSCursor strikeOutNoteCursor];
+        case SKLineNote:      return [NSCursor lineNoteCursor];
+        case SKInkNote:       return [NSCursor inkNoteCursor];
+        default:              return [NSCursor arrowCursor];
+    }
+}
+
+- (NSCursor *)cursorForSelectToolModeAtPoint:(NSPoint)point {
+    NSCursor *cursor = nil;
+    CGFloat margin = 4.0 / [self scaleFactor];
+    PDFPage *page = [self pageForPoint:point nearest:NO];
+    NSPoint p = [self convertPoint:point toPage:page];
+    if (NSIsEmptyRect(selectionRect) || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
+        cursor = [NSCursor crosshairCursor];
+    } else { 
+        NSInteger angle = 360;
+        if (p.x > NSMaxX(selectionRect) - margin) {
+            if (p.y < NSMinY(selectionRect) + margin)
+                angle = 45;
+            else if (p.y > NSMaxY(selectionRect) - margin)
+                angle = 315;
+            else
+                angle = 0;
+        } else if (p.x < NSMinX(selectionRect) + margin) {
+            if (p.y < NSMinY(selectionRect) + margin)
+                angle = 135;
+            else if (p.y > NSMaxY(selectionRect) - margin)
+                angle = 225;
+            else
+                angle = 180;
+        } else if (p.y < NSMinY(selectionRect) + margin) {
+            angle = 90;
+        } else if (p.y > NSMaxY(selectionRect) - margin) {
+            angle = 270;
+        } else {
+            cursor = [NSCursor openHandCursor];
+        }
+        if (angle != 360) {
+            angle = (360 + angle + [page rotation]) % 360;
+            switch (angle) {
+                case 0: case 180: cursor = [NSCursor resizeLeftRightCursor]; break;
+                case 45: cursor = [NSCursor resizeRightDownCursor]; break;
+                case 90: case 270: cursor = [NSCursor resizeUpDownCursor]; break;
+                case 135: cursor = [NSCursor resizeLeftDownCursor]; break;
+                case 225: cursor = [NSCursor resizeLeftUpCursor]; break;
+                case 315: cursor = [NSCursor resizeRightUpCursor]; break;
+            }
+        }
+    }
+    return cursor;
+}
+
 - (NSCursor *)getCursorForEvent:(NSEvent *)theEvent {
     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSCursor *cursor = nil;
@@ -4096,10 +4156,7 @@ enum {
     } else if (NSMouseInRect(p, [self visibleContentRect], [self isFlipped]) == NO || ([navWindow isVisible] && NSPointInRect([[self window] convertBaseToScreen:[theEvent locationInWindow]], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        if ([theEvent modifierFlags] & NSShiftKeyMask)
-            cursor = [NSCursor arrowCursor];
-        else
-            cursor = [NSCursor arrowCursor];
+        cursor = [NSCursor arrowCursor];
     } else {
         PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
         switch (toolMode) {
@@ -4116,67 +4173,29 @@ enum {
                     cursor = p.y < NSMinY([readingBar currentBounds]) + 3.0 ? [NSCursor resizeUpDownCursor] : [NSCursor openHandCursor];
                 else if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [theEvent standardModifierFlags] == 0 && [[page selectionForRect:NSMakeRect(p.x - 40.0, p.y - 50.0, 80.0, 100.0)] hasCharacters] == NO))
                     cursor = [NSCursor openHandCursor];
-                else if (toolMode == SKNoteToolMode && annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote)
-                    cursor = [NSCursor arrowCursor];
+                else if (toolMode == SKNoteToolMode)
+                    cursor = [self cursorForNoteToolMode];
                 break;
             }
             case SKMoveToolMode:
-                if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+                if (area & kPDFLinkArea)
                     cursor = [NSCursor pointingHandCursor];
                 else
                     cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
-                if (area == kPDFNoArea) {
+                if (area == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
-                } else {
-                    CGFloat margin = 4.0 / [self scaleFactor];
-                    PDFPage *page = [self pageForPoint:p nearest:NO];
-                    p = [self convertPoint:p toPage:page];
-                    if (NSIsEmptyRect(selectionRect) || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
-                        cursor = [NSCursor crosshairCursor];
-                    } else {
-                        NSInteger angle = 360;
-                        if (p.x > NSMaxX(selectionRect) - margin) {
-                            if (p.y < NSMinY(selectionRect) + margin)
-                                angle = 45;
-                            else if (p.y > NSMaxY(selectionRect) - margin)
-                                angle = 315;
-                            else
-                                angle = 0;
-                        } else if (p.x < NSMinX(selectionRect) + margin) {
-                            if (p.y < NSMinY(selectionRect) + margin)
-                                angle = 135;
-                            else if (p.y > NSMaxY(selectionRect) - margin)
-                                angle = 225;
-                            else
-                                angle = 180;
-                        } else if (p.y < NSMinY(selectionRect) + margin) {
-                            angle = 90;
-                        } else if (p.y > NSMaxY(selectionRect) - margin) {
-                            angle = 270;
-                        } else {
-                            cursor = [NSCursor openHandCursor];
-                        }
-                        if (angle != 360) {
-                            angle = (360 + angle + [page rotation]) % 360;
-                            switch (angle) {
-                                case 0: case 180: cursor = [NSCursor resizeLeftRightCursor]; break;
-                                case 45: cursor = [NSCursor resizeRightDownCursor]; break;
-                                case 90: case 270: cursor = [NSCursor resizeUpDownCursor]; break;
-                                case 135: cursor = [NSCursor resizeLeftDownCursor]; break;
-                                case 225: cursor = [NSCursor resizeLeftUpCursor]; break;
-                                case 315: cursor = [NSCursor resizeRightUpCursor]; break;
-                            }
-                        }
-                    }
+                else 
+                    cursor = [self cursorForSelectToolModeAtPoint:p];
                 break;
-            }
             case SKMagnifyToolMode:
                 if (area == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
+                else if ([theEvent modifierFlags] & NSShiftKeyMask)
+                    cursor = [NSCursor zoomOutCursor];
                 else
-                    cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                    cursor = [NSCursor zoomInCursor];
                 break;
         }
     }
