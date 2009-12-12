@@ -105,4 +105,85 @@
     return cameraCursor;
 }
 
++ (NSCursor *)textNoteCursor {
+    static NSCursor *textNoteCursor = nil;
+    if (nil == textNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameTextNoteCursor] copy] autorelease];
+        textNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return textNoteCursor;
+}
+
++ (NSCursor *)anchoredNoteCursor {
+    static NSCursor *anchoredNoteCursor = nil;
+    if (nil == anchoredNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameAnchoredNoteCursor] copy] autorelease];
+        anchoredNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return anchoredNoteCursor;
+}
+
++ (NSCursor *)circleNoteCursor {
+    static NSCursor *circleNoteCursor = nil;
+    if (nil == circleNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameCircleNoteCursor] copy] autorelease];
+        circleNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return circleNoteCursor;
+}
+
++ (NSCursor *)squareNoteCursor {
+    static NSCursor *squareNoteCursor = nil;
+    if (nil == squareNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameSquareNoteCursor] copy] autorelease];
+        squareNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return squareNoteCursor;
+}
+
++ (NSCursor *)highlightNoteCursor {
+    static NSCursor *highlightNoteCursor = nil;
+    if (nil == highlightNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameHighlightNoteCursor] copy] autorelease];
+        highlightNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return highlightNoteCursor;
+}
+
++ (NSCursor *)underlineNoteCursor {
+    static NSCursor *underlineNoteCursor = nil;
+    if (nil == underlineNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameUnderlineNoteCursor] copy] autorelease];
+        underlineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return underlineNoteCursor;
+}
+
++ (NSCursor *)strikeOutNoteCursor {
+    static NSCursor *strikeOutNoteCursor = nil;
+    if (nil == strikeOutNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameStrikeOutNoteCursor] copy] autorelease];
+        strikeOutNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return strikeOutNoteCursor;
+}
+
++ (NSCursor *)lineNoteCursor {
+    static NSCursor *lineNoteCursor = nil;
+    if (nil == lineNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameLineNoteCursor] copy] autorelease];
+        lineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return lineNoteCursor;
+}
+
++ (NSCursor *)inkNoteCursor {
+    static NSCursor *inkNoteCursor = nil;
+    if (nil == inkNoteCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameInkNoteCursor] copy] autorelease];
+        inkNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+    }
+    return inkNoteCursor;
+}
+
 @end
