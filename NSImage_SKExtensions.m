@@ -185,6 +185,18 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     return image;
 }
 
+- (NSImage *)copyArrowCursorImage {
+    NSImage *arrowCursor = [[NSCursor arrowCursor] image];
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(24.0, 40.0)];
+    
+    [image lockFocus];
+    [arrowCursor drawAtPoint:NSMakePoint(0.0, [image size].height - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [image drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [image unlockFocus];
+    
+    return image;
+}
+
 + (void)drawAddBadgeAtPoint:(NSPoint)point {
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(point.x + 2.5, point.y + 6.5)];
@@ -1913,72 +1925,31 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [cameraCursorImage unlockFocus];
     [cameraCursorImage setName:SKImageNameCameraCursor];
     
-    size = NSMakeSize(24.0, 40.0);
-    
-    NSImage *arrowCursor = [[NSCursor arrowCursor] image];
-    NSPoint arrowPoint = NSMakePoint(0.0, size.height - [arrowCursor size].height);
-    
-    textNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [textNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarTextNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [textNoteCursorImage unlockFocus];
+    textNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarTextNote] copyArrowCursorImage];
     [textNoteCursorImage setName:SKImageNameTextNoteCursor];
     
-    anchoredNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [anchoredNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarAnchoredNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [anchoredNoteCursorImage unlockFocus];
+    anchoredNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarAnchoredNote] copyArrowCursorImage];
     [anchoredNoteCursorImage setName:SKImageNameAnchoredNoteCursor];
     
-    circleNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [circleNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarCircleNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [circleNoteCursorImage unlockFocus];
+    circleNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarCircleNote] copyArrowCursorImage];
     [circleNoteCursorImage setName:SKImageNameCircleNoteCursor];
     
-    squareNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [squareNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarSquareNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [squareNoteCursorImage unlockFocus];
+    squareNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarSquareNote] copyArrowCursorImage];
     [squareNoteCursorImage setName:SKImageNameSquareNoteCursor];
     
-    highlightNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [highlightNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarHighlightNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [highlightNoteCursorImage unlockFocus];
+    highlightNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarHighlightNote] copyArrowCursorImage];
     [highlightNoteCursorImage setName:SKImageNameHighlightNoteCursor];
     
-    underlineNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [underlineNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarUnderlineNote] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [underlineNoteCursorImage unlockFocus];
+    underlineNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarUnderlineNote] copyArrowCursorImage];
     [underlineNoteCursorImage setName:SKImageNameUnderlineNoteCursor];
     
-    strikeOutNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [strikeOutNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarStrikeOutNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [strikeOutNoteCursorImage unlockFocus];
+    strikeOutNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarStrikeOutNote] copyArrowCursorImage];
     [strikeOutNoteCursorImage setName:SKImageNameStrikeOutNoteCursor];
     
-    lineNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [lineNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarLineNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [lineNoteCursorImage unlockFocus];
+    lineNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarLineNote] copyArrowCursorImage];
     [lineNoteCursorImage setName:SKImageNameLineNoteCursor];
     
-    inkNoteCursorImage = [[NSImage alloc] initWithSize:size];
-    [inkNoteCursorImage lockFocus];
-    [arrowCursor drawAtPoint:arrowPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [[NSImage imageNamed:SKImageNameToolbarInkNote] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [inkNoteCursorImage unlockFocus];
+    inkNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarInkNote] copyArrowCursorImage];
     [inkNoteCursorImage setName:SKImageNameInkNoteCursor];
 }
 
