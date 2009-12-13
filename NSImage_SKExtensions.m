@@ -1358,7 +1358,7 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [shadow1 set];
     [fgColor setFill];
     path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(3.5, 4.0)];
+    [path moveToPoint:NSMakePoint(5.5, 4.0)];
     [path lineToPoint:NSMakePoint(9.5, 14.0)];
     [path lineToPoint:NSMakePoint(11.5, 14.0)];
     [path lineToPoint:NSMakePoint(15.5, 4.0)];
