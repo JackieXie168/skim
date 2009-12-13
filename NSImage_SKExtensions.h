@@ -38,6 +38,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKImageNameTextNote;
+extern NSString *SKImageNameAnchoredNote;
+extern NSString *SKImageNameCircleNote;
+extern NSString *SKImageNameSquareNote;
+extern NSString *SKImageNameHighlightNote;
+extern NSString *SKImageNameUnderlineNote;
+extern NSString *SKImageNameStrikeOutNote;
+extern NSString *SKImageNameLineNote;
+extern NSString *SKImageNameInkNote;
+
 extern NSString *SKImageNameToolbarPageUp;
 extern NSString *SKImageNameToolbarPageDown;
 extern NSString *SKImageNameToolbarFirstPage;
@@ -62,15 +72,6 @@ extern NSString *SKImageNameToolbarMediaBox;
 extern NSString *SKImageNameToolbarCropBox;
 extern NSString *SKImageNameToolbarLeftPane;
 extern NSString *SKImageNameToolbarRightPane;
-extern NSString *SKImageNameToolbarTextNote;
-extern NSString *SKImageNameToolbarAnchoredNote;
-extern NSString *SKImageNameToolbarCircleNote;
-extern NSString *SKImageNameToolbarSquareNote;
-extern NSString *SKImageNameToolbarHighlightNote;
-extern NSString *SKImageNameToolbarUnderlineNote;
-extern NSString *SKImageNameToolbarStrikeOutNote;
-extern NSString *SKImageNameToolbarLineNote;
-extern NSString *SKImageNameToolbarInkNote;
 extern NSString *SKImageNameToolbarTextNoteMenu;
 extern NSString *SKImageNameToolbarAnchoredNoteMenu;
 extern NSString *SKImageNameToolbarCircleNoteMenu;

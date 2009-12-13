@@ -504,23 +504,23 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     
     NSString *imageName = nil;
     if ([self isEqualToString:SKNFreeTextString])
-        imageName = SKImageNameToolbarTextNote;
+        imageName = SKImageNameTextNote;
     else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
-        imageName = SKImageNameToolbarAnchoredNote;
+        imageName = SKImageNameAnchoredNote;
     else if ([self isEqualToString:SKNCircleString])
-        imageName = SKImageNameToolbarCircleNote;
+        imageName = SKImageNameCircleNote;
     else if ([self isEqualToString:SKNSquareString])
-        imageName = SKImageNameToolbarSquareNote;
+        imageName = SKImageNameSquareNote;
     else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
-        imageName = SKImageNameToolbarHighlightNote;
+        imageName = SKImageNameHighlightNote;
     else if ([self isEqualToString:SKNUnderlineString])
-        imageName = SKImageNameToolbarUnderlineNote;
+        imageName = SKImageNameUnderlineNote;
     else if ([self isEqualToString:SKNStrikeOutString])
-        imageName = SKImageNameToolbarStrikeOutNote;
+        imageName = SKImageNameStrikeOutNote;
     else if ([self isEqualToString:SKNLineString])
-        imageName = SKImageNameToolbarLineNote;
+        imageName = SKImageNameLineNote;
     else if ([self isEqualToString:SKNInkString])
-        imageName = SKImageNameToolbarInkNote;
+        imageName = SKImageNameInkNote;
     
     if (imageName) {
         NSImage *image = [NSImage imageNamed:imageName];

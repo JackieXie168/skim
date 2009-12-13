@@ -41,6 +41,16 @@
 
 @implementation NSImage (SKExtensions)
 
+NSString *SKImageNameTextNote = @"TextNote";
+NSString *SKImageNameAnchoredNote = @"AnchoredNote";
+NSString *SKImageNameCircleNote = @"CircleNote";
+NSString *SKImageNameSquareNote = @"SquareNote";
+NSString *SKImageNameHighlightNote = @"HighlightNote";
+NSString *SKImageNameUnderlineNote = @"UnderlineNote";
+NSString *SKImageNameStrikeOutNote = @"StrikeOutNote";
+NSString *SKImageNameLineNote = @"LineNote";
+NSString *SKImageNameInkNote = @"InkNote";
+
 NSString *SKImageNameToolbarPageUp = @"ToolbarPageUp";
 NSString *SKImageNameToolbarPageDown = @"ToolbarPageDown";
 NSString *SKImageNameToolbarFirstPage = @"ToolbarFirstPage";
@@ -65,15 +75,6 @@ NSString *SKImageNameToolbarMediaBox = @"ToolbarMediaBox";
 NSString *SKImageNameToolbarCropBox = @"ToolbarCropBox";
 NSString *SKImageNameToolbarLeftPane = @"ToolbarLeftPane";
 NSString *SKImageNameToolbarRightPane = @"ToolbarRightPane";
-NSString *SKImageNameToolbarTextNote = @"ToolbarTextNote";
-NSString *SKImageNameToolbarAnchoredNote = @"ToolbarAnchoredNote";
-NSString *SKImageNameToolbarCircleNote = @"ToolbarCircleNote";
-NSString *SKImageNameToolbarSquareNote = @"ToolbarSquareNote";
-NSString *SKImageNameToolbarHighlightNote = @"ToolbarHighlightNote";
-NSString *SKImageNameToolbarUnderlineNote = @"ToolbarUnderlineNote";
-NSString *SKImageNameToolbarStrikeOutNote = @"ToolbarStrikeOutNote";
-NSString *SKImageNameToolbarLineNote = @"ToolbarLineNote";
-NSString *SKImageNameToolbarInkNote = @"ToolbarInkNote";
 NSString *SKImageNameToolbarTextNoteMenu = @"ToolbarTextNoteMenu";
 NSString *SKImageNameToolbarAnchoredNoteMenu = @"ToolbarAnchoredNoteMenu";
 NSString *SKImageNameToolbarCircleNoteMenu = @"ToolbarCircleNoteMenu";
@@ -133,21 +134,19 @@ NSString *SKImageNameLineNoteCursor = @"LineNoteCursor";
 NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 
 - (NSImage *)copyWithMenuBadge {
-    NSSize size = [self size]; // should be 27x19
-    
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(size.width, 10.0)];
+    [arrowPath moveToPoint:NSMakePoint(27.0, 10.0)];
     [arrowPath relativeLineToPoint:NSMakePoint(-5.0, 0.0)];
     [arrowPath relativeLineToPoint:NSMakePoint(2.5, -3.0)];
     [arrowPath closePath];
     
-    NSImage *image = [[NSImage alloc] initWithSize:size];
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, size.width, size.height));
+    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
     [NSGraphicsContext restoreGraphicsState];
-    [self drawInRect:NSMakeRect(0.0, 0.0, size.width - 2.0, size.height) fromRect:NSMakeRect(2.0, 0.0, size.width - 2.0, size.height) operation:NSCompositeCopy fraction:1.0];
+    [self drawAtPoint:NSMakePoint(0.5 * (23.0 - [self size].width), 0.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] setFill];
     [arrowPath fill];
@@ -158,25 +157,23 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 }
 
 - (NSImage *)copyWithAddBadge {
-    NSSize size = [self size]; // should be 27x19
-    
     NSBezierPath *addPath = [NSBezierPath bezierPath];
     addPath = [NSBezierPath bezierPath];
-    [addPath appendBezierPathWithRect:NSMakeRect(size.width - 10.0, 4.0, 6.0, 2.0)];
-    [addPath appendBezierPathWithRect:NSMakeRect(size.width - 8.0, 2.0, 2.0, 6.0)];
+    [addPath appendBezierPathWithRect:NSMakeRect(17.0, 4.0, 6.0, 2.0)];
+    [addPath appendBezierPathWithRect:NSMakeRect(19.0, 2.0, 2.0, 6.0)];
     
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:2.0];
     [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
     [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
-    NSImage *image = [[NSImage alloc] initWithSize:size];
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, size.width, size.height));
+    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
     [NSGraphicsContext restoreGraphicsState];
-    [self drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    [self drawAtPoint:NSMakePoint(0.5 * (27.0 - [self size].width), 0.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     [NSGraphicsContext saveGraphicsState];
     [shadow1 set];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
@@ -192,11 +189,10 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 - (NSImage *)copyArrowCursorImage {
     NSImage *arrowCursor = [[NSCursor arrowCursor] image];
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(24.0, 40.0)];
-    NSRect rect = NSMakeRect(0.0, 0.0, 24.0, [self size].height);
     
     [image lockFocus];
     [arrowCursor drawAtPoint:NSMakePoint(0.0, 40.0 - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [self drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:1.0];
+    [self drawAtPoint:NSMakePoint(3.0, 0.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     [image unlockFocus];
     
     return image;
@@ -259,15 +255,6 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     static NSImage *toolbarCropBoxImage = nil;
     static NSImage *toolbarLeftPaneImage = nil;
     static NSImage *toolbarRightPaneImage = nil;
-    static NSImage *toolbarTextNoteImage = nil;
-    static NSImage *toolbarAnchoredNoteImage = nil;
-    static NSImage *toolbarCircleNoteImage = nil;
-    static NSImage *toolbarSquareNoteImage = nil;
-    static NSImage *toolbarHighlightNoteImage = nil;
-    static NSImage *toolbarUnderlineNoteImage = nil;
-    static NSImage *toolbarStrikeOutNoteImage = nil;
-    static NSImage *toolbarLineNoteImage = nil;
-    static NSImage *toolbarInkNoteImage = nil;
     static NSImage *toolbarTextNoteMenuImage = nil;
     static NSImage *toolbarAnchoredNoteMenuImage = nil;
     static NSImage *toolbarCircleNoteMenuImage = nil;
@@ -910,360 +897,82 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [toolbarRightPaneImage unlockFocus];
     [toolbarRightPaneImage setName:SKImageNameToolbarRightPane];
     
-    toolbarTextNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarTextNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow3 set];
-    [fgColor setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.0, 5.0)];
-    [path lineToPoint:NSMakePoint(12.0, 6.0)];
-    [path lineToPoint:NSMakePoint(19.0, 13.0)];
-    [path lineToPoint:NSMakePoint(19.0, 14.0)];
-    [path lineToPoint:NSMakePoint(17.0, 16.0)];
-    [path lineToPoint:NSMakePoint(16.0, 16.0)];
-    [path lineToPoint:NSMakePoint(9.0, 9.0)];
-    [path closePath];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [NSGraphicsContext saveGraphicsState];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(12.0, 7.0)];
-    [path lineToPoint:NSMakePoint(19.0, 14.0)];
-    [path lineToPoint:NSMakePoint(17.0, 16.0)];
-    [path lineToPoint:NSMakePoint(10.0, 9.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:1.0 green:0.835 blue:0.0 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(12.0, 6.0)];
-    [path lineToPoint:NSMakePoint(19.0, 13.0)];
-    [path lineToPoint:NSMakePoint(19.0, 14.0)];
-    [path lineToPoint:NSMakePoint(12.0, 7.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(10.0, 9.0)];
-    [path lineToPoint:NSMakePoint(17.0, 16.0)];
-    [path lineToPoint:NSMakePoint(16.0, 16.0)];
-    [path lineToPoint:NSMakePoint(9.0, 9.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(9.0, 6.5)];
-    [path lineToPoint:NSMakePoint(10.0, 9.0)];
-    [path lineToPoint:NSMakePoint(9.0, 9.0)];
-    [path lineToPoint:NSMakePoint(8.5, 7.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:1.0 green:0.98 blue:0.9 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(9.5, 6.0)];
-    [path lineToPoint:NSMakePoint(12.0, 7.0)];
-    [path lineToPoint:NSMakePoint(10.0, 9.0)];
-    [path lineToPoint:NSMakePoint(9.0, 6.5)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:1.0 green:0.95 blue:0.8 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(10.0, 5.5)];
-    [path lineToPoint:NSMakePoint(12.0, 6.0)];
-    [path lineToPoint:NSMakePoint(12.0, 7.0)];
-    [path lineToPoint:NSMakePoint(9.5, 6.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedRed:0.85 green:0.75 blue:0.6 alpha:1.0] set];
-    [path fill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.0, 5.0)];
-    [path lineToPoint:NSMakePoint(10.0, 5.5)];
-    [path lineToPoint:NSMakePoint(8.5, 7.0)];
-    [path closePath];
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] set];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarTextNoteImage unlockFocus];
-    [toolbarTextNoteImage setName:SKImageNameToolbarTextNote];
-    
-    toolbarTextNoteMenuImage = [toolbarTextNoteImage copyWithMenuBadge];
+    toolbarTextNoteMenuImage = [[NSImage imageNamed:SKImageNameTextNote] copyWithMenuBadge];
     [toolbarTextNoteMenuImage setName:SKImageNameToolbarTextNoteMenu];
     
-    toolbarAddTextNoteImage = [toolbarTextNoteImage copyWithAddBadge];
+    toolbarAddTextNoteImage = [[NSImage imageNamed:SKImageNameTextNote] copyWithAddBadge];
     [toolbarAddTextNoteImage setName:SKImageNameToolbarAddTextNote];
     
     toolbarAddTextNoteMenuImage = [toolbarAddTextNoteImage copyWithMenuBadge];
     [toolbarAddTextNoteMenuImage setName:SKImageNameToolbarAddTextNoteMenu];
     
-    toolbarAnchoredNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarAnchoredNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow1 set];
-    [fgColor setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(15.0, 6.0)];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(20.0, 6.0) toPoint:NSMakePoint(20.0, 16.0) radius:3.0];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(20.0, 16.0) toPoint:NSMakePoint(6.0, 16.0) radius:3.0];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(6.0, 16.0) toPoint:NSMakePoint(6.0, 6.0) radius:3.0];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(6.0, 6.0) toPoint:NSMakePoint(20.0, 6.0) radius:3.0];
-    [path lineToPoint:NSMakePoint(12.0, 6.0)];
-    [path lineToPoint:NSMakePoint(11.0, 3.0)];
-    [path closePath];
-    [path appendBezierPathWithRect:NSMakeRect(12.0, 7.0, 2.0, 2.0)];
-    [path appendBezierPathWithRect:NSMakeRect(12.0, 10.0, 2.0, 4.0)];
-    [path setWindingRule:NSEvenOddWindingRule];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [NSGraphicsContext saveGraphicsState];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(6.0, 10.0)];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(6.0, 6.0) toPoint:NSMakePoint(20.0, 6.0) radius:3.0];
-    [path appendBezierPathWithArcFromPoint:NSMakePoint(20.0, 6.0) toPoint:NSMakePoint(20.0, 10.0) radius:3.0];
-    [path lineToPoint:NSMakePoint(20.0, 10.0)];
-    [path closePath];
-    [path appendBezierPathWithRect:NSMakeRect(12.0, 7.0, 2.0, 2.0)];
-    [path setWindingRule:NSEvenOddWindingRule];
-    gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.988 green:0.988 blue:0.988 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.762 green:0.762 blue:0.762 alpha:1.0]] autorelease];
-    [gradient drawInBezierPath:path angle:90.0];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarAnchoredNoteImage unlockFocus];
-    [toolbarAnchoredNoteImage setName:SKImageNameToolbarAnchoredNote];
-    
-    toolbarAnchoredNoteMenuImage = [toolbarAnchoredNoteImage copyWithMenuBadge];
+    toolbarAnchoredNoteMenuImage = [[NSImage imageNamed:SKImageNameAnchoredNote] copyWithMenuBadge];
     [toolbarAnchoredNoteMenuImage setName:SKImageNameToolbarAnchoredNoteMenu];
     
-    toolbarAddAnchoredNoteImage = [toolbarAnchoredNoteImage copyWithAddBadge];
+    toolbarAddAnchoredNoteImage = [[NSImage imageNamed:SKImageNameAnchoredNote] copyWithAddBadge];
     [toolbarAddAnchoredNoteImage setName:SKImageNameToolbarAddAnchoredNote];
     
     toolbarAddAnchoredNoteMenuImage = [toolbarAddAnchoredNoteImage copyWithMenuBadge];
     [toolbarAddAnchoredNoteMenuImage setName:SKImageNameToolbarAddAnchoredNoteMenu];
 
-    toolbarCircleNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarCircleNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow2 set];
-    [[NSColor colorWithCalibratedRed:0.768 green:0.0 blue:0.0 alpha:1.0] setStroke];
-    path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(7.0, 5.0, 13.0, 10.0)];
-    [path setLineWidth:2.0];
-    [path stroke];
-    [path setLineWidth:1.0];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarCircleNoteImage unlockFocus];
-    [toolbarCircleNoteImage setName:SKImageNameToolbarCircleNote];
-    
-    toolbarCircleNoteMenuImage = [toolbarCircleNoteImage copyWithMenuBadge];
+    toolbarCircleNoteMenuImage = [[NSImage imageNamed:SKImageNameCircleNote] copyWithMenuBadge];
     [toolbarCircleNoteMenuImage setName:SKImageNameToolbarCircleNoteMenu];
     
-    toolbarAddCircleNoteImage = [toolbarCircleNoteImage copyWithAddBadge];
+    toolbarAddCircleNoteImage = [[NSImage imageNamed:SKImageNameCircleNote] copyWithAddBadge];
     [toolbarAddCircleNoteImage setName:SKImageNameToolbarAddCircleNote];
     
     toolbarAddCircleNoteMenuImage = [toolbarAddCircleNoteImage copyWithMenuBadge];
     [toolbarAddCircleNoteMenuImage setName:SKImageNameToolbarAddCircleNoteMenu];
 
-    toolbarSquareNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarSquareNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow2 set];
-    [[NSColor colorWithCalibratedRed:0.768 green:0.0 blue:0.0 alpha:1.0] setStroke];
-    path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.0, 5.0, 13.0, 10.0)];
-    [path setLineWidth:2.0];
-    [path stroke];
-    [path setLineWidth:1.0];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarSquareNoteImage unlockFocus];
-    [toolbarSquareNoteImage setName:SKImageNameToolbarSquareNote];
-    
-    toolbarSquareNoteMenuImage = [toolbarSquareNoteImage copyWithMenuBadge];
+    toolbarSquareNoteMenuImage = [[NSImage imageNamed:SKImageNameSquareNote] copyWithMenuBadge];
     [toolbarSquareNoteMenuImage setName:SKImageNameToolbarSquareNoteMenu];
     
-    toolbarAddSquareNoteImage = [toolbarSquareNoteImage copyWithAddBadge];
+    toolbarAddSquareNoteImage = [[NSImage imageNamed:SKImageNameSquareNote] copyWithAddBadge];
     [toolbarAddSquareNoteImage setName:SKImageNameToolbarAddSquareNote];
     
     toolbarAddSquareNoteMenuImage = [toolbarAddSquareNoteImage copyWithMenuBadge];
     [toolbarAddSquareNoteMenuImage setName:SKImageNameToolbarAddSquareNoteMenu];
     
-    toolbarHighlightNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarHighlightNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0]] autorelease];
-    [gradient drawInRect:NSMakeRect(6.0, 2.0, 15.0, 16.0) angle:90.0];
-    NSShadow *redShadow = [[NSShadow alloc] init];
-    [redShadow setShadowBlurRadius:2.0];
-    [redShadow setShadowOffset:NSZeroSize];
-    [redShadow setShadowColor:[NSColor colorWithCalibratedRed:0.7 green:0.0 blue:0.0 alpha:1.0]];
-    [redShadow set];
-    [redShadow release];
-    [fgColor setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.5, 5.0)];
-    [path lineToPoint:NSMakePoint(12.5, 15.0)];
-    [path lineToPoint:NSMakePoint(14.5, 15.0)];
-    [path lineToPoint:NSMakePoint(18.5, 5.0)];
-    [path lineToPoint:NSMakePoint(16.5, 5.0)];
-    [path lineToPoint:NSMakePoint(15.7, 7.0)];
-    [path lineToPoint:NSMakePoint(11.3, 7.0)];
-    [path lineToPoint:NSMakePoint(10.5, 5.0)];
-    [path closePath];
-    [path moveToPoint:NSMakePoint(12.1, 9.0)];
-    [path lineToPoint:NSMakePoint(14.9, 9.0)];
-    [path lineToPoint:NSMakePoint(13.5, 12.5)];
-    [path closePath];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarHighlightNoteImage unlockFocus];
-    [toolbarHighlightNoteImage setName:SKImageNameToolbarHighlightNote];
-    
-    toolbarHighlightNoteMenuImage = [toolbarHighlightNoteImage copyWithMenuBadge];
+    toolbarHighlightNoteMenuImage = [[NSImage imageNamed:SKImageNameHighlightNote] copyWithMenuBadge];
     [toolbarHighlightNoteMenuImage setName:SKImageNameToolbarHighlightNoteMenu];
     
-    toolbarAddHighlightNoteImage = [toolbarHighlightNoteImage copyWithAddBadge];
+    toolbarAddHighlightNoteImage = [[NSImage imageNamed:SKImageNameHighlightNote] copyWithAddBadge];
     [toolbarAddHighlightNoteImage setName:SKImageNameToolbarAddHighlightNote];
     
     toolbarAddHighlightNoteMenuImage = [toolbarAddHighlightNoteImage copyWithMenuBadge];
     [toolbarAddHighlightNoteMenuImage setName:SKImageNameToolbarAddHighlightNoteMenu];
 
-    toolbarUnderlineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarUnderlineNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow1 set];
-    [fgColor setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.5, 6.0)];
-    [path lineToPoint:NSMakePoint(12.5, 16.0)];
-    [path lineToPoint:NSMakePoint(14.5, 16.0)];
-    [path lineToPoint:NSMakePoint(18.5, 6.0)];
-    [path lineToPoint:NSMakePoint(16.5, 6.0)];
-    [path lineToPoint:NSMakePoint(15.7, 8.0)];
-    [path lineToPoint:NSMakePoint(11.3, 8.0)];
-    [path lineToPoint:NSMakePoint(10.5, 6.0)];
-    [path closePath];
-    [path moveToPoint:NSMakePoint(12.1, 10.0)];
-    [path lineToPoint:NSMakePoint(14.9, 10.0)];
-    [path lineToPoint:NSMakePoint(13.5, 13.5)];
-    [path closePath];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
-    path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 3.0, 17.0, 2.0)];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarUnderlineNoteImage unlockFocus];
-    [toolbarUnderlineNoteImage setName:SKImageNameToolbarUnderlineNote];
-    
-    toolbarUnderlineNoteMenuImage = [toolbarUnderlineNoteImage copyWithMenuBadge];
+    toolbarUnderlineNoteMenuImage = [[NSImage imageNamed:SKImageNameUnderlineNote] copyWithMenuBadge];
     [toolbarUnderlineNoteMenuImage setName:SKImageNameToolbarUnderlineNoteMenu];
     
-    toolbarAddUnderlineNoteImage = [toolbarUnderlineNoteImage copyWithAddBadge];
+    toolbarAddUnderlineNoteImage = [[NSImage imageNamed:SKImageNameUnderlineNote] copyWithAddBadge];
     [toolbarAddUnderlineNoteImage setName:SKImageNameToolbarAddUnderlineNote];
     
     toolbarAddUnderlineNoteMenuImage = [toolbarAddUnderlineNoteImage copyWithMenuBadge];
     [toolbarAddUnderlineNoteMenuImage setName:SKImageNameToolbarAddUnderlineNoteMenu];
 
-    toolbarStrikeOutNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarStrikeOutNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow1 set];
-    [fgColor setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(8.5, 4.0)];
-    [path lineToPoint:NSMakePoint(12.5, 14.0)];
-    [path lineToPoint:NSMakePoint(14.5, 14.0)];
-    [path lineToPoint:NSMakePoint(18.5, 4.0)];
-    [path lineToPoint:NSMakePoint(16.5, 4.0)];
-    [path lineToPoint:NSMakePoint(15.7, 6.0)];
-    [path lineToPoint:NSMakePoint(11.3, 6.0)];
-    [path lineToPoint:NSMakePoint(10.5, 4.0)];
-    [path closePath];
-    [path moveToPoint:NSMakePoint(12.1, 8.0)];
-    [path lineToPoint:NSMakePoint(14.9, 8.0)];
-    [path lineToPoint:NSMakePoint(13.5, 11.5)];
-    [path closePath];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
-    path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 7.0, 17.0, 2.0)];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarStrikeOutNoteImage unlockFocus];
-    [toolbarStrikeOutNoteImage setName:SKImageNameToolbarStrikeOutNote];
-    
-    toolbarStrikeOutNoteMenuImage = [toolbarStrikeOutNoteImage copyWithMenuBadge];
+    toolbarStrikeOutNoteMenuImage = [[NSImage imageNamed:SKImageNameStrikeOutNote] copyWithMenuBadge];
     [toolbarStrikeOutNoteMenuImage setName:SKImageNameToolbarStrikeOutNoteMenu];
     
-    toolbarAddStrikeOutNoteImage = [toolbarStrikeOutNoteImage copyWithAddBadge];
+    toolbarAddStrikeOutNoteImage = [[NSImage imageNamed:SKImageNameStrikeOutNote] copyWithAddBadge];
     [toolbarAddStrikeOutNoteImage setName:SKImageNameToolbarAddStrikeOutNote];
     
     toolbarAddStrikeOutNoteMenuImage = [toolbarAddStrikeOutNoteImage copyWithMenuBadge];
     [toolbarAddStrikeOutNoteMenuImage setName:SKImageNameToolbarAddStrikeOutNoteMenu];
 
-    toolbarLineNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarLineNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow2 set];
-    [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setFill];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(6.0, 10.0)];
-    [path lineToPoint:NSMakePoint(18.0, 10.0)];
-    [path lineToPoint:NSMakePoint(18.0, 7.5)];
-    [path lineToPoint:NSMakePoint(21.5, 11.0)];
-    [path lineToPoint:NSMakePoint(18.0, 14.5)];
-    [path lineToPoint:NSMakePoint(18.0, 12.0)];
-    [path lineToPoint:NSMakePoint(6.0, 12.0)];
-    [path closePath];
-    [path fill];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarLineNoteImage unlockFocus];
-    [toolbarLineNoteImage setName:SKImageNameToolbarLineNote];
-    
-    toolbarLineNoteMenuImage = [toolbarLineNoteImage copyWithMenuBadge];
+    toolbarLineNoteMenuImage = [[NSImage imageNamed:SKImageNameLineNote] copyWithMenuBadge];
     [toolbarLineNoteMenuImage setName:SKImageNameToolbarLineNoteMenu];
     
-    toolbarAddLineNoteImage = [toolbarLineNoteImage copyWithAddBadge];
+    toolbarAddLineNoteImage = [[NSImage imageNamed:SKImageNameLineNote] copyWithAddBadge];
     [toolbarAddLineNoteImage setName:SKImageNameToolbarAddLineNote];
     
     toolbarAddLineNoteMenuImage = [toolbarAddLineNoteImage copyWithMenuBadge];
     [toolbarAddLineNoteMenuImage setName:SKImageNameToolbarAddLineNoteMenu];
 
-    toolbarInkNoteImage = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
-    [toolbarInkNoteImage lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
-    [shadow2 set];
-    [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setStroke];
-    path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(7.0, 9.0)];
-    [path curveToPoint:NSMakePoint(13.5, 10.0) controlPoint1:NSMakePoint(13.0, 5.0) controlPoint2:NSMakePoint(16.0, 5.0)];
-    [path curveToPoint:NSMakePoint(20.0, 11.0) controlPoint1:NSMakePoint(11.0, 15.0) controlPoint2:NSMakePoint(14.0, 15.0)];
-    [path setLineWidth:2.0];
-    [path stroke];
-    [path setLineWidth:1.0];
-    [NSGraphicsContext restoreGraphicsState];
-    [toolbarInkNoteImage unlockFocus];
-    [toolbarInkNoteImage setName:SKImageNameToolbarInkNote];
-    
-    toolbarInkNoteMenuImage = [toolbarInkNoteImage copyWithMenuBadge];
+    toolbarInkNoteMenuImage = [[NSImage imageNamed:SKImageNameInkNote] copyWithMenuBadge];
     [toolbarInkNoteMenuImage setName:SKImageNameToolbarInkNoteMenu];
     
-    toolbarAddInkNoteImage = [toolbarInkNoteImage copyWithAddBadge];
+    toolbarAddInkNoteImage = [[NSImage imageNamed:SKImageNameInkNote] copyWithAddBadge];
     [toolbarAddInkNoteImage setName:SKImageNameToolbarAddInkNote];
     
     toolbarAddInkNoteMenuImage = [toolbarAddInkNoteImage copyWithMenuBadge];
@@ -1392,6 +1101,324 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [shadow1 release];
     [shadow2 release];
     [shadow3 release];
+}
+
++ (void)makeNoteImages {
+    static NSImage *textNoteImage = nil;
+    static NSImage *anchoredNoteImage = nil;
+    static NSImage *circleNoteImage = nil;
+    static NSImage *squareNoteImage = nil;
+    static NSImage *highlightNoteImage = nil;
+    static NSImage *underlineNoteImage = nil;
+    static NSImage *strikeOutNoteImage = nil;
+    static NSImage *lineNoteImage = nil;
+    static NSImage *inkNoteImage = nil;
+    
+    if (textNoteImage)
+        return;
+    
+    NSShadow *shadow1 = [[NSShadow alloc] init];
+    [shadow1 setShadowBlurRadius:2.0];
+    [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:1.0]];
+    
+    NSShadow *shadow2 = [[NSShadow alloc] init];
+    [shadow2 setShadowBlurRadius:2.0];
+    [shadow2 setShadowOffset:NSMakeSize(0.0, -1.0)];
+    [shadow2 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
+    
+    NSShadow *shadow3 = [[NSShadow alloc] init];
+    [shadow3 setShadowBlurRadius:2.0];
+    [shadow3 setShadowOffset:NSMakeSize(0.0, 0.0)];
+    [shadow3 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
+    
+    NSColor *fgColor = [NSColor whiteColor];
+    
+    NSBezierPath *path;
+    NSGradient *gradient;
+    
+    NSRect rect = NSMakeRect(0.0, 0.0, 21.0, 19.0);
+    NSSize size = rect.size;
+    
+    [NSBezierPath setDefaultLineWidth:1.0];
+    
+    textNoteImage = [[NSImage alloc] initWithSize:size];
+    [textNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow3 set];
+    [fgColor setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(5.0, 5.0)];
+    [path lineToPoint:NSMakePoint(9.0, 6.0)];
+    [path lineToPoint:NSMakePoint(16.0, 13.0)];
+    [path lineToPoint:NSMakePoint(16.0, 14.0)];
+    [path lineToPoint:NSMakePoint(14.0, 16.0)];
+    [path lineToPoint:NSMakePoint(13.0, 16.0)];
+    [path lineToPoint:NSMakePoint(6.0, 9.0)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(9.0, 7.0)];
+    [path lineToPoint:NSMakePoint(16.0, 14.0)];
+    [path lineToPoint:NSMakePoint(14.0, 16.0)];
+    [path lineToPoint:NSMakePoint(7.0, 9.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.835 blue:0.0 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(9.0, 6.0)];
+    [path lineToPoint:NSMakePoint(16.0, 13.0)];
+    [path lineToPoint:NSMakePoint(16.0, 14.0)];
+    [path lineToPoint:NSMakePoint(9.0, 7.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(7.0, 9.0)];
+    [path lineToPoint:NSMakePoint(14.0, 16.0)];
+    [path lineToPoint:NSMakePoint(13.0, 16.0)];
+    [path lineToPoint:NSMakePoint(6.0, 9.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(6.0, 6.5)];
+    [path lineToPoint:NSMakePoint(7.0, 9.0)];
+    [path lineToPoint:NSMakePoint(6.0, 9.0)];
+    [path lineToPoint:NSMakePoint(5.5, 7.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.98 blue:0.9 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(6.5, 6.0)];
+    [path lineToPoint:NSMakePoint(9.0, 7.0)];
+    [path lineToPoint:NSMakePoint(7.0, 9.0)];
+    [path lineToPoint:NSMakePoint(6.0, 6.5)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.95 blue:0.8 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(7.0, 5.5)];
+    [path lineToPoint:NSMakePoint(9.0, 6.0)];
+    [path lineToPoint:NSMakePoint(9.0, 7.0)];
+    [path lineToPoint:NSMakePoint(6.5, 6.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedRed:0.85 green:0.75 blue:0.6 alpha:1.0] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(5.0, 5.0)];
+    [path lineToPoint:NSMakePoint(7.0, 5.5)];
+    [path lineToPoint:NSMakePoint(5.5, 7.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] set];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [textNoteImage unlockFocus];
+    [textNoteImage setName:SKImageNameTextNote];
+    
+    anchoredNoteImage = [[NSImage alloc] initWithSize:size];
+    [anchoredNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow1 set];
+    [fgColor setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(12.0, 6.0)];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(17.0, 6.0) toPoint:NSMakePoint(17.0, 16.0) radius:3.0];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(17.0, 16.0) toPoint:NSMakePoint(3.0, 16.0) radius:3.0];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 16.0) toPoint:NSMakePoint(3.0, 6.0) radius:3.0];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 6.0) toPoint:NSMakePoint(17.0, 6.0) radius:3.0];
+    [path lineToPoint:NSMakePoint(9.0, 6.0)];
+    [path lineToPoint:NSMakePoint(8.0, 3.0)];
+    [path closePath];
+    [path appendBezierPathWithRect:NSMakeRect(9.0, 7.0, 2.0, 2.0)];
+    [path appendBezierPathWithRect:NSMakeRect(9.0, 10.0, 2.0, 4.0)];
+    [path setWindingRule:NSEvenOddWindingRule];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(3.0, 10.0)];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(3.0, 6.0) toPoint:NSMakePoint(17.0, 6.0) radius:3.0];
+    [path appendBezierPathWithArcFromPoint:NSMakePoint(17.0, 6.0) toPoint:NSMakePoint(17.0, 10.0) radius:3.0];
+    [path lineToPoint:NSMakePoint(17.0, 10.0)];
+    [path closePath];
+    [path appendBezierPathWithRect:NSMakeRect(9.0, 7.0, 2.0, 2.0)];
+    [path setWindingRule:NSEvenOddWindingRule];
+    gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:0.988 green:0.988 blue:0.988 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:0.762 green:0.762 blue:0.762 alpha:1.0]] autorelease];
+    [gradient drawInBezierPath:path angle:90.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [anchoredNoteImage unlockFocus];
+    [anchoredNoteImage setName:SKImageNameAnchoredNote];
+    
+    circleNoteImage = [[NSImage alloc] initWithSize:size];
+    [circleNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow2 set];
+    [[NSColor colorWithCalibratedRed:0.768 green:0.0 blue:0.0 alpha:1.0] setStroke];
+    path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [path setLineWidth:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [circleNoteImage unlockFocus];
+    [circleNoteImage setName:SKImageNameCircleNote];
+
+    squareNoteImage = [[NSImage alloc] initWithSize:size];
+    [squareNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow2 set];
+    [[NSColor colorWithCalibratedRed:0.768 green:0.0 blue:0.0 alpha:1.0] setStroke];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(4.0, 5.0, 13.0, 10.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [path setLineWidth:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [squareNoteImage unlockFocus];
+    [squareNoteImage setName:SKImageNameSquareNote];
+    
+    highlightNoteImage = [[NSImage alloc] initWithSize:size];
+    [highlightNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedRed:1.0 green:0.925 blue:0.0 alpha:1.0] endingColor:[NSColor colorWithCalibratedRed:1.0 green:0.745 blue:0.0 alpha:1.0]] autorelease];
+    [gradient drawInRect:NSMakeRect(3.0, 2.0, 15.0, 16.0) angle:90.0];
+    NSShadow *redShadow = [[NSShadow alloc] init];
+    [redShadow setShadowBlurRadius:2.0];
+    [redShadow setShadowOffset:NSZeroSize];
+    [redShadow setShadowColor:[NSColor colorWithCalibratedRed:0.7 green:0.0 blue:0.0 alpha:1.0]];
+    [redShadow set];
+    [redShadow release];
+    [fgColor setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(5.5, 5.0)];
+    [path lineToPoint:NSMakePoint(9.5, 15.0)];
+    [path lineToPoint:NSMakePoint(11.5, 15.0)];
+    [path lineToPoint:NSMakePoint(15.5, 5.0)];
+    [path lineToPoint:NSMakePoint(13.5, 5.0)];
+    [path lineToPoint:NSMakePoint(12.7, 7.0)];
+    [path lineToPoint:NSMakePoint(8.3, 7.0)];
+    [path lineToPoint:NSMakePoint(7.5, 5.0)];
+    [path closePath];
+    [path moveToPoint:NSMakePoint(9.1, 9.0)];
+    [path lineToPoint:NSMakePoint(11.9, 9.0)];
+    [path lineToPoint:NSMakePoint(10.5, 12.5)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [highlightNoteImage unlockFocus];
+    [highlightNoteImage setName:SKImageNameHighlightNote];
+
+    underlineNoteImage = [[NSImage alloc] initWithSize:size];
+    [underlineNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow1 set];
+    [fgColor setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(5.5, 6.0)];
+    [path lineToPoint:NSMakePoint(9.5, 16.0)];
+    [path lineToPoint:NSMakePoint(11.5, 16.0)];
+    [path lineToPoint:NSMakePoint(15.5, 6.0)];
+    [path lineToPoint:NSMakePoint(13.5, 6.0)];
+    [path lineToPoint:NSMakePoint(12.7, 8.0)];
+    [path lineToPoint:NSMakePoint(8.3, 8.0)];
+    [path lineToPoint:NSMakePoint(7.5, 6.0)];
+    [path closePath];
+    [path moveToPoint:NSMakePoint(9.1, 10.0)];
+    [path lineToPoint:NSMakePoint(11.9, 10.0)];
+    [path lineToPoint:NSMakePoint(10.5, 13.5)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 3.0, 17.0, 2.0)];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [underlineNoteImage unlockFocus];
+    [underlineNoteImage setName:SKImageNameUnderlineNote];
+
+    strikeOutNoteImage = [[NSImage alloc] initWithSize:size];
+    [strikeOutNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow1 set];
+    [fgColor setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(3.5, 4.0)];
+    [path lineToPoint:NSMakePoint(9.5, 14.0)];
+    [path lineToPoint:NSMakePoint(11.5, 14.0)];
+    [path lineToPoint:NSMakePoint(15.5, 4.0)];
+    [path lineToPoint:NSMakePoint(13.5, 4.0)];
+    [path lineToPoint:NSMakePoint(12.7, 6.0)];
+    [path lineToPoint:NSMakePoint(8.3, 6.0)];
+    [path lineToPoint:NSMakePoint(7.5, 4.0)];
+    [path closePath];
+    [path moveToPoint:NSMakePoint(9.1, 8.0)];
+    [path lineToPoint:NSMakePoint(11.9, 8.0)];
+    [path lineToPoint:NSMakePoint(10.5, 11.5)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor colorWithCalibratedRed:0.766 green:0.0 blue:0.0 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 7.0, 17.0, 2.0)];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [strikeOutNoteImage unlockFocus];
+    [strikeOutNoteImage setName:SKImageNameStrikeOutNote];
+
+    lineNoteImage = [[NSImage alloc] initWithSize:size];
+    [lineNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow2 set];
+    [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setFill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(3.0, 10.0)];
+    [path lineToPoint:NSMakePoint(15.0, 10.0)];
+    [path lineToPoint:NSMakePoint(15.0, 7.5)];
+    [path lineToPoint:NSMakePoint(18.5, 11.0)];
+    [path lineToPoint:NSMakePoint(15.0, 14.5)];
+    [path lineToPoint:NSMakePoint(15.0, 12.0)];
+    [path lineToPoint:NSMakePoint(3.0, 12.0)];
+    [path closePath];
+    [path fill];
+    [NSGraphicsContext restoreGraphicsState];
+    [lineNoteImage unlockFocus];
+    [lineNoteImage setName:SKImageNameLineNote];
+
+    inkNoteImage = [[NSImage alloc] initWithSize:size];
+    [inkNoteImage lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor clearColor] setFill];
+    NSRectFill(rect);
+    [shadow2 set];
+    [[NSColor colorWithCalibratedRed:0.706 green:0.0 blue:0.0 alpha:1.0] setStroke];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(4.0, 9.0)];
+    [path curveToPoint:NSMakePoint(10.5, 10.0) controlPoint1:NSMakePoint(10.0, 5.0) controlPoint2:NSMakePoint(13.0, 5.0)];
+    [path curveToPoint:NSMakePoint(17.0, 11.0) controlPoint1:NSMakePoint(8.0, 15.0) controlPoint2:NSMakePoint(11.0, 15.0)];
+    [path setLineWidth:2.0];
+    [path stroke];
+    [path setLineWidth:1.0];
+    [NSGraphicsContext restoreGraphicsState];
+    [inkNoteImage unlockFocus];
+    [inkNoteImage setName:SKImageNameInkNote];
 }
 
 + (void)makeAdornImages {
@@ -1930,35 +1957,36 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
     [cameraCursorImage unlockFocus];
     [cameraCursorImage setName:SKImageNameCameraCursor];
     
-    textNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarTextNote] copyArrowCursorImage];
+    textNoteCursorImage = [[NSImage imageNamed:SKImageNameTextNote] copyArrowCursorImage];
     [textNoteCursorImage setName:SKImageNameTextNoteCursor];
     
-    anchoredNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarAnchoredNote] copyArrowCursorImage];
+    anchoredNoteCursorImage = [[NSImage imageNamed:SKImageNameAnchoredNote] copyArrowCursorImage];
     [anchoredNoteCursorImage setName:SKImageNameAnchoredNoteCursor];
     
-    circleNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarCircleNote] copyArrowCursorImage];
+    circleNoteCursorImage = [[NSImage imageNamed:SKImageNameCircleNote] copyArrowCursorImage];
     [circleNoteCursorImage setName:SKImageNameCircleNoteCursor];
     
-    squareNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarSquareNote] copyArrowCursorImage];
+    squareNoteCursorImage = [[NSImage imageNamed:SKImageNameSquareNote] copyArrowCursorImage];
     [squareNoteCursorImage setName:SKImageNameSquareNoteCursor];
     
-    highlightNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarHighlightNote] copyArrowCursorImage];
+    highlightNoteCursorImage = [[NSImage imageNamed:SKImageNameHighlightNote] copyArrowCursorImage];
     [highlightNoteCursorImage setName:SKImageNameHighlightNoteCursor];
     
-    underlineNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarUnderlineNote] copyArrowCursorImage];
+    underlineNoteCursorImage = [[NSImage imageNamed:SKImageNameUnderlineNote] copyArrowCursorImage];
     [underlineNoteCursorImage setName:SKImageNameUnderlineNoteCursor];
     
-    strikeOutNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarStrikeOutNote] copyArrowCursorImage];
+    strikeOutNoteCursorImage = [[NSImage imageNamed:SKImageNameStrikeOutNote] copyArrowCursorImage];
     [strikeOutNoteCursorImage setName:SKImageNameStrikeOutNoteCursor];
     
-    lineNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarLineNote] copyArrowCursorImage];
+    lineNoteCursorImage = [[NSImage imageNamed:SKImageNameLineNote] copyArrowCursorImage];
     [lineNoteCursorImage setName:SKImageNameLineNoteCursor];
     
-    inkNoteCursorImage = [[NSImage imageNamed:SKImageNameToolbarInkNote] copyArrowCursorImage];
+    inkNoteCursorImage = [[NSImage imageNamed:SKImageNameInkNote] copyArrowCursorImage];
     [inkNoteCursorImage setName:SKImageNameInkNoteCursor];
 }
 
 + (void)makeImages {
+    [self makeNoteImages];
     [self makeAdornImages];
     [self makeToolbarImages];
     [self makeCursorImages];
