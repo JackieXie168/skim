@@ -133,19 +133,21 @@ NSString *SKImageNameLineNoteCursor = @"LineNoteCursor";
 NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 
 - (NSImage *)copyWithMenuBadge {
+    NSSize size = [self size]; // should be 27x19
+    
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(23.5, 7.0)];
-    [arrowPath lineToPoint:NSMakePoint(21.0, 10.0)];
-    [arrowPath lineToPoint:NSMakePoint(26.0, 10.0)];
+    [arrowPath moveToPoint:NSMakePoint(size.width, 10.0)];
+    [arrowPath relativeLineToPoint:NSMakePoint(-5.0, 0.0)];
+    [arrowPath relativeLineToPoint:NSMakePoint(2.5, -3.0)];
     [arrowPath closePath];
     
-    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
+    NSImage *image = [[NSImage alloc] initWithSize:size];
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
+    NSRectFill(NSMakeRect(0.0, 0.0, size.width, size.height));
     [NSGraphicsContext restoreGraphicsState];
-    [self compositeToPoint:NSMakePoint(-2.0, 0.0) operation:NSCompositeCopy];
+    [self drawInRect:NSMakeRect(0.0, 0.0, size.width - 2.0, size.height) fromRect:NSMakeRect(2.0, 0.0, size.width - 2.0, size.height) operation:NSCompositeCopy fraction:1.0];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] setFill];
     [arrowPath fill];
@@ -156,23 +158,25 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 }
 
 - (NSImage *)copyWithAddBadge {
+    NSSize size = [self size]; // should be 27x19
+    
     NSBezierPath *addPath = [NSBezierPath bezierPath];
     addPath = [NSBezierPath bezierPath];
-    [addPath appendBezierPathWithRect:NSMakeRect(17.0, 4.0, 6.0, 2.0)];
-    [addPath appendBezierPathWithRect:NSMakeRect(19.0, 2.0, 2.0, 6.0)];
+    [addPath appendBezierPathWithRect:NSMakeRect(size.width - 10.0, 4.0, 6.0, 2.0)];
+    [addPath appendBezierPathWithRect:NSMakeRect(size.width - 8.0, 2.0, 2.0, 6.0)];
     
     NSShadow *shadow1 = [[NSShadow alloc] init];
     [shadow1 setShadowBlurRadius:2.0];
     [shadow1 setShadowOffset:NSMakeSize(0.0, 0.0)];
     [shadow1 setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.8]];
     
-    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(27.0, 19.0)];
+    NSImage *image = [[NSImage alloc] initWithSize:size];
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor clearColor] setFill];
-    NSRectFill(NSMakeRect(0.0, 0.0, 27.0, 19.0));
+    NSRectFill(NSMakeRect(0.0, 0.0, size.width, size.height));
     [NSGraphicsContext restoreGraphicsState];
-    [self compositeToPoint:NSMakePoint(0.0, 0.0) operation:NSCompositeCopy];
+    [self drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     [NSGraphicsContext saveGraphicsState];
     [shadow1 set];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
@@ -188,10 +192,11 @@ NSString *SKImageNameInkNoteCursor = @"InkNoteCursor";
 - (NSImage *)copyArrowCursorImage {
     NSImage *arrowCursor = [[NSCursor arrowCursor] image];
     NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(24.0, 40.0)];
+    NSRect rect = NSMakeRect(0.0, 0.0, 24.0, [self size].height);
     
     [image lockFocus];
-    [arrowCursor drawAtPoint:NSMakePoint(0.0, [image size].height - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [image drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [arrowCursor drawAtPoint:NSMakePoint(0.0, 40.0 - [arrowCursor size].height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+    [self drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:1.0];
     [image unlockFocus];
     
     return image;
