@@ -76,23 +76,23 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
     NSImage *image = nil;
     
     if ([type isEqualToString:SKNFreeTextString])
-        image = [NSImage imageNamed:SKImageNameToolbarTextNote];
+        image = [NSImage imageNamed:SKImageNameTextNote];
     else if ([type isEqualToString:SKNNoteString])
-        image = [NSImage imageNamed:SKImageNameToolbarAnchoredNote];
+        image = [NSImage imageNamed:SKImageNameAnchoredNote];
     else if ([type isEqualToString:SKNCircleString])
-        image = [NSImage imageNamed:SKImageNameToolbarCircleNote];
+        image = [NSImage imageNamed:SKImageNameCircleNote];
     else if ([type isEqualToString:SKNSquareString])
-        image = [NSImage imageNamed:SKImageNameToolbarSquareNote];
+        image = [NSImage imageNamed:SKImageNameSquareNote];
     else if ([type isEqualToString:SKNHighlightString])
-        image = [NSImage imageNamed:SKImageNameToolbarHighlightNote];
+        image = [NSImage imageNamed:SKImageNameHighlightNote];
     else if ([type isEqualToString:SKNUnderlineString])
-        image = [NSImage imageNamed:SKImageNameToolbarUnderlineNote];
+        image = [NSImage imageNamed:SKImageNameUnderlineNote];
     else if ([type isEqualToString:SKNStrikeOutString])
-        image = [NSImage imageNamed:SKImageNameToolbarStrikeOutNote];
+        image = [NSImage imageNamed:SKImageNameStrikeOutNote];
     else if ([type isEqualToString:SKNLineString])
-        image = [NSImage imageNamed:SKImageNameToolbarLineNote];
+        image = [NSImage imageNamed:SKImageNameLineNote];
     else if ([type isEqualToString:SKNInkString])
-        image = [NSImage imageNamed:SKImageNameToolbarInkNote];
+        image = [NSImage imageNamed:SKImageNameInkNote];
     
     [super setObjectValue:image];
     [super drawWithFrame:cellFrame inView:controlView];
