@@ -1624,7 +1624,8 @@ enum {
 }
 
 - (void)viewDidMoveToWindow {
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+    if ([self window])
+        trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NSMouseInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds], [self isFlipped])];
 }
 
 #pragma mark NSDraggingDestination protocol
