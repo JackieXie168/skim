@@ -109,7 +109,7 @@
     static NSCursor *textNoteCursor = nil;
     if (nil == textNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameTextNoteCursor] copy] autorelease];
-        textNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        textNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return textNoteCursor;
 }
@@ -118,7 +118,7 @@
     static NSCursor *anchoredNoteCursor = nil;
     if (nil == anchoredNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameAnchoredNoteCursor] copy] autorelease];
-        anchoredNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        anchoredNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return anchoredNoteCursor;
 }
@@ -127,7 +127,7 @@
     static NSCursor *circleNoteCursor = nil;
     if (nil == circleNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameCircleNoteCursor] copy] autorelease];
-        circleNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        circleNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return circleNoteCursor;
 }
@@ -136,7 +136,7 @@
     static NSCursor *squareNoteCursor = nil;
     if (nil == squareNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameSquareNoteCursor] copy] autorelease];
-        squareNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        squareNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return squareNoteCursor;
 }
@@ -145,7 +145,7 @@
     static NSCursor *highlightNoteCursor = nil;
     if (nil == highlightNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameHighlightNoteCursor] copy] autorelease];
-        highlightNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        highlightNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return highlightNoteCursor;
 }
@@ -154,7 +154,7 @@
     static NSCursor *underlineNoteCursor = nil;
     if (nil == underlineNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameUnderlineNoteCursor] copy] autorelease];
-        underlineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        underlineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return underlineNoteCursor;
 }
@@ -163,7 +163,7 @@
     static NSCursor *strikeOutNoteCursor = nil;
     if (nil == strikeOutNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameStrikeOutNoteCursor] copy] autorelease];
-        strikeOutNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        strikeOutNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return strikeOutNoteCursor;
 }
@@ -172,7 +172,7 @@
     static NSCursor *lineNoteCursor = nil;
     if (nil == lineNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameLineNoteCursor] copy] autorelease];
-        lineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        lineNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return lineNoteCursor;
 }
@@ -181,7 +181,7 @@
     static NSCursor *inkNoteCursor = nil;
     if (nil == inkNoteCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameInkNoteCursor] copy] autorelease];
-        inkNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(4.0, 4.0)];
+        inkNoteCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[self arrowCursor] hotSpot]];
     }
     return inkNoteCursor;
 }
