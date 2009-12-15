@@ -63,6 +63,7 @@
 #import "NSEvent_SKExtensions.h"
 #import "NSWindowController_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 
 @implementation SKMainWindowController (Actions)

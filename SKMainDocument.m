@@ -46,7 +46,6 @@
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKConversionProgressController.h"
 #import "SKFindController.h"
-#import "BDAlias.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKPDFView.h"
@@ -1640,18 +1639,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (NSDictionary *)currentDocumentSetup {
-    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [[self fileURL] path];
-    if (fileName) {
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        
-        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
-        if(data)
-            [setup setObject:data forKey:SKDocumentSetupAliasKey];
-        
+    NSMutableDictionary *setup = [[[super currentDocumentSetup] mutableCopy] autorelease];
+    if ([setup count])
         [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
-    }
-    
     return setup;
 }
 

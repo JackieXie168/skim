@@ -58,5 +58,6 @@ enum {
 
 - (void)saveRecentDocumentInfo;
 - (void)applySetup:(NSDictionary *)setup;
+- (NSDictionary *)currentDocumentSetup;
 
 @end
