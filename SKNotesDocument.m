@@ -38,7 +38,6 @@
 
 #import "SKNotesDocument.h"
 #import "SKNoteOutlineView.h"
-#import "BDAlias.h"
 #import "SKDocumentController.h"
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
@@ -255,22 +254,6 @@
         [dict setObject:[NSNumber numberWithUnsignedInt:'TEXT'] forKey:NSFileHFSTypeCode];
     
     return dict;
-}
-
-// these are necessary for the app controller, we may change it there
-- (NSDictionary *)currentDocumentSetup {
-    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    NSString *fileName = [[self fileURL] path];
-    
-    if (fileName) {
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        
-        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
-        if(data)
-            [setup setObject:data forKey:SKDocumentSetupAliasKey];
-    }
-    
-    return setup;
 }
 
 - (void)updateNoteFilterPredicate {

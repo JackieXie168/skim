@@ -40,6 +40,8 @@
 #import "SKApplicationController.h"
 #import "SKTemplateParser.h"
 #import "NSFileManager_SKExtensions.h"
+#import "SKDocumentController.h"
+#import "BDAlias.h"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -110,5 +112,21 @@ static NSSet *richTextTypes() {
 - (void)saveRecentDocumentInfo {}
 
 - (void)applySetup:(NSDictionary *)setup {}
+
+// these are necessary for the app controller, we may change it there
+- (NSDictionary *)currentDocumentSetup {
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    NSString *fileName = [[self fileURL] path];
+    
+    if (fileName) {
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        
+        [setup setObject:fileName forKey:SKDocumentSetupFileNameKey];
+        if(data)
+            [setup setObject:data forKey:SKDocumentSetupAliasKey];
+    }
+    
+    return setup;
+}
 
 @end

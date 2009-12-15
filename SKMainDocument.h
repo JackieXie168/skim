@@ -116,8 +116,6 @@ extern NSDictionary *SKPDFViewSettingsFromScriptingPDFViewSettings(NSDictionary 
 
 - (void)savePasswordInKeychain:(NSString *)password;
 
-- (NSDictionary *)currentDocumentSetup;
-
 - (void)applySetup:(NSDictionary *)setup;
 
 - (SKPDFSynchronizer *)synchronizer;
