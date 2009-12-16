@@ -944,7 +944,7 @@
                 <cocoa key="contentBoundsAsQDRect"/>
             </property>
             <property name="line bounds" code="LBnd" access="r"
-                description="The bounding rectangle for the lines on the page (left, top, right, bottom).">
+                description="The bounding rectangles for the lines on the page (left, top, right, bottom).">
                 <type type="rectangle" list="yes"/>
                 <cocoa key="lineBoundsAsQDRects"/>
             </property>
