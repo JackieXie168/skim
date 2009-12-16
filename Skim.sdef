@@ -943,6 +943,11 @@
                 description="The bounding rectangle for the foreground of the page (left, top, right, bottom).">
                 <cocoa key="contentBoundsAsQDRect"/>
             </property>
+            <property name="line bounds" code="LBnd" access="r"
+                description="The bounding rectangle for the lines on the page (left, top, right, bottom).">
+                <type type="rectangle" list="yes"/>
+                <cocoa key="lineBoundsAsQDRects"/>
+            </property>
             <property name="rotation" code="trot" type="integer"
                 description="The rotation of the page. Must be one of 0, 90, 180, or 270.">
                 <cocoa key="rotationAngle"/>
