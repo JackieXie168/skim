@@ -424,6 +424,15 @@ static BOOL usesSequentialPageNumbering = NO;
     return [NSData dataWithRectAsQDRect:[self foregroundBox]];
 }
 
+- (NSArray *)lineBoundsAsQDRects {
+    NSPointerArray *lineRects = [self lineRects];
+    NSMutableArray *lineBounds = [NSMutableArray array];
+    NSInteger i, count = [lineRects count];
+    for (i = 0; i < count; i++)
+        [lineBounds addObject:[NSData dataWithRectAsQDRect:*(NSRectPointer)[lineRects pointerAtIndex:i]]];
+    return lineBounds;
+}
+
 - (NSTextStorage *)richText {
     NSAttributedString *attrString = [self attributedString];
     return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
