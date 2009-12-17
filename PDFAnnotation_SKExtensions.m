@@ -99,6 +99,8 @@ enum {
     CGFloat r, g, b, a = 0.0;
     PDFBorder *border = [self border];
     NSString *contents = [self contents];
+    NSDate *modDate = [self modificationDate];
+    NSString *userName = [self userName];
     [[self color] getRed:&r green:&g blue:&b alpha:&a];
     [fdfString appendFDFName:SKFDFTypeKey];
     [fdfString appendFDFName:SKFDFAnnotation];
@@ -133,6 +135,14 @@ enum {
     if (contents)
         [fdfString appendString:[[contents lossyISOLatin1String] stringByEscapingParenthesis]];
     [fdfString appendString:@")"];
+    if (modDate) {
+        [fdfString appendFDFName:SKFDFAnnotationModificationDateKey];
+        [fdfString appendFormat:@"(%@)", SKFDFDateFromDate(modDate)];
+    }
+    if (userName) {
+        [fdfString appendFDFName:SKFDFAnnotationUserNameKey];
+        [fdfString appendFormat:@"(%@)", [[userName lossyISOLatin1String] stringByEscapingParenthesis]];
+    }
     return fdfString;
 }
 

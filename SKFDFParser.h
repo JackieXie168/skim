@@ -61,6 +61,8 @@ extern SKFDFString SKFDFAnnotationLineWidthKey;
 extern SKFDFString SKFDFAnnotationDashPatternKey;
 extern SKFDFString SKFDFAnnotationBorderStyleKey;
 extern SKFDFString SKFDFAnnotationBorderKey;
+extern SKFDFString SKFDFAnnotationModificationDateKey;
+extern SKFDFString SKFDFAnnotationUserNameKey;
 extern SKFDFString SKFDFAnnotationIconTypeKey;
 extern SKFDFString SKFDFAnnotationLineStylesKey;
 extern SKFDFString SKFDFAnnotationLinePointsKey;
@@ -90,6 +92,9 @@ extern SKFDFString SKFDFLineStyleCircle;
 extern SKFDFString SKFDFLineStyleDiamond;
 extern SKFDFString SKFDFLineStyleOpenArrow;
 extern SKFDFString SKFDFLineStyleClosedArrow;
+
+extern NSString *SKFDFDateFromDate(NSDate *date);
+extern NSDate *SKDateFromFDFDate(NSString *dateString);
 
 extern PDFBorderStyle SKPDFBorderStyleFromFDFBorderStyle(SKFDFString name);
 extern SKFDFString SKFDFBorderStyleFromPDFBorderStyle(PDFBorderStyle borderStyle);
