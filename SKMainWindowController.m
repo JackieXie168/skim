@@ -2424,7 +2424,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [undoGroupOldPropertiesPerNote setObject:oldNoteProperties forKey:note];
                 [oldNoteProperties release];
                 // set the mod date here, need to do that only once for each note for a real user action
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey] && isUndoOrRedo == NO)
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO && isUndoOrRedo == NO)
                     [note setModificationDate:[NSDate date]];
             }
             

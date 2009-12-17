@@ -57,8 +57,8 @@
 #import "NSString_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 
-#define SKShouldSetNoteUserNameKey @"SKShouldSetNoteUserName"
-#define SKNoteUserNameKey @"SKNoteUserName"
+#define SKUseUserNameKey @"SKUseUserName"
+#define SKUserNameKey @"SKUserName"
 
 
 FourCharCode SKScriptingBorderStyleFromBorderStyle(PDFBorderStyle borderStyle) {
@@ -227,11 +227,11 @@ enum {
 }
 
 - (void)registerUserName {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteUserNameKey]) {
-        NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKNoteUserNameKey];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseUserNameKey]) {
+        NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKUserNameKey];
         [self setUserName:[userName length] ? userName : NSFullUserName()];
     }
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO)
         [self setModificationDate:[NSDate date]];
 }
 
