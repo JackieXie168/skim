@@ -1871,6 +1871,7 @@ inline NSRange SKMakeRangeFromEnd(NSUInteger end, NSUInteger length) {
     if (page && [[page annotations] containsObject:newNote] == NO) {
         SKPDFView *pdfView = [self pdfView];
         
+        [newNote registerUserName];
         [pdfView addAnnotation:newNote toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
     } else {
