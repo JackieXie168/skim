@@ -65,6 +65,8 @@ NSString *SKNPDFAnnotationBorderKey = @"border";
 NSString *SKNPDFAnnotationLineWidthKey = @"lineWidth";
 NSString *SKNPDFAnnotationBorderStyleKey = @"borderStyle";
 NSString *SKNPDFAnnotationDashPatternKey = @"dashPattern";
+NSString *SKNPDFAnnotationModificationDateKey = @"modificationDate";
+NSString *SKNPDFAnnotationUserNameKey = @"userName";
 
 NSString *SKNPDFAnnotationInteriorColorKey = @"interiorColor";
 
@@ -172,8 +174,11 @@ static void replacement_dealloc(id self, SEL _cmd) {
         if (self = [self initSkimNoteWithBounds:bounds]) {
             Class colorClass = [NSColor class];
             Class arrayClass = [NSArray class];
+            Class dateClass = [NSDate class];
             NSString *contents = [dict objectForKey:SKNPDFAnnotationContentsKey];
             NSColor *color = [dict objectForKey:SKNPDFAnnotationColorKey];
+            NSDate *modificationDate = [dict objectForKey:SKNPDFAnnotationModificationDateKey];
+            NSString *userName = [dict objectForKey:SKNPDFAnnotationUserNameKey];
             NSNumber *lineWidth = [dict objectForKey:SKNPDFAnnotationLineWidthKey];
             NSNumber *borderStyle = [dict objectForKey:SKNPDFAnnotationBorderStyleKey];
             NSArray *dashPattern = [dict objectForKey:SKNPDFAnnotationDashPatternKey];
@@ -182,6 +187,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
                 [self setString:contents];
             if ([color isKindOfClass:colorClass])
                 [self setColor:color];
+            if ([modificationDate isKindOfClass:dateClass] && [self respondsToSelector:@selector(setModificationDate:)])
+                [self setModificationDate:modificationDate];
+            if ([userName isKindOfClass:stringClass] && [self respondsToSelector:@selector(setUserName:)])
+                [self setUserName:userName];
             if (lineWidth == nil && borderStyle == nil && dashPattern == nil) {
                 if ([self border])
                     [self setBorder:nil];
@@ -208,6 +217,10 @@ static void replacement_dealloc(id self, SEL _cmd) {
     [dict setValue:[self type] forKey:SKNPDFAnnotationTypeKey];
     [dict setValue:[self string] forKey:SKNPDFAnnotationContentsKey];
     [dict setValue:[self color] forKey:SKNPDFAnnotationColorKey];
+    if ([self respondsToSelector:@selector(modificationDate)])
+        [dict setValue:[self modificationDate] forKey:SKNPDFAnnotationModificationDateKey];
+    if ([self respondsToSelector:@selector(userName)])
+        [dict setValue:[self userName] forKey:SKNPDFAnnotationUserNameKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
     [dict setValue:[NSNumber numberWithUnsignedInt:pageIndex == NSNotFound ? 0 : pageIndex] forKey:SKNPDFAnnotationPageIndexKey];
     if ([self border]) {
