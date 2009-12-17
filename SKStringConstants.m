@@ -123,4 +123,4 @@ NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
 NSString *SKTableFontSizeKey = @"SKTableFontSize";
 NSString *SKSequentialPageNumberingKey = @"SKSequentialPageNumbering";
 NSString *SKDisablePinchZoomKey = @"SKDisablePinchZoom";
-NSString *SKShouldSetNoteModificationDateKey = @"SKShouldSetNoteModificationDate";
+NSString *SKDisableModificationDateKey = @"SKDisableModificationDate";
