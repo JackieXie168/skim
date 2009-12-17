@@ -999,6 +999,14 @@
                 description="The bounding rectangle of the note (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
+            <property name="modification date" code="ModD" type="date" access="r"
+                description="The modification date of a note.">
+                <cocoa key="modificationDate"/>
+            </property>
+            <property name="user name" code="UsrN" type="text" access="r"
+                description="The user name of the creator of a note.">
+                <cocoa key="userName"/>
+            </property>
             <property name="font name" code="FntN" type="text"
                 description="The font name of a text note.">
                 <cocoa key="fontName"/>
