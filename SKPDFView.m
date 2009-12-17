@@ -1909,6 +1909,8 @@ enum {
             NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKNoteUserNameKey];
             [newAnnotation setUserName:[userName length] ? userName : NSFullUserName()];
         }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey])
+            [newAnnotation setModificationDate:[NSDate date]];
         
         [self addAnnotation:newAnnotation toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
