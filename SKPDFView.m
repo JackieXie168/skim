@@ -1907,7 +1907,7 @@ enum {
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteUserNameKey]) {
             NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKNoteUserNameKey];
-            [newAnnotation setUserName:[userName length] ? userName : NSUserName()];
+            [newAnnotation setUserName:[userName length] ? userName : NSFullUserName()];
         }
         
         [self addAnnotation:newAnnotation toPage:page];
