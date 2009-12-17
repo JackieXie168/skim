@@ -256,10 +256,12 @@ enum {
 
 // to support the 'duplicate' command
 - (id)copyWithZone:(NSZone *)zone {
-    if ([self isMovable]) // we don't want to duplicate markup
-        return [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self SkimNoteProperties]];
-    else
-        return nil;
+    PDFAnnotation *copy = nil;
+    if ([self isMovable]) { // we don't want to duplicate markup
+        copy = [[PDFAnnotation allocWithZone:zone] initSkimNoteWithProperties:[self SkimNoteProperties]];
+        [copy registerUserName];
+    }
+    return copy;
 }
 
 // overridden by subclasses to add or remove custom scripting keys relevant for the class, subclasses should call super first
