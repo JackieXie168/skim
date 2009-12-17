@@ -101,6 +101,8 @@ extern NSString *SKPDFAnnotationScriptingBorderStyleKey;
 
 - (NSRect)displayRectForBounds:(NSRect)bounds;
 
+- (void)registerUserName;
+
 - (NSSet *)keysForValuesToObserveForUndo;
 
 + (NSSet *)customScriptingKeys;

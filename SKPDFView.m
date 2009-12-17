@@ -104,9 +104,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 #define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
-#define SKShouldSetNoteUserNameKey @"SKShouldSetNoteUserName"
-#define SKNoteUserNameKey @"SKNoteUserName"
-
 static char SKPDFViewDefaultsObservationContext;
 static char SKPDFViewTransitionsObservationContext;
 
@@ -875,6 +872,7 @@ enum {
         
     }
     
+    [newAnnotation registerUserName];
     [self addAnnotation:newAnnotation toPage:page];
     [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
@@ -1905,13 +1903,7 @@ enum {
                 [newAnnotation setString:text];
         }
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteUserNameKey]) {
-            NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKNoteUserNameKey];
-            [newAnnotation setUserName:[userName length] ? userName : NSFullUserName()];
-        }
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey])
-            [newAnnotation setModificationDate:[NSDate date]];
-        
+        [newAnnotation registerUserName];
         [self addAnnotation:newAnnotation toPage:page];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
@@ -3151,6 +3143,7 @@ enum {
         if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
+            [newAnnotation registerUserName];
             [self addAnnotation:newAnnotation toPage:page];
             [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
             newActiveAnnotation = newAnnotation;
@@ -3182,6 +3175,7 @@ enum {
                 
                 newActiveAnnotation = [[[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:sel markupType:markupType] autorelease];
                 [newActiveAnnotation setString:[sel cleanedString]];
+                [newActiveAnnotation registerUserName];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
             } else if ([[activeAnnotation type] isEqualToString:SKNInkString]) {
@@ -3205,6 +3199,7 @@ enum {
                 [(PDFAnnotationInk *)newActiveAnnotation setColor:[activeAnnotation color]];
                 [(PDFAnnotationInk *)newActiveAnnotation setBorder:[activeAnnotation border]];
                 [self removeActiveAnnotation:nil];
+                [newActiveAnnotation registerUserName];
                 [self addAnnotation:newActiveAnnotation toPage:page];
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 
