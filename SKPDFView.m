@@ -104,6 +104,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 #define SKReadingBarNumberOfLinesKey @"SKReadingBarNumberOfLines"
 
+#define SKShouldSetNoteUserNameKey @"SKShouldSetNoteUserName"
+#define SKNoteUserNameKey @"SKNoteUserName"
+
 static char SKPDFViewDefaultsObservationContext;
 static char SKPDFViewTransitionsObservationContext;
 
@@ -1900,6 +1903,11 @@ enum {
                 text = [[page selectionForRect:[newAnnotation bounds]] cleanedString];
             if (text)
                 [newAnnotation setString:text];
+        }
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteUserNameKey]) {
+            NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:SKNoteUserNameKey];
+            [newAnnotation setUserName:[userName length] ? userName : NSUserName()];
         }
         
         [self addAnnotation:newAnnotation toPage:page];

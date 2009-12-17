@@ -226,7 +226,7 @@ enum {
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *keys = nil;
     if (keys == nil)
-        keys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationStringKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil];
+        keys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationStringKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, SKNPDFAnnotationModificationDateKey, nil];
     return keys;
 }
 

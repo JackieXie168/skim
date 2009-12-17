@@ -148,6 +148,7 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKUsesDrawersKey @"SKUsesDrawers"
 #define SKDisableAnimatedSearchHighlightKey @"SKDisableAnimatedSearchHighlight"
+#define SKShouldSetNoteModificationDateKey @"SKShouldSetNoteModificationDate"
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
 
@@ -2426,8 +2427,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [oldNoteProperties setObject:oldValue forKey:keyPath];
 
             // Don't set the undo action name during undoing and redoing
-            if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO)
+            if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO) {
                 [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey])
+                    [note setModificationDate:[NSDate date]];
+            }
             
             // Update the UI, we should always do that unless the value did not really change
             
@@ -2447,11 +2451,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 }
             }
             
-            [pdfView setNeedsDisplayForAnnotation:note];
-            [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
-            if (NSIsEmptyRect(oldRect) == NO) {
-                [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
-                [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
+            if ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO) {
+                [pdfView setNeedsDisplayForAnnotation:note];
+                [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
+                if (NSIsEmptyRect(oldRect) == NO) {
+                    [pdfView setNeedsDisplayInRect:oldRect ofPage:page];
+                    [secondaryPdfView setNeedsDisplayInRect:oldRect ofPage:page];
+                }
             }
             if ([[note type] isEqualToString:SKNNoteString] && [keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
                 [pdfView resetPDFToolTipRects];
