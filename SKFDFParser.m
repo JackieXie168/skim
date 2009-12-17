@@ -64,6 +64,8 @@ SKFDFString SKFDFAnnotationLineWidthKey = "W";
 SKFDFString SKFDFAnnotationDashPatternKey = "D";
 SKFDFString SKFDFAnnotationBorderStyleKey = "S";
 SKFDFString SKFDFAnnotationBorderKey = "Border";
+SKFDFString SKFDFAnnotationModificationDateKey = "M";
+SKFDFString SKFDFAnnotationUserNameKey = "T";
 SKFDFString SKFDFAnnotationIconTypeKey = "Name";
 SKFDFString SKFDFAnnotationLineStylesKey = "LE";
 SKFDFString SKFDFAnnotationLinePointsKey = "L";
@@ -182,6 +184,38 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
     }
 }
 
+NSString *SKFDFDateFromDate(NSDate *date) {
+    static NSDateFormatter *formatter = nil;
+    if (formatter == nil) {
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
+    }
+    NSMutableString *dateString = [NSMutableString stringWithFormat:@"D:", [formatter stringFromDate:date]];
+    if ([dateString hasSuffix:@"+0000"]) {
+        [dateString replaceCharactersInRange:NSMakeRange([dateString length] - 5, 5) withString:@"Z00'00'"];
+    } else {
+        [dateString insertString:@"'" atIndex:[dateString length] - 2];
+        [dateString insertString:@"'" atIndex:[dateString length]];
+    }
+    return dateString;
+}
+
+NSDate *SKDateFromFDFDate(NSString *dateString) {
+    static NSDateFormatter *formatter = nil;
+    if (formatter == nil) {
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
+    }
+    if ([dateString hasPrefix:@"D:"]) {
+        dateString = [dateString substringFromIndex:2];
+        if ([dateString hasSuffix:@"Z00'00'"])
+            dateString = [[dateString substringToIndex:[dateString length] - 7] stringByAppendingString:@"+0000"];
+        else
+            dateString = [dateString stringByReplacingOccurrencesOfString:@"'" withString:@""];
+        return [formatter dateFromString:dateString];
+    }
+    return nil;
+}
 
 @implementation SKFDFParser
 
@@ -297,6 +331,23 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
         if (CGPDFArrayGetCount(array) == 3 && CGPDFArrayGetNumber(array, 0, &r) && CGPDFArrayGetNumber(array, 1, &g) && CGPDFArrayGetNumber(array, 2, &b)) {
             [dictionary setObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0] forKey:SKNPDFAnnotationInteriorColorKey];
         }
+    }
+    
+    if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationModificationDateKey, &string)) {
+        NSString *dateString = (NSString *)CGPDFStringCopyTextString(string);
+        if (dateString) {
+            NSDate *date = SKDateFromFDFDate(dateString);
+            if (date)
+                [dictionary setObject:date forKey:SKNPDFAnnotationModificationDateKey];
+        }
+        [dateString release];
+    }
+    
+    if (success && CGPDFDictionaryGetString(annot, SKFDFAnnotationUserNameKey, &string)) {
+        NSString *userName = (NSString *)CGPDFStringCopyTextString(string);
+        if (userName)
+            [dictionary setObject:userName forKey:SKNPDFAnnotationUserNameKey];
+        [userName release];
     }
     
     if (success && CGPDFDictionaryGetName(annot, SKFDFAnnotationIconTypeKey, &name)) {
