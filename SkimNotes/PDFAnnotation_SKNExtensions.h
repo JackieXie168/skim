@@ -133,7 +133,14 @@ extern NSString *SKNPDFAnnotationBorderStyleKey;
     @discussion  Global string for annotation dash pattern key.
 */
 extern NSString *SKNPDFAnnotationDashPatternKey;
-
+/*!
+    @discussion  Global string for annotation modification date key.
+*/
+extern NSString *SKNPDFAnnotationModificationDateKey;
+/*!
+    @discussion  Global string for annotation user name key.
+*/
+extern NSString *SKNPDFAnnotationUserNameKey;
 /*!
     @discussion  Global string for annotation interior color key.
 */
