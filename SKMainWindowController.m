@@ -148,7 +148,6 @@ static char SKMainWindowDefaultsObservationContext;
 
 #define SKUsesDrawersKey @"SKUsesDrawers"
 #define SKDisableAnimatedSearchHighlightKey @"SKDisableAnimatedSearchHighlight"
-#define SKShouldSetNoteModificationDateKey @"SKShouldSetNoteModificationDate"
 
 #define SKDisplayNoteBoundsKey @"SKDisplayNoteBounds" 
 
@@ -2405,11 +2404,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             
             // Is this the first observed note change in the current undo group?
             NSUndoManager *undoManager = [[self document] undoManager];
+            BOOL isUndoOrRedo = ([undoManager isUndoing] || [undoManager isRedoing]);
             if (undoGroupOldPropertiesPerNote == nil) {
                 // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
                 undoGroupOldPropertiesPerNote = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
                 // Register an undo operation for any note property changes that are going to be coalesced between now and the next invocation of -observeUndoManagerCheckpoint:.
                 [undoManager registerUndoWithTarget:self selector:@selector(setNoteProperties:) object:undoGroupOldPropertiesPerNote];
+                // Don't set the undo action name during undoing and redoing
+                if (isUndoOrRedo == NO)
+                    [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
             }
 
             // Find the dictionary in which we're recording the old values of properties for the changed note
@@ -2420,38 +2423,33 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 // -setValue:forKey: copies, even if the callback doesn't, so we need to use CF functions
                 [undoGroupOldPropertiesPerNote setObject:oldNoteProperties forKey:note];
                 [oldNoteProperties release];
-            }
-
-            // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
-            if ([oldNoteProperties objectForKey:keyPath] == nil)
-                [oldNoteProperties setObject:oldValue forKey:keyPath];
-
-            // Don't set the undo action name during undoing and redoing
-            if ([undoManager isUndoing] == NO && [undoManager isRedoing] == NO) {
-                [undoManager setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey])
+                // set the mod date here, need to do that only once for each note for a real user action
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetNoteModificationDateKey] && isUndoOrRedo == NO)
                     [note setModificationDate:[NSDate date]];
             }
             
-            // Update the UI, we should always do that unless the value did not really change
+            // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
+            if ([oldNoteProperties objectForKey:keyPath] == nil)
+                [oldNoteProperties setObject:oldValue forKey:keyPath];
             
-            PDFPage *page = [note page];
-            NSRect oldRect = NSZeroRect;
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
-                oldRect = [note displayRectForBounds:[oldValue rectValue]];
-            
-            [self updateThumbnailAtPageIndex:[note pageIndex]];
-            
-            for (SKSnapshotWindowController *wc in snapshots) {
-                if ([wc isPageVisible:[note page]]) {
-                    [self snapshotNeedsUpdate:wc];
-                    [wc setNeedsDisplayForAnnotation:note onPage:page];
-                    if (NSIsEmptyRect(oldRect) == NO)
-                        [wc setNeedsDisplayInRect:oldRect ofPage:page];
-                }
-            }
-            
+            // Update the UI, we should always do that unless the value did not really change or we're just changing the mod date
             if ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO) {
+                PDFPage *page = [note page];
+                NSRect oldRect = NSZeroRect;
+                if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] && [oldValue isEqual:[NSNull null]] == NO)
+                    oldRect = [note displayRectForBounds:[oldValue rectValue]];
+                
+                [self updateThumbnailAtPageIndex:[note pageIndex]];
+                
+                for (SKSnapshotWindowController *wc in snapshots) {
+                    if ([wc isPageVisible:[note page]]) {
+                        [self snapshotNeedsUpdate:wc];
+                        [wc setNeedsDisplayForAnnotation:note onPage:page];
+                        if (NSIsEmptyRect(oldRect) == NO)
+                            [wc setNeedsDisplayInRect:oldRect ofPage:page];
+                    }
+                }
+                
                 [pdfView setNeedsDisplayForAnnotation:note];
                 [secondaryPdfView setNeedsDisplayForAnnotation:note onPage:page];
                 if (NSIsEmptyRect(oldRect) == NO) {
