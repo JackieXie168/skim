@@ -550,6 +550,7 @@ static BOOL usesSequentialPageNumbering = NO;
         }
 
         if (annotation) {
+            [annotation registerUserName];
             if (contentsValue) {
                 NSString *contentsKey = [[NSScriptClassDescription classDescriptionForClass:class] defaultSubcontainerAttributeKey];
                 if (contentsKey && [props objectForKey:contentsKey] == nil)
