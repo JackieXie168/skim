@@ -1916,13 +1916,15 @@ enum {
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
     [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
-    [annotation setShouldDisplay:hideNotes == NO];
-    [annotation setShouldPrint:hideNotes == NO];
+    [annotation setShouldDisplay:hideNotes == NO || [annotation isSkimNote] == NO];
+    [annotation setShouldPrint:hideNotes == NO || [annotation isSkimNote] == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [self resetPDFToolTipRects];
-    [accessibilityChildren release];
-    accessibilityChildren = nil;
+    if ([annotation isSkimNote]) {
+        [accessibilityChildren release];
+        accessibilityChildren = nil;
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
 }
 
@@ -1945,7 +1947,6 @@ enum {
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
-    BOOL wasNote = [[wasAnnotation type] isEqualToString:SKNNoteString];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     if ([self isEditing] && activeAnnotation == annotation)
@@ -1954,9 +1955,11 @@ enum {
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
-    [accessibilityChildren release];
-    accessibilityChildren = nil;
-    if (wasNote)
+    if ([wasAnnotation isSkimNote]) {
+        [accessibilityChildren release];
+        accessibilityChildren = nil;
+    }
+    if ([[wasAnnotation type] isEqualToString:SKNNoteString])
         [self resetPDFToolTipRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, page, SKPDFViewPageKey, nil]];
