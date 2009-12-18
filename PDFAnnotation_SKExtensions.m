@@ -278,7 +278,7 @@ enum {
 + (NSSet *)customScriptingKeys {
     static NSSet *customScriptingKeys = nil;
     if (customScriptingKeys == nil)
-        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, nil];
+        customScriptingKeys = [[NSSet alloc] initWithObjects:SKNPDFAnnotationLineWidthKey, SKPDFAnnotationScriptingBorderStyleKey, SKNPDFAnnotationDashPatternKey, SKNPDFAnnotationModificationDateKey, SKNPDFAnnotationUserNameKey, nil];
     return customScriptingKeys;
 }
 
