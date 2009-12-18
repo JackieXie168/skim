@@ -185,12 +185,14 @@ SKFDFString SKFDFLineStyleFromPDFLineStyle(PDFLineStyle lineStyle) {
 }
 
 NSString *SKFDFDateFromDate(NSDate *date) {
+    if (date == nil) return nil;
     static NSDateFormatter *formatter = nil;
     if (formatter == nil) {
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
     }
-    NSMutableString *dateString = [NSMutableString stringWithFormat:@"D:", [formatter stringFromDate:date]];
+    NSMutableString *dateString = [NSMutableString stringWithString:@"D:"];
+    [dateString appendString:[formatter stringFromDate:date]];
     if ([dateString hasSuffix:@"+0000"]) {
         [dateString replaceCharactersInRange:NSMakeRange([dateString length] - 5, 5) withString:@"Z00'00'"];
     } else {
@@ -201,20 +203,22 @@ NSString *SKFDFDateFromDate(NSDate *date) {
 }
 
 NSDate *SKDateFromFDFDate(NSString *dateString) {
+    if (dateString == nil) return nil;
     static NSDateFormatter *formatter = nil;
     if (formatter == nil) {
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"yyyyMMddHHmmssZZ"];
     }
+    NSDate *date = nil;
     if ([dateString hasPrefix:@"D:"]) {
-        dateString = [dateString substringFromIndex:2];
-        if ([dateString hasSuffix:@"Z00'00'"])
-            dateString = [[dateString substringToIndex:[dateString length] - 7] stringByAppendingString:@"+0000"];
-        else
-            dateString = [dateString stringByReplacingOccurrencesOfString:@"'" withString:@""];
-        return [formatter dateFromString:dateString];
+        NSMutableString *string = [dateString mutableCopy];
+        [string deleteCharactersInRange:NSMakeRange(0, 2)];
+        [string replaceOccurrencesOfString:@"Z" withString:@"+" options:0 range:NSMakeRange(0, [string length])];
+        [string replaceOccurrencesOfString:@"'" withString:@"" options:0 range:NSMakeRange(0, [string length])];
+        date = [formatter dateFromString:string];
+        [string release];
     }
-    return nil;
+    return date;
 }
 
 @implementation SKFDFParser
