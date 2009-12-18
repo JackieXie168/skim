@@ -1003,7 +1003,7 @@
                 description="The modification date of a note.">
                 <cocoa key="modificationDate"/>
             </property>
-            <property name="user name" code="UsrN" type="text" access="r"
+            <property name="user name" code="UsrN" type="text"
                 description="The user name of the creator of a note.">
                 <cocoa key="userName"/>
             </property>
