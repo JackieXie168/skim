@@ -283,17 +283,21 @@ enum {
 }
 
 - (NSDictionary *)scriptingProperties {
+    static NSSet *allCustomScriptingKeys = nil;
+    if (allCustomScriptingKeys == nil) {
+        NSMutableSet *customScriptingKeys = [NSMutableSet set];
+        [customScriptingKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
+        [customScriptingKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
+        [customScriptingKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
+        [customScriptingKeys unionSet:[SKNPDFAnnotationNote customScriptingKeys]];
+        [customScriptingKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
+        [customScriptingKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
+        [customScriptingKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
+        allCustomScriptingKeys = [customScriptingKeys copy];
+    }
     // remove all custom properties that are not valid for this class
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
-    NSMutableSet *customKeys = [[NSMutableSet alloc] init];
-    [customKeys unionSet:[PDFAnnotationCircle customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationSquare customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationFreeText customScriptingKeys]];
-    [customKeys unionSet:[SKNPDFAnnotationNote customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationMarkup customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationLine customScriptingKeys]];
-    [customKeys unionSet:[PDFAnnotationInk customScriptingKeys]];
-    [customKeys minusSet:[[self class] customScriptingKeys]];
+    NSMutableSet *customKeys = [allCustomScriptingKeys mutableCopy];
     [properties removeObjectsForKeys:[customKeys allObjects]];
     [customKeys release];
     return properties;
