@@ -850,13 +850,19 @@
 }
 
 - (IBAction)searchPDF:(id)sender {
+    BOOL wasClosed = NO;
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
             [leftSideWindow expand];
     } else if ([self leftSidePaneIsOpen] == NO) {
+        wasClosed = YES;
         [self toggleLeftSidePane:sender];
     }
-    [searchField selectText:self];
+    // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
+    if (wasClosed)
+        [searchField performSelector:@selector(selectText:) withObject:nil afterDelay:[[NSAnimationContext currentContext] duration]];
+    else
+        [searchField selectText:self];
 }
 
 - (IBAction)performFit:(id)sender {
