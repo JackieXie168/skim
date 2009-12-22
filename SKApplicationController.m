@@ -173,10 +173,8 @@
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
-    SKVersionNumber *versionNumber = versionString ? [SKVersionNumber versionNumberWithVersionString:versionString] : nil;
     NSString *lastVersionString = [sud stringForKey:SKLastVersionLaunchedKey];
-    SKVersionNumber *lastVersionNumber = lastVersionString ? [SKVersionNumber versionNumberWithVersionString:lastVersionString] : nil;
-    if(lastVersionNumber == nil || [lastVersionNumber compareToVersionNumber:versionNumber] == NSOrderedAscending) {
+    if (lastVersionString == nil || [SKVersionNumber compareVersionString:lastVersionString toVersionString:versionString] == NSOrderedAscending) {
         [self showReleaseNotes:nil];
         [sud setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
@@ -394,7 +392,6 @@
     NSBundle *importerBundle = [NSBundle bundleWithPath:importerPath];
     NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     if (importerVersion) {
-        SKVersionNumber *importerVersionNumber = [SKVersionNumber versionNumberWithVersionString:importerVersion];
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
         SInt32 sysVersion;
@@ -405,11 +402,10 @@
             runImporter = YES;
         } else {
             NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
-            SKVersionNumber *lastImporterVersionNumber = [SKVersionNumber versionNumberWithVersionString:lastImporterVersion];
             
             SInt32 lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] intValue];
             
-            runImporter = noErr == err ? ([lastImporterVersionNumber compareToVersionNumber:importerVersionNumber] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
+            runImporter = noErr == err ? ([SKVersionNumber compareVersionString:lastImporterVersion toVersionString:importerVersion] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
         if (runImporter) {
             NSString *mdimportPath = @"/usr/bin/mdimport";
