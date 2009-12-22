@@ -440,7 +440,7 @@ NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTr
     // Show/hide left side pane if necessary
     BOOL hasOutline = ([[pdfView document] outlineRoot] != nil);
     if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && [self leftSidePaneIsOpen] != hasOutline)
-        [self toggleLeftSidePane:self];
+        [self toggleLeftSidePane:nil];
     if (hasOutline)
         [self setLeftSidePaneState:SKOutlineSidePaneState];
     else
@@ -1832,7 +1832,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)displaySearchResultsForString:(NSString *)string {
     if ([self leftSidePaneIsOpen] == NO)
-        [self toggleLeftSidePane:self];
+        [self toggleLeftSidePane:nil];
     // strip extra search criteria, such as kind:pdf
     NSRange range = [string rangeOfString:@":"];
     if (range.location != NSNotFound) {
