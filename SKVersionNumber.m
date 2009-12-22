@@ -18,6 +18,16 @@
 
 @implementation SKVersionNumber
 
++ (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
+{
+    SKVersionNumber *versionNumber = [[self alloc] initWithVersionString:versionString];
+    SKVersionNumber *otherVersionNumber = [[self alloc] initWithVersionString:otherVersionString];
+    NSComparisonResult result = [versionNumber compareToVersionNumber:otherVersionNumber];
+    [versionNumber release];
+    [otherVersionNumber release];
+    return result;
+}
+
 + (id)versionNumberWithVersionString:(NSString *)versionString;
 {
     return [[[[self class] alloc] initWithVersionString:versionString] autorelease];
