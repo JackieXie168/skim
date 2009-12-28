@@ -527,20 +527,9 @@
 
 - (IBAction)toggleAutoScale:(id)sender {
     if ([self isPresentation])
-        [self toggleAutoActualSize:sender];
+        [pdfView toggleAutoActualSize:sender];
     else
         [pdfView setAutoScales:[pdfView autoScales] == NO];
-}
-
-- (IBAction)toggleAutoActualSize:(id)sender {
-    if ([pdfView autoScales])
-        [self doZoomToActualSize:sender];
-    else
-        [self doAutoScale:sender];
-}
-
-- (IBAction)zoomLog:(id)sender {
-    [pdfView setScaleFactor:exp([sender doubleValue])];
 }
 
 - (void)rotatePageAtIndex:(NSUInteger)idx by:(NSInteger)rotation {

@@ -39,13 +39,13 @@
 #import <Cocoa/Cocoa.h>
 #import "SKAnimatedBorderlessWindow.h"
 
-@class PDFView, SKNavigationToolTipView, SKNavigationButton;
+@class SKPDFView, SKNavigationToolTipView, SKNavigationButton;
 
 @interface SKNavigationWindow : SKAnimatedBorderlessWindow {
     SKNavigationButton *zoomButton;
     NSSlider *zoomSlider;
 }
-- (id)initWithPDFView:(PDFView *)pdfView hasSlider:(BOOL)hasSlider;
+- (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider;
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 @end

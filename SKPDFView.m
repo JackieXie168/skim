@@ -919,13 +919,28 @@ enum {
     }
 }
 
-- (void)changeToolMode:(id)sender {
+- (IBAction)changeToolMode:(id)sender {
     [self setToolMode:[sender tag]];
 }
 
-- (void)changeAnnotationMode:(id)sender {
+- (IBAction)changeAnnotationMode:(id)sender {
     [self setToolMode:SKNoteToolMode];
     [self setAnnotationMode:[sender tag]];
+}
+
+- (void)zoomLog:(id)sender {
+    [self setScaleFactor:exp([sender doubleValue])];
+}
+
+- (void)toggleAutoActualSize:(id)sender {
+    if ([self autoScales])
+        [self setScaleFactor:1.0];
+    else
+        [self setAutoScales:YES];
+}
+
+- (void)exitFullScreen:(id)sender {
+    [[[self window] windowController] exitFullScreen:sender];
 }
 
 - (void)showColorsForThisAnnotation:(id)sender {
@@ -967,7 +982,7 @@ enum {
         } else if ((eventChar == 'p') && (modifiers == 0)) {
             [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
         } else if ((eventChar == 'a') && (modifiers == 0)) {
-            [(SKMainWindowController *)[[self window] windowController] toggleAutoActualSize:self];
+            [self toggleAutoActualSize:self];
         } else if ((eventChar == 'b') && (modifiers == 0)) {
             NSView *documentView = [self documentView];
             [documentView setHidden:[documentView isHidden] == NO];
@@ -2462,11 +2477,13 @@ enum {
     navigationMode = [[NSUserDefaults standardUserDefaults] integerForKey:interactionMode == SKPresentationMode ? SKPresentationNavigationOptionKey : SKFullScreenNavigationOptionKey];
     
     // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
-    if (navWindow != nil)
+    if (navWindow != nil) {
+        [navWindow orderOut:nil];
         [navWindow release];
-    else
+    } else {
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                      name: NSWindowWillCloseNotification object: [self window]];
+    }
     navWindow = [[SKNavigationWindow alloc] initWithPDFView:self hasSlider:interactionMode == SKFullScreenMode];
     [navWindow moveToScreen:screen];
     [navWindow setLevel:[[self window] level] + 1];
