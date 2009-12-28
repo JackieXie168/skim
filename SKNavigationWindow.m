@@ -39,15 +39,15 @@
 #import "SKNavigationWindow.h"
 #import <Quartz/Quartz.h>
 #import "NSBezierPath_SKExtensions.h"
-#import "SKMainWindowController.h"
+#import "SKPDFView.h"
 #import "NSParagraphStyle_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
 #define SLIDER_WIDTH 100.0
 #define SEP_WIDTH 21.0
-#define MARGIN 7.0
-#define OFFSET 20.0
+#define BUTTON_MARGIN 7.0
+#define WINDOW_OFFSET 20.0
 #define LABEL_OFFSET 10.0
 #define LABEL_TEXT_MARGIN 2.0
 
@@ -61,16 +61,15 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 @implementation SKNavigationWindow
 
-- (id)initWithPDFView:(PDFView *)pdfView hasSlider:(BOOL)hasSlider {
+- (id)initWithPDFView:(SKPDFView *)pdfView hasSlider:(BOOL)hasSlider {
     NSScreen *screen = [[pdfView window] screen];
     if (screen == nil)
         screen = [NSScreen mainScreen];
-    CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
+    CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * BUTTON_MARGIN;
     if (hasSlider)
         width += SLIDER_WIDTH;
-    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + OFFSET, width, BUTTON_HEIGHT + 2 * MARGIN);
+    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
     if (self = [super initWithContentRect:contentRect screen:screen]) {
-        NSWindowController *controller = [[pdfView window] windowController];
         
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setLevel:[[pdfView window] level]];
@@ -80,18 +79,18 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
-        NSRect rect = NSMakeRect(MARGIN, MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
+        NSRect rect = NSMakeRect(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
         SKNavigationButton *button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:controller];
-        [button setAction:@selector(doGoToPreviousPage:)];
+        [button setTarget:pdfView];
+        [button setAction:@selector(goToPreviousPage:)];
         [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
         [button setPath:previousButtonPath(rect.size)];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
         button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:controller];
-        [button setAction:@selector(doGoToNextPage:)];
+        [button setTarget:pdfView];
+        [button setAction:@selector(goToNextPage:)];
         [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
         [button setPath:nextButtonPath(rect.size)];
         [[self contentView] addSubview:button];
@@ -104,7 +103,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             rect.origin.x = NSMaxX(rect);
             rect.size.width = SLIDER_WIDTH;
             zoomSlider = [[SKNavigationSlider alloc] initWithFrame:rect];
-            [zoomSlider setTarget:controller];
+            [zoomSlider setTarget:pdfView];
             [zoomSlider setAction:@selector(zoomLog:)];
             [zoomSlider setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
             [zoomSlider setMinValue:log(0.1)];
@@ -115,17 +114,16 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
-        button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:controller];
-        [button setAction:@selector(toggleAutoActualSize:)];
-        [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
-        [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
-        [button setPath:zoomButtonPath(rect.size)];
-        [button setAlternatePath:alternateZoomButtonPath(rect.size)];
-        [button setState:[pdfView autoScales]];
-        [button setButtonType:NSPushOnPushOffButton];
+        zoomButton = [[SKNavigationButton alloc] initWithFrame:rect];
+        [zoomButton setTarget:pdfView];
+        [zoomButton setAction:@selector(toggleAutoActualSize:)];
+        [zoomButton setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
+        [zoomButton setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
+        [zoomButton setPath:zoomButtonPath(rect.size)];
+        [zoomButton setAlternatePath:alternateZoomButtonPath(rect.size)];
+        [zoomButton setState:[pdfView autoScales]];
+        [zoomButton setButtonType:NSPushOnPushOffButton];
         [[self contentView] addSubview:button];
-        zoomButton = [button retain];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                      name:PDFViewScaleChangedNotification object:pdfView];
         
@@ -136,7 +134,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
         button = [[[SKNavigationButton alloc] initWithFrame:rect] autorelease];
-        [button setTarget:controller];
+        [button setTarget:pdfView];
         [button setAction:@selector(exitFullScreen:)];
         [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
         [button setPath:closeButtonPath(rect.size)];
@@ -155,7 +153,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)moveToScreen:(NSScreen *)screen {
     NSRect winFrame = [self frame];
     winFrame.origin.x = NSMidX([screen frame]) - 0.5 * NSWidth(winFrame);
-    winFrame.origin.y = NSMinY([screen frame]) + OFFSET;
+    winFrame.origin.y = NSMinY([screen frame]) + WINDOW_OFFSET;
     [self setFrame:winFrame display:NO];
 }
 
