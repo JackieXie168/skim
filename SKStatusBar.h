@@ -51,8 +51,8 @@ typedef NSInteger SKProgressIndicatorStyle;
 	id rightCell;
     id iconCell;
 	NSProgressIndicator *progressIndicator;
-    NSTrackingRectTag leftTrackingRectTag;
-    NSTrackingRectTag rightTrackingRectTag;
+    NSTrackingArea *leftTrackingArea;
+    NSTrackingArea *rightTrackingArea;
     BOOL animating;
 }
 

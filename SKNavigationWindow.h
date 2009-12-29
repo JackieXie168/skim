@@ -114,7 +114,7 @@
 
 
 @interface SKNavigationSlider : NSSlider {
-    NSTrackingRectTag trackingRectTag;
+    NSTrackingArea *trackingArea;
     NSString *toolTip;
 }
 

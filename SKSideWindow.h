@@ -68,7 +68,7 @@
 
 @interface SKSideWindowContentView : NSView {
     NSView *contentView;
-    NSTrackingRectTag trackingRect;
+    NSTrackingArea *trackingArea;
     NSTimer *timer;
     NSRectEdge edge;
     BOOL enabled;
@@ -76,7 +76,6 @@
     BOOL acceptsMouseOver;
 }
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge;
-- (void)trackMouseOvers;
 - (BOOL)isEnabled;
 - (void)setEnabled:(BOOL)flag;
 - (BOOL)acceptsMouseOver;

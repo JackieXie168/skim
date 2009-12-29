@@ -66,7 +66,7 @@ static id SKGetPDFView(id self) {
     return pdfView;
 }
 
-static void (*original_resetCursorRects)(id, SEL) = NULL;
+static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
 static id (*original_accessibilityAttributeNames)(id, SEL) = NULL;
 static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
@@ -76,8 +76,8 @@ static id (*original_accessibilityFocusedUIElement)(id, SEL) = NULL;
 
 #pragma mark Skim support
 
-static void replacement_resetCursorRects(id self, SEL _cmd) {
-	original_resetCursorRects(self, _cmd);
+static void replacement_updateTrackingAreas(id self, SEL _cmd) {
+	original_updateTrackingAreas(self, _cmd);
     id pdfView = SKGetPDFView(self);
     if ([pdfView respondsToSelector:@selector(resetPDFToolTipRects)])
         [pdfView resetPDFToolTipRects];
@@ -210,7 +210,7 @@ static id replacement_accessibilityFocusedUIElement(id self, SEL _cmd) {
 void SKSwizzlePDFDisplayViewMethods() {
     Class PDFDisplayViewClass = NSClassFromString(@"PDFDisplayView");
     if (PDFDisplayViewClass) {
-        original_resetCursorRects = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(resetCursorRects), (IMP)replacement_resetCursorRects);
+        original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKDisableExtendedPDFViewAccessibility"]) return;
         
