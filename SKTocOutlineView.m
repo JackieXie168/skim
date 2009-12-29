@@ -46,7 +46,7 @@
 + (BOOL)usesDefaultFontSize { return YES; }
 
 - (void)dealloc {
-    SKDESTROY(trackingRects);
+    SKDESTROY(trackingAreas);
     [super dealloc];
 }
 
@@ -125,39 +125,41 @@
     return NO;
 }
 
-- (void)removeTrackingRects {
-    if (trackingRects) {
-        NSUInteger idx = [trackingRects count];
-        while (idx--)
-            [self removeTrackingRect:(NSTrackingRectTag)[trackingRects pointerAtIndex:idx]];
-        [trackingRects setCount:0];
-    }
+- (void)removeTrackingAreas {
+    for (NSTrackingArea *area in trackingAreas)
+        [self removeTrackingArea:area];
+    [trackingAreas removeAllObjects];
 }
 
-- (void)rebuildTrackingRects {
+- (void)rebuildTrackingAreas {
     if ([[self delegate] respondsToSelector:@selector(outlineView:shouldTrackTableColumn:item:)] == NO)
         return;
     
-    if (trackingRects == nil)
-        trackingRects = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality];
+    if (trackingAreas == nil)
+        trackingAreas = [[NSMutableArray alloc] init];
     else
-        [self removeTrackingRects];
+        [self removeTrackingAreas];
     
     if ([self window]) {
         NSRange rowRange = [self rowsInRect:[self visibleRect]];
         NSIndexSet *columnIndexes = [self columnIndexesInRect:[self visibleRect]];
         NSUInteger row, column = [columnIndexes firstIndex];
         NSTableColumn *tableColumn;
-        NSInteger userData;
-        NSTrackingRectTag tag;
+        NSDictionary *userInfo;
+        NSRect rect;
+        NSTrackingArea *area;
         
         while (column != NSNotFound) {
             tableColumn = [[self tableColumns] objectAtIndex:column];
             for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
                 if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
-                    userData = row * [self numberOfColumns] + column;
-                    tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
-                    [trackingRects addPointer:(void *)tag];
+                    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:column], @"column", [NSNumber numberWithInteger:row], @"row", nil];
+                    rect = [self frameOfCellAtColumn:column row:row];
+                    area = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+                    [self addTrackingArea:area];
+                    [trackingAreas addObject:area];
+                    [area release];
+                    [userInfo release];
                 }
             }
             column = [columnIndexes indexGreaterThanIndex:column];
@@ -168,52 +170,51 @@
 - (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when expanding
     [super expandItem:item expandChildren:collapseChildren];
-	[self rebuildTrackingRects];
+	[self rebuildTrackingAreas];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when collapsing
     [super collapseItem:item collapseChildren:collapseChildren];
-	[self rebuildTrackingRects];
+	[self rebuildTrackingAreas];
 }
 
 - (void)reloadData{
     [super reloadData];
-	[self rebuildTrackingRects];
+	[self rebuildTrackingAreas];
 }
 
-- (void)resetCursorRects {
-	[super resetCursorRects];
-    [self rebuildTrackingRects];
+- (void)updateTrackingAreas {
+	[super updateTrackingAreas];
+    [self rebuildTrackingAreas];
 }
 
 - (void)setDataSource:(id)anObject {
 	[super setDataSource:anObject];
-	[self rebuildTrackingRects];
+	[self rebuildTrackingAreas];
 }
 
 - (void)noteNumberOfRowsChanged {
 	[super noteNumberOfRowsChanged];
-	[self rebuildTrackingRects];
+	[self rebuildTrackingAreas];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if ([self window])
-        [self removeTrackingRects];
+        [self removeTrackingAreas];
 }
 
 - (void)viewDidMoveToWindow {
 	if ([self window])
-        [self rebuildTrackingRects];
+        [self rebuildTrackingAreas];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
-        NSInteger userData = (NSInteger)[theEvent userData];
-        NSInteger numCols = [self numberOfColumns];
-		NSInteger column = userData % numCols;
-		NSInteger row = userData / numCols;
-        if (column != -1 && row != -1) {
+        NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
+		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
+		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
+        if (userInfo && column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
         }
@@ -222,11 +223,10 @@
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
-        NSInteger userData = (NSInteger)[theEvent userData];
-        NSInteger numCols = [self numberOfColumns];
-		NSInteger column = userData % numCols;
-		NSInteger row = userData / numCols;
-        if (column != -1 && row != -1) {
+        NSDictionary *userInfo = [[theEvent trackingArea] userInfo];
+		NSInteger column = [[userInfo valueForKey:@"column"] integerValue];
+		NSInteger row = [[userInfo valueForKey:@"row"] integerValue];
+        if (userInfo && column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
         }

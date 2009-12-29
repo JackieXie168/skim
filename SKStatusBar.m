@@ -73,8 +73,8 @@
         [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
         iconCell = nil;
 		progressIndicator = nil;
-        leftTrackingRectTag = 0;
-        rightTrackingRectTag = 0;
+        leftTrackingArea = nil;
+        rightTrackingArea = nil;
         animating = NO;
     }
     return self;
@@ -84,6 +84,8 @@
 	SKDESTROY(leftCell);
 	SKDESTROY(rightCell);
 	SKDESTROY(iconCell);
+    SKDESTROY(leftTrackingArea);
+    SKDESTROY(rightTrackingArea);
 	[super dealloc];
 }
 
@@ -237,7 +239,7 @@
 - (void)setLeftStringValue:(NSString *)aString {
 	[leftCell setStringValue:aString];
 	[self setNeedsDisplay:YES];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (NSAttributedString *)leftAttributedStringValue {
@@ -247,7 +249,7 @@
 - (void)setLeftAttributedStringValue:(NSAttributedString *)object {
 	[leftCell setAttributedStringValue:object];
 	[self setNeedsDisplay:YES];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (NSString *)rightStringValue {
@@ -257,7 +259,7 @@
 - (void)setRightStringValue:(NSString *)aString {
 	[rightCell setStringValue:aString];
 	[self setNeedsDisplay:YES];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (NSAttributedString *)rightAttributedStringValue {
@@ -267,7 +269,7 @@
 - (void)setRightAttributedStringValue:(NSAttributedString *)object {
 	[rightCell setAttributedStringValue:object];
 	[self setNeedsDisplay:YES];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (NSFont *)font {
@@ -286,7 +288,7 @@
 
 - (void)setLeftAction:(SEL)selector {
     [leftCell setAction:selector];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (id)leftTarget {
@@ -303,7 +305,7 @@
 
 - (void)setRightAction:(SEL)selector {
     [rightCell setAction:selector];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (id)rightTarget {
@@ -363,7 +365,7 @@
         [iconCell release];
         iconCell = [newIconCell retain];
         [[self superview] setNeedsDisplayInRect:[self frame]];
-        [self resetCursorRects];
+        [self updateTrackingAreas];
     }
 }
 
@@ -416,7 +418,7 @@
 		[progressIndicator release];
 	}
 	[[self superview] setNeedsDisplayInRect:[self frame]];
-    [self resetCursorRects];
+    [self updateTrackingAreas];
 }
 
 - (void)startAnimation:(id)sender {
@@ -429,39 +431,47 @@
 
 #pragma mark Tracking rects
 
-- (void)resetCursorRects {
-    [super resetCursorRects];
-    if (leftTrackingRectTag != 0)
-        [self removeTrackingRect:leftTrackingRectTag];
-    if (rightTrackingRectTag != 0)
-        [self removeTrackingRect:rightTrackingRectTag];
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
+    if (leftTrackingArea) {
+        [self removeTrackingArea:leftTrackingArea];
+        SKDESTROY(leftTrackingArea);
+    }
+    if (rightTrackingArea) {
+        [self removeTrackingArea:rightTrackingArea];
+        SKDESTROY(rightTrackingArea);
+    }
     NSRect leftRect, rightRect;
     [self getLeftFrame:&leftRect rightFrame:&rightRect];
-    if ([self leftAction] != NULL)
-        leftTrackingRectTag = [self addTrackingRect:leftRect owner:self userData:nil assumeInside:NO];
-    else
+    if ([self leftAction] != NULL) {
+        leftTrackingArea = [[NSTrackingArea alloc] initWithRect:leftRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:nil];
+        [self addTrackingArea:leftTrackingArea];
+    } else {
         [leftCell setUnderlined:NO];
-    if ([self rightAction] != NULL)
-        rightTrackingRectTag = [self addTrackingRect:rightRect owner:self userData:nil assumeInside:NO];
-    else
+    }
+    if ([self rightAction] != NULL) {
+        rightTrackingArea = [[NSTrackingArea alloc] initWithRect:rightRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:nil];
+        [self addTrackingArea:rightTrackingArea];
+    } else {
         [rightCell setUnderlined:NO];
+    }
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    if ([theEvent trackingNumber] == leftTrackingRectTag) {
+    if ([[theEvent trackingArea] isEqual:leftTrackingArea]) {
         [leftCell setUnderlined:YES];
         [self setNeedsDisplay:YES];
-    } else if ([theEvent trackingNumber] == rightTrackingRectTag) {
+    } else if ([[theEvent trackingArea] isEqual:rightTrackingArea]) {
         [rightCell setUnderlined:YES];
         [self setNeedsDisplay:YES];
     }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    if ([theEvent trackingNumber] == leftTrackingRectTag) {
+    if ([[theEvent trackingArea] isEqual:leftTrackingArea]) {
         [leftCell setUnderlined:NO];
         [self setNeedsDisplay:YES];
-    } else if ([theEvent trackingNumber] == rightTrackingRectTag) {
+    } else if ([[theEvent trackingArea] isEqual:rightTrackingArea]) {
         [rightCell setUnderlined:NO];
         [self setNeedsDisplay:YES];
     }

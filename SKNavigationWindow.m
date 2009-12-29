@@ -471,37 +471,24 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        trackingRectTag = 0;
+        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways owner:self userInfo:nil];
+        [self addTrackingArea:trackingArea];
         toolTip = nil;
     }
     return self;
 }
 
 - (void)dealloc {
+    SKDESTROY(trackingArea);
     SKDESTROY(toolTip);
     [super dealloc];
 }
 
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if (trackingRectTag != 0) {
-        [self removeTrackingRect:trackingRectTag];
-        trackingRectTag = 0;
-    }
-    [super viewWillMoveToWindow:newWindow];
-}
-
-- (void)viewDidMoveToWindow {
-    if ([self window])
-        trackingRectTag = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-    [super viewDidMoveToWindow];
-}
-
-- (void)resetCursorRects {
-    [super resetCursorRects];
-    if (trackingRectTag)
-        [self removeTrackingRect:trackingRectTag];
-    if ([self window])
-        trackingRectTag = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
+    SKDESTROY(trackingArea);
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways owner:self userInfo:nil];
+    [self addTrackingArea:trackingArea];
 }
 
 - (NSString *)toolTip {
