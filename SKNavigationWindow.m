@@ -123,7 +123,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [zoomButton setAlternatePath:alternateZoomButtonPath(rect.size)];
         [zoomButton setState:[pdfView autoScales]];
         [zoomButton setButtonType:NSPushOnPushOffButton];
-        [[self contentView] addSubview:button];
+        [[self contentView] addSubview:zoomButton];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
                                                      name:PDFViewScaleChangedNotification object:pdfView];
         
